@@ -1,0 +1,73 @@
+<div class="content-header" style="border: none;">
+    <table cellspacing="0">
+        <tr>
+            <td><h3><?php echo Mage::helper('M2ePro')->__('Choose the level at which Products should be automatically added or deleted'); ?></h3></td>
+        </tr>
+    </table>
+</div>
+
+<div id="block_notice_ebay_listing_auto_action_mode" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Auto Add/Remove Rules'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'Choose the level at which Products should be automatically added or deleted.<br/><br/>
+        <b>Global</b> will check for Products being added or deleted anywhere in the Magento Catalog.<br/>
+        <b>Website</b> will check for Products being added or deleted anywhere in a Magento Website.<br/>
+        <b>Category</b> will check for Products being added or deleted in a Category.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        $this->getHelpPageUrl());
+    ?>
+</div>
+
+<div>
+
+    <div style="margin: 15px 0 0 10px;">
+
+        <input id="global" name="auto_mode" type="radio" value="<?php echo Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL; ?>">&nbsp;&nbsp;
+        <label style="font-weight: bold;" for="global"><?php echo Mage::helper('M2ePro')->__('Global (all Products)'); ?></label>
+
+        <div style="margin: 10px 22px;">
+            <?php echo Mage::helper('M2ePro')->__('Acts when a Product is added or deleted from Magento Catalog.'); ?>
+        </div>
+
+        <?php if (!$this->isAdminStore()): ?>
+            <input id="website" name="auto_mode" type="radio" value="<?php echo Ess_M2ePro_Model_Listing::AUTO_MODE_WEBSITE; ?>">&nbsp;&nbsp;
+            <label style="font-weight: bold;" for="website"><?php echo Mage::helper('M2ePro')->__('Website'); ?>&nbsp;(<?php echo $this->getWebsiteName(); ?>)</label>
+
+            <div style="margin: 10px 22px;">
+                <?php echo Mage::helper('M2ePro')->__('Means that when a Product is added or deleted from the Store you selected in M2E Pro Listing Setting the Rule is applied.'); ?>
+            </div>
+        <?php endif; ?>
+
+        <input id="category" name="auto_mode" type="radio" value="<?php echo Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY; ?>" class="validate-one-required-by-name">&nbsp;&nbsp;
+        <label style="font-weight: bold;" for="category"><?php echo Mage::helper('M2ePro')->__('Category'); ?></label>
+
+        <div style="margin: 10px 22px;">
+            <?php echo Mage::helper('M2ePro')->__('Means that when a Product is added or deleted from Magento Category, specified in the Rule Settings, the Rule is applied.'); ?>
+        </div>
+
+    </div>
+
+</div>
+
+<div style="text-align: right; margin: 20px 0;">
+    <a id="cancel_button" href="javascript: void(0);" onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    <?php echo $this->getChildHtml('continue_button'); ?>
+</div>
+
+<script type="text/javascript">
+
+    $('continue_button').observe('click', function() {
+        var validationResult = $$('input[name="auto_mode"]').all(Validation.validate);
+
+        if (!validationResult) {
+            return;
+        }
+
+        var mode = $$('input[name="auto_mode"]:checked')[0].value;
+
+        ListingAutoActionHandlerObj.loadAutoActionHtml(mode);
+    });
+
+</script>

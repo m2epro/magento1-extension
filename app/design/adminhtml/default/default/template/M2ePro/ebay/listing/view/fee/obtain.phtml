@@ -1,0 +1,37 @@
+<style type="text/css">
+    #get-estimated-fee {
+        background: none repeat scroll 0 0 #FAFAFA !important;
+        border: 1px solid #d6d6d6;
+        padding: 10px 15px;
+    }
+</style>
+<script type="text/javascript">
+    Event.observe(window, 'load', function() {
+        $('loading-mask').style.visibility = 'hidden';
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing/getEstimatedFees'),
+        {
+            method: 'get',
+            asynchronous : true,
+            parameters : {},
+            onSuccess: function (transport)
+            {
+                $('loading-mask').style.visibility = 'visible';
+
+                var response = transport.responseText.evalJSON();
+
+                if (response.error) {
+                    $('get-estimated-fee').remove();
+                    return;
+                }
+
+                $('get-estimated-fee').replace(response.html);
+                $('get-estimated-fee').show();
+            }
+        });
+    });
+</script>
+
+<div id="get-estimated-fee">
+  <strong><?php echo Mage::helper('M2ePro')->__('Getting Estimated Fee is in Progress...') ?></strong>
+</div>

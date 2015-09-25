@@ -1,0 +1,38 @@
+<?php echo $this->getParentBlock()->getChildHtml('view_header'); ?>
+
+<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Choose how you want to display Products for selection.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <form id="<?php echo $this->getForm()->getId(); ?>" method="post" action="<?php echo $this->getUrl('*/*/*',array('_current' => true)); ?>">
+
+        <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+        <div style="margin:15px 0 0 10px">
+
+            <input id="products" name="source" type="radio" value="products">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="products"><?php echo Mage::helper('M2ePro')->__('Products List'); ?></label>
+
+            <div style="margin: 10px 22px">
+                <?php echo Mage::helper('M2ePro')->__('Products displayed as a list without any grouping.'); ?>
+            </div>
+
+            <input id="categories" name="source" type="radio" value="categories">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="categories"><?php echo Mage::helper('M2ePro')->__('Categories'); ?></label>
+
+            <div style="margin: 10px 22px">
+                <?php echo Mage::helper('M2ePro')->__('Products grouped by Magento Categories.'); ?>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+
+    var init = function() {
+        var source = '<?php echo $this->getData('source'); ?>';
+        $$('input[value='+source+']').shift().checked = true;
+    };
+
+    Event.observe(window,'load',init);
+</script>

@@ -1,0 +1,48 @@
+<style type="text/css">
+        /* Blocks */
+    .step_container_description {
+        float: left;
+    }
+    .step_container_completed {
+        float: right;
+    }
+    .step_container_incomplete {
+        float: right;
+    }
+    .step_container_buttons {
+        clear:both;
+        padding-top: 10px;
+    }
+        /* Text */
+    .step_completed {
+        font-size: 14px;
+        font-weight: bold;
+        color: green;
+    }
+    .step_incomplete {
+        font-size: 14px;
+        font-weight: bold;
+        color: red;
+    }
+    .step_skip {}
+    .step_process {}
+</style>
+
+<script type="text/javascript">
+
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Module_Wizard'); ?>,'Ess_M2ePro_Helper_Module_Wizard');
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'setStep' => $this->getUrl('M2ePro/adminhtml_wizard_'.$this->getNick().'/setStep'),
+        'setStatus' => $this->getUrl('M2ePro/adminhtml_wizard_'.$this->getNick().'/setStatus')
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Step' => Mage::helper('M2ePro')->__('Step'),
+        'Note: If you close the Wizard, it never starts again. You will be required to set all Settings manually. Press Cancel to continue working with Wizard.' => Mage::helper('M2ePro')->__('Note: If you close the Wizard, it never starts again. You will be required to set all Settings manually. Press Cancel to continue working with Wizard.'),
+    )); ?>);
+
+    WizardHandlerObj = new WizardHandler('<?php echo $this->getStatus(); ?>','<?php echo $this->getStep(); ?>');
+    WizardHandlerObj.steps.all = <?php echo $this->getSteps(); ?>;
+
+</script>

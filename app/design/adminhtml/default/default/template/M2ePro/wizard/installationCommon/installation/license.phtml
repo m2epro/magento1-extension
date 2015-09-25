@@ -1,0 +1,245 @@
+<?php
+    /* @var Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_License $this*/
+
+    /** @var Ess_M2ePro_Helper_Module_Wizard $wizardHelper */
+    $wizardHelper = $this->helper('M2ePro/Module_Wizard');
+?>
+
+<script type="text/javascript">
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Error create License.'                => Mage::helper('M2ePro')->__('License Creation is failed. Please contact M2E Pro Support for resolution.'),
+        'Register Your Free M2E Pro Extension' => Mage::helper('M2ePro')->__('Register Your Free M2E Pro Extension')
+    )); ?>);
+
+    var init = function() {
+
+        InstallationCommonWizardObj.initLicense();
+
+        $('edit_license').observe('click', function() {
+            InstallationCommonWizardObj.openPopupAction();
+        });
+
+        $('process_license_button') && $('process_license_button').observe('click', function() {
+            InstallationCommonWizardObj.proceedLicenseStep();
+        });
+
+        $('license_popup_cancel_link').observe('click', function() {
+            InstallationCommonWizardObj.closePopupAction();
+        });
+
+        $('license_popup_confirm_button').observe('click', function() {
+            InstallationCommonWizardObj.confirmPopupAction();
+        });
+
+        <?php if ($this->getData('isLicenseStepFinished') || $wizardHelper->getStep($this->getNick()) != 'license') : ?>
+            $('edit_license').hide();
+        <?php endif; ?>
+    };
+
+    Event.observe(window, 'load', init);
+
+</script>
+
+<div id="block_notice_wizard_installation_step_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('License Set Up'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <div class="step_container_description">
+        <?php echo Mage::helper('M2ePro')->__('The data stated below will be used to create M2E Pro License, which is required for M2E Pro Connection.'); ?>
+    </div>
+
+    <div style="clear:both;"></div>
+
+    <div style="margin-top: 10px; border: 1px solid #CCCCCC; float: left; padding: 10px 25px 10px 25px; font-size: 13px">
+
+        <form id="license_form">
+
+            <table id="license_table" class="form-list" cellspacing="0" cellpadding="0">
+                <tbody>
+
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('Email') ?>:
+                    </td>
+                    <td id="email" class="value" style="width: 200px">
+                        <input type="hidden" name="form_email" class="required-entry" value="<?php echo $this->getUserInfoValue('email') ; ?>">
+                        <span><?php echo $this->getUserInfoValue('email', 'span'); ?></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('First Name') ?>:
+                    </td>
+                    <td id="firstname" class="value" style="width: 200px">
+                        <input type="hidden" name="form_first_name" class="required-entry" value="<?php echo $this->getUserInfoValue('firstname') ; ?>">
+                        <span><?php echo $this->getUserInfoValue('firstname', 'span'); ?></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('Last Name') ?>:
+                    </td>
+                    <td id="lastname" class="value" style="width: 200px">
+                        <input type="hidden" name="form_last_name" class="required-entry" value="<?php echo $this->getUserInfoValue('lastname') ; ?>">
+                        <span><?php echo $this->getUserInfoValue('lastname', 'span'); ?></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('Country') ?>:
+                    </td>
+                    <td id="country" class="value" style="width: 200px">
+                        <input type="hidden" name="form_country" class="required-entry" value="<?php echo $this->getUserInfoValue('country'); ?>">
+                        <span><?php echo $this->getUserInfoValue('country', 'span'); ?></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('City') ?>:
+                    </td>
+                    <td id="city" class="value" style="width: 200px">
+                        <input type="hidden" name="form_city" class="required-entry" value="<?php echo $this->getUserInfoValue('city'); ?>">
+                        <span><?php echo $this->getUserInfoValue('city', 'span'); ?></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('Postal Code') ?>:
+                    </td>
+                    <td id="postal_code" class="value" style="width: 200px">
+                        <input type="hidden" name="form_postal_code" class="required-entry" value="<?php echo $this->getUserInfoValue('postal_code') ; ?>">
+                        <span><?php echo $this->getUserInfoValue('postal_code', 'span'); ?></span>
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+        </form>
+
+        <div class="right">
+            <a id="edit_license" href="javascript:"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+        </div>
+
+    </div>
+
+    <div style="padding: 20px 25px 20px 35px; height: 100px; width: 450px; margin-left: 50px; margin-top: 10px; margin-bottom: 10px; float: left; background: url('<?php echo $this->getSkinUrl('M2ePro/images/note_background.png'); ?>') no-repeat;">
+        <?php echo Mage::helper('M2ePro')->__(
+            'This information will be sent to M2E Pro for approval.
+            <br/>Read more in our <a href="http://m2epro.com/privacy" target="_blank">Privacy Policy</a>.'
+        ); ?>
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="step_container_completed" style="margin-top: -20px;">
+        <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+    </div>
+
+    <div class="step_container_buttons" style="margin-top: 10px;">
+        <span class="step_process"><?php echo $this->getChildHtml('process_license_button'); ?></span>
+    </div>
+</div>
+
+<script>
+    WizardHandlerObj.addStep('license', 'block_notice_wizard_installation_step_license');
+</script>
+
+<!-- ### LICENSE EDIT POPUP ### -->
+
+<div id="license_popup_content" style="display: none;">
+    <div style="padding: 10px; height: 250px">
+        <div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Please verify the information is valid before we register you with M2E Pro.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes"></div>
+
+        <form id="popup_license_form">
+            <div class="fieldset">
+                <div class="hor-scroll">
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+                        <tbody>
+
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('Email') ?>: <span class="required">*</span>
+                            </td>
+                            <td class="value">
+                                <input type="text" name="email" class="input-text required-entry validate-email" value="" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('First Name') ?>: <span class="required">*</span>
+                            </td>
+                            <td class="value">
+                                <input type="text" name="firstname" class="input-text required-entry" value="" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('Last Name') ?>: <span class="required">*</span>
+                            </td>
+                            <td class="value">
+                                <input type="text" name="lastname" class="input-text required-entry" value="" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('Country') ?>: <span class="required">*</span>
+                            </td>
+                            <td class="value">
+                                <select name="country" class="required-entry">
+                                    <option style="display: none;"></option>
+                                    <?php foreach($this->getData('available_countries') as $country) {?>
+                                        <option value="<?php echo $country['label']; ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($country['label']); ?></option>
+                                    <?php } ?>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('City') ?>: <span class="required">*</span>
+                            </td>
+                            <td class="value">
+                                <input type="text" name="city" class="input-text required-entry" value="" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('Postal Code') ?>: <span class="required">*</span>
+                            </td>
+                            <td class="value">
+                                <input type="text" name="postal_code" class="input-text required-entry" value="" />
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div style="padding-right: 5px">
+        <div class="clear"></div>
+        <div class="right">
+            <a id="license_popup_cancel_link" href="javascript:void(0);" onclick=""><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+            &nbsp;
+            <?php echo $this->getChildHtml('license_popup_confirm_button'); ?>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+</div>

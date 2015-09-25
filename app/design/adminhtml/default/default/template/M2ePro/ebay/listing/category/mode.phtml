@@ -1,0 +1,140 @@
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+</div>
+
+<?php echo $this->getChildHtml('view_header'); ?>
+
+<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('You need to choose eBay Categories for Products in order to list them on eBay.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <div style="padding: 2px"></div>
+
+    <span>
+        <?php echo Mage::helper('M2ePro')->__('Choose one of the Options below.');?>
+    </span>
+
+    <form id="categories_mode_form" method="post" action="<?php echo $this->getUrl('*/*/*',array('step' => 1, '_current' => true)); ?>">
+
+        <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+        <div style="margin:15px 0 0 10px">
+
+            <input id="same" name="mode" type="radio" value="same">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="same"><?php echo Mage::helper('M2ePro')->__('All Products same Category'); ?></label>
+
+            <div style="margin-left: 22px">
+                <div style="margin: 7px 0">
+                    <?php echo Mage::helper('M2ePro')->__('Products will be Listed using the same eBay Category.'); ?>
+                </div>
+                <div style="margin-left: 0px; margin-bottom: 10px;">
+                    <input name="mode_same_remember_checkbox" type="checkbox" id="mode_same_remember_checkbox">&nbsp;
+                    <label style="color: #808080" for="mode_same_remember_checkbox"><?php echo Mage::helper('M2ePro')->__('Remember my choice and skip this step in the future.'); ?></label>
+                </div>
+
+            </div>
+
+            <?php if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) { ?>
+
+                <input id="category" name="mode" type="radio" value="category">&nbsp;&nbsp;
+                <label style="font-weight: bold" for="category"><?php echo Mage::helper('M2ePro')->__('Based on Magento Categories'); ?></label>
+
+                <div style="margin: 10px 22px">
+                    <?php echo Mage::helper('M2ePro')->__('Products will have eBay Categories set according to the Magento Categories.'); ?>
+                </div>
+
+            <?php } ?>
+
+            <input id="product" name="mode" type="radio" value="product">&nbsp;&nbsp;
+            <label style="font-weight: bold" for="product"><?php echo Mage::helper('M2ePro')->__('Get suggested Categories'); ?></label>
+
+            <div style="margin: 10px 22px">
+                <?php echo Mage::helper('M2ePro')->__('Get eBay to suggest Categories for your Products based on the Title and Magento Attribute set.'); ?>
+            </div>
+
+            <?php if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) { ?>
+
+                <input id="manually" name="mode" type="radio" value="manually">&nbsp;&nbsp;
+                <label style="font-weight: bold" for="manually"><?php echo Mage::helper('M2ePro')->__('Set Manually for each Product'); ?></label>
+
+                <div style="margin: 10px 22px">
+                    <?php echo Mage::helper('M2ePro')->__('Set eBay Categories for each Product (or a group of Products) manually.'); ?>
+                </div>
+
+            <?php } ?>
+
+        </div>
+    </form>
+
+</div>
+
+<div id="mode_same_remember_pop_up_content" style="display: none; margin: 15px 5px">
+    <div>
+        <?php echo Mage::helper('M2ePro')->__('If you continue the Settings you will choose next will be applied to the current M2E Pro Listing and automatically assigned to all Products added later.<br/><br/>'); ?>
+    </div>
+    <div class="clear"></div>
+    <div class="right">
+        <a href="javascript:" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+        &nbsp;&nbsp;&nbsp;
+        <span onclick="$('mode_same_remember_checkbox').checked = true; Windows.getFocusedWindow().close(); $('categories_mode_form').submit();">
+            <?php echo $this->getChildHtml('mode_same_remember_pop_up_confirm_button'); ?>
+        </span>
+
+    </div>
+    <div class="clear"></div>
+</div>
+
+<script type="text/javascript">
+
+    var init = function() {
+
+        $$('input[name="mode"]').each(function(element) {
+            element.observe('change', function() {
+                var modeSameRememberCheckbox = $('mode_same_remember_checkbox');
+                modeSameRememberCheckbox.checked = false;
+                modeSameRememberCheckbox.disabled = true;
+                this.value == 'same' && (modeSameRememberCheckbox.disabled = false);
+            })
+        });
+
+        var modeElement = $$('input[value="<?php echo $this->getData('mode'); ?>"]').shift();
+
+        modeElement.checked = true;
+        modeElement.simulate('change');
+
+        $('mode_same_remember_checkbox').observe('click', function(event) {
+
+            if (!this.checked) {
+                return;
+            }
+
+            event.preventDefault();
+
+            var popup = Dialog.info(null, {
+                draggable: true,
+                resizable: true,
+                closable: true,
+                className: "magento",
+                windowClassName: "popup-window",
+                title: '<?php echo Mage::helper('M2ePro')->__('Apply Settings'); ?>',
+                top: 100,
+                width: 400,
+                maxHeight: 500,
+                zIndex: 100,
+                recenterAuto: false,
+                hideEffect: Element.hide,
+                showEffect: Element.show
+            });
+            popup.options.destroyOnClose = false;
+
+            $('modal_dialog_message').insert($('mode_same_remember_pop_up_content').show());
+            Windows.getFocusedWindow().content.setStyle.bind(Windows.getFocusedWindow().content, {height: ''}).defer();
+
+        });
+    };
+
+    Event.observe(window,'load',init);
+</script>

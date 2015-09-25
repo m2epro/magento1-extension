@@ -1,0 +1,146 @@
+<?php
+    $data = $this->getData('user_voice_data');
+?>
+
+<style>
+
+    div#articles_container {
+        width: 45%;
+        float: left;
+        padding: 10px 10px 10px 30px;
+    }
+
+    div#ideas_container {
+        margin-left: 50%;
+        width: 45%;
+        padding: 10px 10px 10px 30px;
+    }
+
+    ul.articles-list {
+        list-style-image: url(<?php echo $this->getSkinUrl('M2ePro/images/icon_article.png'); ?>);
+    }
+
+    ul.ideas-list {
+        list-style-image: url(<?php echo $this->getSkinUrl('M2ePro/images/icon_idea.png'); ?>);
+    }
+
+    .article {
+        margin-bottom: 7px;
+    }
+
+    .article a {
+        text-decoration: none;
+        color: rgb(0, 125, 191);
+        font-size: 14px;
+    }
+
+    .article a:hover {
+        text-decoration: underline;
+    }
+
+    ul .article .answer {
+        color: black;
+        border: 1px dashed #D6D6D6;
+        padding: 5px;
+        width: 90%;
+        word-wrap: break-word;
+    }
+
+    div.no-articles {
+        text-align: center;
+        font-weight: bold;
+        color: gray;
+    }
+
+    .meta {
+        font-size: 12px;
+        color: grey;
+        margin-top: -5px;
+    }
+
+    .resource_link {
+        width: 100%;
+        text-align: right;
+    }
+
+    .resource_link a {
+        font-size: 11px;
+    }
+
+</style>
+
+<div id="articles_container">
+
+    <h2><?php echo Mage::helper('M2ePro')->__('Knowledge Base'); ?></h2>
+
+    <?php if (count($data['articles']) <= 0): ?>
+
+        <div class="no-articles"><?php echo Mage::helper('M2ePro')->__('No Articles Found'); ?></div>
+
+    <?php else: ?>
+
+        <ul class="articles-list">
+            <?php foreach ($data['articles'] as $article): ?>
+                <li class="article">
+
+                    <a href="javascript:void(0)" onclick="SupportHandlerObj.toggleArticle('<?php echo $article['id']; ?>')">
+                        <?php echo $article['question']; ?>
+                    </a>
+
+                    <?php
+                        $meta = strip_tags($article['answer_html']);
+                        $meta = substr($meta, 0, 70) . '...';
+                    ?>
+
+                    <div id="article_meta_<?php echo $article['id']; ?>" class="meta">
+                        <?php echo $meta; ?>
+                    </div>
+
+                    <div style="display: none;" id="article_answer_<?php echo $article['id']; ?>" class="answer">
+                        <?php echo $article['answer_html']; ?>
+                        <div class="resource_link">
+                            <a href="javascript:void(0)" onclick="SupportHandlerObj.goToArticle('<?php echo $article['url']; ?>')"><?php echo Mage::helper('M2ePro')->__('Go To Article →'); ?></a>
+                        </div>
+                    </div>
+
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+    <?php endif; ?>
+</div>
+
+<div id="ideas_container">
+
+    <h2><?php echo Mage::helper('M2ePro')->__('Feedback'); ?></h2>
+
+    <?php if (count($data['suggestions']) <= 0): ?>
+
+        <div class="no-articles"><?php echo Mage::helper('M2ePro')->__('No Ideas Found'); ?></div>
+
+    <?php else: ?>
+
+        <ul class="ideas-list">
+            <?php foreach ($data['suggestions'] as $suggestion): ?>
+                <li class="article">
+                    <a href="javascript:void(0)" onclick="SupportHandlerObj.toggleSuggestion('<?php echo $suggestion['id']; ?>')">
+                        <?php echo $suggestion['title']; ?>
+                    </a>
+
+                    <div id="suggestion_meta_<?php echo $suggestion['id']; ?>" class="meta">
+                        Votes: <?php echo $suggestion['vote_count']; ?>
+                    </div>
+
+                    <div style="display: none;" id="suggestion_text_<?php echo $suggestion['id']; ?>" class="answer">
+                        <?php echo $suggestion['formatted_text']; ?>
+                        <div class="resource_link">
+                            <a href="javascript:void(0)" onclick="SupportHandlerObj.goToArticle('<?php echo $suggestion['url']; ?>')"><?php echo Mage::helper('M2ePro')->__('Go To Idea →'); ?></a>
+                        </div>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+    <?php endif; ?>
+
+</div>

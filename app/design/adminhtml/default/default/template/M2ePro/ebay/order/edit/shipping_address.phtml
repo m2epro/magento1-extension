@@ -1,0 +1,104 @@
+<?php
+
+$address = $this->getData('address');
+
+?>
+
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_order')) ?>);
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit' => $this->getUrl('M2ePro/adminhtml_ebay_order/saveShippingAddress', array('order_id' => $this->getRequest()->getParam('id'))),
+    )); ?>);
+
+    M2ePro.formData.region = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getData('region_code')) ?>';
+
+    Event.observe(window, 'load', function() {
+        OrderEditShippingAddressHandlerObj = new OrderEditShippingAddressHandler('country_code', 'state_td', 'state');
+
+        $('country_code')
+            .observe('change', OrderEditShippingAddressHandlerObj.countryCodeChange)
+            .simulate('change');
+
+        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+    });
+
+</script>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action');?>" method="post" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <div class="entry-edit" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Address Information'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+                    <tbody>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Buyer Name') ?>: <span class="required">*</span></td>
+                            <td class="value"><input type="text" name="buyer_name" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('buyer_name')) ?>" /></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Buyer Email') ?>: <span class="required">*</span></td>
+                            <td class="value"><input type="text" name="buyer_email" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('buyer_email')) ?>" /></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Street Address') ?>: <span class="required">*</span></td>
+                            <td class="value"><input type="text" name="street[0]" class="input-text required-entry" value="<?php echo isset($address['street'][0]) ? Mage::helper('M2ePro')->escapeHtml($address['street'][0]) : '' ?>" /></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"></td>
+                            <td class="value"><input type="text" name="street[1]" class="input-text" value="<?php echo isset($address['street'][1]) ? Mage::helper('M2ePro')->escapeHtml($address['street'][1]) : '' ?>" /></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('City') ?>: <span class="required">*</span></td>
+                            <td class="value"><input type="text" name="city" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->escapeHtml($address['city']) ?>" /></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Country') ?>: <span class="required">*</span></td>
+                            <td class="value">
+                                <select name="country_code" id="country_code" class="required-entry">
+                                    <?php foreach ($this->getData('countries') as $country): ?>
+                                        <option value="<?php echo Mage::helper('M2ePro')->escapeHtml($country['country_id']) ?>" <?php if ($country['country_id'] == $address['country_code']): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($country['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Region/State') ?>:</td>
+                            <td id="state_td" class="value"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Zip/Postal Code') ?>:</td>
+                            <td class="value"><input type="text" name="postal_code" class="input-text" value="<?php echo Mage::helper('M2ePro')->escapeHtml($address['postal_code']) ?>" /></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Telephone') ?>:</td>
+                            <td class="value"><input type="text" name="phone" class="input-text" value="<?php echo Mage::helper('M2ePro')->escapeHtml($address['phone']) ?>" /></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</form>

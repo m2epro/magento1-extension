@@ -1,0 +1,29 @@
+<?php if(!empty($tabs)): ?>
+<ul id="<?php echo $this->getId() ?>" class="m2epro-link-tabs">
+<?php foreach ($tabs as $_tab): ?>
+    <li style="float: left; padding: 5px; margin-right: 15px;">
+        <a href="<?php echo $this->getTabUrl($_tab)?>" id="<?php echo $this->getTabId($_tab) ?>" title="<?php echo $this->getTabTitle($_tab) ?>" class="tab-item-link-lvl-2 <?php echo $this->getTabClass($_tab) ?><?php if (preg_match('/\s?ajax\s?/', $this->getTabClass($_tab))) {?> notloaded<?php }?>">
+            <span>
+                <span class="changed" title="<?php echo $this->__('The information in this tab has been changed.') ?>"></span>
+                <span class="error" title="<?php echo $this->__('This tab contains invalid data. Please solve the problem before saving.') ?>"></span>
+                <?php echo $this->getTabLabel($_tab) ?>
+            </span>
+        </a>
+        <div id="<?php echo $this->getTabId($_tab) ?>_content" style="display:none"><?php echo $this->getTabContent($_tab) ?></div>
+    </li>
+<?php endforeach; ?>
+</ul>
+<script type="text/javascript">
+
+    Event.observe(window,'load', function() {
+        $$('.tab-item-link-lvl-2').each(function(tab) {
+            tab.removeClassName('tab-item-link-lvl-2');
+            tab.addClassName('tab-item-link');
+
+            <?php echo $this->getId() ?>JsTabs = new varienTabs('<?php echo $this->getId() ?>', '<?php echo $this->getDestElementId() ?>', '<?php echo $this->getActiveTabId() ?>', <?php echo $this->getAllShadowTabs()?>);
+            <?php echo $this->getId() ?>JsTabs.moveTabContentInDest();
+        });
+    });
+
+</script>
+<?php endif; ?>

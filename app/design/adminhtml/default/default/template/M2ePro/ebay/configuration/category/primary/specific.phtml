@@ -1,0 +1,31 @@
+<script type="text/javascript">
+
+    Event.observe(window, 'load', function() {
+        <?php if (!$this->getRequest()->isXmlHttpRequest()): ?>
+            EbayConfigurationCategoryHandlerObj.setTemplates('<?php echo json_encode($this->templates); ?>');
+        <?php endif; ?>
+    });
+
+</script>
+
+<div id="primary_category_specifics">
+    <?php foreach ($this->specificsBlocks as $block): ?>
+
+        <div class="entry-edit" id="magento_block_ebay_category_specific_item_specifics<?php echo $block['unique_id']; ?>">
+
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Created at') . ' ' . $block['create_date']; ?></h4>
+            </div>
+
+            <input class="template-info" type="hidden" template_id="<?php echo $block['template_id']; ?>" obj_name="<?php echo 'EbayListingCategorySpecificHandler'.$block['unique_id'].'Obj'; ?>" create_date="<?php echo $block['create_date']; ?>">
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+                    <?php echo $block['block']->toHtml(); ?>
+                </div>
+            </div>
+
+        </div>
+
+    <?php endforeach; ?>
+</div>

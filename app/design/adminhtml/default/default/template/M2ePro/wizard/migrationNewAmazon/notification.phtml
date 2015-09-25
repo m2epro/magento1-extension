@@ -1,0 +1,21 @@
+<?php
+
+$startWizardLink = $this->getUrl("*/adminhtml_wizard_migrationNewAmazon");
+
+?>
+
+<div class="wizard-note">
+
+    <div>
+        <?php
+
+        echo Mage::helper('M2ePro')->__(
+            'Click
+            <a href="%url_1%">Start Configuration</a> Wizard to start migration process to <strong>new M2E Pro Amazon</strong> generation.',
+            $startWizardLink
+        );
+
+        ?>
+    </div>
+
+</div>

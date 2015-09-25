@@ -1,0 +1,555 @@
+/* Locked Styles */
+/* ================================================ */
+
+div.locked_block {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    z-index: 999;
+}
+
+div.locked_block div.locked_wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.2);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#22000000,endColorstr=#22000000);
+}
+
+div.locked_block div.locked_wrapper div {
+    position: relative;
+    top: 45%;
+    text-align: center;
+    font-size: 22px;
+    color: white;
+}
+
+/* ================================================ */
+
+/* Controls Styles */
+/* ================================================ */
+
+button.button_link {
+    background-color: #FFFFFF !important;
+    background-image: url("../../images/btn_back_bg.gif") !important;
+    border-color: #CCCCCC #AAAAAA #AAAAAA #CCCCCC !important;
+    color: #555555 !important;
+}
+
+button.next > span {
+    background-position: 100% 50%;
+    padding-right: 20px !important;
+    padding-left: 0 !important;
+    background-image: url("../images/next.gif") !important;
+}
+
+button.search > span {
+    background-position: 0% 50%;
+    padding-left: 18px !important;
+    padding-right: 0 !important;
+    background-image: url("../images/search.gif") !important;
+}
+
+select.locked_selected {
+    color: gray !important;
+    font-weight: bold !important;
+}
+
+select.locked_selected option[value="0"] {
+    color: black !important;
+    font-weight: normal !important;
+}
+
+select.hightlight_selected {
+    color: green !important;
+    font-weight: bold !important;
+}
+
+select.hightlight_selected option[value="0"] {
+    color: black !important;
+    font-weight: normal !important;
+}
+
+select.lacklustre_selected {
+    color: black !important;
+}
+
+select.lacklustre_selected option[value="1"] {
+    color: green !important;
+    font-weight: bold !important;
+}
+
+/* ================================================ */
+
+/* Grid Filter Styles */
+/* ================================================ */
+
+.filter_block {
+    display: table;
+    width: 100% !important;
+    margin-bottom: 10px !important;
+    border: 1px solid #CDDDDD !important;
+    background: none repeat scroll 0 0 #E7EFEF !important;
+}
+
+.filter_block p {
+    float: left !important;
+    border: none !important;
+    padding-right: 20px !important;
+    margin-bottom: 0 !important;
+    background: none !important;
+}
+
+.invalid-row {
+    background-color: #ffcdbd !important;
+}
+
+/* ================================================ */
+
+/* Errors Summary */
+/* ================================================ */
+
+.errors_summary {
+    padding: 8px 15px !important;
+    margin-bottom: 10px !important;
+    border: 1px dashed #FF7A7A !important;
+    background-color: #FFF7EA !important;
+}
+
+.errors_summary_title {
+    margin-bottom: 10px !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    color: gray !important;
+}
+
+.errors_summary_title a {
+    text-decoration: none !important;
+}
+
+.errors_summary_close {
+    float: right !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+}
+
+.errors_summary_content {
+    max-height: 125px !important;
+    overflow: auto !important;
+}
+
+.errors_summary_line {
+    margin-bottom: 5px !important;
+}
+
+.errors_summary_type {
+    float: left !important;
+    width: 135px !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    color: red !important;
+}
+
+.errors_summary_text {
+    margin-left: 150px !important;
+}
+
+/* ================================================ */
+
+/* Grid Help Line Styles */
+/* ================================================ */
+
+td.help_line {
+    text-align: center !important;
+    padding: 5px 20px 10px !important;
+    border: 1px solid silver !important;
+}
+
+td.help_line .hl_header {
+    padding: 0 0 5px !important;
+    text-align: center !important;
+}
+
+td.help_line .hl_header a {
+    text-decoration: none !important;
+}
+
+td.help_line .hl_title {
+    font-weight: bold !important;
+    font-size: 14px !important;
+    color: gray !important;
+}
+
+td.help_line .hl_close {
+    float: right !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+}
+
+td.help_line .hl_container {
+    text-align: left !important;
+    margin-bottom: 10px !important;
+    padding: 10px !important;
+}
+
+td.help_line .hl_container_success {
+    border: 1px dashed #04DD04 !important;
+    background-color: #E7FFE5 !important;
+}
+
+td.help_line .hl_container_warning {
+    border: 1px dashed #FCE220 !important;
+    background-color: #FFFFE2 !important;
+}
+
+td.help_line .hl_container_error {
+    border: 1px dashed #FF7A7A !important;
+    background-color: #FFF7EA !important;
+}
+
+td.help_line .hl_date {
+    float: left !important;
+    width: 160px !important;
+    height: 20px !important;
+    text-align: center !important;
+    border-right: 1px solid silver !important;
+    border-bottom: 1px solid silver !important;
+    font-weight: bold !important;
+}
+
+td.help_line .hl_action {
+    display: table !important;
+    margin-left: 175px !important;
+    padding-left: 10px !important;
+    padding-bottom: 2px !important;
+    padding-right: 10px !important;
+    border-bottom: 1px solid silver !important;
+    color: black !important;
+}
+
+td.help_line .hl_messages_type {
+    float: left !important;
+    width: 160px !important;
+    text-align: center !important;
+}
+
+td.help_line .hl_messages_type span {
+    font-weight: bold !important;
+}
+
+td.help_line .hl_messages_text {
+    margin-left: 175px !important;
+    padding-left: 10px !important;
+}
+
+td.help_line .hl_footer {
+    float: right !important;
+}
+
+/* ================================================ */
+
+/* Wizard Notification */
+/* ================================================ */
+
+.wizard-note {
+    background: url(../images/wizard-note.png) 48px 38px #E7FFE5 no-repeat;
+    border: dashed 1px #04DD04;
+    border-radius: 5px;
+    margin: 0 0 20px 0;
+    width: 100%;
+}
+
+.wizard-note div {
+    font-size: 14px;
+    color: #555555;
+    padding: 50px 130px;
+}
+
+.wizard-close {
+    font-size: 2em !important;
+    color: #04DD04 !important;
+    text-decoration: none;
+    float: right;
+    margin: 5px 10px;
+}
+
+a.wizard-close:hover {
+    text-decoration: none;
+}
+
+/* ================================================ */
+
+/* Tool tip */
+/* ================================================ */
+
+.tool-tip-image {
+    cursor: help;
+}
+
+.notice-tool-tip-icon {
+    cursor: help;
+    background: url("../../images/fam_help.gif") no-repeat scroll 0 50% transparent;
+    padding-left: 20px;
+    margin-left: 5px;
+}
+
+.tool-tip-message {
+    position: absolute;
+    background: none repeat scroll 0 0 #D7E5EF;
+    border: 1px solid #2BB0D7;
+    border-radius: 3px;
+    padding: 0.8em 1em;
+    display: block;
+    margin-top: -5px;
+    margin-right: 20px;
+    cursor: default;
+    z-index: 9999;
+    word-wrap: normal;
+    font-weight: normal;
+}
+
+.tip-right {
+    margin-left: 17px;
+    margin-right: 15px;
+    padding-left: 10px;
+}
+
+.tip-left {
+    margin-right: 17px;
+    margin-left: 15px;
+}
+
+.tool-tip-message img {
+    border: 0;
+    margin-top: -17px;
+    width: 24px;
+    height: 24px;
+    margin-right: -25px;
+    float: right;
+}
+
+.tip-left img {
+    margin-left: -25px;
+    float: left;
+}
+
+.columns .form-list td.value {
+    width: auto !important;
+}
+
+td div.validation-advice {
+    max-width: 255px;
+}
+
+.tool-tip-warning {
+    min-width: 230px;
+    font-size: 12px;
+    vertical-align: middle;
+    border-color: #ffd967;
+    background-color: #fffbf0;
+}
+
+p.note:not(.note-no-tool-tip) {
+    display: none;
+}
+
+/* ================================================ */
+
+/* Description preview */
+/* ================================================ */
+
+.description-preview-watermark-info {
+    position: relative;
+    display: inline;
+}
+
+.description-preview-watermark-info p {
+    background-color: #fff;
+    color: #000;
+    position: absolute;
+    bottom: 5px;
+    left: 0px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* ================================================ */
+
+/* Marketplaces */
+/* ================================================ */
+
+td.changed {
+    display: none;
+    vertical-align: top;
+}
+
+td.changed::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+td.changed span {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-top: 5px;
+    margin-left: 5px;
+    background-image: url('../../images/fam_bullet_disk.gif');
+}
+
+/* ================================================ */
+
+/* Variation product manage variations */
+/* ================================================ */
+
+.attributes-options-filter img {
+    cursor: pointer;
+}
+
+.attributes-options-filter-values .filter-param-remove {
+    padding-left: 5px;
+}
+
+.attributes-options-filter-values input {
+    width: 87%;
+    margin-top: 3px;
+}
+
+.product-options-main select {
+    width: 185px;
+}
+
+.manage-variations.form-list td.value select {
+    width: 225px;
+}
+
+form select:disabled {
+    background: rgba(0,0,0,0.1);
+}
+
+/* ================================================ */
+
+/* Helpers styles */
+/* ================================================ */
+
+.underline {
+    font-style: normal;
+    text-decoration: underline;
+}
+
+a.custom-button {
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    background: url("../../images/btn_bg.gif") repeat-x scroll 0 100% #ffac47;
+    border-color: #ed6502 #a04300 #a04300 #ed6502;
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    font: bold 12px arial,helvetica,sans-serif;
+    padding: 1px 7px 2px;
+    text-align: center !important;
+    white-space: nowrap;
+}
+
+a.custom-button:hover {
+    background: url("../../images/btn_over_bg.gif") repeat-x scroll 0px 0px #F77C16;
+}
+
+a.custom-button span {
+    line-height: 1.35em
+}
+
+a.hover-underline {
+    text-decoration: none;
+}
+
+a.hover-underline:hover {
+    text-decoration: underline;
+}
+
+/* ================================================ */
+
+/* Second level tabs */
+/* ================================================ */
+
+.m2epro-link-tabs a {
+    color: grey;
+    text-decoration: none;
+    display: inline-flex;
+    background-color: #f6f6f6;
+}
+
+.m2epro-link-tabs a.active{
+    color: black;
+    font-weight: bold;
+    background-color: #e3eff1;
+}
+
+.m2epro-link-tabs a:hover {
+    color: black;
+    background-color: #e2e2e2;
+}
+
+/* ================================================ */
+
+/* Floating Toolbar Fixes */
+/* ================================================ */
+
+.content-header-floating .drop_down {
+    display: none;
+}
+
+.content-header-floating .disabled {
+    display: none;
+}
+
+.content-header-floating a {
+    pointer-events: none;
+}
+
+.content-header-floating a span {
+    background: none;
+}
+
+/* ================================================ */
+
+/* eBay additional css */
+/* ================================================ */
+
+.m2ePro-ebay-auction-bids-link
+{
+    text-decoration: none;
+    color: grey;
+    font-size: 10px;
+}
+
+.m2ePro-ebay-auction-bids-link:hover
+{
+    text-decoration: underline;
+    color: grey;
+    font-size: 10px;
+}
+
+.m2ePro-variation-attributes
+{
+    font-size: 11px;
+}
+
+.m2ePro-variation-attributes a
+{
+    text-decoration: none;
+    color: grey;
+}
+
+.m2ePro-variation-attributes a:hover
+{
+    text-decoration: underline;
+}
+
+/* ================================================ */

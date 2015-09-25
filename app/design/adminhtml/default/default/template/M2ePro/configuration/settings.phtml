@@ -1,0 +1,239 @@
+<?php
+    $urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+    $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
+?>
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_configuration_settings')) ?>);
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit' => $this->getUrl('M2ePro/adminhtml_configuration_settings/save')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        SettingsHandlerObj = new ConfigurationSettingsHandler();
+
+        ControlPanelHandlerObj = new DevelopmentControlPanelHandler();
+
+        //------------------------------
+
+        $('block_notices_show').observe('change', SettingsHandlerObj.changeBlockNoticesShow).simulate('change');
+
+        $('force_qty_mode').simulate('change');
+
+        //------------------------------
+
+        configEditForm = new varienForm('config_edit_form', '<?php echo $this->getValidationUrl(); ?>');
+    });
+    //-----------------------------
+
+</script>
+
+<style>
+    .columns .form-list td.value {
+        width: 280px;
+    }
+</style>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <!-- General   -->
+    <div class="entry-edit" id="magento_block_configuration_interface_general">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Interface'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <div id="block_notice_configuration_interface" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Interface'); ?>">
+                    <?php echo Mage::helper('M2ePro')->__('Set M2E Pro interface preferences, then click <b>Save Config</b>.</br></br>
+                        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-General')
+                    ); ?>
+                </div>
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <colgroup class="label"></colgroup>
+                    <colgroup class="value"></colgroup>
+
+                    <tbody>
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Products Thumbnails'); ?>: </label>
+                        </td>
+                        <td class="value">
+                            <select id="products_show_thumbnails" name="products_show_thumbnails" class="required-entry">
+                                <option value="0" <?php if (!$this->products_show_thumbnails): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Show'); ?></option>
+                                <option value="1" <?php if ($this->products_show_thumbnails): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Show'); ?></option>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Choose whether you want to see Thumbnail Images for Products on the Add Products and View Listing Pages.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Help Blocks'); ?>: </label>
+                        </td>
+                        <td class="value">
+                            <select id="block_notices_show" name="block_notices_show" class="required-entry">
+                                <option value="0" <?php if (!$this->block_notices_show): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Show'); ?></option>
+                                <option value="1" <?php if ($this->block_notices_show): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Show'); ?></option>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Choose whether you want the help at the top of each M2E Pro Page to be available.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="restore_block_notices_tr">
+                        <td class="label"></td>
+                        <td class="value">
+                            <?php echo $this->getChildHtml('restore_block_notices'); ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Restores manually closed helps.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- End General   -->
+
+    <!-- QTY Settings  -->
+    <div class="entry-edit" id="magento_block_configuration_settings_qty">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Quantity'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <div id="block_notice_configuration_qty" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Quantity'); ?>">
+                    <?php echo Mage::helper('M2ePro')->__(
+                        'Choose whether M2E Pro should List Products on external Channels even if there is no Stock or Stock is negative.
+                        <b>Disallow</b> is the recommended Setting if you are selling on eBay.</br></br>
+                        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-Quantity')
+                    ); ?>
+                </div>
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tbody>
+
+                    <tr>
+                        <td class="label">
+                            <label for="force_qty_mode"><?php echo Mage::helper('M2ePro')->__('Manage Stock "No", Backorders'); ?>: </label>
+                        </td>
+                        <td class="value" colspan="2">
+                            <select id="force_qty_mode" name="force_qty_mode" onchange="SettingsHandlerObj.changeForceQtyMode();">
+                                <option value="0"<?php if ($this->forceQtyMode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disallow'); ?></option>
+                                <option value="1"<?php if ($this->forceQtyMode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Allow'); ?></option>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Choose whether M2E Pro should List Products on external Channels when Manage Stock is \'No\' or Backorders is enabled.
+                                    <b>Disallow</b> is the recommended Setting if you are selling on eBay.'
+                                ); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="force_qty_value_tr">
+                        <td class="label">
+                            <label for="force_qty_value"><?php echo Mage::helper('M2ePro')->__('Quantity To Be Listed'); ?>: </label>
+                        </td>
+                        <td class="value" colspan="2">
+                            <input id="force_qty_value" name="force_qty_value" value="<?php echo $this->forceQtyValue; ?>" type="text" class="M2ePro-required-when-visible input-text validate-greater-than-zero" />
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Set a number to List, e.g. if you have Manage Stock "No" in Magento Product and set this Value to 10, 10 will be sent as available Quantity to the Channel.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- End QTY Settings   -->
+
+    <!-- Advanced Settings  -->
+    <div class="entry-edit" id="magento_block_configuration_settings_advanced">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Global Synchronization'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <div id="block_notice_configuration_advanced_settings" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Global Synchronization'); ?>">
+                    <?php echo Mage::helper('M2ePro')->__('
+                    If you change Product Price or Quantity via direct Database access (eg using Import/Export Tools or
+                    Custom scripts), use <a href="%url1%" target="_blank">M2E Pro Models</a> or
+                    <a href="%url2%" target="_blank">Magmi Plugin</a>.<br/><br/>
+
+                    Only in case you cannot use these features, enable an additional feature for global synchronization
+                    - Track Direct Database Changes.<br/><br/>
+
+                    <strong>Warning:</strong> Tracking direct Database changes is resource-intensive and may affect the
+                    Performance of your Magento Site and Synchronization with Channels. Choose \'Yes\' only if you cannot
+                    use another predefined M2E Pro Models and you are totally sure that you need this functionality.</br></br>
+                    More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, 'BestPractice/Programmatic+Possibilities+to+work+with+Extension'),
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, 'BestPractice/Plugin+for+Magmi+Import+Tool'),
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-General')
+                    ); ?>
+                </div>
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tbody>
+
+                        <tr>
+                            <td class="label">
+                                <label for="inspector_mode"><?php echo Mage::helper('M2ePro')->__('Track Direct Database Changes'); ?>: </label>
+                            </td>
+                            <td class="value" colspan="2">
+                                <select id="inspector_mode" name="inspector_mode">
+                                    <option value="0"<?php if ($this->inspectorMode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                    <option value="1"<?php if ($this->inspectorMode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                </select>
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__("<b>Note:</b> Enable this Option if you really need it, as it is very resource and time consuming and may affect Synchronization Performance."); ?></span>
+                                </p>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- End Advanced Settings   -->
+
+</form>

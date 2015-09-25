@@ -1,0 +1,127 @@
+<div id="<?php echo $this->getContainerId(); ?>">
+    <script>
+        if (typeof storedStatuses !== 'undefined') {
+            storedStatuses = storedStatuses.concat(<?php echo json_encode($this->storedStatuses)?>);
+        } else {
+            storedStatuses = <?php echo json_encode($this->storedStatuses)?>;
+        }
+    </script>
+    <?php foreach($this->groups as $group) { ?>
+
+    <div class="entry-edit" id="magento_block_rakuten_marketplaces_group_<?php echo $group['id']; ?>" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__($group['title']); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <?php foreach($group['marketplaces'] as $marketplace) { ?>
+
+                    <?php
+                        $componentName = '';
+                        $componentMode = $marketplace['instance']->getData('component_mode');
+
+                        if (count(Mage::helper('M2ePro/Component')->getActiveComponents()) > 1) {
+                            $componentName = Mage::helper('M2ePro/Component_'.ucfirst($componentMode))->getTitle();
+                        }
+                        $componentTitle = Mage::helper('M2ePro/Component_'.ucfirst($componentMode))->getTitle();
+                    ?>
+
+                    <tr>
+                        <td class="label">
+                            <label for="status_<?php echo $marketplace['instance']->getId(); ?>">
+                                <span style="color: gray;">
+                                    <?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getData('title')); ?>:
+                                </span>
+                            </label>
+                        </td>
+                        <td class="value">
+                            <select disabled="disabled" class="locked_selected marketplace_status_select" id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>">
+                                <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_DISABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_DISABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                            </select>
+                            <p class="note note-no-tool-tip">
+                                <span><?php echo $marketplace['instance']->getData('url'); ?></span>
+                            </p>
+                        </td>
+                        <td id="run_single_button_<?php echo $marketplace['instance']->getId(); ?>" class="value" <?php if($marketplace['instance']->getStatus() == Ess_M2ePro_Model_Marketplace::STATUS_DISABLE): ?>style="display: none;"<?php endif; ?>>
+                            <?php echo $this->getChildHtml('run_single_button'); ?>
+                        </td>
+                        <td id="synch_info_wait_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: gray;">
+                            &nbsp; <?php echo Mage::helper('M2ePro')->__('Waiting'); ?>
+                        </td>
+                        <td id="synch_info_process_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: blue;">
+                            &nbsp; <?php echo Mage::helper('M2ePro')->__('Processing'); ?>
+                        </td>
+                        <td id="synch_info_complete_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: green;">
+                            &nbsp; <?php echo Mage::helper('M2ePro')->__('Completed'); ?>
+                        </td>
+                        <td id="marketplace_title_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none;"><?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getTitle()); ?></td>
+                    </tr>
+
+                    <?php } ?>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <?php } ?>
+
+    <div class="entry-edit" id="magento_block_rakuten_marketplaces_group_<?php echo count($this->groups); ?>" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Europe'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label for="marketplace_rde">
+                                <span style="color: gray;"><?php echo Mage::helper('M2ePro')->__('United Kingdom'); ?>:</span>
+                            </label>
+                        </td>
+                        <td class="value">
+                            <select id="marketplace_rde" disabled="disabled" class="locked_selected marketplace_status_select">
+                                <option value="0"><?php echo Mage::helper('M2ePro')->__('Disabled - Coming Soon'); ?></option>
+                            </select>
+                            <p class="note note-no-tool-tip">
+                                <span><?php echo 'rakuten.co.uk'; ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="marketplace_rde">
+                                <span style="color: gray;"><?php echo Mage::helper('M2ePro')->__('Germany'); ?>:</span>
+                            </label>
+                        </td>
+                        <td class="value">
+                            <select id="marketplace_rde" disabled="disabled" class="locked_selected marketplace_status_select">
+                                <option value="0"><?php echo Mage::helper('M2ePro')->__('Disabled - Coming Soon'); ?></option>
+                            </select>
+                            <p class="note note-no-tool-tip">
+                                <span><?php echo 'rakuten.de'; ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

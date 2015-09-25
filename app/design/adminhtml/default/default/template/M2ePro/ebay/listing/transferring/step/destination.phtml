@@ -1,0 +1,306 @@
+<?php if ($this->isAllowedStep()) : ?>
+
+    <?php $marketplaces = $this->getMarketplaces();?>
+
+    <style type="text/css">
+        .form-list td.label.b-bottom, .form-list td.value.b-bottom{border-bottom: 1px solid #D6D6D6 !important}
+        .form-list td.label.b-right, .form-list td.value.b-right{border-right: 1px solid #D6D6D6 !important}
+        .form-list.transferring-destination-form td {padding-left: 10px !important;padding-top: 5px !important;}
+        .form-list.transferring-destination-form thead{font-weight: bolder;}
+        .form-list.transferring-destination-form td.value select{width: 210px;}
+        .form-list.transferring-destination-form td.value input.input-text{width: 204px;}
+        .form-list.transferring-destination-form td.value p.note{width: 198px;}
+    </style>
+
+    <div class="content-header" style="border: none;">
+        <table cellspacing="0">
+            <tr>
+                <td><h3><?php echo Mage::helper('M2ePro')->__('Choose Destination where you want to list your Items.'); ?></h3></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="transferring_use_custom_settings" class="warning-msg" style="margin: 10px 0 15px 0; display: none;">
+        <div style="margin: 10px 0 10px 35px; font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('Some Products have Custom Settings for Shipping, Payment, or Return Policies. They will be overridden with common Settings set for Destination Listing. Click <a href=\'%url%\' target="_blank">here</a> to find out more.',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Step2"Policies"')
+        ); ?></div>
+    </div>
+
+    <div style="padding-bottom: 10px;">
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <table class="form-list transferring-destination-form" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <td class="value b-bottom b-right" style="min-width: 100px;">&nbsp;</td>
+                            <td class="label b-bottom b-right"  style="min-width: 280px;">
+                                <label><?php echo Mage::helper('M2ePro')->__('Source'); ?></label>
+                            </td>
+                            <td class="value b-bottom">
+                                <label><?php echo Mage::helper('M2ePro')->__('Destination'); ?></label>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="value b-right">
+                                <label><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>:</label>
+                            </td>
+                            <td class="value b-right">
+                                <label><?php echo $this->getSourceAccount()->getTitle(); ?></label>
+                            </td>
+                            <td class="value">
+                                <table class="form-list" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td class="value" style="min-width: 210px;">
+                                            <select id="transferring_account_id" name="transferring_account_id" class="required-entry">
+                                                <?php foreach($this->getAccounts() as $account) : ?>
+                                                    <option data="<?php echo $account['translation_hash']?>" <?php  if ($this->getSourceAccount()->getId() == $account['id']) { echo 'selected'; } ?> value="<?php echo (int)$account['id']; ?>"><?php echo $account['title']; ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </td>
+                                        <td class="value">
+                                            <div style="display: inline-block">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                                <span class="tool-tip-message" style="display: none;">
+                                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                    <span><?php echo Mage::helper('M2ePro')->__('You can choose or create another eBay Account where you want to List your existing Items.'); ?></span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="value">
+                                            or&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="transferring_add_account"><?php echo Mage::helper('M2ePro')->__('Create New') ?></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="value b-right" style="min-width: 100px;">
+                               <span><?php echo Mage::helper('M2ePro')->__('eBay Site'); ?>: <span class="required">*</span></span>
+                            </td>
+                            <td class="value b-right">
+                                <label><?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceMarketplace()->getTitle()); ?></label>
+                            </td>
+                            <td class="value">
+                                <table class="form-list" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td class="value" style="min-width: 210px;">
+                                            <select class="required-entry" id="transferring_marketplace_id" name="transferring_marketplace_id">
+                                                <option value="" selected="selected"></option>
+                                                <?php if ($this->getData('count_available_translation_marketplaces')) : ?>
+                                                    <optgroup data="1" label="<?php echo Mage::helper('M2ePro')->__('Translation Available'); ?>">
+                                                        <?php foreach($marketplaces as $marketplace) : ?>
+                                                            <?php if ($marketplace['translation_available']) : ?>
+                                                                <option data="<?php echo $marketplace['status']; ?>" value="<?php echo (int)$marketplace['id']; ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($marketplace['title']); ?></option>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    </optgroup>
+                                                <?php endif; ?>
+                                                <?php if ($this->getData('count_not_available_translation_marketplaces')) : ?>
+                                                    <optgroup data="0" label="<?php echo Mage::helper('M2ePro')->__('Translation Not Available'); ?>">
+                                                        <?php foreach($marketplaces as $marketplace) : ?>
+                                                            <?php if (!$marketplace['translation_available']) : ?>
+                                                                <option data="<?php echo $marketplace['status']; ?>" value="<?php echo (int)$marketplace['id']; ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($marketplace['title']); ?></option>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    </optgroup>
+                                                <?php endif; ?>
+                                            </select>
+                                        </td>
+                                        <td class="value">
+                                            <div style="display: inline-block">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                                <span class="tool-tip-message" style="display: none;">
+                                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                    <span><?php echo Mage::helper('M2ePro')->__('You can choose another ebay Site where you want to list your existing Items.The Source and Destination eBay Sites cannot coincide. If you still need to move the Products into different Listing with the same eBay Site, you can use <a href="%url%" target="_blank">Moving</a> feature. eBay Sites where Translation Service is available are placed in the Translation Available group.',
+                                                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Moving+Items+to+another+M2E+Pro+Listing')
+                                                    ); ?></span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="value">
+                                            <div id="transferring_marketplace_progress_bar" style="display:none;height:19px;width:100px;"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="value">
+                                            <p class="note note-no-tool-tip" id="transferring_marketplace_url_note" style="display: none; margin-top: -10px;"></p>
+                                        </td>
+                                        <td class="value">
+                                            &nbsp;
+                                        </td>
+                                        <td class="value">
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="value b-right" style="vertical-align: middle; min-width: 100px;">
+                                <label><?php echo Mage::helper('M2ePro')->__('Store View'); ?>:</label>
+                            </td>
+                            <td class="value b-right" style="vertical-align: middle">
+                                <label>
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceStore()->getWebsite()->getName()); ?>&nbsp;->
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceStore()->getGroup()->getName()); ?>&nbsp;->
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceStore()->getName()); ?>
+                                </label>
+                            </td>
+                            <td class="value">
+                                <table class="form-list" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td class="value" style="vertical-align: middle">
+                                            <?php echo $this->getChildHtml('store_switcher'); ?>
+                                        </td>
+                                        <td class="value" style="vertical-align: middle">
+                                            <div style="display: inline-block">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                                <span class="tool-tip-message" style="display: none;">
+                                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                    <span><?php echo Mage::helper('M2ePro')->__('Choose Magento Store View where the data will be taken from. If you are going to use Translation Service, it is impossible to choose Default Store View (otherwise, it could have led to overriding default values with Translated ones).'); ?></span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="value" style="vertical-align: middle">
+                                            or&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="transferring_add_store"><?php echo Mage::helper('M2ePro')->__('Create New') ?></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="value">
+                                            <p class="note note-no-tool-tip" id="transferring_store_note" style="display: none; margin-top: -10px;"><?php echo Mage::helper('M2ePro')->__('You should select Store View different from "Admin (Default Values)" one to use Translation Service.') ?></p>
+                                        </td>
+                                        <td class="value">
+                                            &nbsp;
+                                        </td>
+                                        <td class="value">
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr id="transferring_listing_row" style="display: none;">
+                            <td class="value b-right" style="min-width: 100px;">
+                                <label><?php echo Mage::helper('M2ePro')->__('Listing'); ?>: <span class="required">*</span></label>
+                            </td>
+                            <td class="value b-right">
+                                <label><?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceListing()->getTitle()); ?></label>
+                            </td>
+                            <td class="value">
+                                <table class="form-list" cellspacing="0" cellpadding="0">
+                                    <tr id="transferring_existing_listing_block" style="display: none">
+                                        <td class="value" style="min-width: 210px;">
+                                            <select id="transferring_existing_listing" name="translation_listing" class="required-entry"></select>
+                                        </td>
+                                        <td class="value">
+                                            <div style="display: inline-block">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                                <span class="tool-tip-message" style="display: none;">
+                                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                    <span><?php echo Mage::helper('M2ePro')->__('Choose exisitng Listing or create a new one.'); ?></span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            or&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="transferring_new_listing_link"><?php echo Mage::helper('M2ePro')->__('Create New') ?></a>
+                                        </td>
+                                    </tr>
+                                    <tr id="transferring_new_listing_block" style="display: none">
+                                        <td class="value" style="min-width: 210px;">
+                                            <input id="transferring_new_listing_title" type="text" class="input-text required-entry M2ePro-listing-title" name="transferring_new_listing" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceListing()->getTitle()); ?> - <?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceMarketplace()->getTitle()); ?>">
+                                            <input id="transferring_new_listing_id" type="hidden" name="transferring_new_listing_id" value="">
+                                        </td>
+                                        <td class="value">
+                                            <div style="display: inline-block">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                                <span class="tool-tip-message" style="display: none;">
+                                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                    <span><?php echo Mage::helper('M2ePro')->__('Create a Title for your Destination Listing.'); ?></span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td id="transferring_existing_listing_choose">
+                                            or&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="transferring_existing_listing_link"><?php echo Mage::helper('M2ePro')->__('Use Existing') ?></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <?php if ($this->isAutoCategories()) : ?>
+            <div id="transferring_auto_categories_warning" class="warning-msg" style="display:none;margin: 10px 0 5px 0;">
+                <div style="margin: 10px 0 10px 35px; font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('Some "Auto Add/Remove Rules" will be disabled in the Destination Listing. Cick <a href="%url_2%" target="_blank">here</a> to find out more.',
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Listing')
+                ); ?></div>
+            </div>
+        <?php endif; ?>
+
+    </div>
+
+    <div class="content-footer">
+        <div style="height: 25px;"></div>
+        <div style="position: absolute; text-align: right; bottom: 0; padding: 10px 0 10px 0; background: #ffffff; width: 780px;">
+            <span style="padding-left: 10px;padding-right: 10px;">
+                <a href="javascript:void(0);" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+            </span>
+            <span><?php echo $this->getChildHtml('confirm_button'); ?></span>
+            <span><?php echo $this->getChildHtml('continue_button'); ?></span>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        $('transferring_store_id') && $('transferring_store_id').addClassName('required-entry').setStyle({width:'190px'});
+
+        CommonHandlerObj.setValidationCheckRepetitionValue(
+            'M2ePro-listing-title',
+            '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('This Title is already used for other Listing. Listing Title must be unique.')); ?>',
+            'Listing', 'title', 'id', null, '<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK ?>'
+        );
+
+        EbayListingTransferringHandlerObj.actionHandler.loadSourceData(<?php echo $this->getSourceAccount()->getId(); ?>,
+            <?php echo $this->getSourceMarketplace()->getId(); ?>,
+            <?php echo json_encode($this->getMarketplaces()); ?>,
+            '<?php echo Mage::helper('M2ePro')->escapeHtml($this->getSourceListing()->getTitle()); ?>',
+            <?php echo $this->isCustomSettings() ? '1' : '0'; ?>);
+
+        $('transferring_add_account')
+            .stopObserving('click')
+            .observe('click', EbayListingTransferringHandlerObj.addAccountClick);
+
+        $('transferring_account_id')
+            .stopObserving('change')
+            .observe('change', function(){EbayListingTransferringHandlerObj.accountIdChange(this);});
+
+        $('transferring_marketplace_id')
+            .stopObserving('change')
+            .observe('change', function(){EbayListingTransferringHandlerObj.marketplaceIdChange(this);});
+
+        $('transferring_add_store')
+            .stopObserving('click')
+            .observe('click', EbayListingTransferringHandlerObj.addStoreClick);
+
+        $('transferring_store_id')
+            .stopObserving('change')
+            .observe('change', function(){EbayListingTransferringHandlerObj.refreshListings();});
+
+        $('transferring_existing_listing')
+            .stopObserving('change')
+            .observe('change', function(){EbayListingTransferringHandlerObj.existingListingChange(this);});
+
+        $('transferring_existing_listing_link')
+            .stopObserving('click')
+            .observe('click', EbayListingTransferringHandlerObj.existingListingLinkClick);
+
+        $('transferring_new_listing_link')
+            .stopObserving('click')
+            .observe('click', EbayListingTransferringHandlerObj.newListingLinkClick);
+
+    </script>
+<?php endif; ?>

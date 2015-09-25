@@ -1,0 +1,57 @@
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Version'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlVersion; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Server API'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlApi; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Database Name'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlDatabaseName; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Tables Prefix'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlPrefix != '' ? $this->mySqlPrefix : Mage::helper('M2ePro')->__('Disabled'); ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Connection Timeout'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlSettings['connect_timeout']; ?> <?php echo Mage::helper('M2ePro')->__('sec'); ?>.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Wait Timeout'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlSettings['wait_timeout']; ?> <?php echo Mage::helper('M2ePro')->__('sec'); ?>.
+        </td>
+    </tr>
+
+</table>

@@ -1,0 +1,16 @@
+<div id="asin_search_not_completed_popup" style="display: none">
+    <div style="margin: 10px; height: 160px">
+        <p><?php echo Mage::helper('M2ePro')->__('
+                The Process of Adding new Products was not ended for this Listing.<br/><br/>
+                To work with Products in Listing it is necessary to follow all the Steps of Adding Products.
+                You should specify all Required Data to complete Adding Process and then press <strong>Continue</strong> Button.<br/><br/>
+                In case you do not want to Add selected Products to the Listing, you can press <strong>Back</strong> Button and you will be able to manage your Listing.
+            ') ?></p>
+    </div>
+
+    <div class="clear"></div>
+    <div class="right">
+        <?php echo $this->getChildHtml('closeBtn'); ?>
+    </div>
+    <div class="clear"></div>
+</div>

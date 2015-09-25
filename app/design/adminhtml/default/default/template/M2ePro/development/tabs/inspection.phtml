@@ -1,0 +1,167 @@
+<!-- ########################################################################################### -->
+
+<style>
+
+    span.red {
+        color: red;
+    }
+
+</style>
+
+<!-- ########################################################################################### -->
+
+<div class="box-left">
+
+    <?php if ($this->getChild('requirements')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_requirements">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('System Requirements'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('requirements') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php } ?>
+
+    <?php if ($this->getChild('caches')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_caches">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('Caches / Compilation / Configs'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('caches') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php } ?>
+
+</div>
+
+<!-- ########################################################################################### -->
+
+<div class="box-right">
+
+    <?php if ($this->getChild('cron')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_cron">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('Cron'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('cron') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php } ?>
+
+    <?php if ($this->getChild('conflicted_modules')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_conflicted_modules">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('Conflicted Modules'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('conflicted_modules') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php } ?>
+
+    <?php if ($this->getChild('magento')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_magento">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('Magento'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('magento') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php } ?>
+
+    <?php if ($this->getChild('database_broken')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_database_broken">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('Database Broken Tables'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('database_broken') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php }?>
+
+    <?php if ($this->getChild('other_issues')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_other_issues">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('Other Issues'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('other_issues') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php } ?>
+
+    <?php if ($this->getChild('installation')->isShown()) { ?>
+        <div class="entry-edit" id="magento_block_development_inspection_installation">
+
+            <div class="development_head_container">
+                <h4><?php echo Mage::helper('M2ePro')->__('Installation'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php echo $this->getChildHtml('installation') ?>
+
+                </div>
+            </div>
+
+        </div>
+    <?php }?>
+
+</div>
+
+<!-- ########################################################################################### -->

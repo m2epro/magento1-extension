@@ -1,0 +1,99 @@
+<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category */ ?>
+
+<script type="text/javascript">
+
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Listing'); ?>, 'Ess_M2ePro_Model_Listing');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Listing'); ?>, 'Ess_M2ePro_Model_Ebay_Listing');
+
+</script>
+
+<script type="text/javascript">
+
+    var skipConfirmation = <?php echo json_encode($this->getChild('group_grid')->getCollection()->getSize() == 0) ?>;
+
+    $('reset_button').observe('click', function() {
+        ListingAutoActionHandlerObj.reset(skipConfirmation);
+    });
+
+</script>
+
+<style type="text/css">
+    #magento_block_ebay_category_specific_item_specifics table td, #magento_block_ebay_category_specific_item_specifics table th {
+        padding: 5px;
+    }
+
+    #magento_block_ebay_category_specific_item_specifics td.label, #magento_block_ebay_category_specific_item_specifics td.label {
+        width: 100px;
+    }
+
+    #listingAutoActionModeCategoryGroupGrid table tr.headings th {
+        padding: 1px 4px 0 4px;
+    }
+
+    #listingAutoActionModeCategoryGroupGrid table tr.filter th, #listingAutoActionModeCategoryGroupGrid table td {
+        padding: 5px;
+    }
+
+    #listingAutoActionModeCategoryGroupGrid td.label {
+        width: 100px;
+    }
+
+    #listingAutoActionModeCategoryGroupGrid label {
+        width: 100px;
+    }
+</style>
+
+<?php echo $this->getChildHtml('breadcrumb') ?>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td>
+                <h3><?php echo Mage::helper('M2ePro')->__('Categories'); ?></h3>
+            </td>
+            <td class="form-buttons">
+                <?php echo $this->getChildHtml('add_button'); ?>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="data_container">
+    <div id="block_notice_ebay_listing_auto_action_mode_category" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Rules For Magento Categories'); ?>">
+        <?php echo Mage::helper('M2ePro')->__('Rules for Products added or deleted from particularly Magento Category.<br/>
+        To add a new Rule click on the <i class="underline">Add New Rule</i> Button.'); ?>
+    </div>
+
+    <?php if ($this->getChild('group_grid')->getCollection()->getSize() == 0): ?>
+        <div class="grid">
+            <table cellspacing="0" cellpadding="0" style="border: none">
+                <tfoot>
+                    <tr>
+                        <td style="vertical-align: middle; text-align: center; border: 1px solid #cbd3d4; height: 40px;">
+                            <?php echo $this->getChildHtml('add_first_button'); ?>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    <?php else: ?>
+        <?php echo $this->getChildHtml('group_grid'); ?>
+    <?php endif; ?>
+</div>
+
+<?php if ($this->getChild('group_grid')->getCollection()->getSize() != 0): ?>
+<div style="float: left; margin: 10px 0;">
+    <a id="reset_button" href="javascript: void(0);" onclick=""><?php echo Mage::helper('M2ePro')->__('Reset Automatic Action Rules'); ?></a>
+</div>
+<?php endif; ?>
+<div style="float: right; margin: 10px 0;">
+    <?php if ($this->getChild('group_grid')->getCollection()->getSize() == 0): ?>
+        <a id="reset_button" href="javascript: void(0);" onclick=""><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    <?php endif; ?>
+    <a id="cancel_button" href="javascript: void(0);" onclick="ListingAutoActionHandlerObj.categoryCancel();" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    &nbsp;
+    &nbsp;
+    <?php echo $this->getChildHtml('close_button'); ?>
+    <?php echo $this->getChildHtml('confirm_button'); ?>
+    <?php echo $this->getChildHtml('continue_button'); ?>
+</div>

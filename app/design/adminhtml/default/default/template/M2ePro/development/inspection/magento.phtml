@@ -1,0 +1,14 @@
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <?php if ($this->defaultMagentoTimeZone !== 'UTC') { ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('Magento Default Locale'); ?>: </label>
+            </td>
+            <td class="value">
+                <?php echo $this->defaultMagentoTimeZone; ?>
+            </td>
+        </tr>
+    <?php } ?>
+
+</table>

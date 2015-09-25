@@ -1,0 +1,80 @@
+<?php
+$sep = '';
+$marketplacesData = $this->getData('enabledMarketplaces');
+?>
+
+<style>
+    .enabled-marketplaces {
+        padding: 2px;
+        text-decoration: underline;
+    }
+
+    #custom-progressbar {
+        width: 300px;
+        height: 20px;
+        padding: 2px;
+        border: 2px solid #495f68;
+        position: relative;
+    }
+
+    #custom-progressbar-load {
+        width: 0;
+        height: 20px;
+        background-color: #6F8992;
+    }
+
+    #custom-progressbar-percentage {
+        position: absolute;
+        width: 30px;
+        top: 2px;
+        left: 50%;
+        margin-left: -15px;
+        font-weight: bold;
+        text-shadow: 1px 1px 1px #fff;
+    }
+
+    .synchComplete {
+        color: #007200;
+        font-weight: bold;
+    }
+    .synchProcess {
+        color: grey;
+        font-weight: bold;
+    }
+</style>
+
+<div id="block_notice_wizard_installation_step_marketplaces_synchronization" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('eBay Site Data Synchronization'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="display:none;">
+    <div>
+        <div class="step_container_description">
+            <?php echo Mage::helper('M2ePro')->__('
+                As eBay implemented new rules, usage of eBay Catalog Identifiers, such as UPC, EAN, MPN etc.,
+                <strong>becomes required</strong>. So eBay Sites data should be updated for proper work of M2E Pro.<br/><br/>
+
+                To Start Resynchronization, press <strong>Proceed</strong> Button. All enabled eBay Sites will be Synchronized.
+            '); ?>
+            <br/><br/>
+            <?php foreach ($marketplacesData as $marketplace) : ?>
+                <?php echo $sep; ?>
+                <span class='enabled-marketplaces code-<?php echo $marketplace['code']?>'><?php echo $marketplace['title']; $sep = ', ';?></span>
+            <?php endforeach; ?>
+        </div>
+        <div class="step_container_completed">
+            <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+        </div>
+        <div class="step_container_incomplete">
+            <span class="step_incomplete" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Incomplete'); ?></span>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div class="step_container_buttons">
+        <span class="step_process" style="display:none;"><?php echo $this->getChildHtml('process_marketplaces_synchronization_button'); ?></span>
+    </div>
+    <div id='custom-progressbar' style="display: none;">
+        <div id='custom-progressbar-load'></div><span id='custom-progressbar-percentage'></span>
+    </div>
+</div>
+
+<script type="text/javascript">
+    WizardHandlerObj.addStep('marketplacesSynchronization', 'block_notice_wizard_installation_step_marketplaces_synchronization');
+    WizardEbayProductDetails.setMarketplacesData(<?php echo json_encode($marketplacesData); ?>);
+</script>

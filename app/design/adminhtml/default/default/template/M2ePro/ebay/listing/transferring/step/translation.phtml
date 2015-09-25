@@ -1,0 +1,258 @@
+<?php if ($this->isAllowedStep()) : ?>
+
+    <?php $translationServiceDefault = Mage::helper('M2ePro/Component_Ebay')->getDefaultTranslationService(); ?>
+
+    <style type="text/css">
+        .form-list.transferring-translation-form tr{height: 31px !important;}
+        .form-list.transferring-translation-form .value{min-width: 280px !important;}
+        .form-list.transferring-translation-form .value a{margin-left: 5px !important; vertical-align: middle;}
+        .form-list.transferring-translation-form .input-text{width: 220px !important;}
+        .form-list.transferring-translation-form .label{min-width: 75px;width: 110px !important;}
+    </style>
+
+    <ul id="translation_account_error_block" class="messages" style="display: none;">
+        <li class="error-msg">
+            <ul>
+                <li><?php echo Mage::helper('M2ePro')->__('Translation Account has not been created. Possible reason: you already have an Account in the Lionbridge System with the same <br/>e-mail or eBay User ID. Cick <a href="%url%" target="_blank">here</a> to find out more.',
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                ); ?></li>
+            </ul>
+        </li>
+    </ul>
+
+    <div id="block_notice_ebay_translation_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Use Translation Service'); ?>" subtitle="" collapseable="no" always_show="yes" hideblock="no">
+        <p><?php echo Mage::helper('M2ePro')->__('With Translation Service you can Translate Item Title, Subtitle, Description and associate eBay Source Category with Destination one.  Item Specifics of the Source eBay Category will be associated with Items Specifics of the Destination eBay Category. Click <a href=\'%url%\' target="_blank">here</a> to find out more.',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Step3"Translation"')
+        ); ?></p>
+
+        <div class="fieldset" style="margin-top:15px !important; margin-bottom: 10px !important;">
+            <div class="hor-scroll">
+                <table class="form-list transferring-translation-form" cellspacing="0" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td class="label" style="min-width:150px;">
+                            <?php echo Mage::helper('M2ePro')->__('Enable Translation'); ?>:
+                        </td>
+                        <td class="value">
+                            <select name="transferring_migration_service" id="transferring_migration_service">
+                                <option value="1" selected="selected"><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                                <option value="0"><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                            </select>
+                        </td>
+                        <td class="value" style="min-width: 21px !important;">
+                            <div style="display: inline-block">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                <span class="tool-tip-message" style="display: none;">
+                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                    <span><?php echo Mage::helper('M2ePro')->__('If Translation Service is not used, you will be able to set eBay Categories and Item Specifics further. Click<a href=\'%url%\' target="_blank">here</a> to find out more.',
+                                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Step4"Categories"')
+                                    ); ?></span>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="padding-bottom: 10px;">
+
+        <div id="transferring_account_block">
+
+            <div id="transferring_translation_service_block" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__(''); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="padding-bottom:10px;<?php if (!$this->getData('translation_hash')) { ?>display: none;<?php } ?>">
+            <div class="fieldset" >
+                <div class="hor-scroll">
+                    <table class="form-list transferring-translation-form" cellspacing="0" cellpadding="0">
+                        <tbody>
+                        <tr>
+                            <td class="label" style="min-width:150px;">
+                                <?php echo Mage::helper('M2ePro')->__('Choose Translation Plan'); ?>:
+                            </td>
+                            <td class="value">
+                                <select name="transferring_translation_service" id="transferring_translation_service">
+                                    <?php foreach($this->getTranslationServices() as $service) : ?>
+                                        <option data="<?php echo $service['avg_cost']; ?>" value="<?php echo $service['name']; ?>" <?php if ($translationServiceDefault == $service['name']) : ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($service['title']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                            <td class="value" style="min-width: 21px !important;">
+                                <div style="display: inline-block">
+                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                    <span class="tool-tip-message" style="display: none;">
+                                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                        <span><?php echo Mage::helper('M2ePro')->__('You can select quality of Translation. For that choose appropriate Translation Plan. Remember, that Price for Translation differs depending on the Translation Plan.
+                                            To find out more about each plan click<a href="%url%" target="_blank">here</a>.',
+                                                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                                        ); ?></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="min-width:150px;">
+                                <span><?php echo Mage::helper('M2ePro')->__('Translation Account'); ?>:
+                            </td>
+                            <td class="value">
+                                </span><span id="translation_account_ebay_id"><?php echo Mage::helper('M2ePro')->__($this->getData('ebay_user_id')); ?></span>
+                            </td>
+                        </tr>
+                        <tr id="translation_total_credit_row">
+                            <td class="label" style="...">
+                                <span id="translation_account_ebay_total_credit_label"><?php echo Mage::helper('M2ePro')->__('Total Credits'); ?>:</span>
+                            </td>
+                            <td class="value">
+                                <span id="translation_account_ebay_total_credit_value"><?php echo $this->getData('translation_total_credits'); ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="min-width:150px;">
+                                <span><?php echo Mage::helper('M2ePro')->__('Balance'); ?>:
+                            </td>
+                            <td class="value">
+                                      <span id="translation_account_balance"><?php echo $this->getData('translation_balance'); ?></span>
+                                &nbsp;<span id="translation_account_currency"><?php echo Mage::helper('M2ePro')->__($this->getData('translation_currency')); ?></span>
+                                &nbsp;<a href="javascript:void(0);" onclick="EbayListingTransferringHandlerObj.refreshTranslationAccount()"><?php echo Mage::helper('M2ePro')->__('Refresh') ?></a>
+                                &nbsp;<a href="javascript:void(0);" onclick="EbayListingTransferringHandlerObj.showPayNowPopup()"><?php echo Mage::helper('M2ePro')->__('Add Funds') ?></a>
+                            </td>
+                            <td class="value" style="min-width: 21px !important;">&nbsp;</td>
+                        </tr>
+                        <tr id="translation_estimated_row">
+                            <td class="label" style="min-width:150px;">
+                                <span><?php echo Mage::helper('M2ePro')->__('Estimated Amount'); ?>:</span>
+                            </td>
+                            <td class="value">
+                                      <span id="translation_estimated_amount"><?php echo $this->getData('estimated_amount'); ?></span>
+                                &nbsp;<span id="translation_estimated_currency"><?php echo Mage::helper('M2ePro')->__($this->getData('translation_currency')); ?></span>
+                                &nbsp;<div id ="translation_enough_money_tip" style="display: inline-block">
+                                         <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                         <span class="tool-tip-message" style="display: none;">
+                                             <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                             <span><?php echo Mage::helper('M2ePro')->__('This shows approximate value which is going to be charged for Translation. It may differ from the final value set by Lionbridge. Click <a href="%url%" target="_blank">here</a> to find out more.',
+                                                 Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                                             ); ?> </span>
+                                         </span>
+                                     </div>
+                                     <div id ="translation_not_enough_money_tip" style="display: inline-block">
+                                             <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
+                                             <span class="tool-tip-message" style="display: none;">
+                                                 <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                 <span ><?php echo Mage::helper('M2ePro')->__('A Balance on your Account should be equal or greater than the Price of Translation. You can refill the Balance by clicking “Add Funds” Button. Click <a href="%url%" target="_blank">here</a> to find out more.',
+                                                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                                                 ); ?></span>
+                                             </span>
+                                     </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            </div>
+
+            <?php if (!$this->getData('translation_hash')) : ?>
+
+                <div id="block_notice_ebay_translation_account" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Create New Account'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                    <div style="padding-bottom:15px;"><?php echo Mage::helper('M2ePro')->__('To work with Translation Service M2E Pro should create an Account associated with you in the Lionbridge System. For that you should fill in appropriate form and agree to Lionbridge terms and Conditions. The Account in the Lionbridge System will be associated with the Destination eBay Account. Click <a href="%url%" target="_blank">here</a> to find out more.',
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                    ); ?></div>
+
+                    <div class="fieldset">
+                        <div class="hor-scroll">
+                            <table class="form-list transferring-translation-form" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                <tr>
+                                    <td class="label">
+                                        <?php echo Mage::helper('M2ePro')->__('Email') ?>: <span class="required">*</span>
+                                    </td>
+                                    <td class="value">
+                                        <input id="transferring_email" type="text" name="transferring_email" class="input-text required-entry validate-email" value="<?php echo Mage::helper('M2ePro')->__($this->getData('email')); ?>">
+                                    </td>
+                                    <td class="label">&nbsp;</td>
+                                    <td class="value">&nbsp;</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="label">
+                                        <?php echo Mage::helper('M2ePro')->__('First Name') ?>: <span class="required">*</span>
+                                    </td>
+                                    <td class="value">
+                                        <input id="transferring_firstname" type="text" name="firstname" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->__($this->getData('firstname')); ?>" />
+                                    </td>
+                                    <td class="label">
+                                        <?php echo Mage::helper('M2ePro')->__('Last Name') ?>: <span class="required">*</span>
+                                    </td>
+                                    <td class="value">
+                                        <input id="transferring_lastname" type="text" name="lastname" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->__($this->getData('lastname')); ?>" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="label">
+                                        <?php echo Mage::helper('M2ePro')->__('Company') ?>: <span class="required">*</span>
+                                    </td>
+                                    <td class="value">
+                                        <input id="transferring_company" type="text" name="company" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->__($this->getData('company')); ?>" />
+                                    </td>
+                                    <td class="label">
+                                        <?php echo Mage::helper('M2ePro')->__('Country') ?>: <span class="required">*</span>
+                                    </td>
+                                    <td class="value">
+                                        <select id="transferring_country" name="country" class="input-text required-entry" style="min-width:226px;">
+                                            <?php $selectCountry = Mage::helper('M2ePro')->__($this->getCountryLabelByCode($this->getData('country'))); ?>
+                                            <?php foreach($this->getData('countries') as $country) {?>
+                                                <option value="<?php echo $country['value']; ?>" <?php echo $selectCountry == $country['label'] ? ' selected="selected"' : ''; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($country['label']); ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="padding: 20px 0 10px 0;">
+                            <input type="checkbox" name="agree" value="1" id="agree" onclick="EbayListingTransferringHandlerObj.changeSubmitStatus(this)" class="checkbox" />
+                            <label for="agree"><?php echo Mage::helper('M2ePro')->__('I agree to the following terms and Conditions.&nbsp;To read Lionbridge Privacy Policy click <a href="%url%" target="_blank">here</a>', 'http://www.lionbridge.com/privacy-policy/'); ?></label>
+                            <span style="float: right; padding-left: 10px; padding-right: 10px;"><?php echo $this->getChildHtml('create_account_button'); ?></span>
+                        </div>
+
+                    </div>
+
+                    <script type="text/javascript">
+                        EbayListingTransferringHandlerObj.changeSubmitStatus($('agree'));
+                    </script>
+
+                </div>
+
+            <?php endif; ?>
+
+        </div>
+
+        <div class="content-footer">
+            <div style="height: 25px;"></div>
+            <div style="position: absolute; text-align: right; bottom: 0; padding: 10px 0 10px 0; background: #ffffff; width: 780px;">
+                <span style="padding-left: 10px; padding-right: 10px;"><?php echo $this->getChildHtml('back_button'); ?></span>
+                <span><?php echo $this->getChildHtml('confirm_button'); ?></span>
+                <span><?php echo $this->getChildHtml('continue_button'); ?></span>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+
+        $('transferring_migration_service')
+            .stopObserving('change')
+            .observe('change', function(){EbayListingTransferringHandlerObj.migrationServiceChange(this);});
+
+        $('transferring_translation_service')
+            .stopObserving('change')
+            .observe('change', function(){EbayListingTransferringHandlerObj.translationServiceChange(this);})
+            .simulate('change');
+
+    </script>
+
+<?php endif; ?>

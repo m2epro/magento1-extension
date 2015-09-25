@@ -1,0 +1,57 @@
+<?php if ($items = $this->getItems()) { ?>
+
+    <p class="<?php echo Mage::helper('M2ePro/Magento')->isGoEdition() ? '' : 'switcher'; ?>">
+
+        <label for="<?php echo $this->getParamName(); ?>_switcher"><?php echo $this->getLabel(); ?>:</label>
+
+        <select id="<?php echo $this->getParamName(); ?>_switcher" name="<?php echo $this->getParamName(); ?>_switcher" onchange="return <?php echo $this->getSwitchCallback() ?>(this);">
+            <?php if ($this->hasDefaultOption()) { ?>
+                <option value=""><?php echo Mage::helper('M2ePro')->escapeHtml($this->getDefaultOptionName()); ?></option>
+            <?php } ?>
+
+            <?php foreach ($items as $item) { ?>
+
+                <?php if (count($items) > 1) { ?>
+                    <optgroup label="<?php echo $item['label'] ?>">
+                <?php } ?>
+
+                <?php foreach ($item['value'] as $nestedItem) { ?>
+                    <option value="<?php echo $nestedItem['value'] ?>" <?php if ($this->getSelectedParam() == $nestedItem['value']) echo ' selected="selected"' ?>><?php echo $nestedItem['label'] ?></option>
+                <?php } ?>
+
+                <?php if (count($items) > 1) { ?>
+                    </optgroup>
+                <?php } ?>
+
+            <?php } ?>
+        </select>
+
+    </p>
+
+    <script type="text/javascript">
+
+        <?php echo $this->getSwitchCallback() ?> = function(obj)
+        {
+            var switchUrl = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getSwitchUrl()); ?>';
+            var paramPlaceHolder = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getParamPlaceHolder()); ?>';
+
+            switchUrl = switchUrl.replace(paramPlaceHolder, obj.value);
+
+            <?php if ($this->getUseConfirm()) { ?>
+
+                if (confirm('<?php echo Mage::helper('M2ePro')->escapeJs($this->getConfirmMessage()) ?>')){
+                    setLocation(switchUrl);
+                    return true;
+                } else {
+                    obj.value = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getSelectedParam()); ?>';
+                }
+                return false;
+
+            <?php } else { ?>
+                setLocation(switchUrl);
+            <?php } ?>
+        }
+
+    </script>
+
+<?php } ?>

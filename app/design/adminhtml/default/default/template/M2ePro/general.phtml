@@ -1,0 +1,61 @@
+<script type="text/javascript">
+
+    var BLOCK_NOTICES_SHOW = <?php echo $this->block_notices_show ? 'true' : 'false'; ?>;
+    var BLOCK_NOTICES_DISABLE_COLLAPSE = <?php echo json_encode((bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/view/ebay/notice/', 'disable_collapse')); ?>;
+
+    var IS_VIEW_EBAY = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewEbay()); ?>;
+    var IS_VIEW_COMMON = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewCommon()); ?>;
+    var IS_VIEW_CONFIGURATION = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewConfiguration()); ?>;
+
+    var M2ePro = {};
+
+    M2ePro.url        = new UrlHandler();
+    M2ePro.php        = new PhpHandler();
+    M2ePro.translator = new TranslatorHandler();
+    M2ePro.info = <?php echo Zend_Json::encode($this->m2epro_info); ?>;
+
+    // backward compatibility
+    M2ePro.text       = {};
+    M2ePro.formData   = {};
+    M2ePro.customData = {};
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_general')) ?>);
+    M2ePro.url.add(<?php echo json_encode(array(
+        'm2epro_skin_url' => $this->getSkinUrl('M2ePro')
+    )); ?>);
+
+    setPageHelpLink('<?php echo $this->getPageHelpLink(); ?>');
+
+    M2ePro.translator.add(<?php echo Zend_Json::encode(array(
+
+        'Are you sure?' => Mage::helper('M2ePro')->__('Are you sure?'),
+        'Help'          => Mage::helper('M2ePro')->__('Help'),
+        'Hide Block'    => Mage::helper('M2ePro')->__('Hide Block'),
+        'Show Tips'     => Mage::helper('M2ePro')->__('Show Tips'),
+        'Hide Tips'     => Mage::helper('M2ePro')->__('Hide Tips'),
+        'Notice'        => Mage::helper('M2ePro')->__('Notice'),
+        'Error'         => Mage::helper('M2ePro')->__('Error'),
+        'Close'         => Mage::helper('M2ePro')->__('Close'),
+        'Success'       => Mage::helper('M2ePro')->__('Success'),
+        'Warning'       => Mage::helper('M2ePro')->__('Warning'),
+        'None'          => Mage::helper('M2ePro')->__('None'),
+        'Cancel'        => Mage::helper('M2ePro')->__('Cancel'),
+        'Confirm'       => Mage::helper('M2ePro')->__('Confirm'),
+        'In Progress'   => Mage::helper('M2ePro')->__('In Progress'),
+        'Product(s)'    => Mage::helper('M2ePro')->__('Product(s)'),
+
+        'Please select the Products you want to perform the Action on.' => Mage::helper('M2ePro')->__('Please select the Products you want to perform the Action on.'),
+        'Please select Items.'  => Mage::helper('M2ePro')->__('Please select Items.'),
+        'Please select Action.' => Mage::helper('M2ePro')->__('Please select Action.'),
+        'View All Product Log' => Mage::helper('M2ePro')->__('View All Product Log'),
+        'This is a required field.' => Mage::helper('M2ePro')->__('This is a required field.'),
+        'Please enter valid UPC' => Mage::helper('M2ePro')->__('Please enter valid UPC'),
+        'Please enter valid EAN' => Mage::helper('M2ePro')->__('Please enter valid EAN'),
+        'Please enter valid ISBN' => Mage::helper('M2ePro')->__('Please enter valid ISBN'),
+        'Invalid input data. Decimal value required. Example 12.05' => Mage::helper('M2ePro')->__('Invalid input data. Decimal value required. Example 12.05'),
+
+        'You should select Attribute Set first.' => Mage::helper('M2ePro')->__('You should select Attribute Set first.'),
+
+    )); ?>);
+
+</script>

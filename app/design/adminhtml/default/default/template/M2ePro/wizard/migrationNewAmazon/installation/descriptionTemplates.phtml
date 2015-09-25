@@ -1,0 +1,46 @@
+<style>
+    #description-templates-block {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 10px;
+        clear: both;
+    }
+    .block_notices_module {
+        overflow: hidden;
+    }
+</style>
+
+<div id="block_notice_wizard_installation_step_description_templates" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Description Policy Instead of New ASIN/ISBN Template'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="display:none;">
+    <div>
+        <div class="step_container_description">
+            <?php echo Mage::helper('M2ePro')->__('Unfortunately, using New ASIN Templates is impossible in new version of M2E Pro Amazon Integration. <br/><br/>
+            Below you can see the list of New ASIN Templates which you had earlier and which are not available anymore. '); ?>
+        </div>
+        <div class="step_container_completed">
+            <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+        </div>
+        <div class="step_container_incomplete">
+            <span class="step_incomplete" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Incomplete'); ?></span>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div id="description-templates-block">
+        <?php echo $this->getData('description_templates_grid'); ?>
+    </div>
+
+    <div>
+        <br/>
+        <?php echo Mage::helper('M2ePro')->__('In the new version of M2E Pro Amazon Integration you can use a Description Policy which is conceptually very similar to former New ASIN Template. So you are able to create a list of Description Policies logically similar to New ASIN Templates and use them for your Product in Listings.'); ?>
+    </div>
+
+    <div class="step_container_buttons">
+        <span class="step_skip" style="display:none;"><?php echo $this->getChildHtml('skip_description_templates_button'); ?></span>
+        <span class="step_process" style="display:none;"><?php echo $this->getChildHtml('process_description_templates_button'); ?></span>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    WizardHandlerObj.addStep('descriptionTemplates', 'block_notice_wizard_installation_step_description_templates');
+
+</script>

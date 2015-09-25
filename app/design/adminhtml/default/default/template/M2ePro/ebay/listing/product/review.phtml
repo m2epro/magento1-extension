@@ -1,0 +1,36 @@
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"></td>
+        </tr>
+    </table>
+</div>
+
+<?php echo $this->getChildHtml('view_header'); ?>
+
+<div class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <?php echo Mage::helper('M2ePro')->__(
+        '<b>%amount%</b> Product(s) were successfully added to the M2E Pro Listing.<br/><br/>
+        You can <b>Review Your Products</b> before Listing them on eBay or <b>List Added Products Now</b>.<br/><br/>
+        <b>Note:</b> Products that do not have a Primary eBay Category specified will not be Listed.
+        You will have a chance to set the Primary eBay Category later in the Listing Settings if you need to.',
+        $this->products_count
+    ); ?>
+
+    <div style="margin-top: 10px">
+        <?php echo $this->getChildHtml('review'); ?>
+        &nbsp;
+        <?php echo $this->getChildHtml('save_and_list'); ?>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    var init = function() {
+    };
+
+    Event.observe(window,'load',init);
+</script>

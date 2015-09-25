@@ -1,0 +1,29 @@
+<script type="text/javascript">
+
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Log_Abstract'); ?>,'Ess_M2ePro_Model_Log_Abstract');
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'adminhtml_ebay_order/view' => $this->getUrl(
+            'M2ePro/adminhtml_ebay_order/view',
+            array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('M2ePro/adminhtml_ebay_order/index'))
+            ),
+        'adminhtml_common_amazon_order/view' => $this->getUrl(
+            'M2ePro/adminhtml_common_amazon_order/view',
+            array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('M2ePro/adminhtml_common_order/index', array('tab' => Ess_M2ePro_Block_Adminhtml_Common_Component_Abstract::TAB_ID_AMAZON)))
+            ),
+        'adminhtml_common_buy_order/view' => $this->getUrl(
+            'M2ePro/adminhtml_common_buy_order/view',
+            array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('M2ePro/adminhtml_common_order/index', array('tab' => Ess_M2ePro_Block_Adminhtml_Common_Component_Abstract::TAB_ID_BUY)))
+            )
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'View All Order Logs.' => Mage::helper('M2ePro')->__('View All Order Logs.')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        OrderHandlerObj = new OrderHandler('<?php echo json_encode($this->getGridIds()); ?>');
+        OrderHandlerObj.initializeGrids();
+    });
+
+</script>

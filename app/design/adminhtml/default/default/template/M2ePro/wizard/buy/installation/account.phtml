@@ -1,0 +1,26 @@
+<div id="block_notice_wizard_installation_step_accounts" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Accounts Set Up'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="display:none;">
+    <div>
+        <div class="step_container_description">
+            <?php echo Mage::helper('M2ePro')->__('In this Section you can create Accounts for Rakuten.com.
+             Those Accounts will be used for Listing creations.<br/>
+             <b>Please Note:</b> you can always add or remove Accounts in %accounts_path%.', Mage::helper('M2ePro/View_Common')->getPageNavigationPath('configuration', 'Accounts', 'buy')); ?>
+        </div>
+        <div class="step_container_completed">
+            <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+        </div>
+        <div class="step_container_incomplete">
+            <span class="step_incomplete" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Incomplete'); ?></span>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div class="step_container_buttons">
+        <span class="step_skip" style="display:none;"><?php echo $this->getChildHtml('skip_account_button'); ?></span>
+        <span class="step_process" style="display:none;"><?php echo $this->getChildHtml('process_account_button'); ?></span>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    WizardHandlerObj.addStep('account', 'block_notice_wizard_installation_step_accounts');
+
+</script>

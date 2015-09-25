@@ -1,0 +1,44 @@
+<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Widget_FloatingToolbarFixer */ ?>
+
+<script type="text/javascript">
+
+if (varienGlobalEvents) {
+    varienGlobalEvents.attachEventHandler('showTab', function() {
+        // we need to remove container if it is already exist to be sure
+        // it has the last element with class content-header in DOM (see tools.js createToolbar())
+        // ----------
+        if ($('fake_buttons_container')) {
+            $('fake_buttons_container').remove();
+        }
+        // ----------
+
+        // prepare fake buttons container
+        // ----------
+        var fakeButtonsContainer = new Element('div', {
+            id: 'fake_buttons_container'
+        });
+
+        document.body.insertBefore(fakeButtonsContainer, document.body.lastChild);
+
+        fakeButtonsContainer.hide();
+        // ----------
+
+        // update fake buttons container html and reset floating toolbar
+        // ----------
+        var buttonsHtml;
+
+        <?php if ($this->displayTabButtonsInToolbar()): ?>
+            var activeTab = $$('.tab-item-link.active')[0];
+            buttonsHtml = $$('#' + activeTab.id + '_content div.content-header')[0].innerHTML;
+        <?php else: ?>
+            buttonsHtml = $$('div.content-header')[0].innerHTML;
+        <?php endif; ?>
+
+        $('fake_buttons_container').update('<div class="content-header">' + buttonsHtml + '</div>');
+
+        updateTopButtonToolbarToggle();
+        // ----------
+    });
+}
+
+</script>

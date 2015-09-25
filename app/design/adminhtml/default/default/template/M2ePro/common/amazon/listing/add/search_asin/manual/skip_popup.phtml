@@ -1,0 +1,21 @@
+<div id="next_step_warning_popup_content">
+
+    <div style="margin: 10px;">
+        <?php echo Mage::helper('M2ePro')->__(
+            '<b>Warning:</b> There are <span id="failed_count"></span> Product(s) of <span id="total_count"></span> which have no Description Policy assigned.<br/><br/>
+
+            If you want to assign Description Policy now, click <strong>Cancel</strong> then choose the Set Description Policy Action for the Products which need them.<br/><br/>
+
+            If you\'re not ready to add Description Policy yet or you are not sure which Description Policy to choose, click <strong>Continue</strong>.
+            You will have a chance to assign Description Policies later in the M2E Pro Listing Settings. '
+        ); ?>
+    </div>
+
+    <div style="text-align: right">
+        <a href="javascript:"
+            onclick="nextStepWarningPopup.close();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php echo $this->getChildHtml('continue_button'); ?>
+    </div>
+
+</div>

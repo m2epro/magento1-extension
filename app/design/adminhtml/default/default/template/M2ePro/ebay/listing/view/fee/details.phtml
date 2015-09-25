@@ -1,0 +1,55 @@
+<?php
+    $fees = $this->getFees();
+?>
+<style type="text/css">
+    #fees-table {
+        border: 1px solid #D6D6D6 !important;
+        display: table;
+    }
+    #fees-table .row {
+        display: table-row;
+    }
+    #fees-table .cell {
+        padding: 10px;
+        display: table-cell;
+    }
+    #fees-table .th {
+        border-bottom: 1px solid #D6D6D6 !important;
+        font-weight: bold;
+    }
+    #fees-table .total {
+        font-weight: bold;
+    }
+    #fees-buttons {
+        padding: 10px 0 !important;
+        text-align: right;
+    }
+</style>
+<div class="entry-edit" style="padding-top: 10px;">
+
+    <?php if ($this->hasProductName()): ?>
+        <div style="padding: 10px 0;"><?php echo Mage::helper('M2ePro')->__('Based on Product') ?>&nbsp;<span style="color: gray;"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getProductName()) ?></span></div>
+    <?php endif; ?>
+
+    <div id="fees-table" cellspacing="0" class="form-list" style="width: 100%;">
+        <div class="row th">
+            <div class="cell"><?php echo Mage::helper('M2ePro')->__('Name') ?></div>
+            <div class="cell"><?php echo Mage::helper('M2ePro')->__('Fee') ?></div>
+        </div>
+        <?php foreach ($fees as $feeCode => $fee): ?>
+            <?php if ($feeCode != 'listing_fee'): ?>
+                <div class="row">
+                    <div class="cell label"><?php echo Mage::helper('M2ePro')->__(Mage::helper('M2ePro')->escapeHtml($fee['label'])) ?>:</div>
+                    <div class="cell value"><?php echo Mage::helper('M2ePro')->escapeHtml($fee['value']) ?></div>
+                </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <div class="row">
+            <div class="cell label total"><?php echo Mage::helper('M2ePro')->__('Total') ?>:</div>
+            <div class="cell value total"><?php echo $fees['listing_fee']['value'] ?></div>
+        </div>
+    </div>
+</div>
+<div id="fees-buttons">
+    <?php echo $this->getChildHtml('close_button') ?>
+</div>

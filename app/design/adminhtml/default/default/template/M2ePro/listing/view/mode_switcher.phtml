@@ -1,0 +1,24 @@
+<script type="text/javascript">
+    var listingViewModeSwitcher = function() {
+        var url = '<?php echo $this->getSwitchUrl(); ?>';
+        url = url.replace('%view_mode%', this.value);
+        setLocation(url);
+    };
+
+    var initObservers = function() {
+        $('listing_view_mode_switcher').observe('change', listingViewModeSwitcher);
+    };
+
+    <?php if (!$this->getRequest()->isXmlHttpRequest()): ?>
+        Event.observe(window, 'load', function() {
+            initObservers();
+        });
+    <?php else: ?>
+        setTimeout(initObservers, 150);
+    <?php endif; ?>
+</script>
+<select name="listing_view_mode_switcher" id="listing_view_mode_switcher" style="width: 100px;">
+    <?php foreach ($this->getItems() as $item): ?>
+        <option value="<?php echo Mage::helper('M2ePro')->escapeHtml($item['value']) ?>" <?php if ($this->getCurrentViewMode() == $item['value']): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['label']); ?></option>
+    <?php endforeach; ?>
+</select>

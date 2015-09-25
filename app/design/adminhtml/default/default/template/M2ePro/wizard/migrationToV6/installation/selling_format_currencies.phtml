@@ -1,0 +1,80 @@
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'adminhtml_wizard_migrationToV6/saveSellingFormatCurrencies' => $this->getUrl('*/adminhtml_wizard_migrationToV6/saveSellingFormatCurrencies')
+    )); ?>);
+
+    Validation.add('M2ePro-ebay-coefficient-validation', '<?php echo Mage::helper('M2ePro')->__('Invalid coefficient format.'); ?>', function(value) {
+
+        if (value == '') {
+            return true;
+        }
+
+        if (parseFloat(value.replace(/[+-]/, '')) == 0.0) {
+            return false;
+        }
+
+        return value.match(/^[+-]\d+[\.]?\d*[%]?$/g);
+    });
+
+    Validation.add('M2ePro-common-coefficient-validation', '<?php echo Mage::helper('M2ePro')->__('Invalid coefficient format.'); ?>', function(value)
+    {
+        if (value == '') {
+            return true;
+        }
+
+        if (value == '0' || value == '0%') {
+            return false;
+        }
+
+        return value.match(/^[+-]?\d+[.,]?\d*[%]?$/g);
+    });
+
+    function saveCurrencies() {
+        if (!$('currencies_form')) {
+            return;
+        }
+
+        if (!currenciesForm.validate()) {
+            return;
+        }
+
+        if (!confirm('<?php echo Mage::helper('M2ePro')->__('Are you sure?'); ?>')) {
+            return;
+        }
+
+        new Ajax.Request( M2ePro.url.get('adminhtml_wizard_migrationToV6/saveSellingFormatCurrencies') ,
+        {
+            method: 'post',
+            parameters: {
+                form_data: $('currencies_form').serialize()
+            },
+            onSuccess: function(transport) {
+                var nextStep = '';
+                if (!transport.responseText.evalJSON()['success']) {
+                    nextStep = 'notifications';
+                } else {
+                    nextStep = transport.responseText.evalJSON()['next_step'];
+                }
+
+                WizardHandlerObj.setStep(nextStep,setLocation.bind(window, location.href));
+            }
+        });
+    }
+
+    Event.observe(window, 'load', function() {
+        if ($('currencies_form')) {
+            currenciesForm = new varienForm('currencies_form', '');
+        }
+    });
+
+</script>
+
+<div id="block_notice_wizard_migration_v6_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selling Format Currency Conversion'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+    <?php echo Mage::helper('M2ePro')->__(
+        'In the table below you can see Selling Format templates, which prices will be converted.
+        <br/>The currency rate you can check in <a href="%url%" target="_blank">Manage currency rate</a> settings. If you need to correct the prices, use coefficients.
+        ',
+        Mage::helper('adminhtml')->getUrl('adminhtml/system_currency')
+    ); ?>
+</div>

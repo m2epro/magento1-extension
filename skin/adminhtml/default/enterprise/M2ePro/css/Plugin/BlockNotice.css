@@ -1,0 +1,83 @@
+/* General Styles */
+/* ================================================ */
+
+.block_notices {
+    display: block;
+    border: 1px solid #D6D6D6 !important;
+    background: none repeat scroll 0 0 #FAFAFA !important;
+    padding: 10px 15px !important;
+    margin-bottom: 15px !important;
+}
+
+.block_notices_module, .block_notices_server {
+    display: none;
+}
+
+/* ================================================ */
+
+/* Header Styles */
+/* ================================================ */
+
+.block_notices_header {
+
+}
+
+.block_notices_header_left {
+    float: left !important;
+}
+
+.block_notices_header_left span.title {
+    color: #EB4D00 !important;
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+}
+
+.block_notices_header_left span.subtitle {
+    color: gray !important;
+    font-size: 1.2em !important;
+    font-weight: normal !important;
+}
+
+.block_notices_header_left span.arrow {
+    color: gray !important;
+    font-size: 1.2em !important;
+    font-weight: normal !important;
+}
+
+.block_notices_header_left a {
+    text-decoration: none !important;
+}
+
+.block_notices_header_right {
+    float: right !important;
+}
+
+.block_notices_header_right a {
+    text-decoration: none !important;
+}
+
+.block_notices_header_right span.hideblock {
+    color: #EB4D00 !important;
+    font-size: 1.2em !important;
+    font-weight: normal !important;
+}
+
+/* ================================================ */
+
+/* Content Styles */
+/* ================================================ */
+
+.block_notices_content {
+
+}
+
+.block_notices_content .list {
+    margin: 10px 0px !important;
+    padding-left: 30px !important;
+}
+
+.block_notices_content .list li {
+    list-style: disc !important;
+}
+
+/* ================================================ */

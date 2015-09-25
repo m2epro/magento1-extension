@@ -1,0 +1,237 @@
+<?php
+    /* @var Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_Settings $this*/
+?>
+
+<script type="text/javascript">
+
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,'Ess_M2ePro_Helper_Component_Amazon');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Buy'); ?>,'Ess_M2ePro_Helper_Component_Buy');
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_configuration_components')) ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'You should enable at least one Component.' => Mage::helper('M2ePro')->__('You should enable at least one Component.'),
+        'Default Component should be enabled.'      => Mage::helper('M2ePro')->__('Default Component should be enabled.')
+    )); ?>);
+
+    var init = function() {
+
+        InstallationCommonWizardObj.initSettings();
+
+        ComponentsHandlerObj = new ConfigurationComponentsHandler();
+
+        ComponentsHandlerObj.componentsTitles = <?php echo json_encode(Mage::helper('M2ePro/View_Common_Component')->getComponentsTitles()); ?>
+
+        $('component_amazon_mode').observe('change', ComponentsHandlerObj.component_mode_change);
+        $('component_buy_mode').observe('change', ComponentsHandlerObj.component_mode_change);
+
+        ComponentsHandlerObj.component_mode_change();
+
+        $('process_settings_button') && $('process_settings_button').observe('click', function() {
+            InstallationCommonWizardObj.proceedSettingsStep();
+        });
+    };
+
+    Event.observe(window, 'load', init);
+
+</script>
+
+<div id="block_notice_wizard_installation_step_settings" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Channels Set Up'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+    <div style="margin-top: 10px;">
+        <div class="step_container_description">
+            <?php echo Mage::helper('M2ePro')->__('In this Section you can choose the Integrations which you are planning to use.<br/>
+             You can always enable or disable integrations in System > Configuration > M2E Pro > Channels.<br/><br/>
+             <b>Note:</b> M2E Pro will take you through the Wizards for all the Integrations you choose on this Page.'); ?>
+        </div>
+
+        <div style="clear:both;"></div>
+
+        <div style="width: 800px; margin-top: 10px;">
+            <form id="settings_form">
+
+                <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+
+                        <colgroup class="label"></colgroup>
+                        <colgroup class="value"></colgroup>
+
+                        <tbody>
+
+                        <?php if ($this->getData('is_ebay_allowed')) { ?>
+                            <input type="hidden" id="component_ebay_mode" name="component_ebay_mode" value="<?php echo $this->getData('is_ebay_active') ? '1' : '0'; ?>">
+                        <?php } ?>
+
+                        <?php if ($this->getData('is_amazon_allowed')) { ?>
+                            <tr>
+                                <td class="label">
+                                    <label><?php echo Mage::helper('M2ePro/Component_Amazon')->getTitle(); ?>: </label>
+                                </td>
+                                <td class="value">
+                                    <select id="component_amazon_mode" name="component_amazon_mode" class="M2ePro-component-other">
+                                        <option value="0" <?php if (!$this->getData('is_amazon_active')) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
+                                        <option value="1" <?php if ($this->getData('is_amazon_active')) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
+                                    </select>
+                                </td>
+                                <td class="value">
+                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                    <span class="tool-tip-message" style="display: none;">
+                                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                        <span><?php echo Mage::helper('M2ePro')->__('Amazon Channel status.'); ?></span>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        </tbody>
+
+                    </table>
+
+                    <?php if ($this->getData('is_rakuten_allowed')) { ?>
+                        <table class="form-list" cellspacing="0" cellpadding="0">
+
+                            <colgroup class="label"></colgroup>
+                            <colgroup class="value"></colgroup>
+
+                            <tbody>
+                            <tr>
+                                <td class="value">
+                                    <h4><label><?php echo Mage::helper('M2ePro')->__('Rakuten'); ?>: </label></h4>
+                                </td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+
+                        <div class="custom-options" style="width: 600px; margin-top: -20px;">
+                            <div class="option-box" style="padding-left: 50px;">
+
+                                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                                    <colgroup class="label"></colgroup>
+                                    <colgroup class="value"></colgroup>
+
+                                    <tbody>
+
+                                    <?php if ($this->getData('is_buy_allowed')) { ?>
+                                        <tr>
+                                            <td class="label">
+                                                <label><?php echo Mage::helper('M2ePro/Component_Buy')->getTitle(); ?>: </label>
+                                            </td>
+                                            <td class="value">
+                                                <select id="component_buy_mode" name="component_buy_mode" class="M2ePro-component-other">
+                                                    <option value="0" <?php if (!$this->getData('is_buy_active')) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
+                                                    <option value="1" <?php if ($this->getData('is_buy_active')) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
+                                                </select>
+                                            </td>
+                                            <td class="value">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                                <span class="tool-tip-message" style="display: none;">
+                                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                    <span><?php echo Mage::helper('M2ePro')->__('Rakuten.com Channel status.'); ?></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
+                                    <tr>
+                                        <td class="label">
+                                            <label><?php echo Mage::helper('M2ePro')->__('Rakuten.co.uk'); ?>: </label>
+                                        </td>
+                                        <td class="value">
+                                            <select id="component_rde_mode" name="component_rde_mode" disabled="disabled" class="M2ePro-component-other">
+                                                <option value="0"><?php echo Mage::helper('M2ePro')->__('Disabled - Coming Soon...') ?></option>
+                                            </select>
+                                        </td>
+                                        <td class="value">
+                                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                            <span class="tool-tip-message" style="display: none;">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                <span><?php echo Mage::helper('M2ePro')->__('Rakuten.co.uk Channel status.'); ?></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="label">
+                                            <label><?php echo Mage::helper('M2ePro')->__('Rakuten.de'); ?>: </label>
+                                        </td>
+                                        <td class="value">
+                                            <select id="component_rde_mode" name="component_rde_mode" disabled="disabled" class="M2ePro-component-other">
+                                                <option value="0"><?php echo Mage::helper('M2ePro')->__('Disabled - Coming Soon...') ?></option>
+                                            </select>
+                                        </td>
+                                        <td class="value">
+                                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                            <span class="tool-tip-message" style="display: none;">
+                                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                                <span><?php echo Mage::helper('M2ePro')->__('Rakuten.de Channel status.'); ?></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        </div>
+
+                    <?php } ?>
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+
+                        <colgroup class="label"></colgroup>
+                        <colgroup class="value"></colgroup>
+
+                        <tbody>
+
+                        <tr id="view_common_component_default_tr" style="display: none;">
+                            <td class="label">
+                                <label for="view_common_component_default"><?php echo Mage::helper('M2ePro')->__('Default Channel'); ?>:</label>
+                            </td>
+                            <td class="value">
+                                <select id="view_common_component_default" name="view_common_component_default">
+                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon::NICK; ?>" <?php if ($this->getData('default_component') == Ess_M2ePro_Helper_Component_Amazon::NICK) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro/Component_Amazon')->getTitle(); ?></option>
+                                    <option value="<?php echo Ess_M2ePro_Helper_Component_Buy::NICK; ?>" <?php if ($this->getData('default_component') == Ess_M2ePro_Helper_Component_Buy::NICK) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro/Component_Buy')->getTitle(); ?></option>
+                                </select>
+                            </td>
+                            <td class="value">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                                <span class="tool-tip-message" style="display: none;">
+                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                    <span><?php echo Mage::helper('M2ePro')->__('Open Tab by default.'); ?></span>
+                                </span>
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <input type="hidden" name="validate_selected_components" value="" class="M2ePro-require-select-component" />
+                    <input type="hidden" name="validate_default_component" value="" class="M2ePro-check-default-component" />
+
+                </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="step_container_completed">
+            <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+        </div>
+
+        <div style="clear:both;"></div>
+    </div>
+
+    <div class="step_container_buttons">
+        <span class="step_process" style="display:none;"><?php echo $this->getChildHtml('process_settings_button'); ?></span>
+    </div>
+
+</div>
+
+<script>
+    WizardHandlerObj.addStep('settings', 'block_notice_wizard_installation_step_settings');
+</script>

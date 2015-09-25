@@ -1,0 +1,157 @@
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit' => $this->getUrl('M2ePro/adminhtml_ebay_marketplace/save'),
+        'logViewUrl' => $this->getUrl('M2ePro/adminhtml_ebay_log/synchronization',array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))),
+
+        'runSynchNow' => $this->getUrl('M2ePro/adminhtml_ebay_marketplace/runSynchNow'),
+        'synchCheckProcessingNow' => $this->getUrl('M2ePro/adminhtml_ebay_synchronization/synchCheckProcessingNow')
+    )); ?>);
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_marketplace')) ?>);
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_category')) ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Settings have been saved.' => Mage::helper('M2ePro')->__('Settings have been saved.'),
+        'You must select at least one Site you will work with.' => Mage::helper('M2ePro')->__('You must select at least one Site you will work with.'),
+
+        'Another Synchronization Is Already Running.' => Mage::helper('M2ePro')->__('Another Synchronization Is Already Running.'),
+        'Getting information. Please wait ...' => Mage::helper('M2ePro')->__('Getting information. Please wait ...'),
+        'Preparing to start. Please wait ...' => Mage::helper('M2ePro')->__('Preparing to start. Please wait ...'),
+
+        'Synchronization has successfully ended.' => Mage::helper('M2ePro')->__('Synchronization has successfully ended.'),
+        'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.'),
+        'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.'),
+        'Some eBay Categories were deleted from eBay. Click <a target="_blank" href="%url%">here</a> to check.' => Mage::helper('M2ePro')->__('Some eBay Categories were deleted from eBay. Click <a target="_blank" href="%url%">here</a> to check.')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        editForm = new varienForm('<?php echo $this->getId(); ?>', '<?php echo $this->getValidationUrl(); ?>');
+
+        MarketplaceProgressBarObj = new ProgressBar('marketplaces_progress_bar');
+        MarketplaceWrapperObj = new AreaWrapper('marketplaces_content_container');
+
+        MarketplaceProgressHandlerObj = new EbayMarketplaceSynchProgressHandler(MarketplaceProgressBarObj, MarketplaceWrapperObj );
+        MarketplaceHandlerObj = new MarketplaceHandler(MarketplaceProgressHandlerObj, <?php echo json_encode($this->storedStatuses)?>);
+        MarketplaceProgressHandlerObj.initPageCheckState();
+
+        <?php if (!is_null($this->getChildBlockId())) { ?>
+        <?php
+            $childBlockId = Mage::helper('M2ePro')->escapeJs($this->getChildBlockId());
+            $destinationBlockId = Mage::helper('M2ePro')->escapeJs($this->getId());
+        ?>
+        MarketplaceHandlerObj.moveChildBlockContent('<?php echo $childBlockId; ?>', '<?php echo $destinationBlockId; ?>');
+        <?php } ?>
+
+        varienGlobalEvents && varienGlobalEvents.fireEvent('initReady');
+    });
+
+</script>
+
+<form id="<?php echo $this->getId(); ?>" action="<?php echo $this->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+<div id="<?php echo $this->getContainerId(); ?>">
+<?php foreach ($this->groups as $group) : ?>
+
+    <div class="entry-edit" id="magento_block_ebay_marketplaces_group_<?php echo $group['id']; ?>" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__($group['title']); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <?php
+                        $componentName = '';
+                        if (count(Mage::helper('M2ePro/Component')->getActiveComponents()) > 1) {
+                            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+                        }
+                        $isFirst = true;
+                    ?>
+
+                    <?php foreach($group['marketplaces'] as $marketplace) { ?>
+
+                        <?php if ($isFirst) {?>
+
+                            <tr style="display: none;">
+                                <td colspan="2" style="padding: 5px 0 !important;">
+                                    <hr style="border: 1px solid silver; border-bottom: none;">
+                                </td>
+                            </tr>
+
+                        <?php } ?>
+
+                        <?php $isFirst = false; ?>
+
+                        <tr>
+                            <td class="label">
+                                <label for="status_<?php echo $marketplace['instance']->getId(); ?>">
+                                    <?php if ($marketplace['params']['locked']) { ?>
+                                        <span style="color: gray;">
+                                    <?php } ?>
+                                        <?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getData('title')); ?>:
+                                    <?php if ($marketplace['params']['locked']) { ?>
+                                        </span>
+                                    <?php } ?>
+                                </label>
+                            </td>
+                            <td class="value">
+
+                                <?php if ($marketplace['params']['locked']) { ?>
+                                    <select disabled="disabled" id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>" class="locked_selected marketplace_status_select">
+                                        <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>" selected="selected"><?php echo Mage::helper('M2ePro')->__('Enabled'); echo ' - '.Mage::helper('M2ePro')->__('Used in Listing(s)'); ?></option>
+                                    </select>
+                                <?php } else { ?>
+
+                                    <select id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>" onchange="MarketplaceHandlerObj.changeStatus(this);" <?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' class="hightlight_selected marketplace_status_select"'; else echo ' class="lacklustre_selected marketplace_status_select"'; ?>>
+                                        <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_DISABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_DISABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                                        <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                                    </select>
+
+                                <?php } ?>
+
+                                <p class="note note-no-tool-tip">
+                                    <span><?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getData('url')); ?></span>
+                                </p>
+                            </td>
+                            <td id="run_single_button_<?php echo $marketplace['instance']->getId(); ?>" class="value" <?php if($marketplace['instance']->getStatus() == Ess_M2ePro_Model_Marketplace::STATUS_DISABLE): ?>style="display: none;"<?php endif; ?>>
+                                <?php echo $this->getChildHtml('run_single_button'); ?>
+                            </td>
+                            <td id="changed_<?php echo $marketplace['instance']->getId(); ?>" class="changed">
+                                <span></span>
+                            </td>
+                            <td id="synch_info_wait_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: gray;">
+                                &nbsp; <?php echo Mage::helper('M2ePro')->__('Waiting'); ?>
+                            </td>
+                            <td id="synch_info_process_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: blue;">
+                                &nbsp; <?php echo Mage::helper('M2ePro')->__('Processing'); ?>
+                            </td>
+                            <td id="synch_info_complete_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: green;">
+                                &nbsp; <?php echo Mage::helper('M2ePro')->__('Completed'); ?>
+                            </td>
+                            <td id="marketplace_title_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none;"><?php echo Mage::helper('M2ePro')->__($marketplace['instance']->getTitle()); ?></td>
+                        </tr>
+
+                        <tr style="display: none;">
+                            <td colspan="2" style="padding: 5px 0 !important;">
+                                <hr style="border: 1px solid silver; border-bottom: none;">
+                            </td>
+                        </tr>
+
+                    <?php } ?>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+<?php endforeach; ?>
+</div>
+
+</form>

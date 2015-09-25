@@ -1,0 +1,176 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data $this */
+
+    $formData = $this->getFormData();
+    $default = $this->getDefault();
+
+    $formData = array_merge($default, $formData);
+    $marketplaceData = $this->getMarketplaceData();
+
+?>
+
+<script type="text/javascript">
+
+    var init = function() {
+        EbayTemplateReturnHandlerObj = new EbayTemplateReturnHandler();
+
+        $('return_accepted')
+            .observe('change', EbayTemplateReturnHandlerObj.acceptedChange)
+            .simulate('change');
+    };
+
+    <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
+        init();
+    <?php else: ?>
+        Event.observe(window, 'load', init);
+    <?php endif; ?>
+
+</script>
+
+<input type="hidden" name="return[id]" value="<?php echo (!$this->isCustom() && isset($formData['id'])) ? (int)$formData['id'] : ''; ?>" />
+<input type="hidden" name="return[title]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getTitle()); ?>" />
+<input type="hidden" name="return[marketplace_id]" value="<?php echo (int)$marketplaceData['id']; ?>" />
+<input type="hidden" name="return[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
+
+<div class="entry-edit" id="magento_block_ebay_template_return_form_data_policy">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Return Policy'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr class="return" <?php if (empty($marketplaceData['info']['returns_accepted'])): echo 'style="display: none;"'; endif; ?>>
+                    <td class="label">
+                        <label for="return_accepted"><?php echo Mage::helper('M2ePro')->__('Return Policy'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <select id="return_accepted" name="return[accepted]" class="required-entry">
+                            <?php if (!empty($marketplaceData['info']['returns_accepted'])): ?>
+                                <?php foreach ($marketplaceData['info']['returns_accepted'] as $item): ?>
+                                    <?php $selected = $formData['accepted'] == $item['ebay_id']; ?>
+                                    <option value="<?php echo $item['ebay_id'] ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['title']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                        <p class="note">
+                                <span>
+                                    <?php echo Mage::helper('M2ePro')->__(
+                                        'Buyers are more comfortable shopping from Sellers who offer <a href="http://sellercentre.ebay.co.uk/offer-returns-policy" target="_blank">Returns Policies</a>, even though most Buyers will never return an Item.
+                                        Items with a clear Returns Policy typically sell better than Items that don\'t have one.'
+                                    ) ;?>
+                                </span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="return_option_tr" class="return return-accepted" <?php if (empty($marketplaceData['info']['refund'])):  echo 'style="display: none;"'; endif; ?>>
+                    <td class="label">
+                        <label for="return_option"><?php echo Mage::helper('M2ePro')->__('Refund Will Be Given As'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="return_option" name="return[option]">
+                            <?php if (!empty($marketplaceData['info']['refund'])): ?>
+                                <?php foreach ($marketplaceData['info']['refund'] as $item): ?>
+                                    <?php $selected = $formData['option'] == $item['ebay_id']; ?>
+                                    <option value="<?php echo $item['ebay_id'] ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['title']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr id="return_within_tr" class="return return-accepted" <?php if (empty($marketplaceData['info']['returns_within'])): echo 'style="display: none;"'; endif; ?>>
+                    <td class="label">
+                        <label for="return_within"><?php echo Mage::helper('M2ePro')->__('Item Must Be Returned Within'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="return_within" name="return[within]">
+                            <?php if (!empty($marketplaceData['info']['returns_within'])): ?>
+                                <?php foreach ($marketplaceData['info']['returns_within'] as $item): ?>
+                                    <?php $selected = $formData['within'] == $item['ebay_id']; ?>
+                                    <option value="<?php echo $item['ebay_id'] ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['title']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </td>
+                </tr>
+
+                <?php if ($this->canShowHolidayReturnOption()): ?>
+                    <tr id="return_holiday_tr" class="return return-accepted">
+                        <td class="label">
+                            <label for="return_holiday_mode"><?php echo Mage::helper('M2ePro')->__('Extended Holiday Returns'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select id="return_holiday_mode" name="return[holiday_mode]">
+                                <option value="0" <?php if (!$formData['holiday_mode']): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                                <option value="1" <?php if ($formData['holiday_mode']): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                            </select>
+                            <p class="note">
+                                <span>
+                                    <?php echo Mage::helper('M2ePro')->__(
+                                        'You can specify Extended Holiday Returns (as well as their regular non-holiday returns period) for chosen Listings at any time during the year. The Extended Holiday Returns offer is not visible in the Listings until the current year\'s holiday returns period start date, at which point it overrides the non-holiday Returns Policy.
+                                         <br/><br/>Buyers will see and be subject to the Extended Holiday Returns offer in Listings purchased through the purchase cutoff date, and will be able to return those purchases through the end date.
+                                         <br/><br/>After the purchase cutoff date, the Extended Holiday Returns offer automatically disappears from the Listings, and non-holiday returns period reappears. Purchases made from that point on are subject to the non-holiday returns period, while purchases made before the cutoff date still have until the end date to be returned.
+                                         <br/><br/>For more details please read <a href="http://pages.ebay.com/sellerinformation/holiday2014/extholidayreturns.html" target="_blank">this documentation</a>.'
+                                    ) ;?>
+                                </span>
+                            </p>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+
+                <tr id="return_shipping_cost_tr" class="return return-accepted" <?php if (empty($marketplaceData['info']['shipping_cost_paid_by'])): echo 'style="display: none;"'; endif; ?>>
+                    <td class="label">
+                        <label for="return_shipping_cost"><?php echo Mage::helper('M2ePro')->__('Return Shipping Will Be Paid By'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="return_shipping_cost" name="return[shipping_cost]">
+                            <?php if (!empty($marketplaceData['info']['shipping_cost_paid_by'])): ?>
+                                <?php foreach ($marketplaceData['info']['shipping_cost_paid_by'] as $item): ?>
+                                    <?php $selected = $formData['shipping_cost'] == $item['ebay_id']; ?>
+                                    <option value="<?php echo $item['ebay_id'] ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['title']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr id="return_restocking_fee_tr" class="return return-accepted" <?php if (empty($marketplaceData['info']['restocking_fee_value'])): echo 'style="display: none;"'; endif; ?>>
+                    <td class="label">
+                        <label for="return_restocking_fee"><?php echo Mage::helper('M2ePro')->__('Restocking Fee Value'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="return_restocking_fee" name="return[restocking_fee]">
+                            <?php if (!empty($marketplaceData['info']['restocking_fee_value'])): ?>
+                                <?php foreach ($marketplaceData['info']['restocking_fee_value'] as $item): ?>
+                                    <?php $selected = $formData['restocking_fee'] == $item['ebay_id']; ?>
+                                    <option value="<?php echo $item['ebay_id'] ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($item['title']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </td>
+                </tr>
+
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr id="return_description_tr" class="return return-accepted">
+                    <td class="label">
+                        <label for="return_description"><?php echo Mage::helper('M2ePro')->__('Refund Description'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <textarea id="return_description" name="return[description]" class="input-text" style="width: 600px; height: 250px;"><?php echo Mage::helper('M2ePro')->escapeHtml($formData['description']); ?></textarea>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

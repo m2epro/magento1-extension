@@ -1,0 +1,15 @@
+<?php
+$_element = $this->getElement();
+?>
+
+<div class="rule-tree">
+    <div id="<?php echo $_element->getHtmlId(); ?>">
+        <?php echo $_element->getChildrenHtml() ?>
+    </div>
+</div>
+<script type="text/javascript">
+<?php echo $_element->getHtmlId() ?> = new VarienRulesForm('<?php echo $_element->getHtmlId() ?>', '<?php echo $this->getNewChildUrl() ?>');
+<?php if ($_element->getReadonly()): ?>
+    <?php echo $_element->getHtmlId() ?>.setReadonly(true);
+<?php endif; ?>
+</script>

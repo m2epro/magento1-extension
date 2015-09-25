@@ -1,0 +1,119 @@
+<?php
+
+    $attributeSets = Mage::helper('M2ePro/Magento_AttributeSet')->getAll(Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS);
+    $urls = json_encode(array(
+        'adminhtml_ebay_template/getTemplateHtml' => $this->getUrl(
+            '*/adminhtml_ebay_template/getTemplateHtml',
+            array(
+                'account_id' => NULL,
+                'attribute_sets' => implode(',', $attributeSets),
+                'id' => $this->getTemplateId(),
+                'nick' => $this->getTemplateNick(),
+                'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE,
+                'data_force' => true
+            )
+        ),
+        'adminhtml_ebay_template/isTitleUnique' => $this->getUrl(
+            '*/adminhtml_ebay_template/isTitleUnique',
+            array(
+                'id' => $this->getTemplateId(),
+                'nick' => $this->getTemplateNick()
+            )
+        ),
+        'deleteAction' => $this->getUrl(
+            '*/adminhtml_ebay_template/delete',
+            array(
+                'id' => $this->getTemplateId(),
+                'nick' => $this->getTemplateNick()
+            )
+        )
+    ));
+
+    $translations = json_encode(array(
+        'Policy Title is not unique.' => Mage::helper('M2ePro')->__('Policy Title is not unique.'),
+        'Do not show any more' => Mage::helper('M2ePro')->__('Do not show any more'),
+    ));
+?>
+
+<script type="text/javascript">
+    M2ePro.url.add(<?php echo $urls; ?>);
+    M2ePro.translator.add(<?php echo $translations; ?>);
+</script>
+
+<script type="text/javascript">
+
+    EbayTemplateEditHandlerObj = new EbayTemplateEditHandler();
+    EbayTemplateEditHandlerObj.templateNick = '<?php echo $this->getTemplateNick() ?>';
+
+    Event.observe(window, 'load', function() {
+        if ($('marketplace_id')) {
+            $('marketplace_id').observe('change', function() {
+                EbayTemplateEditHandlerObj.loadTemplateData();
+
+                var emptyOption = $('marketplace_id').down('.empty-option');
+                emptyOption && emptyOption.remove();
+            });
+
+            if ($('marketplace_id').value) {
+                $('marketplace_id').simulate('change');
+            }
+
+        } else {
+            EbayTemplateEditHandlerObj.loadTemplateData();
+        }
+    });
+</script>
+
+<div class="entry-edit" id="magento_block_ebay_template_title_marketplace">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="title" id="title" class="input-text required-entry validate-title-uniqueness" />
+                    </td>
+                </tr>
+
+                <?php if ($this->canDisplayMarketplace()): ?>
+
+                    <tr>
+                        <td class="label">
+                            <label for="marketplace_id"><?php echo Mage::helper('M2ePro')->__('eBay Site'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <?php if ($this->getMarketplaceId()): ?>
+                                <input type="hidden" name="marketplace_id" value="<?php echo $this->getMarketplaceId() ?>" id="marketplace_id" />
+                                <span><?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', $this->getMarketplaceId())->getTitle()) ?></span>
+                            <?php else: ?>
+                                <select name="marketplace_id" id="marketplace_id" class="required-entry">
+                                    <option value="" class="empty-option"></option>
+                                    <?php foreach ($this->getEnabledMarketplaces() as $marketplace): ?>
+                                        <option value="<?php echo $marketplace->getId() ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($marketplace->getTitle()) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
+                <?php endif; ?>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div style="display: none;">
+    <?php echo $this->getChildHtml('confirm') ?>
+</div>

@@ -1,0 +1,30 @@
+<div id="productSearch_pop_up_content" style="display: none;">
+    <div class="hor-scroll" style="padding-top: 15px; margin-bottom: 0px;">
+
+        <div id="productSearch_error_block" class="error-msg" style="display:none; margin-bottom: 10px;">
+            <div style="margin: 10px 0px 10px 35px">
+                <div id="productSearch_error_message" style="font-weight:bold"></div>
+            </div>
+        </div>
+
+        <div id="productSearch_form" style="float:none; padding: 10px; margin-bottom:10px; border: 1px solid #CDDDDD !important; background: none repeat scroll 0 0 #E7EFEF !important" >
+            <label for="query"><?php echo Mage::helper('M2ePro')->__('Enter Product Title, Rakuten.com SKU, ISBN or UPC'); ?></label>
+            <input id="query" type="text" name="query" class="input-text" style="margin: 0 10px 0 10px; width: 150px" />
+
+            <?php echo $this->getChildHtml('productSearch_submit_button'); ?>&nbsp;&nbsp;
+            <a href="javascript:void(0)" id="productSearch_reset_button"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></a>
+        </div>
+
+        <div id="productSearch_grid" style="margin: 10px auto; height: 380px !important; overflow-y: auto; overflow-x: hidden;">
+        </div>
+
+        <div class="clear"></div>
+
+        <div id="productSearch_buttons" style="top:480px; right:23px; display:none; text-align: right; margin: 10px 0px;">
+            <?php echo $this->getChildHtml('productSearch_cleanSuggest_button'); ?>
+            <?php echo $this->getChildHtml('productSearch_back_button'); ?>&nbsp;&nbsp;
+            <?php echo $this->getChildHtml('productSearch_cancel_button'); ?>
+        </div>
+
+    </div>
+</div>

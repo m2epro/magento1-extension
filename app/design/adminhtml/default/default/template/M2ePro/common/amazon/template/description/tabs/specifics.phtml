@@ -1,0 +1,165 @@
+<div id="block_notice_amazon_template_description_specifics" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Specifics'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('On this Tab you can specify Product Specifics for more detailed Description of its properties. List of available Specifics determines for the Category that you have chosen on General Tab. <br/><br/>
+
+    To add new Specifics you can use “Add Specifics” Button at the top of a Tab or click “Plus” icon at the top right corner of a group to add Specifics to one particular group. Use search and filters to find Specifics you need. Specifics have nested structure so the same Specific can be used in different groups. <br/><br/>
+
+    There is a list of required Specifics that should be specified. Recommended Specifics by Amazon are marked with a “Desired” label. Such Specifics are not mandatory, though they are recommended to be specified. <br/><br/>
+
+    You can delete added Specifics by clicking a cross icon on the right. Some Specifics have a duplication Option (there is a copy icon on the right), i.e. you can specify several values for one Specific at the same time. <br/><br/>
+
+    You can choose between 3 modes to specify the Specifics values:
+
+    <ul class="list">
+        <li>Custom Value – you should set value manually;</li>
+        <li>Custom Attribute - selecting of Magento Attribute, that will be a source for a Specific value;</li>
+        <li>Recommended Value (optional) - selecting of value from the list of predefined values.</li>
+    </ul>
+    </br>
+    More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Specifics')
+    ); ?>
+</div>
+
+<?php
+
+$formData = array('specifics' => array());
+$default  = array('specifics' => array());
+
+$isEdit = !!$this->getRequest()->getParam('id');
+$isEdit && $formData = array(
+    'specifics' => Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getChildObject()->getSpecifics()
+);
+
+$formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
+?>
+
+<script type="text/javascript">
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+
+        'Add Specifics'        => Mage::helper('M2ePro')->__('Add Specifics'),
+        'Remove this specific' => Mage::helper('M2ePro')->__('Remove this specific'),
+
+        'Total digits (not more):' => Mage::helper('M2ePro')->__('Total digits (not more):'),
+        'Type: Numeric.' => Mage::helper('M2ePro')->__('Type: Numeric.'),
+        'Min:'           => Mage::helper('M2ePro')->__('Min:'),
+        'Max:'           => Mage::helper('M2ePro')->__('Max:'),
+
+        'Can take any value.' => Mage::helper('M2ePro')->__('Can take any value.'),
+        'Two uppercase letters or "unknown".' => Mage::helper('M2ePro')->__('Two uppercase letters or "unknown".'),
+        'The value is incorrect.' => Mage::helper('M2ePro')->__('The value is incorrect.'),
+        'Type: String.'   => Mage::helper('M2ePro')->__('Type: String.'),
+        'Min length:'     => Mage::helper('M2ePro')->__('Min length:'),
+        'Max length:'     => Mage::helper('M2ePro')->__('Max length:'),
+
+        'Type: Date time. Format: YYYY-MM-DD hh:mm:ss' => Mage::helper('M2ePro')->__('Type: Date time. Format: YYYY-MM-DD hh:mm:ss'),
+        'Type: Numeric floating point.'                => Mage::helper('M2ePro')->__('Type: Numeric floating point.'),
+        'Decimal places (not more):'                   => Mage::helper('M2ePro')->__('Decimal places (not more):'),
+
+        'Recommended Values' => Mage::helper('M2ePro')->__('Recommended Values'),
+        'Allowed Values'     => Mage::helper('M2ePro')->__('Allowed Values'),
+        'Custom Attribute'   => Mage::helper('M2ePro')->__('Custom Attribute'),
+        'Custom Value'       => Mage::helper('M2ePro')->__('Custom Value'),
+        'None'               => Mage::helper('M2ePro')->__('None'),
+
+        'Definition:'    => Mage::helper('M2ePro')->__('Definition:'),
+        'Tips:'          => Mage::helper('M2ePro')->__('Tips:'),
+        'Examples:'      => Mage::helper('M2ePro')->__('Examples:'),
+        'Desired'        => Mage::helper('M2ePro')->__('Desired'),
+
+        'Duplicate specific' => Mage::helper('M2ePro')->__('Duplicate specific'),
+        'Delete specific'    => Mage::helper('M2ePro')->__('Delete specific'),
+        'Add Specific into current container' => Mage::helper('M2ePro')->__('Add Specific into current container'),
+
+        'Value of this Specific can be automatically overwritten by M2E Pro.' => Mage::helper('M2ePro')->__('In case this Description Policy will be used to create New Amazon Child Products, value of this Specific can be automatically overwritten by M2E Pro. Below there is a list of Variation Themes for which the value of this Specific will be overwritten if you are using one of them in your Listing.'),
+        'Amazon Parentage Specific will be overridden notice.' => 'The Value of this Specific can be necessary due to technical reasons, so there is no ability to Edit the Attribute parentage and also it has no semantic load. In case this Description Policy uses for creation of new Amazon Parent-Child Product, this Value will be overwritten and the Value you selected will not be/cannot be used.'
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+
+        $('amazonTemplateDescriptionEditTabs_specifics').observe('click', AmazonTemplateDescriptionHandlerObj.checkSpecificsReady);
+
+        AmazonTemplateDescriptionCategorySpecificHandlerObj.setFormDataSpecifics(<?php echo json_encode($formData['specifics']); ?>);
+    });
+
+</script>
+
+<style>
+
+    a.specific-remove-button, a.specific-clone-button, a.specific-add-button {
+        display: inline-block;
+        width: 20px;
+        height: 16px;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    a.specific-remove-button {
+        background-image: url("<?php echo $this->getSkinUrl('M2ePro/images/delete.png'); ?>");
+    }
+    a.specific-clone-button {
+        background-image: url("<?php echo $this->getSkinUrl('M2ePro/images/duplicate.png'); ?>");
+    }
+    a.specific-add-button {
+        background-image: url("<?php echo $this->getSkinUrl('M2ePro/images/add.png'); ?>");
+    }
+
+</style>
+
+<input id="encoded_specifics_data" type="hidden" name="specifics[encoded_data]" value="">
+
+<div class="fieldset">
+    <div class="hor-scroll" style="padding-bottom: 10px;">
+        <div id="specifics_container">
+
+        </div>
+    </div>
+</div>
+
+<!-- specifics grid template start -->
+<!-- ########################################################## -->
+<div id="specifics_list_grid_template" style="display: none;">
+
+    <table class="form-list entry-edit" cellspacing="0" cellpadding="0" style="width: 100%;">
+
+        <tr class="item-specifics-tr">
+            <td class="grid" colspan="2">
+
+                <table class="border" cellpadding="0" cellspacing="0">
+                    <thead>
+                    <tr class="headings">
+                        <th style="width: 37%;"><?php echo Mage::helper('M2ePro')->__('Name'); ?></th>
+                        <th style="width: 25%;"><?php echo Mage::helper('M2ePro')->__('Mode'); ?></th>
+                        <th style="width: 30%;"><?php echo Mage::helper('M2ePro')->__('Value'); ?></th>
+                        <th style="width: 6%; text-align: center;">&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- #specific_table_row_template inserts here -->
+                    </tbody>
+                </table>
+
+            </td>
+        </tr>
+
+    </table>
+</div>
+<!-- ########################################################## -->
+
+<!-- specifics add ror start -->
+<!-- ########################################################## -->
+<div id="specifics_add_row_template" style="display: none;">
+
+    <table style="width: 100%; margin-bottom: 10px; background-color: #e5ecf2;" cellpadding="0" cellspacing="0">
+        <tfoot>
+        <tr>
+            <td valign="middle" align="right" style="vertical-align: middle; border: 1px solid #cbd3d4; height: 40px; text-align: center;">
+                <button title="Add Specifics" type="button" class="scalable add add_custom_specific_button" style="margin-right: 15px;">
+                    <span><span><span><?php echo Mage::helper('M2ePro')->__('Add Specifics'); ?></span></span></span>
+                </button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>
+<!-- ########################################################## -->

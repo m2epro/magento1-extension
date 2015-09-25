@@ -1,0 +1,35 @@
+<div id="block_notice_ebay_listings_view_grid" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Listing Items'); ?>">
+    <p>
+        <?php echo Mage::helper('M2ePro')->__(
+            'This Page shows the Products you\'ve added to the current M2E Pro Listing.<br/><br/>
+            Use the filters to find the Product you want to manage. If an eBay Item ID is available, clicking it will take you to the Listing on eBay.
+            Click the <b>Add Products</b> Button to add new Products to the M2E Pro Listing.<br/><br/>
+            Click <b>Edit Settings</b> to adjust the Settings for this Listing.<br/><br/>
+            To add a new M2E Pro Listing or switch edit a different M2E Pro Listing, click the Arrow Icon to the right of the M2E Pro Listing Title above.'
+        ); ?>
+    </p>
+
+    <?php if(Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) : ?>
+        <div>
+            <?php echo Mage::helper('M2ePro')->__(
+                'There are three <b>View Mode</b>s available to you in Advanced Mode:
+                <ul class="list">
+                    <li>
+                        <b>eBay</b> - displays Product information related to eBay. In this Mode, you can easily find Products by eBay information, perform Actions in bulk (i.e. List, Revise, Relist, Stop, etc);
+                    </li>
+                    <li>
+                        <b>Settings</b> - displays information about Settings set for Products (i.e. Selling Settings, eBay Categories, etc). In this Mode, you can easily find Products by Settings they use, change the Settings in bulk.
+                    </li>
+                    <li>
+                        <b>Magento</b> - displays Products information related to Magento Catalog. In this Mode, you can easily find Products using Magento Products information (i.e. Magento QTY, Stock Status, etc);
+                    </li>
+                </ul>
+                You can switch between modes using Dropdown at the top of the Product Grid.<br/><br/>
+                <b>Note:</b> If you need to Search by Magento Product Attributes not shown in the Filters of the Grid, click <b>Show Advanced Filter</b> above the Table on the right.</br></br>
+                More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Manage+M2E+Pro+Listings')
+            ); ?>
+        </div>
+    <?php endif; ?>
+
+</div>

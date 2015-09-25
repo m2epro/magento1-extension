@@ -1,0 +1,62 @@
+<?php
+    $currentStep = Mage::helper('M2ePro/Module_Wizard')->getStep(
+        Ess_M2ePro_Helper_Module::WIZARD_MIGRATION_NICK
+    );
+
+    $migrationModel = Mage::getSingleton('M2ePro/Wizard_MigrationToV6');
+    $steps = $migrationModel->getSteps();
+    $stepTitles = $migrationModel->getStepTitles();
+
+    switch (count($steps)) {
+        case 2:
+            $breadcrumbWidth = '49.8%';
+            break;
+
+        case 3:
+        default:
+            $breadcrumbWidth = '33.1%';
+            break;
+    }
+?>
+
+<style type="text/css">
+    div.breadcrumb {
+        padding: 12px 0;
+        color: #AAAAAA;
+        width: <?php echo $breadcrumbWidth; ?>;
+        font-size: 14px;
+        text-align: center;
+        background: #e7efef;
+    }
+    div.selected {
+        color: white;
+        background: #6f8992;
+        font-weight: bold;
+    }
+</style>
+
+<div style="margin-bottom: 10px">
+
+    <div class="clear"></div>
+
+    <?php $stepCounter = 1; ?>
+    <?php foreach ($steps as $step): ?>
+        <div id="step_<?php echo $step; ?>" class="left breadcrumb <?php if ($step == $currentStep) echo 'selected' ?>">
+
+            <span class="<?php if ($step == $currentStep) echo 'selected' ?>">
+                <?php echo Mage::helper('M2ePro')->__('Step %number%', $stepCounter) ?>:
+            </span>
+            <span>
+                <?php echo $stepTitles[$step]; ?>
+            </span>
+
+        </div>
+
+        <div class="left" style="width: 3px; height: 1px; background: white"></div>
+
+        <?php $stepCounter++; ?>
+    <?php endforeach; ?>
+
+    <div class="clear"></div>
+
+</div>

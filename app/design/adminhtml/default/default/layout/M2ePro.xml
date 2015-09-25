@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <m2epro>
+        <reference name="head">
+            <action method="addJs"><script>M2ePro/General/PhpFunctions.js</script></action>
+            <action method="addJs"><script>M2ePro/General/PrototypeSimulate.js</script></action>
+            <action method="addJs"><script>M2ePro/General/CommonHandler.js</script></action>
+            <action method="addJs"><script>M2ePro/General/TranslatorHandler.js</script></action>
+            <action method="addJs"><script>M2ePro/General/PhpHandler.js</script></action>
+            <action method="addJs"><script>M2ePro/General/UrlHandler.js</script></action>
+            <action method="addJs"><script>M2ePro/Plugin/Magento/Message.js</script></action>
+            <action method="addJs"><script>M2ePro/Plugin/Magento/Block.js</script></action>
+            <action method="addJs"><script>M2ePro/Plugin/Magento/FieldTip.js</script></action>
+            <action method="addJs"><script>M2ePro/Plugin/BlockNotice.js</script></action>
+            <action method="addJs"><script>M2ePro/Initialization.js</script></action>
+            <action method="addCss"><stylesheet>M2ePro/css/main.css</stylesheet></action>
+            <action method="addCss"><stylesheet>M2ePro/css/Plugin/BlockNotice.css</stylesheet></action>
+        </reference>
+    </m2epro>
+    <m2epro_adminhtml_common_amazon_listing_variation_product_manage_viewvariationsgrid>
+        <remove name="footer"/>
+        <remove name="header"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+    </m2epro_adminhtml_common_amazon_listing_variation_product_manage_viewvariationsgrid>
+    <m2epro_adminhtml_ebay_listing_motorviewgrid>
+        <remove name="footer"/>
+        <remove name="header"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+    </m2epro_adminhtml_ebay_listing_motorviewgrid>
+    <m2epro_adminhtml_ebay_listing_variation_product_manage_viewvariationsgrid>
+        <remove name="footer"/>
+        <remove name="header"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+    </m2epro_adminhtml_ebay_listing_variation_product_manage_viewvariationsgrid>
+</layout>

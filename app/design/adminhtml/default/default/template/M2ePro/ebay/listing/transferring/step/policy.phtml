@@ -1,0 +1,32 @@
+<?php if ($this->isAllowedStep()) : ?>
+    <div style="padding-bottom: 10px;">
+        <?php if ($this->isUseCustomSettings()) : ?>
+            <div class="warning-msg" style="margin: 10px 0 5px 0;">
+                <div style="margin: 10px 0 10px 35px; font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('Some Products have Custom Settings for Shipping, Payment, or Return Policies. They will be overridden with common Settings set for Destination Listing. Click <a href=\'%url%\' target="_blank">here</a> to find out more.',
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Step4"Categories"')
+                ); ?></div>
+            </div>
+        <?php endif; ?>
+        <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+            <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+            <div id ="transferring_policies_block" style="margin: 10px 0 5px 0;">
+                <?php echo $this->getChildHtml('templates'); ?>
+            </div>
+        </form>
+    </div>
+
+    <div class="content-footer">
+        <p class="form-buttons"><?php echo $this->getButtonsHtml('footer') ?></p>
+        <div style="height: 25px;"></div>
+        <div style="position: absolute; text-align: right; bottom: 0; padding: 10px 0 10px 0; background: #ffffff; width: 780px;">
+            <span style="padding-left: 10px; padding-right: 10px;"><?php echo $this->getChildHtml('back_button'); ?></span>
+            <span><?php echo $this->getChildHtml('confirm_button'); ?></span>
+            <span><?php echo $this->getChildHtml('continue_button'); ?></span>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        ebayListingTemplateEditTabsJsTabs.moveTabContentInDest();
+    </script>
+<?php endif; ?>

@@ -1,0 +1,39 @@
+/* General Styles */
+/* ================================================ */
+
+.drop_down_menu {
+    display: none;
+    position: absolute !important;
+}
+
+.drop_down_menu ul {
+    background: #f8f8f8 !important;
+    border: solid 1px #c3c3c3 !important;
+}
+
+.drop_down_menu ul li {
+    padding: 5px 10px !important;
+    list-style: none !important;
+    text-align: left !important;
+    border-bottom: solid 1px #e3e3e3;
+}
+
+.drop_down_menu ul li:hover {
+    background: #e8e8e8 !important;
+    border-bottom: solid 1px #d7d7d7 !important;
+}
+
+.drop_down_menu a {
+    display: block;
+    color: #2f2f2f !important;
+    text-decoration: none !important;
+}
+
+.drop_down_header {
+    margin: 0;
+    padding: 0 15px 0 0;
+    display: inline-block;
+    background: url(../../images/drop_down_bg.png) no-repeat center right;
+}
+
+/* ================================================ */

@@ -1,0 +1,79 @@
+<?php
+    /* @var Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_Account_Content $this*/
+?>
+
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'adminhtml_ebay_account/edit' => $this->getUrl('*/adminhtml_ebay_account/edit', array('id' => $this->getData('account_id'), 'wizard' => true, 'close_on_save' => true)),
+        '*/*/getAccountSettings'      => $this->getUrl('*/*/getAccountSettings',array('account_id' => $this->getData('account_id')))
+    )); ?>);
+
+    var init = function() {
+
+        InstallationEbayWizardObj.initAccountSettings();
+
+        $('edit_account').observe('click', function() {
+            InstallationEbayWizardObj.openEditAccountPage();
+        });
+    };
+
+    Event.observe(window, 'load', init);
+
+</script>
+
+<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Congratulations, you have successfully linked your eBay Account to M2E Pro.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <div style="padding: 5px"></div>
+
+    <?php if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) { ?>
+        <?php echo Mage::helper('M2ePro')->__('You can change it if you need.'); ?>
+    <?php } ?>
+
+    <div class="clear" style="margin-bottom: 10px;"></div>
+
+    <div style="margin-bottom: 15px; border: 1px solid #CCCCCC; float: left; padding: 10px 25px 10px 25px; font-size: 13px; <?php if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) echo 'display: none;'; ?>">
+
+        <table class="form-list" cellspacing="0" cellpadding="0">
+            <tbody>
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('Import 3rd Party Items') ?>:
+                    </td>
+                    <td id="listing_other" class="value" style="width: 200px">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('Import Feedback') ?>:
+                    </td>
+                    <td id="feedbacks" class="value" style="width: 200px">
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <div class="right">
+            <a id="edit_account" href="javascript:"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+    <div style="margin-top: 5px">
+        <h4>
+            <?php echo Mage::helper('M2ePro')->__(
+                'Now, create an M2E Pro Listing. This will allow you to define specific Settings on eBay.'
+            ); ?>
+        </h4>
+
+        <div style="margin-top: 15px">
+            <?php echo $this->getChildHtml('create_listing_button'); ?>
+        </div>
+    </div>
+
+</div>

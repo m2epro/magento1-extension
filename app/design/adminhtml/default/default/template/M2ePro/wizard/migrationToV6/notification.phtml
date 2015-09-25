@@ -1,0 +1,29 @@
+<script type="text/javascript">
+
+</script>
+
+<?php
+
+$version = Mage::helper('M2ePro/Module')->getVersion();
+$startWizardLink = $this->getUrl("*/adminhtml_wizard_migrationToV6");
+
+?>
+
+<div class="wizard-note">
+
+    <div>
+        <?php
+
+        echo Mage::helper('M2ePro')->__(
+            'You have successfully upgraded to <strong>M2E Pro v. %version%</strong>.<br/>
+             Click
+             <a href="%url%">Start Migration</a> Wizard to quickly set up main settings',
+            $version,
+            $startWizardLink,
+            'javascript:'
+        );
+
+        ?>
+    </div>
+
+</div>

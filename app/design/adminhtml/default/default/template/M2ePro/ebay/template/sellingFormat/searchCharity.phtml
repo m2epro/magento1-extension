@@ -1,0 +1,48 @@
+<style type="text/css">
+
+    #ebayCharityGrid table tr.filter th, #ebayCharityGrid table td {
+        padding-left: 5px !important;
+        vertical-align: middle;
+    }
+
+</style>
+
+<div class="hor-scroll" style="padding-top: 15px;" >
+
+    <div id="searchCharity_error_block" class="error-msg" style="display: none; margin-bottom: 10px;">
+        <div style="margin: 10px 0px 10px 35px">
+            <div id="searchCharity_error_message" style="font-weight:bold"></div>
+        </div>
+    </div>
+
+    <div id="searchCharity_form" style="float:none; padding: 10px; border: 1px solid #CDDDDD !important; background: none repeat scroll 0 0 #E7EFEF !important">
+        <label for="query"><?php echo Mage::helper('M2ePro')->__('Enter the organization name or ID')?></label>
+        <input id="query" type="text" name="query" class="input-text" style="margin: 0 10px 0 10px; width: 280px">
+        <select id="selectCharitySearch" class="select" style="width: 60px">
+            <option value="title"><?php echo Mage::helper('M2ePro')->__('Name')?></option>
+            <option value="id"><?php echo Mage::helper('M2ePro')->__('ID')?></option>
+        </select>&nbsp;&nbsp;
+        <?php echo $this->getChildHtml('submit_button');?>&nbsp;
+        <a href="javascript:void(0)" id="searchCharity_reset"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></a>
+   </div>
+
+    <div id="searchCharity_warning_block" class="msg" style="display: none;">
+        <ul style="margin-top: 5px;" class="messages">
+            <li class="warning-msg">
+                <ul>
+                        <li>
+                            <div style="display: inline-block; width: 92%;" id="searchCharity_warning_message">
+                            </div>
+                        </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div id="searchCharity_grid" style="margin: 10px auto; overflow-y: hidden; overflow-x: hidden; height: 370px !important; display: none;">
+    </div>
+
+    <div id="searchCharity_buttons" style="position: absolute; top: auto; bottom: 3px; right: 23px; text-align: right; margin: 10px 0px;">
+    <?php echo $this->getChildHtml('close_button');?>
+
+</div>

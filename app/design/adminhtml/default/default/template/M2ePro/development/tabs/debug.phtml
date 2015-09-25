@@ -1,0 +1,79 @@
+<style>
+
+    #block_notice_development_tab_debug_magento_development,
+    #block_notice_development_tab_debug_maintenance,
+    #block_notice_development_tab_development_mode {
+        style: margin-top: 8px;
+        width: 500px;
+    }
+
+</style>
+
+<div id="magento_block_development_debug_commands">
+
+    <?php foreach($this->commands as $command) : ?>
+
+        <table class="simple_commands_list">
+
+            <tr>
+                <td>
+
+                    <a href="<?php echo $command['url']; ?>" <?php if ($command['confirm'] != ''): ?>onclick="return confirm('<?php echo $command['confirm']; ?>');"<?php endif; ?> <?php if ($command['new_window']): ?>target="_blank"<?php endif; ?> title="<?php echo $command['description']; ?>" alt="<?php echo $command['description']; ?>"><?php echo $command['title']; ?></a>
+                    <p><?php echo $command['description']; ?></p>
+
+                </td>
+            </tr>
+
+        </table>
+
+    <?php endforeach; ?>
+
+</div>
+
+<div id="block_notice_development_tab_debug_magento_development" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <?php if ($this->isMagentoDevelopmentModeEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('Magento Development Mode is <span style="color:red;">Enabled</span> now.'); ?></b>
+    <?php endif; ?>
+
+    <?php if (!$this->isMagentoDevelopmentModeEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('Magento Development Mode is <span style="color:green;">Disabled</span> now.'); ?></b>
+    <?php endif; ?>
+
+</div>
+
+<div id="block_notice_development_tab_development_mode" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <?php if ($this->isDevelopmentModeEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('M2ePro Development Mode is <span style="color:red;">Enabled</span> now.'); ?></b>
+        <div style="float: right;">
+            <?php echo $this->getChildHtml('disable_development_mode'); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$this->isDevelopmentModeEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('M2ePro Development Mode is <span style="color:green;">Disabled</span> now.'); ?></b>
+        <div style="float: right;">
+            <?php echo $this->getChildHtml('enable_development_mode'); ?>
+        </div>
+    <?php endif; ?>
+
+</div>
+
+<div id="block_notice_development_tab_debug_maintenance" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <?php if ($this->isMaintenanceEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('Maintenance Mode is <span style="color:red;">Enabled</span> now.'); ?></b>
+        <div style="float: right;">
+            <?php echo $this->getChildHtml('disable_maintenance'); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$this->isMaintenanceEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('Maintenance Mode is <span style="color:green;">Disabled</span> now.'); ?></b>
+        <div style="float: right;">
+            <?php echo $this->getChildHtml('enable_maintenance'); ?>
+        </div>
+    <?php endif; ?>
+
+</div>

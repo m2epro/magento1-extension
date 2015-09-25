@@ -1,0 +1,20 @@
+<?php
+
+$startWizardLink = $this->getUrl("*/adminhtml_wizard_fullAmazonCategories");
+
+?>
+
+<div class="wizard-note">
+
+    <div>
+        <?php
+
+        echo Mage::helper('M2ePro')->__(
+            'Please <a href="%url_1%">resynchronize</a> Amazon Marketplaces Data to work with Extension. It should be Updated because available Amazon Categories were Added.',
+            $startWizardLink
+        );
+
+        ?>
+    </div>
+
+</div>

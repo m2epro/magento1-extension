@@ -1,0 +1,233 @@
+<?php
+/* @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Tree */
+?>
+
+<div class="content-header">
+    <h3 class="icon-head head-categories"><?php echo Mage::helper('M2ePro')->__('Categories'); ?></h3>
+</div>
+
+<div style="width: 86%; padding: 6px 0 6px 10px; background: none repeat scroll 0 0 #FAFAFA; border: 1px solid #D6D6D6;">
+    <?php echo Mage::helper('M2ePro')->__('Selected Products: ') ?><span id="total_products_count">0</span>
+    <br/>
+    <?php echo Mage::helper('M2ePro')->__('Selected Categories: ') ?><span id="total_categories_count">0</span>
+
+    <span id="view_categories_summary">
+        [ <a href="javascript:" onclick="saveSelectedProducts(showCategoriesSummary)"><?php echo Mage::helper('M2ePro')->__('view') ?></a> ]
+    </span>
+</div>
+
+<div style="padding: 4px"></div>
+
+<div class="categories-side-col">
+    <div class="tree-holder">
+        <div id="tree-div" style="width: 100%; overflow: auto;"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+var tree,
+    treeInfo = <?php echo $this->getInfoJson() ?>;
+
+var init = function() {
+
+    var categoryLoader = new Ext.tree.TreeLoader({
+        dataUrl: '<?php echo $this->getLoadTreeUrl(); ?>',
+        createNode: createNodeByConfig,
+        requestMethod: 'GET'
+    });
+
+    categoryLoader.on("beforeload", function(treeLoader, node) {
+        treeLoader.baseParams.category = node.attributes.id;
+    });
+
+    categoryLoader.on("load", function(treeLoader, node, config) {
+        updateInfo();
+        varienWindowOnload();
+    });
+
+    tree = new Ext.tree.TreePanel('tree-div', {
+        animate:true,
+        loader: categoryLoader,
+        enableDD:false,
+        containerScroll: true,
+        rootVisible: false
+    });
+
+    tree.on('click', categoryClick.bind(tree));
+
+    // set the root node
+    var root = new Ext.tree.TreeNode({
+        text: 'root',
+        draggable: false,
+        id: <?php echo $this->getRoot()->getId() ?>
+    });
+
+    tree.setRootNode(root);
+
+    buildCategoryTree(root, <?php echo $this->getTreeJson() ?>);
+
+    // render the tree
+    tree.render();
+    root.expand();
+
+    var currentNode = tree.getNodeById('<?php echo $this->getCurrentNodeId(); ?>') || root.firstChild;
+
+    tree.selectPath(currentNode.getPath());
+
+    updateInfo();
+};
+
+var createNodeByConfig = function(config)
+{
+    var node = Object.clone(config);
+
+    if (node.children && !node.children.length) {
+        delete(node.children);
+        node = new Ext.tree.AsyncTreeNode(node);
+    } else {
+        node = new Ext.tree.TreeNode(node);
+    }
+
+    return node;
+};
+
+var buildCategoryTree = function(parent, config)
+{
+    if (!config) return;
+
+    if (parent && config && config.length) {
+        for (var i = 0; i < config.length; i++){
+
+            var node = createNodeByConfig(config[i]);
+
+            parent.appendChild(node);
+            node.loader = node.getOwnerTree().loader;
+
+            if(config[i].children){
+                buildCategoryTree(node, config[i].children);
+            }
+        }
+    }
+};
+
+var categoryClick = function(node, event)
+{
+    var gridObj = window['<?php echo $this->getGridId() ?>JsObject'];
+
+    saveSelectedProducts(function(transport) {
+
+        gridObj.reloadParams['category_change'] = 1;
+        gridObj.reloadParams['current_category_id'] = node.id;
+        gridObj.reload();
+
+    });
+};
+
+var updateInfo = function()
+{
+    $$('span[category_id]').each(function(element) {
+        element.update('('+treeInfo['category_products'][element.readAttribute('category_id')]);
+    });
+
+    $('total_products_count').update(treeInfo['total_products_count']);
+    $('total_categories_count').update(treeInfo['total_categories_count']);
+
+    if (treeInfo['total_categories_count'] > 0) {
+        $('view_categories_summary').show();
+    } else {
+        $('view_categories_summary').hide();
+    }
+
+};
+
+var saveSelectedProducts = function(callback)
+{
+    var gridObj = window['<?php echo $this->getGridId() ?>JsObject'];
+    var massGridObj = window['<?php echo $this->getGridId() ?>_massactionJsObject'];
+
+    var checkedString = massGridObj['checkedString'];
+    var initialCheckedString = massGridObj['initialCheckedString'];
+
+    massGridObj['checkedString'] = '';
+    massGridObj['initialCheckedString'] = '';
+
+    new Ajax.Request('<?php echo $this->getUrl('*/*/saveProductsToSessionAndGetInfo', array('_current' => true)) ?>', {
+        method: 'post',
+        parameters: {
+            checked_ids: checkedString,
+            initial_checked_ids: initialCheckedString
+        },
+        onSuccess: function(transport) {
+            treeInfo = transport.responseText.evalJSON();
+            updateInfo();
+            callback && callback(transport);
+            gridObj.reloadParams['category_change'] = 0;
+        }
+    });
+};
+
+var showCategoriesSummary = function()
+{
+    var gridObj = window['<?php echo $this->getGridId() ?>JsObject'];
+    var massGridObj = window['<?php echo $this->getGridId() ?>_massactionJsObject'];
+
+    Dialog.info(null, {
+        draggable: true,
+        resizable: true,
+        closable: true,
+        className: "magento",
+        windowClassName: "popup-window",
+        title: 'Categories',
+        height: 400,
+        width: 900,
+        zIndex: 100,
+        recenterAuto: true,
+        hideEffect: Element.hide,
+        showEffect: Element.show,
+        onClose: function() {
+            var url = '<?php echo $this->getUrl('*/*/getTreeInfo', array('_current' => true)); ?>';
+            new Ajax.Request(url, {
+                method: 'get',
+                onSuccess: function(transport) {
+                    treeInfo = transport.responseText.evalJSON();
+                    updateInfo();
+                    massGridObj.unselectAll();
+                    gridObj.reloadParams['category_change'] = 1;
+                    gridObj.reload();
+                    gridObj.reloadParams['category_change'] = 0;
+                }
+            });
+        }
+    });
+
+    new Ajax.Updater(
+        'modal_dialog_message',
+        '<?php echo $this->getUrl('*/*/getCategoriesSummaryHtml', array('_current' => true)); ?>',
+        {
+            method: 'get',
+            evalScripts: true,
+            parameters: {
+                categories_ids: getExpandedCategoriesIds().join(',')
+            },
+            onSuccess: function()
+            {
+                Windows.getFocusedWindow().content.style.height = '';
+            }
+        }
+    );
+
+};
+
+var getExpandedCategoriesIds = function()
+{
+    var categoriesIds = [];
+    for (var categoryId in tree.nodeHash) {
+        categoriesIds.push(categoryId);
+    }
+    return categoriesIds;
+};
+
+Ext.EventManager.onDocumentReady(init);
+
+</script>

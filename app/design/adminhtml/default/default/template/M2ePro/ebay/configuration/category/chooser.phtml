@@ -1,0 +1,79 @@
+<?php
+    $categoryMode = $this->getRequest()->getParam('mode');
+    $categoryValue = $this->getRequest()->getParam('value');
+
+    $translations = array();
+
+    // ->__('<b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Category is used.')
+    $text = '<b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Category is used.';
+    $translations[$text] = Mage::helper('M2ePro')->__($text);
+
+    // ->__('Do not show any more')
+    $text = 'Do not show any more';
+    $translations[$text] = Mage::helper('M2ePro')->__($text);
+
+    $translations = json_encode($translations);
+
+?>
+<script type="text/javascript">
+
+    M2ePro.translator.add(<?php echo $translations; ?>);
+
+    Event.observe(window, 'load', function() {
+        EbayConfigurationCategoryHandlerObj = new EbayConfigurationCategoryHandler('<?php echo $categoryMode; ?>', '<?php echo $categoryValue; ?>');
+        EbayListingCategoryChooserHandlerObj
+            .categoriesRequiringValidation[M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN')] = true;
+        EbayListingCategoryChooserHandlerObj.doneCallback = EbayConfigurationCategoryHandlerObj.chooserDoneCallback;
+    });
+
+</script>
+
+<div class="entry-edit" id="magento_block_ebay_configuration_category_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tbody>
+
+                    <?php if (!is_null($this->marketplaceData)): ?>
+                        <tr>
+                            <td class="label" style="width: 110px;">
+                                <label style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('eBay Site'); ?>: </label>
+                            </td>
+                            <td class="value">
+                                <strong><?php echo $this->marketplaceData['title']; ?></strong>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <?php if (!is_null($this->accountData)): ?>
+                        <tr>
+                            <td class="label" style="width: 110px;">
+                                <label style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>: </label>
+                            </td>
+                            <td class="value">
+                                <a target="_blank" href="<?php echo $this->getUrl('*/adminhtml_ebay_account/edit', array('id' => $this->accountData['id'])); ?>"><?php echo $this->accountData['title']; ?></a>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<?php echo $this->getChildHtml('chooser_block'); ?>
+
+<div style="display: none;">
+    <?php echo $this->getChildHtml('confirm'); ?>
+</div>

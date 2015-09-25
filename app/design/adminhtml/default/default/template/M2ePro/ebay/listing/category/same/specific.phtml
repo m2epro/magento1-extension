@@ -1,0 +1,19 @@
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+</div>
+
+<?php echo $this->getChildHtml('view_header'); ?>
+
+<?php if (!is_null($this->_selectedCategoryPath)): ?>
+    <div class="listing-view-header">
+        <span style="font-size: 1em; font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('eBay Category'); ?>:</span>&nbsp;&nbsp;&nbsp;
+        <span style="font-size: 1.1em"><?php echo $this->_selectedCategoryPath; ?></span>
+    </div>
+<?php endif; ?>
+
+<?php echo $this->getChildHtml('category_specific'); ?>

@@ -1,0 +1,7 @@
+<?php if ($this->getPaymentMethod()) { ?>
+<?php echo $this->getPaymentMethod(); ?>{{pdf_row_separator}}
+<?php } ?>
+
+<?php if ($this->getChannelOrderId()) { ?>
+<?php echo Mage::helper('M2ePro')->__('Order ID') . ': ' . $this->getChannelOrderId() ?>{{pdf_row_separator}}
+<?php } ?>

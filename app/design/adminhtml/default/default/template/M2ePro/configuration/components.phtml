@@ -1,0 +1,248 @@
+<?php
+    $urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+    $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
+?>
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,'Ess_M2ePro_Helper_Component_Amazon');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Buy'); ?>,'Ess_M2ePro_Helper_Component_Buy');
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Default Component should be enabled.' => Mage::helper('M2ePro')->__('Default Component should be enabled.')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        ComponentsHandlerObj = new ConfigurationComponentsHandler();
+
+        ControlPanelHandlerObj = new DevelopmentControlPanelHandler();
+
+        ComponentsHandlerObj.componentsTitles = <?php echo $this->getComponentsTitles(); ?>
+
+        $('component_amazon_mode').observe('change', ComponentsHandlerObj.component_mode_change);
+        $('component_buy_mode').observe('change', ComponentsHandlerObj.component_mode_change);
+
+        ComponentsHandlerObj.component_mode_change();
+    });
+    //-----------------------------
+
+</script>
+
+<style>
+    .columns .form-list td.value {
+        width: 280px;
+    }
+</style>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <div id="magento_block_configuration_ebay_channel">
+
+        <div id="block_notice_configuration_ebay_channel" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Channels'); ?>">
+            <p><?php echo Mage::helper('M2ePro')->__('
+                <b>Enable</b> the Channels you want to sell on, then click <b>Save Config</b>.</br></br>
+                More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-Channels')
+                ); ?></p>
+        </div>
+
+        <div class="entry-edit" id="magento_block_configuration_channel_status">
+
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('eBay Channel'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+
+                        <colgroup class="label"></colgroup>
+                        <colgroup class="value"></colgroup>
+
+                        <tbody>
+
+                        <?php if ($this->component_ebay_allowed) { ?>
+                            <tr>
+                                <td class="label">
+                                    <label><?php echo Mage::helper('M2ePro')->__('Status'); ?>: </label>
+                                </td>
+                                <td class="value">
+                                    <select id="component_ebay_mode" name="component_ebay_mode">
+                                        <option value="0" <?php if (!$this->component_ebay_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
+                                        <option value="1" <?php if ($this->component_ebay_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
+                                    </select>
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__('eBay Channel Status.') ?></span>
+                                    </p>
+                                </td>
+                            </tr>
+
+                        <?php } ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="entry-edit" id="magento_block_configuration_settings_other">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Other Channels'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <colgroup class="label"></colgroup>
+                    <colgroup class="value"></colgroup>
+
+                    <tbody>
+
+                    <?php if ($this->component_amazon_allowed) { ?>
+                        <tr>
+                            <td class="label">
+                                <label><?php echo Mage::helper('M2ePro/Component_Amazon')->getTitle(); ?>: </label>
+                            </td>
+                            <td class="value">
+                                <select id="component_amazon_mode" name="component_amazon_mode" class="M2ePro-component-other">
+                                    <option value="0" <?php if (!$this->component_amazon_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
+                                    <option value="1" <?php if ($this->component_amazon_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
+                                </select>
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__('Amazon Channel Status.') ?></span>
+                                </p>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
+                    </tbody>
+
+                </table>
+
+                <?php if ($this->component_group_rakuten_allowed) { ?>
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <colgroup class="label"></colgroup>
+                    <colgroup class="value"></colgroup>
+
+                    <tbody>
+                    <tr>
+                        <td class="value">
+                            <h4><label><?php echo Mage::helper('M2ePro')->__('Rakuten'); ?>: </label></h4>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+                    <?php if ($this->component_group_rakuten_allowed) { ?>
+                    <div class="custom-options" style="width: 600px; margin-top: -20px;">
+                        <div class="option-box" style="padding-left: 50px;">
+
+                            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                                <colgroup class="label"></colgroup>
+                                <colgroup class="value"></colgroup>
+
+                                <tbody>
+
+                                <?php if ($this->component_buy_allowed) { ?>
+                                    <tr>
+                                        <td class="label">
+                                            <label><?php echo Mage::helper('M2ePro/Component_Buy')->getTitle(); ?>: </label>
+                                        </td>
+                                        <td class="value">
+                                            <select id="component_buy_mode" name="component_buy_mode" class="M2ePro-component-other">
+                                                <option value="0" <?php if (!$this->component_buy_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled') ?></option>
+                                                <option value="1" <?php if ($this->component_buy_mode) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled') ?></option>
+                                            </select>
+                                            <p class="note">
+                                                <span><?php echo Mage::helper('M2ePro')->__('Rakuten.com Channel Status.') ?></span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+
+                                <tr>
+                                    <td class="label">
+                                        <label><?php echo Mage::helper('M2ePro')->__('Rakuten.co.uk'); ?>: </label>
+                                    </td>
+                                    <td class="value">
+                                        <select id="component_rde_mode" name="component_rde_mode" disabled="disabled" class="M2ePro-component-other">
+                                            <option value="0"><?php echo Mage::helper('M2ePro')->__('Disabled - Coming Soon...') ?></option>
+                                        </select>
+                                        <p class="note">
+                                            <span><?php echo Mage::helper('M2ePro')->__('Rakuten.co.uk Channel Status.') ?></span>
+                                        </p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="label">
+                                        <label><?php echo Mage::helper('M2ePro')->__('Rakuten.de'); ?>: </label>
+                                    </td>
+                                    <td class="value">
+                                        <select id="component_rde_mode" name="component_rde_mode" disabled="disabled" class="M2ePro-component-other">
+                                            <option value="0"><?php echo Mage::helper('M2ePro')->__('Disabled - Coming Soon...') ?></option>
+                                        </select>
+                                        <p class="note">
+                                            <span><?php echo Mage::helper('M2ePro')->__('Rakuten.de Channel Status.') ?></span>
+                                        </p>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+                    <?php } ?>
+
+                <?php } ?>
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <colgroup class="label"></colgroup>
+                    <colgroup class="value"></colgroup>
+
+                    <tbody>
+
+                    <tr id="view_common_component_default_tr" style="display: none;">
+                        <td class="label">
+                            <label for="view_common_component_default"><?php echo Mage::helper('M2ePro')->__('Default Channel'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select id="view_common_component_default" name="view_common_component_default">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon::NICK; ?>" <?php if ($this->view_common_component_default == Ess_M2ePro_Helper_Component_Amazon::NICK) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro/Component_Amazon')->getTitle(); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Buy::NICK; ?>" <?php if ($this->view_common_component_default == Ess_M2ePro_Helper_Component_Buy::NICK) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro/Component_Buy')->getTitle(); ?></option>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Open Tab by default.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+                <input type="hidden" name="validate_default_component" value="" class="M2ePro-check-default-component" />
+
+            </div>
+        </div>
+
+    </div>
+
+</form>

@@ -1,0 +1,101 @@
+<?php
+    $selectedCategory = $this->getSelectedCategory();
+?>
+
+<style>
+    #selected_category_container {
+        height: 40px;
+        border: 1px solid black;
+        background-color: #ffffff;
+        margin-bottom: 10px;
+    }
+
+    #chooser_browser {
+        white-space: nowrap;
+        overflow: hidden;
+        overflow-x: auto;
+        width: 642px;
+        border: 1px solid #000000;
+        height: 162px;
+        padding: 10px;
+    }
+
+    #chooser_tabs_container {
+        height: 250px;
+    }
+
+    #chooser_search_results {
+        height: 193px;
+        overflow: auto;
+        margin-top: 16px;
+        border: 1px solid #000000;
+        padding: 0 5px 5px 5px;
+    }
+
+    #chooser_search_input_container {
+        height: 23px;
+        padding-left: 10px;
+    }
+
+    #chooser_search_input_container > button {
+        height: 22px;
+    }
+
+    #query {
+        width: 480px;
+        height: 20px;
+        border: 1px black solid;
+        border-radius: 3px;
+        margin-right: 35px;
+        padding-left: 3px;
+    }
+
+    #chooser_recent {
+        height: 230px;
+        border: 1px solid #000000;
+        padding: 0 7px 7px 7px;
+        overflow: auto;
+    }
+
+    #chooser_attributes {
+        border: 1px solid black;
+        height: 175px;
+        padding: 0 7px 7px 7px;
+        overflow: auto;
+    }
+
+    #chooser_buttons_container {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 10px 24px;
+    }
+</style>
+
+<div id="selected_category_container">
+    <table width="670px" style="margin-top: -2px">
+        <tr>
+            <td width="170px" height="40px" valign="middle" style="vertical-align: middle; padding-left: 15px">
+                <strong id="category_title_container">
+                    <?php echo $this->getCategoryTitle(); ?>:
+                </strong>
+            </td>
+            <td valign="middle" width="440px" style="vertical-align: middle">
+                <span id="selected_category_path">
+                    <?php if (!empty($selectedCategory)): ?>
+                        <?php echo $selectedCategory['path']; ?>
+                    <?php else: ?>
+                        <span style="color: grey; font-style: italic"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                    <?php endif; ?>
+                </span>
+            </td>
+            <td width="60px" style="vertical-align: middle">
+                <a href="javascript:void(0)" id="category_reset_link" <?php if (empty($selectedCategory)): ?>style="display: none"<?php endif; ?> onclick="EbayListingCategoryChooserHandlerObj.unSelectCategory()"><?php echo Mage::helper('M2ePro')->__('Reset') ?></a>
+            </td>
+
+        </tr>
+    </table>
+</div>
+
+<input type="hidden" id="category_type" value="<?php echo $this->getCategoryType(); ?>">
+<input type="hidden" id="category_validation" value="" class="required-entry">

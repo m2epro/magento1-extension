@@ -1,0 +1,132 @@
+<style>
+
+    tr.search_results_results_tr td {
+        padding: 2px !important;
+    }
+    .specifics_search_input_container {
+        margin-top: 8px;
+    }
+    #query {
+        width: 420px;
+        padding: 2px;
+        color: gray;
+        margin-right: 10px;
+    }
+    #selected_specifics_container {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        max-height: 50px;
+        overflow: auto;
+    }
+    .selected-specific-box-item {
+        padding: 1px 5px;
+        padding-right: 3px;
+        border: rgb(126, 166, 166) 1px solid;
+        background-color: rgb(222, 231, 231);
+        margin-right: 4px;
+        margin-top: 4px;
+        display: inline-block;
+    }
+    .selected-specific-box-item:hover {
+        background-color: rgb(210, 221, 221);
+    }
+    .selected-specific-box-item a {
+        text-decoration: none;
+        font-weight: bold;
+    }
+    a.remove-link-button {
+        margin-left: 7px;
+        background-color: rgb(141, 160, 173);
+        border-radius: 10px;
+        color: white;
+        font-weight: 100;
+        font-size: 11px;
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        line-height: 13px;
+        text-align: center;
+    }
+    a.remove-link-button:hover {
+        background-color: rgba(70, 78, 86, 0.76);
+    }
+
+    #only_desired {
+        margin-right: 40px;
+        width: 70px;
+    }
+
+</style>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    if (typeof M2ePro == 'undefined') {
+        M2ePro = {};
+        M2ePro.url = {};
+        M2ePro.formData = {};
+        M2ePro.customData = {};
+        M2ePro.text = {};
+    }
+
+</script>
+
+<div style="height: 300px;">
+
+    <div class="content-header skip-header" style="margin-bottom: 0;">
+        <table cellspacing="0" style="margin-top: -5px;">
+            <tbody>
+            <tr>
+                <td>
+                    <h3 class="icon-head head-adminhtml-common-amazon-template-description-add-specific">
+                        <?php echo $this->getData('additional_title') ? Mage::helper('M2ePro')->__('Add Specifics to "%additional_title%" Block', $this->getData('additional_title'))
+                                                                      : Mage::helper('M2ePro')->__('Add Specifics'); ?>
+                    </h3>
+                </td>
+                <td class="form-buttons"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="selected_specifics_container" class="<?php echo Mage::helper('M2ePro/Magento')->isGoEdition() ? '' : 'switcher'; ?>" style="display: none;">
+
+        <div>
+            <div style="float: left; width: 120px; margin-top: 5px;">
+                <label style="width: 110px; margin-top: 5px;"><?php echo Mage::helper('M2ePro')->__('Selected Specifics') ?>:</label>
+            </div>
+            <div id="selected_specifics_box" style="margin-top: -3px; width: 590px; display: inline-block;">
+                <!-- #selected specifics inserts here -->
+            </div>
+            <div style="float: right; margin-right: 11px; display: inline-block;">
+                <a style="margin-top: 5px;" class="specifics_reset_selected_button" href="javascript:void(0);"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="specifics_search_input_container">
+        <input id="query" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter specific Title ...'); ?>">
+        <label for="only_desired" style="width: 85px; display: inline-block;"><?php echo Mage::helper('M2ePro')->__('Only Desired'); ?>: </label>
+        <select id="only_desired">
+            <option value="0"><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+            <option value="1"><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+        </select>
+        <div style="float: right; margin-right: 23px;">
+            <button class="specifics_filter_button"><?php echo Mage::helper('M2ePro')->__('Filter'); ?></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="specifics_reset_filter_button" href="javascript:void(0);"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></a>
+        </div>
+    </div>
+
+    <div class="hor-scroll" style="margin-top: 8px;">
+
+        <div id="specifics_grid_container" style="height: 370px;">
+            <div class="grid-wrapper">
+                <?php echo $this->getChildHtml('specifics_grid'); ?>
+            </div>
+        </div>
+
+    </div>
+
+</div>

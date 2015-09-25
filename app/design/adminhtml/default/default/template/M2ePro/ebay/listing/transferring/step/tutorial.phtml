@@ -1,0 +1,46 @@
+<?php if ($this->isAllowedStep()) : ?>
+    <script type="text/javascript">
+
+        VideoTutorialHandlerObj = new VideoTutorialHandler(
+            'video_tutorial_pop_up',
+            '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Sell on Another eBay Site')); ?>',
+            function() {}
+        );
+
+    </script>
+
+    <div class="content-header" style="border: none;">
+        <table cellspacing="0">
+            <tr>
+                <td><h3><?php echo Mage::helper('M2ePro')->__('Sell on Another eBay Site'); ?></h3></td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="padding-bottom: 10px;">
+            <table>
+                <tr>
+                    <td style="padding: 10px  0 0 30px">
+                        <p><?php echo Mage::helper('M2ePro')->__('“Sell on Another eBay Site” Option is introduced to simplify and speed up the process of Setting up for sale on other eBay Sites Items which you are currently selling. <br/>
+                            <br/>One of the most important features of “Sell on Another eBay Site” functionality is a Translation Service.  With Translation Service it is possible to Translate Item Title, Subtitle, Description and associate eBay Source Category with Destination one. Item Specifics of the Source eBay Category will be associated with Items Specifics of the Destination eBay Category.
+                            <br/><br/>The Service is implemented by the top Translation company Lionbridge in cooperation with eBay. This is a great addition to eBay Global Shipping Program and Cross Border Trade which provides additional opportunity to highly increase your sales. Some Customers may be granted with a credit from eBay to try the Translation Service for free.<br/><br/> <strong>It is strongly recommended to watch this video and read <a href="%url%" target="_blank">documentation</a> to get familiar with new Option.</strong> <br/>',
+                            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site')
+                        ); ?></p>
+                    </td>
+                </tr>
+            </table>
+    </div>
+
+    <div class="content-footer">
+        <div style="height: 25px;"></div>
+        <div style="position: absolute; text-align: right; bottom: 0; padding: 10px 0 10px 0; background: #ffffff; width: 780px;">
+            <span style="padding-left: 10px;"><?php echo $this->getChildHtml('confirm_button'); ?></span>
+        </div>
+    </div>
+
+    <div id="video_tutorial_pop_up" style="display: none;">
+        <div class="player_container" style="margin: 20px 5px; ">
+            <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/tFgFpm3O5NU?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/tFgFpm3O5NU?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
+        </div>
+    </div>
+<?php endif; ?>

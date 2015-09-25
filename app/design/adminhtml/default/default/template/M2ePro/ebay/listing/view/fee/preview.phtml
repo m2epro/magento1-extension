@@ -1,0 +1,17 @@
+<?php
+    $feeDetailsId = uniqid('fee-details-');
+?>
+<style type="text/css">
+    #get-estimated-fee {
+        background: none repeat scroll 0 0 #FAFAFA !important;
+        border: 1px solid #d6d6d6;
+        padding: 10px 15px;
+    }
+</style>
+<div id="<?php echo $feeDetailsId ?>" style="display: none;">
+    <?php echo $this->getChildHtml('details'); ?>
+</div>
+
+<div id="get-estimated-fee" style="display: none;">
+    <span style="text-decoration: underline;"><strong>Estimated Fee</strong></span> based on Product "<?php echo Mage::helper('M2ePro')->escapeHtml($this->getProductName()) ?>" is <strong><?php echo $this->getTotalFee() ?></strong>&nbsp;[<a href="javascript:void(0);" onclick="EbayListingEbayGridHandlerObj.openFeePopUp($('<?php echo $feeDetailsId ?>').innerHTML);">details</a>]
+</div>

@@ -1,0 +1,55 @@
+<?php
+    /* @var Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_ModeConfirmation_Content $this*/
+?>
+
+<script type="text/javascript">
+
+    var init = function() {
+
+        InstallationEbayWizardObj.initAccountMode('<?php echo $this->getMode(); ?>');
+
+        $('continue_button').observe('click', function() {
+            InstallationEbayWizardObj.saveAccountMode();
+        });
+    };
+
+    Event.observe(window, 'load', init);
+
+</script>
+
+<div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Please select an M2E Pro Mode'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+    <?php
+        echo Mage::helper('M2ePro')->__(
+            'There are two modes available to you.
+            <br/>
+            We have chosen the Mode we think is most suitable for you, based on your selling history, but you can change this if you prefer.'
+        );
+    ?>
+
+    <form id="mode_confirmation_form">
+        <div style="margin: 20px 0 10px 20px; font-size: 13px">
+            <div>
+                <input id="simple_mode_input" name="mode" type="radio" value="<?php echo Ess_M2ePro_Helper_View_Ebay::MODE_SIMPLE ?>">&nbsp;&nbsp;
+                <label id="simple_mode_label" for="simple_mode_input"><?php echo Mage::helper('M2ePro')->__('Simple'); ?></label>
+                <span>(<?php echo Mage::helper('M2ePro')->__('Suitable for new Users and for those with a limited Inventory.'); ?>)</span>
+            </div>
+            <div style="padding: 5px"></div>
+            <div>
+                <input id="advanced_mode_input" name="mode" type="radio" value="<?php echo Ess_M2ePro_Helper_View_Ebay::MODE_ADVANCED; ?>">&nbsp;&nbsp;
+                <label id="advanced_mode_label" for="advanced_mode_input"><?php echo Mage::helper('M2ePro')->__('Advanced'); ?></label>
+                <span>(<?php echo Mage::helper('M2ePro')->__('Suitable for the more experienced user.'); ?>)</span>
+            </div>
+        </div>
+        <p style="margin-top: 25px">
+            <?php echo Mage::helper('M2ePro')->__(
+                'If you\'re not sure which Mode to choose, go for the Simple Mode.
+                Don\'t worry you can change it later in %menu_path%',
+                Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'General')
+            );?>
+        </p>
+    </form>
+
+    <div style="margin-top: 25px">
+        <?php echo $this->getChildHtml('continue_button'); ?>
+    </div>
+</div>

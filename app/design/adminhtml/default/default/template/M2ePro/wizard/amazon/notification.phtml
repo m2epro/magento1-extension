@@ -1,0 +1,29 @@
+<?php
+
+$version = Mage::helper('M2ePro/Module')->getVersion();
+$skipWizardLink = $this->getUrl("*/adminhtml_wizard_amazon/skip");
+$startWizardLink = $this->getUrl("*/adminhtml_wizard_amazon");
+
+?>
+
+<div class="wizard-note">
+
+    <a class="wizard-close" href="javascript:void(0);" onclick="WizardHandlerObj.skip('<?php echo $skipWizardLink; ?>');" title="<?php echo Mage::helper('M2ePro')->__('Skip Wizard') ?>">&times;</a>
+
+    <div>
+        <?php
+
+        echo Mage::helper('M2ePro')->__(
+            'Click
+            <a href="%url_1%">Start Configuration</a> Wizard to quickly set up <strong>Amazon</strong> Settings or
+            <a href="%url_2%" onclick="%script_code%">Skip</a> it if you intend to set up it later. <br/>
+            <b>Note:</b> If you close the Wizard now, you will have to set up Amazon Settings manually.',
+            $startWizardLink,
+            'javascript:',
+            'confirm(M2ePro.translator.translate(\'Note: If you close the Wizard, it never starts again. You will be required to set all Settings manually. Press Cancel to continue working with Wizard.\')) && setLocation(\''.$skipWizardLink.'\')'
+        );
+
+        ?>
+    </div>
+
+</div>

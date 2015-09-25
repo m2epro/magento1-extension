@@ -1,0 +1,22 @@
+<div id="block_notice_wizard_congratulation" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+    <?php
+
+    $synchronizationTemplatesUrl = $this->getUrl('*/adminhtml_commom_template_synchronization/index');
+    $sellingFormatTemplatesUrl = $this->getUrl('*/adminhtml_common_template_sellingFormat/index');
+
+    $listingsUrl = $this->getUrl('*/adminhtml_listing/index');
+    $docsLink = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl();
+
+    $menuLabel = Mage::helper('M2ePro/View_Common')->getMenuRootNodeLabel();
+
+    $components = Mage::helper('M2ePro/Component')->getAllowedComponentsTitles();
+    $components = implode(' / ',$components);
+
+    $tempString = Mage::helper('M2ePro')->__(
+        'You have set the main M2E Pro Settings and now you have to set up the main Settings of the chosen Channel(s).'
+    );
+
+    echo $tempString;
+
+    ?>
+</div>

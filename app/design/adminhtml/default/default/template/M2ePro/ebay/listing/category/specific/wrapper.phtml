@@ -1,0 +1,121 @@
+<style type="text/css">
+    li.categories {
+        text-align: left;
+        padding: 1px 0 1px 10px;
+        border-bottom: 1px solid #d6d6d6;
+    }
+    li.selected {
+        background-color: #6f8992;
+        color: white;
+        font-weight: bold;
+    }
+    .area_wrapper {
+        opacity: 1 !important;
+        background-color: rgb(226, 226, 226) !important;
+        color: #a9a9a9 !important;
+        font-weight: bold !important;
+        font-size: 30pt !important;
+        text-align: center !important;
+        border: 1px solid  #D6D6D6
+    }
+</style>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+</div>
+
+<?php echo $this->getChildHtml('view_header'); ?>
+
+<div class="clear"></div>
+
+<div class="left" style="margin-right: 1%; width: 28%; border-top: 1px solid #D6D6D6 !important; border-left: 1px solid #D6D6D6 !important;border-right: 1px solid #D6D6D6 !important; background: none repeat scroll 0 0 #FAFAFA !important;">
+
+    <div style="padding-top: 10px; text-align: center">
+        <h3 style="text-decoration: underline"><?php echo Mage::helper('M2ePro')->__('eBay Categories') ?></h3>
+    </div>
+
+    <div style="<?php if (count($this->getData('categories')) == 1) echo 'display: none;'; ?> padding-bottom: 10px; text-align: center ; border-bottom: 1px solid #D6D6D6 !important;">
+        <input type="checkbox" name="skip_optional_specifics" id="skip_optional_specifics">
+        &nbsp;
+        <label for="skip_optional_specifics"><?php echo Mage::helper('M2ePro')->__('Skip Optional Specifics') ?></label>
+        <div style="display: inline-block">
+            <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+            <span class="tool-tip-message" style="display: none;">
+                <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                <span>
+                    <?php echo Mage::helper('M2ePro')->__(
+                        'M2E Pro will check  all available Item Specifics for selected eBay Categories and stops at the Category where user Action is required (required Item Specifics should be set).'
+                    ); ?>
+                </span>
+            </span>
+        </div>
+    </div>
+
+    <ul style="max-height: 500px; overflow-y: auto" id="categories_list">
+        <?php foreach ($this->getData('categories') as $categoryData) { ?>
+            <?php if ($categoryData['category_main_mode'] == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY) {
+                $category = $categoryData['category_main_id'];
+                $title = $categoryData['category_main_path'] . ' ('.$category.')';
+            } else {
+                $category = $categoryData['category_main_attribute'];
+                $title = Mage::helper('M2ePro')->__('Magento Attribute > %attribute_label%', Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel(
+                    $category,
+                    $this->getData('store_id')
+                ));
+            }?>
+            <li id="<?php echo $category; ?>" class="categories">
+                <?php echo Mage::helper('M2ePro')->escapeHtml($title); ?>
+            </li>
+        <?php } ?>
+    </ul>
+
+</div>
+
+<div class="left" style="width: 70%;">
+
+    <div id="specifics_main_container_wrapper">
+        <div id="specifics_main_container">
+            <?php echo $this->getChildHtml('specific'); ?>
+        </div>
+    </div>
+
+    <div class="entry-edit" id="buttons_container">
+        <div class="fieldset">
+            <div class="hor-scroll" style="padding-right: 1px; text-align: right">
+                <?php echo $this->getChildHtml('continue'); ?>
+                <?php echo $this->getChildHtml('next_category_button'); ?>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="clear"></div>
+
+<div id="popup_content" style="display: none;">
+
+    <div style="padding: 10px; height: 195px">
+
+        <?php echo Mage::helper('M2ePro')->__(
+            '<br/>All selected eBay Categories were checked for required Item Specifics.
+            <br/><br/>
+            Now you can proceed further (use Continue Button) or close this window and review Item Specifics if neccessary (use Cancel Button).'); ?>
+
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="right">
+        <a href="javascript:" onclick="EbayListingCategorySpecificWrapperHandlerObj.hidePopup()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php echo $this->getChildHtml('popup_confirm_button'); ?>
+    </div>
+
+    <div class="clear"></div>
+
+</div>

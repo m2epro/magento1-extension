@@ -1,0 +1,170 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping */
+?>
+
+<style type="text/css">
+
+    .popup-window .magento_message {
+        padding: 0;
+    }
+
+    .buttons-container {
+        padding: 10px;
+        text-align: right;
+    }
+
+</style>
+
+<div id="product_options_mapping_content" class="hor-scroll" style="">
+
+    <div style="padding: 10px 15px;">
+
+        <div id="order_item_product_options_mapping_pop_up_help" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Order Item Options Setting'); ?>">
+            <?php
+                echo Mage::helper('M2ePro')->__('As M2E Pro was not able to find appropriate Option in Magento Product you are supposed find and Map it manualy.
+                <br/>If you want to use the same Settings for the similar subsequent Orders, select appropriate check-box at the bottom.
+                <br/><br/><b>Note:</b> Magento Order can be only created when all Products of Order are found in Magento Catalog.');
+            ?>
+        </div>
+
+        <div>
+
+            <input type="hidden" name="order_item_id" class="form-element" value="<?php echo Mage::helper('M2ePro/Data_Global')->getValue('order_item')->getId() ?>" />
+
+            <h4><?php echo Mage::helper('M2ePro')->__('Channel Options') ?></h4>
+
+            <div style="border-bottom: 1px solid #E7E7E7; padding-left: 10px;">
+
+                <?php if (count($this->getData('channel_options')) == 0): ?>
+                    <span style="font-style: italic;">
+                        <?php echo Mage::helper('M2ePro')->__('No Channel Options are available.'); ?>
+                    </span>
+                <?php else: ?>
+
+                    <dl>
+
+                    <?php foreach ($this->getData('channel_options') as $channelOption): ?>
+                        <dt>
+                            <label>
+                                <span style="font-weight: bold; font-style: italic;">
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($channelOption['label']); ?>:
+                                </span>
+                                <span>
+                                    &nbsp;<?php echo Mage::helper('M2ePro')->escapeHtml($channelOption['value']); ?>
+                                </span>
+                            </label>
+                        </dt>
+                    <?php endforeach; ?>
+
+                    </dl>
+
+                <?php endif; ?>
+
+            </div>
+
+            <br/>
+
+            <h4><?php echo Mage::helper('M2ePro')->escapeHtml($this->getProductTypeHeader()) ?></h4>
+
+            <div>
+
+                <dl>
+
+                <?php foreach ($this->getData('magento_options') as $option): ?>
+                    <dt>
+                        <label>
+                            <span class="required">*</span>&nbsp;<?php echo Mage::helper('M2ePro')->escapeHtml($option['label']); ?>
+                        </label>
+                    </dt>
+                    <dd style="border-bottom: 1px solid #E7E7E7; margin: 5px 0 15px; padding: 0 0 12px;">
+                        <div class="input-box">
+                            <select name="option_id[<?php echo (int)$option['option_id']; ?>]" class="required-entry form-element" style="width: 100%;">
+                                <option value="" class="empty"><?php echo Mage::helper('M2ePro')->__('Select Option...'); ?></option>
+                                <?php foreach ($option['values'] as $value): ?>
+                                    <?php
+                                        $optionValue = json_encode(array(
+                                            'value_id' => $value['value_id'],
+                                            'product_ids' => $value['product_ids']
+                                        ));
+                                        $optionLabel = $value['label'];
+
+                                        $selected = $this->isMagentoOptionSelected($option, $value);
+                                    ?>
+                                    <option value="<?php echo Mage::helper('M2ePro')->escapeHtml($optionValue); ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($optionLabel); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </dd>
+                <?php endforeach; ?>
+
+                </dl>
+
+            </div>
+
+            <?php if (count($this->getData('channel_options')) > 0): ?>
+
+                <div style="padding-top: 5px;">
+                    <p class="switcher">
+                        <input type="checkbox" id="save_matching" name="save_matching" class="form-element">&nbsp;<span><?php echo Mage::helper('M2ePro')->__('Save selection for subsequent Orders') ?></span>
+                    </p>
+                </div>
+
+            <?php endif; ?>
+
+        </div>
+
+    </div>
+
+    <div class="buttons-container">
+        <div id="selected_product_option_is_out_of_stock" style="display: none; float: left;">
+            <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" alt="" />&nbsp;<span><?php echo Mage::helper('M2ePro')->__('Selected Product Option is Out of Stock.') ?></span>
+        </div>
+        <div>
+            <a href="javascript: void(0);" onclick="OrderEditItemHandlerObj.closePopUp();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <?php echo $this->getChildHtml('product_options_mapping_submit_button'); ?>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $$('.form-element').each(function (element) {
+        element.observe('change', function() {
+            if (element.selectedIndex != 0) {
+                CommonHandlerObj.hideEmptyOption(element);
+            }
+
+            var hasEmptyOptions = $$('.form-element').any(function(element) { return element.value == '' });
+            if (hasEmptyOptions) {
+                return;
+            }
+
+            new Ajax.Request(M2ePro.url.get('adminhtml_order/checkProductOptionStockAvailability'), {
+                method: 'get',
+                parameters: Form.serialize('modal_dialog_message'),
+                onSuccess: function(transport) {
+                    var isInStock = transport.responseText.evalJSON()['is_in_stock'];
+
+                    if (!isInStock) {
+                        $('selected_product_option_is_out_of_stock').show();
+                    } else {
+                        $('selected_product_option_is_out_of_stock').hide();
+                    }
+                }
+            });
+        });
+        element.simulate('change');
+    });
+
+    if (OrderEditItemHandlerObj && OrderEditItemHandlerObj.popUp) {
+        setTimeout(function() { OrderEditItemHandlerObj.popUp.updateHeight(); }, 50);
+    }
+
+</script>

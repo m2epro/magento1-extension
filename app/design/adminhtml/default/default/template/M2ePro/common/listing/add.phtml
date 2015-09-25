@@ -1,0 +1,9 @@
+<?php echo $this->getChildHtml('general'); ?>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <?php echo $this->getChildHtml('content'); ?>
+
+</form>

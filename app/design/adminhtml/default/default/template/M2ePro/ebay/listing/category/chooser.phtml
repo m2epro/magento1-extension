@@ -1,0 +1,249 @@
+<?php
+    $internalData = !is_null($this->getInternalData()) ? $this->getInternalData() : array();
+    $selectCallback = $this->getSelectCallback();
+    $unselectCallback = $this->getUnselectCallback();
+    $attributes = $this->getAttributes();
+    $isInterfaceModeFull = $this->isInterfaceModeFull();
+    $isSingleCategoryMode = $this->isSingleCategoryMode();
+    $singleCategoryType = $this->getSingleCategoryType();
+    $isShowEditLinks = $this->isShowEditLinks();
+?>
+
+<?php if (!$this->_isAjax): ?>
+    <div id="<?php echo $this->getDivId(); ?>">
+<?php endif; ?>
+
+<script type="text/javascript">
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_category')) ?>);
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_marketplace')) ?>);
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Category'); ?>,
+        'Ess_M2ePro_Model_Ebay_Template_Category'
+    );
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Category'); ?>,
+        'Ess_M2ePro_Helper_Component_Ebay_Category'
+    );
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Select' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Select')),
+        'Reset' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Reset')),
+        'No recently used Categories' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('No recently used Categories')),
+        'Change' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Change')),
+        'Category' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Category')),
+        'Not Selected' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Not Selected')),
+        'No results' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('No results')),
+        'Try to <a href="javascript:void(0)" onclick="EbayListingCategoryChooserHandlerObj.refreshEbayCategories()">update eBay Sites Data</a> and repeate the Search.' => Mage::helper('M2ePro')->__('Try to <a href="javascript:void(0)" onclick="EbayListingCategoryChooserHandlerObj.refreshEbayCategories()">update eBay Sites Data</a> and repeate the Search.'),
+        'Try to <a href="javascript:void(0)" onclick="EbayListingCategoryChooserHandlerObj.refreshStoreCategories()">refresh eBay Store Data</a> and repeate the Search.' => Mage::helper('M2ePro')->__('Try to <a href="javascript:void(0)" onclick="EbayListingCategoryChooserHandlerObj.refreshStoreCategories()">refresh eBay Store Data</a> and repeate the Search.'),
+    )); ?>);
+
+    EbayListingCategoryChooserHandlerObj = new EbayListingCategoryChooserHandler('<?php echo $this->getDivId(); ?>', '<?php echo $this->getMarketplaceId(); ?>', '<?php echo $this->getAccountId(); ?>');
+    EbayListingCategoryChooserHandlerObj.setCategoryTitles(<?php echo json_encode(Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser_Edit::getCategoryTitles()); ?>);
+    EbayListingCategoryChooserHandlerObj.setSelectedCategories(<?php echo json_encode($this->getInternalData()); ?>);
+    EbayListingCategoryChooserHandlerObj.setAttributes(<?php echo json_encode($this->getAttributes()); ?>);
+    EbayListingCategoryChooserHandlerObj.setInterfaceMode(<?php echo json_encode($this->getInterfaceMode()); ?>);
+    EbayListingCategoryChooserHandlerObj.setIsWizardMode(<?php echo json_encode(!Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished()); ?>);
+
+    <?php if ($isSingleCategoryMode): ?>
+        EbayListingCategoryChooserHandlerObj.setSingleCategoryMode(<?php echo json_encode($isSingleCategoryMode); ?>);
+        EbayListingCategoryChooserHandlerObj.setSingleCategoryType(<?php echo $singleCategoryType; ?>);
+    <?php endif; ?>
+
+    EbayListingCategoryChooserHandlerObj.setShowEditLinks(<?php echo json_encode($this->isShowEditLinks()); ?>);
+
+    <?php if (!empty($selectCallback)): ?>
+        EbayListingCategoryChooserHandlerObj.setSelectCallback(<?php echo $selectCallback; ?>);
+    <?php endif; ?>
+
+    <?php if (!empty($unselectCallback)): ?>
+        EbayListingCategoryChooserHandlerObj.setUnselectCallback(<?php echo $unselectCallback; ?>);
+    <?php endif; ?>
+
+</script>
+
+<div id="ebay_category_chooser" class="ebay_category_chooser">
+
+    <?php if (!$singleCategoryType || in_array($singleCategoryType, Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes())): ?>
+
+        <?php if ($isInterfaceModeFull): ?>
+            <div class="entry-edit" id="magento_block_ebay_listing_category_chooser_ebay">
+
+                <div class="entry-edit-head">
+                    <h4 class="icon-head head-edit-form fieldset-legend"><?php if (!$isSingleCategoryMode) { echo Mage::helper('M2ePro')->__('eBay') . ' '; } echo Mage::helper('M2ePro')->__('Category'); ?></h4>
+                </div>
+        <?php endif; ?>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <?php if (!$isInterfaceModeFull): ?>
+                    <h5><?php echo Mage::helper('M2ePro')->__('eBay Category'); ?></h5>
+                <?php endif; ?>
+
+                <table class="form-list" cellspacing="0" cellpadding="0" <?php if (!$isInterfaceModeFull): ?>style="padding-left: 25px" <?php endif; ?>>
+
+                    <?php if (!$isSingleCategoryMode || $singleCategoryType == Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN): ?>
+
+                        <tr>
+                            <?php if (!$isSingleCategoryMode): ?>
+                                <td class="label" style="width: 110px;">
+                                    <?php echo Mage::helper('M2ePro')->__('Primary'); ?>: <span class="required">*</span>
+                                </td>
+                            <?php endif; ?>
+
+                            <td class="value" style="min-width: 300px;">
+                                <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['mode'])
+                                          && $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
+                                    <?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['path']; ?>
+                                <?php else: ?>
+                                    <span style="font-style: italic; color: grey"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                                    <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['message'])): ?>
+                                        <div class="validation-advice default-value-message"><?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['message']; ?></div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <div class="validation-advice main-empty-advice" style="display: none;"><?php echo Mage::helper('M2ePro')->__('eBay Primary Category must be selected.') ?></div>
+                            </td>
+                            <?php if ($isShowEditLinks): ?>
+                                <td class="value">
+                                    <a href="#" onclick="EbayListingCategoryChooserHandlerObj.showEditPopUp(<?php echo Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+
+                    <?php endif; ?>
+
+                    <?php if (!$isSingleCategoryMode || $singleCategoryType == Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY): ?>
+
+                        <tr>
+                            <?php if (!$isSingleCategoryMode): ?>
+                                <td class="label" style="width: 110px;">
+                                    <?php echo Mage::helper('M2ePro')->__('Secondary'); ?>:
+                                </td>
+                            <?php endif; ?>
+                            <td class="value" style="min-width: 300px;">
+                                <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['mode'])
+                                    && $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
+                                    <?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['path']; ?>
+                                <?php else: ?>
+                                    <span style="font-style: italic; color: grey"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                                    <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['message'])): ?>
+                                        <div class="validation-advice default-value-message"><?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['message']; ?></div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </td>
+                            <?php if ($isShowEditLinks): ?>
+                                <td class="value">
+                                    <a href="#" onclick="EbayListingCategoryChooserHandlerObj.showEditPopUp(<?php echo Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+
+                    <?php endif; ?>
+
+                </table>
+
+            </div>
+        </div>
+        <?php if ($isInterfaceModeFull): ?>
+            </div>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+    <?php if ($this->isShowStoreCatalog()): ?>
+
+        <?php if (!$isSingleCategoryMode || in_array($singleCategoryType, Mage::helper('M2ePro/Component_Ebay_Category')->getStoreCategoryTypes())): ?>
+
+            <?php if ($isInterfaceModeFull): ?>
+                <div class="entry-edit" id="magento_block_ebay_listing_category_chooser_store">
+
+                    <div class="entry-edit-head">
+                        <h4 class="icon-head head-edit-form fieldset-legend"><?php if (!$isSingleCategoryMode) { echo Mage::helper('M2ePro')->__('eBay Store') . ' '; } echo Mage::helper('M2ePro')->__('Category'); ?></h4>
+                    </div>
+            <?php endif; ?>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <?php if (!$isInterfaceModeFull): ?>
+                        <h5><?php echo Mage::helper('M2ePro')->__('eBay Store Category'); ?></h5>
+                    <?php endif; ?>
+
+                    <table class="form-list" cellspacing="0" cellpadding="0" <?php if (!$isInterfaceModeFull): ?>style="padding-left: 25px" <?php endif; ?>>
+
+                        <?php if (!$isSingleCategoryMode || $singleCategoryType == Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN): ?>
+
+                            <tr>
+                                <?php if (!$isSingleCategoryMode): ?>
+                                    <td class="label" style="width: 110px;">
+                                        <?php echo Mage::helper('M2ePro')->__('Primary'); ?>:
+                                    </td>
+                                <?php endif; ?>
+
+                                <td class="value" style="min-width: 300px;">
+                                    <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN]['mode'])
+                                              && $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
+                                        <?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN]['path']; ?>
+                                    <?php else: ?>
+                                        <span style="font-style: italic; color: grey" id="magento_block_ebay_listing_category_chooser_store_primary_not_selected"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                                        <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN]['message'])): ?>
+                                            <div class="validation-advice default-value-message"><?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN]['message']; ?></div>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                    <div class="validation-advice main-store-empty-advice" style="display: none;"><?php echo Mage::helper('M2ePro')->__('eBay Primary Store Category must be selected.') ?></div>
+                                </td>
+                                <?php if ($isShowEditLinks): ?>
+                                    <td class="value">
+                                        <a href="#" onclick="EbayListingCategoryChooserHandlerObj.showEditPopUp(<?php echo Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+
+                        <?php endif; ?>
+
+                        <?php if (!$isSingleCategoryMode || $singleCategoryType == Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY): ?>
+
+                            <tr>
+                                <?php if (!$isSingleCategoryMode): ?>
+                                    <td class="label" style="width: 110px;">
+                                        <?php echo Mage::helper('M2ePro')->__('Secondary'); ?>:
+                                    </td>
+                                <?php endif; ?>
+
+                                <td class="value" style="min-width: 300px;">
+                                    <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY]['mode'])
+                                        && $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
+                                        <?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY]['path']; ?>
+                                    <?php else: ?>
+                                        <span style="font-style: italic; color: grey" id="magento_block_ebay_listing_category_chooser_store_secondary_not_selected"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                                        <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY]['message'])): ?>
+                                            <div class="validation-advice default-value-message"><?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY]['message']; ?></div>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </td>
+                                <?php if ($isShowEditLinks): ?>
+                                    <td class="value">
+                                        <a href="#" onclick="EbayListingCategoryChooserHandlerObj.showEditPopUp(<?php echo Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY; ?>)"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+
+                        <?php endif; ?>
+
+                    </table>
+
+                </div>
+            </div>
+
+            <?php if ($isInterfaceModeFull): ?>
+                </div>
+            <?php endif; ?>
+
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+    </div>
+
+<?php if (!$this->_isAjax): ?>
+    </div>
+<?php endif; ?>

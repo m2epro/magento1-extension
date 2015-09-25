@@ -1,0 +1,59 @@
+<style>
+    .group_container_summary {
+        float: left;
+        margin-right: 15px;
+    }
+
+    .group_container_summary table {
+
+        font-size: 12px;
+        line-height: 20px;
+    }
+</style>
+<div class="entry-edit group_container_summary" id="magento_block_development_info_module" ">
+
+    <div class="development_head_container">
+        <h4><?php echo Mage::helper('M2ePro')->__('Information'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <?php echo $this->getChildHtml('actual_info') ?>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit group_container_summary" id="magento_block_development_database_module">
+
+    <div class="development_head_container">
+        <h4><?php echo Mage::helper('M2ePro')->__('Database (Module)'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <?php echo $this->getChildHtml('database_module') ?>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit group_container_summary" id="magento_block_development_database_integration">
+
+    <div class="development_head_container">
+        <h4><?php echo Mage::helper('M2ePro')->__('Database (Integration)'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <?php echo $this->getChildHtml('database_integration') ?>
+
+        </div>
+    </div>
+
+</div>

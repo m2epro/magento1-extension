@@ -1,0 +1,39 @@
+<style type="text/css">
+    #orderItemProductMappingGrid table td, #orderItemProductMappingGrid table th {
+        padding: 5px;
+    }
+
+    #orderItemProductMappingGrid td.label {
+        width: 100px;
+    }
+
+    #orderItemProductMappingGrid label {
+        width: 100px;
+    }
+</style>
+
+<div id="mapping_pop_up_content">
+
+    <div class="hor-scroll" style="padding-top: 15px; ">
+
+        <div id="order_item_product_mapping_pop_up_help" class="block_notices block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Order Item Mapping'); ?>" style="padding-top: 10px;">
+            <?php
+                echo Mage::helper('M2ePro')->__('As M2E Pro was not able to find appropriate Product in Magento Catalog, you are supposed to find and map it manualy.
+                <br/><br/><b>Note:</b> Magento Order can be only created when all Products of Order are found in Magento Catalog.');
+            ?>
+        </div>
+
+        <div id="help_grid" style="margin: 0 auto; padding-top: 10px;">
+            <?php echo $this->getChildHtml('product_mapping_grid') ?>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    if (OrderEditItemHandlerObj && OrderEditItemHandlerObj.popUp) {
+        setTimeout(function() { OrderEditItemHandlerObj.popUp.updateHeight(); }, 50);
+    }
+
+</script>

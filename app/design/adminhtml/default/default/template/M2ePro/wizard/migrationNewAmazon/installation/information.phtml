@@ -1,0 +1,45 @@
+<div id="block_notice_wizard_installation_step_information" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Key Features of New M2E Pro Amazon Generation'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="display:none;">
+    <div>
+        <div class="step_container_description">
+            <?php echo Mage::helper('M2ePro')->__('
+            New M2E Pro Amazon Generation has plenty of advantages and useful features.<br/><br/>
+            <ul>
+                <li>1) Full support of Amazon Products with Parent-Child relations;</li>
+                <li>2) Possibility of Adding/Updating the Product Information via <a href="%url1%" target="_blank">Description Policy</a>;</li>
+                <li>
+                3) Flexible and handy way of working with Magento Variational Products:
+                <ul style="padding-left: 2em;">
+                    <li>a) Ability to sell Specific Variations of the same Magento Product separately;</li>
+                    <li>b) Ability to sell Magento Variational Product as Amazon Parent-Child Product;</li>
+                </ul>
+                </li>
+                <li>4) Best features were brought from M2E Pro eBay Integration;</li>
+                <li>5) Attribute Sets are not required for working with M2E Pro Amazon Integration anymore;</li>
+                <li>6) Flexible System for managing the process of automatic adding Magento Products to M2E Pro Amazon Listings;</li>
+                <li>7) Totally improved logic and interface of ASIN/ISBN Search Tool;</li>
+                <li>8) Improved Logging System to provide more details of each Action;</li>
+                <li>9) Possibility to synchronize Product Details and Images during automatic Revise and Relist Actions;</li>
+                <li>10) A lot of Fixes and Improvements. More details you can find on <a href="%url2%" target="_blank">Magento Connect</a>;</li>
+            </ul>',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Description+Policy'),
+            Mage::helper('M2ePro/Module_Support')->getMagentoConnectUrl()
+            ); ?>
+        </div>
+        <div class="step_container_completed">
+            <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+        </div>
+        <div class="step_container_incomplete">
+            <span class="step_incomplete" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Incomplete'); ?></span>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div class="step_container_buttons">
+        <span class="step_process" style="display:none;"><?php echo $this->getChildHtml('process_information_button'); ?></span>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    WizardHandlerObj.addStep('information', 'block_notice_wizard_installation_step_information');
+
+</script>

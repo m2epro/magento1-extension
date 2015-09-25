@@ -1,0 +1,28 @@
+<div id="block_notice_wizard_installation_step_marketplaces" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Marketplaces Set Up'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes" style="display:none;">
+    <div>
+        <div class="step_container_description">
+            <?php echo Mage::helper('M2ePro')->__('At this Step Marketplace data will be synchronized for Rakuten.com Integration. <br/>
+             <b>Please Note:</b> you can always resynchronize Marketplace data in %marketplaces_path%.', Mage::helper('M2ePro/View_Common')->getPageNavigationPath('configuration', 'Marketplaces', 'buy')); ?>
+        </div>
+        <div id="marketplaces_container">
+            <?php echo $this->getChildHtml('wizard_marketplace_form');?>
+        </div>
+        <div class="step_container_completed">
+            <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+        </div>
+        <div class="step_container_incomplete">
+            <span class="step_incomplete" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Incomplete'); ?></span>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div class="step_container_buttons">
+        <span class="step_skip" style="display:none;"></span>
+        <span class="step_process" style="display:none;"><?php echo $this->getChildHtml('process_marketplace_button'); ?></span>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    WizardHandlerObj.addStep('marketplace', 'block_notice_wizard_installation_step_marketplaces');
+
+</script>

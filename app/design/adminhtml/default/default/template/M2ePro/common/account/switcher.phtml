@@ -1,0 +1,44 @@
+<?php if ($accounts = $this->getAccounts()): ?>
+
+    <p class="<?php echo Mage::helper('M2ePro/Magento')->isGoEdition() ? '' : 'switcher'; ?>">
+
+        <label for="account_switcher"><?php echo Mage::helper('M2ePro')->__('Choose Account'); ?>:</label>
+
+        <select id="account_switcher" name="account_switcher" onchange="return switchAccount(this);">
+            <?php if ($this->hasDefaultOption()): ?>
+                <option value=""><?php echo $this->getDefaultAccountName(); ?></option>
+            <?php endif; ?>
+            <?php foreach ($accounts as $account): ?>
+                <option value="<?php echo $account->getId(); ?>"<?php if($this->getAccountId() == $account->getId()): ?> selected="selected"<?php endif; ?>>&nbsp;&nbsp;<?php echo $account->getTitle(); ?></option>
+            <?php endforeach; ?>
+        </select>
+
+    </p>
+
+    <script type="text/javascript">
+
+        function switchAccount(obj)
+        {
+            var accountParam = obj.value ? 'account/'+obj.value + '/' : '';
+
+            if(obj.switchParams){
+                accountParam+= obj.switchParams;
+            }
+
+            <?php if($this->getUseConfirm()): ?>
+                if(confirm("<?php echo Mage::helper('M2ePro')->__("Please confirm Account switching. All data that hasn't been saved will be lost."); ?>")){
+                    setLocation('<?php echo $this->getSwitchUrl(); ?>'+accountParam);
+                    return true;
+                }
+                else {
+                    obj.value = '<?php echo $this->getAccountId(); ?>';
+                }
+                return false;
+            <?php else: ?>
+                setLocation('<?php echo $this->getSwitchUrl(); ?>'+accountParam);
+            <?php endif; ?>
+        }
+
+    </script>
+
+<?php endif; ?>

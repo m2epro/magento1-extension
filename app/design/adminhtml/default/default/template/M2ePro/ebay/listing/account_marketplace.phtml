@@ -1,0 +1,375 @@
+<style type="text/css">
+
+    .switcher {
+        margin: 0 !important;
+    }
+    td.value {
+        vertical-align: middle !important;
+    }
+
+</style>
+
+<script type="text/javascript" src="<?php echo $this->getJsUrl('M2ePro/VideoTutorialHandler.js'); ?>"></script>
+
+<script type="text/javascript">
+
+    VideoTutorialHandlerObj = new VideoTutorialHandler(
+        'video_tutorial_pop_up',
+        '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('eBay/Magento Integration: Listing')); ?>',
+        function() {}
+    );
+
+    VideoTutorialHandlerObj.closeCallback = function() { return true; }
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'adminhtml_ebay_account/edit' => $this->getUrl('M2ePro/adminhtml_ebay_account/edit/')
+    )); ?>);
+
+</script>
+
+<div id="progress_bar"></div>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" method="post" enctype="multipart/form-data"
+      onsubmit="$$('.next_step_button').first().simulate('click'); return false;">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <div id="content_container">
+
+        <div id="block_notice_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General Settings'); ?>">
+            <?php echo Mage::helper('M2ePro')->__(
+                'This Page sets the eBay details and Magento Store View you want to use for this M2E Pro Listing.</br></br>
+                More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Step+1%3A+General+Settings')
+            ); ?>
+        </div>
+
+        <div class="entry-edit" id="magento_block_general">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+            </div>
+            <div class="fieldset">
+                <div class="hor-scroll">
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+                        <tbody>
+
+                            <tr>
+                                <td class="label">
+                                    <label for="title"><?php echo Mage::helper('M2ePro')->__('Title') ?>: <span class="required">*</span></label>
+                                </td>
+
+                                <td class="value">
+                                    <input id="title" type="text" class="input-text required-entry M2ePro-listing-title" name="title" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('title')); ?>">
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__(
+                                            'Create a descriptive and meaningful Title for your M2E Pro Listing. <br/>
+                                            This is used for reference within M2E Pro and will not appear on your eBay Listings.'
+                                        ); ?></span>
+                                    </p>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="entry-edit" id="magento_block_ebay_settings">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('eBay Settings'); ?></h4>
+            </div>
+            <div class="fieldset">
+                <div class="hor-scroll">
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+
+                        <tr>
+                            <td class="label">
+                                <label><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>: <span class="required">*</span></label>
+                            </td>
+                            <td class="value" style="min-width: 280px;">
+                                <span id="account_label"></span>
+                                <?php
+                                $accountSelectionDisabled = true;
+                                $accountId = $this->getRequest()->getParam('account_id');
+                                if($accountId) {
+                                    echo '<input type="hidden" name="account_id" value="'.$accountId.'" />';
+                                } else {
+                                    $accountId = $this->getData('account_id');
+                                    $accountSelectionDisabled = false;
+                                }
+                                ?>
+                                <select <?php if($accountSelectionDisabled) echo 'disabled="disabled"' ?> id="account_id" name="account_id" class="required-entry" style="display: none"></select>
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__('This is the user name of your eBay Account.'); ?></span>
+                                </p>
+                            </td>
+                            <td class="value" <?php if($accountSelectionDisabled) echo 'style="visibility: hidden;"'?>>
+                                <?php echo $this->getChildHtml('add_account_button'); ?>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="label">
+                                <label><?php echo Mage::helper('M2ePro')->__('eBay Site'); ?>: <span class="required">*</span></label>
+                            </td>
+
+                            <td class="value">
+                                <?php
+                                    $marketplaceSelectionDisabled = true;
+                                    $marketplaceId = $this->getRequest()->getParam('marketplace_id');
+                                    if($marketplaceId) {
+                                        echo '<input type="hidden" name="marketplace_id" value="'.$marketplaceId.'" />';
+                                    } else {
+                                        $marketplaceId = $this->getData('marketplace_id');
+                                        $marketplaceSelectionDisabled = false;
+                                    }
+                                ?>
+                                <select <?php if($marketplaceSelectionDisabled) echo 'disabled="disabled"' ?> class="required-entry" id="marketplace_id" name="marketplace_id">
+                                    <option style="display: none"></option>
+                                    <?php foreach($this->getData('marketplaces') as $marketplace) { ?>
+                                        <option <?php  if ($marketplaceId == $marketplace['id']) echo 'selected'; ?> value="<?php echo (int)$marketplace['id']; ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($marketplace['title']); ?></option>
+                                    <?php } ?>
+                                </select>
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                        'Choose the eBay Site you want to list on using this M2E Pro Listing. <br/>
+                                         Currency will be set automatically based on the eBay Site you choose.'
+                                    ); ?></span>
+                                </p>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                            </td>
+                            <td class="value">
+                                <p class="note note-no-tool-tip" id="marketplace_url_note" style="display: none; margin-top: -10px;">
+                                </p>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="entry-edit" id="magento_block_magento_settings">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Magento Settings'); ?></h4>
+            </div>
+            <div class="fieldset">
+                <div class="hor-scroll">
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+                <tbody>
+
+                    <tr>
+                        <td class="label" style="vertical-align: middle">
+                            <label for="store_id"><?php echo Mage::helper('M2ePro')->__('Magento Store View'); ?>: <span class="required">*</span></label>
+                        </td>
+
+                        <td class="value" style="vertical-align: middle">
+                            <?php echo $this->getChildHtml('store_switcher'); ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Choose the Magento Store View you want to use for this M2E Pro Listing.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+    var initAccount = function() {
+
+        var renderAccounts = function (callback) {
+
+            var account_add_btn = $('add_account_button');
+            var account_label_el = $('account_label');
+            var account_select_el = $('account_id');
+
+            new Ajax.Request('<?php echo $this->getUrl('*/adminhtml_general/getAccounts', array('component' => Ess_M2ePro_Helper_Component_Ebay::NICK)); ?>', {
+                method: 'get',
+                onSuccess: function(transport) {
+                    var accounts = transport.responseText.evalJSON();
+
+                    if (accounts.length == 0) {
+                        account_add_btn.down('span').update('<?php echo Mage::helper('M2ePro')->__('Add'); ?>');
+                        account_label_el.update('<?php echo Mage::helper('M2ePro')->__('Account not found, please create it.'); ?>');
+                        account_label_el.show();
+                        account_select_el.hide();
+                        return;
+                    }
+
+                    account_select_el.update();
+                    account_select_el.appendChild(new Element('option', {style: 'display: none'}));
+                    accounts.each(function(account) {
+                        account_select_el.appendChild(new Element('option', {value: account.id})).insert(account.title);
+                    });
+
+                    account_add_btn.down('span').update('<?php echo Mage::helper('M2ePro')->__('Add Another'); ?>');
+
+                    if (accounts.length == 1) {
+                        var account = accounts.shift();
+
+                        account_select_el.setValue(account.id);
+
+                        var accountLink = M2ePro.url.get('adminhtml_ebay_account/edit', {'id': account.id});
+                        var accountElement;
+
+                        if (<?php echo (int) $this->getRequest()->getParam('wizard', 0); ?>) {
+                            accountElement = new Element('span').update(account.title);
+                        } else {
+                            accountElement = new Element('a', {
+                                'href': accountLink,
+                                'target': '_blank'
+                            }).update(account.title);
+                        }
+
+                        account_label_el.update(accountElement);
+
+                        account_label_el.show();
+                        account_select_el.hide();
+                    } else {
+                        account_select_el.setValue(accounts.pop().id);
+
+                        account_label_el.hide();
+                        account_select_el.show();
+                    }
+
+                    callback && callback();
+                }
+            });
+        };
+
+        renderAccounts(function() {
+            <?php if ($accountId) {?>
+                $('account_id').setValue(<?php echo $accountId; ?>);
+            <?php } ?>
+        });
+
+        $('add_account_button').observe('click', function() {
+            var win = window.open('<?php echo $this->getUrl('*/adminhtml_ebay_account/new',array(
+                'close_on_save' => true,
+                'wizard' => (bool)$this->getRequest()->getParam('wizard',false)
+            )); ?>');
+
+            var intervalId = setInterval(function() {
+
+                if (!win.closed) {
+                    return;
+                }
+
+                clearInterval(intervalId);
+
+                renderAccounts();
+
+            }, 1000);
+        });
+    };
+
+    var initMarketplace = function() {
+
+        M2ePro.url.set(
+            'adminhtml_ebay_listing_create/index','<?php echo $this->getUrl('*/adminhtml_ebay_listing_create/index', array('_current' => true, 'step' => 1)); ?>'
+        );
+
+        M2ePro.translator.add(<?php echo json_encode(array(
+            'Another Synchronization Is Already Running.' => Mage::helper('M2ePro')->__('Another Synchronization Is Already Running.'),
+            'Getting information. Please wait ...' => Mage::helper('M2ePro')->__('Getting information. Please wait ...'),
+            'Preparing to start. Please wait ...' => Mage::helper('M2ePro')->__('Preparing to start. Please wait ...'),
+        )); ?>);
+
+        var marketplaceSynchProgressHandlerObj = new EbayListingMarketplaceSynchProgressHandler(
+            new ProgressBar('progress_bar'),
+            new AreaWrapper('content_container')
+        );
+
+        var synchronizeMarketplace = function(marketplaceId) {
+
+            new Ajax.Request('<?php echo $this->getUrl('*/adminhtml_ebay_general/isMarketplaceEnabled'); ?>', {
+                method: 'get',
+                parameters: { marketplace_id: marketplaceId },
+                onSuccess: function(transport) {
+
+                    if (transport.responseText.evalJSON()) {
+                        return marketplaceSynchProgressHandlerObj.end();
+                    }
+
+                    var params = {};
+                    params['status_' + marketplaceId] = 1;
+
+                    new Ajax.Request('<?php echo $this->getUrl('*/adminhtml_ebay_marketplace/save'); ?>', {
+                        method: 'post',
+                        parameters: params,
+                        onSuccess: function() {
+
+                            var title = 'eBay ' + $('marketplace_id').down('option[value='+$('marketplace_id').value+']').innerHTML;
+
+                            marketplaceSynchProgressHandlerObj.runTask(
+                                title,
+                                '<?php echo $this->getUrl('*/adminhtml_ebay_marketplace/runSynchNow'); ?>' + 'marketplace_id/' + marketplaceId
+                            );
+
+                        }
+                    });
+                }
+            });
+        };
+
+        $$('.next_step_button').each(function(btn) { btn.observe('click',function() {
+            if (marketplaceSynchProgressHandlerObj.runningNow) {
+                return alert('<?php echo Mage::helper('M2ePro')->__('Please wait while Synchronization is finished.'); ?>');
+            }
+            editForm.validate() && synchronizeMarketplace($('marketplace_id').value);
+        }) });
+
+        var marketplaces = <?php echo json_encode($this->getData('marketplaces')); ?>
+
+        $('marketplace_id')
+            .observe('click', function() {
+                if (!this.value) {
+                    return;
+                }
+                $('marketplace_url_note').update(marketplaces[this.value].url).show();
+            })
+            .simulate('click')
+        ;
+    };
+
+    var init = function() {
+
+        CommonHandlerObj.setValidationCheckRepetitionValue(
+            'M2ePro-listing-title',
+            '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('The specified Title is already used for other Listing. Listing Title must be unique.')); ?>',
+            'Listing', 'title', 'id', null, '<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK ?>'
+        );
+
+        initAccount();
+        initMarketplace();
+
+    };
+
+    Event.observe(window,'load',init);
+
+</script>
+
+<div id="video_tutorial_pop_up" style="display: none;">
+    <div class="player_container" style="margin: 20px 5px; ">
+        <?php if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) { ?>
+            <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/CvjQSRx-od0?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/CvjQSRx-od0?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
+        <?php } else { ?>
+            <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/IvXP-tA64KE?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/IvXP-tA64KE?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
+        <?php } ?>
+    </div>
+</div>

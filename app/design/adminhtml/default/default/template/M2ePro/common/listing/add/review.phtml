@@ -1,0 +1,38 @@
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"></td>
+        </tr>
+    </table>
+</div>
+
+<?php echo $this->getChildHtml('view_header'); ?>
+
+<div class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <?php echo Mage::helper('M2ePro')->__(
+        'Products were successfully added to M2E Pro Listing.<br/><br/>
+
+        <ul class="list">
+            <li>You can <strong>Review Your Products</strong> before Listing them on %component% or <strong>List Added Products Now</strong>.</li>
+            <li>You will have a chance to set the Primary %component% Category later in the Listing Settings if you need to.</li>
+        </ul>',
+        $this->getComponentTitle()
+    ); ?>
+
+    <div style="margin-top: 10px">
+        <?php echo $this->getChildHtml('review'); ?>
+        &nbsp;
+        <?php echo $this->getChildHtml('list'); ?>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    var init = function() {
+    };
+
+    Event.observe(window,'load',init);
+</script>

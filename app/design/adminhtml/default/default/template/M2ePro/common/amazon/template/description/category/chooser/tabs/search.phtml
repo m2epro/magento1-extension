@@ -1,0 +1,40 @@
+<style>
+
+    tr.search_results_results_tr td {
+        padding: 2px !important;
+    }
+
+</style>
+
+<div id="chooser_search_input_container">
+    <input id="query" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keyword(s) or browsenode ID...'); ?>" onkeypress="AmazonTemplateDescriptionCategoryChooserHandlerObj.keyPressQuery(event)">
+    <button onclick="AmazonTemplateDescriptionCategoryChooserHandlerObj.search()"><?php echo Mage::helper('M2ePro')->__('Search'); ?></button>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="AmazonTemplateDescriptionCategoryChooserHandlerObj.searchReset()"><?php echo Mage::helper('M2ePro')->__('Reset'); ?></button>
+</div>
+
+<div id="chooser_search_results">
+    <table id="search_results_table" style="display: inline-block; " >
+
+        <tr>
+            <td width="740px"></td>
+            <td width="60px"></td>
+        </tr>
+
+        <tr id="search_results_no_results_tr" style="display: none;">
+            <td colspan="2" style="text-align: center;">
+                <strong><?php echo Mage::helper('M2ePro')->__('No Results'); ?></strong>
+            </td>
+        </tr>
+
+        <tr id="search_results_update_sites_data_tr" style="display: none;">
+            <td colspan="2" style="text-align: center;">
+                <?php echo Mage::helper('M2ePro')->__('Try to <a href="javascript:void(0)" onclick="AmazonTemplateDescriptionCategoryChooserHandlerObj.refreshAmazonCategories()">Update Amazon Marketplaces data</a> and repeate the Search.'); ?>
+            </td>
+        </tr>
+
+        <!--  Placeholder  -->
+        <tr class="search_results_results_tr">
+
+        </tr>
+
+    </table>
+</div>

@@ -1,0 +1,11 @@
+<div id="ebayVariationsProductManageVariationsGrid" style="height: 550px; margin-top: 10px;">
+    <?php
+    $url = $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/viewVariationsGrid',
+        array(
+            'product_id' => $this->getListingProductId(),
+            'filter' => $this->getRequest()->getParam('filter')
+        )
+    );
+    ?>
+    <input type="hidden" id="ebayVariationsProductManageVariationsGridIframeUrl" value="<?php echo $url ?>">
+</div>

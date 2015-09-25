@@ -1,0 +1,87 @@
+<style type="text/css">
+    #breadcrumb_container {
+        margin: 10px 0;
+    }
+    .breadcrumb {
+        padding: 12px 0;
+        color: #aaa;
+        width: 24.7%;
+        font-size: 14px;
+        text-align: center;
+        background: #e7efef;
+    }
+    .space {
+        width: 0.3%;
+        height: 40px;
+        background: white;
+    }
+    .selected {
+        color: white;
+        background: #6f8992;
+        font-weight: bold;
+    }
+</style>
+
+<div id="breadcrumb_container" <?php if ($this->getStep() == 'none'): ?>style="display: none" <?php endif; ?>>
+
+    <div class="left" style="width: 100%;">
+
+        <div id="step_destination" class="left breadcrumb <?php if ($this->getStep() == 'destination'): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step ') ?>
+            </span>
+            <span class="transferring_step_number">&nbsp;</span>:
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Destination') ?>
+            </span>
+
+        </div>
+
+        <div class="left space"></div>
+
+        <div id="step_policy" class="left breadcrumb <?php if ($this->getStep() == 'policy'): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step ') ?>
+            </span>
+            <span class="transferring_step_number">&nbsp;</span>:
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Policies') ?>
+            </span>
+
+        </div>
+
+        <div class="left space"></div>
+
+        <div id="step_translation" class="left breadcrumb <?php if ($this->getStep() == 'translation'): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step ') ?>
+            </span>
+            <span class="transferring_step_number">&nbsp;</span>:
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Translation') ?>
+            </span>
+
+        </div>
+
+        <div class="left space"></div>
+
+        <div id="step_categories" class="left breadcrumb <?php if ($this->getStep() == 'categories'): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step ') ?>
+            </span>
+            <span class="transferring_step_number">&nbsp;</span>:
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Categories') ?>
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>

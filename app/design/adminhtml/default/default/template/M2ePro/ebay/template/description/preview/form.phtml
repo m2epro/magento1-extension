@@ -1,0 +1,51 @@
+<style type="text/css">
+    body {
+        background: none;
+    }
+    #store_switcher_container p {
+        margin-bottom: 0 !important;
+        border: none !important;
+        background: none !important;
+        padding: 0 !important;
+    }
+</style>
+
+<div class="entry-edit" id="magento_block_ebay_template_description_form" style="padding: 5px;">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Select Product'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+                <input type="hidden" name="show" value="1" />
+                <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>" />
+
+                <?php if ($errorMessage = $this->getData('error_message')): ?>
+                    <span style="color: red; font-weight: bold;"><?php echo Mage::helper('M2ePro')->escapeHtml($errorMessage); ?></span>
+                    <br/><br/>
+                <?php endif; ?>
+
+                <?php echo Mage::helper('M2ePro')->__('Enter Product Id'); ?>:&nbsp;&nbsp;
+                <input id="product_id" type="text" name="id" value="<?php echo $this->getData('product_id'); ?>" class="input-text" />
+
+                <div id="store_switcher_container" style="margin-left: 10px; margin-right: 10px; display: inline-block;">
+                    <?php echo Mage::helper('M2ePro')->__('Store'); ?>:&nbsp;&nbsp;
+                    <div style="display: inline-block; \">
+                        <?php echo $this->getChildHtml('store_switcher'); ?>
+                    </div>
+                </div>
+
+                &nbsp;&nbsp;<?php echo $this->getChildHtml('display_product_description') ?>
+                &nbsp;&nbsp;<?php echo Mage::helper('M2ePro')->__('or') ?>&nbsp;&nbsp;
+                <?php echo $this->getChildHtml('display_random_product_description') ?>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

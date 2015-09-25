@@ -1,0 +1,124 @@
+<?php /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher $this */ ?>
+
+<script type="text/javascript">
+
+    var init = function() {
+        EbayListingTemplateSwitcherHandlerObj.updateEditVisibility('<?php echo $this->getTemplateNick() ?>');
+        EbayListingTemplateSwitcherHandlerObj.updateButtonsVisibility('<?php echo $this->getTemplateNick() ?>');
+        EbayListingTemplateSwitcherHandlerObj.updateTemplateLabelVisibility('<?php echo $this->getTemplateNick() ?>');
+
+        $('<?php echo $this->getSwitcherId() ?>').observe('change', EbayListingTemplateSwitcherHandlerObj.change);
+
+        <?php if ($this->isTemplateModeTemplate()): ?>
+            $('<?php echo $this->getSwitcherId() ?>').simulate('change');
+        <?php endif; ?>
+    };
+
+    <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
+        init();
+    <?php else: ?>
+        Event.observe(window, 'load', init);
+    <?php endif; ?>
+
+</script>
+
+<div class="template-switcher-container">
+
+    <div class="content-header">
+        <table cellspacing="0">
+            <tr>
+                <td class="template-header" style="width: <?php echo $this->getHeaderWidth() ?>px;">
+                    <h3 style="margin: 0;"><?php echo $this->getHeaderText() ?></h3>
+                </td>
+
+                <?php $display = $this->canDisplaySwitcher() ? 'cell' : 'none'; ?>
+                <td class="template-switcher-td" style="display: <?php echo $display ?>;">
+                    <select name="<?php echo $this->getSwitcherName() ?>" id="<?php echo $this->getSwitcherId() ?>" class="template-switcher M2ePro-validate-ebay-template-switcher">
+                        <?php if ($this->canDisplayUseDefaultOption() && $this->isTemplateModeParentForced()): ?>
+                            <option value="<?php echo base64_encode(json_encode(array('mode' => null))) ?>" selected="selected" class="template-switcher-empty-option empty"></option>
+                        <?php endif; ?>
+
+                        <?php
+                            $value = base64_encode(json_encode(array(
+                                'id' => $this->isTemplateModeCustom() ? $this->getTemplateId() : null,
+                                'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM,
+                                'nick' => $this->getTemplateNick()
+                            )));
+                            $selected = $this->isTemplateModeCustom();
+                        ?>
+                        <option value="<?php echo $value ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?> class="template-switcher-custom-option">
+                            <?php echo Mage::helper('M2ePro')->__('Custom Settings') ?>
+                        </option>
+
+                        <?php if ($this->canDisplayUseDefaultOption()): ?>
+                            <?php
+                                $value = base64_encode(json_encode(array(
+                                    'id' => null,
+                                    'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT,
+                                    'nick' => $this->getTemplateNick()
+                                )));
+                                $selected = $this->isTemplateModeParent() && !$this->isTemplateModeParentForced();
+                            ?>
+                            <option value="<?php echo $value; ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?> class="template-switcher-parent-option">
+                                <?php echo Mage::helper('M2ePro')->__('Use From Listing Settings') ?>
+                            </option>
+                        <?php endif; ?>
+
+                        <?php $templates = $this->getTemplates(); ?>
+
+                        <?php if (count($templates) > 0): ?>
+                            <optgroup label="<?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Policies')) ?>" class="templates-group">
+                                <?php foreach ($templates as $template): ?>
+                                    <?php
+                                        $value = base64_encode(json_encode(array(
+                                            'id' => $template->getId(),
+                                            'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE,
+                                            'nick' => $this->getTemplateNick()
+                                        )));
+                                        $selected = $this->isTemplateModeTemplate() && $this->getTemplateId() == $template->getId();
+                                    ?>
+                                    <option value="<?php echo $value; ?>" <?php if ($selected): ?>selected="selected"<?php endif; ?> class="template-switcher-template-option">
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($template->getTitle()) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
+                    </select>
+                </td>
+
+                <?php if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $this->isTemplateModeTemplate()): ?>
+
+                    <td class="template-title-td">
+                        <span class="template-title"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getTemplateObject()->getTitle()) ?></span>
+                    </td>
+
+                <?php endif; ?>
+
+                <td style="padding-left: 10px; width: 100%;" class="template-nick-td">
+
+                    <div id="template_<?php echo $this->getTemplateNick() ?>_nick_label" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/note_cell_bg.gif'); ?>" />
+                        <span class="template" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Policy') ?></span>
+                        <?php if ($this->isTemplateModeParentForced()): ?>
+                            <span class="parent" style="display: none;"><?php echo Mage::helper('M2ePro')->__('Please, specify a value suitable for all chosen Products.') ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()): ?>
+                        <div id="template_<?php echo $this->getTemplateNick() ?>_edit" style="display: none;">
+                            <a href="javascript: void(0);" onclick="EbayListingTemplateSwitcherHandlerObj.editTemplate('<?php echo $this->getTemplateNick() ?>');"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                            <?php echo Mage::helper('M2ePro')->__('or') ?>
+                            <a href="javascript: void(0);" onclick="EbayListingTemplateSwitcherHandlerObj.customizeTemplate('<?php echo $this->getTemplateNick() ?>');"><?php echo Mage::helper('M2ePro')->__('Use Custom Settings') ?></a>
+                        </div>
+                    <?php endif; ?>
+
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td id="template_switcher_<?php echo $this->getTemplateNick() ?>_messages" colspan="2" class="value" style="padding-left: 30px;"></td>
+            </tr>
+        </table>
+    </div>
+
+</div>

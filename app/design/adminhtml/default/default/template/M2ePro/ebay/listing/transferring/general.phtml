@@ -1,0 +1,34 @@
+<div id="data_container_progress" style="margin-top: 20px; display:none;"></div>
+
+<div id="data_container" >
+
+    <?php echo $this->getChildHtml('breadcrumb') ?>
+
+    <div id="data_container_step_tutorial" style="padding-bottom: 10px;display: none;">
+        <?php echo $this->getChildHtml('tutorial') ?>
+    </div>
+
+    <div id="data_container_step_destination" style="padding-bottom: 10px;display: none;">
+        <?php echo $this->getChildHtml('destination') ?>
+    </div>
+
+    <div id="data_container_step_policy" style="padding-bottom: 10px;display: none;">
+        <?php echo $this->getChildHtml('policy') ?>
+    </div>
+
+    <div id="data_container_step_translation" style="padding-bottom: 10px;display: none;">
+        <?php echo $this->getChildHtml('translation') ?>
+    </div>
+
+    <div id="data_container_step_categories" style="padding-bottom: 10px;display: none;">
+        <?php echo $this->getChildHtml('categories') ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    <?php if ($this->isShownTutorial()) { ?>
+        EbayListingTransferringHandlerObj.renderStepDestination();
+    <?php } else { ?>
+        EbayListingTransferringHandlerObj.renderStepTutorial();
+    <?php } ?>
+</script>

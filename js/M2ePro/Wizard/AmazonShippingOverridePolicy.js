@@ -1,0 +1,1 @@
+AmazonShippingOverridePolicy = Class.create(WizardAmazonCustomHandler, {});

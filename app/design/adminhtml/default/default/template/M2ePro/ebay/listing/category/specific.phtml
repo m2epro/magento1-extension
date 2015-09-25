@@ -1,0 +1,271 @@
+<?php
+    $isCompactMode = $this->isCompactMode();
+    $interfaceMode = Mage::helper('M2ePro/View_Ebay')->getMode();
+
+    $uniqueId      = $this->getUniqueId();
+    $internalData  = $this->getInternalData();
+
+    $requiredDetailsFields = $this->getRequiredDetailsFields();
+
+    $dictionarySpecifics       = json_encode($this->getDictionarySpecifics());
+    $ebaySelectedSpecifics     = json_encode($this->getEbaySelectedSpecifics());
+    $customSelectedSpecifics   = json_encode($this->getCustomSelectedSpecifics());
+?>
+
+<?php if (!$this->_isAjax): ?>
+    <?php echo '<div id="category_specific_box' . $uniqueId . '">'; ?>
+<?php endif; ?>
+
+<script type="text/javascript">
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+
+        'The Category <b>%cat%</b> doesn\'t have Item Specific.' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('The Category <b>%cat%</b> doesn\'t have Item Specific.')),
+
+    )); ?>);
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_category')) ?>);
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_View_Ebay'); ?>,
+        'Ess_M2ePro_Helper_View_Ebay'
+    );
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay'); ?>,
+        'Ess_M2ePro_Helper_Component_Ebay'
+    );
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Category'); ?>,
+        'Ess_M2ePro_Model_Ebay_Template_Category'
+    );
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Category_Specific'); ?>,
+        'Ess_M2ePro_Model_Ebay_Template_Category_Specific'
+    );
+
+    // Data for current tab
+    //-----------------------------
+    <?php echo $uniqueId ?>init = function() {
+
+        window['specificForm<?php echo $uniqueId; ?>'] = new varienForm('<?php echo $uniqueId; ?>category_specific_form', '<?php echo $this->getValidationUrl(); ?>');
+
+        EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj = new EbayListingCategorySpecificHandler('<?php echo $this->getMarketplaceId(); ?>',
+                                                                                                               '<?php echo $this->getCategoryMode(); ?>',
+                                                                                                               '<?php echo $this->getCategoryValue(); ?>',
+                                                                                                               '<?php echo $uniqueId; ?>',
+                                                                                                               '<?php echo $interfaceMode; ?>');
+
+        EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj.setAttributes(<?php echo json_encode($this->getAttributes()); ?>)
+                                                                     .setDictionarySpecifics(<?php echo $dictionarySpecifics; ?>)
+                                                                     .setEbaySelectedSpecifics(<?php echo $ebaySelectedSpecifics; ?>)
+                                                                     .setCustomSelectedSpecifics(<?php echo $customSelectedSpecifics; ?>)
+                                                                     .renderSpecifics();
+
+    };
+
+    <?php if ($this->_isAjax) { ?>
+        <?php echo $uniqueId ?>init();
+
+    <?php } else { ?>
+        Event.observe(window, 'load', <?php echo $uniqueId ?>init);
+    <?php } ?>
+
+    //-----------------------------
+
+</script>
+
+<?php if ($requiredDetailsFields) : ?>
+    <ul class="messages">
+        <li class="notice-msg">
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('
+                    You selected an eBay Category where %UPC% Value is required.<br/>
+
+                    <strong>Note:</strong> also do not forget to check setting in eBay Catalog Identifiers block of
+                    Description Policy you are using.',
+                    implode(', ', $requiredDetailsFields)
+                ); ?>
+            </span>
+        </li>
+    </ul>
+<?php endif; ?>
+
+<form id="<?php echo $uniqueId; ?>category_specific_form">
+
+<div id="<?php echo $uniqueId; ?>listing_category_specific_item_specifics_container">
+
+    <?php if (!$isCompactMode): ?>
+
+        <div id="block_notice_ebay_category_specific_item_specifics<?php echo $uniqueId; ?>" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Specifics'); ?>">
+            <?php echo Mage::helper('M2ePro')->__(
+                'Adding specific Item details will attract your Buyers and help them to find your Item in a search. We recommend using as many Item specifics as you can.
+                <br/>There are mandatory specifics and the chance to create your own.
+                <br/>
+                <br/>There are four Options available to you.
+                <br/>
+                <ul class="list">
+                    <li>
+                        <b>eBay Recommended</b>
+                        <br/>eBay recommends certain characteristics your Item may possess. Simply choose the most appropriate one from the drop down menu.
+                        <br/>So if you are selling headphones, eBay will recommend an ABC list of the most common brands from Apple and Bose to Creative.
+                        <br/>This is a sensible Option for beginners to eBay.
+                        <br/>
+                        <b>Note:</b> These Options correspond to the Primary eBay Category, not any Secondary Category you may have chosen.
+                    </li>
+                    <li>
+                        <b>Custom Attribute</b>
+                        <br/>You can create more customisable detail by choosing the Custom Attribute that contains the Item specific.
+                    </li>
+                    <li>
+                        <b>Custom Value</b>
+                        <br/>This allows you to manually type specific information about your Product rather than choosing from a Dropdown list.
+                        <br/>This is particularly useful if the eBay recommended Option does not include information about the specific Item you have for sale.
+                    </li>
+                    <li>
+                        <b>None</b>
+                        <br/>You choose not to offer potential Buyers any Item specific information. Be aware that this may hamper your Items appearing in eBay Search results.
+                    </li>
+                </ul>
+                </br>
+                More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Ebay::NICK, 'Set+Item+Specifics')
+            ); ?>
+        </div>
+
+        <div class="entry-edit" id="magento_block_ebay_category_specific_item_specifics">
+
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Specifics'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+    <?php endif; ?>
+
+    <table id="<?php echo $uniqueId; ?>item_specifics_table" class="form-list" cellspacing="0" cellpadding="0" style="width: 100%">
+
+        <tr>
+
+            <td colspan="2">
+
+                <table class="form-list" cellspacing="0" cellpadding="0" style="width: 100%;">
+
+                    <tr class="item-specifics-tr">
+                        <td class="grid" colspan="2">
+
+                            <table class="border" cellpadding="0" cellspacing="0">
+                                <thead>
+                                <tr class="headings">
+                                    <th style="width: 30%;"><?php echo Mage::helper('M2ePro')->__('Name'); ?></th>
+                                    <th style="width: 30%;"><?php echo Mage::helper('M2ePro')->__('Mode'); ?></th>
+                                    <th style="width: 37%;"><?php echo Mage::helper('M2ePro')->__('Value'); ?></th>
+                                    <th style="width: 3%;">&nbsp;</th>
+                                </tr>
+                                </thead>
+                                <tbody id="<?php echo $uniqueId; ?>item_specifics_tbody">
+                                <!-- #specific_table_row_template inserts here -->
+                                </tbody>
+                                <tfoot id="<?php echo $uniqueId; ?>add_custom_container">
+                                <tr>
+                                    <td colspan="4" class="a-right"><?php echo $this->getChildHtml('add_custom_specific_button'); ?></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+                <?php if (!$isCompactMode): ?>
+
+                    <p class="note note-no-tool-tip">
+                        <?php echo Mage::helper('M2ePro')->__('Add more information to help Buyers find your Item in Search results.') ?>
+                    </p>
+
+                <?php endif; ?>
+
+            </td>
+        </tr>
+
+    </table>
+
+    <?php if (!$isCompactMode): ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div style="display: none;" class="validation-advice" id="<?php echo $uniqueId; ?>maximum_specifics_error" >
+        <?php echo Mage::helper('M2ePro')->__('You can select not more than 25 specifics.'); ?>
+    </div>
+
+</div>
+
+<script type="text/m2e-template-html" id="<?php echo $uniqueId; ?>specific_template">
+
+    <input id="<?php echo $uniqueId; ?>item_specifics_mode_%i%" name="item_specifics_mode_%i%" value="%relation_mode%" type="hidden" />
+    <input id="<?php echo $uniqueId; ?>item_specifics_attribute_title_%i%" name="item_specifics_attribute_title_%i%" value="%attribute_title%" type="hidden" />
+
+    <tr id="<?php echo $uniqueId; ?>specific_%i%_row" class="specific-row not-custom" style="height: 25px;">
+        <td style="vertical-align:top;">
+            <span id="<?php echo $uniqueId; ?>attribute_title_%i%">%attribute_title%%required%</span>
+            <input id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_value_%i%" name="custom_item_specifics_label_custom_value_%i%" type="text" style="display: none; width: 97%;" class="input-text M2ePro-required-when-visible custom-item-specific" />
+            <input id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_label_attribute_%i%" name="custom_item_specifics_label_custom_label_attribute_%i%" type="text" style="display: none; width: 97%;" class="input-text M2ePro-required-when-visible custom-item-specific" />
+            <span id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_attribute_%i%" style="display:none;"><strong>From Attribute label</strong></span>
+        </td>
+        <td style="vertical-align:top;">
+            <select id="<?php echo $uniqueId; ?>item_specifics_value_mode_%i%" name="item_specifics_value_mode_%i%" style="width: 100%; margin-bottom: 2px;" onchange="EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj.dictionarySpecificModeChange(this);">
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_NONE ?>" class="specific-mode-none"><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_EBAY_RECOMMENDED ?>" class="specific-mode-recommended"><?php echo Mage::helper('M2ePro')->__('eBay Recommended'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_VALUE ?>" class="specific-mode-custom-value"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_ATTRIBUTE ?>" class="custom-specific-mode-custom-attribute"><?php echo Mage::helper('M2ePro')->__('Custom Attribute'); ?></option>
+            </select>
+            <select id="<?php echo $uniqueId; ?>custom_item_specifics_value_mode_%i%" name="custom_item_specifics_value_mode_%i%" style="display: none; width: 100%;margin-bottom: 2px;" onchange="EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj.customSelectedSpecificChange(this);">
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_ATTRIBUTE ?>" class="custom-specific-mode-custom-attribute"><?php echo Mage::helper('M2ePro')->__('Custom Attribute'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_VALUE ?>" class="custom-specific-mode-custom-value"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_LABEL_ATTRIBUTE ?>" class="custom-specific-mode-custom-label-attribute"><?php echo Mage::helper('M2ePro')->__('Custom Label / Attribute'); ?></option>
+            </select>
+        </td>
+        <td id="<?php echo $uniqueId; ?>specific_value_%i%_cell" style="width: 100%; vertical-align:top; text-align: left;">
+            <div id="<?php echo $uniqueId; ?>item_specifics_custom_value_%i%" style="display: none;">
+                <table style="border:none; border-spacing: 0 2px">
+                    <tbody id="<?php echo $uniqueId; ?>item_specifics_custom_value_tbody_%i%" data-min_values="%min_values%" data-max_values="%max_values%">
+                        <!-- #specific_custom_value_table_row_template inserts here -->
+                    </tbody>
+                </table>
+                <a id="<?php echo $uniqueId; ?>add_item_specifics_custom_value_button_%i%"
+                   data-counter="%i%"
+                   href="javascript: void(0);"
+                   style="display:none; float:right; font-size:11px;"
+                   onclick="EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj.addItemSpecificsCustomValueRow(this);">
+                   <?php echo Mage::helper('M2ePro')->__('Add more'); ?>
+                </a>
+            </div>
+            <select id="<?php echo $uniqueId; ?>item_specifics_value_ebay_recommended_%i%" name="item_specifics_value_ebay_recommended_%i%" style="display: none; width: 100%;" class="M2ePro-required-when-visible item-specific"></select>
+            <select id="<?php echo $uniqueId; ?>item_specifics_value_custom_attribute_%i%" name="item_specifics_value_custom_attribute_%i%" style="display: none; width: 100%;"></select>
+        </td>
+        <td id="<?php echo $uniqueId; ?>custom_item_specific_remove_%i%" style="display: none; text-align: center; vertical-align: middle;">
+            <?php echo $this->getChildHtml('remove_custom_specific_button'); ?>
+        </td>
+    </tr>
+
+</script>
+
+<script type="text/m2e-template-html" id="<?php echo $uniqueId; ?>specific_custom_value_template">
+    <tr>
+        <td style="border: none; width: 100%; vertical-align:top; text-align: left; padding: 0; ">
+            <input id="<?php echo $uniqueId; ?>item_specifics_value_custom_value_%i%_%position%" name="item_specifics_value_custom_value_%i%[]" type="text" style="width: 99%; padding-left: 2px; padding-right: 0;" class="input-text M2ePro-required-when-visible item-specific" />
+        </td>
+        <td id="<?php echo $uniqueId; ?>item_specifics_custom_value_remove_%i%_%position%" class="btn_value_remove" style="display: none; padding:0; border: none;">
+            <?php echo $this->getChildHtml('remove_item_specifics_custom_value_button'); ?>
+        </td>
+    </tr>
+</script>
+
+</form>
+
+<?php if (!$this->_isAjax): ?>
+    <?php echo '</div>'; ?>
+<?php endif; ?>

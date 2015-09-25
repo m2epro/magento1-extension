@@ -1,0 +1,269 @@
+<div id="block_notice_ebay_accounts_store" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('eBay Store'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'This Page shows the details for the eBay Store you connected to M2E Pro.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'eBay+Store')
+    ); ?>
+</div>
+
+<?php
+    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
+        ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray()
+        : array();
+
+    $defaults = array(
+        'ebay_store_title' => '',
+        'ebay_store_url' => '',
+        'ebay_store_subscription_level' => '',
+        'ebay_store_description' => ''
+    );
+
+    $formData = array_merge($defaults, $formData);
+
+    $formData['ebay_store_title'] = Mage::helper('M2ePro')->escapeHtml($formData['ebay_store_title']);
+    $formData['ebay_store_subscription_level'] = Mage::helper('M2ePro')->escapeHtml($formData['ebay_store_subscription_level']);
+    $formData['ebay_store_description'] = Mage::helper('M2ePro')->escapeHtml($formData['ebay_store_description']);
+
+    $isEdit = !!$this->getRequest()->getParam('id');
+
+    if ($isEdit){
+        $categoriesTreeArray = Mage::getModel('M2ePro/Ebay_Account')
+                                        ->loadInstance($this->getRequest()->getParam('id'))
+                                        ->buildEbayStoreCategoriesTree();
+    }
+?>
+
+<script type="text/javascript">
+
+    // Data for current tab
+    //-----------------------------
+    M2ePro.formData.ebay_store_title = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['ebay_store_title']); ?>';
+    M2ePro.formData.ebay_store_url = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['ebay_store_url']); ?>';
+    M2ePro.formData.ebay_store_subscription_level = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['ebay_store_subscription_level']); ?>';
+    M2ePro.formData.ebay_store_description = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['ebay_store_description']); ?>';
+    //-----------------------------
+
+</script>
+
+<?php if(!is_null($formData['ebay_store_title']) && $formData['ebay_store_title'] != '') { ?>
+
+    <div class="entry-edit" id="magento_block_ebay_accounts_ebay_store_info">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Information'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Store Title'); ?>: </label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <b><?php echo $formData['ebay_store_title']; ?></b>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('URL'); ?>: </label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <a href="<?php echo $formData['ebay_store_url']; ?>" target="_blank"><?php echo $formData['ebay_store_url']; ?></a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Subscription Level'); ?>: </label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $formData['ebay_store_subscription_level']; ?>
+                        </td>
+                    </tr>
+
+                    <?php if (!empty($formData['ebay_store_description'])) : ?>
+                        <tr>
+                            <td class="label">
+                                <label><?php echo Mage::helper('M2ePro')->__('Description'); ?>: </label>
+                            </td>
+                            <td class="value" style="width: auto;">
+                                <?php echo $formData['ebay_store_description']; ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                </table>
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label"></td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $this->getChildHtml('update_ebay_store'); ?>
+                            <p class="note">
+                                <?php echo Mage::helper('M2ePro')->__('Updates Store information.'); ?>
+                            </p>
+                        </td>
+                    </tr>
+
+               </table>
+
+           </div>
+       </div>
+
+    </div>
+
+    <div class="entry-edit" id="magento_block_ebay_accounts_ebay_store_categories">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Categories'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <?php if(count($categoriesTreeArray) == 0) { ?>
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+
+                        <tr>
+                            <td class="label" style="font-weight: bold;">
+                                Categories not found
+                            </td>
+                        </tr>
+
+                    </table>
+
+                <?php } else { ?>
+
+                    <table id="ebay_store_categories_selected_container" class="form-list" cellspacing="0" cellpadding="0" style="display: none;">
+
+                        <tr>
+                            <td class="label">
+                                <label for="ebay_store_categories_selected"><?php echo Mage::helper('M2ePro')->__('Category ID'); ?>:</label>
+                            </td>
+                            <td class="value" style="width: auto;">
+                                <input id="ebay_store_categories_selected" name="ebay_store_categories_selected" value="" type="text" readonly="readonly" class="input-text" />
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__('Highlighted Category ID.'); ?></span>
+                                </p>
+                            </td>
+                            <td class="value" style="width: auto;">
+                                <?php echo $this->getChildHtml('hide_selected_category'); ?>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <!-- TREE ###################### -->
+
+                    <div class="categories-side-col">
+                        <div class="tree-holder">
+                            <div id="tree-div" style="width: 100%; overflow: auto;"></div>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+
+                        Ext.EventManager.onDocumentReady(function() {
+
+                            var tree = new Ext.tree.TreePanel('tree-div', {
+                                animate: true,
+                                enableDD: false,
+                                containerScroll: true,
+                                rootUIProvider: Ext.tree.CheckboxNodeUI,
+                                selModel: new Ext.tree.CheckNodeMultiSelectionModel(),
+                                rootVisible: false
+                            });
+
+                            tree.on('click', function(node) {
+                                EbayAccountHandlerObj.ebayStoreSelectCategory(node.attributes.id);
+                            }, tree);
+
+                            var root = new Ext.tree.TreeNode({
+                                text: 'root',
+                                draggable: false,
+                                checked: 'false',
+                                id: '__root__',
+                                uiProvider: Ext.tree.CheckboxNodeUI
+                            });
+
+                            tree.setRootNode(root);
+                            buildCategoryTree(root, <?php echo json_encode($categoriesTreeArray); ?>);
+
+                            tree.render();
+                            root.expand();
+                        });
+
+                        function buildCategoryTree(parent, config)
+                        {
+                            if (!config) return null;
+
+                            if (parent && config && config.length){
+
+                                for (var i = 0; i < config.length; i++) {
+                                    //config[i].uiProvider = Ext.tree.CheckboxNodeUI;
+                                    var node = new Ext.tree.TreeNode(config[i]);
+                                    parent.appendChild(node);
+                                    if(config[i].children) {
+                                        buildCategoryTree(node, config[i].children);
+                                    }
+                                }
+                            }
+                        }
+
+                    </script>
+
+                    <!-- ########################### -->
+
+                <?php } ?>
+
+           </div>
+       </div>
+
+    </div>
+
+<?php } else { ?>
+
+     <div class="entry-edit" id="magento_block_ebay_accounts_ebay_store_info">
+
+         <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Information'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="value" style="width: auto; font-weight: bold;">
+                            <?php echo Mage::helper('M2ePro')->__('This eBay Account does not have an eBay Store subscription.'); ?>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="value" style="width: auto;">
+                            <?php echo $this->getChildHtml('update_ebay_store'); ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Updates Store information.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+               </table>
+
+           </div>
+        </div>
+
+    </div>
+
+<?php } ?>

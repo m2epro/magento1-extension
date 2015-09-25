@@ -1,0 +1,68 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_TableCellsPopup */
+?>
+
+<script type="text/javascript">
+
+    $$('#development_tabs_database_table_cells_popup .input_switcher').each(function(el){
+        el.observe('change', DevelopmentDatabaseGridHandlerObj.switcherStateChange.bind(el));
+    });
+
+</script>
+
+<div id="development_tabs_database_table_cells_popup" style="margin: 7px;">
+
+    <h4>
+        <?php echo Mage::helper('M2ePro')->__('Table `%table_name%`', $this->tableName); ?>
+        <?php if ($this->isUpdateCellsMode()) : ?>
+            <span style="color: grey; font-style: italic; font-weight: lighter;">
+                &nbsp;<?php echo Mage::helper('M2ePro')->__('(%amount% records)', count($this->rowsIds)); ?>
+            </span>
+        <?php endif; ?>
+    </h4>
+
+    <form id="development_tabs_database_table_cells_popup_form">
+
+        <?php if ($this->isUpdateCellsMode()) : ?>
+            <input type="hidden" name="ids" value="<?php echo $this->getRequest()->getParam('ids'); ?>" />
+        <?php endif; ?>
+
+        <table>
+            <?php foreach($this->getTableColumns() as $column) : ?>
+
+                <?php if (strpos($column['extra'], 'increment') !== false) {
+                    continue;
+                } ?>
+
+                <tr id="tr_column_id_<?php echo $column['name']; ?>">
+                    <td style="min-width: 220px; height: 23px;" title="<?php echo $column['type']; ?>">
+                        <?php if (isset($column['is_parent']) && $column['is_parent']) : ?><span style="color: orangered;">p:&nbsp;</span><?php endif; ?>
+                        <?php if (isset($column['is_parent']) && !$column['is_parent']) : ?><span style="color: forestgreen;">ch:&nbsp;</span><?php endif; ?>
+                        <?php echo $column['name']; ?>
+                    </td>
+                    <td style="width: 25px;">
+                        <input id="switcher_column_id_<?php echo $column['name']; ?>" class="input_switcher" type="checkbox" name="cells[]" value="<?php echo $column['name']; ?>" />
+                    </td>
+                    <td>
+                        <input id="input_column_id_<?php echo $column['name']; ?>" name="value_<?php echo $column['name']; ?>" type="text" size="47" disabled="disabled" />
+                    </td>
+                </tr>
+
+            <?php endforeach; ?>
+        </table>
+
+    </form>
+
+    <div class="right" style="margin-top: 7px;">
+        <a href="javascript:" onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php if ($this->isUpdateCellsMode()) {
+            echo $this->getChildHtml('popup_confirm_update_button');
+        } else {
+            echo $this->getChildHtml('popup_confirm_add_button');
+        } ?>
+    </div>
+
+    <div class="clear"></div>
+
+</div>

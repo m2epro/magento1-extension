@@ -1,0 +1,53 @@
+<script type="text/javascript" src="<?php echo $this->getJsUrl('M2ePro/VideoTutorialHandler.js'); ?>"></script>
+
+<script type="text/javascript">
+
+    VideoTutorialHandlerObj = new VideoTutorialHandler(
+        'video_tutorial_pop_up',
+        '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('eBay/Magento Integration: Products Management')); ?>',
+        function() {}
+    );
+
+</script>
+
+<div class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+    <table>
+
+        <tr>
+            <td>
+                <a id="tutorial_image_container" style="display: block;" href="javascript:" onclick="VideoTutorialHandlerObj.openPopUp()">
+                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/ebay-video-thumbnail.png'); ?>" alt="">
+                </a>
+            </td>
+
+            <td style="padding: 10px  0 0 30px">
+
+                <h3>
+                    <?php echo Mage::helper('M2ePro')->__('Congratulations, you have successfully created your first M2E Pro Listing. You\'re well on your way to your first Items appearing on eBay.'); ?>
+                </h3>
+                <br/>
+
+                <p><?php echo Mage::helper('M2ePro')->__('Next up is to select the Products from your Magento Store that you want to list on eBay. '); ?></p>
+                <p><?php echo Mage::helper('M2ePro')->__('Any Products on your Magento Store that fulfil your M2E Pro Listing criteria can be chosen.'); ?></p>
+                <p><?php echo Mage::helper('M2ePro')->__('Once you\'ve chosen your Products, assign them to the correct eBay Category.'); ?></p>
+                <p><?php echo Mage::helper('M2ePro')->__('You can adjust the Price that you sell your Items for on eBay in relation to your Shop Price. You might want to increase your Selling Price to take into Account the fees for Selling on eBay.
+                                                          Or, reduce your Price to be competitive.'); ?></p>
+
+                <br/>
+                <div><?php echo $this->getChildHtml('continue_button'); ?></div>
+            </td>
+
+        </tr>
+
+    </table>
+</div>
+
+<div id="video_tutorial_pop_up" style="display: none;">
+    <div class="player_container" style="margin: 20px 5px; ">
+        <?php if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) { ?>
+            <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/_fEtRN2eYCA?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/_fEtRN2eYCA?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
+        <?php } else { ?>
+            <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/iBEiQ8Ilya8?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/iBEiQ8Ilya8?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
+        <?php } ?>
+    </div>
+</div>

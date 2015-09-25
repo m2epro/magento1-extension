@@ -1,0 +1,24 @@
+<?php
+    $items = $this->getData('items');
+    $first = true;
+?>
+
+<ul style="margin-top: 5px;" class="messages">
+    <li class="warning-msg">
+        <ul>
+            <?php foreach ($items as $messageType => $messageText): ?>
+                <li>
+                    <?php if ($first): ?>
+                        <?php $first = false; ?>
+                        <div style="display: inline-block; float: right;">
+                            <a href="javascript: void(0);" class="refresh-messages">[<?php echo Mage::helper('M2ePro')->__('Refresh') ?>]</a>
+                        </div>
+                    <?php endif; ?>
+                    <div style="display: inline-block; width: 92%;">
+                        <?php echo $messageText; ?>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </li>
+</ul>

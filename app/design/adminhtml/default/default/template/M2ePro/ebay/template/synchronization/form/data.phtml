@@ -1,0 +1,130 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Synchronization_Edit_Form_Data $this */
+
+    $formData = $this->getFormData();
+?>
+
+<script type="text/javascript">
+
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Synchronization'); ?>,'Ess_M2ePro_Model_Ebay_Template_Synchronization');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Template_Synchronization'); ?>,'Ess_M2ePro_Model_Template_Synchronization');
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Wrong value. Only integer numbers.' => Mage::helper('M2ePro')->__('Wrong value. Only integer numbers.'),
+
+        'Must be greater than "Min".' => Mage::helper('M2ePro')->__('Must be greater than "Min".'),
+        'Inconsistent Settings in Relist and Stop Rules.' => Mage::helper('M2ePro')->__('Inconsistent Settings in Relist and Stop Rules.'),
+
+        'You need to choose at set at least one time for the schedule to run.' => Mage::helper('M2ePro')->__('You need to choose at set at least one time for the schedule to run.'),
+        'You should specify time.' => Mage::helper('M2ePro')->__('You should specify time.'),
+
+        'Wrong value.' => Mage::helper('M2ePro')->__('Wrong value.'),
+        'Must be greater than "Active From" Date.' => Mage::helper('M2ePro')->__('Must be greater than "Active From" Date.'),
+        'Must be greater than "From Time".' => Mage::helper('M2ePro')->__('Must be greater than "From Time".')
+    )); ?>);
+
+</script>
+
+<script type="text/javascript">
+
+    var init = function() {
+        EbayTemplateSynchronizationHandlerObj = new EbayTemplateSynchronizationHandler();
+
+        $$('.navigation_bar').each(function(el){
+            el.observe('click', EbayTemplateSynchronizationHandlerObj.setVirtualTabAsActive);
+        });
+
+        setTimeout(function() {
+            $$('#ebay_template_synchronization_edit_form_container select').each(function(el){
+                el.observe('change', EbayTemplateSynchronizationHandlerObj.setVirtualTabAsChanged);
+            });
+        },350);
+    };
+
+    <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
+        init();
+    <?php else: ?>
+        Event.observe(window, 'load', init);
+    <?php endif; ?>
+
+</script>
+
+<div>
+    <input type="hidden" name="synchronization[id]" value="<?php echo (!$this->isCustom() && isset($formData['id'])) ? (int)$formData['id'] : ''; ?>" />
+    <input type="hidden" name="synchronization[title]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getTitle()); ?>" />
+    <input type="hidden" name="synchronization[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
+</div>
+
+<div id="ebay_template_synchronization_edit_form_container" class="columns" style="margin-bottom: 10px;">
+
+    <div id="ebay_template_synchronization_edit_form_navigation_bar_container" class="side-col">
+        <ul id="ebay_template_synchronization_edit_form_navigation_bar" class="tabs">
+            <li>
+                <a href="javascript:void(0);" id="ebay_template_synchronization_edit_form_navigation_bar_list" class="navigation_bar tab-item-link active">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('List Rules'); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="ebay_template_synchronization_edit_form_navigation_bar_revise" class="navigation_bar tab-item-link">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('Revise Rules'); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="ebay_template_synchronization_edit_form_navigation_bar_relist" class="navigation_bar tab-item-link">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('Relist Rules'); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="ebay_template_synchronization_edit_form_navigation_bar_stop" class="navigation_bar tab-item-link">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('Stop Rules'); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="ebay_template_synchronization_edit_form_navigation_bar_schedule" class="navigation_bar tab-item-link">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('Schedule'); ?>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="ebay_template_synchronization_edit_form_content" class="main-col" style="padding-bottom: 0;">
+        <div class="main-col-inner">
+            <div id="ebay_template_synchronization_edit_form_content_list" class="form_content">
+                <?php echo $this->getChildHtml('ebay_template_synchronization_edit_form_tabs_list'); ?>
+            </div>
+            <div id="ebay_template_synchronization_edit_form_content_revise" class="form_content" style="display: none;">
+                <?php echo $this->getChildHtml('ebay_template_synchronization_edit_form_tabs_revise'); ?>
+            </div>
+            <div id="ebay_template_synchronization_edit_form_content_relist" class="form_content" style="display: none;">
+                <?php echo $this->getChildHtml('ebay_template_synchronization_edit_form_tabs_relist'); ?>
+            </div>
+            <div id="ebay_template_synchronization_edit_form_content_stop" class="form_content" style="display: none;">
+                <?php echo $this->getChildHtml('ebay_template_synchronization_edit_form_tabs_stop'); ?>
+            </div>
+            <div id="ebay_template_synchronization_edit_form_content_schedule" class="form_content" style="display: none;">
+                <?php echo $this->getChildHtml('ebay_template_synchronization_edit_form_tabs_schedule'); ?>
+            </div>
+        </div>
+    </div>
+
+</div>

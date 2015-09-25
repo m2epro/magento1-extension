@@ -1,0 +1,33 @@
+<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Order_MigrationToV611 */ ?>
+
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_order')) ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Orders migration' => Mage::helper('M2ePro')->__('Orders migration'),
+        'Starting orders migration...' => Mage::helper('M2ePro')->__('Starting orders migration...'),
+        'Orders migration is finished' => Mage::helper('M2ePro')->__('Orders migration is finished'),
+        'Orders migration is in process...' => Mage::helper('M2ePro')->__('Orders migration is in process...'),
+    )); ?>);
+
+    Event.observe(window,'load',function() {
+        var orderMigrationProgressBarObj = new ProgressBar('order_migration_progress_bar');
+
+        EbayOrderMigrationToV611HandlerObj = new EbayOrderMigrationToV611Handler();
+        EbayOrderMigrationToV611HandlerObj.setProgressBarObj(orderMigrationProgressBarObj);
+        EbayOrderMigrationToV611HandlerObj.setNotMigratedOrdersCount(<?php echo $this->getNotMigratedOrdersCount(); ?>);
+        EbayOrderMigrationToV611HandlerObj.setOrdersCountPerAjaxRequest(<?php echo $this->getOrdersCountPerAjaxRequest(); ?>);
+    });
+
+</script>
+
+<div id="order_migration_progress_bar"></div>
+
+<div id="block_notice_ebay_order_migrationToV611" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+    <?php echo Mage::helper('M2ePro')->__('The orders are not available because orders data was not completely migrated in the process of upgrade to the M2E Pro version 6.1.1 or higher. <br/>You should execute data migration for further work with orders.<br/> To start data migration press "Migrate" Button and wait until the process is completed. '); ?>
+
+    <div style="text-align: center">
+        <button id="run_migration_button" onclick="EbayOrderMigrationToV611HandlerObj.runMigration()"><?php echo Mage::helper('M2ePro')->__('Migrate'); ?></button>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+<?php
+    $feeDetailsId = uniqid('fee-details-');
+?>
+<div id="<?php echo $feeDetailsId ?>" style="display: none;">
+    <?php echo $this->getChildHtml('details'); ?>
+</div>
+<span><?php echo $this->getTotalFee() ?>&nbsp;[<a href="javascript:void(0);" onclick="EbayListingEbayGridHandlerObj.openFeePopUp($('<?php echo $feeDetailsId ?>').innerHTML);"><?php echo Mage::helper('M2ePro')->__('details') ?></a>]</span>

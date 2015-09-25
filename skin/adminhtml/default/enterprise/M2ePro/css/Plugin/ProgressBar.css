@@ -1,0 +1,67 @@
+/* General Styles */
+/* ================================================ */
+
+.progress_bar_container {
+    margin-bottom: 20px !important;
+    padding: 10px 15px !important;
+    border-left: 1px solid #BDBDBD !important;
+    border-right: 1px solid #BDBDBD !important;
+    border-bottom: 1px solid #BDBDBD !important;
+    background: url("../../../images/filter_row_bg.gif") repeat-x scroll 0 0 #E3EFF1 !important;
+}
+
+.progress_bar_title {
+    width: 100% !important;
+    height: 20px !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: #2D444F !important;
+}
+
+.progress_bar_control {
+    width: 100% !important;
+    height: 25px !important;
+    position: relative !important;
+    margin: 5px 0px !important;
+    border: 1px solid #2D444F !important;
+    background-color: #f5f2f2 !important;
+}
+
+.progress_bar_status {
+    width: 100% !important;
+    height: 20px !important;
+    border: none !important;
+    font-size: 12px !important;
+    color: #2D444F !important;
+}
+
+/* ================================================ */
+
+/* Progress Line Styles */
+/* ================================================ */
+
+.progress_bar_fill {
+    width: 0px;
+    height: 25px !important;
+    position: absolute !important;
+    background-color: #2D444F !important;
+}
+
+.progress_bar_percents {
+    position: absolute !important;
+    left: 50% !important;
+    top: 3px !important;
+    font-weight: bold !important;
+    font-size: 12px !important;
+}
+
+.progress_bar_percents_before_50 {
+    color: #2D444F !important;
+}
+
+.progress_bar_percents_after_50 {
+    color: white !important;
+}
+
+/* ================================================ */

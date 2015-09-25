@@ -1,0 +1,94 @@
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Magento'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->magentoInfo ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Module'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->moduleVersion ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('PHP'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->phpVersion ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Server API'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo$this->phpApi ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Memory Limit'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->memoryLimit . ' Mb'?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Max Execution Time'); ?>: </label>
+        </td>
+        <td class="value">
+             <?php echo $this->maxExecutionTime == 0 ? Mage::helper('M2ePro')->__('Unlimited') : $this->maxExecutionTime . ' sec'; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('MySQL'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlVersion ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Database'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->mySqlDatabaseName ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Cron'); ?> (<?php echo $this->cronCurrentType; ?>): </label>
+        </td>
+        <?php
+            $style = '';
+            if ($this->cronIsNotWorking) {
+                $style = ' style="color: red"';
+            }
+        ?>
+        <td class="value">
+            <span<?php echo $style; ?>><?php echo $this->cronLastRunTime; ?></span>
+            <?php
+            if ($this->cronIsNotWorking) {
+                echo ' (' . Mage::helper('M2ePro')->__('not working') . ')';
+            }
+            ?>
+        </td>
+    </tr>
+</table>

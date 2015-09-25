@@ -1,0 +1,216 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Synchronization_Edit_Form_Tabs_List $this */
+
+    $default = $this->getDefault();
+    $formData = $this->getFormData();
+
+    $formData = array_merge($default, $formData);
+
+?>
+
+<script type="text/javascript">
+
+    var init = function() {
+        $('list_mode').observe('change', EbayTemplateSynchronizationHandlerObj.listMode_change);
+        $('list_qty_magento').observe('change', EbayTemplateSynchronizationHandlerObj.listQty_change);
+        $('list_qty_calculated').observe('change', EbayTemplateSynchronizationHandlerObj.listQty_change);
+    };
+
+    <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
+        init();
+    <?php else: ?>
+        Event.observe(window, 'load', init);
+    <?php endif; ?>
+
+</script>
+
+<div id="block_notice_ebay_template_synchronization_form_data_list" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('List Rules'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'If <b>List Action</b> is enabled, M2E Pro will list Items that haven\'t been Listed yet on eBay if they meet the Conditions you set.
+        (List Action will not list Items that were Listed previously but have been Stopped.)<br/><br/>
+        If the automatic Listing doesn\'t work (usually because eBay has sent back errors),
+        M2E Pro will only attempt to list the Item again if the Product status, Stock availabiliy or Quantity is changed.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'List+Rules')
+    ); ?>
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_template_synchronization_form_data_list">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('List Action'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('List Action'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="list_mode" name="synchronization[list_mode]" class="required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_MODE_NONE; ?>" <?php if ($formData['list_mode'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_MODE_YES; ?>" <?php if ($formData['list_mode'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_MODE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'Enables automatic Listing of unlisted Items if they meet List Conditions.
+                                Choose whether you want an Item that isn\'t currently Listed on eBay to be Listed if the list Conditions are met.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_template_synchronization_form_data_list_rules" <?php if ($formData['list_mode'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_MODE_NONE): echo ' style="display:none;"'; endif; ?>>
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('List Conditions'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Product Status'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="list_status_enabled" name="synchronization[list_status_enabled]" class="required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_STATUS_ENABLED_NONE; ?>" <?php if ($formData['list_status_enabled'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_STATUS_ENABLED_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_STATUS_ENABLED_YES; ?>" <?php if ($formData['list_status_enabled'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_STATUS_ENABLED_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                '<b>Enabled:</b> List Items automatically on eBay if they have a Magento Product status of enabled.
+                                <b>Any:</b> List Items with any Magento Product status automatically on eBay.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Stock Availability'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="list_is_in_stock" name="synchronization[list_is_in_stock]" class="required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_IS_IN_STOCK_NONE; ?>" <?php if ($formData['list_is_in_stock'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_IS_IN_STOCK_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_IS_IN_STOCK_YES; ?>" <?php if ($formData['list_is_in_stock'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_IS_IN_STOCK_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('In Stock'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    '<b>In Stock:</b> List Items automatically if Products are in Stock. (Recommended.)<br/>
+                                    <b>Any:</b> List Items automatically, regardless of Stock availability.'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Magento Quantity'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="list_qty_magento" name="synchronization[list_qty_magento]" class="required-entry" qty_type="magento">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_NONE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <!-- <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_LESS; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_MORE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    '<b>Any:</b> List Items automatically with any Quantity available.<br/>
+                                    <b>More or Equal: </b> List Items automatically if the Quantity available in Magento is at least equal to the number you set.<br/>
+                                    <b>Between:</b> List Items automatically if the Quantity available in Magento is between the minimum and maximum numbers you set.'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="list_qty_magento_value_container" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_NONE) echo ' style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="list_qty_magento_value">
+                            <span id="list_qty_magento_item" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
+                            <span id="list_qty_magento_item_min" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
+                        </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="list_qty_magento_value" name="synchronization[list_qty_magento_value]" value="<?php echo $this->escapeHtml($formData['list_qty_magento_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
+                    </td>
+                </tr>
+
+                <tr id="list_qty_magento_value_max_container" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="list_qty_magento_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="list_qty_magento_value_max" name="synchronization[list_qty_magento_value_max]" value="<?php echo $this->escapeHtml($formData['list_qty_magento_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Calculated Quantity'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="list_qty_calculated" name="synchronization[list_qty_calculated]" class="required-entry" qty_type="calculated">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_NONE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <!-- <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_LESS; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_MORE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    '<b>Any:</b> List Items automatically with any Quantity available.<br/>
+                                    <b>More or Equal: </b> List Items automatically if the calculated Quantity according to the Price, Quantity and Format Policy is at least equal to the number you set.<br/>
+                                    <b>Between:</b> List Items automatically if the Quantity according to the Price, Quantity and Format Policy is between the minimum and maximum numbers you set.'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="list_qty_calculated_value_container" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_NONE) echo ' style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="list_qty_calculated_value">
+                            <span id="list_qty_calculated_item" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
+                            <span id="list_qty_calculated_item_min" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
+                        </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="list_qty_calculated_value" name="synchronization[list_qty_calculated_value]" value="<?php echo $this->escapeHtml($formData['list_qty_calculated_value']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits" />
+                    </td>
+                </tr>
+
+                <tr id="list_qty_calculated_value_max_container" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="list_qty_calculated_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="list_qty_calculated_value_max" name="synchronization[list_qty_calculated_value_max]" value="<?php echo $this->escapeHtml($formData['list_qty_calculated_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

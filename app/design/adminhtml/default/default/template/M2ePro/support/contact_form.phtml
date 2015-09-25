@@ -1,0 +1,126 @@
+<style>
+
+    div#form_left {
+        width: 35%;
+        float: left;
+        padding: 10px 10px 10px 0;
+    }
+
+    div#form_right {
+        margin-left: 37%;
+        width: 67%;
+        padding: 10px;
+    }
+
+    #form_left input {
+        width: 99%;
+        height: 30px;
+        margin-bottom: 20px;
+        border: 1px solid #808080;
+        border-radius: 4px;
+        padding-left: 4px;
+    }
+
+    #form_left select {
+        width: 100%;
+        height: 30px;
+        margin-bottom: 10px;
+        border: 1px solid #808080;
+        border-radius: 4px;
+        padding: 5px 4px;
+    }
+
+    #form_left input[type = 'file'] {
+        border: none;
+        margin-bottom: 10px;
+        height: 25px;
+    }
+
+    #form_right textarea {
+        width: 92%;
+        height: 210px;
+        border: 1px solid #808080;
+        border-radius: 4px;
+        padding-left: 4px;
+    }
+
+    div#send_button_container {
+        text-align: right;
+        padding-right: 55px;
+        margin-top: 20px;
+    }
+
+</style>
+
+<div id="block_notice_support_contact_form" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Contact Support'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'Immediate help can be obtained from <a href="%url_1%" onclick="%script_code_1%">Documentation</a> and <a href="%url_2%" onclick="%script_code_2%">Knowledge Base</a>.
+        <br/><br/>
+        If you can\'t find the answer to your question, use the form below to contact us for help and we\'ll get back to you as soon as we can.
+        Our Customer Support Team\'s hours of operation are Monday to Friday, 8am–4pm (UK time).',
+        'javascript:void(0)', 'SupportHandlerObj.setTabActive(\'support_documentation\')',
+        'javascript:void(0)', 'SupportHandlerObj.setTabActive(\'support_articles\')'
+    ); ?>
+</div>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" method="post" action="<?php echo $this->getForm()->getData('action'); ?>" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <div id="form_left">
+
+        <input type="text" id="subject" name="subject" class="required-entry" placeholder="<?php echo Mage::helper('M2ePro')->__('Subject'); ?>" /><br/>
+        <input type="text" id="contact_name" name="contact_name" class="required-entry" placeholder="<?php echo Mage::helper('M2ePro')->__('Contact Name'); ?>" /><br/>
+        <input type="text" id="contact_mail" name="contact_mail" class="required-entry validate-email" placeholder="<?php echo Mage::helper('M2ePro')->__('Contact Email'); ?>" /><br/>
+        <?php if (Mage::helper('M2ePro/Module_Support')->isTypePremium()) : ?>
+            <select id="severity" name="severity">
+                <option value="minor"><?php echo Mage::helper('M2ePro')->__('Minor'); ?></option>
+                <option value="important"><?php echo Mage::helper('M2ePro')->__('Important'); ?></option>
+                <option value="critical"><?php echo Mage::helper('M2ePro')->__('Critical'); ?></option>
+            </select>
+        <?php endif; ?>
+
+        <select id="component" name="component" <?php if ($this->getRequest()->getParam('referrer') == Ess_M2ePro_Helper_View_Ebay::NICK) echo 'style="display: none"'?>>
+            <option selected value="none"><?php echo Mage::helper('M2ePro')->__('General Problem'); ?></option>
+            <?php if (Mage::helper('M2ePro/Component_Ebay')->isActive()) { ?>
+                <option
+                    <?php if ($this->getRequest()->getParam('referrer') == Ess_M2ePro_Helper_View_Ebay::NICK) echo 'selected="selected"'; ?>
+                    <?php if ($this->getRequest()->getParam('referrer') == Ess_M2ePro_Helper_View_Common::NICK) echo 'style="display: none"'; ?>
+                    value="<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Ebay')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?>
+                </option>
+            <?php } ?>
+            <?php if (Mage::helper('M2ePro/Component_Amazon')->isActive()) { ?>
+                <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Amazon')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
+            <?php } ?>
+            <?php if (Mage::helper('M2ePro/Component_Buy')->isEnabled()) { ?>
+                <option value="<?php echo Ess_M2ePro_Helper_Component_Buy::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Buy')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
+            <?php } ?>
+        </select>
+
+        <div id="more">
+            <input type="file" name="files[]" onchange="SupportHandlerObj.toggleMoreButton()">
+        </div>
+
+        <div id="more_button_container" style="display: none;">
+            <?php echo $this->getChildHtml('more_attachments'); ?>
+        </div>
+
+    </div>
+
+    <div id="form_right">
+        <textarea id="description" name="description">What steps will reproduce the problem?
+1.
+2.
+3.
+
+What is the expected output? What do you see instead?
+
+
+Please provide any additional information below.
+</textarea>
+        <div id="send_button_container">
+            <?php echo $this->getChildHtml('send_form'); ?>
+        </div>
+    </div>
+
+</form>

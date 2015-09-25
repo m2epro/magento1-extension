@@ -1,0 +1,22 @@
+<?php
+
+$completeLink = $this->getUrl("*/adminhtml_wizard_removedPlay/complete");
+
+?>
+
+<div class="wizard-note">
+
+    <a class="wizard-close" href="javascript:void(0);" onclick="WizardHandlerObj.complete('<?php echo $completeLink; ?>');" title="<?php echo Mage::helper('M2ePro')->__('Close') ?>">&times;</a>
+
+    <div>
+        <?php echo Mage::helper('M2ePro')->__('
+            Play.com Integration was <strong>Removed</strong> from current version of M2E Pro.<br/>
+            Play.com Marketplace was Closed as a web-resource. It is connected with it was removed and rebranded in Rakuten.co.uk.
+            M2E Pro stops support of Play.com Integration as technically Play.com and Rakuten.co.uk are totally different and it is necessary to create new integration with Rakuten.co.uk.<br/>
+            M2E Pro is planning to release Rakuten.co.uk Integration at the end of 2015 year or beginning of 2016 year.
+            <a href="javascript:void(0);" onclick="WizardHandlerObj.complete(\'%url_1%\');">Hide message.</a>
+        ', $completeLink
+        );?>
+    </div>
+
+</div>

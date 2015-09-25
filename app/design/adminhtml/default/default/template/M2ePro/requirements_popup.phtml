@@ -1,0 +1,55 @@
+<script type="text/javascript">
+
+    var requirementsPopup;
+
+    function showRequirementsPopup()
+    {
+        requirementsPopup = Dialog.info(null, {
+            className: "magento",
+            windowClassName: "popup-window",
+            title: '<?php echo Mage::helper('M2ePro')->__('System Requirements'); ?>',
+            top: 100,
+            width: 500,
+            height: 235,
+            zIndex: 100,
+            recenterAuto: false,
+            hideEffect: Element.hide,
+            showEffect: Element.show
+        });
+
+        requirementsPopup.options.destroyOnClose = false;
+        $('modal_dialog_message').insert($('requirements_popup_content').show());
+    }
+
+    function closeRequirementsPopup()
+    {
+        new Ajax.Request('<?php echo $this->getUrl('M2ePro/adminhtml_general/requirementsPopupClose'); ?>',
+        {
+            method: 'post',
+            asynchronous : true,
+            onSuccess: function()
+            {
+                requirementsPopup.close();
+            }
+        });
+    }
+
+    Event.observe(window,'load',function() {
+        MagentoMessageObj.addError('<?php echo Mage::helper('M2ePro')->__(
+            'M2E Pro has detected, that your System Configuration does not meet minimum requirements, so there might be problems with its work. Please <a href="javascript:" onclick="%script_code%">check it</a> and amend appropriate Settings.',
+            'showRequirementsPopup()') ?>'
+        )
+    })
+
+</script>
+
+<div id="requirements_popup_content" style="display:none;">
+
+    <div style="height: 200px">
+        <div style="padding: 10px"></div>
+        <?php echo $this->getChildHtml('requirements'); ?>
+    </div>
+
+    <?php echo $this->getChildHtml('requirements_popup_close'); ?>
+
+</div>

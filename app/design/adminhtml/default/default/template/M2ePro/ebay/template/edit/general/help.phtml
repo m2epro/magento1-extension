@@ -1,0 +1,9 @@
+<?php $url = $this->isEditMode() ? Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Edit+Payment%2C+Shipping%2C+Return+Listing+Settings') :
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Step+2%3A+Payment+and+Shipping+Settings');
+?>
+<div id="ebay_template_edit_general_help" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Payment and Shipping Settings'); ?>">
+    <p><?php echo Mage::helper('M2ePro')->__(
+        'Choose the Payment, Domestic and International Shipping Options you want to use for Products Listed on eBay using this M2E Pro Listing.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.', $url
+    ); ?></p>
+</div>

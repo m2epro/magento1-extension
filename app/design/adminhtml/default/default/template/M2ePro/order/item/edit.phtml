@@ -1,0 +1,26 @@
+<style type="text/css">
+
+    .gray {
+        color: gray;
+    }
+
+</style>
+
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_order')) ?>);
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_log')) ?>);
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_common_log')) ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Please enter correct Product ID or SKU.' => Mage::helper('M2ePro')->__('Please enter correct Product ID or SKU.'),
+        'Please enter correct Product ID.' => Mage::helper('M2ePro')->__('Please enter correct Product ID.')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+
+        OrderEditItemHandlerObj = new OrderEditItemHandler();
+
+    });
+
+</script>

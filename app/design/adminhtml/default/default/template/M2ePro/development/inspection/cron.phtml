@@ -1,0 +1,119 @@
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Type'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->cronCurrentType; ?>
+        </td>
+    </tr>
+
+    <?php if (Mage::helper('M2ePro/Module_Cron')->isTypeService() && !$this->getData('is_support_mode')) : ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('Service Auth Key'); ?>: </label>
+            </td>
+            <td class="value">
+                <?php echo $this->cronServiceAuthKey; ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Last Run'); ?>: </label>
+        </td>
+        <?php
+            $style = '';
+            if ($this->cronIsNotWorking) {
+                $style = ' style="color: red"';
+            }
+        ?>
+        <td class="value">
+            <span<?php echo $style; ?>><?php echo $this->cronLastRunTime ?></span>
+            <?php
+                if ($this->cronIsNotWorking) {
+                    echo ' (' . Mage::helper('M2ePro')->__('not working') . ')';
+                }
+            ?>
+        </td>
+    </tr>
+
+    <?php if (!$this->getData('is_support_mode') && $this->isServiceCronDisabled) : ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('Service Cron State'); ?>: </label>
+            </td>
+            <td class="value" style="color: red;">
+                <?php echo Mage::helper('M2ePro')->__('Disabled by Developer'); ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <?php if (!$this->getData('is_support_mode') && $this->isMagentoCronDisabled) : ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('Magento Cron State'); ?>: </label>
+            </td>
+            <td class="value" style="color: red;">
+                <?php echo Mage::helper('M2ePro')->__('Disabled by Developer'); ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <?php if ($this->isShownRecommendationsMessage()) : ?>
+        <tr>
+            <td class="label" colspan="2" style="width: 600px">
+                <strong><?php echo Mage::helper('M2ePro')->__('We recommend to set up your Cron Job to be run every 1 minute (e.g. * * * * *).'); ?></strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('PHP Command'); ?>: </label>
+            </td>
+            <td class="value">
+                <?php echo $this->cronPhp; ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('GET Command'); ?>: </label>
+            </td>
+            <td class="value">
+                <?php echo $this->cronGet; ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <?php if ($this->isShownServiceDescriptionMessage()) : ?>
+        <tr>
+            <td class="label" colspan="2" style="width: 600px">
+                <strong><?php echo Mage::helper('M2ePro')->__('What is the Cron Type Service?'); ?></strong>
+            </td>
+        </tr>
+        <tr>
+            <td class="label" colspan="2" style="width: 600px">
+                <?php echo Mage::helper('M2ePro')->__(
+                    'It is M2E Pro Cron System where you were registered automatically during the Extension Installation.
+                    No additional Settings are required. Our Service does HTTP calls to your Magento from IP address: <b>%server_ip%</b>.',
+                    $this->cronServiceIp
+                ); ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <?php if (!$this->getData('is_support_mode')) : ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('Cron Schedule Table'); ?>: </label>
+            </td>
+            <td class="value">
+                <a href="<?php echo $this->getUrl('*/adminhtml_development_inspection/cronScheduleTable'); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Show') ?></a>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+</table>

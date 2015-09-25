@@ -1,0 +1,110 @@
+<?php
+
+    //------------------------------
+    $urls = array();
+
+    $store = Mage::helper('M2ePro/Data_Global')->getValue('ebay_store');
+    $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
+
+    $path = 'adminhtml_ebay_template/isTitleUnique';
+    $urls[$path] = $this->getUrl('*/' . $path);
+
+    $path = 'adminhtml_ebay_template/edit';
+    $urls[$path] = $this->getUrl('*/adminhtml_ebay_template/edit', array('wizard' => (bool)$this->getRequest()->getParam('wizard', false)));
+
+    $urls = json_encode($urls);
+    //------------------------------
+
+?>
+<script type="text/javascript">
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Manager'); ?>,
+        'Ess_M2ePro_Model_Ebay_Template_Manager'
+    );
+
+    M2ePro.url.add(<?php echo $urls ?>);
+    M2ePro.url.templateCheckMessages = '<?php echo $this->getUrl('*/adminhtml_template/checkMessages', array('component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK)); ?>';
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Customized' => Mage::helper('M2ePro')->__('Customized'),
+        'Policies' => Mage::helper('M2ePro')->__('Policies'),
+        'Policy with the same Title already exists.' => Mage::helper('M2ePro')->__('Policy with the same Title already exists.'),
+        'Please specify Policy Title' => Mage::helper('M2ePro')->__('Please specify Policy Title'),
+        'Save New Policy' => Mage::helper('M2ePro')->__('Save New Policy'),
+        'Save as New Policy' => Mage::helper('M2ePro')->__('Save as New Policy'),
+    )) ?>);
+</script>
+<script type="text/javascript">
+    TemplateHandlerObj = new TemplateHandler();
+
+    EbayListingTemplateSwitcherHandlerObj = new EbayListingTemplateSwitcherHandler();
+    EbayListingTemplateSwitcherHandlerObj.storeId = <?php echo (int)$store->getId(); ?>;
+    EbayListingTemplateSwitcherHandlerObj.marketplaceId = <?php echo (int)$marketplace->getId(); ?>;
+    EbayListingTemplateSwitcherHandlerObj.listingProductIds = '<?php echo $this->getRequest()->getParam('ids') ?>';
+</script>
+<style type="text/css">
+    #template_payment_data_container,
+    #template_shipping_data_container,
+    #template_return_data_container,
+    #template_description_data_container,
+    #template_selling_format_data_container {
+        background: none repeat scroll 0 0 #EAEAEA;
+        border: 1px solid #D6D6D6;
+        padding: 20px;
+    }
+    #template_payment_nick_label,
+    #template_shipping_nick_label,
+    #template_return_nick_label,
+    #template_selling_format_nick_label,
+    #template_description_nick_label,
+    #template_synchronization_nick_label {
+        float: left;
+        padding-right: 10px;
+    }
+    #template_payment_buttons_container,
+    #template_shipping_buttons_container,
+    #template_return_buttons_container,
+    #template_selling_format_buttons_container,
+    #template_description_buttons_container {
+        margin-top: -15px !important;
+    }
+    .template-switcher-container .content-header {
+        border-bottom: 0;
+        margin: 10px 0 5px 0 !important
+    }
+    .template-switcher-container .content-header table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    .template-switcher-container .template-switcher-td {
+        padding-left: 30px !important;
+        width: 250px;
+    }
+    .template-switcher {
+        width: 100%;
+    }
+    .template-title-td {
+        padding-left: 10px;
+        width: 100px;
+    }
+    .template-title {
+        color: gray;
+        font-style: italic;
+    }
+    .template-nick-td {
+        padding-left: 10px;
+        width: 100%;
+    }
+    .template-nick-td .template, .template-nick-td .policy {
+        font-size: 11px;
+        font-style: italic;
+        color: gray;
+    }
+    .template-nick-td .parent {
+        font-size: 11px;
+        color: red;
+    }
+</style>
+<div style="display: none;">
+    <?php echo $this->getChildHtml('confirm') ?>
+</div>

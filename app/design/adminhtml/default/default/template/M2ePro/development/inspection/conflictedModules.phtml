@@ -1,0 +1,46 @@
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label" style="width:300px;">
+            <strong><?php echo Mage::helper('M2ePro')->__('Module'); ?></strong>
+        </td>
+        <td class="value" style="width:150px;">
+            <strong><?php echo Mage::helper('M2ePro')->__('Status'); ?></strong>
+        </td>
+        <td class="value" style="width:150px;">
+            <strong><?php echo Mage::helper('M2ePro')->__('Code Pool'); ?></strong>
+        </td>
+        <td class="value" style="width:150px;">
+            <strong><?php echo Mage::helper('M2ePro')->__('Version'); ?></strong>
+        </td>
+    </tr>
+
+    <?php foreach (Mage::helper('M2ePro/Magento')->getConflictedModules() as $module => $data) : ?>
+
+        <tr>
+            <td class="label">
+                <label><?php echo $module; ?>: </label>
+                <?php if (!empty($data['description'])) { ?>
+                    <p class="note" style="color: grey">
+                        <span><?php echo Mage::helper('M2ePro')->__($data['description']); ?></span>
+                    </p>
+                <?php } ?>
+            </td>
+            <td class="value">
+                <?php if ($data['active']) { ?>
+                    <span class="red"><b>Enabled</b></span>
+                <?php } else { ?>
+                    <span><b>Disabled</b></span>
+                <?php } ?>
+            </td>
+            <td class="value">
+                <?php echo isset($data['codePool']) ? $data['codePool'] : '-'; ?>
+            </td>
+            <td class="value">
+                <?php echo isset($data['version']) ? $data['version'] : '-'; ?>
+            </td>
+        </tr>
+
+    <?php endforeach; ?>
+
+</table>

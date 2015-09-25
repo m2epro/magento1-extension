@@ -1,0 +1,31 @@
+<div id="productSearchMenu_pop_up_content" style="display: none;">
+    <div class="hor-scroll" style="padding-top: 15px; margin-bottom: 0px">
+
+        <div id="productSearchMenu_error_block" class="error-msg" style="display:none">
+            <div style="margin: 6px 0px 6px 35px">
+                <strong><?php echo Mage::helper('M2ePro')->__('There was an error during previous automatic Rakuten.com SKU Search:'); ?></strong><br/>
+                <div id="productSearchMenu_error_message"></div>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin: 20px auto;">
+            <div>
+                <a style="font-size:140%" href="javascript:void(0);" onclick="ListingGridHandlerObj.productSearchHandler.showSearchManualPrompt();"><?php echo Mage::helper('M2ePro')->__('Assign Rakuten.com SKU Manually'); ?></a>
+                <div style="color:#666; height:50px; margin:5px auto 10px auto;"> <?php echo Mage::helper('M2ePro')->__('Allows searching Rakuten.com SKU by data that will be specified on the next step.'); ?></div>
+            </div>
+            <div>
+                <a style="font-size:140%" href="javascript:void(0);" onclick="ListingGridHandlerObj.productSearchHandler.showSearchGeneralIdAutoPrompt();"><?php echo Mage::helper('M2ePro')->__('Assign Rakuten.com SKU Automatically'); ?></a>
+                <div style="color:#666; height:50px; margin:5px auto 10px auto;"> <?php echo Mage::helper('M2ePro')->__('Allows searching Rakuten.com SKU by data, that have already been specified in Listing Search Settings.'); ?></div>
+            </div>
+            <div>
+                <a style="font-size:140%;" href="javascript:void(0);" onclick="ListingGridHandlerObj.productSearchHandler.addNewGeneralId();"><?php echo Mage::helper('M2ePro')->__('Add New Rakuten.com SKU'); ?></a>
+                <div style="color:#666; height:50px;  margin:5px auto 10px auto;"> <?php echo Mage::helper('M2ePro')->__('Allows adding a Product, which is not present on Rakuten.com. Rakuten.com SKU will be generated and returned back by Rakuten.com.'); ?></div>
+            </div>
+        </div>
+
+        <div id="productSearchMenu_buttons" style="text-align: right; margin: 10px 0px;">
+            <?php echo $this->getChildHtml('productSearchMenu_cancel_button') ?>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,70 @@
+<style type="text/css">
+    #breadcrumb_container {
+        margin: 10px 0;
+    }
+    .breadcrumb {
+        padding: 12px 0;
+        color: #aaa;
+        width: 33.1%;
+        font-size: 14px;
+        text-align: center;
+        background: #e7efef;
+    }
+    .space {
+        width: 0.3%;
+        height: 40px;
+        background: white;
+    }
+    .selected {
+        color: white;
+        background: #6f8992;
+        font-weight: bold;
+    }
+</style>
+
+<div id="breadcrumb_container" style="display: none;">
+
+    <div class="left" style="width: 100%;">
+
+        <div id="step_1" class="left breadcrumb <?php if ($this->getStep() == 1): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step 1') ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('General') ?>
+            </span>
+
+        </div>
+
+        <div class="left space"></div>
+
+        <div id="step_2" class="left breadcrumb <?php if ($this->getStep() == 2): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step 2') ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('eBay Categories') ?>
+            </span>
+
+        </div>
+
+        <div class="left space"></div>
+
+        <div id="step_3" class="left breadcrumb <?php if ($this->getStep() == 3): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step 3') ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Specifics') ?>
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>

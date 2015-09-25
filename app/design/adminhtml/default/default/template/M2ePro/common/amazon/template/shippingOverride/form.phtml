@@ -1,0 +1,256 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Form */
+
+    /** @var Ess_M2ePro_Model_Amazon_Template_ShippingOverride $model */
+    $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+    $formData = array();
+    if ($model) {
+        $formData = $model->toArray();
+    }
+
+    if (!empty($formData)) {
+        $formData['shipping_override_rule'] = $model->getServices();
+    }
+
+    $default = array(
+        'id' => '',
+        'title' => '',
+        'marketplace_id' => '',
+        'shipping_override_rule' => array()
+    );
+
+    $default['marketplace_id'] = $this->getRequest()->getParam('marketplace_id', '');
+
+    $formData = array_merge($default, $formData);
+?>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,
+        'Ess_M2ePro_Helper_Component_Amazon'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service'); ?>,
+        'Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service'
+    );
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit'    => $this->getUrl('M2ePro/adminhtml_common_amazon_template_shippingOverride/save', array('id' => $this->getRequest()->getParam('id'))),
+        'formSubmitNew' => $this->getUrl('M2ePro/adminhtml_common_amazon_template_shippingOverride/save'),
+        'deleteAction'  => $this->getUrl('M2ePro/adminhtml_common_amazon_template_shippingOverride/delete', array('id' => $this->getRequest()->getParam('id')))
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Any' => Mage::helper('M2ePro')->__('Any'),
+        'Add Shipping Override Policy.' => Mage::helper('M2ePro')->__('Add Shipping Override Policy.'),
+        'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
+    )); ?>);
+
+    M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
+    M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
+
+    Event.observe(window, 'load', function() {
+        AmazonTemplateShippingOverrideHandlerObj = new CommonAmazonTemplateShippingOverrideHandler();
+
+        AmazonTemplateShippingOverrideHandlerObj.overrideServicesData = <?php echo json_encode($this->getOverrideDictionaryData()); ?>;
+
+        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+
+        <?php if ($formData['id'] != '') { ?>
+            AmazonTemplateShippingOverrideHandlerObj.renderRules(<?php echo json_encode($formData['shipping_override_rule']); ?>);
+        <?php } else { ?>
+            $('marketplace_id')
+                .observe('change', AmazonTemplateShippingOverrideHandlerObj.marketplaceChange)
+                .simulate('change');
+        <?php } ?>
+
+       $('<?php echo $this->getForm()->getId(); ?>').on('change', 'select', function(e) {
+            $(e.target).select('.empty') && $(e.target).select('.empty').length && $(e.target).select('.empty')[0].hide();
+        });
+    });
+    //-----------------------------
+
+</script>
+
+<style type="text/css">
+    .coef {
+        padding-left: 5px !important;
+        padding-top: 5px !important;
+    }
+    .coef input {
+        text-align: right;
+        width: 36px;
+    }
+    .form-list td.label {
+        width: 275px;
+    }
+</style>
+
+<div id="block_notice_amazon_template_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Shipping Override Policy'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        Shipping Override Policy Settings allow to select Shipping Service which you would like to use, Locale and
+        the Shipping Cost Settings.</br></br>
+
+        <strong>Note:</strong> the Settings specified in Shipping Override Policy are not visible in Seller Central.
+        They become available only after the Buyer add the Item with such settings into a Cart in selected Locale.</br></br>
+
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Shipping+Override+Policy')); ?>
+</div>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+<div class="entry-edit" id="magento_block_amazon_template_selling_format_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-price-tpl-title"/>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Short meaningful Policy Title for your internal use.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="marketplace_id"><?php echo Mage::helper('M2ePro')->__('Marketplace'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <?php if (!empty($formData['marketplace_id'])): ?>
+                            <input type="hidden" name="marketplace_id" value="<?php echo $formData['marketplace_id'] ?>" id="marketplace_id" />
+                            <span><?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Marketplace', $formData['marketplace_id'])->getTitle()) ?></span>
+                        <?php else: ?>
+                            <select name="marketplace_id" id="marketplace_id" class="required-entry">
+                                <option value="" class="empty-option"></option>
+                                <?php foreach ($this->getEnabledMarketplaces() as $marketplace): ?>
+                                    <option value="<?php echo $marketplace->getId() ?>" currency="<?php echo $marketplace->getChildObject()->getCurrency() ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($marketplace->getTitle()) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_amazon_template_shipping_override_rules" style="display: none">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Overrides'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="grid" colspan="2">
+
+                        <div style="margin: 10px 0"></div>
+
+                        <table id="shipping_override_rule_table" class="border" cellpadding="0" cellspacing="0" style="max-width: 900px">
+                            <thead>
+                            <tr class="headings">
+                                <th style="width: 120px"><?php echo Mage::helper('M2ePro')->__('Service'); ?><span class="required">*</span></th>
+                                <th style="width: 220px"><?php echo Mage::helper('M2ePro')->__('Locale'); ?><span class="required">*</span></th>
+                                <th style="width: 150px"><?php echo Mage::helper('M2ePro')->__('Override Method'); ?></th>
+                                <th style="width: 120px"><?php echo Mage::helper('M2ePro')->__('Mode'); ?></th>
+                                <th style="width: 160px"><?php echo Mage::helper('M2ePro')->__('Cost'); ?><span class="required">*</span></th>
+                                <th style="width: 50px"><?php echo Mage::helper('M2ePro')->__('Currency'); ?></th>
+                                <th style="width: 35px;" class="type-butt last">&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody id="shipping_override_rules_table_tbody">
+                            <!-- #shipping_override_rule_table_row_template inserts here -->
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="20" class="a-right"><?php echo $this->getChild('add_shipping_override_rule_button')->setData('label', Mage::helper('M2ePro')->__('Add'))->toHtml(); ?></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+</form>
+
+<table id="shipping_override_rule_table_row_template" style="display: none;">
+    <tbody>
+        <tr id="shipping_override_rule_%i%_tr" class="shipping-override-rule">
+            <td style="text-align: center;">
+                <select name="shipping_override_rule[service][%i%]" class="required-entry shipping-override-service" style="width: 120px" onchange="AmazonTemplateShippingOverrideHandlerObj.ruleServiceChange(this)"></select>
+            </td>
+            <td style="text-align: center;">
+                <select name="shipping_override_rule[location][%i%]" class="required-entry shipping-override-location" disabled="disabled" style="width: 220px;display: none" onchange="AmazonTemplateShippingOverrideHandlerObj.ruleLocationChange(this)"></select>
+                <input name="shipping_override_rule[option][%i%]" type="hidden" class="shipping-override-option"/>
+            </td>
+            <td style="text-align: center;">
+                <select name="shipping_override_rule[type][%i%]" class="required-entry shipping-override-type" disabled="disabled" style="width: 150px; display: none" onchange="AmazonTemplateShippingOverrideHandlerObj.ruleTypeChange(this)">
+                    <option value="" class="empty"></option>
+                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service::TYPE_EXCLUSIVE ?>"><?php echo Mage::helper('M2ePro')->__('Exclusive'); ?></option>
+                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service::TYPE_ADDITIVE ?>"><?php echo Mage::helper('M2ePro')->__('Additive'); ?></option>
+                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service::TYPE_RESTRICTIVE ?>"><?php echo Mage::helper('M2ePro')->__('Restrictive'); ?></option>
+                </select>
+            </td>
+            <td style="text-align: center;">
+                <select name="shipping_override_rule[cost_mode][%i%]" class="required-entry shipping-override-cost-mode" disabled="disabled" style="width: 120px; display: none" onchange="AmazonTemplateShippingOverrideHandlerObj.ruleCostModeChange(this)">
+                    <option value="" class="empty"></option>
+                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service::COST_MODE_FREE ?>"><?php echo Mage::helper('M2ePro')->__('Free'); ?></option>
+                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service::COST_MODE_CUSTOM_VALUE ?>"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service::COST_MODE_CUSTOM_ATTRIBUTE ?>"><?php echo Mage::helper('M2ePro')->__('Custom Attribute'); ?></option>
+                </select>
+            </td>
+            <td style="text-align: center;">
+                <input name="shipping_override_rule[cost_value][%i%]" type="text" class="required-entry input-text M2ePro-validation-float shipping-override-cost-custom-value" disabled="disabled" style="width: 155px; display: none; text-align: right"/>
+                <select name="shipping_override_rule[cost_value][%i%]" class="required-entry shipping-override-cost-custom-attribute" disabled="disabled" style="width: 155px; display: none;">
+                    <option value="" class="empty"></option>
+                    <?php foreach ($this->getAttributes() as $attribute) { ?>
+                        <option value="<?php echo $attribute['code'] ?>"><?php echo $attribute['label']; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td style="text-align: center;">
+                <span class="shipping-override-rule-currency">
+                    <?php if (!empty($formData['marketplace_id'])) { ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Marketplace', $formData['marketplace_id'])->getChildObject()->getCurrency()) ?>
+                    <?php } ?>
+                </span>
+            </td>
+            <td style="text-align: center;">
+                <?php echo $this->getChildHtml('remove_shipping_override_rule_button'); ?>
+            </td>
+        </tr>
+    </tbody>
+</table>

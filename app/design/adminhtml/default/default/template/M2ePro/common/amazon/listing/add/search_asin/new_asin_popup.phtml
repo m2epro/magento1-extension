@@ -1,0 +1,23 @@
+<div id="asin_search_new_asin_popup">
+    <div style="margin: 10px; height: 160px">
+        <h3><?php echo Mage::helper('M2ePro')->__('Do you want to create New Amazon Products for Magento Products which do not have ASIN/ISBN assigned? ') ?></h3>
+        <br/>
+        <p><?php echo Mage::helper('M2ePro')->__('Not for all Magento Products ASIN/ISBN was found in Amazon Catalog. If you want M2E Pro can create New ASIN(s)/ISBN(s) for such Magento Products. <br/><br/>
+         <b>Note:</b> You can use the Search of Amazon Products or the feature of Creation of New Amazon Products later in M2E Pro Listing.') ?></p>
+    </div>
+
+    <div class="clear"></div>
+    <div class="left">
+        <div style="margin-left: 20px">
+            <input id="asin_search_new_asin_remember_checkbox" type="checkbox">
+            &nbsp;&nbsp;
+            <label for="asin_search_new_asin_remember_checkbox"><?php echo Mage::helper('M2ePro')->__('Remember my choice') ?></label>
+        </div>
+    </div>
+    <div class="right">
+        <?php echo $this->getChildHtml('yesBtn'); ?>
+        <div style="display: inline-block;"></div>
+        <?php echo $this->getChildHtml('noBtn'); ?>
+    </div>
+    <div class="clear"></div>
+</div>

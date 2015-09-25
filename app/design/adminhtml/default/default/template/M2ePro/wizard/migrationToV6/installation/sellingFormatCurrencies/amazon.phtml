@@ -1,0 +1,70 @@
+<?php
+    $amazonTableData = $this->getData('migration_data');
+    $amazonCoefficients = array(
+        'price',
+        'sale_price',
+    );
+?>
+
+<div class="grid">
+
+    <table class="border" cellpadding="0" cellspacing="0">
+        <thead>
+        <tr class="headings">
+            <th style="width: 3%"><?php echo Mage::helper('M2ePro')->__('ID'); ?></th>
+            <th><?php echo Mage::helper('M2ePro')->__('Title'); ?></th>
+            <th style="width: 25%"><?php echo Mage::helper('M2ePro')->__('Possible Conversions'); ?></th>
+            <th style="width: 10%"><?php echo Mage::helper('M2ePro')->__('Rate'); ?></th>
+            <th style="width: 20%"><?php echo Mage::helper('M2ePro')->__('Price Coefficient'); ?></th>
+            <th style="width: 20%"><?php echo Mage::helper('M2ePro')->__('Sale Price Coefficient'); ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($amazonTableData as $id => $row): ?>
+            <tr>
+                <td>
+                    <?php echo $id; ?>
+                </td>
+                <td>
+                    <?php echo $row['title']; ?>
+                </td>
+                <td>
+                    <?php foreach ($row['currencies'] as $currency): ?>
+                        <?php echo Mage::helper('M2ePro')->__('Store Currency (%currency_code%)', $currency['store']); ?> -> <?php echo Mage::helper('M2ePro')->__('Marketplace Currency (%currency_code%)', $currency['marketplace']); ?><br/>
+
+                        <?php if ($currency['rate'] <= 0): ?>
+                            <span style="color: green; font-style: italic; font-size: 12px;">&nbsp;&nbsp;&nbsp;
+                                <?php echo Mage::helper('M2ePro')->__('Conversion will not be performed.'); ?>
+                            </span>
+                        <?php else: ?>
+                            <span style="color: red; font-style: italic; font-size: 12px;">&nbsp;&nbsp;&nbsp;
+                                <?php echo Mage::helper('M2ePro')->__('Conversion will be performed.'); ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <br/>
+                    <?php endforeach; ?>
+                </td>
+
+                <td align="center">
+                    <?php foreach ($row['rates'] as $rate): ?>
+                        <div style="height: 35px">
+                            <?php echo $rate != 0 ? $rate : ''; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </td>
+
+                <?php foreach ($amazonCoefficients as $coefficient): ?>
+                    <td align="center">
+                        <?php if (isset($row['prices'][$coefficient])): ?>
+                            <input type="text" name="amazon[<?php echo $coefficient; ?>_coefficient_<?php echo $id; ?>]" value="<?php echo $row['prices'][$coefficient]; ?>" class="M2ePro-common-coefficient-validation" style="width: 40px">
+                        <?php endif; ?>
+                    </td>
+                <?php endforeach; ?>
+
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+</div>

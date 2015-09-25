@@ -1,0 +1,38 @@
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit' => $this->getUrl('M2ePro/adminhtml_common_marketplace/save'),
+        'runSynchNow' => $this->getUrl('M2ePro/adminhtml_common_marketplace/runSynchNow'),
+        'synchCheckProcessingNow' => $this->getUrl('M2ePro/adminhtml_common_synchronization/synchCheckProcessingNow')
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Settings have been saved.' => Mage::helper('M2ePro')->__('Settings have been saved.'),
+        'You must select at least one Marketplace you will work with.' => Mage::helper('M2ePro')->__('You must select at least one Marketplace you will work with.'),
+
+        'Another Synchronization Is Already Running.' => Mage::helper('M2ePro')->__('Another Synchronization Is Already Running.'),
+        'Getting information. Please wait ...' => Mage::helper('M2ePro')->__('Getting information. Please wait ...'),
+        'Preparing to start. Please wait ...' => Mage::helper('M2ePro')->__('Preparing to start. Please wait ...'),
+
+        'Synchronization has successfully ended.' => Mage::helper('M2ePro')->__('Synchronization has successfully ended.'),
+        'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.'),
+        'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        editForm = new varienForm('<?php echo $this->getForm()->getId(); ?>', '<?php echo $this->getValidationUrl(); ?>');
+
+        WizardMarketplaceProgressBarObj = new ProgressBar('marketplaces_progress_bar');
+        WizardMarketplaceWrapperObj = new AreaWrapper('marketplaces_content_container');
+
+        WizardMarketplaceProgressHandlerObj = new SynchProgressHandler(WizardMarketplaceProgressBarObj, WizardMarketplaceWrapperObj );
+        WizardBuyMarketplaceHandlerObj = new WizardBuyMarketplaceHandler(WizardMarketplaceProgressHandlerObj, <?php echo json_encode($this->storedStatuses); ?>);
+
+        varienGlobalEvents && varienGlobalEvents.fireEvent('initReady');
+    });
+
+</script>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+</form>

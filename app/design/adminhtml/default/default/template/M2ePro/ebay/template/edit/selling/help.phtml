@@ -1,0 +1,12 @@
+<?php $url = $this->isEditMode() ? Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Edit+Selling+Listing+Settings') :
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Step+3%3A+Selling+Settings');
+?>
+<div id="ebay_template_edit_selling_help" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Selling Settings'); ?>">
+    <p><?php echo Mage::helper('M2ePro')->__(
+        'Choose the Listing Duration, Listing Type and Options you want to use for Products Listed on eBay using this M2E Pro Listing.
+        You can also choose whether you want the Selling Price adjusted for sales on eBay, eg increasing them by a certain amount or
+        percentage to allow for Seller fees or reducing them to compete against other Sellers on eBay.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.', $url
+    ); ?></p>
+<!--    <p>--><?php //echo Mage::helper('M2ePro')->__('Remember, you can amend Selling Settings at any time.'); ?><!--</p>-->
+</div>

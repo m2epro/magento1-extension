@@ -1,0 +1,99 @@
+<?php if ($websites = $this->getWebsites()): ?>
+
+    <p class="<?php echo Mage::helper('M2ePro/Magento')->isGoEdition() ? '' : 'switcher'; ?>">
+
+        <select id="<?php echo $this->getStoreSelectId(); ?>" name="<?php echo $this->getStoreSelectName(); ?>" style="width: 250px;" class="left-col-block store-switcher
+                    <?php if ($this->isRequiredOption()) : ?> M2ePro-store-switcher-validation<?php endif; ?>"
+                    <?php if ($this->hasEmptyOption()) : ?> onchange="return removeStoreSwitcherEmptyOption(this);"<?php endif; ?>>
+
+            <?php if ($this->hasEmptyOption()): ?>
+                <option value="-1"></option>
+            <?php endif; ?>
+
+            <?php if ($this->hasDefaultOption() && $this->isDisplayDefaultStoreModeUp()): ?>
+                <option value=""><?php echo $this->getDefaultStoreName(); ?></option>
+            <?php endif; ?>
+
+            <?php foreach ($websites as $website): ?>
+                <?php $showWebsite=false; ?>
+                <?php foreach ($website->getGroups() as $group): ?>
+                    <?php $showGroup=false; ?>
+                    <?php foreach ($this->getStores($group) as $store): ?>
+                        <?php if ($showWebsite == false): ?>
+                            <?php $showWebsite = true; ?>
+                            <optgroup label="<?php echo $website->getName(); ?>"></optgroup>
+                        <?php endif; ?>
+                        <?php if ($showGroup == false): ?>
+                            <?php $showGroup = true; ?>
+                            <optgroup label="&nbsp;&nbsp;&nbsp;<?php echo $group->getName(); ?>">
+                        <?php endif; ?>
+                        <option value="<?php echo $store->getId(); ?>"<?php if($this->getStoreId() == $store->getId()): ?> selected="selected"<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $store->getName(); ?></option>
+                    <?php endforeach; ?>
+                    <?php if ($showGroup): ?>
+                        </optgroup>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+
+            <?php if ($this->hasDefaultOption() && $this->isDisplayDefaultStoreModeDown()): ?>
+                <option value=""><?php echo $this->getDefaultStoreName(); ?></option>
+            <?php endif; ?>
+
+        </select>
+
+    </p>
+
+    <script type="text/javascript">
+
+        function switchStore(obj)
+        {
+            var storeParam = obj.value ? 'store/'+obj.value + '/' : '';
+
+            if(obj.switchParams){
+                storeParam+= obj.switchParams;
+            }
+
+            <?php if($this->getUseConfirm()): ?>
+              $('edit_form').action = "<?php echo $this->getSwitchUrl(); ?>"+storeParam;
+              $('edit_form').submit();
+            <?php else: ?>
+                setLocation('<?php echo $this->getSwitchUrl(); ?>'+storeParam);
+            <?php endif; ?>
+        }
+
+        Validation.add('M2ePro-store-switcher-validation', '<?php echo Mage::helper('M2ePro')->__('You should select Store View'); ?>', function(value, element) {
+
+            if (!element.visible()) {
+                return true;
+            }
+
+            if (element.up('tr') && !element.up('tr').visible()) {
+                return true;
+            }
+
+            if (value == -1 || value == null) {
+                return false;
+            }
+
+            return true;
+        });
+
+        function removeStoreSwitcherEmptyOption(obj)
+        {
+            if (obj.value == -1) {
+                return true;
+            }
+
+            obj.select('option').each(function(option) {
+                if (option.value == -1) {
+                    obj.options[option.index].remove();
+                    return true;
+                }
+            });
+
+            return true;
+        }
+
+    </script>
+
+<?php endif; ?>

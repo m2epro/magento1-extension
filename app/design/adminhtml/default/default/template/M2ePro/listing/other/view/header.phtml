@@ -1,0 +1,84 @@
+<style type="text/css">
+
+    div.listing-view-header {
+        background: none repeat scroll 0 0 #FAFAFA !important;
+        border: 1px solid #D6D6D6 !important;
+        margin-bottom: 15px !important;
+        padding: 10px 15px !important;
+    }
+
+    div.listing-view-header span.label {
+        font-weight: bold;
+    }
+
+    div.listing-view-header span.value {
+        color: #8e9393;
+    }
+
+    div.listing-view-header ul {
+        text-align: justify;
+        line-height: 0;
+        font-size: 1px;
+    }
+
+    div.listing-view-header ul:after {
+        width: 100%;
+        height: 0;
+        visibility: hidden;
+        overflow: hidden;
+        content: '';
+        display: inline-block;
+    }
+
+    div.listing-view-header ul li {
+        display: inline-block;
+        text-align: left;
+        line-height: normal;
+        font-size: 12px;
+        vertical-align: top;
+    }
+
+</style>
+
+<div class="listing-view-header">
+    <ul>
+        <li>
+            <label>
+                <span class="label">
+                    <?php if($this->getAccount()->isComponentModeEbay()): ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('eBay User ID')); ?>:&nbsp;
+                    <?php else: ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Account')); ?>:&nbsp;
+                    <?php endif; ?>
+                </span>
+                <span class="value">
+                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->getAccountTitle()); ?>
+                </span>
+            </label>
+        </li>
+        <li>
+            <label>
+                <span class="label">
+                    <?php if($this->getMarketplace()->isComponentModeEbay()): ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('eBay Site')); ?>:&nbsp;
+                    <?php else: ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Marketplace')); ?>:&nbsp;
+                    <?php endif; ?>
+                </span>
+                <span class="value">
+                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->getMarketplaceTitle()); ?>
+                </span>
+            </label>
+        </li>
+        <li>
+            <label>
+                <span class="label">
+                    <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Magento Store View')); ?>:&nbsp;
+                </span>
+                <span class="value">
+                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->getStoreViewBreadcrumb()); ?>
+                </span>
+            </label>
+        </li>
+    </ul>
+</div>

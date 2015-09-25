@@ -1,0 +1,11 @@
+<div id="amazonVariationsProductManageVariationsGrid" style="height: 510px;">
+    <?php
+    $url = $this->getUrl('*/adminhtml_common_amazon_listing_variation_product_manage/viewVariationsGrid',
+        array(
+            'product_id' => $this->getListingProductId(),
+            'filter' => $this->getRequest()->getParam('filter')
+        )
+    );
+    ?>
+    <input type="hidden" id="amazonVariationsProductManageVariationsGridIframeUrl" value="<?php echo $url ?>">
+</div>
