@@ -1,22 +1,28 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonListing');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_amazon_listing_other_view';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         if (!Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()) {
             $this->_headerText = Mage::helper('M2ePro')->__(
                 '3rd Party %channel_title% Listings',
@@ -25,19 +31,19 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if (!is_null($this->getRequest()->getParam('back'))) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton('back', array(
@@ -46,18 +52,18 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
                 'class'   => 'back'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
     }
 
-    // ####################################
+    //########################################
 
     public function getGridHtml()
     {
         $accountId = $this->getRequest()->getParam('account');
         $marketplaceId = $this->getRequest()->getParam('marketplace');
 
-        //------------------------------
+        // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_other_view_header','',
             array(
@@ -65,14 +71,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
                 'marketplace' => Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Marketplace', $marketplaceId)
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
         $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
 
         return $viewHeaderBlock->toHtml() . $mapToProductBlock->toHtml() . parent::getGridHtml();
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -91,6 +97,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
 
         $removingProductsUrl = $this->getUrl('*/adminhtml_common_listing_other/removing');
         $unmappingProductsUrl = $this->getUrl('*/adminhtml_listing_other_mapping/unmapping');
+
+        $getAFNQtyBySku = $this->getUrl('*/adminhtml_common_amazon_listing/getAFNQtyBySku');
 
         $someProductsWereNotMappedMessage = 'No matches were found. Please change the Mapping Attributes in <strong>';
         $someProductsWereNotMappedMessage .= 'Configuration > Account > 3rd Party Listings</strong> ';
@@ -170,7 +178,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
 
         ));
 
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     M2eProAmazon = {};
@@ -193,6 +201,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
 
     M2eProAmazon.url.removingProducts = '{$removingProductsUrl}';
     M2eProAmazon.url.unmappingProducts = '{$unmappingProductsUrl}';
+
+    M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
 
     M2eProAmazon.text.create_listing = '{$createListing}';
     M2eProAmazon.text.popup_title = '{$popupTitle}';
@@ -238,15 +248,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
             'amazon'
         );
 
-        // TODO NEXT (temp solution)
         AmazonListingOtherGridHandlerObj.movingHandler.setOptions(M2eProAmazon);
         AmazonListingOtherGridHandlerObj.autoMappingHandler.setOptions(M2eProAmazon);
         AmazonListingOtherGridHandlerObj.removingHandler.setOptions(M2eProAmazon);
         AmazonListingOtherGridHandlerObj.unmappingHandler.setOptions(M2eProAmazon);
+
+        CommonAmazonListingAfnQtyHandlerObj = new CommonAmazonListingAfnQtyHandler();
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return $javascriptsMain.
             '<div id="listing_other_progress_bar"></div>' .
@@ -256,5 +267,5 @@ JAVASCRIPT;
             '</div>';
     }
 
-    // ####################################
+    //########################################
 }

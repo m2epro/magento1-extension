@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_listing_other`
@@ -26,7 +26,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `dispatch_time_attribute` VARCHAR(255) NOT NULL AFTER `dispatch_time_value`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_other');
 
@@ -38,7 +38,7 @@ if ($connection->tableColumnExists($tempTable, 'additional_data') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_new_product_core');
 
@@ -50,7 +50,7 @@ if ($connection->tableColumnExists($tempTable, 'gtin_mode') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_description');
 
@@ -62,7 +62,7 @@ if ($connection->tableColumnExists($tempTable, 'default_image_url') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -87,7 +87,7 @@ if ($connection->tableColumnExists($tempTable, 'dispatch_time_attribute') === fa
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempQuery = <<<SQL
@@ -111,7 +111,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_config');
 $tempQuery = <<<SQL
@@ -164,7 +164,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_config');
 $oldData = $connection->query("
@@ -193,7 +193,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_cache_config');
 
@@ -238,7 +238,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -252,7 +252,7 @@ SET `additional_data` = REPLACE(`additional_data`,'category_settings_mode','ebay
 SQL
 );
 
-//#############################################
+//########################################
 
 if (Mage::registry('M2EPRO_IS_INSTALLATION') === true) {
 
@@ -277,8 +277,8 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

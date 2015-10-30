@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_account`
@@ -19,7 +19,7 @@ $connection = $installer->getConnection();
         ADD INDEX `is_click_and_collect` (`is_click_and_collect`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_account');
 $columnName = 'token';
@@ -30,7 +30,7 @@ if ($connection->tableColumnExists($tempTable, $columnName) === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -47,7 +47,7 @@ if (!isset($tempTableIndexList[strtoupper('is_click_and_collect')])) {
     $connection->addKey($tempTable, 'is_click_and_collect', 'is_click_and_collect');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -59,8 +59,8 @@ WHERE `marketplace_id` = 3 OR -- UK --
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

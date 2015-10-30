@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
     extends Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -16,14 +18,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonListingViewSettingsGrid'.$listingData['id']);
-        //------------------------------
+        // ---------------------------------------
 
         $this->showAdvancedFilterProductsOption = false;
     }
 
-    // ####################################
+    //########################################
 
     public function getMainButtonsHtml()
     {
@@ -38,14 +40,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
         return $viewModeSwitcherBlock->toHtml() . parent::getMainButtonsHtml();
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         // Get collection
-        //----------------------------
+        // ---------------------------------------
         /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
         $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
             Mage::getModel('catalog/product')->getResource());
@@ -61,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
                 'left'
             );
 
-        //----------------------------
+        // ---------------------------------------
 
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
@@ -189,8 +191,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
             'left'
         );
 
-        //----------------------------
-//        exit($collection->getSelect()->__toString());
+        // ---------------------------------------
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -213,7 +214,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
         $this->addColumn('name', array(
             'header'    => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
             'align'     => 'left',
-            //'width'     => '300px',
             'type'      => 'text',
             'index'     => 'name',
             'filter_index' => 'name',
@@ -229,6 +229,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
             'index' => 'amazon_sku',
             'filter_index' => 'amazon_sku',
             'frame_callback' => array($this, 'callbackColumnAmazonSku')
+        ));
+
+        $this->addColumn('general_id', array(
+            'header' => Mage::helper('M2ePro')->__('ASIN / ISBN'),
+            'align' => 'left',
+            'width' => '140px',
+            'type' => 'text',
+            'index' => 'general_id',
+            'filter_index' => 'general_id',
+            'frame_callback' => array($this, 'callbackColumnGeneralId')
         ));
 
         $this->addColumn('description_template', array(
@@ -268,7 +278,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     protected function getGroupOrder()
     {
@@ -315,18 +325,18 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
         return $actions;
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
-        //--------------------------------
+        // ---------------------------------------
 
         // Set mass-action
-        //--------------------------------
+        // ---------------------------------------
         $groups = array(
             'description_policy' => Mage::helper('M2ePro')->__('Description Policy'),
             'shipping_override_policy' => Mage::helper('M2ePro')->__('Shipping Override Policy'),
@@ -370,12 +380,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ), 'other');
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
@@ -448,7 +458,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
             if (empty($virtualProductAttributes) && empty($virtualChannelAttributes)) {
                 $attributesStr = implode(', ', $productAttributes);
             } else {
-                foreach($productAttributes as $attribute) {
+                foreach ($productAttributes as $attribute) {
                     if (in_array($attribute, array_keys($virtualProductAttributes))) {
 
                         $attributesStr .= '<span style="border-bottom: 2px dotted grey">' . $attribute .
@@ -501,6 +511,100 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Settings_Grid
         return $value;
     }
 
+    // ---------------------------------------
+
+    public function callbackColumnGeneralId($generalId, $row, $column, $isExport)
+    {
+        if (empty($generalId)) {
+            if ($row->getData('is_general_id_owner') == 1) {
+                return Mage::helper('M2ePro')->__('New ASIN/ISBN');
+            }
+            return $this->getGeneralIdColumnValueEmptyGeneralId($row);
+        }
+
+        return $this->getGeneralIdColumnValueNotEmptyGeneralId($row);
+    }
+
+    private function getGeneralIdColumnValueEmptyGeneralId($row)
+    {
+        // ---------------------------------------
+        if ((int)$row->getData('amazon_status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+            return '<i style="color:gray;">'.Mage::helper('M2ePro')->__('receiving...').'</i>';
+        }
+
+        $iconPath = $this->getSkinUrl('M2ePro/images/search_statuses/');
+        $searchSettingsStatus = $row->getData('search_settings_status');
+
+        // ---------------------------------------
+        if ($searchSettingsStatus == Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_IN_PROGRESS) {
+
+            $tip = Mage::helper('M2ePro')->__('Automatic ASIN/ISBN Search in Progress.');
+            $iconSrc = $iconPath.'processing.gif';
+
+            return <<<HTML
+&nbsp;
+<a href="javascript: void(0);" title="{$tip}">
+    <img src="{$iconSrc}" alt="">
+</a>
+HTML;
+        }
+        // ---------------------------------------
+
+        return Mage::helper('M2ePro')->__('N/A');
+    }
+
+    private function getGeneralIdColumnValueNotEmptyGeneralId($row)
+    {
+        $generalId = $row->getData('general_id');
+        $marketplaceId = Mage::helper('M2ePro/Data_Global')->getValue('marketplace_id');
+
+        $url = Mage::helper('M2ePro/Component_Amazon')->getItemUrl(
+            $generalId,
+            $marketplaceId
+        );
+
+        $generalIdOwnerHtml = '';
+        if ($row->getData('is_general_id_owner') == Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES) {
+
+            $generalIdOwnerHtml = '<br/><span style="font-size: 10px; color: grey;">'.
+                Mage::helper('M2ePro')->__('creator of ASIN/ISBN').
+                '</span>';
+        }
+
+        if ((int)$row->getData('amazon_status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+
+            return <<<HTML
+<a href="{$url}" target="_blank">{$generalId}</a>{$generalIdOwnerHtml}
+HTML;
+        }
+
+        $generalIdSearchInfo = $row->getData('general_id_search_info');
+
+        if (!empty($generalIdSearchInfo)) {
+            $generalIdSearchInfo = @json_decode($generalIdSearchInfo, true);
+        }
+
+        if (!empty($generalIdSearchInfo['is_set_automatic'])) {
+
+            $tip = Mage::helper('M2ePro')->__('ASIN/ISBN was found automatically');
+
+            $text = <<<HTML
+<a href="{$url}" target="_blank" title="{$tip}" style="color:#40AADB;">{$generalId}</a>
+HTML;
+
+        } else {
+
+            $text = <<<HTML
+<a href="{$url}" target="_blank">{$generalId}</a>
+HTML;
+
+        }
+
+        return $text . $generalIdOwnerHtml;
+    }
+
+    // ---------------------------------------
+
     public function callbackColumnTemplateDescription($value, $row, $column, $isExport)
     {
         $html = Mage::helper('M2ePro')->__('N/A');
@@ -541,7 +645,7 @@ HTML;
         return $html;
     }
 
-    // ####################################
+    //########################################
 
     protected function callbackFilterTitle($collection, $column)
     {
@@ -559,7 +663,7 @@ HTML;
         );
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -571,11 +675,11 @@ HTML;
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     if (typeof ListingGridHandlerObj != 'undefined') {
@@ -589,10 +693,10 @@ HTML;
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml().$javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 }

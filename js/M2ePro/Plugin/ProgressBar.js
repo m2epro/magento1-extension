@@ -1,7 +1,7 @@
 ProgressBar = Class.create();
 ProgressBar.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(progressBarId)
     {
@@ -20,7 +20,7 @@ ProgressBar.prototype = {
         this.reset();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     makeAndFillHtml: function()
     {
@@ -49,7 +49,7 @@ ProgressBar.prototype = {
         this.setStatus('');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     show: function(title, percents, status)
     {
@@ -79,7 +79,7 @@ ProgressBar.prototype = {
         $(this.progressBarId).hide();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getTitle: function()
     {
@@ -97,7 +97,7 @@ ProgressBar.prototype = {
         $(this.progressBarId+'_title').innerHTML = this.title;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getPercents: function()
     {
@@ -203,7 +203,7 @@ ProgressBar.prototype = {
         $(this.progressBarId+'_percents').innerHTML = this.percents + '&nbsp;%';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getStatus: function()
     {
@@ -221,5 +221,5 @@ ProgressBar.prototype = {
         $(this.progressBarId+'_status').innerHTML = this.status;
     }
 
-    //----------------------------------
-}
+    // ---------------------------------------
+};

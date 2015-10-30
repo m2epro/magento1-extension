@@ -1,28 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 {
-    const SERVER_LOCK_NO = 0;
+    const SERVER_LOCK_NO  = 0;
     const SERVER_LOCK_YES = 1;
 
-    const SERVER_MESSAGE_TYPE_NOTICE = 0;
-    const SERVER_MESSAGE_TYPE_ERROR = 1;
+    const SERVER_MESSAGE_TYPE_NOTICE  = 0;
+    const SERVER_MESSAGE_TYPE_ERROR   = 1;
     const SERVER_MESSAGE_TYPE_WARNING = 2;
     const SERVER_MESSAGE_TYPE_SUCCESS = 3;
 
-    const WIZARD_MIGRATION_NICK = 'migrationToV6';
-
-    const ENVIRONMENT_PRODUCTION = 'production';
+    const ENVIRONMENT_PRODUCTION  = 'production';
     const ENVIRONMENT_DEVELOPMENT = 'development';
-    const ENVIRONMENT_TESTING = 'testing';
+    const ENVIRONMENT_TESTING     = 'testing';
 
     const DEVELOPMENT_MODE_COOKIE_KEY = 'm2epro_development_mode';
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Config_Module
@@ -48,7 +48,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return Mage::getSingleton('M2ePro/Config_Synchronization');
     }
 
-    // ########################################
+    //########################################
 
     public function getName()
     {
@@ -72,7 +72,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getRevision()
     {
-        $revision = '9445';
+        $revision = '9727';
 
         if ($revision == str_replace('|','#','|REVISION|')) {
             $revision = (int)exec('svnversion');
@@ -83,14 +83,14 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return $revision;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function getVersionWithRevision()
     {
         return $this->getVersion().'r'.$this->getRevision();
     }
 
-    // ########################################
+    //########################################
 
     public function getInstallationKey()
     {
@@ -99,14 +99,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         );
     }
 
-    public function isMigrationWizardFinished()
-    {
-        return Mage::helper('M2ePro/Module_Wizard')->isFinished(
-            self::WIZARD_MIGRATION_NICK
-        );
-    }
-
-    // ########################################
+    //########################################
 
     public function isLockedByServer()
     {
@@ -123,7 +116,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return self::SERVER_LOCK_NO;
     }
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     public function getServerMessages()
     {
@@ -150,7 +143,24 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return true;
     }
 
-    // ########################################
+    //########################################
+
+    public function isReadyToWork()
+    {
+        if (!Mage::helper('M2ePro/Module_Wizard')->isFinished('migrationToV6')) {
+            return false;
+        }
+
+        if (!Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished() &&
+            !Mage::helper('M2ePro/View_Common')->isInstallationWizardFinished()) {
+
+            return false;
+        }
+
+        return true;
+    }
+
+    //########################################
 
     public function getFoldersAndFiles()
     {
@@ -205,9 +215,8 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
                 'title' => Mage::helper('M2ePro')->__('Magento Version'),
                 'condition' => array(
                     'sign' => '>=',
-                    'value' => (Mage::helper('M2ePro/Magento')->isGoEdition()           ? '1.9.0.0' :
-                               (Mage::helper('M2ePro/Magento')->isEnterpriseEdition()   ? '1.7.0.0' :
-                               (Mage::helper('M2ePro/Magento')->isProfessionalEdition() ? '1.7.0.0' : '1.4.1.0')))
+                    'value' => Mage::helper('M2ePro/Magento')->isEnterpriseEdition()   ? '1.7.0.0' :
+                               (Mage::helper('M2ePro/Magento')->isProfessionalEdition() ? '1.7.0.0' : '1.4.1.0')
                 ),
                 'current' => array(
                     'value' => Mage::helper('M2ePro/Magento')->getVersion(false),
@@ -247,7 +256,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return $requirements;
     }
 
-    // ########################################
+    //########################################
 
     public function getUnWritableDirectories()
     {
@@ -280,14 +289,14 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
 
         $directories = array();
-        foreach($iterator as $path) {
+        foreach ($iterator as $path) {
             $path->isDir() && $directories[] = rtrim($path->getPathname(),'/\\');
         }
 
         return $directories;
     }
 
-    // ########################################
+    //########################################
 
     public function isDevelopmentMode()
     {
@@ -305,7 +314,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
                : Mage::app()->getCookie()->delete(self::DEVELOPMENT_MODE_COOKIE_KEY);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function isProductionEnvironment()
     {
@@ -323,7 +332,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return (string)getenv('M2EPRO_ENV') == self::ENVIRONMENT_TESTING;
     }
 
-    // ########################################
+    //########################################
 
     public function clearConfigCache()
     {
@@ -335,5 +344,5 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeAllValues();
     }
 
-    // ########################################
+    //########################################
 }

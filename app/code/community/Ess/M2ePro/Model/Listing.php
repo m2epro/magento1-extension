@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstract
@@ -17,6 +19,9 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
     const ADDING_MODE_NONE          = 0;
     const ADDING_MODE_ADD           = 1;
 
+    const AUTO_ADDING_ADD_NOT_VISIBLE_NO   = 0;
+    const AUTO_ADDING_ADD_NOT_VISIBLE_YES  = 1;
+
     const DELETING_MODE_NONE        = 0;
     const DELETING_MODE_STOP        = 1;
     const DELETING_MODE_STOP_REMOVE = 2;
@@ -31,7 +36,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
      */
     private $marketplaceModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -39,8 +44,12 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         $this->_init('M2ePro/Listing');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -84,7 +93,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                                      // Listing was successfully deleted
                                      'Listing was successfully deleted',
                                      Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-                                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH );
+                                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH);
 
         $this->accountModel = NULL;
         $this->marketplaceModel = NULL;
@@ -95,7 +104,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -119,7 +128,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
          $this->accountModel = $instance;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -143,8 +152,14 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
          $this->marketplaceModel = $instance;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getProducts($asObjects = false, array $filters = array())
     {
         $products = $this->getRelatedComponentItems('Listing_Product','listing_id',$asObjects,$filters);
@@ -159,36 +174,51 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return $products;
     }
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getAutoCategoriesGroups($asObjects = false, array $filters = array())
     {
         return $this->getRelatedComponentItems('Listing_Auto_Category_Group', 'listing_id', $asObjects, $filters);
     }
 
-    // ########################################
+    //########################################
 
     public function getTitle()
     {
         return $this->getData('title');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getAccountId()
     {
         return (int)$this->getData('account_id');
     }
 
+    /**
+     * @return int
+     */
     public function getMarketplaceId()
     {
         return (int)$this->getData('marketplace_id');
     }
 
+    /**
+     * @return int
+     */
     public function getStoreId()
     {
         return (int)$this->getData('store_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getCreateDate()
     {
@@ -200,108 +230,177 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return $this->getData('update_date');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isSourceProducts()
     {
         return (int)$this->getData('source_products') == self::SOURCE_PRODUCTS_CUSTOM;
     }
 
+    /**
+     * @return bool
+     */
     public function isSourceCategories()
     {
         return (int)$this->getData('source_products') == self::SOURCE_PRODUCTS_CATEGORIES;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getAutoMode()
     {
         return (int)$this->getData('auto_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoModeNone()
     {
         return $this->getAutoMode() == self::AUTO_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoModeGlobal()
     {
         return $this->getAutoMode() == self::AUTO_MODE_GLOBAL;
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoModeWebsite()
     {
         return $this->getAutoMode() == self::AUTO_MODE_WEBSITE;
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoModeCategory()
     {
         return $this->getAutoMode() == self::AUTO_MODE_CATEGORY;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
+    public function isAutoGlobalAddingAddNotVisibleYes()
+    {
+        return $this->getData('auto_global_adding_add_not_visible') == self::AUTO_ADDING_ADD_NOT_VISIBLE_YES;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoWebsiteAddingAddNotVisibleYes()
+    {
+        return $this->getData('auto_website_adding_add_not_visible') == self::AUTO_ADDING_ADD_NOT_VISIBLE_YES;
+    }
+
+    //########################################
+
+    /**
+     * @return int
+     */
     public function getAutoGlobalAddingMode()
     {
         return (int)$this->getData('auto_global_adding_mode');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isAutoGlobalAddingModeNone()
     {
         return $this->getAutoGlobalAddingMode() == self::ADDING_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoGlobalAddingModeAdd()
     {
         return $this->getAutoGlobalAddingMode() == self::ADDING_MODE_ADD;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getAutoWebsiteAddingMode()
     {
         return (int)$this->getData('auto_website_adding_mode');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isAutoWebsiteAddingModeNone()
     {
         return $this->getAutoWebsiteAddingMode() == self::ADDING_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoWebsiteAddingModeAdd()
     {
         return $this->getAutoWebsiteAddingMode() == self::ADDING_MODE_ADD;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getAutoWebsiteDeletingMode()
     {
         return (int)$this->getData('auto_website_deleting_mode');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isAutoWebsiteDeletingModeNone()
     {
         return $this->getAutoWebsiteDeletingMode() == self::DELETING_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoWebsiteDeletingModeStop()
     {
         return $this->getAutoWebsiteDeletingMode() == self::DELETING_MODE_STOP;
     }
 
+    /**
+     * @return bool
+     */
     public function isAutoWebsiteDeletingModeStopRemove()
     {
         return $this->getAutoWebsiteDeletingMode() == self::DELETING_MODE_STOP_REMOVE;
     }
 
-    // ########################################
+    //########################################
 
     public function addProduct($product, $checkingMode = false, $checkHasProduct = true)
     {
@@ -334,7 +433,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         $variationUpdaterObject->afterMassProcessEvent();
 
         // Add message for listing log
-        //------------------------------
+        // ---------------------------------------
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
         $tempLog->setComponentMode($this->getComponentMode());
         $tempLog->addProductMessage( $this->getId(),
@@ -348,12 +447,12 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                                      'Item was successfully Added',
                                      Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
                                      Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
-        //------------------------------
+        // ---------------------------------------
 
         return $listingProductTemp;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function addProductsFromCategory($categoryId)
     {
@@ -365,13 +464,8 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
 
     public function getProductsFromCategory($categoryId, $hideProductsPresentedInAnotherListings = false)
     {
-        // Make collection
-        //----------------------------
         $collection = Mage::getModel('catalog/product')->getCollection();
-        //----------------------------
 
-        // Hide products others listings
-        //----------------------------
         if ($hideProductsPresentedInAnotherListings) {
 
             $table = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
@@ -382,10 +476,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
 
             $collection->getSelect()->where('`e`.`entity_id` NOT IN ('.$dbSelect->__toString().')');
         }
-        //----------------------------
 
-        // Add categories filter
-        //----------------------------
         $table = Mage::getSingleton('core/resource')->getTableName('catalog_category_product');
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
             ->select()
@@ -393,10 +484,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             ->where("`category_id` = ?",(int)$categoryId);
 
         $collection->getSelect()->where('`e`.`entity_id` IN ('.$dbSelect->__toString().')');
-        //----------------------------
 
-        // Get categories products
-        //----------------------------
         $sqlQuery = $collection->getSelect()->__toString();
 
         $categoryProductsArray = Mage::getResourceModel('core/config')
@@ -406,8 +494,12 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return (array)$categoryProductsArray;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param int $productId
+     * @return bool
+     */
     public function hasProduct($productId)
     {
         return count($this->getProducts(false,array('product_id'=>$productId))) > 0;
@@ -421,7 +513,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         $processedListings = array();
 
         // Delete Products
-        //------------------
+        // ---------------------------------------
         $listingsProducts = Mage::getModel('M2ePro/Listing_Product')
                                     ->getCollection()
                                     ->addFieldToFilter('product_id', $productId)
@@ -459,13 +551,13 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                                     Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_MAGENTO,
                                     NULL,
                                     Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING,
-                                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH );
+                                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH);
         }
 
         $processedListings = array();
 
         // Delete Options
-        //------------------
+        // ---------------------------------------
         $variationOptions = Mage::getModel('M2ePro/Listing_Product_Variation_Option')
                                     ->getCollection()
                                     ->addFieldToFilter('product_id', $productId)
@@ -511,18 +603,17 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         foreach ($listingsProductsForRemove as $listingProduct) {
             $listingProduct->deleteInstance();
         }
-
-        //------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function getTrackingAttributes()
     {
         return $this->getChildObject()->getTrackingAttributes();
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -536,5 +627,5 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

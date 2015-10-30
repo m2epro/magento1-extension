@@ -1,6 +1,6 @@
 ListingOtherUnmappingHandler = Class.create(ActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -10,7 +10,7 @@ ListingOtherUnmappingHandler = Class.create(ActionHandler, {
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     run: function()
     {
@@ -42,5 +42,5 @@ ListingOtherUnmappingHandler = Class.create(ActionHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

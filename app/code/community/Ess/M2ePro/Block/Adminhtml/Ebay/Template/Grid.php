@@ -1,32 +1,34 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     private $enabledMarketplacesCollection = NULL;
 
-    // ##########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayTemplateGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ##########################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -34,7 +36,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         // Prepare selling format collection
-        // ----------------------------------
+        // ---------------------------------------
         $collectionSellingFormat = Mage::getModel('M2ePro/Template_SellingFormat')->getCollection();
         $collectionSellingFormat->getSelect()->join(
             array('etsf' => Mage::getModel('M2ePro/Ebay_Template_SellingFormat')->getResource()->getMainTable()),
@@ -49,10 +51,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionSellingFormat->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
         $collectionSellingFormat->addFieldToFilter('is_custom_template', 0);
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare synchronization collection
-        // ----------------------------------
+        // ---------------------------------------
         $collectionSynchronization = Mage::getModel('M2ePro/Template_Synchronization')->getCollection();
         $collectionSynchronization->getSelect()->join(
             array('ets' => Mage::getModel('M2ePro/Ebay_Template_Synchronization')->getResource()->getMainTable()),
@@ -67,10 +69,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionSynchronization->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
         $collectionSynchronization->addFieldToFilter('is_custom_template', 0);
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare description collection
-        // ----------------------------------
+        // ---------------------------------------
         $collectionDescription = Mage::getModel('M2ePro/Template_Description')->getCollection();
         $collectionDescription->getSelect()->join(
             array('ets' => Mage::getModel('M2ePro/Ebay_Template_Description')->getResource()->getMainTable()),
@@ -85,10 +87,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionDescription->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
         $collectionDescription->addFieldToFilter('is_custom_template', 0);
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare payment collection
-        // ----------------------------------
+        // ---------------------------------------
         $collectionPayment = Mage::getModel('M2ePro/Ebay_Template_Payment')->getCollection();
         $collectionPayment->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionPayment->getSelect()->columns(
@@ -98,10 +100,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionPayment->addFieldToFilter('is_custom_template', 0);
         $collectionPayment->addFieldToFilter('marketplace_id', array('in' => $this->getEnabledMarketplacesIds()));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare shipping collection
-        // ----------------------------------
+        // ---------------------------------------
         $collectionShipping = Mage::getModel('M2ePro/Ebay_Template_Shipping')->getCollection();
         $collectionShipping->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionShipping->getSelect()->columns(
@@ -111,10 +113,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionShipping->addFieldToFilter('is_custom_template', 0);
         $collectionShipping->addFieldToFilter('marketplace_id', array('in' => $this->getEnabledMarketplacesIds()));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare return collection
-        // ----------------------------------
+        // ---------------------------------------
         $collectionReturn = Mage::getModel('M2ePro/Ebay_Template_Return')->getCollection();
         $collectionReturn->getSelect()->reset(Varien_Db_Select::COLUMNS);
         $collectionReturn->getSelect()->columns(
@@ -124,10 +126,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
         $collectionReturn->addFieldToFilter('is_custom_template', 0);
         $collectionReturn->addFieldToFilter('marketplace_id', array('in' => $this->getEnabledMarketplacesIds()));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare union select
-        // ----------------------------------
+        // ---------------------------------------
         $unionSelect = $connRead->select();
         $unionSelect->union(array(
             $collectionSellingFormat->getSelect(),
@@ -137,16 +139,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             $collectionShipping->getSelect(),
             $collectionReturn->getSelect()
         ));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare result collection
-        // ----------------------------------
+        // ---------------------------------------
         $resultCollection = new Varien_Data_Collection_Db($connRead);
         $resultCollection->getSelect()->reset()->from(
             array('main_table' => $unionSelect),
             array('template_id', 'title', 'nick', 'marketplace', 'create_date', 'update_date')
         );
-        // ----------------------------------
+        // ---------------------------------------
 
 //        var_dump($resultCollection->getSelectSql(true)); exit;
 
@@ -254,7 +256,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         return parent::_prepareColumns();
     }
 
-    // ##########################################
+    //########################################
 
     public function callbackColumnMarketplace($value, $row, $column, $isExport)
     {
@@ -276,7 +278,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         $collection->getSelect()->where('main_table.marketplace = 0 OR main_table.marketplace = ?', (int)$value);
     }
 
-    // ##########################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -295,7 +297,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         );
     }
 
-    // ##########################################
+    //########################################
 
     private function getEnabledMarketplacesCollection()
     {
@@ -321,5 +323,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         return $this->getEnabledMarketplacesCollection()->toOptionHash();
     }
 
-    // ##########################################
+    //########################################
 }

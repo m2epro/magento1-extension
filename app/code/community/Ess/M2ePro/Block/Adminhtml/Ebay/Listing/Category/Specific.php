@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adminhtml_Block_Widget
 {
     protected $_marketplaceId = null;
@@ -13,16 +19,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
     protected $_attributes = array();
     protected $_selectedSpecifics = array();
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingCategorySpecific');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/listing/category/specific.phtml');
 
@@ -33,42 +39,42 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
     {
         $uniqueId = $this->getUniqueId();
 
-        //------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                 'label'   => '',
                 'onclick' => 'EbayListingCategorySpecificHandler'.$uniqueId.'Obj.removeSpecific(this);',
                 'class' => 'scalable delete remove_custom_specific_button'
-            ) );
-        $this->setChild('remove_custom_specific_button',$buttonBlock);
-        //------------------------------
+            ));
+        $this->setChild('remove_custom_specific_button', $buttonBlock);
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                 'label'   => Mage::helper('M2ePro')->__('Add Custom Specific'),
                 'onclick' => 'EbayListingCategorySpecificHandler'.$uniqueId.'Obj.addCustomSpecificRow();',
                 'class' => 'add add_custom_specific_button'
-            ) );
-        $this->setChild('add_custom_specific_button',$buttonBlock);
-        //------------------------------
+            ));
+        $this->setChild('add_custom_specific_button', $buttonBlock);
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                 'label'   => '',
                 'onclick' => 'EbayListingCategorySpecificHandler'.$uniqueId.'Obj.removeItemSpecificsCustomValue(this);',
                 'class'   => 'scalable delete remove_item_specifics_custom_value_button',
                 'style'   => 'padding-bottom:1px; padding-right:0px; padding-left:4px;'
-            ) );
-        $this->setChild('remove_item_specifics_custom_value_button',$buttonBlock);
-        //------------------------------
+            ));
+        $this->setChild('remove_item_specifics_custom_value_button', $buttonBlock);
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function getMarketplaceId()
     {
@@ -81,7 +87,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getCategoryMode()
     {
@@ -94,7 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getCategoryValue()
     {
@@ -107,7 +113,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function setInternalData(array $data)
     {
@@ -120,7 +126,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this->_internalData;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function setUniqueId($id)
     {
@@ -133,7 +139,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this->_uniqueId;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function setCompactMode($isMode = true)
     {
@@ -146,7 +152,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this->_isCompactMode;
     }
 
-    // ########################################
+    //########################################
 
     public function getAttributes()
     {
@@ -158,7 +164,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $attributes;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getSelectedSpecifics()
     {
@@ -208,7 +214,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function getDictionarySpecifics()
     {
@@ -237,7 +243,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         );
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getRequiredDetailsFields()
     {
@@ -265,7 +271,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $requiredFields;
     }
 
-    // ########################################
+    //########################################
 
     protected function filterSelectedSpecificsByMode($mode)
     {
@@ -286,5 +292,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $customSpecifics;
     }
 
-    // ########################################
+    //########################################
 }

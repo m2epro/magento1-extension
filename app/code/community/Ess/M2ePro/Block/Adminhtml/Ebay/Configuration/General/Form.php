@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    // #################################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayConfigurationGeneralForm');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/configuration/general/form.phtml');
     }
 
-    // #################################################
+    //########################################
 
     protected function _prepareForm()
     {
@@ -59,47 +61,47 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
             '/ebay/description/','upload_images_mode'
         );
 
-        /** @var Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility $compatibilityHelper */
-        $compatibilityHelper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
+        /** @var Ess_M2ePro_Helper_Component_Ebay_Motors $motorsHelper */
+        $motorsHelper = Mage::helper('M2ePro/Component_Ebay_Motors');
 
         $resource = Mage::getSingleton('core/resource');
-        $specificsDictionaryTable = $resource->getTableName('m2epro_ebay_dictionary_motor_specific');
-        $ktypeDictionaryTable     = $resource->getTableName('m2epro_ebay_dictionary_motor_ktype');
+        $epidsDictionaryTable = $resource->getTableName('m2epro_ebay_dictionary_motor_epid');
+        $ktypeDictionaryTable = $resource->getTableName('m2epro_ebay_dictionary_motor_ktype');
 
-        // ------------------------
-        /** @var Ess_M2ePro_Model_Mysql4_Marketplace_Collection $specificsMarketplaceCollection */
-        $specificsMarketplaceCollection = Mage::getModel('M2ePro/Marketplace')->getCollection();
-        $specificsMarketplaceCollection->addFieldToFilter(
+        // ---------------------------------------
+        /** @var Ess_M2ePro_Model_Mysql4_Marketplace_Collection $epidsMarketplaceCollection */
+        $epidsMarketplaceCollection = Mage::getModel('M2ePro/Marketplace')->getCollection();
+        $epidsMarketplaceCollection->addFieldToFilter(
             'id',
-            array('in' => $compatibilityHelper->getSpecificSupportedMarketplaces())
+            array('in' => $motorsHelper->getEpidSupportedMarketplaces())
         );
-        $specificsMarketplaceCollection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
-        $this->is_motors_specifics_marketplace_enabled = (bool)$specificsMarketplaceCollection->getSize();
+        $epidsMarketplaceCollection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
+        $this->is_motors_epids_marketplace_enabled = (bool)$epidsMarketplaceCollection->getSize();
 
         $ebayDictionaryRecords = (int)$resource->getConnection('core_read')
             ->select()
-            ->from($specificsDictionaryTable, array(new Zend_Db_Expr('COUNT(*)')))
+            ->from($epidsDictionaryTable, array(new Zend_Db_Expr('COUNT(*)')))
             ->where('is_custom = 0')
             ->query()
             ->fetchColumn();
 
         $customDictionaryRecords = (int)$resource->getConnection('core_read')
               ->select()
-              ->from($specificsDictionaryTable, array(new Zend_Db_Expr('COUNT(*)')))
+              ->from($epidsDictionaryTable, array(new Zend_Db_Expr('COUNT(*)')))
               ->where('is_custom = 1')
               ->query()
               ->fetchColumn();
 
-        $this->motors_specifics_dictionary_ebay_count   = $ebayDictionaryRecords;
-        $this->motors_specifics_dictionary_custom_count = $customDictionaryRecords;
-        // ------------------------
+        $this->motors_epids_dictionary_ebay_count   = $ebayDictionaryRecords;
+        $this->motors_epids_dictionary_custom_count = $customDictionaryRecords;
+        // ---------------------------------------
 
-        // ------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Model_Mysql4_Marketplace_Collection $ktypeMarketplaceCollection */
         $ktypeMarketplaceCollection = Mage::getModel('M2ePro/Marketplace')->getCollection();
         $ktypeMarketplaceCollection->addFieldToFilter(
             'id',
-            array('in' => $compatibilityHelper->getKtypeSupportedMarketplaces())
+            array('in' => $motorsHelper->getKtypeSupportedMarketplaces())
         );
         $ktypeMarketplaceCollection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
         $this->is_motors_ktypes_marketplace_enabled = (bool)$ktypeMarketplaceCollection->getSize();
@@ -120,25 +122,25 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
 
         $this->motors_ktypes_dictionary_ebay_count   = $ebayDictionaryRecords;
         $this->motors_ktypes_dictionary_custom_count = $customDictionaryRecords;
-        // ------------------------
+        // ---------------------------------------
 
-        // ------------------------
-        $attributesForPartsCompatibility = Mage::getResourceModel('catalog/product_attribute_collection')
+        // ---------------------------------------
+        $attributesForMotors = Mage::getResourceModel('catalog/product_attribute_collection')
             ->addVisibleFilter()
             ->addFieldToFilter('backend_type', array('eq' => 'text'))
             ->addFieldToFilter('frontend_input', array('eq' => 'textarea'))
             ->toArray();
 
-        $this->attributes_for_parts_compatibility = $attributesForPartsCompatibility['items'];
+        $this->attributes_for_motors = $attributesForMotors['items'];
 
-        $this->motors_specifics_attribute = $configModel->getGroupValue('/ebay/motor/','motors_specifics_attribute');
-        $this->motors_ktypes_attribute = $configModel->getGroupValue('/ebay/motor/','motors_ktypes_attribute');
-        // ------------------------
+        $this->motors_epids_attribute = $configModel->getGroupValue('/ebay/motors/','epids_attribute');
+        $this->motors_ktypes_attribute = $configModel->getGroupValue('/ebay/motors/','ktypes_attribute');
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // #################################################
+    //########################################
 
     public function getMultiCurrency()
     {
@@ -169,5 +171,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
                                                          ->getGroupValue('/ebay/selling/currency/', $code);
     }
 
-    // #################################################
+    //########################################
 }

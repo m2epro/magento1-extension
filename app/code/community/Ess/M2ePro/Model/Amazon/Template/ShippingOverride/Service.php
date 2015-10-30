@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2ePro_Model_Component_Abstract
@@ -24,7 +26,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
      */
     private $shippingOverrideServiceSourceModels = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -32,7 +34,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
         $this->_init('M2ePro/Amazon_Template_ShippingOverride_Service');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -42,7 +44,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
         return $temp;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Template_ShippingOverride
@@ -66,7 +68,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
          $this->shippingOverrideTemplateModel = $instance;
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -89,14 +91,17 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
         return $this->shippingOverrideServiceSourceModels[$id];
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getTemplateShippingOverrideId()
     {
         return (int)$this->getData('template_shipping_override_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getService()
     {
@@ -113,61 +118,88 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
         return $this->getData('option');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getType()
     {
         return (int)$this->getData('type');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isTypeExclusive()
     {
         return $this->getType() == self::TYPE_EXCLUSIVE;
     }
 
+    /**
+     * @return bool
+     */
     public function isTypeAdditive()
     {
         return $this->getType() == self::TYPE_ADDITIVE;
     }
 
+    /**
+     * @return bool
+     */
     public function isTypeRestrictive()
     {
         return $this->getType() == self::TYPE_RESTRICTIVE;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getCostMode()
     {
         return (int)$this->getData('cost_mode');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isCostModeFree()
     {
         return $this->getCostMode() == self::COST_MODE_FREE;
     }
 
+    /**
+     * @return bool
+     */
     public function isCostModeCustomValue()
     {
         return $this->getCostMode() == self::COST_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isCostModeCustomAttribute()
     {
         return $this->getCostMode() == self::COST_MODE_CUSTOM_ATTRIBUTE;
     }
 
-    // #######################################
+    //########################################
 
     public function getCostValue()
     {
         return $this->getData('cost_value');
     }
 
+    /**
+     * @return array
+     */
     public function getCostAttributes()
     {
         $attributes = array();
@@ -179,13 +211,19 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
         return $attributes;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         return array();
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         return array_unique(
@@ -193,5 +231,5 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride_Service extends Ess_M2eP
         );
     }
 
-    // #######################################
+    //########################################
 }

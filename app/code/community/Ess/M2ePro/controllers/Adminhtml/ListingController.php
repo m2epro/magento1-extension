@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_ListingController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
-    //#############################################
+    //########################################
 
     public function clearLogAction()
     {
@@ -38,7 +40,7 @@ class Ess_M2ePro_Adminhtml_ListingController
         return $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function saveListingAdditionalDataAction()
     {
@@ -58,5 +60,5 @@ class Ess_M2ePro_Adminhtml_ListingController
         return $this->getResponse()->setBody(0);
     }
 
-    //#############################################
+    //########################################
 }

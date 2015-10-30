@@ -1,7 +1,7 @@
 CommonBuyTemplateSynchronizationHandler = Class.create();
 CommonBuyTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -32,7 +32,7 @@ CommonBuyTemplateSynchronizationHandler.prototype = Object.extend(new CommonHand
             return true;
         });
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-conditions-between', M2ePro.translator.translate('Must be greater than "Min".'), function(value, el) {
 
             var minValue = $(el.id.replace('_max','')).value;
@@ -43,9 +43,9 @@ CommonBuyTemplateSynchronizationHandler.prototype = Object.extend(new CommonHand
 
             return parseInt(value) > parseInt(minValue);
         });
-        //-----------------
+        // ---------------------------------------
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-stop-relist-conditions-product-status', M2ePro.translator.translate('Inconsistent Settings in Relist and Stop Rules.'), function(value, el) {
 
             if (BuyTemplateSynchronizationHandlerObj.isRelistModeDisabled()) {
@@ -116,17 +116,17 @@ CommonBuyTemplateSynchronizationHandler.prototype = Object.extend(new CommonHand
 
             return true;
         });
-        //-----------------
+        // ---------------------------------------
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     isRelistModeDisabled: function()
     {
         return $('relist_mode').value == 0;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     duplicate_click: function($headId)
     {
@@ -138,7 +138,7 @@ CommonBuyTemplateSynchronizationHandler.prototype = Object.extend(new CommonHand
         CommonHandlerObj.duplicate_click($headId, M2ePro.translator.translate('Add Synchronization Policy.'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     stopQty_change: function()
     {
@@ -309,7 +309,7 @@ CommonBuyTemplateSynchronizationHandler.prototype = Object.extend(new CommonHand
         $('revise_update_qty_max_applied_value_mode').simulate('change');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     revisePrice_change: function()
     {
@@ -373,5 +373,5 @@ CommonBuyTemplateSynchronizationHandler.prototype = Object.extend(new CommonHand
         $('revise_update_price_max_allowed_deviation_mode').simulate('change');
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

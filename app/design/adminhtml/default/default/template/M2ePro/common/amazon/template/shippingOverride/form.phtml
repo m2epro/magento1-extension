@@ -69,7 +69,11 @@
                 .simulate('change');
         <?php } ?>
 
-       $('<?php echo $this->getForm()->getId(); ?>').on('change', 'select', function(e) {
+       $('<?php echo $this->getForm()->getId(); ?>').observe('change', function(e) {
+           if (e.target.tagName != 'SELECT') {
+               return;
+           }
+
             $(e.target).select('.empty') && $(e.target).select('.empty').length && $(e.target).select('.empty')[0].hide();
         });
     });
@@ -93,14 +97,14 @@
 
 <div id="block_notice_amazon_template_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Shipping Override Policy'); ?>">
     <?php echo Mage::helper('M2ePro')->__('
-        Shipping Override Policy Settings allow to select Shipping Service which you would like to use, Locale and
-        the Shipping Cost Settings.</br></br>
+        The Shipping Override Policy allows to override Shipping Settings provided in your Amazon Seller Central. So you
+        can add/edit selected Shipping Service and  Locale as well as the Shipping Cost Settings.</br></br>
 
         <strong>Note:</strong> the Settings specified in Shipping Override Policy are not visible in Seller Central.
-        They become available only after the Buyer add the Item with such settings into a Cart in selected Locale.</br></br>
+        They become available only after the Buyer add the Item with such Settings into a Cart in selected Locale.</br></br>
 
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Shipping+Override+Policy')); ?>
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/d44VAQ')); ?>
 </div>
 
 <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
@@ -123,7 +127,7 @@
                         <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-price-tpl-title"/>
+                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-shipping-override-tpl-title"/>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Short meaningful Policy Title for your internal use.'); ?></span>
                         </p>

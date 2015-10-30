@@ -1,25 +1,27 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract extends Ess_M2ePro_Block_Adminhtml_Wizard_Abstract
 {
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId($this->getWizardBlockId());
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__($this->getHeaderTextHtml());
 
         // Buttons
-        //------------------------------
+        // ---------------------------------------
         $this->removeButtons();
 
         if ($this->isNeedSkipButton()) {
@@ -36,7 +38,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract extends Ess_M2ePro
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function getWizardBlockId()
     {
@@ -50,7 +52,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract extends Ess_M2ePro
         return '';
     }
 
-    // ########################################
+    //########################################
 
     protected function removeButtons()
     {
@@ -62,7 +64,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract extends Ess_M2ePro
         $this->removeButton('edit');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function isNeedSkipButton()
     {
@@ -70,5 +72,5 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract extends Ess_M2ePro
                Ess_M2ePro_Helper_Module_Wizard::TYPE_BLOCKER;
     }
 
-    // ########################################
+    //########################################
 }

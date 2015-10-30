@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_marketplace`
@@ -25,7 +25,7 @@ $connection = $installer->getConnection();
     ADD INDEX `ignore_next_inventory_synch` (`ignore_next_inventory_synch`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -42,7 +42,7 @@ if (!isset($tempTableIndexList[strtoupper('is_map')])) {
     $connection->addKey($tempTable, 'is_map', 'is_map');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 
@@ -70,7 +70,7 @@ if ($connection->tableColumnExists($tempTable, 'price_discount_map_exposure_type
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -86,7 +86,7 @@ if (!isset($tempTableIndexList[strtoupper('ignore_next_inventory_synch')])) {
     $connection->addKey($tempTable, 'ignore_next_inventory_synch', 'ignore_next_inventory_synch');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_primary_config');
 $tempQuery = <<<SQL
@@ -120,7 +120,7 @@ WHERE `group` = '/license/validation/directory/notification/' OR
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -139,15 +139,15 @@ WHERE `marketplace_id` = 1;
 SQL
 );
 
-//#############################################
+//########################################
 
 /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion611 $migrationInstance */
 $migrationInstance = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion611');
 $migrationInstance->setInstaller($installer);
 $migrationInstance->migrate();
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

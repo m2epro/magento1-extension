@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Buy_Synchronization_Orders_Abstract
     extends Ess_M2ePro_Model_Buy_Synchronization_Abstract
 {
-    // ##########################################################
+    //########################################
 
     protected function getType()
     {
@@ -19,5 +21,5 @@ abstract class Ess_M2ePro_Model_Buy_Synchronization_Orders_Abstract
         return parent::processTask('Orders_'.$taskPath);
     }
 
-    // ##########################################################
+    //########################################
 }

@@ -13,8 +13,8 @@
     <ul id="translation_account_error_block" class="messages" style="display: none;">
         <li class="error-msg">
             <ul>
-                <li><?php echo Mage::helper('M2ePro')->__('Translation Account has not been created. Possible reason: you already have an Account in the Lionbridge System with the same <br/>e-mail or eBay User ID. Cick <a href="%url%" target="_blank">here</a> to find out more.',
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                <li><?php echo Mage::helper('M2ePro')->__('Translation Account has not been created. Possible reason: you already have an Account in the Lionbridge System with the same <br/>e-mail or eBay User ID. Click <a href="%url%" target="_blank">here</a> to find out more.',
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Account')
                 ); ?></li>
             </ul>
         </li>
@@ -22,7 +22,7 @@
 
     <div id="block_notice_ebay_translation_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Use Translation Service'); ?>" subtitle="" collapseable="no" always_show="yes" hideblock="no">
         <p><?php echo Mage::helper('M2ePro')->__('With Translation Service you can Translate Item Title, Subtitle, Description and associate eBay Source Category with Destination one.  Item Specifics of the Source eBay Category will be associated with Items Specifics of the Destination eBay Category. Click <a href=\'%url%\' target="_blank">here</a> to find out more.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Step3"Translation"')
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Step3"Translation"')
         ); ?></p>
 
         <div class="fieldset" style="margin-top:15px !important; margin-bottom: 10px !important;">
@@ -85,7 +85,7 @@
                                         <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
                                         <span><?php echo Mage::helper('M2ePro')->__('You can select quality of Translation. For that choose appropriate Translation Plan. Remember, that Price for Translation differs depending on the Translation Plan.
                                             To find out more about each plan click<a href="%url%" target="_blank">here</a>.',
-                                                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                                                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Account')
                                         ); ?></span>
                                     </span>
                                 </div>
@@ -93,10 +93,10 @@
                         </tr>
                         <tr>
                             <td class="label" style="min-width:150px;">
-                                <span><?php echo Mage::helper('M2ePro')->__('Translation Account'); ?>:
+                                <span><?php echo Mage::helper('M2ePro')->__('Translation Account'); ?>:</span>
                             </td>
                             <td class="value">
-                                </span><span id="translation_account_ebay_id"><?php echo Mage::helper('M2ePro')->__($this->getData('ebay_user_id')); ?></span>
+                                <span id="translation_account_ebay_id"><?php echo Mage::helper('M2ePro')->__($this->getData('ebay_user_id')); ?></span>
                             </td>
                         </tr>
                         <tr id="translation_total_credit_row">
@@ -131,7 +131,7 @@
                                          <span class="tool-tip-message" style="display: none;">
                                              <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
                                              <span><?php echo Mage::helper('M2ePro')->__('This shows approximate value which is going to be charged for Translation. It may differ from the final value set by Lionbridge. Click <a href="%url%" target="_blank">here</a> to find out more.',
-                                                 Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                                                 Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Account')
                                              ); ?> </span>
                                          </span>
                                      </div>
@@ -140,7 +140,7 @@
                                              <span class="tool-tip-message" style="display: none;">
                                                  <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
                                                  <span ><?php echo Mage::helper('M2ePro')->__('A Balance on your Account should be equal or greater than the Price of Translation. You can refill the Balance by clicking “Add Funds” Button. Click <a href="%url%" target="_blank">here</a> to find out more.',
-                                                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                                                     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Account')
                                                  ); ?></span>
                                              </span>
                                      </div>
@@ -157,7 +157,7 @@
 
                 <div id="block_notice_ebay_translation_account" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Create New Account'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                     <div style="padding-bottom:15px;"><?php echo Mage::helper('M2ePro')->__('To work with Translation Service M2E Pro should create an Account associated with you in the Lionbridge System. For that you should fill in appropriate form and agree to Lionbridge terms and Conditions. The Account in the Lionbridge System will be associated with the Destination eBay Account. Click <a href="%url%" target="_blank">here</a> to find out more.',
-                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Account')
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Account')
                     ); ?></div>
 
                     <div class="fieldset">

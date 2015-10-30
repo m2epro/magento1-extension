@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -42,16 +44,13 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
-        $block = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_common_configuration', '',
-            array('active_tab' => Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs::TAB_ID_DESCRIPTION_TEMPLATE)
-        );
-
-        $this->_initAction()->_addContent($block)->renderLayout();
+        return $this->_redirect('*/adminhtml_common_template/index', array(
+            'channel' => Ess_M2ePro_Helper_Component_Amazon::NICK
+        ));
     }
 
     public function gridAction()
@@ -62,7 +61,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function newAction()
     {
@@ -104,7 +103,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         $id = $this->getRequest()->getParam('id');
 
         // Saving general data
-        //----------------------------
+        // ---------------------------------------
         $keys = array(
             'title',
             'marketplace_id',
@@ -117,15 +116,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
             'registered_parameter',
 
             'worldwide_id_mode',
-            'worldwide_id_custom_attribute',
-
-            'item_package_quantity_mode',
-            'item_package_quantity_custom_value',
-            'item_package_quantity_custom_attribute',
-
-            'number_of_items_mode',
-            'number_of_items_custom_value',
-            'number_of_items_custom_attribute'
+            'worldwide_id_custom_attribute'
         );
 
         $dataForAdd = array();
@@ -144,12 +135,12 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         }
 
         $descriptionTemplate->addData($dataForAdd)->save();
-        //----------------------------
+        // ---------------------------------------
 
         $id = $descriptionTemplate->getId();
 
         // Saving definition info
-        //----------------------------
+        // ---------------------------------------
         $keys = array(
             'title_mode',
             'title_template',
@@ -165,6 +156,14 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
             'manufacturer_part_number_mode',
             'manufacturer_part_number_custom_value',
             'manufacturer_part_number_custom_attribute',
+
+            'item_package_quantity_mode',
+            'item_package_quantity_custom_value',
+            'item_package_quantity_custom_attribute',
+
+            'number_of_items_mode',
+            'number_of_items_custom_value',
+            'number_of_items_custom_attribute',
 
             'item_dimensions_volume_mode',
             'item_dimensions_volume_length_custom_value',
@@ -247,13 +246,13 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         $descriptionDefinition = Mage::getModel('M2ePro/Amazon_Template_Description_Definition');
         $descriptionDefinition->load($id);
         $descriptionDefinition->addData($dataForAdd)->save();
-        //----------------------------
+        // ---------------------------------------
 
         /** @var Ess_M2ePro_Model_Amazon_Template_Description $amazonDescriptionTemplate */
         $amazonDescriptionTemplate = $descriptionTemplate->getChildObject();
 
         // Saving specifics info
-        //----------------------------
+        // ---------------------------------------
         foreach ($amazonDescriptionTemplate->getSpecifics(true) as $specific) {
             $specific->deleteInstance();
         }
@@ -295,16 +294,16 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
             ));
             $specificInstance->save();
         }
-        //----------------------------
+        // ---------------------------------------
 
         // Is Need Synchronize
-        //----------------------------
+        // ---------------------------------------
         $newData = $amazonDescriptionTemplate->getDataSnapshot();
         $amazonDescriptionTemplate->setSynchStatusNeed($newData, $oldData);
-        //----------------------------
+        // ---------------------------------------
 
         // Run Processor for Variation Relation Parents
-        //----------------------------
+        // ---------------------------------------
         if ($amazonDescriptionTemplate->getResource()->isDifferent($newData, $oldData)) {
 
             /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
@@ -325,7 +324,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
 
             $massProcessor->execute();
         }
-        //----------------------------
+        // ---------------------------------------
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
         return $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list',array(),array('edit'=>array('id'=>$id))));
@@ -400,7 +399,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         uksort($specifics, 'callback');
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function deleteAction()
     {
@@ -433,7 +432,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         $this->_redirect('*/*/index');
     }
 
-    //#############################################
+    //########################################
 
     public function getCategoryChooserHtmlAction()
     {
@@ -464,7 +463,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         $this->getResponse()->setBody($editBlock->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function getCategoryInfoByBrowseNodeIdAction()
     {
@@ -539,12 +538,16 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         $queryStmt = $select->query();
         $tempCategories = array();
 
+        $sortIndex = 0;
         while ($row = $queryStmt->fetch()) {
+
             $this->formatCategoryRow($row);
-            $tempCategories[] = $row;
+            $this->isItOtherCategory($row) ? $tempCategories[10000] = $row
+                                           : $tempCategories[$sortIndex++] = $row;
         }
 
-        return $this->getResponse()->setBody(json_encode($tempCategories));
+        ksort($tempCategories);
+        return $this->getResponse()->setBody(json_encode(array_values($tempCategories)));
     }
 
     public function searchCategoryAction()
@@ -767,7 +770,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         return $this->getResponse()->setBody(json_encode($variationThemes));
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function formatCategoryRow(&$row)
     {
@@ -775,7 +778,15 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
             ? (array)json_decode($row['product_data_nicks'], true) : array();
     }
 
-    //#############################################
+    private function isItOtherCategory($row)
+    {
+        $parentTitle = explode('>', $row['path']);
+        $parentTitle = array_pop($parentTitle);
+
+        return preg_match("/^.* \({$parentTitle}\)$/i", $row['title']);
+    }
+
+    //########################################
 
     public function getAllSpecificsAction()
     {
@@ -859,5 +870,5 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
         return $this->getResponse()->setBody(json_encode($attributes));
     }
 
-    //#############################################
+    //########################################
 }

@@ -74,9 +74,11 @@
             <br/>
              <table>
             <thead>
+                <tr>
                     <td width="200"><b>Previously known as:</b></td>
                     <td width="200"><b>New name of policy:</b></td>
                     <td width="250"><b>What’s included:</b></td>
+                </tr>
             </thead>
             <tr>
                 <td>General</td>
@@ -121,22 +123,21 @@
             <?php echo Mage::helper('M2ePro')->__('2) Easier to create new listings'); ?>
         </h2>
 
-        <div>
-        <span class="migration_installation_note" style="padding-left: 40px;">
-            <p><?php echo Mage::helper('M2ePro')->__(
-            'It’s now quicker and easier to create eBay listings. You can set up a single listing from scratch using custom setting mode or use previously saved information. You can also edit listings individually or in bulk with details in your listing settings*, policies and custom settings.
-            <br/>
-            <br/>
-            When your listings have been created, you can choose between 3 different modes to view and filter them:
-            <br/>
-                <ul style="list-style: disc; padding-left: 35px;">
-                    <li><b>eBay</b> – displays product information related to eBay so it’s easy to find and edit listings in bulk (for example, list, relist, revise, stop etc)</li>
-                    <li><b>Magento</b> - displays product information related to the Magento catalogue such as Magento QTY, stock Status etc.</li>
-                    <li><b>Settings</b> – displays information in relation to the product settings (for example Selling settings, eBay categories etc) to make it easy to change settings in bulk.</li>
-                </ul>
-            <br/>
-            * Attributes have been removed from listing settings.
-            '); ?>
+        <div class="migration_installation_note" style="padding-left: 40px;">
+                <p><?php echo Mage::helper('M2ePro')->__(
+                'It’s now quicker and easier to create eBay listings. You can set up a single listing from scratch using custom setting mode or use previously saved information. You can also edit listings individually or in bulk with details in your listing settings*, policies and custom settings.
+                <br/>
+                <br/>
+                When your listings have been created, you can choose between 3 different modes to view and filter them:
+                <br/>
+                    <ul style="list-style: disc; padding-left: 35px;">
+                        <li><b>eBay</b> – displays product information related to eBay so it’s easy to find and edit listings in bulk (for example, list, relist, revise, stop etc)</li>
+                        <li><b>Magento</b> - displays product information related to the Magento catalogue such as Magento QTY, stock Status etc.</li>
+                        <li><b>Settings</b> – displays information in relation to the product settings (for example Selling settings, eBay categories etc) to make it easy to change settings in bulk.</li>
+                    </ul>
+                <br/>
+                * Attributes have been removed from listing settings.
+                '); ?></p>
         </div>
 
         <div style="padding-left: 40px;">
@@ -186,46 +187,40 @@
         <h2>
             <?php echo Mage::helper('M2ePro')->__('3) Other improvements and changes'); ?>
         </h2>
-        <div style="padding-left: 40px;>
-            <span class="migration_installation_note">
-                        <?php echo Mage::helper('M2ePro')->__('
-                        <b>eBay Fee estimation</b> has been added to the listing view, allowing you to see how much you’ll be charged for listing your item on eBay.
-                        <br/><br/>
-                        <b>Automatic currency rate conversion</b> has been added. If Magento has the currency conversion rate, it will be converted automatically to all your prices.
-                        <br/><br/>
-                        <b>List / Relist Schedule</b> has been removed from Amazon, Rakuten.com synchronization templates and updated for eBay. It now covers both list and relist rules.
-                        <br/><br/>
-                        <b>The following terms have been rephrased for eBay:</b>
-                                <br/><br/>
-                                <ul style="list-style: disc; padding-left: 35px;">
-                                    <li>Account title is now <b>eBay User ID</b></li>
-                                    <li>Marketplace is now <b>eBay site</b></li>
-                                    <li>Template is now <b>Policy</b></li>
-                                    <li>Actions On Categories\' Products is now <b>Automatic Actions</b></li>
-                                </ul>
-                            </li>
-                        <b>Simple / Advanced Mode for eBay</b>. There are now two modes available for eBay.
-                                <br/><br/>
-                                <ul style="list-style: disc; padding-left: 35px;">
-                                    <li><b>Simple</b> - for new users and those with limited inventory;</li>
-                                    <li><b>Advanced</b> - for more experienced users.</li>
-                                </ul>
-                                You can change the mode any time in Sell on eBay > Configuration > General.
-                        <br/><br/>
-                        <b>The global settings for M2E</b> have been moved and divided into:
-                                <ul style="list-style: disc; padding-left: 35px;">
-                                <br/>
-                                <li>Common – for all channels. Find these settings in Magento > System > Configuration and select M2E Pro;</li>
-                                <li>eBay settings. Find these settings in Sell on eBay > Configuration > General.</li>
-                            </li>
-                        </ul>
-                        '); ?>
-                    </span>
-                </div>
-
+        <div class="migration_installation_note" style="padding-left: 40px;">
+            <?php echo Mage::helper('M2ePro')->__('
+            <b>eBay Fee estimation</b> has been added to the listing view, allowing you to see how much you’ll be charged for listing your item on eBay.
+            <br/><br/>
+            <b>Automatic currency rate conversion</b> has been added. If Magento has the currency conversion rate, it will be converted automatically to all your prices.
+            <br/><br/>
+            <b>List / Relist Schedule</b> has been removed from Amazon, Rakuten.com synchronization templates and updated for eBay. It now covers both list and relist rules.
+            <br/><br/>
+            <b>The following terms have been rephrased for eBay:</b>
+                    <br/><br/>
+                    <ul style="list-style: disc; padding-left: 35px;">
+                        <li>Marketplace is now <b>eBay site</b></li>
+                        <li>Template is now <b>Policy</b></li>
+                        <li>Actions On Categories\' Products is now <b>Automatic Actions</b></li>
+                    </ul>
+                </li>
+            <b>Simple / Advanced Mode for eBay</b>. There are now two modes available for eBay.
+                    <br/><br/>
+                    <ul style="list-style: disc; padding-left: 35px;">
+                        <li><b>Simple</b> - for new users and those with limited inventory;</li>
+                        <li><b>Advanced</b> - for more experienced users.</li>
+                    </ul>
+                    You can change the mode any time in Sell on eBay > Configuration > General.
+            <br/><br/>
+            <b>The global settings for M2E</b> have been moved and divided into:
+                    <ul style="list-style: disc; padding-left: 35px;">
+                    <br/>
+                    <li>Common – for all channels. Find these settings in Magento > System > Configuration and select M2E Pro;</li>
+                    <li>eBay settings. Find these settings in Sell on eBay > Configuration > General.</li>
+                </li>
+            </ul>
+            '); ?>
+        </div>
     </div>
-
-</div>
 
 <div id="video_tutorial_pop_up" style="display: none;">
     <div class="player_container" style="margin: 20px 5px; ">

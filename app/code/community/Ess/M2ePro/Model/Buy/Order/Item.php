@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -12,7 +14,7 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
     /** @var $channelItem Ess_M2ePro_Model_Buy_Item */
     private $channelItem = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -20,14 +22,14 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         $this->_init('M2ePro/Buy_Order_Item');
     }
 
-    // ########################################
+    //########################################
 
     public function getProxy()
     {
         return Mage::getModel('M2ePro/Buy_Order_Item_Proxy', $this);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Buy_Order
@@ -37,13 +39,19 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         return $this->getParentObject()->getOrder()->getChildObject();
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Buy_Account
+     */
     public function getBuyAccount()
     {
         return $this->getBuyOrder()->getBuyAccount();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Buy_Item|null
+     */
     public function getChannelItem()
     {
         if (is_null($this->channelItem)) {
@@ -58,7 +66,7 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         return !is_null($this->channelItem->getId()) ? $this->channelItem : NULL;
     }
 
-    // ########################################
+    //########################################
 
     public function getBuyOrderItemId()
     {
@@ -80,11 +88,17 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         return $this->getData('general_id');
     }
 
+    /**
+     * @return float
+     */
     public function getPrice()
     {
         return (float)$this->getData('price');
     }
 
+    /**
+     * @return float
+     */
     public function getTaxAmount()
     {
         return (float)$this->getData('tax_amount');
@@ -95,11 +109,17 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         return $this->getData('currency');
     }
 
+    /**
+     * @return int
+     */
     public function getQtyPurchased()
     {
         return (int)$this->getData('qty');
     }
 
+    /**
+     * @return array
+     */
     public function getVariationProductOptions()
     {
         $channelItem = $this->getChannelItem();
@@ -111,45 +131,48 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         return $channelItem->getVariationProductOptions();
     }
 
+    /**
+     * @return array
+     */
     public function getVariationChannelOptions()
     {
         return array();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getAssociatedStoreId()
     {
         /** @var $buyAccount Ess_M2ePro_Model_Buy_Account */
         $buyAccount = $this->getBuyOrder()->getBuyAccount();
 
-        // Item was listed by M2E
-        // ----------------
         if (!is_null($this->getChannelItem())) {
             return $buyAccount->isMagentoOrdersListingsStoreCustom()
                 ? $buyAccount->getMagentoOrdersListingsStoreId()
                 : $this->getChannelItem()->getStoreId();
         }
-        // ----------------
 
         return $buyAccount->getMagentoOrdersListingsOtherStoreId();
     }
 
-    // ########################################
+    //########################################
 
     public function getAssociatedProductId()
     {
         $this->validate();
 
         // Item was listed by M2E
-        // ----------------
+        // ---------------------------------------
         if (!is_null($this->getChannelItem())) {
             return $this->getChannelItem()->getProductId();
         }
-        // ----------------
+        // ---------------------------------------
 
         // 3rd party Item
-        // ----------------
+        // ---------------------------------------
         $sku = $this->getSku();
         if ($sku != '' && strlen($sku) <= Ess_M2ePro_Helper_Magento_Product::SKU_MAX_LENGTH) {
             $product = Mage::getModel('catalog/product')
@@ -168,7 +191,7 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
                 return $product->getId();
             }
         }
-        // ----------------
+        // ---------------------------------------
 
         $product = $this->createProduct();
 
@@ -239,11 +262,11 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         );
 
         // Create product in magento
-        // ----------------
+        // ---------------------------------------
         /** @var $productBuilder Ess_M2ePro_Model_Magento_Product_Builder */
         $productBuilder = Mage::getModel('M2ePro/Magento_Product_Builder')->setData($productData);
         $productBuilder->buildProduct();
-        // ----------------
+        // ---------------------------------------
 
         $this->getParentObject()->getOrder()->addSuccessLog(
         'Product for Rakuten.com Item "%title%" was Created in Magento Catalog.', array('!title' => $this->getTitle())
@@ -267,5 +290,5 @@ class Ess_M2ePro_Model_Buy_Order_Item extends Ess_M2ePro_Model_Component_Child_B
         return $this->getQtyPurchased();
     }
 
-    // ########################################
+    //########################################
 }

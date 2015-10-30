@@ -1,6 +1,6 @@
 EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -29,9 +29,8 @@ EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
                 this.editSettings(id, 'synchronization');
             }.bind(this),
 
-            editPartsCompatibilityAction: function(id) {
-                EbayMotorCompatibilityHandlerObj.setMode('add');
-                this.openPartsCompatibilityPopup(id);
+            editMotorsAction: function(id) {
+                this.openMotorsPopup(id);
             }.bind(this),
 
             movingAction: this.movingHandler.run.bind(this.movingHandler),
@@ -43,30 +42,7 @@ EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    //----------------------------------
-
-    showCompatibilityDetails: function(listingProductId, compatibilityType)
-    {
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing/motorViewDetails'), {
-            method: 'get',
-            asynchronous: true,
-            parameters: {
-                listing_product_id: listingProductId,
-                compatibility_type: compatibilityType
-            },
-            onSuccess: function(transport) {
-                this.openPopUp(
-                    M2ePro.translator.translate('Compatibility Attribute'),
-                    transport.responseText,
-                    {width: 750, height: 450}
-                );
-
-                EbayMotorCompatibilityHandlerObj.setMode('view');
-            }.bind(this)
-        });
-    },
-
-    //----------------------------------
+    // ---------------------------------------
 
     editSettings: function(id, tab)
     {
@@ -92,30 +68,30 @@ EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    openPartsCompatibilityPopup: function(id)
+    openMotorsPopup: function(id)
     {
-        EbayMotorCompatibilityHandlerObj.savedNotes = {};
+        EbayMotorsHandlerObj.savedNotes = {};
 
         this.selectedProductsIds = id ? [id] : this.getSelectedProductsArray();
-        EbayMotorCompatibilityHandlerObj.openPopUp();
+        EbayMotorsHandlerObj.openAddPopUp(this.selectedProductsIds);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     saveSettings: function(savedTemplates)
     {
         var requestParams = {};
 
         // push information about saved templates into the request params
-        //----------------------------------
+        // ---------------------------------------
         $H(savedTemplates).each(function(i) {
             requestParams[i.key] = i.value;
         });
-        //----------------------------------
+        // ---------------------------------------
 
-        //----------------------------------
+        // ---------------------------------------
         requestParams['ids'] = this.selectedProductsIds.join(',');
-        //----------------------------------
+        // ---------------------------------------
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_template/saveListingProduct'), {
             method: 'post',
@@ -128,7 +104,7 @@ EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getSelectedProductsTitles: function()
     {
@@ -154,7 +130,7 @@ EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
         return title;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getPopUpTitle: function(tab, productTitles)
     {
@@ -183,7 +159,7 @@ EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
         return title;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     transferring: function(id)
     {
@@ -198,12 +174,12 @@ EbayListingSettingsGridHandler = Class.create(EbayListingViewGridHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function()
     {
         return true;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

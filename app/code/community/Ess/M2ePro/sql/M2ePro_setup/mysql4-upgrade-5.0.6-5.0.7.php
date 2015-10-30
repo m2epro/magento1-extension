@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -27,7 +27,7 @@ WHERE `group` = '/cache/index/catalog_product_price/';
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE m2epro_order_change
@@ -43,7 +43,7 @@ SQL
     ADD INDEX items_sold_count (items_sold_count);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order_change');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -57,7 +57,7 @@ if (!isset($tempTableIndexList[strtoupper('hash')])) {
     $connection->addKey($tempTable, 'hash', 'hash');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing');
 
@@ -77,7 +77,7 @@ if ($connection->tableColumnExists($tempTable, 'items_active_count') === false) 
         'INT(11) UNSIGNED NOT NULL DEFAULT 0 AFTER `products_inactive_count`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -91,7 +91,7 @@ if (!isset($tempTableIndexList[strtoupper('items_sold_count')])) {
     $connection->addKey($tempTable, 'items_sold_count', 'items_sold_count');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_amazon_account');
 $tempAccounts = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -127,7 +127,7 @@ foreach ($tempAccounts as $account) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("
@@ -152,8 +152,8 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

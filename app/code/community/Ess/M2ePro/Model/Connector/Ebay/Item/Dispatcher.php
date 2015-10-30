@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_Item_Dispatcher
 {
     private $logsActionId = NULL;
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $action
@@ -66,12 +68,15 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Dispatcher
         return $result;
     }
 
+    /**
+     * @return int
+     */
     public function getLogsActionId()
     {
         return (int)$this->logsActionId;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $sortedProducts
@@ -216,7 +221,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareProducts($products)
     {
@@ -264,21 +269,23 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Dispatcher
         return $sortedProducts;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $params
+     * @return int
+     */
     protected function recognizeInitiatorForLogging(array $params)
     {
         $statusChanger = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN;
         isset($params['status_changer']) && $statusChanger = $params['status_changer'];
 
-        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
+        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
 
         if ($statusChanger == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN) {
             $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
         } else if ($statusChanger == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
             $initiator = Ess_M2ePro_Helper_Data::INITIATOR_USER;
-        } else {
-            $initiator = Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
         }
 
         return $initiator;
@@ -325,5 +332,5 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Dispatcher
         return $action;
     }
 
-    // ########################################
+    //########################################
 }

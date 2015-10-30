@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -33,17 +35,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/orders');
     }
 
-    //#############################################
-
-    public function preDispatch()
-    {
-        parent::preDispatch();
-
-        Mage::getSingleton('M2ePro/Order_Log_Manager')
-            ->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
-    }
-
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -59,7 +51,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function viewAction()
     {
@@ -78,7 +70,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
              ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function orderItemGridAction()
     {
@@ -91,7 +83,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function editShippingAddressAction()
     {
@@ -158,7 +150,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         $this->_redirect('*/adminhtml_ebay_order/view', array('id' => $order->getId()));
     }
 
-    //#############################################
+    //########################################
 
     private function processConnector($action, array $params = array())
     {
@@ -172,7 +164,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         return Mage::getModel('M2ePro/Connector_Ebay_Order_Dispatcher')->process($action, $ids, $params);
     }
 
-    //--------------------
+    // ---------------------------------------
 
     public function updatePaymentStatusAction()
     {
@@ -204,7 +196,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         return $this->_redirectUrl($this->_getRefererUrl());
     }
 
-    //#############################################
+    //########################################
 
     public function createMagentoOrderAction()
     {
@@ -213,10 +205,11 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
 
         /** @var $order Ess_M2ePro_Model_Order */
         $order = Mage::helper('M2ePro/Component_Ebay')->getObject('Order', (int)$id);
+        $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
         if (!is_null($order->getMagentoOrderId()) && $force != 'yes') {
-    // M2ePro_TRANSLATIONS
-    // Magento Order is already created for this eBay Order. Press Create Order Button to create new one.
+            // M2ePro_TRANSLATIONS
+            // Magento Order is already created for this eBay Order. Press Create Order Button to create new one.
             $message = 'Magento Order is already created for this eBay Order. ' .
                        'Press Create Order Button to create new one.';
 
@@ -228,7 +221,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         }
 
         // Create magento order
-        // -------------
+        // ---------------------------------------
         try {
             $order->createMagentoOrder();
             $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento Order was created.'));
@@ -239,7 +232,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
             );
             $this->_getSession()->addError($message);
         }
-        // -------------
+        // ---------------------------------------
 
         if ($order->getChildObject()->canCreatePaymentTransaction()) {
             $order->getChildObject()->createPaymentTransactions();
@@ -259,14 +252,14 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
             $order->getChildObject()->createTracks();
         }
 
-        // -------------
+        // ---------------------------------------
         $order->updateMagentoOrderStatus();
-        // -------------
+        // ---------------------------------------
 
         return $this->_redirectUrl($this->_getRefererUrl());
     }
 
-    //#############################################
+    //########################################
 
     public function goToPaypalAction()
     {
@@ -293,7 +286,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         return $this->_redirectUrl($transaction->getPaypalUrl());
     }
 
-    //#############################################
+    //########################################
 
     public function migrateOrdersPackToV611Action()
     {
@@ -308,5 +301,5 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         $migrationModel->migrate();
     }
 
-    //#############################################
+    //########################################
 }

@@ -1,11 +1,11 @@
 EbayListingOtherSynchronizationHandler = Class.create();
 EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-conditions-between', M2ePro.translator.translate('Must be greater than "Min".'), function(value, el) {
 
             var minValue = $(el.id.replace('_max','')).value;
@@ -17,7 +17,7 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
             return parseInt(value) > parseInt(minValue);
         });
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-stop-relist-conditions-product-status', M2ePro.translator.translate('Inconsistent Settings in Relist and Stop Rules.'), function(value, el) {
 
             if (EbayListingOtherSynchronizationHandlerObj.isRelistModeDisabled()) {
@@ -86,17 +86,17 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
 
             return true;
         });
-        //-----------------
+        // ---------------------------------------
     },
 
-    //-----------------------------------
+    // ---------------------------------------
 
     isRelistModeDisabled: function()
     {
         return $('relist_mode').value == 0;
     },
 
-    //-----------------------------------
+    // ---------------------------------------
 
     save_click: function(redirectUrl)
     {
@@ -124,53 +124,127 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
         }
     },
 
-    source_change: function()
+    // ---------------------------------------
+
+    qtySourceChange: function()
     {
         var self = EbayListingOtherSynchronizationHandlerObj;
-        var id = this.id.replace('_source', '');
-        var sourceMode = this.options[this.selectedIndex].up().getAttribute(id + '_source');
 
-        //hack for PRODUCT FIXED QTY virtual attribute
-        if (sourceMode === null ||
-            this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT_FIXED')) {
+        var sourceMode = this.value;
 
-            sourceMode = this.value;
+        $('qty_attribute').value = '';
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('qty_attribute'))
         }
 
-        $(id + '_attribute').value = '';
-        $(id).value = sourceMode;
+        var reviseUpdateQty = $('revise_update_qty');
+        var relistQty = $('relist_qty');
+        var stopQty = $('stop_qty');
 
-        var constAttribute = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::'+id.toUpperCase()+'_SOURCE_ATTRIBUTE');
-        var constNone = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::'+id.toUpperCase()+'_SOURCE_NONE');
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_NONE')) {
 
-        if (sourceMode == constAttribute) {
-            $(id + '_attribute').value = this.value;
-        }
+            reviseUpdateQty.selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_QTY_NONE');
+            reviseUpdateQty.disabled = true;
 
-        if (this.value == constNone) {
-            var constReviseNone = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_'+id.toUpperCase()+'_NONE');
+            relistQty.selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::RELIST_QTY_NONE');
+            relistQty.simulate('change');
+            relistQty.disabled = true;
 
-            $('revise_update_' + id).selectedIndex = constReviseNone;
-            $('revise_update_' + id).disabled = true;
-
-            if (id == 'qty') {
-                $('relist_qty').selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::RELIST_QTY_NONE');
-                $('relist_qty').simulate('change');
-                $('relist_qty').disabled = true;
-
-                $('stop_qty').selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::STOP_QTY_NONE');
-                $('stop_qty').simulate('change');
-                $('stop_qty').disabled = true;
-            }
+            stopQty.selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::STOP_QTY_NONE');
+            stopQty.simulate('change');
+            stopQty.disabled = true;
         } else {
-            $('revise_update_' + id).disabled = false;
-
-            if (id == 'qty') {
-                $('relist_qty').disabled = false;
-                $('stop_qty').disabled = false;
-            }
+            reviseUpdateQty.disabled = false;
+            relistQty.disabled = false;
+            stopQty.disabled = false;
         }
     },
+
+    priceSourceChange: function()
+    {
+        var self = EbayListingOtherSynchronizationHandlerObj;
+
+        var sourceMode = this.value;
+
+        $('price_attribute').value = '';
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::PRICE_SOURCE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('price_attribute'));
+        }
+
+        var reviseUpdatePrice = $('revise_update_price');
+
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::PRICE_SOURCE_NONE')) {
+            reviseUpdatePrice.selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_PRICE_NONE');
+            reviseUpdatePrice.disabled = true;
+        } else {
+            reviseUpdatePrice.disabled = false;
+        }
+    },
+
+    titleSourceChange: function()
+    {
+        var self = EbayListingOtherSynchronizationHandlerObj;
+
+        var sourceMode = this.value;
+
+        $('title_attribute').value = '';
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::TITLE_SOURCE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('title_attribute'));
+        }
+
+        var reviseUpdateTitle = $('revise_update_title');
+
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::TITLE_SOURCE_NONE')) {
+            reviseUpdateTitle.selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_TITLE_NONE');
+            reviseUpdateTitle.disabled = true;
+        } else {
+            reviseUpdateTitle.disabled = false;
+        }
+    },
+
+    subTitleSourceChange: function()
+    {
+        var self = EbayListingOtherSynchronizationHandlerObj;
+
+        var sourceMode = this.value;
+
+        $('sub_title_attribute').value = '';
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::SUB_TITLE_SOURCE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('sub_title_attribute'));
+        }
+
+        var reviseUpdateSubTitle = $('revise_update_sub_title');
+
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::SUB_TITLE_SOURCE_NONE')) {
+            reviseUpdateSubTitle.selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_SUB_TITLE_NONE');
+            reviseUpdateSubTitle.disabled = true;
+        } else {
+            reviseUpdateSubTitle.disabled = false;
+        }
+    },
+
+    descriptionSourceChange: function()
+    {
+        var self = EbayListingOtherSynchronizationHandlerObj;
+
+        var sourceMode = this.value;
+
+        $('description_attribute').value = '';
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::DESCRIPTION_SOURCE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('description_attribute'));
+        }
+
+        var reviseUpdateDescription = $('revise_update_description');
+
+        if (sourceMode == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::DESCRIPTION_SOURCE_NONE')) {
+            reviseUpdateDescription.selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_DESCRIPTION_NONE');
+            reviseUpdateDescription.disabled = true;
+        } else {
+            reviseUpdateDescription.disabled = false;
+        }
+    },
+
+    // ---------------------------------------
 
     relist_mode_change: function()
     {
@@ -239,5 +313,5 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

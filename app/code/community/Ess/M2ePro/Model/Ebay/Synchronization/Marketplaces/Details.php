@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
     extends Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/details/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Details';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 25;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -58,7 +72,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
         $this->logSuccessfulOperation($marketplace);
     }
 
-    //####################################
+    //########################################
 
     protected function receiveFromEbay(Ess_M2ePro_Model_Marketplace $marketplace)
     {
@@ -87,7 +101,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
         $tableShipping = $coreResourceModel->getTableName('m2epro_ebay_dictionary_shipping');
 
         // Save marketplaces
-        //-----------------------
+        // ---------------------------------------
         $connWrite->delete($tableMarketplaces, array('marketplace_id = ?' => $marketplace->getId()));
 
         $insertData = array(
@@ -111,10 +125,10 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
 
         unset($details['categories_version']);
         $connWrite->insert($tableMarketplaces, $insertData);
-        //-----------------------
+        // ---------------------------------------
 
         // Save shipping
-        //-----------------------
+        // ---------------------------------------
         $connWrite->delete($tableShipping, array('marketplace_id = ?' => $marketplace->getId()));
 
         foreach ($details['shipping'] as $data) {
@@ -130,7 +144,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
             );
             $connWrite->insert($tableShipping, $insertData);
         }
-        //-----------------------
+        // ---------------------------------------
     }
 
     protected function logSuccessfulOperation(Ess_M2ePro_Model_Marketplace $marketplace)
@@ -148,5 +162,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
                                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
     }
 
-    //####################################
+    //########################################
 }

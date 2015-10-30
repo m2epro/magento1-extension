@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
@@ -10,7 +12,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminht
     const TAB_ID_AMAZON = 'amazon';
     const TAB_ID_BUY    = 'buy';
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -20,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminht
         $this->setDestElementId('search_tabs_container');
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareLayout()
     {
@@ -42,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminht
         return parent::_prepareLayout();
     }
 
-    // ########################################
+    //########################################
 
     protected function getAllTabBlock()
     {
@@ -64,7 +66,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminht
         return $tab;
     }
 
-    // ########################################
+    //########################################
 
     protected function getAmazonTabBlock()
     {
@@ -88,7 +90,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminht
         return $tab;
     }
 
-    // ########################################
+    //########################################
 
     protected function getBuyTabBlock()
     {
@@ -112,7 +114,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminht
         return $tab;
     }
 
-    // ########################################
+    //########################################
 
     protected function getActiveChannelTab()
     {
@@ -125,5 +127,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_listing_Search_Tabs extends Mage_Adminht
         return $activeTab;
     }
 
-    // ########################################
+    //########################################
 }

@@ -2,7 +2,7 @@
     <?php echo Mage::helper('M2ePro')->__('This Section allows you to Create, Edit and Delete the Accounts for Amazon and Rakuten.com.<br/><br/>
     <b>Note:</b> That it is required to have separate Account for each Amazon Marketplace. <br/>
      For example, if you sell Items on Amazon.co.uk, you cannot use the same M2E Pro %amazon% Account to sell Items on different European Marketplaces.<br/>
-     So in order to sell Items on Amazon.es, Amazon.it etc., you need to create another M2E Pro %amazon% Accounts for Spain and Italy Marketplaces, although you can still use the same Seller ID.
+     So in order to sell Items on Amazon.es, Amazon.it etc., you need to create another M2E Pro %amazon% Accounts for Spain and Italy Marketplaces, although you can still use the same Merchant ID.
     ', Mage::helper('M2ePro/Component_Amazon')->getTitle());
 
     $components = Mage::helper('M2ePro/View_Common_Component')->getActiveComponents();
@@ -15,9 +15,9 @@
         <?php echo Mage::helper('M2ePro')->__('
             </br></br>More detailed information about ability to work with this page you can find on <a target="_blank" href="%url1%">%amazon%</a> and
             <a target="_blank" href="%url2%">%buy%</a>.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Accounts'),
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/mIIVAQ'),
             Mage::helper('M2ePro/Component_Amazon')->getTitle(),
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'Accounts'),
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/k4MVAQ'),
             Mage::helper('M2ePro/Component_Buy')->getTitle()
         ); ?>
     <?php endif; ?>

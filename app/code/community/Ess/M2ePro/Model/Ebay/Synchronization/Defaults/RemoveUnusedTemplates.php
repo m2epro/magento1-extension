@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveUnusedTemplates
@@ -9,19 +11,25 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveUnusedTemplates
 {
     const SAFE_CREATE_DATE_INTERVAL = 86400;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/remove_unused_templates/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Remove Unused Policies';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -33,14 +41,14 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveUnusedTemplates
         return 20;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function intervalIsEnabled()
     {
         return true;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -55,7 +63,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveUnusedTemplates
         $this->removeOtherCategoriesTemplates();
     }
 
-    //####################################
+    //########################################
 
     private function removeUnusedTemplates($templateNick)
     {
@@ -107,7 +115,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveUnusedTemplates
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__.$templateNick);
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     private function removeCategoriesTemplates()
     {
@@ -203,5 +211,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveUnusedTemplates
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 }

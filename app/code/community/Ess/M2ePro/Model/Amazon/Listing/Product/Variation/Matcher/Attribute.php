@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
@@ -20,8 +22,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
 
     private $canUseDictionary = true;
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $product
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $product)
     {
         $this->magentoProduct = $product;
@@ -32,8 +38,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         return $this;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $attributes
+     * @return $this
+     */
     public function setSourceAttributes(array $attributes)
     {
         $this->sourceAttributes = $attributes;
@@ -44,6 +54,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         return $this;
     }
 
+    /**
+     * @param array $attributes
+     * @return $this
+     */
     public function setDestinationAttributes(array $attributes)
     {
         $this->destinationAttributes = $attributes;
@@ -52,33 +66,49 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         return $this;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param bool $flag
+     * @return $this
+     */
     public function canUseDictionary($flag = true)
     {
         $this->canUseDictionary = $flag;
         return $this;
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isAmountEqual()
     {
         return count($this->getSourceAttributes()) == count($this->getDestinationAttributes());
     }
 
+    /**
+     * @return bool
+     */
     public function isSourceAmountGreater()
     {
         return count($this->getSourceAttributes()) > count($this->getDestinationAttributes());
     }
 
+    /**
+     * @return bool
+     */
     public function isDestinationAmountGreater()
     {
         return count($this->getSourceAttributes()) < count($this->getDestinationAttributes());
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getMatchedAttributes()
     {
         if (empty($this->matchedAttributes)) {
@@ -88,37 +118,52 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         return $this->matchedAttributes;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isFullyMatched()
     {
         return count($this->getMagentoUnmatchedAttributes()) <= 0 && count($this->getChannelUnmatchedAttributes()) <= 0;
     }
 
+    /**
+     * @return bool
+     */
     public function isNotMatched()
     {
         return count($this->getMatchedAttributes()) <= 0;
     }
 
+    /**
+     * @return bool
+     */
     public function isPartiallyMatched()
     {
         return !$this->isFullyMatched() && !$this->isNotMatched();
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getMagentoUnmatchedAttributes()
     {
         return array_keys($this->getMatchedAttributes(), null);
     }
 
+    /**
+     * @return array
+     */
     public function getChannelUnmatchedAttributes()
     {
         $matchedChannelAttributes = array_values($this->getMatchedAttributes());
         return array_diff($this->destinationAttributes, $matchedChannelAttributes);
     }
 
-    // ##########################################################
+    //########################################
 
     private function match()
     {
@@ -218,7 +263,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         return $this->isFullyMatched();
     }
 
-    // ##########################################################
+    //########################################
 
     private function getSourceAttributes()
     {
@@ -293,7 +338,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         return $resultData;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function getResolver()
     {
@@ -316,5 +361,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         return $names;
     }
 
-    // ##########################################################
+    //########################################
 }

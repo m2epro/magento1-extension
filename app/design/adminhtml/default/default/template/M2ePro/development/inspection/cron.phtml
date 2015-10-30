@@ -5,11 +5,11 @@
             <label><?php echo Mage::helper('M2ePro')->__('Type'); ?>: </label>
         </td>
         <td class="value">
-            <?php echo $this->cronCurrentType; ?>
+            <?php echo $this->cronCurrentRunner; ?>
         </td>
     </tr>
 
-    <?php if (Mage::helper('M2ePro/Module_Cron')->isTypeService() && !$this->getData('is_support_mode')) : ?>
+    <?php if (Mage::helper('M2ePro/Module_Cron')->isRunnerService() && !$this->getData('is_support_mode')) : ?>
         <tr>
             <td class="label">
                 <label><?php echo Mage::helper('M2ePro')->__('Service Auth Key'); ?>: </label>

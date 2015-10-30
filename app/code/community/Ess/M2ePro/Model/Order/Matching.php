@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Order_Matching extends Ess_M2ePro_Model_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -14,23 +16,37 @@ class Ess_M2ePro_Model_Order_Matching extends Ess_M2ePro_Model_Abstract
         $this->_init('M2ePro/Order_Matching');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getProductId()
     {
         return (int)$this->getData('product_id');
     }
 
+    /**
+     * @return int
+     */
     public function getType()
     {
         return (int)$this->getData('type');
     }
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getInputVariationOptions()
     {
         return $this->getSettings('input_variation_options');
     }
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOutputVariationOptions()
     {
         return $this->getSettings('output_variation_options');
@@ -41,7 +57,7 @@ class Ess_M2ePro_Model_Order_Matching extends Ess_M2ePro_Model_Abstract
         return $this->getData('component');
     }
 
-    // ########################################
+    //########################################
 
     public static function create(
         $productId,
@@ -86,5 +102,5 @@ class Ess_M2ePro_Model_Order_Matching extends Ess_M2ePro_Model_Abstract
         return sha1(serialize($input));
     }
 
-    // ########################################
+    //########################################
 }

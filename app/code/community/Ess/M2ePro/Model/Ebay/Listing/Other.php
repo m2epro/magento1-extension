@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -9,7 +11,7 @@
  */
 class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +19,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         $this->_init('M2ePro/Ebay_Listing_Other');
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -43,7 +45,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $this->getParentObject()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Other_Source
@@ -61,19 +63,22 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return Mage::getSingleton('M2ePro/Ebay_Listing_Other_Synchronization');
     }
 
-    // ########################################
+    //########################################
 
     public function getSku()
     {
         return $this->getData('sku');
     }
 
+    /**
+     * @return float
+     */
     public function getItemId()
     {
         return (double)$this->getData('item_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getTitle()
     {
@@ -85,29 +90,41 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $this->getData('currency');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return float
+     */
     public function getOnlinePrice()
     {
         return (float)$this->getData('online_price');
     }
 
+    /**
+     * @return int
+     */
     public function getOnlineQty()
     {
         return (int)$this->getData('online_qty');
     }
 
+    /**
+     * @return int
+     */
     public function getOnlineQtySold()
     {
         return (int)$this->getData('online_qty_sold');
     }
 
+    /**
+     * @return int
+     */
     public function getOnlineBids()
     {
         return (int)$this->getData('online_bids');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getStartDate()
     {
@@ -119,8 +136,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $this->getData('end_date');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return float|int|null
+     */
     public function getMappedPrice()
     {
         if (is_null($this->getParentObject()->getProductId()) ||
@@ -152,6 +172,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $price;
     }
 
+    /**
+     * @return int|null
+     */
     public function getMappedQty()
     {
         if (is_null($this->getParentObject()->getProductId()) ||
@@ -180,8 +203,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return (int)floor($qty);
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return null|string
+     */
     public function getMappedTitle()
     {
         if (is_null($this->getParentObject()->getProductId()) ||
@@ -203,6 +229,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $title;
     }
 
+    /**
+     * @return null|string
+     */
     public function getMappedSubTitle()
     {
         if (is_null($this->getParentObject()->getProductId()) ||
@@ -220,6 +249,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $subTitle;
     }
 
+    /**
+     * @return string|null
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function getMappedDescription()
     {
         if (is_null($this->getParentObject()->getProductId()) ||
@@ -248,7 +281,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return str_replace(array('<![CDATA[', ']]>'), '', $description);
     }
 
-    // ########################################
+    //########################################
 
     public function getRelatedStoreId()
     {
@@ -264,7 +297,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         );
     }
 
-    // ########################################
+    //########################################
 
     public function reviseAction(array $params = array())
     {
@@ -281,7 +314,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $this->processDispatcher(Ess_M2ePro_Model_Listing_Product::ACTION_STOP,$params);
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function processDispatcher($action, array $params = array())
     {
@@ -294,7 +327,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         return $dispatcher->process($action, $this->getId(), $params);
     }
 
-    // ########################################
+    //########################################
 
     public function afterMapProduct()
     {
@@ -320,5 +353,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
                     ));
     }
 
-    // ########################################
+    //########################################
 }

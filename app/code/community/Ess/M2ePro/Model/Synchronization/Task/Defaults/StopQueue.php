@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Synchronization_Task_Defaults_StopQueue
@@ -9,38 +11,53 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_StopQueue
 {
     private $itemsWereProcessed = false;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/stop_queue/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Stopping Products';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
-        return 30;
+        return 50;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
-        return 40;
+        return 60;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     protected function intervalIsEnabled()
     {
         return true;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -50,7 +67,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_StopQueue
         }
     }
 
-    //####################################
+    //########################################
 
     private function sendComponentRequests($component)
     {
@@ -142,7 +159,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_StopQueue
         } catch (Exception $exception) {}
     }
 
-    //####################################
+    //########################################
 
     protected function intervalSetLastTime($time)
     {
@@ -153,5 +170,5 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_StopQueue
         parent::intervalSetLastTime($time);
     }
 
-    //####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -9,7 +11,7 @@
  */
 class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Component_Child_Buy_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +19,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         $this->_init('M2ePro/Buy_Listing_Product_Variation');
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -35,7 +37,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $this->getAccount()->getChildObject();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -53,7 +55,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $this->getMarketplace()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -71,7 +73,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $this->getListing()->getChildObject();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -89,7 +91,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $this->getListingProduct()->getChildObject();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Template_SellingFormat
@@ -107,7 +109,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $this->getSellingFormatTemplate()->getChildObject();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Template_Synchronization
@@ -125,15 +127,19 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $this->getSynchronizationTemplate()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
     public function getOptions($asObjects = false, array $filters = array())
     {
         return $this->getParentObject()->getOptions($asObjects,$filters);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return mixed
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getSku()
     {
         $sku = '';
@@ -182,7 +188,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $sku;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function applySkuModification($sku)
     {
@@ -203,7 +209,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         return $sku;
     }
 
-    // ########################################
+    //########################################
 
     public function getQty($magentoMode = false)
     {
@@ -222,10 +228,11 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation extends Ess_M2ePro_Model_Co
         /** @var $calculator Ess_M2ePro_Model_Buy_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Buy_Listing_Product_PriceCalculator');
         $calculator->setSource($src)->setProduct($this->getListingProduct());
-        $calculator->setModifyByCoefficient(true);
+        $calculator->setModifyByCoefficient(true)
+                   ->setIsIncreaseByVatPercent(true);
 
         return $calculator->getVariationValue($this->getParentObject());
     }
 
-    // ########################################
+    //########################################
 }

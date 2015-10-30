@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Main
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -18,7 +20,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Main
 
     protected function _beforeToHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'    => 'productSearch_submit_button',
             'label' => Mage::helper('M2ePro')->__('Search'),
@@ -26,9 +28,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Main
         );
         $buttonSubmitBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('productSearch_submit_button', $buttonSubmitBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'    => 'productSearch_back_button',
             'label' => Mage::helper('M2ePro')->__('Back'),
@@ -36,9 +38,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Main
         );
         $buttonBackBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('productSearch_back_button', $buttonBackBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'    => 'productSearch_cancel_button',
             'label' => Mage::helper('M2ePro')->__('Close'),
@@ -46,9 +48,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Main
         );
         $buttonCancelBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('productSearch_cancel_button', $buttonCancelBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'    => 'productSearch_cleanSuggest_button',
             'label' => Mage::helper('M2ePro')->__('Clear Search Results'),
@@ -57,10 +59,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Main
         );
         $buttonResetBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('productSearch_cleanSuggest_button', $buttonResetBlock);
-        //------------------------------
+        // ---------------------------------------
 
         parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 }

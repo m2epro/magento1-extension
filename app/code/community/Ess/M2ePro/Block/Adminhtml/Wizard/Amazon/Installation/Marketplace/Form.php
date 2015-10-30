@@ -1,23 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Wizard_Amazon_Installation_Marketplace_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('wizardAmazonMarketplaceForm');
         $this->setContainerId('wizard_marketplaces_container');
         $this->setTemplate('M2ePro/wizard/amazon/installation/marketplace/form.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareForm()
@@ -34,11 +36,11 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_Amazon_Installation_Marketplace_Form ext
         return parent::_prepareForm();
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
-        //-------------------------------
+        // ---------------------------------------
 
         /** @var Ess_M2ePro_Model_Marketplace[] $marketplaces */
         $marketplaces = Mage::helper('M2ePro/Component_Amazon')->getCollection('Marketplace')
@@ -53,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_Amazon_Installation_Marketplace_Form ext
         $canadaMarketplace = NULL;
         $canadaStoreStatus = NULL;
 
-        foreach($marketplaces as $marketplace) {
+        foreach ($marketplaces as $marketplace) {
             if (is_null($marketplace->getData('developer_key'))) {
                 continue;
             }
@@ -95,10 +97,10 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_Amazon_Installation_Marketplace_Form ext
         $this->marketplaces = $resultMarketplaces;
         $this->storedStatuses = $storedStatuses;
 
-        //-------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

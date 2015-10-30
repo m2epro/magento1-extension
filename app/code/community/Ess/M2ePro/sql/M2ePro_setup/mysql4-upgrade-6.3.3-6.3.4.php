@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ### registry table
@@ -129,7 +129,7 @@ $connection = $installer->getConnection();
     ### -------------------------------
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQL
 
@@ -147,7 +147,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_marketplace');
 
@@ -171,7 +171,7 @@ if ($connection->tableColumnExists($tempTable, 'vocabulary') !== false) {
     }
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_marketplace');
 
@@ -186,7 +186,7 @@ if ($connection->tableColumnExists($tempTable, 'categories_features_defaults') !
     $connection->dropColumn($tempTable, 'categories_features_defaults');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_marketplace');
 
@@ -194,7 +194,7 @@ if ($connection->tableColumnExists($tempTable, 'vocabulary') !== false) {
     $connection->dropColumn($tempTable, 'vocabulary');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -246,7 +246,7 @@ if (isset($tempTableIndexList[strtoupper('level')])) {
     $connection->dropKey($tempTable, 'level');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -284,7 +284,7 @@ if ($connection->tableColumnExists($tempTable, 'path') !== false) {
 }
 
 if ($connection->tableColumnExists($tempTable, 'is_leaf') === false &&
-    $connection->tableColumnExists($tempTable, 'is_listable') !== false ) {
+    $connection->tableColumnExists($tempTable, 'is_listable') !== false) {
     $connection->changeColumn($tempTable, 'is_listable', 'is_leaf', 'TINYINT(2) UNSIGNED NOT NULL DEFAULT 0');
 }
 
@@ -296,7 +296,7 @@ if (!isset($tempTableIndexList[strtoupper('is_leaf')])) {
     $connection->addKey($tempTable, 'is_leaf', 'is_leaf');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_dictionary_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -323,7 +323,7 @@ if ($connection->tableColumnExists($tempTable, 'attributes') !== false) {
 }
 
 if ($connection->tableColumnExists($tempTable, 'is_leaf') === false &&
-    $connection->tableColumnExists($tempTable, 'is_listable') !== false ) {
+    $connection->tableColumnExists($tempTable, 'is_listable') !== false) {
     $connection->changeColumn(
         $tempTable, 'is_listable', 'is_leaf',
         'TINYINT(2) UNSIGNED NOT NULL DEFAULT 0 AFTER `attributes`'
@@ -350,7 +350,7 @@ if (!isset($tempTableIndexList[strtoupper('is_leaf')])) {
     $connection->addKey($tempTable, 'is_leaf', 'is_leaf');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_motor_specific');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -366,7 +366,7 @@ if (!isset($tempTableIndexList[strtoupper('is_custom')])) {
     $connection->addKey($tempTable, 'is_custom', 'is_custom');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_motor_ktype');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -390,7 +390,7 @@ if (isset($tempTableIndexList[strtoupper('marketplace_id')])) {
     $connection->dropKey($tempTable, 'marketplace_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -406,7 +406,7 @@ if (!isset($tempTableIndexList[strtoupper('online_current_price')])) {
     $connection->addKey($tempTable, 'online_current_price', 'online_current_price');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 
@@ -431,7 +431,7 @@ if ($connection->tableColumnExists($tempTable, 'fixed_price_custom_attribute') =
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQL
 
@@ -443,14 +443,14 @@ $installer->run(<<<SQL
         `buyitnow_price_coefficient` = NULL,
         `buyitnow_price_custom_attribute` = NULL
     WHERE
-        listing_type = 2 AND buyitnow_price_mode IS NOT NULL;
+        listing_type = 2 AND buyitnow_price_mode IS NOT NULL AND buyitnow_price_mode <> 0;
 
     UPDATE `m2epro_ebay_template_selling_format`
     SET `fixed_price_mode` = `buyitnow_price_mode`,
         `fixed_price_coefficient` = `buyitnow_price_coefficient`,
         `fixed_price_custom_attribute` = `buyitnow_price_custom_attribute`
     WHERE
-        listing_type = 3 AND buyitnow_price_mode IS NOT NULL;
+        listing_type = 3 AND buyitnow_price_mode IS NOT NULL AND buyitnow_price_mode <> 0;
 
     UPDATE `m2epro_ebay_listing_product`
         SET `online_current_price` = `online_buyitnow_price`,
@@ -468,7 +468,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing');
 
@@ -486,7 +486,7 @@ if ($connection->tableColumnExists($tempTable, 'sku_modification_custom_value') 
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_listing');
 
@@ -504,7 +504,7 @@ if ($connection->tableColumnExists($tempTable, 'sku_modification_custom_value') 
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_other');
 
@@ -515,7 +515,7 @@ if ($connection->tableColumnExists($tempTable, 'title') !== false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing');
 
@@ -526,7 +526,7 @@ if ($connection->tableColumnExists($tempTable, 'additional_data') !== false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_log');
 
@@ -537,7 +537,7 @@ if ($connection->tableColumnExists($tempTable, 'additional_data') !== false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_other');
 
@@ -548,7 +548,7 @@ if ($connection->tableColumnExists($tempTable, 'additional_data') !== false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_product');
 
@@ -559,7 +559,7 @@ if ($connection->tableColumnExists($tempTable, 'additional_data') !== false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_product_variation');
 
@@ -570,7 +570,7 @@ if ($connection->tableColumnExists($tempTable, 'additional_data') === false) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -596,7 +596,7 @@ SQL
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_wizard');
 
@@ -616,7 +616,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_config');
 
@@ -679,7 +679,7 @@ SQL
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQl
 
@@ -835,7 +835,7 @@ $installer->run(<<<SQl
 SQl
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_log');
 
@@ -880,7 +880,7 @@ if (count($newLogsData) != 0) {
     }
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_template_description');
 
@@ -915,7 +915,7 @@ if ($result !== false) {
     }
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_processing_request');
 
@@ -968,8 +968,8 @@ if (!empty($processingRequests)) {
     $connection->insertOnDuplicate($tempTable, $processingRequests, array('responser_params'));
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

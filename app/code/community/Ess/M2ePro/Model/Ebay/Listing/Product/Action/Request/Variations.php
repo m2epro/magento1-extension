@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -10,8 +12,11 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         $data = array(
@@ -35,8 +40,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         return $data;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getVariationsData()
     {
         $data = array();
@@ -123,6 +132,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         return $data;
     }
 
+    /**
+     * @return bool
+     */
     public function getSetsData()
     {
         $additionalData = $this->getListingProduct()->getAdditionalData();
@@ -134,6 +146,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function getImagesData()
     {
         $attributeLabels = array();
@@ -153,7 +168,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         return $this->getImagesDataByAttributeLabels($attributeLabels);
     }
 
-    // ########################################
+    //########################################
 
     private function logLimitationsAndReasons()
     {
@@ -208,7 +223,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         }
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getConfigurableImagesAttributeLabels()
     {
@@ -220,16 +235,24 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
 
         $product = $this->getMagentoProduct()->getProduct();
 
-        $attributeCode = $descriptionTemplate->getVariationConfigurableImages();
+        $attributeCodes = $descriptionTemplate->getDecodedVariationConfigurableImages();
+        $attributes = array();
 
-        /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
-        $attribute = $product->getResource()->getAttribute($attributeCode);
+        foreach ($attributeCodes as $attributeCode) {
+            /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+            $attribute = $product->getResource()->getAttribute($attributeCode);
 
-        if (!$attribute) {
-            return array();
+            if (!$attribute) {
+                continue;
+            }
+
+            $attribute->setStoreId($product->getStoreId());
+            $attributes[] = $attribute;
         }
 
-        $attribute->setStoreId($product->getStoreId());
+        if (empty($attributes)) {
+            return array();
+        }
 
         $attributeLabels = array();
 
@@ -241,15 +264,18 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
             /** @var $configurableAttribute Mage_Catalog_Model_Product_Type_Configurable_Attribute */
             $configurableAttribute->setStoteId($product->getStoreId());
 
-            if ((int)$attribute->getAttributeId() == (int)$configurableAttribute->getAttributeId()) {
+            foreach ($attributes as $attribute) {
 
-                $attributeLabels = array_values($attribute->getStoreLabels());
-                $attributeLabels[] = $configurableAttribute->getData('label');
-                $attributeLabels[] = $attribute->getFrontendLabel();
+                if ((int)$attribute->getAttributeId() == (int)$configurableAttribute->getAttributeId()) {
 
-                $attributeLabels = array_filter($attributeLabels);
+                    $attributeLabels = array_values($attribute->getStoreLabels());
+                    $attributeLabels[] = $configurableAttribute->getData('label');
+                    $attributeLabels[] = $attribute->getFrontendLabel();
 
-                break;
+                    $attributeLabels = array_filter($attributeLabels);
+
+                    break 2;
+                }
             }
         }
 
@@ -257,7 +283,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
 
             $this->addNotFoundAttributesMessages(
                 Mage::helper('M2ePro')->__('Change Images for Attribute'),
-                array($attributeCode)
+                $attributes
             );
 
             return array();
@@ -323,7 +349,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         );
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Category_Source
@@ -333,7 +359,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         return $this->getEbayListingProduct()->getCategoryTemplateSource();
     }
 
-    // ########################################
+    //########################################
 
     public function checkQtyWarnings($productsIds)
     {
@@ -367,6 +393,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         }
     }
 
+    /**
+     * @param int $type
+     */
     public function addQtyWarnings($type)
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
@@ -384,7 +413,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         }
     }
 
-    // ########################################
+    //########################################
 
     private function getVariationDetails(Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
@@ -496,5 +525,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

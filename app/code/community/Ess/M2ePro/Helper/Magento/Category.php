@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstract
 {
-    // ################################
+    //########################################
 
     public function getCategoriesByProduct($product, $storeId = 0, $returnType = self::RETURN_TYPE_IDS)
     {
@@ -53,7 +55,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         return $this->_convertFetchNumArrayToReturnType($fetchArray, $returnType, 'catalog/category');
     }
 
-    // -------------------------------
+    // ---------------------------------------
 
     public function getGeneralProductsFromCategories(array $categories,
                                                      $storeId = 0,
@@ -77,7 +79,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         return $this->_getProductsFromCategoryIds($categoryIds, $storeId, $returnType);
     }
 
-    // -------------------------------
+    // ---------------------------------------
 
     public function getUncategorizedProducts($storeId = 0, $returnType = self::RETURN_TYPE_IDS)
     {
@@ -198,7 +200,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         return array_values(array_unique($resultCategories));
     }
 
-    // ################################
+    //########################################
 
     protected function _getProductsFromCategoryIds(array $categoryIds, $storeId, $returnType, $onlyGeneral = false)
     {
@@ -238,7 +240,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         return $this->_convertFetchNumArrayToReturnType($fetchArray, $returnType, 'catalog/product');
     }
 
-    // ################################
+    //########################################
 
     public function getPath($categoryId)
     {
@@ -271,5 +273,5 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         return $categoryPath;
     }
 
-    // ################################
+    //########################################
 }

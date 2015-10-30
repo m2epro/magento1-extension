@@ -1,12 +1,14 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
 {
-    //####################################
+    //########################################
 
     public function getBrokenTablesInfo()
     {
@@ -133,7 +135,7 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         }
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     /**
      * @param $tableName
@@ -150,7 +152,7 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         return $result['Msg_text'];
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function fixColumnIndex($tableName, array $columnInfo)
     {
@@ -208,5 +210,5 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         $writeConnection->dropColumn($tableName, $columnInfo['name']);
     }
 
-    //####################################
+    //########################################
 }

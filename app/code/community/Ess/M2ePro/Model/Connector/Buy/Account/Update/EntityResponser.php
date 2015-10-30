@@ -1,14 +1,20 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Buy_Account_Update_EntityResponser
     extends Ess_M2ePro_Model_Connector_Buy_Responser
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -18,7 +24,7 @@ class Ess_M2ePro_Model_Connector_Buy_Account_Update_EntityResponser
         $this->getAccount()->deleteObjectLocks('adding_to_server', $processingRequest->getHash());
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponseData($response)
     {
@@ -38,10 +44,14 @@ class Ess_M2ePro_Model_Connector_Buy_Account_Update_EntityResponser
             'info' => json_encode($response['info'])
         );
 
+        if (!empty($response['info']['seller_id'])) {
+            $dataForUpdate['seller_id'] = $response['info']['seller_id'];
+        }
+
         $buyAccount->addData($dataForUpdate)->save();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -51,5 +61,5 @@ class Ess_M2ePro_Model_Connector_Buy_Account_Update_EntityResponser
         return $this->getObjectByParam('Account','account_id');
     }
 
-    // ########################################
+    //########################################
 }

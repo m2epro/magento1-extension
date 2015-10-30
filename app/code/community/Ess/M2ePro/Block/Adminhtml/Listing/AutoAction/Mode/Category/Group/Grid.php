@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Group_Grid
@@ -9,27 +11,27 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Group_Grid
 {
     private $isGridPrepared = false;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingAutoActionModeCategoryGroupGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareGrid()
     {
@@ -45,12 +47,12 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Group_Grid
         return $this->_prepareGrid();
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareCollection()
     {
         // Get collection logs
-        //--------------------------------
+        // ---------------------------------------
         $categoriesCollection = Mage::getModel('M2ePro/Listing_Auto_Category')->getCollection();
         $categoriesCollection->getSelect()->reset(Zend_Db_Select::FROM);
         $categoriesCollection->getSelect()->from(
@@ -65,14 +67,14 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Group_Grid
         $collection->getSelect()->columns(
             array('categories' => new Zend_Db_Expr('('.$categoriesCollection->getSelect().')'))
         );
-        //--------------------------------
+        // ---------------------------------------
 
         // we need sort by id also, because create_date may be same for some adjustment entries
-        //--------------------------------
+        // ---------------------------------------
         if ($this->getRequest()->getParam('sort', 'create_date') == 'create_date') {
             $collection->setOrder('id', $this->getRequest()->getParam('dir', 'DESC'));
         }
-        //--------------------------------
+        // ---------------------------------------
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -80,7 +82,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Group_Grid
         return parent::_prepareCollection();
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareColumns()
     {
@@ -130,13 +132,13 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Group_Grid
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function callbackColumnCategories($value, $row, $column, $isExport)
     {
@@ -209,7 +211,7 @@ HTML;
 HTML;
     }
 
-    // ########################################
+    //########################################
 
     public function getRowUrl($item)
     {
@@ -221,5 +223,5 @@ HTML;
         return $this->getUrl('*/adminhtml_listing_autoAction/getCategoryGroupGrid', array('_current' => true));
     }
 
-    // ########################################
+    //########################################
 }

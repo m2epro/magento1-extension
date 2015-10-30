@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_MotorsKtypes
     extends Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/motors_ktypes/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Parts Compatibility';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function isPossibleToRun()
     {
@@ -41,7 +55,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_MotorsKtypes
 
         $params = $this->getParams();
 
-        return Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility')
+        return Mage::helper('M2ePro/Component_Ebay_Motors')
                     ->isMarketplaceSupportsKtype($params['marketplace_id']);
     }
 
@@ -93,7 +107,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_MotorsKtypes
         $this->logSuccessfulOperation($marketplace);
     }
 
-    //####################################
+    //########################################
 
     protected function receiveFromEbay(Ess_M2ePro_Model_Marketplace $marketplace, $partNumber)
     {
@@ -190,5 +204,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_MotorsKtypes
                                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
     }
 
-    //####################################
+    //########################################
 }

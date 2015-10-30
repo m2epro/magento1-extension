@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_M2ePro_Block_Adminhtml_Widget_Container
@@ -9,7 +11,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
     /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
     private $magentoProduct = null;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -75,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
 
     protected function _beforeToHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         $channelOptions = array();
 
         foreach ($this->getOrderItem()->getChildObject()->getVariationChannelOptions() as $attribute => $value) {
@@ -83,9 +85,9 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
         }
 
         $this->setData('channel_options', $channelOptions);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->magentoProduct = $this->getOrderItem()->getMagentoProduct();
 
         $magentoOptions = array();
@@ -143,9 +145,9 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
         }
 
         $this->setData('magento_options', $magentoOptions);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'product_options_mapping_submit_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
@@ -154,10 +156,10 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('product_options_mapping_submit_button',$buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
         parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 }

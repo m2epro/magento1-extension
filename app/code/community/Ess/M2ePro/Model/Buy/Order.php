@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -13,7 +15,7 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
 
     private $grandTotalPrice = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -21,14 +23,14 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         $this->_init('M2ePro/Buy_Order');
     }
 
-    // ########################################
+    //########################################
 
     public function getProxy()
     {
         return Mage::getModel('M2ePro/Buy_Order_Proxy', $this);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Buy_Account
@@ -38,7 +40,7 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return $this->getParentObject()->getAccount()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
     public function getBuyOrderId()
     {
@@ -65,6 +67,9 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return $this->getData('shipping_method');
     }
 
+    /**
+     * @return float
+     */
     public function getShippingPrice()
     {
         return (float)$this->getData('shipping_price');
@@ -90,13 +95,19 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return new Varien_Object((array)json_decode($this->getData('billing_address'), true));
     }
 
+    /**
+     * @return float
+     */
     public function getPaidAmount()
     {
         return (float)$this->getData('paid_amount');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return float|null
+     */
     public function getSubtotalPrice()
     {
         if (is_null($this->subTotalPrice)) {
@@ -106,6 +117,9 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return $this->subTotalPrice;
     }
 
+    /**
+     * @return float|null
+     */
     public function getGrandTotalPrice()
     {
         if (is_null($this->grandTotalPrice)) {
@@ -116,15 +130,18 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return $this->grandTotalPrice;
     }
 
-    // ########################################
+    //########################################
 
     public function getStatusForMagentoOrder()
     {
         return $this->getBuyAccount()->getMagentoOrdersStatusProcessing();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int|null
+     */
     public function getAssociatedStoreId()
     {
         $storeId = NULL;
@@ -133,19 +150,19 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
 
         if (count($channelItems) == 0) {
             // 3rd party order
-            // ---------------
+            // ---------------------------------------
             $storeId = $this->getBuyAccount()->getMagentoOrdersListingsOtherStoreId();
-            // ---------------
+            // ---------------------------------------
         } else {
             // M2E order
-            // ---------------
+            // ---------------------------------------
             if ($this->getBuyAccount()->isMagentoOrdersListingsStoreCustom()) {
                 $storeId = $this->getBuyAccount()->getMagentoOrdersListingsStoreId();
             } else {
                 $firstChannelItem = reset($channelItems);
                 $storeId = $firstChannelItem->getStoreId();
             }
-            // ---------------
+            // ---------------------------------------
         }
 
         if ($storeId == 0) {
@@ -155,8 +172,11 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return $storeId;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function canCreateMagentoOrder()
     {
         return true;
@@ -178,8 +198,11 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         }
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function canCreateInvoice()
     {
         if (!$this->getBuyAccount()->isMagentoOrdersInvoiceEnabled()) {
@@ -198,6 +221,10 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return true;
     }
 
+    /**
+     * @return Mage_Sales_Model_Order_Invoice|null
+     * @throws Exception
+     */
     public function createInvoice()
     {
         if (!$this->canCreateInvoice()) {
@@ -207,12 +234,12 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         $magentoOrder = $this->getParentObject()->getMagentoOrder();
 
         // Create invoice
-        // -------------
+        // ---------------------------------------
         /** @var $invoiceBuilder Ess_M2ePro_Model_Magento_Order_Invoice */
         $invoiceBuilder = Mage::getModel('M2ePro/Magento_Order_Invoice');
         $invoiceBuilder->setMagentoOrder($magentoOrder);
         $invoiceBuilder->buildInvoice();
-        // -------------
+        // ---------------------------------------
 
         $invoice = $invoiceBuilder->getInvoice();
 
@@ -223,20 +250,31 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return $invoice;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function canCreateShipment()
     {
         return false;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $trackingDetails
+     * @return bool
+     */
     public function canUpdateShippingStatus(array $trackingDetails = array())
     {
         return true;
     }
 
+    /**
+     * @param array $trackingDetails
+     * @return bool
+     */
     public function updateShippingStatus(array $trackingDetails = array())
     {
         if (empty($trackingDetails['tracking_number'])) {
@@ -285,5 +323,5 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         return true;
     }
 
-    // ########################################
+    //########################################
 }

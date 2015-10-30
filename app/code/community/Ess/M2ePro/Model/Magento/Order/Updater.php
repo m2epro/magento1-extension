@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Order_Updater
@@ -12,14 +14,14 @@ class Ess_M2ePro_Model_Magento_Order_Updater
     // Cancel is not allowed for Orders which were put on Hold.
     // Cancel is not allowed for Orders which were Completed or Closed.
 
-    // ########################################
+    //########################################
 
     /** @var $magentoOrder Mage_Sales_Model_Order */
     private $magentoOrder = NULL;
 
     private $needSave = false;
 
-    // ########################################
+    //########################################
 
     /**
      * Set magento order for updating
@@ -34,7 +36,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     private function getMagentoCustomer()
     {
@@ -55,7 +57,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         return $customer->getId() ? $customer : null;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Update shipping address
@@ -90,7 +92,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         $this->needSave = true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Update customer email
@@ -159,7 +161,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         $customerAddress->save();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Update payment data (payment method, transactions, etc)
@@ -179,7 +181,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Add notes
@@ -206,7 +208,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         $this->needSave = true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Update status
@@ -235,7 +237,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         $this->needSave = true;
     }
 
-    // ########################################
+    //########################################
 
     public function cancel()
     {
@@ -270,7 +272,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         $this->magentoOrder->cancel()->save();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Save magento order only once and only if it's needed
@@ -282,5 +284,5 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         }
     }
 
-    // ########################################
+    //########################################
 }

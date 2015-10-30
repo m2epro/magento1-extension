@@ -1,6 +1,6 @@
 EbayListingProductAddSettingsGridHandler = Class.create(EbayListingSettingsGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -15,7 +15,7 @@ EbayListingProductAddSettingsGridHandler = Class.create(EbayListingSettingsGridH
 
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     removeItems: function(ids)
     {
@@ -35,7 +35,7 @@ EbayListingProductAddSettingsGridHandler = Class.create(EbayListingSettingsGridH
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     continue: function()
     {
@@ -57,5 +57,5 @@ EbayListingProductAddSettingsGridHandler = Class.create(EbayListingSettingsGridH
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

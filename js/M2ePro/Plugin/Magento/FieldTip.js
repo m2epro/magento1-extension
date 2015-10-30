@@ -1,14 +1,14 @@
 MagentoFieldTip = Class.create();
 MagentoFieldTip.prototype = {
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
         this.isHideToolTip = false;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     onToolTipMouseLeave: function()
     {
@@ -40,7 +40,7 @@ MagentoFieldTip.prototype = {
         }, 1000);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     showToolTip: function()
     {
@@ -99,7 +99,7 @@ MagentoFieldTip.prototype = {
         toolTipSpan.observe('mouseover', self.onToolTipMouseEnter);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     changeToolTipPosition: function(element)
     {
@@ -127,5 +127,5 @@ MagentoFieldTip.prototype = {
         }
     }
 
-    // --------------------------------
-}
+    // ---------------------------------------
+};

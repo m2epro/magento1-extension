@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -48,7 +48,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_category`
@@ -57,7 +57,7 @@ SQL
     ADD INDEX `category_description_id` (`category_description_id`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -80,7 +80,7 @@ if (!isset($tempTableIndexList[strtoupper('category_description_id')])) {
     $connection->addKey($tempTable, 'category_description_id', 'category_description_id');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_template_description');
 $stmt = $connection->query("SELECT `id`
@@ -102,7 +102,7 @@ if (count($templatesDescriptionIds) > 0) {
     );
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQL
 
@@ -121,7 +121,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_template_description');
 $currentGmtDateMySql = $connection->quote(Mage::getModel('core/date')->gmtDate(NULL));
@@ -137,7 +137,7 @@ $connection->query("INSERT INTO `{$tempTable}` (`title`,
                             {$currentGmtDateMySql},
                             {$currentGmtDateMySql})");
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_description');
 $templateDescriptionId = (int)$connection->lastInsertId();
@@ -145,7 +145,7 @@ $templateDescriptionId = (int)$connection->lastInsertId();
 $connection->query("INSERT INTO `{$tempTable}` (`template_description_id`)
                     VALUES ({$templateDescriptionId})");
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTypeId = Mage::getModel('catalog/product')->getResource()->getTypeId();
 $attributeSets = Mage::getModel('eav/entity_attribute_set')
@@ -172,7 +172,7 @@ foreach ($attributeSets['items'] as $attributeSet) {
                                 {$currentGmtDateMySql})");
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing');
 
@@ -180,8 +180,8 @@ $connection->query("UPDATE `{$tempTable}`
                     SET `template_description_id` = {$templateDescriptionId}
                     WHERE `component_mode` = 'amazon'");
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Listing_View_ModeSwitcher_Abstract extends Mage_Adminhtml_Block_Widget
@@ -9,16 +11,16 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_ModeSwitcher_Abstract extends Mage
     const NICK = 'default';
     const LABEL = 'Default';
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingViewModeSwitcher');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setData('component_nick', self::NICK);
         $this->setData('component_label', self::LABEL);
@@ -68,5 +70,5 @@ HTML;
         return $this->_data['current_view_mode'];
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
@@ -23,34 +25,51 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
      */
     private $descriptionDefinitionTemplateModel = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         $this->magentoProduct = $magentoProduct;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Magento_Product
+     */
     public function getMagentoProduct()
     {
         return $this->magentoProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Amazon_Template_Description_Definition $instance
+     * @return $this
+     */
     public function setDescriptionDefinitionTemplate(Ess_M2ePro_Model_Amazon_Template_Description_Definition $instance)
     {
         $this->descriptionDefinitionTemplateModel = $instance;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Template_Description_Definition
+     */
     public function getDescriptionDefinitionTemplate()
     {
         return $this->descriptionDefinitionTemplateModel;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         $src = $this->getDescriptionDefinitionTemplate()->getTitleSource();
@@ -74,6 +93,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $title;
     }
 
+    /**
+     * @return null|string
+     */
     public function getBrand()
     {
         $src = $this->getDescriptionDefinitionTemplate()->getBrandSource();
@@ -89,6 +111,56 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return trim($this->getMagentoProduct()->getAttributeValue($src['custom_attribute']));
     }
 
+    /**
+     * @return int|null|string
+     */
+    public function getItemPackageQuantity()
+    {
+        $result = '';
+        $src = $this->getDescriptionDefinitionTemplate()->getItemPackageQuantitySource();
+
+        if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeNone()) {
+            $result = NULL;
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeCustomValue()) {
+            $result = (int)$src['value'];
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeCustomAttribute()) {
+            $result = (int)$this->getMagentoProduct()->getAttributeValue($src['attribute']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int|null|string
+     */
+    public function getNumberOfItems()
+    {
+        $result = '';
+        $src = $this->getDescriptionDefinitionTemplate()->getNumberOfItemsSource();
+
+        if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeNone()) {
+            $result = NULL;
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeCustomValue()) {
+            $result = (int)$src['value'];
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeCustomAttribute()) {
+            $result = (int)$this->getMagentoProduct()->getAttributeValue($src['attribute']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return mixed|string
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function getDescription()
     {
         $src = $this->getDescriptionDefinitionTemplate()->getDescriptionSource();
@@ -128,6 +200,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getTargetAudience()
     {
         if ($this->getDescriptionDefinitionTemplate()->isTargetAudienceModeNone()) {
@@ -148,6 +223,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $audience;
     }
 
+    /**
+     * @return array
+     */
     public function getBulletPoints()
     {
         if ($this->getDescriptionDefinitionTemplate()->isBulletPointsModeNone()) {
@@ -168,6 +246,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $bullets;
     }
 
+    /**
+     * @return array
+     */
     public function getSearchTerms()
     {
         if ($this->getDescriptionDefinitionTemplate()->isSearchTermsModeNone()) {
@@ -188,6 +269,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     // ---------------------------------------
 
+    /**
+     * @return null|string
+     */
     public function getManufacturer()
     {
         $src = $this->getDescriptionDefinitionTemplate()->getManufacturerSource();
@@ -203,6 +287,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return trim($this->getMagentoProduct()->getAttributeValue($src['custom_attribute']));
     }
 
+    /**
+     * @return null|string
+     */
     public function getManufacturerPartNumber()
     {
         $src = $this->getDescriptionDefinitionTemplate()->getManufacturerPartNumberSource();
@@ -220,6 +307,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsVolume()
     {
         $volume = array();
@@ -247,6 +337,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $volume;
     }
 
+    /**
+     * @return null|string
+     */
     public function getItemDimensionsVolumeUnitOfMeasure()
     {
         $unitOfMeasure = NULL;
@@ -265,11 +358,17 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $unitOfMeasure;
     }
 
+    /**
+     * @return float|null|string
+     */
     public function getItemDimensionsWeight()
     {
         return $this->getWeight(self::WEIGHT_TYPE_ITEM_DIMENSIONS);
     }
 
+    /**
+     * @return null|string
+     */
     public function getItemDimensionsWeightUnitOfMeasure()
     {
         return $this->getWeightUnitOfMeasure(self::WEIGHT_TYPE_ITEM_DIMENSIONS);
@@ -277,6 +376,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getPackageDimensionsVolume()
     {
         $volume = array();
@@ -304,6 +406,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $volume;
     }
 
+    /**
+     * @return null|string
+     */
     public function getPackageDimensionsVolumeUnitOfMeasure()
     {
         $unitOfMeasure = NULL;
@@ -324,11 +429,17 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     // ---------------------------------------
 
+    /**
+     * @return float|null|string
+     */
     public function getPackageWeight()
     {
         return $this->getWeight(self::WEIGHT_TYPE_PACKAGE);
     }
 
+    /**
+     * @return null|string
+     */
     public function getPackageWeightUnitOfMeasure()
     {
         return $this->getWeightUnitOfMeasure(self::WEIGHT_TYPE_PACKAGE);
@@ -336,11 +447,17 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     // ---------------------------------------
 
+    /**
+     * @return float|null|string
+     */
     public function getShippingWeight()
     {
         return $this->getWeight(self::WEIGHT_TYPE_SHIPPING);
     }
 
+    /**
+     * @return null|string
+     */
     public function getShippingWeightUnitOfMeasure()
     {
         return $this->getWeightUnitOfMeasure(self::WEIGHT_TYPE_SHIPPING);
@@ -348,6 +465,10 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     // ---------------------------------------
 
+    /**
+     * @param $weightType
+     * @return float|null|string
+     */
     private function getWeight($weightType)
     {
         $src = NULL;
@@ -356,10 +477,6 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
             case self::WEIGHT_TYPE_ITEM_DIMENSIONS:
                 $src = $this->getDescriptionDefinitionTemplate()->getItemDimensionsWeightSource();
-                break;
-
-            case self::WEIGHT_TYPE_PACKAGE_DIMENSIONS:
-                $src = $this->getDescriptionDefinitionTemplate()->getPackageDimensionsWeightSource();
                 break;
 
             case self::WEIGHT_TYPE_PACKAGE:
@@ -399,10 +516,6 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
                 $src = $this->getDescriptionDefinitionTemplate()->getItemDimensionsWeightUnitOfMeasureSource();
                 break;
 
-            case self::WEIGHT_TYPE_PACKAGE_DIMENSIONS:
-                $src = $this->getDescriptionDefinitionTemplate()->getPackageDimensionsWeightUnitOfMeasureSource();
-                break;
-
             case self::WEIGHT_TYPE_PACKAGE:
                 $src = $this->getDescriptionDefinitionTemplate()->getPackageWeightUnitOfMeasureSource();
                 break;
@@ -429,8 +542,11 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return NULL;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getMainImageLink()
     {
         $imageLink = '';
@@ -447,6 +563,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $imageLink;
     }
 
+    /**
+     * @return array|string
+     */
     public function getGalleryImages()
     {
         if ($this->getDescriptionDefinitionTemplate()->isImageMainModeNone()) {
@@ -505,6 +624,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return array_merge($mainImage, $galleryImages);
     }
 
+    /**
+     * @return array
+     */
     public function getVariationDifferenceImages()
     {
         if ($this->getDescriptionDefinitionTemplate()->isImageVariationDifferenceModeNone()) {
@@ -529,5 +651,5 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return array($imageLink);
     }
 
-    // ########################################
+    //########################################
 }

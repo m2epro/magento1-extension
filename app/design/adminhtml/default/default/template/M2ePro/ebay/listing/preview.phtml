@@ -1,0 +1,1007 @@
+<?php
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview $this */
+
+$images = $this->getImages();
+$variations = $this->getVariations();
+
+?>
+
+<script type="text/javascript">
+    var variationsData = JSON.parse('<?php echo Mage::helper('M2ePro')->escapeJs(json_encode($variations)); ?>');
+    var imagesData = JSON.parse('<?php echo Mage::helper('M2ePro')->escapeJs(json_encode($images)); ?>');
+
+    function getVariation(chosenOptions) {
+        var returnVariation = {};
+
+        variationsData.variations.forEach(function (variation) {
+
+            var countOfOptions = 0;
+
+            for (var variationSpecific in variation.specifics) {
+                chosenOptions.forEach(function (option) {
+                    if (variationSpecific === option.attribute) {
+                        if (variation.specifics[variationSpecific] === option.value) {
+                            countOfOptions++;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            }
+
+            if (countOfOptions === chosenOptions.length) {
+                returnVariation = variation;
+                return false;
+            }
+
+        });
+
+        return returnVariation;
+    }
+
+    function onChangeVariationSelect(currentSelect) {
+        $$('option').each(function (option) {
+            option.show();
+        });
+
+        choseSelects = $$("select[value!=]").length;
+
+        if (choseSelects < $$('select').length - 1) {
+            return;
+        }
+
+        if (choseSelects === $$('select').length - 1) {
+            var otherSelectsValues = [];
+
+            $$('select[value!=]').each(function (select) {
+                otherSelectsValues.push({
+                    attribute: select.name,
+                    value: select.value
+                });
+            });
+
+            $$("select[value=]")[0].select('option[value!=]').each(function (option) {
+                otherSelectsValues.push({
+                    attribute: option.up().name,
+                    value: option.value
+                });
+
+                variation = getVariation(otherSelectsValues);
+
+                if (variation.data === undefined) {
+                    option.hide();
+                }
+
+                otherSelectsValues.pop();
+            });
+        } else {
+            $$('select').each(function (select) {
+                var otherSelectsValues = [];
+
+                $$('select').each(function (otherSelects) {
+                    if (otherSelects !== select) {
+                        otherSelectsValues.push({
+                            attribute: otherSelects.name,
+                            value: otherSelects.value
+                        });
+                    }
+                });
+
+                select.select('option[value!=]').each(function (option) {
+
+                    otherSelectsValues.push({
+                        attribute: option.up().name,
+                        value: option.value
+                    });
+
+                    variation = getVariation(otherSelectsValues);
+
+                    if (variation.data === undefined) {
+                        if (select.value === option.value) {
+                            select.value = "";
+                        }
+                        option.hide();
+
+                    }
+
+                    otherSelectsValues.pop();
+                });
+            });
+
+            var otherSelectsValues = [];
+
+            $$('select').each(function (otherSelects) {
+                otherSelectsValues.push({
+                    attribute: otherSelects.name,
+                    value: otherSelects.value
+                });
+            });
+
+            variation = getVariation(otherSelectsValues);
+
+            if($('product_discount_stp')) {
+                $('product_discount_stp').hide();
+                $('product_price_stp').hide();
+            }
+            if($('product_discount_map')) {
+                $('product_discount_map').hide();
+                $('product_price_map').hide();
+            }
+
+            if (variation.data.price_stp !== null) {
+                $('product_discount_stp').show();
+                $('product_price_stp').show().update(variation.data.price_stp);
+            } else {
+                if (variation.data.price_map !== null) {
+                    $('product_discount_map').show();
+                    $('product_price_map').show().update(variation.data.price_map);
+                }
+            }
+
+            $('product_price').update(variation.data.price);
+            $('product_qty').update(variation.data.qty);
+
+        }
+
+        if (imagesData.variations &&
+            imagesData.variations.specific === currentSelect.name && currentSelect.value) {
+            $('product_image').src = imagesData.variations.images[currentSelect.value][0];
+        }
+    }
+
+    function onClickGalleryImage(image) {
+        $('product_image').src = image.src;
+    }
+
+    function onTabClick(tab){
+        $$('.' + $$('li.active')[0].readAttribute('data-tab') + '_container')[0].hide();
+        $$('li.active')[0].removeClassName('active');
+
+        tab.addClassName('active');
+        $$('.' + tab.readAttribute('data-tab') + '_container')[0].show();
+    }
+
+    function initVariations() {
+        $$('select').each(function(currentSelect){
+            if(currentSelect.select('option[value!=]').length === 1){
+                currentSelect.select('option[value!=]')[0].selected = true;
+                onChangeVariationSelect(currentSelect);
+            }
+        });
+    }
+
+    Event.observe(window, 'load', function () {
+        $$('button').each(function (button) {
+            button.observe('click', function () {
+                alert('<?php echo Mage::helper('M2ePro')->__('This is Item Preview Mode');?>');
+            });
+        });
+
+        initVariations();
+
+        $$('.tab_container').each(Element.hide);
+
+        firstTab = $$('.tabs-horiz li')[0];
+
+        firstTab.addClassName('active');
+        $$('.' + firstTab.readAttribute('data-tab') + '_container')[0].show();
+    });
+
+</script>
+
+<style type="text/css">
+
+    .variation_select {
+        width: 200px;
+    }
+
+    .field_title{
+        color: grey;
+    }
+
+    td.field_title{
+        text-align: right;
+    }
+
+    .field_group{
+        font-weight: bold;
+        margin-top: 12px;
+        margin-bottom: 2px;
+        font-size: 13px;
+    }
+
+    .field_table{
+        border-spacing: 5px;
+        margin-bottom: 5px;
+    }
+
+    .field_table thead{
+        color: grey;
+    }
+
+    .field_table_specifics thead td{
+        width: 200px;
+    }
+
+    .field_table_service{
+        width: 350px;
+    }
+
+    .field_table_cost,
+    .field_table_additional_cost{
+        width: 100px;
+    }
+
+    .field_table thead td, .field_table tr:last-child td{
+        border-bottom: solid 1px #EFEFEF;
+    }
+
+    .preview_header {
+        margin: 10px 30px;
+    }
+
+    .preview_container {
+        padding: 30px;
+    }
+
+    .image_container {
+        float: left;
+        text-align: center;
+        width: 400px;
+    }
+
+    .image_container img:first-child {
+        max-width: 400px;
+        max-height: 200px;
+    }
+
+    .info_container td {
+        padding: 2px;
+    }
+
+    .gallery_container {
+        width: 390px;
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    .gallery_container img {
+        width: 100px;
+        margin: 5px;
+        cursor: pointer;
+        vertical-align: middle;
+    }
+
+    .category_breadcrumbs {
+        margin-bottom: 5px;
+    }
+
+    .category_breadcrumbs a{
+        text-decoration: none;
+        color: #00498C;
+    }
+
+    .category_breadcrumbs_black a{
+        text-decoration: none;
+        color: #000;
+    }
+
+    .product_title {
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    .product_subtitle {
+        margin: 3px 0;
+    }
+
+    .title_separator {
+        border: solid 1px #EFEFEF;
+        margin: 10px 0;
+    }
+
+    .price_container {
+        background: #EFEFEF;
+        font-size: 20px;
+        margin-left: 400px;
+        padding: 20px;
+    }
+
+    .price_currency {
+        margin-top: 5px;
+        font-weight: bold;
+        min-width: 130px;
+    }
+
+    .price_discount{
+        text-decoration: line-through;
+        font-weight: normal;
+        font-size: 14px;
+        color: #555555;
+    }
+
+    .add_to_cart, .buy_it_now {
+        width: 150px;
+        height: 30px;
+        border: none;
+        border-radius: 2px;
+        margin-left: 20px;
+    }
+
+    .add_to_cart {
+        background: #3890CE !important;
+    }
+
+    .buy_it_now {
+        background: #00498C !important;
+        margin-bottom: 10px;
+    }
+
+    .pagination_container {
+        padding: 20px 30px;
+        background: #F9F9F9;
+        height: 28px;
+        padding-top: 20px !important;
+        margin: 0 30px;
+    }
+
+    .pagination_container a {
+        font-size: 12px;
+    }
+
+    .pagination_container img {
+        margin: 0 10px;
+    }
+
+    .pagination_left > div, .pagination_right > div {
+        font-size: 14px;
+    }
+
+    .pagination_center > div {
+        font-size: 18px;
+    }
+
+    .pagination_left, .pagination_right {
+        width: 30%;
+    }
+
+    .pagination_center {
+        width: 40%;
+        float: left;
+        text-align: center;
+    }
+
+    .pagination_left, .pagination_left img {
+        float: left;
+    }
+
+    .pagination_right, .pagination_right img {
+        float: right;
+        text-align: right;
+    }
+
+    .variation_table {
+        margin: 10px 0;
+    }
+
+    .variation_table td:first-child {
+        min-width: 90px;
+    }
+
+    .specific_container td:first-child {
+        text-align: right;
+    }
+
+    .specific_container td {
+        padding: 0 5px;
+    }
+
+    /* Overriding Magento styles */
+
+    ul.tabs-horiz li.active {
+        border: none;
+        background: #EFEFEF;
+    }
+
+    ul.tabs-horiz li{
+        border: none;
+        background: #FFF;
+        padding: 5px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    ul.tabs-horiz{
+        background: none;
+        border-bottom: 2px solid #EFEFEF;
+        clear: left;
+        padding-top: 30px;
+    }
+
+    .middle {
+        padding: 0;
+        background: none;
+    }
+
+    .footer {
+        display: none;
+    }
+
+    body {
+        background: none;
+    }
+
+</style>
+
+<div class="preview_header block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('eBay Item Preview'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        This Page is a <strong>stylized Template</strong> of the prospective eBay Page.</br></br>
+        The Template displays <strong>eBay Item information</strong> which will be sent on eBay during the List/ Relist/ Revise
+        Actions. The information presented on this Page is <strong>not available on eBay</strong> yet. The Template just gives
+        you a chance to <strong>Preview</strong> how the Product will be Shown on eBay.</br></br>
+        You can have a preliminary <strong>Overview</strong> of the Product Title, eBay Category, Item Condition, Quantity,
+        Price, all of the available Product Variations and more other.</br></br>
+        There are tabs under which the main Item Specifics, Description, Shipping, Payment and Return data can be found.
+        The available information <strong>does not contain all of the details</strong>, only the Key Points.
+    '); ?>
+</div>
+
+<div class="pagination_container block_notices">
+    <div class="pagination_left">
+        <?php
+
+        $previousProduct = $this->getProductShortInfo(Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview::PREVIOUS);
+        if (!is_null($previousProduct)):
+            ?>
+            <div>
+                <?php echo "<a href='{$previousProduct['url']}'>&leftarrow; {$previousProduct['title']} (ID: {$previousProduct['id']})</a>"; ?>
+            </div>
+        <?php else: ?>
+            &nbsp;
+        <?php endif; ?>
+    </div>
+    <div class="pagination_center">
+        <div>
+            <b>
+                <?php
+                    $currentProduct = $this->getProductShortInfo(Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview::CURRENT);
+                    echo "{$currentProduct['title']} (ID: {$currentProduct['id']})";
+                ?>
+            </b>
+        </div>
+    </div>
+    <div class="pagination_right">
+        <?php
+        $nextProduct = $this->getProductShortInfo(Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview::NEXT);
+        if (!is_null($nextProduct)): ?>
+            <div>
+                <?php echo "<a href='{$nextProduct['url']}'>{$nextProduct['title']} (ID: {$nextProduct['id']}) &rightarrow;</a>"; ?>
+            </div>
+        <?php else: ?>
+            &nbsp;
+        <?php endif; ?>
+    </div>
+</div>
+
+<div class="preview_container">
+    <div class="image_container">
+        <?php
+        $imageGallery = $images['gallery'];
+
+        if (!empty($images['variations'])) {
+            foreach($images['variations']['images'] as $variationImage) {
+                $imageGallery = array_merge($imageGallery, $variationImage);
+            }
+        }
+
+        if (empty($imageGallery)) {
+            echo "<img id='product_image' src='{$this->getSkinUrl('M2ePro/images/preview_no_images.png')}'>";
+        } else {
+            echo "<img id='product_image' src='{$imageGallery[0]}'>";
+            echo '<div class="gallery_container">';
+
+            if (count($imageGallery) > 1) {
+                foreach ($imageGallery as $image) {
+                    echo "<img src='{$image}' onclick='onClickGalleryImage(this)'>";
+                }
+            }
+
+            echo '</div>';
+        }
+        ?>
+    </div>
+
+    <div class="info_container">
+        <div class="category_breadcrumbs">
+            <?php echo $this->getCategory(); ?>
+        </div>
+        <div class="product_title">
+            <?php echo $this->getTitle(); ?>
+        </div>
+        <div class="product_subtitle">
+            <?php echo $this->getSubtitle(); ?>
+        </div>
+
+        <hr class="title_separator"/>
+
+        <table class="variation_table">
+            <tr>
+                <td class="field_title">
+                    <?php echo Mage::helper('M2ePro')->__('Item Condition'); ?>:
+                </td>
+                <td>
+                    <?php echo $this->getCondition(); ?>
+                </td>
+            </tr>
+
+            <?php
+            $conditionNote = $this->getConditionNote();
+
+            if($conditionNote):
+            ?>
+            <tr>
+                <td class="field_title">
+                    <?php echo Mage::helper('M2ePro')->__('Seller Note'); ?>:
+                </td>
+                <td>
+                    <?php echo $conditionNote; ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+
+            <?php
+            $qty = $this->getQty();
+
+            if (!empty($variations) && $qty):
+                ?>
+                <?php foreach ($variations['variation_sets'] as $attribute => $data): ?>
+                <tr>
+                    <td class='field_title'><?php echo $attribute; ?>:</td>
+                    <td>
+                        <select class='variation_select' name='<?php echo Mage::helper('M2ePro')->escapeHtml($attribute, null, ENT_QUOTES); ?>'
+                                onchange='onChangeVariationSelect(this)'>
+                            <option value="">- <?php echo Mage::helper('M2ePro')->__('Select'); ?> -</option>
+                            <?php foreach ($data as $option): ?>
+                                <option value='<?php echo Mage::helper('M2ePro')->escapeHtml($option, null, ENT_QUOTES); ?>'>
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($option, null, ENT_QUOTES); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            <tr>
+                <td class="field_title">
+                    <?php echo Mage::helper('M2ePro')->__('Quantity'); ?>:
+                </td>
+                <td>
+                    <?php if($qty): ?>
+                    <span id="product_qty">
+                        <?php echo $qty; ?>
+                    </span> <?php echo Mage::helper('M2ePro')->__('available'); ?>
+                    <?php else: ?>
+                        <span id="product_qty">
+                            <?php echo Mage::helper('M2ePro')->__('N/A'); ?>
+                        </span>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <?php
+
+    $currency = "{$this->getCurrency()} {$this->getCurrencySymbol()}";
+    $price = $this->getPrice($variations);
+
+    if(!is_null($price['price']) && $qty):
+
+    ?>
+
+    <div class="price_container">
+        <table>
+            <tr>
+                <td>
+                    <div id="product_discount_stp" class="price_discount" <?php if (!isset($price['price_stp'])):?>style="display: none"<?php endif;?>>
+                        <?php echo $currency; ?><span id='product_price_stp'><?php if (isset($price['price_stp']) && $price['price_stp'] > $price['price']) { echo $price['price_stp']; } ?></span>
+                    </div>
+                    <div id="product_discount_map" class="price_discount" <?php if (!isset($price['price_map'])):?>style="display: none"<?php endif;?>>
+                        <?php echo $currency; ?><span id='product_price_map'><?php if (isset($price['price_map']) && $price['price_map'] > $price['price']) { echo $price['price_map']; } ?></span>
+                    </div>
+                    <div class='price_currency'>
+                        <?php echo $currency; ?><span id='product_price'><?php echo $price['price']; ?></span>
+                    </div>
+                </td>
+                <td>
+                    <button class='buy_it_now' type='button'>
+                        <?php echo Mage::helper('M2ePro')->__('Buy it now'); ?>
+                    </button>
+                    <br>
+                    <button class='add_to_cart' type='button'>
+                        <?php echo Mage::helper('M2ePro')->__('Add to cart'); ?>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <?php endif; ?>
+
+    <?php
+
+    $description = $this->getDescription();
+    $specifics = $this->getSpecifics();
+    $return = $this->getReturnPolicy();
+    $otherCategories = $this->getOtherCategories();
+
+    ?>
+
+    <ul class="tabs-horiz">
+        <?php if (!empty($specifics)): ?>
+        <li data-tab="specifics" onclick="onTabClick(this);">
+            <?php echo Mage::helper('M2ePro')->__('Item Specifics'); ?>
+        </li>
+        <?php endif; ?>
+        <?php if ($description): ?>
+        <li data-tab="description" onclick="onTabClick(this);">
+            <?php echo Mage::helper('M2ePro')->__('Description'); ?>
+        </li>
+        <?php endif; ?>
+        <li data-tab="shipping" onclick="onTabClick(this);">
+            <?php echo Mage::helper('M2ePro')->__('Shipping'); ?>
+        </li>
+        <li data-tab="payment" onclick="onTabClick(this);">
+            <?php echo Mage::helper('M2ePro')->__('Payment'); ?>
+        </li>
+        <?php if (!empty($return)): ?>
+        <li data-tab="return" onclick="onTabClick(this);">
+            <?php echo Mage::helper('M2ePro')->__('Return'); ?>
+        </li>
+        <?php endif; ?>
+        <?php if (!empty($otherCategories)): ?>
+        <li data-tab="other" onclick="onTabClick(this);">
+            <?php echo Mage::helper('M2ePro')->__('Other'); ?>
+        </li>
+        <?php endif; ?>
+    </ul>
+
+    <div class="description_container tab_container">
+        <?php if ($description): ?>
+            <div>
+                <?php echo $description; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="specifics_container tab_container">
+
+        <?php if (!empty($specifics)): ?>
+            <table class="field_table field_table_specifics">
+                <thead>
+                <tr>
+                    <td><?php echo Mage::helper('M2ePro')->__('Name'); ?></td>
+                    <td><?php echo Mage::helper('M2ePro')->__('Value'); ?></td>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($specifics as $specific): ?>
+                 <tr>
+                     <td><?php echo $specific['name']; ?></td>
+                     <td><?php echo $specific['value'][0]; ?></td>
+                 </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    <div class="shipping_container tab_container">
+        <div>
+            <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Item Location'); ?>:</span>
+            <?php echo $this->getItemLocation(); ?>
+        </div>
+        <div class="field_group"><?php echo Mage::helper('M2ePro')->__('Domestic Shipping'); ?></div>
+        <div>
+            <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Type'); ?>:</span>
+            <?php echo $this->getShippingLocalType(); ?>
+        </div>
+
+        <?php
+        $shippingLocalServices = $this->getShippingLocalServices();
+
+        if (!empty($shippingLocalServices)):
+            ?>
+
+            <div>
+                <table class="field_table">
+                    <thead>
+                    <tr>
+                        <td class="field_table_service"><?php echo Mage::helper('M2ePro')->__('Service'); ?></td>
+                        <td class="field_table_cost"><?php echo Mage::helper('M2ePro')->__('Cost'); ?></td>
+                        <?php if(!$this->isLocalShippingCalculated()): ?>
+                            <td class="field_table_additional_cost"><?php echo Mage::helper('M2ePro')->__('Additional Cost'); ?></td>
+                        <?php endif; ?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($shippingLocalServices as $shippingLocalService): ?>
+                        <tr>
+                            <td><?php echo $shippingLocalService['service']; ?></td>
+                            <td>
+                                <?php
+                                if (isset($shippingLocalService['cost'])) {
+                                    if ($shippingLocalService['cost'] == 0) {
+                                        echo Mage::helper('M2ePro')->__('Free');
+                                    } else {
+                                        echo $currency . $shippingLocalService['cost'];
+                                    }
+                                }
+                                if (isset($shippingLocalService['is_free'])) {
+                                    if ($shippingLocalService['is_free']) {
+                                        echo Mage::helper('M2ePro')->__('Free');
+                                    } else {
+                                        echo Mage::helper('M2ePro')->__('Calculated');
+                                    }
+                                }
+                                ?>
+                            </td>
+                        <?php if(!$this->isLocalShippingCalculated()): ?>
+                            <td>
+                                <?php
+                                if (isset($shippingLocalService['cost_additional'])) {
+                                    if ($shippingLocalService['cost_additional'] == 0) {
+                                        echo Mage::helper('M2ePro')->__('Free');
+                                    } else {
+                                        echo $currency . $shippingLocalService['cost_additional'];
+                                    }
+                                }
+                                ?>
+                            </td>
+                            <?php endif; ?>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+
+        <?php
+        $dispatchTime = $this->getShippingDispatchTime();
+
+        if (!is_null($dispatchTime)):
+            ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Dispatch Time'); ?>:</span>
+                <?php echo $dispatchTime; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php
+
+        $shippingLocalHandlingCost = $this->getShippingLocalHandlingCost();
+
+        if ($shippingLocalHandlingCost):
+            ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Handling Cost'); ?>:</span>
+                <?php echo $currency . $shippingLocalHandlingCost; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php
+
+        $shippingInternationalType = $this->getShippingInternationalType();
+
+        if (!is_null($shippingInternationalType)):
+            ?>
+
+            <div class="field_group"><?php echo Mage::helper('M2ePro')->__('International Shipping'); ?></div>
+
+            <?php if ($this->getShippingInternationalGlobalOffer()): ?>
+            <div>
+                <span class="field_title">
+                    <?php echo Mage::helper('M2ePro')->__('Offer Global Shipping Program'); ?>:
+                </span>
+                <?php echo Mage::helper('M2ePro')->__('Yes'); ?>
+            </div>
+            <?php endif; ?>
+
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Type'); ?>:</span>
+                <?php echo $shippingInternationalType ?>
+            </div>
+
+            <?php
+
+            $shippingInternationalServices = $this->getShippingInternationalServices();
+
+            if (!empty($shippingInternationalServices)):
+
+                ?>
+                <div>
+                    <table class="field_table">
+                        <thead>
+                        <tr>
+                            <td class="field_table_service"><?php echo Mage::helper('M2ePro')->__('Service'); ?></td>
+                            <td class="field_table_cost"><?php echo Mage::helper('M2ePro')->__('Cost'); ?></td>
+                            <?php if(!$this->isInternationalShippingCalculated()): ?>
+                                <td class="field_table_additional_cost"><?php echo Mage::helper('M2ePro')->__('Additional Cost'); ?></td>
+                            <?php endif; ?>
+                            <td class="field_table_locations"><?php echo Mage::helper('M2ePro')->__('Locations'); ?></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($shippingInternationalServices as $shippingInternationalService): ?>
+                            <tr>
+                                <td>
+                                    <?php
+                                    if($shippingInternationalService['service']){
+                                        echo $shippingInternationalService['service'];
+                                    } else {
+                                        echo Mage::helper('M2ePro')->__('Buyer Should Contact Seller');
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    if (isset($shippingInternationalService['cost'])) {
+                                        if ($shippingInternationalService['cost'] == 0) {
+                                            echo Mage::helper('M2ePro')->__('Free');
+                                        } else {
+                                            echo $currency . $shippingInternationalService['cost'];
+                                        }
+                                    } else {
+                                        echo Mage::helper('M2ePro')->__('Calculated');
+                                    }
+
+                                    ?>
+                                </td>
+                                <?php if(!$this->isInternationalShippingCalculated()): ?>
+                                    <td>
+                                        <?php
+                                        if (isset($shippingInternationalService['cost_additional'])) {
+                                            if ($shippingInternationalService['cost_additional'] == 0) {
+                                                echo Mage::helper('M2ePro')->__('Free');
+                                            } else {
+                                                echo $currency . $shippingInternationalService['cost_additional'];
+                                            }
+                                        }
+                                        ?>
+                                    </td>
+                                <?php endif; ?>
+                                    <td><?php echo $shippingInternationalService['locations']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?php
+
+        $shippingInternationalHandlingCost = $this->getShippingInternationalHandlingCost();
+
+        if ($shippingInternationalHandlingCost):
+            ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Handling Cost'); ?>:</span>
+                <?php echo $currency . $shippingInternationalHandlingCost; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php
+
+        $excludedLocations = $this->getShippingExcludedLocations();
+
+        if ($excludedLocations):
+            ?>
+
+            <div class="field_group"><?php echo Mage::helper('M2ePro')->__('Excluded Locations'); ?></div>
+
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Locations'); ?>:</span>
+                <?php echo $excludedLocations; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="payment_container tab_container">
+        <?php
+        $payment = $this->getPayment();
+
+        if (isset($payment['paypal'])) {
+            echo "<img src='{$this->getSkinUrl('M2ePro/images/img_echeck.png')}'>";
+        }
+        ?>
+
+        <?php if (!empty($payment['paymentMethods'])): ?>
+            <table>
+                <tr>
+                    <td class="field_title"><?php echo Mage::helper('M2ePro')->__('Payment Methods'); ?>:</td>
+                    <td>
+                        <?php foreach ($payment['paymentMethods'] as $paymentMethod): ?>
+                            <div><?php echo $paymentMethod; ?></div>
+                        <?php endforeach; ?>
+                    </td>
+                </tr>
+            </table>
+        <?php endif; ?>
+    </div>
+    <div class="return_container tab_container">
+        <?php if (!empty($return)): ?>
+            <?php if ($return['returns_accepted']): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Return Policy'); ?>:</span>
+                <?php echo $return['returns_accepted']; ?>
+            </div>
+            <?php endif; ?>
+            <?php if ($return['refund']): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Refund Will Be Given As'); ?>:</span>
+                <?php echo $return['refund']; ?>
+            </div>
+            <?php endif; ?>
+            <?php if ($return['returns_within']): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Item Must Be Returned Within'); ?>:</span>
+                <?php echo $return['returns_within']; ?>
+            </div>
+            <?php endif; ?>
+            <?php if($return['is_holiday_enabled']): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Extended Holiday Returns'); ?>:</span>
+                <?php echo Mage::helper('M2ePro')->__('Yes'); ?>
+            </div>
+            <?php endif; ?>
+            <?php if ($return['shipping_cost_paid_by']): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Return Shipping Will Be Paid By'); ?>:</span>
+                <?php echo $return['shipping_cost_paid_by']; ?>
+            </div>
+            <?php endif; ?>
+            <?php if ($return['restocking_fee_value']): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Restocking Fee Value'); ?>:</span>
+                <?php echo $return['restocking_fee_value']; ?>
+            </div>
+            <?php endif; ?>
+            <?php if($return['description']): ?>
+                <div>
+                    <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Refund Description'); ?>:</span>
+                    <?php echo $return['description']; ?>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
+    </div>
+    <div class="other_container tab_container">
+        <?php if (isset($otherCategories['secondary'])): ?>
+            <div class="field_group"><?php echo Mage::helper('M2ePro')->__('eBay Catalog Categories'); ?></div>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Secondary Category'); ?>:</span>
+                <span class="category_breadcrumbs_black">
+                    <?php echo $otherCategories['secondary']; ?>
+                </span>
+            </div>
+        <?php endif; ?>
+        <?php if (isset($otherCategories['primary_store']) || isset($otherCategories['secondary_store'])): ?>
+            <div class="field_group"><?php echo Mage::helper('M2ePro')->__('Store Categories'); ?></div>
+        <?php endif; ?>
+        <?php if (isset($otherCategories['primary_store'])): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Primary Store Category'); ?>:</span>
+                <span class="category_breadcrumbs_black">
+                    <?php echo $otherCategories['primary_store']; ?>
+                </span>
+            </div>
+        <?php endif; ?>
+        <?php if (isset($otherCategories['secondary_store'])): ?>
+            <div>
+                <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Secondary Store Category'); ?>:</span>
+                <span class="category_breadcrumbs_black">
+                    <?php echo $otherCategories['secondary_store']; ?>
+                </span>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

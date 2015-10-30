@@ -1,7 +1,7 @@
 CommonAmazonAccountHandler = Class.create();
 CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -101,7 +101,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     completeStep: function()
     {
@@ -109,7 +109,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         window.close();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     delete_click: function()
     {
@@ -119,7 +119,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         setLocation(M2ePro.url.get('deleteAction'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     changeMarketplace: function(id)
     {
@@ -150,7 +150,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         $('marketplaces_register_url_container_'+id).show();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     other_listings_synchronization_change: function()
     {
@@ -187,7 +187,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         $('other_listings_move_mode').simulate('change');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     mapping_general_id_mode_change: function()
     {
@@ -237,7 +237,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     move_mode_change: function()
     {
@@ -248,7 +248,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     magentoOrdersListingsModeChange: function()
     {
@@ -443,7 +443,7 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     saveAndClose: function()
     {
@@ -464,5 +464,5 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

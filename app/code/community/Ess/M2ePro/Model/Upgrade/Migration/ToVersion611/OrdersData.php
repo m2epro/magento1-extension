@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData
@@ -10,9 +12,9 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData
 
     const MAX_EXECUTION_LIMIT_PERCENT = 70;
 
-    // ##########################################################
+    //########################################
 
-    /** @var $connection Varien_Db_Adapter_Interface */
+    /** @var $connection Varien_Db_Adapter_Pdo_Mysql */
     private $connection = null;
 
     private $maxOrdersCount = null;
@@ -23,7 +25,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData
 
     private $startExecutionTimestamp = null;
 
-    // ##########################################################
+    //########################################
 
     public function setMaxOrdersCount($ordersCount)
     {
@@ -37,7 +39,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData
         return $this;
     }
 
-    // ##########################################################
+    //########################################
 
     public function migrate()
     {
@@ -97,7 +99,7 @@ SQL
         );
     }
 
-    // ##########################################################
+    //########################################
 
     protected function processFromLastProcessedOrder($lastProcessedOrderId)
     {
@@ -147,7 +149,8 @@ SQL
                 break;
             }
 
-            // ----------------------------------------------------------
+            // ---------------------------------------
+
             $this->getConnection()->beginTransaction();
 
             try {
@@ -161,11 +164,10 @@ SQL
             }
 
             $this->getConnection()->commit();
-            // ----------------------------------------------------------
         }
     }
 
-    // ##########################################################
+    //########################################
 
     protected function getNewOrderData(array $oldData)
     {
@@ -189,14 +191,15 @@ SQL
             'purchase_update_date' => $oldData['purchase_update_date'],
         );
 
-        // ----------------
+        // ---------------------------------------
+
         $shippingAddress = '';
         if (!empty($oldData['shipping_address'])) {
             $address = @unserialize($oldData['shipping_address']);
 
             if (is_array($address)) {
                 // compatibility with M2E 3.x
-                // -------------
+                // ---------------------------------------
                 $shippingAddress = array(
                     'country_code' => $address['country_id'],
                     'country_name' => null,
@@ -206,7 +209,7 @@ SQL
                     'phone'        => $address['telephone'],
                     'street'       => $address['street']
                 );
-                // -------------
+                // ---------------------------------------
             } else {
                 $shippingAddress = json_decode($oldData['shipping_address'], true);
             }
@@ -231,9 +234,9 @@ SQL
         );
 
         $order['shipping_details'] = json_encode($shippingDetails);
-        // ----------------
 
-        // ----------------
+        // ---------------------------------------
+
         $paymentDetails = array(
             'method' => $oldData['payment_method'],
             'date'   => $oldData['payment_date'],
@@ -241,9 +244,9 @@ SQL
         );
 
         $order['payment_details'] = json_encode($paymentDetails);
-        // ----------------
 
-        // ----------------
+        // ---------------------------------------
+
         $taxDetails = null;
         if ((float)$oldData['tax_rate'] > 0) {
             $isVat = false;
@@ -260,12 +263,13 @@ SQL
         }
 
         $order['tax_details'] = json_encode($taxDetails);
-        // ----------------
+
+        // ---------------------------------------
 
         $trackingDetails = null;
         if (!empty($oldData['shipping_tracking_details'])) {
             // compatibility with M2E 3.x
-            // -------------
+            // ---------------------------------------
             $trackingDetails = @unserialize($oldData['shipping_tracking_details']);
             if (!is_array($trackingDetails)) {
                 $trackingDetails = json_decode($oldData['shipping_tracking_details'], true);
@@ -276,7 +280,7 @@ SQL
             } else {
                 $trackingDetails = null;
             }
-            // -------------
+            // ---------------------------------------
         }
 
         $this->dataForOrderItems[$orderId] = array(
@@ -304,15 +308,16 @@ SQL
             'unpaid_item_process_state' => $oldData['unpaid_item_process_state'],
         );
 
-        // ----------------
+        // ---------------------------------------
+
         $variationDetails = array();
         if (!empty($oldData['variation'])) {
             // compatibility with M2E 3.x
-            // -------------
+            // ---------------------------------------
             $variationDetails = @unserialize($oldData['variation']);
             $variationDetails === false && $variationDetails = json_decode($oldData['variation'], true);
             $variationDetails = is_array($variationDetails) ? $variationDetails : array();
-            // -------------
+            // ---------------------------------------
         }
 
         if (!empty($variationDetails)) {
@@ -324,7 +329,8 @@ SQL
         } else {
             $item['variation_details'] = null;
         }
-        // ----------------
+
+        // ---------------------------------------
 
         $additionalItemData = array();
         if (isset($this->dataForOrderItems[$orderId])) {
@@ -332,7 +338,8 @@ SQL
             unset($this->dataForOrderItems[$orderId]);
         }
 
-        // ----------------
+        // ---------------------------------------
+
         $taxDetails = null;
         if (!empty($additionalItemData['tax_details'])) {
 
@@ -350,7 +357,8 @@ SQL
         }
 
         $item['tax_details'] = json_encode($taxDetails);
-        // ----------------
+
+        // ---------------------------------------
 
         $item['final_fee'] = 0.0;
         $item['tracking_details'] = null;
@@ -363,7 +371,7 @@ SQL
         return $item;
     }
 
-    // ##########################################################
+    //########################################
 
     protected function getLastProcessedOrderId()
     {
@@ -412,7 +420,7 @@ SQL
         );
     }
 
-    // ##########################################################
+    //########################################
 
     protected function getOrdersStatement($lastProcessedOrderId = null)
     {
@@ -447,7 +455,7 @@ SQL
         );
     }
 
-    // ##########################################################
+    //########################################
 
     protected function isExceededMaxExecutionTime()
     {
@@ -489,7 +497,7 @@ SQL
         return $processedOrdersCount > $this->maxOrdersCount;
     }
 
-    // ##########################################################
+    //########################################
 
     protected function getConnection()
     {
@@ -512,5 +520,5 @@ SQL
         return !empty($result);
     }
 
-    // ##########################################################
+    //########################################
 }

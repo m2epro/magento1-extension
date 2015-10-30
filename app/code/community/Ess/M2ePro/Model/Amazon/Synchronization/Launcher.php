@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Launcher
     extends Ess_M2ePro_Model_Amazon_Synchronization_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getType()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Launcher
         return NULL;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Launcher
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -46,5 +48,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Launcher
         return $result;
     }
 
-    //####################################
+    //########################################
 }

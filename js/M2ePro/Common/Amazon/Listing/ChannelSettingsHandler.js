@@ -1,7 +1,7 @@
 CommonAmazonListingChannelSettingsHandler = Class.create();
 CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -45,7 +45,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getAvailableConstantsForImages: function()
     {
@@ -61,7 +61,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         ];
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     sku_mode_change: function()
     {
@@ -73,7 +73,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     sku_modification_mode_change: function()
     {
@@ -92,7 +92,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     general_id_mode_change: function()
     {
@@ -104,12 +104,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    general_id_custom_attribute_change: function()
-    {
-        AmazonListingChannelSettingsHandlerObj.hideEmptyOption($('general_id_custom_attribute'));
-    },
-
-    //----------------------------------
+    // ---------------------------------------
 
     worldwide_id_mode_change: function()
     {
@@ -121,12 +116,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    worldwide_id_custom_attribute_change: function()
-    {
-        AmazonListingChannelSettingsHandlerObj.hideEmptyOption($('worldwide_id_custom_attribute'));
-    },
-
-    //----------------------------------
+    // ---------------------------------------
 
     condition_mode_change: function()
     {
@@ -162,7 +152,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     image_main_mode_change: function()
     {
@@ -200,7 +190,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     gift_wrap_mode_change: function()
     {
@@ -224,7 +214,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     condition_note_mode_change: function()
     {
@@ -268,7 +258,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     appendToText: function(ddId, targetId)
     {
@@ -306,5 +296,5 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

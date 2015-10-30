@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -12,14 +14,6 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
 {
     const WORLDWIDE_ID_MODE_NONE             = 0;
     const WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE = 1;
-
-    const ITEM_PACKAGE_QUANTITY_MODE_NONE             = 0;
-    const ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE     = 1;
-    const ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE = 2;
-
-    const NUMBER_OF_ITEMS_MODE_NONE             = 0;
-    const NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE     = 1;
-    const NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE = 2;
 
     /**
      * @var Ess_M2ePro_Model_Marketplace
@@ -36,7 +30,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
      */
     private $descriptionSourceModels = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -44,8 +38,12 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         $this->_init('M2ePro/Amazon_Template_Description');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -66,6 +64,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
                (bool)$collection->getSize();
     }
 
+    /**
+     * @return bool
+     */
     public function isLockedForCategoryChange()
     {
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product')
@@ -92,6 +93,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return (bool)$collection->getSize();
     }
 
+    /**
+     * @return bool
+     */
     public function isLockedForNewAsinCreation()
     {
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product')
@@ -105,7 +109,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return (bool)$collection->getSize();
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     public function deleteInstance()
     {
@@ -127,7 +131,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -152,8 +156,11 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         $this->marketplaceModel = $instance;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Template_Description_Definition
+     */
     public function getDefinitionTemplate()
     {
         if (is_null($this->descriptionDefinitionModel)) {
@@ -193,7 +200,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return $specifics;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -214,13 +221,19 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return $this->descriptionSourceModels[$productId];
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getMarketplaceId()
     {
         return (int)$this->getData('marketplace_id');
     }
 
+    /**
+     * @return bool
+     */
     public function isNewAsinAccepted()
     {
         return (bool)$this->getData('is_new_asin_accepted');
@@ -228,21 +241,33 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
 
     // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getWorldwideIdMode()
     {
         return (int)$this->getData('worldwide_id_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isWorldwideIdModeNone()
     {
         return $this->getWorldwideIdMode() == self::WORLDWIDE_ID_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isWorldwideIdModeCustomAttribute()
     {
         return $this->getWorldwideIdMode() == self::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getWorldwideIdSource()
     {
         return array(
@@ -251,108 +276,15 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         );
     }
 
+    /**
+     * @return array
+     */
     public function getWorldwideIdAttributes()
     {
         $attributes = array();
         $src = $this->getWorldwideIdSource();
 
         if ($src['mode'] == self::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE) {
-            $attributes[] = $src['attribute'];
-        }
-
-        return $attributes;
-    }
-
-    // ---------------------------------------
-
-    public function getItemPackageQuantityMode()
-    {
-        return (int)$this->getData('item_package_quantity_mode');
-    }
-
-    public function getItemPackageQuantityCustomValue()
-    {
-        return $this->getData('item_package_quantity_custom_value');
-    }
-
-    public function getItemPackageQuantityCustomAttribute()
-    {
-        return $this->getData('item_package_quantity_custom_attribute');
-    }
-
-    public function isItemPackageQuantityModeNone()
-    {
-        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_NONE;
-    }
-
-    public function isItemPackageQuantityModeCustomValue()
-    {
-        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE;
-    }
-
-    public function isItemPackageQuantityModeCustomAttribute()
-    {
-        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    public function getItemPackageQuantitySource()
-    {
-        return array(
-            'mode'      => $this->getItemPackageQuantityMode(),
-            'value'     => $this->getItemPackageQuantityCustomValue(),
-            'attribute' => $this->getItemPackageQuantityCustomAttribute()
-        );
-    }
-
-    public function getItemPackageQuantityAttributes()
-    {
-        $attributes = array();
-        $src = $this->getItemPackageQuantitySource();
-
-        if ($src['mode'] == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE) {
-            $attributes[] = $src['attribute'];
-        }
-
-        return $attributes;
-    }
-
-    // ---------------------------------------
-
-    public function getNumberOfItemsMode()
-    {
-        return (int)$this->getData('number_of_items_mode');
-    }
-
-    public function isNumberOfItemsModeNone()
-    {
-        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_NONE;
-    }
-
-    public function isNumberOfItemsModeCustomValue()
-    {
-        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE;
-    }
-
-    public function isNumberOfItemsModeCustomAttribute()
-    {
-        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    public function getNumberOfItemsSource()
-    {
-        return array(
-            'mode'      => $this->getNumberOfItemsMode(),
-            'value'     => $this->getData('number_of_items_custom_value'),
-            'attribute' => $this->getData('number_of_items_custom_attribute')
-        );
-    }
-
-    public function getNumberOfItemsAttributes()
-    {
-        $attributes = array();
-        $src = $this->getNumberOfItemsSource();
-
-        if ($src['mode'] == self::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -383,8 +315,11 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return $this->getData('registered_parameter');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         $attributes = $this->getDefinitionTemplate()->getTrackingAttributes();
@@ -397,6 +332,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return array_unique($attributes);
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         $attributes = $this->getDefinitionTemplate()->getUsedAttributes();
@@ -408,14 +346,15 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
 
         return array_unique(array_merge(
             $attributes,
-            $this->getWorldwideIdAttributes(),
-            $this->getNumberOfItemsAttributes(),
-            $this->getItemPackageQuantityAttributes()
+            $this->getWorldwideIdAttributes()
         ));
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getDataSnapshot()
     {
         $data = parent::getDataSnapshot();
@@ -437,7 +376,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return $data;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param bool $asArrays
@@ -473,7 +412,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -487,5 +426,5 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

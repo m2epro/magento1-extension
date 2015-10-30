@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_listing_product`
@@ -16,7 +16,7 @@ $connection = $installer->getConnection();
         ADD INDEX `variation_parent_need_processor` (`variation_parent_need_processor`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 
@@ -33,7 +33,7 @@ if (!isset($tempTableIndexList[strtoupper('variation_parent_need_processor')])) 
     $connection->addKey($tempTable, 'variation_parent_need_processor', 'variation_parent_need_processor');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_config');
 
@@ -59,7 +59,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_primary_config');
 
@@ -80,7 +80,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -91,8 +91,8 @@ WHERE `group` = '/support/' AND `key` = 'clients_portal_url';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

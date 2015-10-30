@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_M2ePro_Model_Ebay_Listing_Action_Request
@@ -13,8 +15,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
 
     private $isVariationItem = false;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $object
+     */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $object)
     {
         $this->listingProduct = $object;
@@ -28,7 +33,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
         return $this->listingProduct;
     }
 
-    // ########################################
+    //########################################
 
     public function setIsVariationItem($value)
     {
@@ -40,7 +45,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
         return $this->isVariationItem;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Product
@@ -50,7 +55,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
         return $this->getListingProduct()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -68,7 +73,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
         return $this->getListing()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -78,7 +83,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
         return $this->getListing()->getMarketplace();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -88,7 +93,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
         return $this->getListing()->getAccount();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Magento_Product_Cache
@@ -98,5 +103,5 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request extends Ess_
         return $this->getListingProduct()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 }

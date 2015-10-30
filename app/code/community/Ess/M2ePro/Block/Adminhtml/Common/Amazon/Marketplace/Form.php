@@ -1,23 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Marketplace_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonMarketplaceForm');
         $this->setContainerId('magento_block_amazon_marketplaces');
         $this->setTemplate('M2ePro/common/amazon/marketplace.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareForm()
@@ -25,11 +27,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Marketplace_Form extends Mage_Adm
         return parent::_prepareForm();
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
-        //----------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Model_Marketplace[] $marketplaces */
         $marketplaces = Mage::helper('M2ePro/Component_Amazon')->getCollection('Marketplace')
                                                         ->setOrder('group_title', 'ASC')
@@ -53,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Marketplace_Form extends Mage_Adm
                 'marketplaces' => array()
             );
 
-            foreach($marketplaces as $marketplace) {
+            foreach ($marketplaces as $marketplace) {
                 if ($marketplace->getGroupTitle() != $groupOrderTitle) {
                     continue;
                 }
@@ -78,9 +80,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Marketplace_Form extends Mage_Adm
 
         $this->groups = $groups;
         $this->storedStatuses = $storedStatuses;
-        //----------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Update Now'),
             'onclick' => 'MarketplaceHandlerObj.runSingleSynchronization(this)',
@@ -88,10 +90,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Marketplace_Form extends Mage_Adm
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('run_single_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

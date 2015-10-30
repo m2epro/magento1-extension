@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Command_Group extends Mage_Adminhtml_Block_Widget
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -15,7 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Command_Group extends Mage_Adm
         $this->setTemplate('M2ePro/development/tabs/command/group.phtml');
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -27,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Command_Group extends Mage_Adm
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     public function getCommandLauncherHtml(array $commandRow, $component = null)
     {
@@ -55,5 +57,5 @@ JS;
 HTML;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Order_Debug extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -45,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Debug extends Ess_M2ePro_Block_Adminhtml_
             );
             $this->setData('store_shipping_tax_class', $taxClass->getClassName());
 
-            // --------------------
+            // ---------------------------------------
             $request = new Varien_Object();
             $request->setProductClassId($store->getConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_SHIPPING_TAX_CLASS));
 
@@ -53,9 +55,9 @@ class Ess_M2ePro_Block_Adminhtml_Order_Debug extends Ess_M2ePro_Block_Adminhtml_
             $taxCalculator = Mage::getSingleton('tax/calculation');
 
             $this->setData('store_shipping_tax_rate', $taxCalculator->getStoreRate($request, $store));
-            // --------------------
+            // ---------------------------------------
         }
     }
 
-    // ########################################
+    //########################################
 }

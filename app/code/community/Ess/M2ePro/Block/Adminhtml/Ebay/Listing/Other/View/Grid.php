@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -16,17 +18,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $this->connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingOtherViewGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     public function getMassactionBlockName()
@@ -34,7 +36,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         return 'M2ePro/adminhtml_grid_massaction';
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -83,8 +85,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             )
         );
 
-        //exit($collection->getSelect()->__toString());
-
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -105,7 +105,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $this->addColumn('title', array(
             'header' => Mage::helper('M2ePro')->__('Title / SKU'),
             'align' => 'left',
-            //'width'     => '300px',
             'type' => 'text',
             'index' => 'title',
             'filter_index' => 'second_table.title',
@@ -230,10 +229,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
     protected function _prepareMassaction()
     {
         // Set mass-action identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('`main_table`.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         $this->getMassactionBlock()->setGroups(array(
             'actions'            => Mage::helper('M2ePro')->__('Actions'),
@@ -242,7 +241,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         ));
 
         // Set mass-action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('revise', array(
             'label'   => Mage::helper('M2ePro')->__('Revise Item(s)'),
             'url'     => '',
@@ -282,12 +281,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
         ), 'mapping');
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
@@ -376,6 +375,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
         if ($value <= 0) {
             return '<span style="color: red;">0</span>';
+        }
+
+        if ($row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
+            return '<span style="color: gray; text-decoration: line-through;">' . $value . '</span>';
         }
 
         return $value;
@@ -471,14 +474,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $collection->getSelect()->where('second_table.title LIKE ? OR second_table.sku LIKE ?', '%'.$value.'%');
     }
 
-    // ####################################
+    //########################################
 
     public function getViewLogIconHtml($listingOtherId)
     {
         $listingOtherId = (int)$listingOtherId;
 
         // Get last messages
-        //--------------------------
+        // ---------------------------------------
         $dbSelect = $this->connRead->select()
             ->from(
                 Mage::getResourceModel('M2ePro/Listing_Other_Log')->getMainTable(),
@@ -490,10 +493,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             ->limit(30);
 
         $logRows = $this->connRead->fetchAll($dbSelect);
-        //--------------------------
+        // ---------------------------------------
 
         // Get grouped messages by action_id
-        //--------------------------
+        // ---------------------------------------
         $actionsRows = array();
         $tempActionRows = array();
         $lastActionId = false;
@@ -620,11 +623,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         return Mage::app()->getLocale()->date(strtotime($actionRows[0]['create_date']))->toString($format);
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     if (typeof EbayListingOtherGridHandlerObj != 'undefined') {
@@ -638,12 +641,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml().$javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -655,5 +658,5 @@ JAVASCRIPT;
         return false;
     }
 
-    // ####################################
+    //########################################
 }

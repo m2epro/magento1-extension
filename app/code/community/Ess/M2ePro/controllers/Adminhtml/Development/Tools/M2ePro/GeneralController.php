@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Development_Tools_M2ePro_GeneralController
     extends Ess_M2ePro_Controller_Adminhtml_Development_CommandController
 {
-    //#############################################
+    //########################################
 
     /**
      * @title "Clear Cache"
@@ -46,7 +48,7 @@ class Ess_M2ePro_Adminhtml_Development_Tools_M2ePro_GeneralController
         $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageToolsTabUrl());
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Repair Broken Tables"
@@ -193,7 +195,7 @@ HTML;
         return '<pre>' . print_r($info);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @title "Repair Removed Stores"
@@ -301,7 +303,7 @@ HTML;
                     continue;
                 }
 
-                //json
+                // json
                 $bind = array($columnInfo['name'] => new Zend_Db_Expr(
                     "REPLACE(
                         REPLACE(
@@ -326,7 +328,7 @@ HTML;
         $this->_redirect('*/*/showRemovedMagentoStores');
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @title "Repair Listing Product Structure"
@@ -344,11 +346,11 @@ HTML;
             $deletedOptions = $deletedVariations = $deletedProducts = 0;
 
             /* @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
-            while($option = $collection->fetchItem()) {
+            while ($option = $collection->fetchItem()) {
 
                 try {
                     $variation = $option->getListingProductVariation();
-                } catch (LogicException $e) {
+                } catch (Ess_M2ePro_Model_Exception_Logic $e) {
 
                     $tempOption = Mage::getModel('M2ePro/Listing_Product_Variation_Option')->load($option->getId());
                     if (!is_null($tempOption->getId())) {
@@ -359,14 +361,14 @@ HTML;
 
                 try {
                     $listingProduct = $variation->getListingProduct();
-                } catch (LogicException $e) {
+                } catch (Ess_M2ePro_Model_Exception_Logic $e) {
                     $variation->deleteInstance() && $deletedVariations++;
                     continue;
                 }
 
                 try {
                     $listing = $listingProduct->getListing();
-                } catch (LogicException $e) {
+                } catch (Ess_M2ePro_Model_Exception_Logic $e) {
                     $listingProduct->deleteInstance() && $deletedProducts++;
                     continue;
                 }
@@ -378,7 +380,32 @@ HTML;
         }
     }
 
-    //#############################################
+    /**
+     * @title "Repair OrderItem => Order Structure"
+     * @description "OrderItem->getOrder() => remove OrderItem if is need"
+     */
+    public function repairOrderItemOrderStructureAction()
+    {
+        ini_set('display_errors', 1);
+
+        $deletedOrderItems = 0;
+        $collection = Mage::getModel('M2ePro/Order_Item')->getCollection();
+
+        /* @var $item Ess_M2ePro_Model_Order_Item */
+        while ($item = $collection->fetchItem()) {
+
+            try {
+                $order = $item->getOrder();
+            } catch (Ess_M2ePro_Model_Exception_Logic $e) {
+
+                $item->deleteInstance() && $deletedOrderItems++;
+            }
+        }
+
+        printf('Deleted OrderItems records %d', $deletedOrderItems);
+    }
+
+    //########################################
 
     /**
      * @title "Remove Config Duplicates"
@@ -406,7 +433,7 @@ HTML;
     {
         $curlObject = curl_init();
 
-        //set the server we are using
+        // set the server we are using
         curl_setopt($curlObject, CURLOPT_URL, Mage::helper('M2ePro/Server')->getEndpoint());
 
         // stop CURL from verifying the peer's certificate
@@ -439,7 +466,7 @@ HTML;
         curl_close($curlObject);
     }
 
-    //#############################################
+    //########################################
 
     private function getEmptyResultsHtml($messageText)
     {
@@ -453,5 +480,5 @@ HTML;
 HTML;
     }
 
-    //#############################################
+    //########################################
 }

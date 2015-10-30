@@ -1,22 +1,28 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buyListing');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_buy_listing_other_view';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         if (!Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()) {
             $this->_headerText = Mage::helper('M2ePro')->__(
                 '3rd Party %channel_title% Listings',
@@ -25,19 +31,19 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View extends Mage_Admi
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if (!is_null($this->getRequest()->getParam('back'))) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton('back', array(
@@ -46,17 +52,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View extends Mage_Admi
                 'class'   => 'back'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
     }
 
-    // ####################################
+    //########################################
 
     public function getGridHtml()
     {
         $accountId = $this->getRequest()->getParam('account');
 
-        //------------------------------
+        // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_other_view_header','',
             array(
@@ -64,14 +70,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View extends Mage_Admi
                 'marketplace' => Mage::helper('M2ePro/Component_Buy')->getMarketplace()
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
         $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
 
         return $viewHeaderBlock->toHtml() . $mapToProductBlock->toHtml() . parent::getGridHtml();
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -177,7 +183,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View extends Mage_Admi
 
         ));
 
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     M2eProBuy = {};
@@ -244,7 +250,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View extends Mage_Admi
             'buy'
         );
 
-        // TODO NEXT (temp solution)
         BuyListingOtherGridHandlerObj.movingHandler.setOptions(M2eProBuy);
         BuyListingOtherGridHandlerObj.autoMappingHandler.setOptions(M2eProBuy);
         BuyListingOtherGridHandlerObj.removingHandler.setOptions(M2eProBuy);
@@ -252,7 +257,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View extends Mage_Admi
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return $javascriptsMain.
             '<div id="listing_other_progress_bar"></div>' .
@@ -262,5 +267,5 @@ JAVASCRIPT;
             '</div>';
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
@@ -21,7 +23,7 @@ class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
      */
     protected $magentoProductModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -29,7 +31,7 @@ class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
         $this->_init('M2ePro/Amazon_Item');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -40,7 +42,7 @@ class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
         return $temp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -64,7 +66,7 @@ class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
          $this->accountModel = $instance;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -88,7 +90,7 @@ class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
          $this->marketplaceModel = $instance;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Magento_Product
@@ -112,13 +114,19 @@ class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
         $this->magentoProductModel = $instance;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getAccountId()
     {
         return (int)$this->getData('account_id');
     }
 
+    /**
+     * @return int
+     */
     public function getMarketplaceId()
     {
         return (int)$this->getData('marketplace_id');
@@ -129,25 +137,39 @@ class Ess_M2ePro_Model_Amazon_Item extends Ess_M2ePro_Model_Component_Abstract
         return $this->getData('sku');
     }
 
+    /**
+     * @return int
+     */
     public function getProductId()
     {
         return (int)$this->getData('product_id');
     }
 
+    /**
+     * @return int
+     */
     public function getStoreId()
     {
         return (int)$this->getData('store_id');
     }
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getVariationProductOptions()
     {
         return $this->getSettings('variation_product_options');
     }
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getVariationChannelOptions()
     {
         return $this->getSettings('variation_channel_options');
     }
 
-    // ########################################
+    //########################################
 }

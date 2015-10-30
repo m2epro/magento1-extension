@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Connector_Requester extends Ess_M2ePro_Model_Connector_Protocol
 {
     protected $params = array();
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array())
     {
         $this->params = $params;
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -43,26 +45,35 @@ abstract class Ess_M2ePro_Model_Connector_Requester extends Ess_M2ePro_Model_Con
             return null;
         }
 
-        $processResult = $responserRunner->process($responseData, $this->messages);
-        if (!$processResult) {
+        if (!$responserRunner->process($responseData, $this->messages)) {
             return false;
         }
+
+        $responserRunner->complete();
 
         return $responserRunner->getParsedResponseData();
     }
 
-    // ########################################
+    //########################################
 
     public function eventBeforeExecuting() {}
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function eventBeforeProcessing() {}
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     */
     public function setProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest) {}
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param $processingId
+     * @return Ess_M2ePro_Model_Processing_Request
+     * @throws Exception
+     */
     protected function createProcessingRequest($processingId)
     {
         $processingRequestData = array_merge(
@@ -85,6 +96,9 @@ abstract class Ess_M2ePro_Model_Connector_Requester extends Ess_M2ePro_Model_Con
         return $processingRequest;
     }
 
+    /**
+     * @return array
+     */
     protected function getProcessingData()
     {
         $expirationDate = Mage::helper('M2ePro')->getDate(
@@ -101,7 +115,7 @@ abstract class Ess_M2ePro_Model_Connector_Requester extends Ess_M2ePro_Model_Con
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function getResponserModelName()
     {
@@ -111,10 +125,13 @@ abstract class Ess_M2ePro_Model_Connector_Requester extends Ess_M2ePro_Model_Con
         return $responserModelName;
     }
 
+    /**
+     * @return array
+     */
     protected function getResponserParams()
     {
         return $this->params;
     }
 
-    // ########################################
+    //########################################
 }

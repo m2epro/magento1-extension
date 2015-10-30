@@ -1,11 +1,17 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser extends Mage_Adminhtml_Block_Widget
 {
     const INTERFACE_MODE_FULL     = 1;
     const INTERFACE_MODE_COMPACT  = 2;
 
-    // ########################################
+    //########################################
 
     protected $_marketplaceId = null;
 
@@ -31,26 +37,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser extends Mage_Admi
 
     protected $_isAjax = false;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingCategoryChooser');
-        //------------------------------
+        // ---------------------------------------
 
         // Set template
-        //------------------------------
+        // ---------------------------------------
         $this->setTemplate('M2ePro/ebay/listing/category/chooser.phtml');
-        //------------------------------
+        // ---------------------------------------
 
         $this->_isAjax = $this->getRequest()->isXmlHttpRequest();
     }
 
-    // ########################################
+    //########################################
 
     public function getMarketplaceId()
     {
@@ -286,7 +292,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser extends Mage_Admi
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function isShowStoreCatalog()
     {
@@ -302,7 +308,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser extends Mage_Admi
         return !empty($storeCategories);
     }
 
-    // ########################################
+    //########################################
 
     protected function _preparePath($mode, $value, $type)
     {
@@ -333,5 +339,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser extends Mage_Admi
         return Mage::helper('M2ePro')->__('Magento Attribute') . ' > ' . $attributeLabel;
     }
 
-    // ########################################
+    //########################################
 }

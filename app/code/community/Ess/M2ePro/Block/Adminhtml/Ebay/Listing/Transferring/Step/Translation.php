@@ -1,39 +1,41 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation extends Mage_Adminhtml_Block_Widget
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingTransferringStepTranslation');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/listing/transferring/step/translation.phtml');
     }
 
-    // ####################################
+    //########################################
 
     public function isAllowedStep()
     {
         return (bool)$this->getData('is_allowed');
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'back_button_translation',
             'class'   => 'back back_button',
@@ -42,9 +44,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('back_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'continue_button_translation',
             'class'   => 'next continue_button',
@@ -52,9 +54,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('continue_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'confirm_button_translation',
             'class'   => 'confirm_button',
@@ -64,9 +66,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'create_account_button_translation',
             'class'   => 'confirm_button',
@@ -75,17 +77,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('create_account_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $defaultStoreId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
 
         $countries = Mage::getModel('Adminhtml/System_Config_Source_Country')->toOptionArray();
         $this->setData('countries', $countries);
         $this->setData('country', Mage::getStoreConfig('general/country/default', $defaultStoreId));
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
 
         $accountId = (int)$this->getData('account_id');
         if ($accountId) {
@@ -121,10 +123,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
             $this->addData($info);
         }
 
-        //-------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function getCountryLabelByCode($code)
     {
@@ -140,7 +142,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
         return $countryLabel;
     }
 
-    // ####################################
+    //########################################
 
     public function getTranslationServices()
     {
@@ -160,5 +162,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
         return $translationServices;
     }
 
-    // ####################################
+    //########################################
 }

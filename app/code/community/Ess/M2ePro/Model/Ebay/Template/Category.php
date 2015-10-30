@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -23,7 +25,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
      */
     private $categorySourceModels = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -31,7 +33,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         $this->_init('M2ePro/Ebay_Template_Category');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -51,7 +53,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return true;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -75,7 +77,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
          $this->marketplaceModel = $instance;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -96,7 +98,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return $this->categorySourceModels[$productId];
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param bool $asObjects
@@ -118,19 +120,25 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return $specifics;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getCategoryMainId()
     {
         return (int)$this->getData('category_main_id');
     }
 
+    /**
+     * @return int
+     */
     public function getMarketplaceId()
     {
         return (int)$this->getData('marketplace_id');
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     public function getCreateDate()
     {
@@ -142,8 +150,11 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return $this->getData('update_date');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getCategoryMainSource()
     {
         return array(
@@ -154,6 +165,11 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         );
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing $listing
+     * @param bool $withId
+     * @return string
+     */
     public function getCategoryPath(Ess_M2ePro_Model_Listing $listing, $withId = true)
     {
         $src = $this->getCategoryMainSource();
@@ -175,8 +191,11 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return $path;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         $usedAttributes = array();
@@ -187,14 +206,14 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
             $usedAttributes[] = $categoryMainSrc['attribute'];
         }
 
-        foreach($this->getSpecifics(true) as $specificModel) {
+        foreach ($this->getSpecifics(true) as $specificModel) {
             $usedAttributes = array_merge($usedAttributes, $specificModel->getUsedAttributes());
         }
 
         return array_values(array_unique($usedAttributes));
     }
 
-    // #######################################
+    //########################################
 
     public function getDataSnapshot()
     {
@@ -210,6 +229,9 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultSettings()
     {
         return array(
@@ -220,7 +242,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         );
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param bool $asArrays
@@ -251,7 +273,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -265,5 +287,5 @@ class Ess_M2ePro_Model_Ebay_Template_Category extends Ess_M2ePro_Model_Component
         return parent::delete();
     }
 
-    // #######################################
+    //########################################
 }

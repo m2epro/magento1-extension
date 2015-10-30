@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
@@ -21,7 +23,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
      */
     private $productValueCache = NULL;
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $product
@@ -46,7 +48,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $this->product;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -64,7 +66,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $this->getListing()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Template_SellingFormat
@@ -82,7 +84,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $this->getSellingFormatTemplate()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param null|string $key
@@ -114,7 +116,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $this->getProduct()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 
     public function getProductValue()
     {
@@ -193,7 +195,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return (int)floor($value);
     }
 
-    // ########################################
+    //########################################
 
     protected function getOptionBaseValue(Ess_M2ePro_Model_Listing_Product_Variation_Option $option)
     {
@@ -225,7 +227,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $value;
     }
 
-    // ########################################
+    //########################################
 
     protected function applySellingFormatTemplateModifications($value)
     {
@@ -243,7 +245,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $value;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function applyValuePercentageModifications($value)
     {
@@ -274,5 +276,5 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
         return $value;
     }
 
-    // ########################################
+    //########################################
 }

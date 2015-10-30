@@ -1,11 +1,11 @@
 EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     productIdCellIndex: 1,
     productTitleCellIndex: 2,
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -27,7 +27,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getSuggestedCategories: function(id)
     {
@@ -62,7 +62,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
 
     getSuggestedCategoriesForAll: function()
     {
-        var gridIds = this.getGridMassActionObj().getGridIds().split(',')
+        var gridIds = this.getGridMassActionObj().getGridIds().split(',');
         if (gridIds.length > 100 && !confirm('Are you sure?')) {
             return;
         }
@@ -71,7 +71,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         this.getSuggestedCategories();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editPrimaryCategories: function()
     {
@@ -83,7 +83,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         this.editCategoriesByType(M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN'))
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editCategories: function(id)
     {
@@ -109,7 +109,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     resetCategories: function(id)
     {
@@ -132,7 +132,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showChooserPopup: function(title, content)
     {
@@ -176,7 +176,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         $('modal_dialog_message').innerHTML.evalScripts();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     nextStep: function()
     {
@@ -222,7 +222,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     removeItems: function(ids)
     {
@@ -242,7 +242,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function($super)
     {
@@ -269,7 +269,7 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         return result;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validate: function()
     {
@@ -290,5 +290,5 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
         return true;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

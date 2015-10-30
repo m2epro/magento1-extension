@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_LockedObject extends Ess_M2ePro_Model_Abstract
 {
-    //####################################
+    //########################################
 
     public function _construct()
     {
@@ -14,13 +16,16 @@ class Ess_M2ePro_Model_LockedObject extends Ess_M2ePro_Model_Abstract
         $this->_init('M2ePro/LockedObject');
     }
 
-    //####################################
+    //########################################
 
     public function getModelName()
     {
         return $this->getData('model_name');
     }
 
+    /**
+     * @return int
+     */
     public function getObjectId()
     {
         return (int)$this->getData('object_id');
@@ -41,5 +46,5 @@ class Ess_M2ePro_Model_LockedObject extends Ess_M2ePro_Model_Abstract
         return $this->getData('description');
     }
 
-    //####################################
+    //########################################
 }

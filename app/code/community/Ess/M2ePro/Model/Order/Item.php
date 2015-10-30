@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -29,7 +31,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         Mage_Downloadable_Model_Product_Type::TYPE_DOWNLOADABLE
     );
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -37,8 +39,12 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $this->_init('M2ePro/Order_Item');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -62,7 +68,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function getOrderId()
     {
@@ -74,6 +80,9 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return $this->getData('product_id');
     }
 
+    /**
+     * @return int
+     */
     public function getQtyReserved()
     {
         return (int)$this->getData('qty_reserved');
@@ -112,14 +121,22 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return $this->getSetting('product_details', 'reserved_products', array());
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @return $this
+     */
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
         $this->order = $order;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Order
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOrder()
     {
         if (is_null($this->order)) {
@@ -130,7 +147,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return $this->order;
     }
 
-    // ########################################
+    //########################################
 
     public function setProduct($product)
     {
@@ -172,7 +189,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return $this->magentoProduct;
     }
 
-    // ########################################
+    //########################################
 
     public function getProxy()
     {
@@ -183,7 +200,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return $this->proxy;
     }
 
-    // ########################################
+    //########################################
 
     public function getStoreId()
     {
@@ -214,7 +231,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return array_shift($storeIds);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Associate order item with product in magento
@@ -244,7 +261,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Associate order item variation with options of magento product
@@ -353,7 +370,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
        return $options;
     }
 
-    // ########################################
+    //########################################
 
     public function assignProduct($productId)
     {
@@ -375,7 +392,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $this->save();
     }
 
-    // ########################################
+    //########################################
 
     public function assignProductDetails(array $associatedOptions, array $associatedProducts)
     {
@@ -413,7 +430,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $this->save();
     }
 
-    // ########################################
+    //########################################
 
     public function unassignProduct()
     {
@@ -423,5 +440,5 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $this->save();
     }
 
-    // ########################################
+    //########################################
 }

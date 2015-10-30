@@ -1,6 +1,6 @@
 CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super,gridHandler)
     {
@@ -15,7 +15,7 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         $('productSearchMenu_pop_up_content').remove();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initMenuEvents: function()
     {
@@ -51,7 +51,7 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -61,11 +61,11 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     params: {autoMapErrorFlag: false},
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(mode, title, productId, errorMsg)
     {
@@ -140,7 +140,7 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         self.autoHeightFix();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showSearchManualPrompt: function()
     {
@@ -167,7 +167,7 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         $('modal_dialog_message').insert(self.searchBlock);
         $('productSearch_pop_up_content').show();
         self.initSearchEvents();
-        //search manual
+        // search manual
         $('productSearch_form').show();
         $('productSearch_back_button').show();
         $('productSearch_buttons').show();
@@ -208,7 +208,7 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     searchGeneralIdManual: function(productId)
     {
@@ -336,7 +336,7 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     mapToGeneralId: function(productId, generalId)
     {
@@ -470,7 +470,7 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         $('buy_link_' + id).innerHTML = buyLinkTemplate;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     clearSearchResultsAndOpenSearchMenu: function() {
         var self = this;
@@ -483,5 +483,5 @@ CommonBuyListingProductSearchHandler = Class.create(ActionHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 });

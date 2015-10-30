@@ -1,17 +1,17 @@
 EbayListingCategoryProductSuggestedSearchHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     searchResult: {
         failed: 0,
         succeeded: 0
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     resetSearchResult: function()
     {
@@ -21,7 +21,7 @@ EbayListingCategoryProductSuggestedSearchHandler = Class.create(CommonHandler, {
         };
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     search: function(products, onComplete)
     {
@@ -111,5 +111,5 @@ EbayListingCategoryProductSuggestedSearchHandler = Class.create(CommonHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

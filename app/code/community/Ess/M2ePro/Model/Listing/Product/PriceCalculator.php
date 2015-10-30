@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
@@ -26,7 +28,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
      */
     private $productValueCache = NULL;
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $source
@@ -53,7 +55,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
                 $this->source[$key] : $this->source;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $product
@@ -78,7 +80,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->product;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param bool $value
@@ -98,7 +100,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->modifyByCoefficient;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -116,7 +118,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->getListing()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Template_SellingFormat
@@ -134,7 +136,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->getSellingFormatTemplate()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Component_Child_Abstract
@@ -152,7 +154,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->getProduct()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 
     public function getProductValue()
     {
@@ -174,7 +176,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->prepareFinalValue($value);
     }
 
-    // ########################################
+    //########################################
 
     protected function getProductBaseValue()
     {
@@ -300,7 +302,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $value;
     }
 
-    // ########################################
+    //########################################
 
     protected function getConfigurableVariationValue(
         Ess_M2ePro_Model_Listing_Product_Variation $variation)
@@ -383,7 +385,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->getOptionBaseValue(reset($options));
     }
 
-    // ########################################
+    //########################################
 
     protected function applyAdditionalOptionValuesModifications(
         Ess_M2ePro_Model_Listing_Product_Variation $variation, $value)
@@ -402,7 +404,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $value;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function getConfigurableAdditionalOptionValue(
         Ess_M2ePro_Model_Listing_Product_Variation_Option $option)
@@ -428,7 +430,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
             $tempAttributeNames[] = $configurableAttribute->getData('label');
             $tempAttributeNames[] = $attribute->getFrontendLabel();
 
-            if (!in_array($attributeName,array_map('strtolower',array_filter($tempAttributeNames)))){
+            if (!in_array($attributeName,array_map('strtolower',array_filter($tempAttributeNames)))) {
                 continue;
             }
 
@@ -455,7 +457,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
                 $tempOptionNames = array_map('strtolower', array_filter($tempOptionNames));
                 $tempOptionNames = $this->prepareOptionTitles($tempOptionNames);
 
-                if (!in_array($optionName, $tempOptionNames)){
+                if (!in_array($optionName, $tempOptionNames)) {
                     continue;
                 }
 
@@ -516,7 +518,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
                 $tempOptionTitles = array_map('strtolower', array_filter($tempOptionTitles));
                 $tempOptionTitles = $this->prepareOptionTitles($tempOptionTitles);
 
-                if (!in_array($optionName, $tempOptionTitles )) {
+                if (!in_array($optionName, $tempOptionTitles)) {
                     continue;
                 }
 
@@ -600,7 +602,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $value;
     }
 
-    // ########################################
+    //########################################
 
     protected function getExistedProductValue(Ess_M2ePro_Model_Magento_Product $product)
     {
@@ -619,7 +621,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->convertValueFromStoreToMarketplace($value);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function getGroupedProductValue(Ess_M2ePro_Model_Magento_Product $product)
     {
@@ -685,7 +687,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return round((($value * $percent) / 100), 2);
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareFinalValue($value)
     {
@@ -737,12 +739,12 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         return $this->getComponentListing()->convertPriceFromStoreToMarketplace($value);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function prepareOptionTitles($optionTitles)
     {
         return $optionTitles;
     }
 
-    // ########################################
+    //########################################
 }

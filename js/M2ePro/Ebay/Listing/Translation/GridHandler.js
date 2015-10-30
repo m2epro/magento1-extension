@@ -1,6 +1,6 @@
 EbayListingTranslationGridHandler = Class.create(EbayListingViewGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     afterInitPage: function($super)
     {
@@ -19,7 +19,7 @@ EbayListingTranslationGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
@@ -42,7 +42,7 @@ EbayListingTranslationGridHandler = Class.create(EbayListingViewGridHandler, {
         return maxProductsInPart;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getLogViewUrl: function(rowId)
     {
@@ -61,12 +61,12 @@ EbayListingTranslationGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function()
     {
         return true;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

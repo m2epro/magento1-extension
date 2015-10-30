@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger extends Ess_M2ePro_Model_Ebay_Listing_Action_Logger
@@ -13,8 +15,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger extends Ess_M2ePro_Mod
      */
     private $listingLog = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @param array $messageData
+     * @param int $priority
+     */
     public function logListingProductMessage(Ess_M2ePro_Model_Listing_Product $listingProduct,
                                              array $messageData,
                                              $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM)
@@ -41,7 +48,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger extends Ess_M2ePro_Mod
                                 $priority);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Log
@@ -60,5 +67,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger extends Ess_M2ePro_Mod
         return $this->listingLog;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -83,7 +85,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
     const STOP_QTY_BETWEEN = 2;
     const STOP_QTY_MORE    = 3;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -91,8 +93,12 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         $this->_init('M2ePro/Amazon_Template_Synchronization');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -105,186 +111,282 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
                             ->getSize();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getListings($asObjects = false, array $filters = array())
     {
         return $this->getRelatedComponentItems('Listing','template_synchronization_id',$asObjects,$filters);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isListMode()
     {
         return $this->getData('list_mode') != self::LIST_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isListStatusEnabled()
     {
         return $this->getData('list_status_enabled') != self::LIST_STATUS_ENABLED_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isListIsInStock()
     {
         return $this->getData('list_is_in_stock') != self::LIST_IS_IN_STOCK_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isListWhenQtyMagentoHasValue()
     {
         return $this->getData('list_qty_magento') != self::LIST_QTY_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isListWhenQtyCalculatedHasValue()
     {
         return $this->getData('list_qty_calculated') != self::LIST_QTY_NONE;
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getReviseUpdateQtyMaxAppliedValueMode()
     {
         return (int)$this->getData('revise_update_qty_max_applied_value_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseUpdateQtyMaxAppliedValueModeOn()
     {
         return $this->getReviseUpdateQtyMaxAppliedValueMode() == self::REVISE_MAX_AFFECTED_QTY_MODE_ON;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseUpdateQtyMaxAppliedValueModeOff()
     {
         return $this->getReviseUpdateQtyMaxAppliedValueMode() == self::REVISE_MAX_AFFECTED_QTY_MODE_OFF;
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getReviseUpdateQtyMaxAppliedValue()
     {
         return (int)$this->getData('revise_update_qty_max_applied_value');
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getReviseUpdatePriceMaxAllowedDeviationMode()
     {
         return (int)$this->getData('revise_update_price_max_allowed_deviation_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseUpdatePriceMaxAllowedDeviationModeOn()
     {
         return $this->getReviseUpdatePriceMaxAllowedDeviationMode() == self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseUpdatePriceMaxAllowedDeviationModeOff()
     {
         return $this->getReviseUpdatePriceMaxAllowedDeviationMode()
                     == self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF;
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getReviseUpdatePriceMaxAllowedDeviation()
     {
         return (int)$this->getData('revise_update_price_max_allowed_deviation');
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangeQty()
     {
         return $this->getData('revise_update_qty') != self::REVISE_UPDATE_QTY_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangePrice()
     {
         return $this->getData('revise_update_price') != self::REVISE_UPDATE_PRICE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangeDetails()
     {
         return $this->getData('revise_update_details') != self::REVISE_UPDATE_DETAILS_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangeImages()
     {
         return $this->getData('revise_update_images') != self::REVISE_UPDATE_IMAGES_NONE;
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isReviseDescriptionTemplate()
     {
         return $this->getData('revise_change_description_template') != self::REVISE_CHANGE_DESCRIPTION_TEMPLATE_NONE;
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isReviseShippingOverrideTemplate()
     {
         return $this->getData('revise_change_shipping_override_template') !=
             self::REVISE_CHANGE_SHIPPING_OVERRIDE_TEMPLATE_NONE;
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isRelistMode()
     {
         return $this->getData('relist_mode') != self::RELIST_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistFilterUserLock()
     {
         return $this->getData('relist_filter_user_lock') != self::RELIST_FILTER_USER_LOCK_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistSendData()
     {
         return $this->getData('relist_send_data') != self::RELIST_SEND_DATA_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistStatusEnabled()
     {
         return $this->getData('relist_status_enabled') != self::RELIST_STATUS_ENABLED_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistIsInStock()
     {
         return $this->getData('relist_is_in_stock') != self::RELIST_IS_IN_STOCK_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistWhenQtyMagentoHasValue()
     {
         return $this->getData('relist_qty_magento') != self::RELIST_QTY_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistWhenQtyCalculatedHasValue()
     {
         return $this->getData('relist_qty_calculated') != self::RELIST_QTY_NONE;
     }
 
-    //------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isStopStatusDisabled()
     {
         return $this->getData('stop_status_disabled') != self::STOP_STATUS_DISABLED_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isStopOutOfStock()
     {
         return $this->getData('stop_out_off_stock') != self::STOP_OUT_OFF_STOCK_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isStopWhenQtyMagentoHasValue()
     {
         return $this->getData('stop_qty_magento') != self::STOP_QTY_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isStopWhenQtyCalculatedHasValue()
     {
         return $this->getData('stop_qty_calculated') != self::STOP_QTY_NONE;
     }
 
-    // ########################################
+    //########################################
 
     public function getListWhenQtyMagentoHasValueType()
     {
@@ -301,7 +403,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return $this->getData('list_qty_magento_value_max');
     }
 
-    // ---------------------
+    // ---------------------------------------
 
     public function getListWhenQtyCalculatedHasValueType()
     {
@@ -318,7 +420,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return $this->getData('list_qty_calculated_value_max');
     }
 
-    //------------------------
+    // ---------------------------------------
 
     public function getRelistWhenQtyMagentoHasValueType()
     {
@@ -335,7 +437,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return $this->getData('relist_qty_magento_value_max');
     }
 
-    //------------------------
+    // ---------------------------------------
 
     public function getRelistWhenQtyCalculatedHasValueType()
     {
@@ -352,7 +454,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return $this->getData('relist_qty_calculated_value_max');
     }
 
-    //------------------------
+    // ---------------------------------------
 
     public function getStopWhenQtyMagentoHasValueType()
     {
@@ -369,7 +471,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return $this->getData('stop_qty_magento_value_max');
     }
 
-    //------------------------
+    // ---------------------------------------
 
     public function getStopWhenQtyCalculatedHasValueType()
     {
@@ -386,7 +488,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return $this->getData('stop_qty_calculated_value_max');
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param bool $asArrays
@@ -428,7 +530,7 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -442,5 +544,5 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

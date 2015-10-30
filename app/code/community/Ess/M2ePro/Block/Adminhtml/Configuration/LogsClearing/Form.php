@@ -1,31 +1,33 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
     extends Ess_M2ePro_Block_Adminhtml_Configuration_Abstract
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('configurationLogsClearingForm');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/configuration/logsClearing.phtml');
 
-        //------------------------------
+        // ---------------------------------------
 
         $this->setPageHelpLink('Global+Settings#GlobalSettings-LogsClearing');
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareForm()
     {
@@ -59,7 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
             Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS
         );
 
-        //----------------------------
+        // ---------------------------------------
         $modes = array();
         $days  = array();
 
@@ -70,10 +72,10 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
 
         $this->modes = $modes;
         $this->days = $days;
-        //----------------------------
+        // ---------------------------------------
 
         foreach ($tasks as $task) {
-            //------------------------------
+            // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('M2ePro')->__('Run Now'),
                 'onclick' => 'LogClearingHandlerObj.runNowLog(\'' . $task . '\')',
@@ -81,13 +83,13 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
             $this->setChild('run_now_'.$task, $buttonBlock);
-            //------------------------------
+            // ---------------------------------------
 
             if ($task == Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS) {
                 continue;
             }
 
-            //------------------------------
+            // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('M2ePro')->__('Clear All'),
                 'onclick' => 'LogClearingHandlerObj.clearAllLog(\'' . $task . '\')',
@@ -95,11 +97,11 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
             $this->setChild('clear_all_'.$task, $buttonBlock);
-            //------------------------------
+            // ---------------------------------------
         }
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

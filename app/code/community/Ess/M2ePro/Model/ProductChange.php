@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
@@ -18,7 +20,7 @@ class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
 
     const UPDATE_ATTRIBUTE_CODE = '__INSTANCE__';
 
-    //####################################
+    //########################################
 
     public function _construct()
     {
@@ -26,7 +28,7 @@ class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
         $this->_init('M2ePro/ProductChange');
     }
 
-    //####################################
+    //########################################
 
     public function addCreateAction($productId, $initiator = self::INITIATOR_UNKNOWN)
     {
@@ -127,7 +129,7 @@ class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
         return false;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     public function updateAttribute($productId, $attribute,
                                     $valueOld, $valueNew,
@@ -198,7 +200,7 @@ class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
         return false;
     }
 
-    //####################################
+    //########################################
 
     public function removeDeletedProduct($product)
     {
@@ -215,7 +217,7 @@ class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
         }
     }
 
-    //####################################
+    //########################################
 
     public function clearLastProcessed($date, $maxPerOneTime)
     {
@@ -263,7 +265,7 @@ class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
         }
     }
 
-    //####################################
+    //########################################
 
     public function clear($where = NULL, $limit = NULL)
     {
@@ -283,5 +285,5 @@ class Ess_M2ePro_Model_ProductChange extends Ess_M2ePro_Model_Abstract
         $connWrite->query($sql);
     }
 
-    //####################################
+    //########################################
 }

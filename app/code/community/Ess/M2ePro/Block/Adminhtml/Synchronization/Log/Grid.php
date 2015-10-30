@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
 {
     protected $viewComponentHelper = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -20,14 +22,14 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         $channel = $this->getRequest()->getParam('channel');
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId(
             'synchronizationLogGrid' . (!is_null($task) ? $task : '') . ucfirst($channel)
         );
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
@@ -37,17 +39,17 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         !is_null($task) && $filters['task'] = $task;
         !is_null($task) && $filters['component_mode'] = $channel;
         $this->setDefaultFilter($filters);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
         // Get collection logs
-        //--------------------------------
+        // ---------------------------------------
         $collection = Mage::getModel('M2ePro/Synchronization_Log')->getCollection();
-        //--------------------------------
+        // ---------------------------------------
 
         $channel = $this->getRequest()->getParam('channel');
         if (!empty($channel) && $channel != Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::CHANNEL_ID_ALL) {
@@ -69,11 +71,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         }
 
         // we need sort by id also, because create_date may be same for some adjacents entries
-        //--------------------------------
+        // ---------------------------------------
         if ($this->getRequest()->getParam('sort', 'create_date') == 'create_date') {
             $collection->setOrder('id', $this->getRequest()->getParam('dir', 'DESC'));
         }
-        //--------------------------------
+        // ---------------------------------------
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -106,7 +108,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         $this->addColumn('description', array(
             'header'    => Mage::helper('M2ePro')->__('Description'),
             'align'     => 'left',
-            //'width'     => '300px',
             'type'      => 'text',
             'string_limit' => 350,
             'index'     => 'description',
@@ -131,13 +132,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -152,9 +153,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         return false;
     }
 
-    // ####################################
+    //########################################
 
     abstract protected function getActionTitles();
 
-    // ####################################
+    //########################################
 }

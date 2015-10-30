@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component_Parent_Abstract
@@ -17,7 +19,7 @@ class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component
     const QTY_MODE_ATTRIBUTE     = 4;
     const QTY_MODE_PRODUCT_FIXED = 5;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -25,7 +27,7 @@ class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component
         $this->_init('M2ePro/Template_SellingFormat');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -39,14 +41,14 @@ class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function getTitle()
     {
         return $this->getData('title');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getCreateDate()
     {
@@ -58,7 +60,7 @@ class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component
         return $this->getData('update_date');
     }
 
-    // ########################################
+    //########################################
 
     public function getTrackingAttributes()
     {
@@ -70,7 +72,7 @@ class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component
         return $this->getChildObject()->getUsedAttributes();
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -84,5 +86,5 @@ class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component
         return parent::delete();
     }
 
-    // #######################################
+    //########################################
 }

@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -14,8 +16,13 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
         $this->_init('M2ePro/Account');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $onlyMainConditions
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked($onlyMainConditions = false)
     {
         if (!$onlyMainConditions && parent::isLocked()) {
@@ -61,8 +68,14 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOtherListings($asObjects = false, array $filters = array())
     {
         $otherListings = $this->getRelatedComponentItems('Listing_Other','account_id',$asObjects,$filters);
@@ -77,6 +90,12 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return $otherListings;
     }
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOrders($asObjects = false, array $filters = array())
     {
         $orders = $this->getRelatedComponentItems('Order','account_id',$asObjects,$filters);
@@ -91,19 +110,22 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return $orders;
     }
 
-    // ########################################
+    //########################################
 
     public function getTitle()
     {
         return $this->getData('title');
     }
 
+    /**
+     * @return bool
+     */
     public function isSingleAccountMode()
     {
         return Mage::getModel('M2ePro/Account')->getCollection()->getSize() <= 1;
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -117,5 +139,5 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

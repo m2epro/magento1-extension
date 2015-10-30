@@ -1,12 +1,12 @@
 EbayTemplateEditHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     templateNick: null,
 
     showConfirmMsg: true,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -31,7 +31,7 @@ EbayTemplateEditHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     loadTemplateData: function()
     {
@@ -75,7 +75,7 @@ EbayTemplateEditHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validateForm: function()
     {
@@ -97,7 +97,7 @@ EbayTemplateEditHandler = Class.create(CommonHandler, {
         return validationResult;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function(templateNick, confirmText, okCallback)
     {
@@ -187,5 +187,5 @@ EbayTemplateEditHandler = Class.create(CommonHandler, {
         $super(headId, chapter_when_duplicate_text);
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

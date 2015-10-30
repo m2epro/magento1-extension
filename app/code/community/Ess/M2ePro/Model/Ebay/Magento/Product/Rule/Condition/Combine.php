@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Condition_Combine
     extends Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -11,18 +17,27 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Condition_Combine
         $this->setType('M2ePro/Ebay_Magento_Product_Rule_Condition_Combine');
     }
 
-    // ####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getConditionCombine()
     {
         return $this->getType() . '|ebay|';
     }
 
+    /**
+     * @return string
+     */
     protected function getCustomLabel()
     {
         return Mage::helper('M2ePro')->__('eBay Values');
     }
 
+    /**
+     * @return array
+     */
     protected function getCustomOptions()
     {
         $attributes = $this->getCustomOptionsAttributes();
@@ -31,6 +46,9 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Condition_Combine
             : array();
     }
 
+    /**
+     * @return array
+     */
     protected function getCustomOptionsAttributes()
     {
         return array(
@@ -51,5 +69,5 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Condition_Combine
         );
     }
 
-    // ####################################
+    //########################################
 }

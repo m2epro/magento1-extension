@@ -1,14 +1,19 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $params
+     */
     public function processSuccess($params = array())
     {
         $generalId = $this->getGeneralId($params);
@@ -32,6 +37,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
 
         $this->getListingProduct()->addData($data);
         $this->setVariationData($generalId);
+        $this->getListingProduct()->setSetting(
+            'additional_data', 'list_date', Mage::helper('M2ePro')->getCurrentGmtDate()
+        );
+
         $this->getListingProduct()->save();
 
         if (!$variationManager->isRelationParentType()) {
@@ -39,7 +48,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         }
     }
 
-    // ########################################
+    //########################################
 
     private function appendIdentifiersData($data, $generalId)
     {
@@ -58,7 +67,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         return $data;
     }
 
-    // ########################################
+    //########################################
 
     private function setVariationData($generalId)
     {
@@ -108,14 +117,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         }
 
         // add child variation to parent
-        // -------------------
+        // ---------------------------------------
         $channelVariations = (array)$parentTypeModel->getRealChannelVariations();
         $channelVariations[$generalId] = $realChannelOptions;
         $parentTypeModel->setChannelVariations($channelVariations, false);
-        // -------------------
+        // ---------------------------------------
 
         // update parent attributes sets
-        // -------------------
+        // ---------------------------------------
         $channelAttributesSets = $parentTypeModel->getRealChannelAttributesSets();
         foreach ($realChannelOptions as $attribute => $value) {
             if (!isset($channelAttributesSets[$attribute])) {
@@ -129,12 +138,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
             $channelAttributesSets[$attribute][] = $value;
         }
         $parentTypeModel->setChannelAttributesSets($channelAttributesSets, false);
-        // -------------------
+        // ---------------------------------------
 
         $typeModel->getParentListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
     private function getGeneralId(array $params)
     {
@@ -168,7 +177,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         return Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO;
     }
 
-    // ########################################
+    //########################################
 
     private function createAmazonItem()
     {
@@ -179,5 +188,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
         $linkingObject->createAmazonItem();
     }
 
-    // ########################################
+    //########################################
 }

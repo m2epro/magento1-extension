@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Menu
@@ -9,7 +11,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Menu
 {
     protected $listingProductId;
 
-    // ####################################
+    //########################################
 
     /**
      * @param mixed $listingProductId
@@ -29,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Menu
         return $this->listingProductId;
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
     protected $listingProduct = null;
@@ -39,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Menu
      */
     public function getListingProduct()
     {
-        if(is_null($this->listingProduct)) {
+        if (is_null($this->listingProduct)) {
             $this->listingProduct = Mage::helper('M2ePro/Component_Amazon')
                 ->getObject('Listing_Product', $this->getListingProductId());
         }
@@ -76,7 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Menu
 
     protected function _beforeToHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'    => 'productSearchMenu_cancel_button',
             'label' => Mage::helper('M2ePro')->__('Close'),
@@ -84,10 +86,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Menu
         );
         $buttonCancelBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('productSearchMenu_cancel_button', $buttonCancelBlock);
-        //------------------------------
+        // ---------------------------------------
 
         parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 }

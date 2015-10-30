@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
@@ -33,7 +35,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
      */
     protected $_arrayInputTypes = array();
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -101,6 +103,10 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         return $this->getRule()->getForm();
     }
 
+    /**
+     * @param array $arrAttributes
+     * @return array
+     */
     public function asArray(array $arrAttributes = array())
     {
         $out = array(
@@ -113,6 +119,9 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         return $out;
     }
 
+    /**
+     * @return string
+     */
     public function asXml()
     {
         $xml = "<type>".$this->getType()."</type>"
@@ -130,9 +139,6 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         $this->setValue(isset($arr['value']) ? $arr['value'] : false);
         $this->setIsValueParsed(isset($arr['is_value_parsed']) ? $arr['is_value_parsed'] : false);
 
-//        $this->loadAttributeOptions();
-//        $this->loadOperatorOptions();
-//        $this->loadValueOptions();
         return $this;
     }
 
@@ -156,6 +162,9 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         return array();
     }
 
+    /**
+     * @return array
+     */
     public function getAttributeSelectOptions()
     {
         $opt = array();
@@ -192,6 +201,9 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         return $this->_inputType;
     }
 
+    /**
+     * @return array
+     */
     public function getOperatorSelectOptions()
     {
         $type = $this->getInputType();
@@ -212,10 +224,6 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
 
     public function loadValueOptions()
     {
-//        $this->setValueOption(array(
-//            true  => Mage::helper('rule')->__('TRUE'),
-//            false => Mage::helper('rule')->__('FALSE'),
-//        ));
         $this->setValueOption(array());
         return $this;
     }
@@ -624,6 +632,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
      *
      * @param  string|int|float $validatedValue
      * @param  string|int|float $value
+     * @param  bool $strict
      * @return bool
      */
     protected function _compareValues($validatedValue, $value, $strict = true)
@@ -654,5 +663,5 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         return $this->getOperator();
     }
 
-    // ########################################
+    //########################################
 }

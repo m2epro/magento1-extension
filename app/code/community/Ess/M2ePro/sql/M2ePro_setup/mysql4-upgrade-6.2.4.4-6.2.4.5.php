@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_product_change`
@@ -17,13 +17,12 @@ $connection = $installer->getConnection();
         ADD INDEX `initiators`(`initiators`);
 */
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_product_change');
 
 if ($connection->tableColumnExists($tempTable, 'initiators') === false &&
-    $connection->tableColumnExists($tempTable, 'creator_type') !== false
-) {
+    $connection->tableColumnExists($tempTable, 'creator_type') !== false) {
     $connection->changeColumn($tempTable, 'creator_type', 'initiators', 'VARCHAR(16) NOT NULL');
 }
 
@@ -37,8 +36,8 @@ if (!isset($tempTableIndexList[strtoupper('initiators')])) {
     $connection->addKey($tempTable, 'initiators', 'initiators');
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

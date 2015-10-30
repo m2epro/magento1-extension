@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_shipping`
@@ -108,7 +108,7 @@ $connection = $installer->getConnection();
     DROP COLUMN `originating_postal_code`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 $indexList = $connection->getIndexList($tempTable);
@@ -167,7 +167,7 @@ if (isset($indexList[strtoupper('international_trade')])) {
     $connection->dropKey($tempTable, 'international_trade');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 
@@ -179,7 +179,7 @@ if ($connection->tableColumnExists($tempTable, 'qty_percentage') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_selling_format');
 
@@ -191,7 +191,7 @@ if ($connection->tableColumnExists($tempTable, 'qty_percentage') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_selling_format');
 
@@ -203,7 +203,7 @@ if ($connection->tableColumnExists($tempTable, 'qty_percentage') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_template_selling_format');
 
@@ -215,7 +215,7 @@ if ($connection->tableColumnExists($tempTable, 'qty_percentage') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order');
 
@@ -223,7 +223,7 @@ if ($connection->tableColumnExists($tempTable, 'state') !== false) {
     $connection->dropColumn($tempTable, 'state');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order_item');
 
@@ -231,7 +231,7 @@ if ($connection->tableColumnExists($tempTable, 'state') !== false) {
     $connection->dropColumn($tempTable, 'state');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_order');
 
@@ -259,7 +259,7 @@ if ($connection->tableColumnExists($tempTable, 'discount_details') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_order_item');
 
@@ -287,7 +287,7 @@ if ($connection->tableColumnExists($tempTable, 'discount_details') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_lock_item');
 
@@ -299,7 +299,7 @@ if ($connection->tableColumnExists($tempTable, 'kill_now') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_processing_request');
 
@@ -317,9 +317,9 @@ $connection->update(
 );
 
 // REMOVE EBAY SWEDEN MARKETPLACE
-//#############################################
+//########################################
 
-//-- listings tables
+// listings tables
 $lTable    = $installer->getTable('m2epro_listing');
 $lpTable   = $installer->getTable('m2epro_listing_product');
 $lpvTable  = $installer->getTable('m2epro_listing_product_variation');
@@ -357,7 +357,7 @@ deleteByIdsFromHorizontalTable($installer, $lpIds, 'm2epro_listing_product');
 deleteByIdsFromHorizontalTable($installer, $lpvIds, 'm2epro_listing_product_variation');
 deleteByIdsFromHorizontalTable($installer, $lpvoIds, 'm2epro_listing_product_variation_option');
 
-//-- listings other tables
+// listings other tables
 $loTable = $installer->getTable('m2epro_listing_other');
 $queryStmt = $connection->query(
     "SELECT `lo`.`id` FROM {$loTable} lo WHERE `marketplace_id` = 23"
@@ -371,7 +371,7 @@ $ids = array_filter(array_unique($ids));
 
 deleteByIdsFromHorizontalTable($installer, $ids, 'm2epro_listing_other');
 
-//-- orders tables
+// orders tables
 $oTable  = $installer->getTable('m2epro_order');
 $oiTable = $installer->getTable('m2epro_order_item');
 
@@ -395,7 +395,7 @@ $oiIds = array_filter(array_unique($oiIds));
 deleteByIdsFromHorizontalTable($installer, $oIds, 'm2epro_order');
 deleteByIdsFromHorizontalTable($installer, $oiIds, 'm2epro_order_item');
 
-//-- other related tables
+// other related tables
 $where = array('marketplace_id = 23');
 
 $connection->delete($installer->getTable('m2epro_stop_queue'), $where);
@@ -414,7 +414,7 @@ $connection->delete($installer->getTable('m2epro_ebay_template_payment'), $where
 $connection->delete($installer->getTable('m2epro_ebay_template_return'), $where);
 $connection->delete($installer->getTable('m2epro_ebay_template_shipping'), $where);
 
-// -- help function
+// help function
 function deleteByIdsFromHorizontalTable($installer, array $ids, $parentTable)
 {
     /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
@@ -438,11 +438,11 @@ function deleteByIdsFromHorizontalTable($installer, array $ids, $parentTable)
 }
 
 // CHANGE SHIPPING TABLE VALUES
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
-// -- dispatch_time
+// dispatch_time
 if ($connection->tableColumnExists($tempTable, 'dispatch_time_mode') !== false &&
     $connection->tableColumnExists($tempTable, 'dispatch_time') !== false) {
 
@@ -485,11 +485,11 @@ if ($connection->tableColumnExists($tempTable, 'local_shipping_cash_on_delivery_
 }
 
 // CHANGE CALCULATED SHIPPING TABLE VALUES
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping_calculated');
 
-// -- local_handling_cost
+// local_handling_cost
 if ($connection->tableColumnExists($tempTable, 'local_handling_cost_value') !== false &&
     $connection->tableColumnExists($tempTable, 'local_handling_cost') === false) {
     $connection->changeColumn(
@@ -520,7 +520,7 @@ if ($connection->tableColumnExists($tempTable, 'local_handling_cost_attribute') 
     $connection->dropColumn($tempTable, 'local_handling_cost_attribute');
 }
 
-// -- international_handling_cost
+// international_handling_cost
 if ($connection->tableColumnExists($tempTable, 'international_handling_cost_value') !== false &&
     $connection->tableColumnExists($tempTable, 'international_handling_cost') === false) {
     $connection->changeColumn(
@@ -551,9 +551,9 @@ if ($connection->tableColumnExists($tempTable, 'international_handling_cost_attr
     $connection->dropColumn($tempTable, 'international_handling_cost_attribute');
 }
 
-// -------------------------------------------
+// ---------------------------------------
 
-// -- dimension_length_value
+// dimension_length_value
 if ($connection->tableColumnExists($tempTable, 'dimension_height_value') !== false &&
     $connection->tableColumnExists($tempTable, 'dimension_length_value') === false) {
     $connection->changeColumn(
@@ -563,7 +563,7 @@ if ($connection->tableColumnExists($tempTable, 'dimension_height_value') !== fal
         'VARCHAR(500) NOT NULL'
     );
 }
-// -- dimension_length_attribute
+// dimension_length_attribute
 if ($connection->tableColumnExists($tempTable, 'dimension_height_attribute') !== false &&
     $connection->tableColumnExists($tempTable, 'dimension_length_attribute') === false) {
     $connection->changeColumn(
@@ -574,7 +574,7 @@ if ($connection->tableColumnExists($tempTable, 'dimension_height_attribute') !==
     );
 }
 
-// -------------------------------------------
+// ---------------------------------------
 
 if ($connection->tableColumnExists($tempTable, 'originating_postal_code') !== false) {
 
@@ -591,7 +591,7 @@ if ($connection->tableColumnExists($tempTable, 'originating_postal_code') !== fa
     $connection->dropColumn($tempTable, 'originating_postal_code');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("
@@ -612,8 +612,8 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

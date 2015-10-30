@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Category_Summary_Grid
     extends Ess_M2ePro_Block_Adminhtml_Category_Grid
 {
-    // ####################################
+    //########################################
 
     public function setProductsForEachCategory($productsForEachCategory)
     {
@@ -31,26 +33,26 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Category_Summary_Grid
         return $this->getData('products_ids');
     }
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId($this->getData('component') . 'ListingProductSourceCategoriesSummaryGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setFilterVisibility(false);
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -73,33 +75,33 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Category_Summary_Grid
         return $this;
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('entity_id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         $this->getMassactionBlock()->addItem('remove', array(
              'label'    => Mage::helper('M2ePro')->__('Remove'),
         ));
 
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function getMassactionBlockName()
     {
         return 'M2ePro/adminhtml_grid_massaction';
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareColumns()
     {
@@ -126,7 +128,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Category_Summary_Grid
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnMagentoCategory($value, $row, $column, $isExport)
     {
@@ -136,7 +138,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Category_Summary_Grid
                ' ('.$productsForEachCategory[$row->getId()].')';
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnActions($value, $row, $column, $isExport)
     {
@@ -149,7 +151,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Category_Summary_Grid
 HTML;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -238,19 +240,19 @@ HTML;
         return $beforeHtml . parent::_toHtml() . $afterHtml . $js;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
         return $this->getCurrentUrl(array('grid' => true));
     }
 
-    // ####################################
+    //########################################
 
     public function getRowUrl($row)
     {
         return false;
     }
 
-    // ####################################
+    //########################################
 }

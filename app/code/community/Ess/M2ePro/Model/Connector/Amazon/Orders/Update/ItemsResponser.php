@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Amazon_Orders_Update_ItemsResponser
@@ -16,8 +18,12 @@ class Ess_M2ePro_Model_Connector_Amazon_Orders_Update_ItemsResponser
 
     private $orders = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -31,27 +37,13 @@ class Ess_M2ePro_Model_Connector_Amazon_Orders_Update_ItemsResponser
     {
         parent::eventFailedExecuting($message);
 
-        $logMessage = Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
-            'Amazon Order status was not updated. Reason: %msg%', array('msg' => $message)
-        );
-
-        $logs = array();
-
         foreach ($this->getOrders() as $order) {
-            $logs[] = array(
-                'order_id'       => $order->getId(),
-                'message'        => $logMessage,
-                'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-                'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                'create_date'    => Mage::helper('M2ePro')->getCurrentGmtDate(),
-            );
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $order->addErrorLog('Amazon Order status was not updated. Reason: %msg%', array('msg' => $message));
         }
-
-        $this->createLogEntries($logs);
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponseData($response)
     {
@@ -60,44 +52,32 @@ class Ess_M2ePro_Model_Connector_Amazon_Orders_Update_ItemsResponser
 
     protected function processResponseData($response)
     {
-        $logs = array();
-        $currentDate = Mage::helper('M2ePro')->getCurrentGmtDate();
+        /** @var $orders Ess_M2ePro_Model_Order[] */
+        $orders = $this->getOrders();
 
         // Check global messages
-        //----------------------
+        // ---------------------------------------
         $globalMessages = $this->messages;
         if (isset($response['messages']['0-id']) && is_array($response['messages']['0-id'])) {
             $globalMessages = array_merge($globalMessages,$response['messages']['0-id']);
         }
 
         if (count($globalMessages) > 0) {
-            foreach ($this->getOrders() as $order) {
+            foreach ($orders as $order) {
                 foreach ($globalMessages as $message) {
                     $text = $message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TEXT_KEY];
 
-                    $logMessage = Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
-                        'Amazon Order status was not updated. Reason: %msg%', array('msg' => $text)
-                    );
-
-                    $logs[] = array(
-                        'order_id'       => $order->getId(),
-                        'message'        => $logMessage,
-                        'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                        'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-                        'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                        'create_date'    => $currentDate
-                    );
+                    $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+                    $order->addErrorLog('Amazon Order status was not updated. Reason: %msg%', array('msg' => $text));
                 }
             }
 
-            $this->createLogEntries($logs);
-
             return;
         }
-        //----------------------
+        // ---------------------------------------
 
         // Check separate messages
-        //----------------------
+        // ---------------------------------------
         $failedOrdersIds = array();
 
         foreach ($response['messages'] as $changeId => $messages) {
@@ -118,23 +98,14 @@ class Ess_M2ePro_Model_Connector_Amazon_Orders_Update_ItemsResponser
             foreach ($messages as $message) {
                 $text = $message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TEXT_KEY];
 
-                $logMessage = Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
-                    'Amazon Order status was not updated. Reason: %msg%', array('msg' => $text)
-                );
-
-                $logs[] = array(
-                    'order_id'       => $orderId,
-                    'message'        => $logMessage,
-                    'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-                    'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                    'create_date'    => $currentDate
-                );
+                $orders[$orderId]->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+                $orders[$orderId]->addErrorLog('Amazon Order status was not updated. Reason: %msg%',
+                    array('msg' => $text));
             }
         }
-        //----------------------
+        // ---------------------------------------
 
-        //----------------------
+        // ---------------------------------------
         foreach ($this->params as $changeId => $requestData) {
             $orderId = $this->getOrderIdByChangeId($changeId);
 
@@ -146,41 +117,23 @@ class Ess_M2ePro_Model_Connector_Amazon_Orders_Update_ItemsResponser
                 continue;
             }
 
-            $logs[] = array(
-                'order_id'       => (int)$orderId,
-                'message'        => 'Amazon Order status was updated to Shipped.',
-                'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-                'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                'create_date'    => $currentDate
-            );
+            $orders[$orderId]->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $orders[$orderId]->addSuccessLog('Amazon Order status was updated to Shipped.');
 
             if (empty($requestData['tracking_number']) || empty($requestData['carrier_name'])) {
                 continue;
             }
 
-            $logMessage = Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
-                'Tracking number "%num%" for "%code%" has been sent to Amazon.', array(
-                    '!num' => $requestData['tracking_number'],
-                    'code' => $requestData['carrier_name']
+            $orders[$orderId]->addSuccessLog('Tracking number "%num%" for "%code%" has been sent to Amazon.', array(
+                '!num' => $requestData['tracking_number'],
+                'code' => $requestData['carrier_name']
                 )
             );
-
-            $logs[] = array(
-                'order_id'       => (int)$orderId,
-                'message'        => $logMessage,
-                'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                'component_mode' => Ess_M2ePro_Helper_Component_Amazon::NICK,
-                'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                'create_date'    => $currentDate
-            );
         }
-        //----------------------
-
-        $this->createLogEntries($logs);
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @throws Ess_M2ePro_Model_Exception_Logic
@@ -222,18 +175,5 @@ class Ess_M2ePro_Model_Connector_Amazon_Orders_Update_ItemsResponser
         return NULL;
     }
 
-    // ########################################
-
-    private function createLogEntries(array $data)
-    {
-        if (empty($data)) {
-            return;
-        }
-
-        /** @var $writeConnection Varien_Db_Adapter_Interface */
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $writeConnection->insertMultiple(Mage::getResourceModel('M2ePro/Order_Log')->getMainTable(), $data);
-    }
-
-    // ########################################
+    //########################################
 }

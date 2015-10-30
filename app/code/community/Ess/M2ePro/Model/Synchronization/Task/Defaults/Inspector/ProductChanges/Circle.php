@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChanges_Circle
     extends Ess_M2ePro_Model_Synchronization_Task_Defaults_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/inspector/product_changes/circle/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Product Changes';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 40;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 80;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -73,7 +87,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         $this->setLastListingProductId($listingProduct->getId());
     }
 
-    //####################################
+    //########################################
 
     private function prepareBaseValues()
     {
@@ -86,7 +100,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         }
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     private function getMinIntervalBetweenCircles()
     {
@@ -98,7 +112,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         return (int)$this->getConfigValue($this->getFullSettingsPath(),'max_count_times_for_full_circle');
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     private function getMinCountItemsPerOneTime()
     {
@@ -110,7 +124,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         return (int)$this->getConfigValue($this->getFullSettingsPath(),'max_count_items_per_one_time');
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     private function getLastListingProductId()
     {
@@ -122,7 +136,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         $this->setConfigValue($this->getFullSettingsPath(),'last_listing_product_id',(int)$listingProductId);
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     private function getLastTimeStartCircle()
     {
@@ -136,7 +150,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         );
     }
 
-    //####################################
+    //########################################
 
     private function getCountItemsPerOneTime()
     {
@@ -176,7 +190,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         return $collection->getItems();
     }
 
-    //####################################
+    //########################################
 
     private function updateListingsProductChange(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -199,5 +213,5 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_Inspector_ProductChan
         }
     }
 
-    //####################################
+    //########################################
 }

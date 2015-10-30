@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Connector_Ebay_Requester extends Ess_M2ePro_Model_Connector_Requester
@@ -27,7 +29,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Requester extends Ess_M2ePro_Mode
      */
     protected $mode = NULL;
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array(),
                                 Ess_M2ePro_Model_Marketplace $marketplace = NULL,
@@ -45,7 +47,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Requester extends Ess_M2ePro_Mode
         parent::__construct($params);
     }
 
-    // ########################################
+    //########################################
 
     protected function getComponent()
     {
@@ -57,7 +59,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Requester extends Ess_M2ePro_Mode
         return self::COMPONENT_VERSION;
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -76,13 +78,23 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Requester extends Ess_M2ePro_Mode
         return parent::process();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param $time
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public static function ebayTimeToString($time)
     {
         return (string)self::getEbayDateTimeObject($time)->format('Y-m-d H:i:s');
     }
 
+    /**
+     * @param $time
+     * @return int
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public static function ebayTimeToTimeStamp($time)
     {
         return (int)self::getEbayDateTimeObject($time)->format('U');
@@ -107,5 +119,5 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Requester extends Ess_M2ePro_Mode
         return $dateTime;
     }
 
-    // ########################################
+    //########################################
 }

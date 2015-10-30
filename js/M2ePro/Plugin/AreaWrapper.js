@@ -1,7 +1,7 @@
 AreaWrapper = Class.create();
 AreaWrapper.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(containerId)
     {
@@ -17,7 +17,7 @@ AreaWrapper.prototype = {
         this.makeWrapperHtml();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     makeWrapperHtml: function()
     {
@@ -30,7 +30,7 @@ AreaWrapper.prototype = {
         $(this.containerId).innerHTML += '<div style="clear: both;"></div>';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     lock: function()
     {
@@ -44,5 +44,5 @@ AreaWrapper.prototype = {
         $(this.containerId).setStyle({position: this.containerPosition});
     }
 
-    //----------------------------------
-}
+    // ---------------------------------------
+};

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -16,7 +18,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Grid extend
     /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option $matcherOptions */
     private $matcherOptions;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -34,19 +36,19 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Grid extend
             ->getDefaultCurrency();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonProductSearchGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setFilterVisibility(false);
         $this->setPagerVisibility(false);
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -66,7 +68,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Grid extend
             );
 
             if ($temp['is_variation_product']) {
-                if(!$item['bad_parent']) {
+                if (!$item['bad_parent']) {
                     $temp += array(
                         'parentage' => $item['parentage'],
                         'variations' => $item['variations'],
@@ -148,7 +150,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Grid extend
 
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnImage($value, $product, $column, $isExport)
     {
@@ -193,24 +195,24 @@ HTML;
 </div>
 HTML;
 
-        if(!$this->listingProduct->getChildObject()->getVariationManager()->isVariationProduct()
+        if (!$this->listingProduct->getChildObject()->getVariationManager()->isVariationProduct()
             || $this->listingProduct->getChildObject()->getVariationManager()->isIndividualType()) {
-            if(!$row->getData('is_variation_product')) {
+            if (!$row->getData('is_variation_product')) {
                 return $value;
             }
         } else {
-            if(!$row->getData('is_variation_product')) {
+            if (!$row->getData('is_variation_product')) {
                 return $value;
             }
         }
 
-        if($row->getData('is_variation_product') && $row->getData('bad_parent')) {
+        if ($row->getData('is_variation_product') && $row->getData('bad_parent')) {
             return $value;
         }
 
         $variations = $row->getData('variations');
 
-        if($this->listingProduct->getChildObject()->getVariationManager()->isRelationParentType()) {
+        if ($this->listingProduct->getChildObject()->getVariationManager()->isRelationParentType()) {
 
             $magentoProductAttributesHtml = '';
             $magentoProductAttributesJs = '';
@@ -220,7 +222,7 @@ HTML;
             $this->matcherAttributes->setMagentoProduct($this->listingProduct->getMagentoProduct());
             $this->matcherAttributes->setDestinationAttributes($destinationAttributes);
 
-            if($this->matcherAttributes->isAmountEqual()) {
+            if ($this->matcherAttributes->isAmountEqual()) {
                 $magentoProductAttributesJs .= '<script type="text/javascript">';
                 $magentoProductAttributesHtml .= '<div><span style="margin-left: 10px;
                                         font-size: 11px;
@@ -239,7 +241,7 @@ HTML;
 
                 $matchedAttributes = $this->matcherAttributes->getMatchedAttributes();
                 $attributeId = 0;
-                foreach($matchedAttributes as $magentoAttr => $amazonAttr){
+                foreach ($matchedAttributes as $magentoAttr => $amazonAttr) {
 
                     $magentoProductAttributesHtml .= '<span style="margin-left: 10px;
                                             font-size: 11px;
@@ -360,12 +362,12 @@ HTML;
         $specificsHtml = '';
         $specificsJs = '<script type="text/javascript">';
 
-        //match options for individual
+        // match options for individual
         if ($this->listingProduct->getChildObject()->getVariationManager()->isIndividualType() &&
             $this->listingProduct->getChildObject()->getVariationManager()->getTypeModel()->isVariationProductMatched()
         ) {
             $channelVariations = array();
-            foreach($variations['asins'] as $asin => $asinAttributes) {
+            foreach ($variations['asins'] as $asin => $asinAttributes) {
                 $channelVariations[$asin] = $asinAttributes['specifics'];
             }
 
@@ -471,7 +473,7 @@ HTML;
         $iconWarningPath = $this->getSkinUrl('M2ePro/images/warning.png');
         $iconHelpPath = $this->getSkinUrl('M2ePro/images/i_notice.gif');
 
-        if(!$this->listingProduct->getChildObject()->getVariationManager()->isVariationProduct()
+        if (!$this->listingProduct->getChildObject()->getVariationManager()->isVariationProduct()
             || $this->listingProduct->getChildObject()->getVariationManager()->isIndividualType()) {
             if (!$row->getData('is_variation_product')) {
 
@@ -481,7 +483,7 @@ HTML;
 HTML;
             }
 
-            if(!$row->getData('bad_parent')) {
+            if (!$row->getData('bad_parent')) {
 
                 $msg = Mage::helper('M2ePro')->__(
                     'Please select necessary Options for this Amazon Product to be able to assign ASIN/ISBN.'
@@ -583,7 +585,7 @@ HTML;
 HTML;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -628,11 +630,11 @@ HTML;
         $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    $$('#amazonProductSearchGrid div.grid th').each(function(el){
+    $$('#amazonProductSearchGrid div.grid th').each(function(el) {
         el.style.padding = '2px 2px';
     });
 
-    $$('#amazonProductSearchGrid div.grid td').each(function(el){
+    $$('#amazonProductSearchGrid div.grid td').each(function(el) {
         el.style.padding = '2px 2px';
     });
 
@@ -660,7 +662,7 @@ HTML;
         return $jsText . parent::_toHtml() . $javascriptsMain . $searchParamsHtml;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -672,12 +674,12 @@ HTML;
         return false;
     }
 
-    // ####################################
+    //########################################
 
     private function getChannelVariationsTree($variations)
     {
         $channelVariations = array();
-        foreach($variations['asins'] as $asin => $asinAttributes) {
+        foreach ($variations['asins'] as $asin => $asinAttributes) {
             $channelVariations[$asin] = $asinAttributes['specifics'];
         }
 
@@ -769,5 +771,5 @@ HTML;
         return $return;
     }
 
-    // ####################################
+    //########################################
 }

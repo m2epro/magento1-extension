@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
-    //#############################################
+    //########################################
 
     public function mapGridAction()
     {
@@ -15,7 +17,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function mapAction()
     {
@@ -116,5 +118,5 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
         return $this->getResponse()->setBody('1');
     }
 
-    //#############################################
+    //########################################
 }

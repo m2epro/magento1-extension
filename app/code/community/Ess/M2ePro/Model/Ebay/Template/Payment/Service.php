@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Component_Abstract
@@ -11,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
      */
     private $paymentTemplateModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -19,7 +21,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
         $this->_init('M2ePro/Ebay_Template_Payment_Service');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -28,7 +30,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
         return $temp;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Payment
@@ -52,8 +54,11 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
          $this->paymentTemplateModel = $instance;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getTemplatePaymentId()
     {
         return (int)$this->getData('template_payment_id');
@@ -64,5 +69,5 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
         return $this->getData('code_name');
     }
 
-    // #######################################
+    //########################################
 }

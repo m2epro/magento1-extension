@@ -1,39 +1,53 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
     extends Ess_M2ePro_Model_Ebay_Synchronization_Orders_Abstract
 {
     const MAX_UPDATES_PER_TIME = 200;
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/update/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Update';
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 100;
     }
 
-    // ##########################################################
+    //########################################
 
     protected function performActions()
     {
@@ -51,30 +65,29 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
         foreach ($permittedAccounts as $account) {
             /** @var $account Ess_M2ePro_Model_Account **/
 
-            // ----------------------------------------------------------
             $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
             // M2ePro_TRANSLATIONS
             // The "Update" Action for eBay Account: "%account_title%" is started. Please wait...
             $status = 'The "Update" Action for eBay Account: "%account_title%" is started. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             $this->processAccount($account);
 
-            // ----------------------------------------------------------
+            // ---------------------------------------
             // M2ePro_TRANSLATIONS
             // The "Update" Action for eBay Account: "%account_title%" is finished. Please wait...
             $status = 'The "Update" Action for eBay Account: "%account_title%" is finished. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep);
             $this->getActualLockItem()->activate();
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             $iteration++;
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function getPermittedAccounts()
     {
@@ -83,7 +96,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
         return $accountsCollection->getItems();
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function processAccount(Ess_M2ePro_Model_Account $account)
     {
@@ -97,7 +110,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function getRelatedChanges(Ess_M2ePro_Model_Account $account)
     {
@@ -111,7 +124,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
         return $changesCollection->getItems();
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function processChange(Ess_M2ePro_Model_Order_Change $change)
     {
@@ -148,7 +161,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function deleteNotActualChanges()
     {
@@ -158,5 +171,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
         );
     }
 
-    // ##########################################################
+    //########################################
 }

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.3.6</version>
+            <version>6.3.8</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -28,22 +28,19 @@
                 <group>offline</group>
             </m2epropayment>
         </payment>
+        <web>
+            <routers>
+                <m2epro_router>
+                    <area>admin</area>
+                    <class>Ess_M2ePro_Controller_Router</class>
+                </m2epro_router>
+            </routers>
+        </web>
     </default>
-    <frontend>
-        <routers>
-            <M2ePro>
-                <use>m2epro_custom</use>
-                <args>
-                    <module>Ess_M2ePro</module>
-                    <frontName>M2ePro</frontName>
-                </args>
-            </M2ePro>
-        </routers>
-    </frontend>
     <admin>
         <routers>
             <M2ePro>
-                <use>admin</use>
+                <use>m2epro_router</use>
                 <args>
                     <module>Ess_M2ePro</module>
                     <frontName>M2ePro</frontName>
@@ -761,6 +758,13 @@
                         <table>m2epro_ebay_template_other_category</table>
                     </Ebay_Template_OtherCategory>
 
+                    <Ebay_Motor_Filter>
+                        <table>m2epro_ebay_motor_filter</table>
+                    </Ebay_Motor_Filter>
+                    <Ebay_Motor_Group>
+                        <table>m2epro_ebay_motor_group</table>
+                    </Ebay_Motor_Group>
+
                     <!-- AMAZON -->
 
                     <Amazon_Item>
@@ -845,7 +849,7 @@
                     <cron_expr>*/1 * * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>M2ePro/Cron_Type_Magento::process</model>
+                    <model>M2ePro/Cron_Runner_Magento::process</model>
                 </run>
             </M2ePro_cron>
         </jobs>

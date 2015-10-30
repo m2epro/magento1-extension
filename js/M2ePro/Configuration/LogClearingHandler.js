@@ -1,7 +1,7 @@
 ConfigurationLogClearingHandler = Class.create();
 ConfigurationLogClearingHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -19,7 +19,7 @@ ConfigurationLogClearingHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     runNowLog: function(log)
     {
@@ -35,7 +35,7 @@ ConfigurationLogClearingHandler.prototype = Object.extend(new CommonHandler(), {
         configEditForm.submit(M2ePro.url.get('formSubmit', {'task': 'clear_all','log': log}));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     changeModeLog: function(log)
     {
@@ -50,5 +50,5 @@ ConfigurationLogClearingHandler.prototype = Object.extend(new CommonHandler(), {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Log extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('commonListingOtherLog');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_listing_other_log';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $otherListingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         if (isset($otherListingData['id'])) {
@@ -33,17 +35,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Log extends Mage_Adminhtml
         } else {
             $this->_headerText = '';
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
         if ($this->_headerText != '') {
             $this->addButton('show_general_log', array(
@@ -59,5 +61,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Log extends Mage_Adminhtml
         }
     }
 
-    // ########################################
+    //########################################
 }

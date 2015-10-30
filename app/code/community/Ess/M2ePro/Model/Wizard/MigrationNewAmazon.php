@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Wizard_MigrationNewAmazon extends Ess_M2ePro_Model_Wizard
@@ -12,8 +14,11 @@ class Ess_M2ePro_Model_Wizard_MigrationNewAmazon extends Ess_M2ePro_Model_Wizard
         'information'
     );
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getSteps()
     {
         $steps = $this->steps;
@@ -28,8 +33,11 @@ class Ess_M2ePro_Model_Wizard_MigrationNewAmazon extends Ess_M2ePro_Model_Wizard
         return $steps;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getDataForDescriptionTemplatesStep()
     {
         $tempTemplates = Mage::getModel('M2ePro/Registry')->load('/wizard/new_amazon_description_templates/', 'key')
@@ -38,10 +46,13 @@ class Ess_M2ePro_Model_Wizard_MigrationNewAmazon extends Ess_M2ePro_Model_Wizard
         return $tempTemplates ? (array)json_decode($tempTemplates, true) : array();
     }
 
+    /**
+     * @return string
+     */
     public function getNick()
     {
         return 'migrationNewAmazon';
     }
 
-    // ########################################
+    //########################################
 }

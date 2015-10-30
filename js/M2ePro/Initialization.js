@@ -1,5 +1,5 @@
 // Create main objects
-// ----------------------------------
+// ---------------------------------------
 CommonHandlerObj = new CommonHandler();
 
 MagentoMessageObj = new MagentoMessage();
@@ -9,7 +9,7 @@ ModuleNoticeObj = new BlockNotice('Module');
 ServerNoticeObj = new BlockNotice('Server');
 
 MagentoFieldTipObj = new MagentoFieldTip();
-// ----------------------------------
+// ---------------------------------------
 
 function setPageHelpLink(url)
 {
@@ -23,6 +23,21 @@ function setPageHelpLink(url)
         heplLink.href = url;
         heplLink.target = '_blank'
     }
+}
+
+function initializationCustomAttributeInputs()
+{
+    $$('select.M2ePro-custom-attribute-can-be-created').each(function(selectObj){
+
+        var handlerObj = new AttributeCreator(selectObj.id);
+        handlerObj.setSelectObj(selectObj);
+
+        if (handlerObj.alreadyHaveAddedOption()) {
+            return true;
+        }
+
+        handlerObj.injectAddOption();
+    });
 }
 
 function initializationMagentoBlocks()
@@ -128,27 +143,28 @@ function prepareFloatingToolbarContent()
 }
 
 // Set main observers
-// ----------------------------------
+// ---------------------------------------
 Event.observe(window, 'load', function() {
 
     initializationMagentoBlocks();
+    initializationCustomAttributeInputs();
 
     var ajaxHandler = {
         onComplete: function(transport) {
             if (Ajax.activeRequestCount == 0) {
                 initializationMagentoBlocks();
+                initializationCustomAttributeInputs();
             }
         }
-
     };
 
     prepareFloatingToolbarContent();
 
     Ajax.Responders.register(ajaxHandler);
 });
-// ----------------------------------
+// ---------------------------------------
 
-// ----------------------------------
+// ---------------------------------------
 (function(window) {
 
     var setLoc = setLocation;
@@ -161,4 +177,4 @@ Event.observe(window, 'load', function() {
     };
 
 })(window);
-// ----------------------------------
+// ---------------------------------------

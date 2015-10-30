@@ -1,6 +1,6 @@
 WizardInstallationCommon = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     popupObj : null,
 
@@ -8,7 +8,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
     popupLicenseForm : null,
     settingsForm     : null,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initLicense: function()
     {
@@ -34,7 +34,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopupAction: function()
     {
@@ -73,7 +73,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
         this.closePopupAction();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     copyValuesFromPopup: function()
     {
@@ -92,7 +92,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     proceedLicenseStep: function()
     {
@@ -139,7 +139,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     proceedSettingsStep: function()
     {
@@ -158,7 +158,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     doStep: function(currentStep)
     {
@@ -177,5 +177,5 @@ WizardInstallationCommon = Class.create(CommonHandler, {
         })
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

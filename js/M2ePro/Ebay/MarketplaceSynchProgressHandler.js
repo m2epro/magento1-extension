@@ -1,6 +1,6 @@
 EbayMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     printFinalMessage: function(resultType)
     {
@@ -38,5 +38,5 @@ EbayMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

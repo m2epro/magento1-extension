@@ -1,13 +1,20 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Search_Dispatcher
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @param string $query
+     * @return array|bool
+     */
     public function runCustom(Ess_M2ePro_Model_Listing_Product $listingProduct, $query)
     {
         if (empty($query)) {
@@ -30,6 +37,10 @@ class Ess_M2ePro_Model_Buy_Search_Dispatcher
         return $searchResult;
     }
 
+    /**
+     * @param array $listingsProducts
+     * @return bool
+     */
     public function runSettings(array $listingsProducts)
     {
         /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
@@ -70,7 +81,7 @@ class Ess_M2ePro_Model_Buy_Search_Dispatcher
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function checkSearchConditions(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -82,5 +93,5 @@ class Ess_M2ePro_Model_Buy_Search_Dispatcher
                !$buyListingProduct->getGeneralId();
     }
 
-    // ########################################
+    //########################################
 }

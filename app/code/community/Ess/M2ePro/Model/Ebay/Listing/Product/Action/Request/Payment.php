@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Payment
@@ -14,8 +16,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Payment
      */
     private $paymentTemplate = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         $data = array(
@@ -29,8 +34,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Payment
         return array('payment'=>$data);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getMethodsData()
     {
         $methods = array();
@@ -61,7 +69,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Payment
         );
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Payment
@@ -76,5 +84,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Payment
         return $this->paymentTemplate;
     }
 
-    // ########################################
+    //########################################
 }

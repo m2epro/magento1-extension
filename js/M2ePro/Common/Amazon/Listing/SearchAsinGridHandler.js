@@ -1,20 +1,20 @@
 CommonAmazonListingSearchAsinGridHandler = Class.create(CommonListingGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'amazon';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
         return 1000;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -39,7 +39,7 @@ CommonAmazonListingSearchAsinGridHandler = Class.create(CommonListingGridHandler
         };
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     parseResponse: function(response)
     {
@@ -50,7 +50,7 @@ CommonAmazonListingSearchAsinGridHandler = Class.create(CommonListingGridHandler
         return response.responseText.evalJSON();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     afterInitPage: function($super)
     {
@@ -204,7 +204,7 @@ CommonAmazonListingSearchAsinGridHandler = Class.create(CommonListingGridHandler
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showNotCompletedPopup: function()
     {
@@ -230,5 +230,5 @@ CommonAmazonListingSearchAsinGridHandler = Class.create(CommonListingGridHandler
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

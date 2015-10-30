@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -28,7 +30,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -86,11 +88,11 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
             }
         }
 
-        $motorsSpecificsAttribute = $this->getRequest()->getParam('motors_specifics_attribute');
+        $motorsEpidsAttribute = $this->getRequest()->getParam('motors_epids_attribute');
         $motorsKtypesAttribute = $this->getRequest()->getParam('motors_ktypes_attribute');
 
-        if (!empty($motorsKtypesAttribute) && !empty($motorsSpecificsAttribute) &&
-            $motorsSpecificsAttribute == $motorsKtypesAttribute
+        if (!empty($motorsKtypesAttribute) && !empty($motorsEpidsAttribute) &&
+            $motorsEpidsAttribute == $motorsKtypesAttribute
         ) {
             $this->_getSession()->addError(
                 Mage::helper('M2ePro')->__('ePIDs and kTypes Attributes can not be the same.')
@@ -100,12 +102,12 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         }
 
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/motor/', 'motors_specifics_attribute',
-            $motorsSpecificsAttribute
+            '/ebay/motors/', 'epids_attribute',
+            $motorsEpidsAttribute
         );
 
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/ebay/motor/', 'motors_ktypes_attribute',
+            '/ebay/motors/', 'ktypes_attribute',
             $motorsKtypesAttribute
         );
 
@@ -113,14 +115,14 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         $this->_redirectUrl($this->_getRefererUrl());
     }
 
-    //#############################################
+    //########################################
 
-    public function importPartsCompatibilityDataAction()
+    public function importMotorsDataAction()
     {
-        $helper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-        $compatibilityType = $this->getRequest()->getPost('compatibility_type');
+        $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
+        $motorsType = $this->getRequest()->getPost('motors_type');
 
-        if (!$compatibilityType || empty($_FILES['source']['tmp_name'])) {
+        if (!$motorsType || empty($_FILES['source']['tmp_name'])) {
             $this->getSession()->addError(Mage::helper('M2ePro')->__('Some of required fields are not filled up.'));
             return $this->_redirect('*/*/index');
         }
@@ -135,10 +137,10 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         }
 
         $added = 0;
-        $existedItems = $this->getExistedCompatibilityItems();
+        $existedItems = $this->getExistedMotorsItems();
 
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core/write');
-        $tableName = $helper->getDictionaryTable($compatibilityType);
+        $tableName = $helper->getDictionaryTable($motorsType);
 
         foreach ($csvData as $csvRow) {
 
@@ -154,34 +156,34 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         return $this->_redirect('*/*/index');
     }
 
-    public function clearAddedPartsCompatibilityDataAction()
+    public function clearAddedMotorsDataAction()
     {
-        $helper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-        $compatibilityType = $this->getRequest()->getPost('compatibility_type');
+        $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
+        $motorsType = $this->getRequest()->getPost('motors_type');
 
-        if (!$compatibilityType) {
+        if (!$motorsType) {
             $this->getSession()->addError(Mage::helper('M2ePro')->__('Some of required fields are not filled up.'));
             return $this->_redirect('*/*/index');
         }
 
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core/write');
-        $connWrite->delete($helper->getDictionaryTable($compatibilityType), '`is_custom` = 1');
+        $connWrite->delete($helper->getDictionaryTable($motorsType), '`is_custom` = 1');
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Added compatibility data has been cleared.'));
         return $this->_redirect('*/*/index');
     }
 
-    //#############################################
+    //########################################
 
-    private function getExistedCompatibilityItems()
+    private function getExistedMotorsItems()
     {
-        $helper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-        $compatibilityType = $this->getRequest()->getParam('compatibility_type');
+        $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
+        $motorsType = $this->getRequest()->getParam('motors_type');
 
         $queryStmt = Mage::getSingleton('core/resource')->getConnection('core/read')
             ->select()
-            ->from($helper->getDictionaryTable($compatibilityType),
-                   array($helper->getIdentifierKey($compatibilityType)))
+            ->from($helper->getDictionaryTable($motorsType),
+                   array($helper->getIdentifierKey($motorsType)))
             ->query();
 
         $result = array();
@@ -195,16 +197,16 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
     private function getPreparedInsertData($csvRow, $existedItems)
     {
-        $helper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-        $compatibilityType = $this->getRequest()->getParam('compatibility_type');
+        $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
+        $motorsType = $this->getRequest()->getParam('motors_type');
 
-        $idCol = $helper->getIdentifierKey($compatibilityType);
+        $idCol = $helper->getIdentifierKey($motorsType);
 
         if (!isset($csvRow[$idCol]) || in_array($csvRow[$idCol], $existedItems)) {
             return false;
         }
 
-        if ($compatibilityType == Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::TYPE_KTYPE) {
+        if ($motorsType == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE) {
 
             return array(
                 'ktype'      => (int)$csvRow['ktype'],
@@ -241,5 +243,5 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         );
     }
 
-    //#############################################
+    //########################################
 }

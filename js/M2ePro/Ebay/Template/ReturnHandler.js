@@ -1,10 +1,10 @@
 EbayTemplateReturnHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     acceptedChange: function()
     {
@@ -26,5 +26,5 @@ EbayTemplateReturnHandler = Class.create(CommonHandler, {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

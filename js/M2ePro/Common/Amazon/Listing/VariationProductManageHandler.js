@@ -4,7 +4,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
     MATCHING_TYPE_VIRTUAL_AMAZON: 2,
     MATCHING_TYPE_VIRTUAL_MAGENTO: 3,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super,gridHandler)
     {
@@ -13,7 +13,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         $super(gridHandler);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
     matchingType: 1,
@@ -61,13 +61,17 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
             form = $('variation_manager_attributes_form');
 
         if (form && self.matchingType == self.MATCHING_TYPE_EQUAL) {
-            form.on('change', 'select', function(e) {
+            form.observe('change', function(e) {
+                if (e.target.tagName != 'SELECT') {
+                    return;
+                }
+
                 $(e.target).select('.empty') && $(e.target).select('.empty').length && $(e.target).select('.empty')[0].hide();
             });
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     parseResponse: function(response)
     {
@@ -78,7 +82,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         return response.responseText.evalJSON();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(productId, title, filter)
     {
@@ -100,7 +104,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
                     closable: true,
                     className: "magento",
                     windowClassName: "popup-window",
-                    title: title,
+                    title: title.escapeHTML(),
                     top: 5,
                     width: 1100,
                     height: 600,
@@ -126,7 +130,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         variationProductManagePopup.close();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openVocabularyAttributesPopUp: function (attributes)
     {
@@ -266,7 +270,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setGeneralIdOwner: function (value, hideConfirm)
     {
@@ -394,8 +398,8 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
                 product_id : variationProductManagePopup.productId
             },
             onSuccess: function (transport) {
-                $('templateDescription_grid').update(transport.responseText);
-                $('templateDescription_grid').show();
+                $('template_description_grid').update(transport.responseText);
+                $('template_description_grid').show();
             }
         });
 
@@ -427,7 +431,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         templateDescriptionPopup.close();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     changeVariationTheme: function(el)
     {
@@ -480,7 +484,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         channelVariationThemeNote && channelVariationThemeNote.show();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     changeMatchedAttributes: function(el)
     {
@@ -497,7 +501,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         el.next().next().show();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     isValidAttributes: function()
     {
@@ -600,7 +604,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         el.next().hide();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderMatchedAttributesNotSetView: function(type)
     {
@@ -986,7 +990,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderMatchedAttributesVirtualMagentoView: function()
     {
@@ -1352,7 +1356,7 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     reloadSettings: function(callback, hideMask)
     {
@@ -1370,11 +1374,12 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
                 $('amazonVariationProductManageTabs_settings_content').update(response.html);
                 self.initSettingsTab();
 
-                if (response.errors_count == 0) {
-                    var img = $('amazonVariationProductManageTabs_settings').down('img');
-                    if (img) {
-                        img.hide();
-                    }
+                var img = $('amazonVariationProductManageTabs_settings').down('img');
+
+                img.hide();
+                if (response.error_icon != '') {
+                    img.src = M2ePro.url.get('m2epro_skin_url') + '/images/' + response.error_icon + '.png';
+                    img.show();
                 }
 
                 if(callback) {
@@ -1422,14 +1427,14 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         gridIframe.contentWindow.ListingGridHandlerObj.actionHandler.gridHandler.unselectAllAndReload();
     },
 
-    //---------------------------------
+    // ---------------------------------------
 
     openVariationsTab: function (createNewAsin) {
         amazonVariationProductManageTabsJsTabs.showTabContent(amazonVariationProductManageTabsJsTabs.tabs[0]);
         $('amazonVariationsProductManageVariationsGridIframe').contentWindow.ListingGridHandlerObj.showNewChildForm(createNewAsin);
     },
 
-    //---------------------------------
+    // ---------------------------------------
 
     reloadVocabulary: function(callback, hideMask)
     {
@@ -1504,5 +1509,5 @@ CommonAmazonListingVariationProductManageHandler = Class.create(ActionHandler,{
         });
     }
 
-    //---------------------------------
+    // ---------------------------------------
 });

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
@@ -19,37 +21,55 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
 
     private $status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param $value
+     */
     public function setAction($value)
     {
         $this->action = (int)$value;
     }
 
+    /**
+     * @param $id
+     */
     public function setActionId($id)
     {
         $this->actionId = (int)$id;
     }
 
+    /**
+     * @param $value
+     */
     public function setInitiator($value)
     {
         $this->initiator = (int)$value;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return null|int
+     */
     public function getActionId()
     {
         return $this->actionId;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
+    /**
+     * @param int $status
+     */
     public function setStatus($status)
     {
         if ($status == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
@@ -73,7 +93,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
         $this->status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $message
@@ -121,6 +141,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
         return $result;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @param string $message
+     * @param int $type
+     * @param int $priority
+     */
     public function logListingProductMessage(Ess_M2ePro_Model_Listing_Product $listingProduct,
                                              $message,
                                              $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -139,7 +165,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
                                                   $priority);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Log
@@ -178,5 +204,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
         }
     }
 
-    // ########################################
+    //########################################
 }

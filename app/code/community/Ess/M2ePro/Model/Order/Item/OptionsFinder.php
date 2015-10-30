@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Order_Item_OptionsFinder
@@ -16,20 +18,32 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
 
     private $failedOptions = array();
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @param array $options
+     * @return $this
+     */
     public function setChannelOptions(array $options = array())
     {
         $this->channelOptions = $options;
         return $this;
     }
 
+    /**
+     * @param int $productId
+     * @return $this
+     */
     public function setProductId($productId)
     {
         $this->productId = $productId;
         return $this;
     }
 
+    /**
+     * @param array $options
+     * @return $this
+     */
     public function setMagentoOptions(array $options = array())
     {
         $this->magentoOptions = $options;
@@ -46,20 +60,31 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         return $this;
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getFailedOptions()
     {
         return $this->failedOptions;
     }
 
+    /**
+     * @return bool
+     */
     public function hasFailedOptions()
     {
         return count($this->failedOptions) > 0;
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getProductDetails()
     {
         if (is_null($this->productType)) {
@@ -85,6 +110,11 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         return $details;
     }
 
+    /**
+     * @param array $associatedProducts
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function prepareAssociatedProducts(array $associatedProducts)
     {
         if ($this->productType == Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE
@@ -129,8 +159,12 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         return array();
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     */
     private function getSelectedOptions()
     {
         $channelOptions = $this->toLowerCase($this->channelOptions);
@@ -146,7 +180,8 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         $options  = array();
         $products = array();
 
-        //------------------------------
+        // ---------------------------------------
+
         $configGroup = '/order/magento/settings/';
         $configKey   = 'create_with_first_product_options_when_variation_unavailable';
         $configValue = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue($configGroup, $configKey);
@@ -157,10 +192,9 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
                 'associated_products' => array()
             );
         }
-        //------------------------------
 
         // Variation info unavailable - return first value for each required option
-        // ---------------
+        // ---------------------------------------
         if (empty($channelOptions)) {
             foreach ($this->magentoOptions as $magentoOption) {
                 $optionId = $magentoOption['option_id'];
@@ -175,10 +209,9 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
                 'associated_products' => $products
             );
         }
-        // ---------------
 
         // Map variation with magento options
-        // ---------------
+        // ---------------------------------------
         foreach ($this->magentoOptions as $magentoOption) {
             $magentoOption['labels'] = array_filter($magentoOption['labels']);
 
@@ -200,7 +233,8 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
             $options[$optionId] = $valueId;
             $products["{$optionId}::{$valueId}"] = $magentoValue['product_ids'];
         }
-        // ---------------
+
+        // ---------------------------------------
 
         if ($this->productType == Ess_M2ePro_Model_Magento_Product::TYPE_CONFIGURABLE && $this->hasFailedOptions()) {
             throw new Ess_M2ePro_Model_Exception('There is no associated Product found for Configurable Product.');
@@ -258,7 +292,8 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
     {
         $variationName = array_shift($this->channelOptions);
 
-        //------------------------------
+        // ---------------------------------------
+
         $configGroup = '/order/magento/settings/';
         $configKey   = 'create_with_first_product_options_when_variation_unavailable';
         $configValue = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue($configGroup, $configKey);
@@ -266,7 +301,8 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         if ((is_null($variationName) || strlen(trim($variationName)) == 0) && !$configValue) {
             return null;
         }
-        //------------------------------
+
+        // ---------------------------------------
 
         foreach ($this->magentoOptions as $option) {
             // return product if it's name is equal to variation name
@@ -304,5 +340,5 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         );
     }
 
-    // ##########################################################
+    //########################################
 }

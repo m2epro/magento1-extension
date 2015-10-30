@@ -1,0 +1,49 @@
+<style type="text/css">
+    #set_note_form .form-list td.label {
+        width: 130px;
+    }
+
+    #set_note_form .form-list td.label label {
+        width: 130px;
+    }
+
+    #set_note_form textarea {
+        height: 65px;
+    }
+</style>
+
+<div id="set_note_popup" style="display: none;">
+
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+
+        <div id="block_notice_ebay_motor_add_set_note_popup_popup" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Set Note'); ?>">
+            <?php echo Mage::helper('M2ePro')->__('
+                This Option allows you to <strong>Add a Note</strong> to the selected
+                Compatible Vehicle where you can provide Additional Details.
+            '); ?>
+        </div>
+
+        <form id="set_note_form" action="javascript:void(0);">
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="label">
+                        <label for="note"><?php echo Mage::helper('M2ePro')->__('Note') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <textarea id="note" name="note" class="textarea"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <div style="float: right;">
+            <a href="javascript:void(0);" onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+            &nbsp;&nbsp;
+            <?php echo $this->getChildHtml('save_btn'); ?>
+        </div>
+
+        <div class="clear"></div>
+
+    </div>
+
+</div>

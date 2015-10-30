@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Component_Abstract
@@ -11,9 +13,6 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
 
     const ISBN_MODE_NONE = 0;
     const ISBN_MODE_CUSTOM_ATTRIBUTE = 2;
-
-    const ASIN_MODE_NONE = 0;
-    const ASIN_MODE_CUSTOM_ATTRIBUTE = 2;
 
     const MFG_PART_NUMBER_MODE_CUSTOM_VALUE = 1;
     const MFG_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE = 2;
@@ -57,7 +56,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
      */
     private $newProductCoreSourceModels = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -65,7 +64,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         $this->_init('M2ePro/Buy_Template_NewProduct_Core');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -79,7 +78,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $temp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Buy_Template_NewProduct
@@ -104,7 +103,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         $this->newProductTemplateModel = $instance;
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -125,18 +124,27 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $this->newProductCoreSourceModels[$productId];
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getTemplateNewProductId()
     {
         return (int)$this->getData('template_new_product_id');
     }
 
+    /**
+     * @return mixed
+     */
     public function getSellerSkuCustomAttribute()
     {
         return $this->getData('seller_sku_custom_attribute');
     }
 
+    /**
+     * @return array
+     */
     public function getSellerSkuSource()
     {
         return array(
@@ -144,18 +152,27 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getGtinMode()
     {
         return (int)$this->getData('gtin_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isGtinNone()
     {
         return $this->getGtinMode() == self::GTIN_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isGtinCustomAttribute()
     {
         return $this->getGtinMode() == self::GTIN_MODE_CUSTOM_ATTRIBUTE;
@@ -166,6 +183,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $this->getData('gtin_custom_attribute');
     }
 
+    /**
+     * @return array
+     */
     public function getGtinSource()
     {
         return array(
@@ -174,8 +194,11 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getIsbnMode()
     {
         return (int)$this->getData('isbn_mode');
@@ -186,16 +209,25 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $this->getData('isbn_custom_attribute');
     }
 
+    /**
+     * @return bool
+     */
     public function isIsbnNone()
     {
         return $this->getIsbnMode() == self::ISBN_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isIsbnCustomAttribute()
     {
         return $this->getIsbnMode() == self::ISBN_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getIsbnSource()
     {
         return array(
@@ -204,38 +236,11 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
-    // ########################################
+    //########################################
 
-    public function getAsinMode()
-    {
-        return (int)$this->getData('asin_mode');
-    }
-
-    public function getAsinCustomAttribute()
-    {
-        return $this->getData('asin_custom_attribute');
-    }
-
-    public function isAsinNone()
-    {
-        return $this->getAsinMode() == self::ASIN_MODE_NONE;
-    }
-
-    public function isAsinCustomAttribute()
-    {
-        return $this->getAsinMode() == self::ASIN_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    public function getAsinSource()
-    {
-        return array(
-            'mode'     => $this->getAsinMode(),
-            'custom_attribute' => $this->getAsinCustomAttribute(),
-        );
-    }
-
-    // ########################################
-
+    /**
+     * @return array
+     */
     public function getMfgSource()
     {
         return array(
@@ -243,20 +248,26 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
+    /**
+     * @return array
+     */
     public function getMfgAttributes()
     {
         $attributes = array();
         $src = $this->getMfgSource();
 
         $match = array();
-        preg_match_all('/#([a-zA-Z_]+?)#/', $src['template'], $match);
+        preg_match_all('/#([a-zA-Z_0-9]+?)#/', $src['template'], $match);
         $match && $attributes = $match[1];
 
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getMfgPartNumberMode()
     {
         return (int)$this->getData('mfg_part_number_mode');
@@ -272,16 +283,25 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $this->getData('mfg_part_number_custom_attribute');
     }
 
+    /**
+     * @return bool
+     */
     public function isMfgPartNumberCustomValue()
     {
         return $this->getMfgPartNumberMode() == self::MFG_PART_NUMBER_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isMfgPartNumberCustomAttribute()
     {
         return $this->getMfgPartNumberMode() == self::MFG_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getMfgPartNumberSource()
     {
         return array(
@@ -291,8 +311,11 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getProductSetIdMode()
     {
         return (int)$this->getData('product_set_id_mode');
@@ -308,21 +331,33 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $this->getData('product_set_id_custom_attribute');
     }
 
+    /**
+     * @return bool
+     */
     public function isProductSetIdNone()
     {
         return $this->getProductSetIdMode() == self::PRODUCT_SET_ID_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isProductSetIdCustomValue()
     {
         return $this->getProductSetIdMode() == self::PRODUCT_SET_ID_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isProductSetIdCustomAttribute()
     {
         return $this->getProductSetIdMode() == self::PRODUCT_SET_ID_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getProductSetIdSource()
     {
         return array(
@@ -332,24 +367,35 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
-    // ########################################
+    //########################################
 
-    // -- Description
+    /**
+     * @return int
+     */
     public function getTitleMode()
     {
         return (int)$this->getData('title_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isTitleModeProduct()
     {
         return $this->getTitleMode() == self::TITLE_MODE_PRODUCT_NAME;
     }
 
+    /**
+     * @return bool
+     */
     public function isTitleCustomTemplate()
     {
         return $this->getTitleMode() == self::TITLE_MODE_CUSTOM_TEMPLATE;
     }
 
+    /**
+     * @return array
+     */
     public function getTitleSource()
     {
         return array(
@@ -358,6 +404,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
+    /**
+     * @return array
+     */
     public function getTitleAttributes()
     {
         $attributes = array();
@@ -367,30 +416,42 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
             $attributes[] = 'name';
         } else {
             $match = array();
-            preg_match_all('/#([a-zA-Z_]+?)#/', $src['template'], $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $src['template'], $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getDescriptionMode()
     {
         return (int)$this->getData('description_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionProductFull()
     {
         return $this->getDescriptionMode() == self::DESCRIPTION_MODE_PRODUCT_FULL;
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionProductShort()
     {
         return $this->getDescriptionMode() == self::DESCRIPTION_MODE_PRODUCT_SHORT;
     }
 
+    /**
+     * @return array
+     */
     public function getDescriptionSource()
     {
         return array(
@@ -399,6 +460,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
+    /**
+     * @return array
+     */
     public function getDescriptionAttributes()
     {
         $attributes = array();
@@ -410,30 +474,42 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
             $attributes[] = 'short_description';
         } else {
             $match = array();
-            preg_match_all('/#([a-zA-Z_]+?)#/', $src['template'], $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $src['template'], $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getMainImageMode()
     {
         return (int)$this->getData('main_image_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isMainImageBroductBase()
     {
         return $this->getMainImageMode() == self::IMAGE_MAIN_MODE_PRODUCT_BASE;
     }
 
+    /**
+     * @return bool
+     */
     public function isMainImageAttribute()
     {
         return $this->getMainImageMode() == self::IMAGE_MAIN_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getMainImageSource()
     {
         return array(
@@ -442,6 +518,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
+    /**
+     * @return array
+     */
     public function getMainImageAttributes()
     {
         $attributes = array();
@@ -456,28 +535,43 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getAdditionalImageMode()
     {
         return (int)$this->getData('additional_images_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isAdditionalImageNone()
     {
         return $this->getAdditionalImageMode() == self::ADDITIONAL_IMAGES_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isAdditionalImageProduct()
     {
         return $this->getAdditionalImageMode() == self::ADDITIONAL_IMAGES_MODE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isAdditionalImageCustomAttribute()
     {
         return $this->getAdditionalImageMode() == self::ADDITIONAL_IMAGES_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getAdditionalImageSource()
     {
         return array(
@@ -487,6 +581,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
+    /**
+     * @return array
+     */
     public function getAdditionalImageAttributes()
     {
         $attributes = array();
@@ -499,13 +596,19 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getKeywordsMode()
     {
         return (int)$this->getData('keywords_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isKeywordsNone()
     {
         return $this->getKeywordsMode() == self::KEYWORDS_MODE_NONE;
@@ -521,16 +624,25 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $this->getData('keywords_custom_value');
     }
 
+    /**
+     * @return bool
+     */
     public function isKeywordsCustomAttribute()
     {
         return $this->getKeywordsMode() == self::KEYWORDS_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return bool
+     */
     public function isKeywordsCustomValue()
     {
         return $this->getKeywordsMode() == self::KEYWORDS_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return array
+     */
     public function getKeywordsSource()
     {
         return array(
@@ -540,6 +652,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
+    /**
+     * @return array
+     */
     public function getKeywordsAttributes()
     {
         $src = $this->getKeywordsSource();
@@ -553,30 +668,42 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         if ($src['mode'] == self::KEYWORDS_MODE_CUSTOM_ATTRIBUTE) {
             $match = array();
             $keywords = implode(PHP_EOL,$src['template']);
-            preg_match_all('/#([a-zA-Z_]+?)#/', $keywords, $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $keywords, $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getFeaturesMode()
     {
         return (int)$this->getData('features_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isFeaturesNone()
     {
         return $this->getFeaturesMode() == self::FEATURES_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isFeaturesCustomTemplate()
     {
         return $this->getFeaturesMode() == self::FEATURES_MODE_CUSTOM_TEMPLATE;
     }
 
+    /**
+     * @return array
+     */
     public function getFeaturesSource()
     {
         return array(
@@ -591,6 +718,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return is_null($value) ? array() : json_decode($value, true);
     }
 
+    /**
+     * @return array
+     */
     public function getFeaturesAttributes()
     {
         $src = $this->getFeaturesSource();
@@ -604,15 +734,18 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         if ($src['mode'] == self::FEATURES_MODE_CUSTOM_TEMPLATE) {
             $match = array();
             $features = implode(PHP_EOL,$src['template']);
-            preg_match_all('/#([a-zA-Z_]+?)#/', $features, $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $features, $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getWeightMode()
     {
         return (int)$this->getData('weight_mode');
@@ -628,16 +761,25 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return $this->getData('weight_custom_attribute');
     }
 
+    /**
+     * @return bool
+     */
     public function isWeightCustomValue()
     {
         return $this->getWeightMode() == self::WEIGHT_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isWeightCustomAttribute()
     {
         return $this->getWeightMode() == self::WEIGHT_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getWeightSource()
     {
         return array(
@@ -647,7 +789,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         );
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -655,5 +797,5 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core extends Ess_M2ePro_Model_Com
         return parent::save();
     }
 
-    // ########################################
+    //########################################
 }

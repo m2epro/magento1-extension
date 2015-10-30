@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Response
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
 {
-    // ########################################
+    //########################################
 
     public function processSuccess(array $response, array $responseParams = array())
     {
@@ -40,7 +42,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Response
         $this->updateVariationsValues(false);
     }
 
-    // ########################################
+    //########################################
 
     public function markAsPotentialDuplicate()
     {
@@ -79,5 +81,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Response
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
@@ -14,7 +16,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
 
     private $descriptionTemplatesIds = array();
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array())
     {
@@ -28,6 +30,10 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         }
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -78,7 +84,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function addListingsProductsLogsMessage(Ess_M2ePro_Model_Listing_Product $listingProduct,
                                                       $text, $type = Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
@@ -106,7 +112,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
                                      $action , $text, $type , $priority);
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponseData($response)
     {
@@ -118,7 +124,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         $failedListingsProductsIds = array();
 
         // Check global messages
-        //----------------------
+        // ---------------------------------------
         $globalMessages = $this->messages;
 
         foreach ($this->listingsProducts as $listingProduct) {
@@ -158,7 +164,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
             }
         }
 
-        //----------------------
+        // ---------------------------------------
 
         foreach ($this->listingsProducts as $listingProduct) {
 
@@ -176,14 +182,14 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
             }
 
             // M2ePro_TRANSLATIONS
-            // 'Product has been successfully Translated.',
+            // Product has been successfully Translated.
             $this->addListingsProductsLogsMessage($listingProduct, 'Product has been successfully Translated.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateProduct(Ess_M2ePro_Model_Listing_Product $listingProduct, array $response)
     {
@@ -221,26 +227,18 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
             $productData['template_description_mode']      = Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM;
         }
 
-        $this->checkAndCreateMagentoAttributes(array(
-            'ebay_translated_title'    => 'Ebay Translated Title',
-            'ebay_translated_subtitle' => 'Ebay Translated Subtitle',
-        ), 'text');
-
-        $this->checkAndCreateMagentoAttributes(array(
-            'ebay_translated_description' => 'Ebay Translated Description',
-        ), 'textarea');
-
-        $this->checkAndCreateMagentoProductAttributes($listingProduct->getMagentoProduct(), array(
-            'ebay_translated_title',
-            'ebay_translated_subtitle',
-            'ebay_translated_description'
-        ));
+        $attributes = array(
+            'ebay_translated_title'       => array('label' => 'Ebay Translated Title', 'type' => 'text'),
+            'ebay_translated_subtitle'    => array('label' => 'Ebay Translated Subtitle', 'type' => 'text'),
+            'ebay_translated_description' => array('label' => 'Ebay Translated Description', 'type' => 'textarea')
+        );
+        $this->checkAndCreateMagentoAttributes($listingProduct->getMagentoProduct(), $attributes);
 
         $listingProduct->getMagentoProduct()
                        ->setAttributeValue('ebay_translated_title',       $response['title'])
                        ->setAttributeValue('ebay_translated_subtitle',    $response['subtitle'])
                        ->setAttributeValue('ebay_translated_description', $response['description']);
-        //------------------------------
+        // ---------------------------------------
 
         $categoryPath = !is_null($response['category']['primary_id'])
             ? Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getPath((int)$response['category']['primary_id'],
@@ -275,7 +273,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         ))->save();
     }
 
-    // ########################################
+    //########################################
 
     protected function getHasErrorByServerMessage($message)
     {
@@ -328,7 +326,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -346,7 +344,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         return $this->getObjectByParam('Marketplace','marketplace_id');
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     protected function getStatusChanger()
     {
@@ -358,74 +356,51 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         return (int)$this->params['logs_action_id'];
     }
 
-    // ########################################
+    //########################################
 
-    private function checkAndCreateMagentoAttributes(array $attributes, $frontendInput = 'text')
+    private function checkAndCreateMagentoAttributes($magentoProduct, array $attributes)
     {
-        /** @var $helpAttribute Ess_M2ePro_Helper_Magento_Attribute */
-        $helpAttribute = Mage::helper('M2ePro/Magento_Attribute');
+        $attributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-        foreach ($attributes as $code => $label) {
-            if (!$helpAttribute->getByCode($code)) {
-                $helpAttribute->create($code, array($label), $frontendInput, 0);
+        $attributeSetId  = $magentoProduct->getProduct()->getAttributeSetId();
+        $attributesInSet = $attributeHelper->getByAttributeSet($attributeSetId);
+
+        /** @var Ess_M2ePro_Model_Magento_AttributeSet_Group $model */
+        $model = Mage::getModel('M2ePro/Magento_AttributeSet_Group');
+        $model->setGroupName('Ebay')
+              ->setAttributeSetId($attributeSetId)
+              ->save();
+
+        foreach ($attributes as $attributeCode => $attributeProp) {
+
+            if (!$attributeHelper->getByCode($attributeCode)) {
+
+                /** @var Ess_M2ePro_Model_Magento_Attribute_Builder $model */
+                $model = Mage::getModel('M2ePro/Magento_Attribute_Builder');
+                $model->setCode($attributeCode)
+                      ->setLabel($attributeProp['label'])
+                      ->setInputType($attributeProp['type'])
+                      ->setScope($model::SCOPE_STORE);
+
+                $model->save();
+            }
+
+            if (!$attributeHelper->isExistInAttributesArray($attributeCode, $attributesInSet)) {
+
+                /** @var Ess_M2ePro_Model_Magento_Attribute_Relation $model */
+                $model = Mage::getModel('M2ePro/Magento_Attribute_Relation');
+                $model->setCode($attributeCode)
+                      ->setAttributeSetId($attributeSetId)
+                      ->setGroupName('Ebay');
+
+                $model->save();
             }
         }
 
         return true;
     }
 
-    private function checkAndCreateMagentoProductAttributes($magentoProduct, array $attributes)
-    {
-        /** @var $helpAttribute Ess_M2ePro_Helper_Magento_Attribute */
-        $helpAttribute = Mage::helper('M2ePro/Magento_Attribute');
-
-        /** @var $helpAttributeSet Ess_M2ePro_Helper_Magento_AttributeSet */
-        $helpAttributeSet = Mage::helper('M2ePro/Magento_AttributeSet');
-
-        $attributeSetId = $magentoProduct->getProduct()->getAttributeSetId();
-        $attributesInSet = $helpAttribute->getByAttributeSet($attributeSetId);
-
-        foreach ($attributes as $code) {
-            if (!$helpAttribute->isExistInAttributesArray($code, $attributesInSet)) {
-                empty($attributeGroupId) &&
-                    $attributeGroupId = $this->getAttributeGroupId($attributeSetId);
-
-                $attributeIds = $helpAttribute->getByCode($code, Ess_M2ePro_Helper_Magento_Attribute::RETURN_TYPE_IDS);
-                !empty($attributeIds) &&
-                    $helpAttributeSet->attributeAdd($attributeIds[0], $attributeSetId, $attributeGroupId);
-            }
-        }
-
-        return true;
-    }
-
-    //---------------------------------------
-
-    private function getAttributeGroupId($attributeSetId, $groupName = 'Ebay')
-    {
-        /** @var $attributeGroupModel Mage_Eav_Model_Entity_Attribute_Group */
-        $attributeGroupModel = Mage::getModel('eav/entity_attribute_group')
-            ->setAttributeGroupName($groupName)
-            ->setAttributeSetId($attributeSetId);
-
-        if (!$attributeGroupModel->itemExists()) {
-            try {
-                $attributeGroupModel->save();
-            } catch (Exception $e) {
-                return false;
-            }
-        } else {
-            $attributeGroupModel = Mage::getModel('eav/entity_attribute_group')
-                ->getResourceCollection()
-                ->addFieldToFilter('attribute_group_name', $groupName)
-                ->addFieldToFilter('attribute_set_id', $attributeSetId)
-                ->getFirstItem();
-        }
-
-        return $attributeGroupModel->getId();
-    }
-
-    //---------------------------------------
+    // ---------------------------------------
 
     private function getSpecificsData($responseSpecifics)
     {
@@ -444,5 +419,5 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

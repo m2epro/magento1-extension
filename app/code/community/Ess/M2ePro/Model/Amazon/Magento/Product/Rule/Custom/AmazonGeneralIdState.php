@@ -1,24 +1,36 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonGeneralIdState
     extends Ess_M2ePro_Model_Magento_Product_Rule_Custom_Abstract
 {
-    // #################################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getAttributeCode()
     {
         return 'amazon_general_id_state';
     }
 
+    /**
+     * @return string
+     */
     public function getLabel()
     {
         return Mage::helper('M2ePro')->__('ASIN/ISBN Status');
     }
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @return int
+     */
     public function getValueByProductInstance(Mage_Catalog_Model_Product $product)
     {
         $generalId = $product->getData('general_id');
@@ -42,16 +54,25 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonGeneralIdState
         return Ess_M2ePro_Model_Amazon_Listing_Product::GENERAL_ID_STATE_NOT_SET;
     }
 
+    /**
+     * @return string
+     */
     public function getInputType()
     {
         return 'select';
     }
 
+    /**
+     * @return string
+     */
     public function getValueElementType()
     {
         return 'select';
     }
 
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return array(
@@ -74,5 +95,5 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonGeneralIdState
         );
     }
 
-    // #################################################
+    //########################################
 }

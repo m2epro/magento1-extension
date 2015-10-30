@@ -1,7 +1,7 @@
 SynchProgressHandler = Class.create();
 SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(progressBarObj, wrapperObj)
     {
@@ -17,7 +17,7 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         this.loadingMask = $('loading-mask');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     start: function(title, status)
     {
@@ -52,7 +52,7 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         self.loadingMask.setStyle({visibility: 'visible'});
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initPageCheckState: function(callBackWhenEnd)
     {
@@ -88,7 +88,7 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     runTask: function(title, url, components, callBackWhenEnd)
     {
@@ -136,7 +136,7 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     startGetExecutingInfo: function(callBackWhenEnd)
     {
@@ -173,7 +173,7 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
 
                     self.progressBarObj.setPercents(100,0);
 
-                    //-----------------
+                    // ---------------------------------------
                     setTimeout(function() {
 
                         if (callBackWhenEnd != '') {
@@ -191,13 +191,13 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
                             });
                         }
                     },1500);
-                    //-----------------
+                    // ---------------------------------------
                 }
             }
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     printFinalMessage: function(resultType)
     {
@@ -219,7 +219,7 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addProcessingNowWarning: function()
     {
@@ -241,5 +241,5 @@ SynchProgressHandler.prototype = Object.extend(new CommonHandler(), {
         });
 }
 
-    //----------------------------------
+    // ---------------------------------------
 });

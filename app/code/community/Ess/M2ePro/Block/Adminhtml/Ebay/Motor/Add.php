@@ -1,16 +1,18 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    private $compatibilityType = null;
+    private $motorsType = null;
 
     private $productGridId = null;
 
-    // ##########################################################
+    //########################################
 
     public function __construct()
     {
@@ -20,38 +22,81 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
 
     protected function _beforeToHtml()
     {
-        if (is_null($this->compatibilityType)) {
+        if (is_null($this->motorsType)) {
             throw new Ess_M2ePro_Model_Exception_Logic('Compatibility type was not set.');
         }
 
         //------------------------------
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Tabs $tabsBlock */
+        $tabsBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_add_tabs');
+        $tabsBlock->setMotorsType($this->getMotorsType());
+        $this->setChild('motor_add_tabs', $tabsBlock);
+        //------------------------------
+
+        //------------------------------
         $data = array(
-            'id'      => 'add_custom_compatibility_record_button',
-            'label'   => Mage::helper('M2ePro')->__('Add Custom Compatible Vehicle'),
-            'class'   => 'success',
-            'onclick' => 'EbayMotorCompatibilityHandlerObj.openAddRecordPopup()'
+            'style' => 'float: right;',
+            'label'   => Mage::helper('M2ePro')->__('Confirm'),
+            'onclick' => 'EbayMotorsHandlerObj.closeInstruction();'
         );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('add_custom_compatibility_record_button', $buttonBlock);
+        $confirmBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('motor_confirm_btn', $confirmBtn);
+        //------------------------------
+
+        //------------------------------
+        $data = array(
+            'style' => 'margin-right: 5px',
+            'label'   => Mage::helper('M2ePro')->__('Add'),
+            'onclick' => 'EbayMotorsHandlerObj.updateMotorsData(0);'
+        );
+        $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('motor_add_btn', $closeBtn);
+        //------------------------------
+
+        //------------------------------
+        $data = array(
+            'label'   => Mage::helper('M2ePro')->__('Override'),
+            'onclick' => 'EbayMotorsHandlerObj.updateMotorsData(1);'
+        );
+        $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('motor_override_btn', $closeBtn);
+        //------------------------------
+
+        //------------------------------
+        $data = array(
+            'style' => 'float: right;',
+            'label'   => Mage::helper('M2ePro')->__('Close'),
+            'onclick' => 'Windows.getFocusedWindow().close();'
+        );
+        $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('motor_close_btn', $closeBtn);
         //------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ##########################################################
+    //########################################
 
-    public function setCompatibilityType($type)
+    public function wasInstructionShown()
     {
-        $this->compatibilityType = $type;
+        return Mage::helper('M2ePro/Module')->getCacheConfig()
+                    ->getGroupValue('/ebay/motors/','was_instruction_shown') != false;
+    }
+
+    //########################################
+
+    public function setMotorsType($type)
+    {
+        $this->motorsType = $type;
         return $this;
     }
 
-    public function getCompatibilityType()
+    public function getMotorsType()
     {
-        return $this->compatibilityType;
+        return $this->motorsType;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     public function setProductGridId($gridId)
     {
@@ -64,40 +109,24 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
         return $this->productGridId;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
-    public function isCompatibilityTypeKtype()
+    public function isMotorsTypeKtype()
     {
-        return $this->getCompatibilityType() == Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::TYPE_KTYPE;
+        return $this->getMotorsType() == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE;
     }
 
-    public function isCompatibilityTypeEpid()
+    public function isMotorsTypeEpid()
     {
-        return $this->getCompatibilityType() == Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::TYPE_SPECIFIC;
+        return $this->getMotorsType() == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID;
     }
 
-    // ----------------------------------------------------------
-
-    public function getCompatibilityGridId()
-    {
-        $gridBlockName = '';
-
-        $this->isCompatibilityTypeEpid()  && $gridBlockName = 'M2ePro/adminhtml_ebay_motor_add_specific_grid';
-        $this->isCompatibilityTypeKtype() && $gridBlockName = 'M2ePro/adminhtml_ebay_motor_add_ktype_grid';
-
-        if (empty($gridBlockName)) {
-            return null;
-        }
-
-        return $this->getLayout()->createBlock($gridBlockName)->getId();
-    }
-
-    // -- Add Custom Compatible Vehicle
-    // ##########################################################
+    // Add Custom Compatible Vehicle
+    //########################################
 
     public function getRecordColumns()
     {
-        return $this->isCompatibilityTypeKtype() ? $this->getKtypeRecordColumns()
+        return $this->isMotorsTypeKtype() ? $this->getKtypeRecordColumns()
                                                  : $this->getEpidRecordColumns();
     }
 
@@ -114,11 +143,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
                'title'       => 'Type',
                'is_required' => true,
                'options'     => array(
-                   Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::PRODUCT_TYPE_VEHICLE
+                   Ess_M2ePro_Helper_Component_Ebay_Motors::PRODUCT_TYPE_VEHICLE
                              => Mage::helper('M2ePro')->__('Car / Truck'),
-                   Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::PRODUCT_TYPE_MOTORCYCLE
+                   Ess_M2ePro_Helper_Component_Ebay_Motors::PRODUCT_TYPE_MOTORCYCLE
                              => Mage::helper('M2ePro')->__('Motorcycle'),
-                   Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::PRODUCT_TYPE_ATV
+                   Ess_M2ePro_Helper_Component_Ebay_Motors::PRODUCT_TYPE_ATV
                              => Mage::helper('M2ePro')->__('ATV / Snowmobiles'),
                )
            ),
@@ -209,5 +238,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
         );
     }
 
-    // ##########################################################
+    //########################################
 }

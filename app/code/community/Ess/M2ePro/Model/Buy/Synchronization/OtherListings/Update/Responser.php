@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
@@ -10,7 +12,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
     protected $logsActionId = NULL;
     protected $synchronizationLog = NULL;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages(array $messages = array())
     {
@@ -46,8 +48,12 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -82,7 +88,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData($response)
     {
@@ -103,11 +109,9 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
             );
         }
-
-        $this->updateFirstSynchronizationTime();
     }
 
-    // ########################################
+    //########################################
 
     protected function updateReceivedOtherListings($receivedItems)
     {
@@ -199,7 +203,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
                 }
             }
 
-            foreach($tempLogMessages as $tempLogMessage) {
+            foreach ($tempLogMessages as $tempLogMessage) {
                 $tempLog->addProductMessage(
                     (int)$existingItem['listing_other_id'],
                     Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
@@ -256,7 +260,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
                 'general_id' => (int)$receivedItem['general_id'],
                 'sku' => (string)$receivedItem['sku'],
 
-                'title' => NULL,
+                'title' => 'Unknown [Product Title cannot be received]',
 
                 'online_price' => (float)$receivedItem['price'],
                 'online_qty' => (int)$receivedItem['qty'],
@@ -309,7 +313,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function filterReceivedOnlyOtherListings(array $receivedItems)
     {
@@ -372,20 +376,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
         return $stmtTemp;
     }
 
-    protected function updateFirstSynchronizationTime()
-    {
-        $childAccountObj = $this->getAccount()->getChildObject();
-
-        $firstSynchronizationTime = $childAccountObj->getOtherListingsFirstSynchronization();
-        if (!is_null($firstSynchronizationTime)) {
-            return;
-        }
-
-        $childAccountObj->setData('other_listings_first_synchronization',Mage::helper('M2ePro')->getCurrentGmtDate())
-                        ->save();
-    }
-
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -395,7 +386,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
         return $this->getObjectByParam('Account','account_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function getLogsActionId()
     {
@@ -419,5 +410,5 @@ class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update_Responser
         return $this->synchronizationLog;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
     private $installer = NULL;
 
-    //####################################
+    //########################################
 
     public function getInstaller()
     {
@@ -21,7 +23,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData
         $this->installer = $installer;
     }
 
-    //####################################
+    //########################################
 
     /*
         DELETE FROM `m2epro_cache_config` WHERE (`group` = '/servicing/' AND `key` = 'cron_interval');
@@ -71,7 +73,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData
                 OR `group` = '/ebay/orders/reserve_cancellation/'));
      */
 
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -80,7 +82,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData
         $this->processSynchronizationConfigTable();
     }
 
-    //####################################
+    //########################################
 
     private function processCacheConfigTable()
     {
@@ -183,5 +185,5 @@ SQL
         );
     }
 
-    //####################################
+    //########################################
 }

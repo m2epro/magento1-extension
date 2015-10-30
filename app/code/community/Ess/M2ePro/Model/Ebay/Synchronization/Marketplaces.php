@@ -1,38 +1,55 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces
     extends Ess_M2ePro_Model_Ebay_Synchronization_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getType()
     {
         return Ess_M2ePro_Model_Synchronization_Task_Abstract::MARKETPLACES;
     }
 
+    /**
+     * @return null
+     */
     protected function getNick()
     {
         return NULL;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 100;
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     protected function isPossibleToRun()
     {
         if (!parent::isPossibleToRun()) {
@@ -81,7 +98,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces
 
         $result = !$this->processTask('Marketplaces_Details') ? false : $result;
         $result = !$this->processTask('Marketplaces_Categories') ? false : $result;
-        $result = !$this->processTask('Marketplaces_MotorsSpecifics') ? false : $result;
+        $result = !$this->processTask('Marketplaces_MotorsEpids') ? false : $result;
         $result = !$this->processTask('Marketplaces_MotorsKtypes') ? false : $result;
 
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('marketplace');
@@ -89,5 +106,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces
         return $result;
     }
 
-    //####################################
+    //########################################
 }

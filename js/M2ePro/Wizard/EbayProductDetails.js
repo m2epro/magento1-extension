@@ -1,7 +1,7 @@
 WizardEbayProductDetails = Class.create();
 WizardEbayProductDetails.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -11,7 +11,7 @@ WizardEbayProductDetails.prototype = {
         this.percent = 0;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     marketplacesSynchronizationAction: function(obj)
     {
@@ -22,7 +22,7 @@ WizardEbayProductDetails.prototype = {
         setTimeout(function() { self.synchronizeMarketplaces(); }, 0);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setMarketplacesData: function(marketplaces)
     {
@@ -42,7 +42,7 @@ WizardEbayProductDetails.prototype = {
         $('wizard_complete').show();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     synchronizeMarketplaces: function()
     {
@@ -90,7 +90,7 @@ WizardEbayProductDetails.prototype = {
         })
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     progressBarStartLoad: function(from, to, callback)
     {
@@ -147,5 +147,5 @@ WizardEbayProductDetails.prototype = {
         element.addClassName('synchProcess');
     }
 
-    //----------------------------------
+    // ---------------------------------------
 };

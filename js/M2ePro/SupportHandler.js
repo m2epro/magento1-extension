@@ -1,11 +1,11 @@
 SupportHandler = Class.create();
 SupportHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     searchUserVoiceData: function()
     {
@@ -50,7 +50,7 @@ SupportHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     toggleArticle: function(answerId)
     {
@@ -87,7 +87,7 @@ SupportHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     moreAttachments: function()
     {
@@ -107,14 +107,14 @@ SupportHandler.prototype = Object.extend(new CommonHandler(), {
         self.toggleMoreButton();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setTabActive: function(tabId)
     {
         $(tabId).simulate('click');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     goToArticle: function(url)
     {
@@ -133,5 +133,5 @@ SupportHandler.prototype = Object.extend(new CommonHandler(), {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

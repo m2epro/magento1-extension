@@ -1,6 +1,6 @@
 CommonAmazonFulfillmentHandler = Class.create(ActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super,gridHandler)
     {
@@ -10,7 +10,7 @@ CommonAmazonFulfillmentHandler = Class.create(ActionHandler, {
 
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -20,7 +20,7 @@ CommonAmazonFulfillmentHandler = Class.create(ActionHandler, {
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     switchToAFN: function(productsIds)
     {
@@ -51,7 +51,7 @@ CommonAmazonFulfillmentHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     switchToMFN: function(productsIds)
     {

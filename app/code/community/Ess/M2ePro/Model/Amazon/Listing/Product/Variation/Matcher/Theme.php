@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
@@ -15,8 +17,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
 
     private $matchedTheme = null;
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $product
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $product)
     {
         $this->magentoProduct   = $product;
@@ -25,8 +31,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
         return $this;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $attributes
+     * @return $this
+     */
     public function setSourceAttributes(array $attributes)
     {
         $this->sourceAttributes = $attributes;
@@ -35,16 +45,23 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
         return $this;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $themes
+     * @return $this
+     */
     public function setThemes(array $themes)
     {
         $this->themes = $themes;
         return $this;
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return mixed
+     */
     public function getMatchedTheme()
     {
         if (is_null($this->matchedTheme)) {
@@ -54,7 +71,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
         return $this->matchedTheme;
     }
 
-    // ##########################################################
+    //########################################
 
     private function match()
     {
@@ -96,5 +113,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
         }
     }
 
-    // ##########################################################
+    //########################################
 }

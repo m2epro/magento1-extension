@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     private $productId;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -17,19 +19,19 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Grid extends M
         $this->productId = Mage::helper('M2ePro/Data_Global')->getValue('product_id');
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buyProductSearchGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setFilterVisibility(false);
         $this->setPagerVisibility(false);
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -114,7 +116,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Grid extends M
 
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnImage($value, $product, $column, $isExport)
     {
@@ -208,23 +210,23 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Grid extends M
             .'\');">'.$assignText.'</a>';
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    $$('#buyProductSearchGrid div.grid th').each(function(el){
+    $$('#buyProductSearchGrid div.grid th').each(function(el) {
         el.style.padding = '2px 2px';
     });
 
-    $$('#buyProductSearchGrid div.grid td').each(function(el){
+    $$('#buyProductSearchGrid div.grid td').each(function(el) {
         el.style.padding = '2px 2px';
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         $searchData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
@@ -236,7 +238,7 @@ HTML;
         return parent::_toHtml() . $javascriptsMain . $searchParamsHtml;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -248,5 +250,5 @@ HTML;
         return false;
     }
 
-    // ####################################
+    //########################################
 }

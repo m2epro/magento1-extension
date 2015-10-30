@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Model_Component_Abstract
@@ -9,7 +11,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
     protected $childMode = NULL;
     protected $childObject = NULL;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -24,8 +26,12 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         parent::__construct($params);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param string $mode
+     * @return $this
+     */
     public function setChildMode($mode)
     {
         $mode = strtolower((string)$mode);
@@ -38,7 +44,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return $this->childMode;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function setChildObject(Ess_M2ePro_Model_Component_Child_Abstract $object)
     {
@@ -85,7 +91,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return $this->childObject;
     }
 
-    // ########################################
+    //########################################
 
     public function getComponentMode()
     {
@@ -96,7 +102,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return $this->getData('component_mode');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function isComponentModeEbay()
     {
@@ -113,7 +119,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return $this->getComponentMode() == Ess_M2ePro_Helper_Component_Buy::NICK;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function getComponentTitle()
     {
@@ -132,7 +138,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return '';
     }
 
-    // ########################################
+    //########################################
 
     public function isLocked()
     {
@@ -173,7 +179,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return true;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function deleteChildInstance()
     {
@@ -190,7 +196,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         $childObject->deleteInstance();
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -215,7 +221,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return $temp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param string $modelName
@@ -250,7 +256,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return $this->getRelatedItems($tempModel,$fieldName,$asObjects,$filters,$sort);
     }
 
-    // ########################################
+    //########################################
 
     protected function _getResource()
     {
@@ -269,5 +275,5 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return Mage::getResourceModel($this->_resourceName,$arguments);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,7 @@
 WizardHandler = Class.create();
 WizardHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(currentStatus, currentStep, hiddenSteps)
     {
@@ -13,7 +13,7 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         this.steps.nicks = [];
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     skip: function(url)
     {
@@ -29,7 +29,7 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         setLocation(url);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setStatus: function(status, callback)
     {
@@ -87,7 +87,7 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         })
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addStep: function(step, stepContainerId)
     {
@@ -125,7 +125,7 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         return nextStepNick;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderStep: function(step)
     {
@@ -135,7 +135,7 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         }
 
         // Render step subtitle
-        //----------------
+        // ---------------------------------------
         var stepNumber = this.steps.nicks.indexOf(step) + 1;
         var subtitle = '[' + M2ePro.translator.translate('Step') + ' ' + stepNumber + ']';
 
@@ -144,7 +144,7 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         if (typeof $$('#' + stepContainerId + ' span.subtitle')[0] != 'undefined') {
             $$('#' + stepContainerId + ' span.subtitle')[0].innerHTML = subtitle;
         }
-        //----------------
+        // ---------------------------------------
 
         $$('#'+stepContainerId+' .step_completed').each(function(obj) {
             obj.hide();
@@ -193,7 +193,7 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     processStep: function(stepWindowUrl, step, callback)
     {
@@ -255,5 +255,5 @@ WizardHandler.prototype = Object.extend(new CommonHandler(), {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

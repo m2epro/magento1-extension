@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingLog');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_log';
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
@@ -33,17 +35,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_W
             'onclick'   => 'setLocation(\'' .$this->getUrl('*/adminhtml_ebay_log/listing').'\')',
             'class'     => 'button_link'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function getListingId()
     {
         return $this->getRequest()->getParam('id', false);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /** @var Ess_M2ePro_Model_Listing $listing */
     protected $listing = NULL;
@@ -61,14 +63,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_W
         return $this->listing;
     }
 
-    // ########################################
+    //########################################
 
     public function getListingProductId()
     {
         return $this->getRequest()->getParam('listing_product_id', false);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
     protected $listingProduct = NULL;
@@ -86,7 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_W
         return $this->listingProduct;
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -119,7 +121,7 @@ JAVASCIRPT;
         $grid = $this->getChild('grid');
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = '';
 
         if ($this->getListingId()) {
@@ -170,13 +172,13 @@ JAVASCIRPT;
         } else {
 
             // Set template
-            //------------------------------
+            // ---------------------------------------
             $this->setTemplate('M2ePro/widget/grid/container/only_content.phtml');
-            //------------------------------
+            // ---------------------------------------
 
         }
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 }

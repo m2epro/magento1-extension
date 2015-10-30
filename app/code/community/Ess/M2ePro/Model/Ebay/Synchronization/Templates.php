@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Templates
@@ -22,36 +24,51 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates
      */
     protected $changesHelper = NULL;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getType()
     {
         return Ess_M2ePro_Model_Synchronization_Task_Abstract::TEMPLATES;
     }
 
+    /**
+     * @return null
+     */
     protected function getNick()
     {
         return NULL;
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Inventory';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function beforeStart()
     {
@@ -80,7 +97,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates
         parent::afterEnd();
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function performActions()
     {
@@ -105,7 +122,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates
         return $task;
     }
 
-    //####################################
+    //########################################
 
     private function executeRunner()
     {
@@ -149,5 +166,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates
         $this->getActualOperationHistory()->addText('Updating Products on eBay ended with'.' '.$resultString.'.');
     }
 
-    //####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
@@ -11,26 +13,32 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
 
     private $forceAllSteps = false;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     */
     public function getInstaller()
     {
         return $this->installer;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     public function setForceAllSteps($value = true)
     {
         $this->forceAllSteps = $value;
     }
 
-    //####################################
+    //########################################
 
     /*
         CREATE TABLE m2epro_listing_auto_category (
@@ -141,7 +149,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
             DROP COLUMN categories_delete_action;
     */
 
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -154,7 +162,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
         $this->deleteOldData();
     }
 
-    //####################################
+    //########################################
 
     private function isNeedToSkip()
     {
@@ -172,7 +180,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_AutoAction
         return false;
     }
 
-    //####################################
+    //########################################
 
     private function prepareStructure()
     {
@@ -337,7 +345,7 @@ SQL
 
     }
 
-    //####################################
+    //########################################
 
     private function migrateData()
     {
@@ -418,7 +426,7 @@ SQL
         );
     }
 
-    //####################################
+    //########################################
 
     private function deleteOldData()
     {
@@ -486,5 +494,5 @@ SQL
         }
     }
 
-    //####################################
+    //########################################
 }

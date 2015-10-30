@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Responser
@@ -10,7 +12,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
     protected $logsActionId = NULL;
     protected $synchronizationLog = NULL;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages(array $messages = array())
     {
@@ -46,8 +48,12 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -83,7 +89,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData($response)
     {
@@ -103,7 +109,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateReceivedListingsProducts($receivedItems)
     {
@@ -229,7 +235,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
                 }
             }
 
-            foreach($tempLogMessages as $tempLogMessage) {
+            foreach ($tempLogMessages as $tempLogMessage) {
                 $tempLog->addProductMessage(
                     $existingItem['listing_id'],
                     $existingItem['product_id'],
@@ -250,7 +256,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function getPdoStatementExistingListings($withData = false)
     {
@@ -292,7 +298,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
         return $stmtTemp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -302,7 +308,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
         return $this->getObjectByParam('Account','account_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function getLogsActionId()
     {
@@ -327,5 +333,5 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
         return $this->synchronizationLog;
     }
 
-    // ########################################
+    //########################################
 }

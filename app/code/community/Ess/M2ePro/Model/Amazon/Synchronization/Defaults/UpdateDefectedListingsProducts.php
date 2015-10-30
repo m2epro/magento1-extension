@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListingsProducts
@@ -10,7 +12,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListi
     const INTERVAL_COEFFICIENT_VALUE = 50000;
     const LOCK_ITEM_PREFIX = 'synchronization_amazon_default_update_defected_listings_products';
 
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -22,7 +24,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListi
         return 'Update Defected Listings Products';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -34,7 +36,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListi
         return 40;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function intervalIsEnabled()
     {
@@ -50,7 +52,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListi
         return parent::intervalIsLocked();
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -111,7 +113,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListi
         }
     }
 
-    //####################################
+    //########################################
 
     private function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
@@ -122,5 +124,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListi
         return $lockItem->isExist();
     }
 
-    //####################################
+    //########################################
 }

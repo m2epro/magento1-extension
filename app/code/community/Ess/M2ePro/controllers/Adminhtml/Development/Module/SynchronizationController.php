@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Development_Module_SynchronizationController
     extends Ess_M2ePro_Controller_Adminhtml_Development_CommandController
 {
-    //#############################################
+    //########################################
 
     /**
      * @title "Cron Tasks"
@@ -28,7 +30,7 @@ class Ess_M2ePro_Adminhtml_Development_Module_SynchronizationController
         ));
     }
 
-    //----------------------------------------------
+    // ---------------------------------------
 
     /**
      * @title "Defaults"
@@ -43,7 +45,7 @@ class Ess_M2ePro_Adminhtml_Development_Module_SynchronizationController
         ));
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Templates"
@@ -96,7 +98,7 @@ class Ess_M2ePro_Adminhtml_Development_Module_SynchronizationController
         $params = array();
 
         $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id');
-        if(!empty($marketplaceId)) {
+        if (!empty($marketplaceId)) {
             $params['marketplace_id'] = $marketplaceId;
         }
 
@@ -118,7 +120,7 @@ class Ess_M2ePro_Adminhtml_Development_Module_SynchronizationController
         ));
     }
 
-    //#############################################
+    //########################################
 
     private function processSynchTasks($tasks, $params = array())
     {
@@ -143,5 +145,5 @@ class Ess_M2ePro_Adminhtml_Development_Module_SynchronizationController
         echo '<pre>'.$dispatcher->getOperationHistory()->getFullProfilerInfo().'</pre>';
     }
 
-    //#############################################
+    //########################################
 }

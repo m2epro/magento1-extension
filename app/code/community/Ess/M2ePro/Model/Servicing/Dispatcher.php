@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Servicing_Dispatcher
@@ -12,7 +14,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
     private $params = array();
     private $forceTasksRunning = false;
 
-    // ########################################
+    //########################################
 
     public function getForceTasksRunning()
     {
@@ -24,19 +26,25 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         $this->forceTasksRunning = (bool)$value;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;
     }
 
+    /**
+     * @param array $params
+     */
     public function setParams(array $params = array())
     {
         $this->params = $params;
     }
 
-    // ########################################
+    //########################################
 
     public function process($minInterval = NULL, $taskCodes = NULL)
     {
@@ -53,7 +61,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         return $this->processTasks($taskCodes);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function processTask($taskCode)
     {
@@ -80,7 +88,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function getRequestData(array $taskCodes)
     {
@@ -127,8 +135,11 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getRegisteredTasks()
     {
         return array(
@@ -143,6 +154,9 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         );
     }
 
+    /**
+     * @return array
+     */
     public function getSlowTasks()
     {
         return array(
@@ -152,12 +166,15 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         );
     }
 
+    /**
+     * @return array
+     */
     public function getFastTasks()
     {
         return array_diff($this->getRegisteredTasks(), $this->getSlowTasks());
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getLastUpdateTimestamp()
     {
@@ -178,5 +195,5 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
                             Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 
-    // ########################################
+    //########################################
 }

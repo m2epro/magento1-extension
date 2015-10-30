@@ -36,7 +36,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Grid_Column_Renderer_DeveloperActi
     extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
     implements Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Interface
 {
-    // ####################################
+    //########################################
 
     /**
      * Renders grid column
@@ -48,8 +48,10 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Grid_Column_Renderer_DeveloperActi
     {
         $actions = array();
 
-        $status = $row->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK
-            ? $row->getData('ebay_status') : $row->getData('status');
+        $status = $row->getData('status');
+
+        $row->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK && $row->getData('ebay_status');
+        $row->getData('component_mode') == Ess_M2ePro_Helper_Component_Amazon::NICK && $row->getData('amazon_status');
 
         if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED ||
             $status == Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED) {
@@ -108,7 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Grid_Column_Renderer_DeveloperActi
             $html .= '<a href="javascript: void(0);" onclick="'.$onclick.'">'.$action['title'].'</a>';
         }
 
-        // --------------------------
+        // ---------------------------------------
         $colName = 'id';
         $url = $this->getUrl(
             '*/adminhtml_development_database/manageTable',
@@ -127,11 +129,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Grid_Column_Renderer_DeveloperActi
                   'filter'=> base64_encode("{$colName}[from]={$id}&{$colName}[to]={$id}"))
         );
         $html .= '<br/><a href="'.$url.'" target="_blank" style="color: green;">Child Product</a>';
-        // --------------------------
+        // ---------------------------------------
 
         $html .= "<br/>{$id}";
         return $html;
     }
 
-    // ####################################
+    //########################################
 }

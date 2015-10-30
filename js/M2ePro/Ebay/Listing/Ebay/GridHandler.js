@@ -1,6 +1,6 @@
 EbayListingEbayGridHandler = Class.create(EbayListingViewGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     afterInitPage: function($super)
     {
@@ -19,7 +19,7 @@ EbayListingEbayGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
@@ -42,7 +42,7 @@ EbayListingEbayGridHandler = Class.create(EbayListingViewGridHandler, {
         return maxProductsInPart;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getLogViewUrl: function(rowId)
     {
@@ -51,7 +51,7 @@ EbayListingEbayGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openFeePopUp: function(content)
     {
@@ -95,7 +95,7 @@ EbayListingEbayGridHandler = Class.create(EbayListingViewGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showMotorsNotificationPopUp: function(message)
     {
@@ -104,7 +104,7 @@ EbayListingEbayGridHandler = Class.create(EbayListingViewGridHandler, {
                         '<button onclick="Windows.getFocusedWindow().close()">' +
                           '<span>OK</span>' +
                         '</button>' +
-                      '</div> '
+                      '</div> ';
         var config = {
             draggable: true,
             resizable: true,
@@ -124,5 +124,5 @@ EbayListingEbayGridHandler = Class.create(EbayListingViewGridHandler, {
         Dialog.info(content, config);
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

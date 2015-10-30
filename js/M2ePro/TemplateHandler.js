@@ -1,10 +1,10 @@
 TemplateHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     checkMessages: function(id, nick, data, storeId, marketplaceId, checkAttributesAvailability, container, callback)
     {
@@ -40,5 +40,5 @@ TemplateHandler = Class.create(CommonHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

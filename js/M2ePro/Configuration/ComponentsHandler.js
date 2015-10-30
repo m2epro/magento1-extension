@@ -1,11 +1,11 @@
 ConfigurationComponentsHandler = Class.create();
 ConfigurationComponentsHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     componentsTitles: [],
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -29,7 +29,7 @@ ConfigurationComponentsHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     component_mode_change: function()
     {
@@ -88,5 +88,5 @@ ConfigurationComponentsHandler.prototype = Object.extend(new CommonHandler(), {
         $('view_common_component_default').innerHTML = html;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

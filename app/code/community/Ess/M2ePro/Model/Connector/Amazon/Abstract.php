@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Connector_Amazon_Abstract extends Ess_M2ePro_Model_Connector_Command
@@ -14,7 +16,7 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Abstract extends Ess_M2ePro_Mod
      */
     protected $account = NULL;
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array(),
                                 Ess_M2ePro_Model_Account $account = NULL)
@@ -23,7 +25,7 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Abstract extends Ess_M2ePro_Mod
         parent::__construct($params);
     }
 
-    // ########################################
+    //########################################
 
     protected function getComponent()
     {
@@ -35,7 +37,7 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Abstract extends Ess_M2ePro_Mod
         return self::COMPONENT_VERSION;
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -46,5 +48,5 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Abstract extends Ess_M2ePro_Mod
         return parent::process();
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,0 +1,19 @@
+<div id="block_notice_motors_view_filter" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selected Filters'); ?>" style="margin-top: 15px;">
+    <?php echo Mage::helper('M2ePro')->__('
+        In this Block you can see the list of the saved Filters which are used to select
+        the Compatible Vehicles. In case you do not want some of them to be used, you can
+        Choose the appropriate Option from the mass actions bulk to Remove the Filters.
+    '); ?>
+</div>
+
+<div class="hor-scroll">
+
+    <div id="motors">
+        <?php echo $this->getChildHtml('view_filter_grid'); ?>
+    </div>
+
+</div>
+
+<div style="float: right; margin-top: 10px; margin-bottom: 8px;">
+    <?php echo $this->getChildHtml('motor_close_btn'); ?>
+</div>

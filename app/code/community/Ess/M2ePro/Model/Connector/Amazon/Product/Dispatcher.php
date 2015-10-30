@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Amazon_Product_Dispatcher
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_Dispatcher
     private $logsActionId = NULL;
     private $isProcessingItems = false;
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $action
@@ -87,19 +89,25 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_Dispatcher
         return $result;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getLogsActionId()
     {
         return (int)$this->logsActionId;
     }
 
+    /**
+     * @return bool
+     */
     public function isProcessingItems()
     {
         return (bool)$this->isProcessingItems;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $sortedProductsData
@@ -186,7 +194,7 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareProducts($products)
     {
@@ -296,7 +304,7 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_Dispatcher
         return array_values($sortedProducts);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function recognizeInitiatorForLogging(array $params)
     {
@@ -350,5 +358,5 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_Dispatcher
         return $action;
     }
 
-    // ########################################
+    //########################################
 }

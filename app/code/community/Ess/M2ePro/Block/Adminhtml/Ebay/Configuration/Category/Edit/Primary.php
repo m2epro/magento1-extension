@@ -1,27 +1,29 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayConfigurationCategoryEditPrimary');
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__('Edit eBay Primary Category');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/configuration/category/primary.phtml');
 
@@ -58,5 +60,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary
         return parent::_toHtml() . $helpBlock->toHtml() . $tabsBlock->toHtml() . '<div id="tabs_container"></div>';
     }
 
-    // ########################################
+    //########################################
 }

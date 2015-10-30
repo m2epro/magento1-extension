@@ -1,15 +1,15 @@
 CommonListing = Class.create();
 CommonListing.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(tabsComponent) {
-        this.tabsComponent = tabsComponent
+        this.tabsComponent = tabsComponent;
 
         this.init3rdPartyControlVisibility();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     init3rdPartyControlVisibility: function()
     {
@@ -24,7 +24,7 @@ CommonListing.prototype = {
         this.tabsComponent.activeTab.simulate('click');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getActiveTab: function() {
         var activeTabId = this.tabsComponent.activeTab.id;

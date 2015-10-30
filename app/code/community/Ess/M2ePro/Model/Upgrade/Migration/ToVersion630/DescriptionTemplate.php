@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
@@ -13,26 +15,32 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
 
     private $forceAllSteps = false;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     */
     public function getInstaller()
     {
         return $this->installer;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     public function setForceAllSteps($value = true)
     {
         $this->forceAllSteps = $value;
     }
 
-    //####################################
+    //########################################
 
     public function getBackupTableName($originalTableName)
     {
@@ -42,7 +50,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
         return $this->installer->getTable($tableName);
     }
 
-    //####################################
+    //########################################
 
     /*
 
@@ -168,7 +176,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
 
     */
 
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -186,7 +194,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
         $this->processAmazonTemplates();
     }
 
-    //####################################
+    //########################################
 
     private function isNeedToSkip()
     {
@@ -208,7 +216,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
         return false;
     }
 
-    //####################################
+    //########################################
 
     private function saveWizardNecessaryData()
     {
@@ -284,7 +292,7 @@ SQL
         }
     }
 
-    //####################################
+    //########################################
 
     private function processListingProduct()
     {
@@ -321,7 +329,7 @@ SQL
         }
     }
 
-    //####################################
+    //########################################
 
     private function processGeneralTemplates()
     {
@@ -584,5 +592,5 @@ SQL
         );
     }
 
-    //####################################
+    //########################################
 }

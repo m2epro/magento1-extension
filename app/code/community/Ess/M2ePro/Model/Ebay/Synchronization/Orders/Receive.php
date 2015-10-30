@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
     extends Ess_M2ePro_Model_Ebay_Synchronization_Orders_Abstract
 {
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/receive/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Orders Receive';
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 100;
     }
 
-    // ##########################################################
+    //########################################
 
     protected function performActions()
     {
@@ -46,7 +60,6 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         foreach ($permittedAccounts as $account) {
             /** @var $account Ess_M2ePro_Model_Account **/
 
-            // ----------------------------------------------------------
             $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
             $this->getActualOperationHistory()->addTimePoint(__METHOD__.'get'.$account->getId(),'Get Orders from eBay');
 
@@ -54,11 +67,10 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
             // The "Receive" Action for eBay Account "%account_title%" is in data receiving state...
             $status = 'The "Receive" Action for eBay Account "%account_title%" is in data receiving state...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             $ebayOrders = $this->processEbayOrders($account);
 
-            // ----------------------------------------------------------
             $this->getActualLockItem()->setPercents(
                 $this->getPercentsStart() + $iteration * $percentsForOneAccount * 0.3
             );
@@ -73,7 +85,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
             // The "Receive" Action for eBay Account "%account_title%" is in Order Creation state...
             $status = 'The "Receive" Action for eBay Account "%account_title%" is in Order Creation state...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             if (count($ebayOrders) > 0) {
                 $percentsForOneOrder = (int)(($this->getPercentsStart() + $iteration * $percentsForOneAccount * 0.7)
@@ -82,18 +94,18 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
                 $this->createMagentoOrders($ebayOrders, $percentsForOneOrder);
             }
 
-            // ----------------------------------------------------------
+            // ---------------------------------------
             $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'create_magento_orders'.$account->getId());
 
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneAccount);
             $this->getActualLockItem()->activate();
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             $iteration++;
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function getPermittedAccounts()
     {
@@ -102,7 +114,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         return $accountsCollection->getItems();
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function processEbayOrders($account)
     {
@@ -210,7 +222,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function prepareFromTime(Ess_M2ePro_Model_Account $account)
     {
@@ -228,17 +240,17 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         $sinceTime = new DateTime($lastSynchronizationDate, new DateTimeZone('UTC'));
 
         // Get min date for synch
-        //------------------------
+        // ---------------------------------------
         $minDate = new DateTime('now',new DateTimeZone('UTC'));
         $minDate->modify('-90 days');
-        //------------------------
+        // ---------------------------------------
 
         // Prepare last date
-        //------------------------
+        // ---------------------------------------
         if ((int)$sinceTime->format('U') < (int)$minDate->format('U')) {
             $sinceTime = $minDate;
         }
-        //------------------------
+        // ---------------------------------------
 
         return Ess_M2ePro_Model_Connector_Ebay_Abstract::ebayTimeToString($sinceTime);
     }
@@ -250,5 +262,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         $ebayAccount->setData('orders_last_synchronization', $lastUpdateTime)->save();
     }
 
-    // ##########################################################
+    //########################################
 }

@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Controller_Adminhtml_Common_WizardController
     extends Ess_M2ePro_Controller_Adminhtml_WizardController
 {
-    //#############################################
+    //########################################
 
     protected function getCustomViewNick()
     {
@@ -24,7 +26,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Common_WizardController
         return Mage::helper('M2ePro/View_Common')->getMenuRootNodeLabel();
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -35,5 +37,5 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Common_WizardController
         parent::indexAction();
     }
 
-    //#############################################
+    //########################################
 }

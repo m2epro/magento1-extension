@@ -51,7 +51,7 @@
         <b>Note:</b> Settings made here only take effect if <b>3rd Party Listings Synchronization</b> is enabled in %menu_path%.</br></br>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'Synchronization'),
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, 'pages/viewpage.action?pageId=17367085')); ?>
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LQAJAQ')); ?>
 </div>
 
 <div class="entry-edit" id="magento_block_ebay_accounts_other_listings_synchronization">
@@ -129,14 +129,14 @@
                         <?php $tempAttributeValue = isset($mappingSettings['sku']['attribute']) ? $mappingSettings['sku']['attribute'] : ''; ?>
                         <input type="hidden" name="mapping_sku_attribute" id="mapping_sku_attribute" value="<?php echo $tempAttributeValue; ?>"/>
 
-                        <select id="mapping_sku_mode" name="mapping_sku_mode" class="attribute-mode-select">
+                        <select id="mapping_sku_mode" name="mapping_sku_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created">
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product SKU') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product ID') ?></option>
 
-                            <optgroup label="Magento Attributes">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
                                 <?php foreach ($this->attributes as $attribute): ?>
-                                    <option value_hack="<?php echo $attribute['code']; ?>"
+                                    <option attribute_code="<?php echo $attribute['code']; ?>"
                                             value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE; ?>"
                                         <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE && $tempAttributeValue == $attribute['code']) : echo 'selected="selected"'; endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->__($attribute['label']) ?>
@@ -166,13 +166,13 @@
                         <?php $tempAttributeValue = isset($mappingSettings['title']['attribute']) ? $mappingSettings['title']['attribute'] : ''; ?>
                         <input type="hidden" name="mapping_title_attribute" id="mapping_title_attribute" value="<?php echo $tempAttributeValue; ?>"/>
 
-                        <select id="mapping_title_mode" name="mapping_title_mode" class="attribute-mode-select">
+                        <select id="mapping_title_mode" name="mapping_title_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created">
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE ?>" <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ?>" <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product Name') ?></option>
 
-                            <optgroup label="Magento Attributes">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
                                 <?php foreach ($this->attributes as $attribute): ?>
-                                    <option value_hack="<?php echo $attribute['code']; ?>"
+                                    <option attribute_code="<?php echo $attribute['code']; ?>"
                                             value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE; ?>"
                                         <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE && $tempAttributeValue == $attribute['code']) : echo 'selected="selected"'; endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->__($attribute['label']) ?>

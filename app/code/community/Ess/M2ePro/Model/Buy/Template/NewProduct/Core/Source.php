@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
@@ -18,40 +20,60 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
      */
     private $newProductCoreTemplateModel = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         $this->magentoProduct = $magentoProduct;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Magento_Product
+     */
     public function getMagentoProduct()
     {
         return $this->magentoProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Buy_Template_NewProduct_Core $instance
+     * @return $this
+     */
     public function setNewProductCoreTemplate(Ess_M2ePro_Model_Buy_Template_NewProduct_Core $instance)
     {
         $this->newProductCoreTemplateModel = $instance;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Buy_Template_NewProduct_Core
+     */
     public function getNewProductCoreTemplate()
     {
         return $this->newProductCoreTemplateModel;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getSellerSku()
     {
         $src = $this->getNewProductCoreTemplate()->getSellerSkuSource();
         return $this->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
     }
 
+    /**
+     * @return null|string
+     */
     public function getGtin()
     {
         $gtin = NULL;
@@ -65,6 +87,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return $gtin;
     }
 
+    /**
+     * @return null|string
+     */
     public function getIsbn()
     {
         $isbn = NULL;
@@ -78,19 +103,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return $isbn;
     }
 
-    public function getAsin()
-    {
-        $asin = NULL;
-
-        if ($this->getNewProductCoreTemplate()->isAsinCustomAttribute()) {
-            $asin = $this->getMagentoProduct()->getAttributeValue(
-                $this->getNewProductCoreTemplate()->getAsinCustomAttribute()
-            );
-        }
-
-        return $asin;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getMfgName()
     {
         $mfgName = NULL;
@@ -107,6 +122,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return $mfgName;
     }
 
+    /**
+     * @return null|string
+     */
     public function getMfgPartNumber()
     {
         $mfgPartNumber = null;
@@ -123,6 +141,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return $mfgPartNumber;
     }
 
+    /**
+     * @return null|string
+     */
     public function getProductSetId()
     {
         $productSetId = NULL;
@@ -139,6 +160,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return $productSetId;
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         $src = $this->getNewProductCoreTemplate()->getTitleSource();
@@ -162,6 +186,10 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return $title;
     }
 
+    /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function getDescription()
     {
         $src = $this->getNewProductCoreTemplate()->getDescriptionSource();
@@ -197,6 +225,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return trim(strip_tags($description));
     }
 
+    /**
+     * @return string
+     */
     public function getMainImage()
     {
         $imageLink = NULL;
@@ -213,6 +244,9 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return trim($imageLink);
     }
 
+    /**
+     * @return null|string
+     */
     public function getAdditionalImages()
     {
         $limitImages = self::ADDITIONAL_IMAGES_COUNT_MAX;
@@ -324,5 +358,5 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Core_Source
         return $weight;
     }
 
-    // ########################################
+    //########################################
 }

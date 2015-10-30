@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /*
@@ -25,7 +27,7 @@ class Ess_M2ePro_Model_PublicServices_Product_ObjectChange
 {
     protected $observers = array();
 
-    //####################################
+    //########################################
 
     public function applyChanges()
     {
@@ -48,13 +50,16 @@ class Ess_M2ePro_Model_PublicServices_Product_ObjectChange
         return $this->flushObservers();
     }
 
+    /**
+     * @return $this
+     */
     public function flushObservers()
     {
         $this->observers = array();
         return $this;
     }
 
-    //####################################
+    //########################################
 
     /**
      * @param Mage_Catalog_Model_Product|int $product
@@ -88,7 +93,7 @@ class Ess_M2ePro_Model_PublicServices_Product_ObjectChange
         return $this;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function prepareProductObserver(Mage_Catalog_Model_Product $product)
     {
@@ -120,5 +125,5 @@ class Ess_M2ePro_Model_PublicServices_Product_ObjectChange
         return $observer;
     }
 
-    //####################################
+    //########################################
 }

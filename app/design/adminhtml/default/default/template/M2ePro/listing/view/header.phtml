@@ -55,11 +55,7 @@
         <li>
             <label>
                 <span class="label">
-                    <?php if($this->getListing()->isComponentModeEbay()): ?>
-                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('eBay User ID')); ?>:&nbsp;
-                    <?php else: ?>
-                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Account')); ?>:&nbsp;
-                    <?php endif; ?>
+                    <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Account')); ?>:&nbsp;
                 </span>
                 <span class="value">
                     <?php echo Mage::helper('M2ePro')->escapeHtml($this->getAccountTitle()); ?>

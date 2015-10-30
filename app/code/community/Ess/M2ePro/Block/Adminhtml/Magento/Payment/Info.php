@@ -1,23 +1,24 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block_Info
 {
     private $order = NULL;
 
-    // ########################################
+    //########################################
 
     protected function _construct()
     {
         parent::_construct();
-        $this->setData('area', 'adminhtml');
         $this->setTemplate('M2ePro/magento/order/payment/info.phtml');
     }
 
-    // ########################################
+    //########################################
 
     private function getAdditionalData($key = '')
     {
@@ -28,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         }
 
         // backward compatibility with M2E Pro 3.1.5 or lower
-        // -----------
+        // ---------------------------------------
         $backwardCompatibleKeys = array(
             'payment_method'    => 'ebay_payment_method',
             'channel_order_id'  => 'ebay_order_id',
@@ -40,11 +41,14 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         if (isset($additionalData[$backwardCompatibleKey])) {
             return $additionalData[$backwardCompatibleKey];
         }
-        // -----------
+        // ---------------------------------------
 
         return isset($additionalData[$key]) ? $additionalData[$key] : NULL;
     }
 
+    /**
+     * @return Mage_Sales_Model_Order
+     */
     public function getOrder()
     {
         if (is_null($this->order)) {
@@ -59,6 +63,8 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
                 $this->order = Mage::registry('current_invoice')->getOrder();
             } elseif (Mage::registry('current_shipment')) {
                 $this->order = Mage::registry('current_shipment')->getOrder();
+            } elseif (Mage::registry('current_creditmemo')) {
+                $this->order = Mage::registry('current_creditmemo')->getOrder();
             }
         }
 
@@ -118,7 +124,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         return is_array($transactions) ? $transactions : array();
     }
 
-    // ########################################
+    //########################################
 
     public function toPdf()
     {
@@ -126,5 +132,27 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         return $this->toHtml();
     }
 
-    // ########################################
+    /**
+     * Render block
+     * @return string
+     */
+    public function renderView()
+    {
+        $design = Mage::getDesign();
+
+        $oldArea = $design->getArea();
+        $oldPackageName = $design->getPackageName();
+
+        $design->setArea('adminhtml');
+        $design->setPackageName(Mage::getStoreConfig('design/package/name', Mage::app()->getStore()->getId()));
+
+        $result = parent::renderView();
+
+        $design->setArea($oldArea);
+        $design->setPackageName($oldPackageName);
+
+        return $result;
+    }
+
+    //########################################
 }

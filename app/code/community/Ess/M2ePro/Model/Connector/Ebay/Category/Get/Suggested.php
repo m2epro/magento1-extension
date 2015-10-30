@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_Category_Get_Suggested
     extends Ess_M2ePro_Model_Connector_Ebay_Abstract
 {
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -40,5 +42,5 @@ class Ess_M2ePro_Model_Connector_Ebay_Category_Get_Suggested
         return 30;
     }
 
-    // ########################################
+    //########################################
 }

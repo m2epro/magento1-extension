@@ -22,7 +22,7 @@
 
     <div id="transferring_use_custom_settings" class="warning-msg" style="margin: 10px 0 15px 0; display: none;">
         <div style="margin: 10px 0 10px 35px; font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('Some Products have Custom Settings for Shipping, Payment, or Return Policies. They will be overridden with common Settings set for Destination Listing. Click <a href=\'%url%\' target="_blank">here</a> to find out more.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Step2"Policies"')
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Step2"Policies"')
         ); ?></div>
     </div>
 
@@ -44,7 +44,7 @@
                     <tbody>
                         <tr>
                             <td class="value b-right">
-                                <label><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>:</label>
+                                <label><?php echo Mage::helper('M2ePro')->__('Account'); ?>:</label>
                             </td>
                             <td class="value b-right">
                                 <label><?php echo $this->getSourceAccount()->getTitle(); ?></label>
@@ -114,7 +114,7 @@
                                                 <span class="tool-tip-message" style="display: none;">
                                                     <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
                                                     <span><?php echo Mage::helper('M2ePro')->__('You can choose another ebay Site where you want to list your existing Items.The Source and Destination eBay Sites cannot coincide. If you still need to move the Products into different Listing with the same eBay Site, you can use <a href="%url%" target="_blank">Moving</a> feature. eBay Sites where Translation Service is available are placed in the Translation Available group.',
-                                                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Moving+Items+to+another+M2E+Pro+Listing')
+                                                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/WwAJAQ')
                                                     ); ?></span>
                                                 </span>
                                             </div>
@@ -236,7 +236,7 @@
         <?php if ($this->isAutoCategories()) : ?>
             <div id="transferring_auto_categories_warning" class="warning-msg" style="display:none;margin: 10px 0 5px 0;">
                 <div style="margin: 10px 0 10px 35px; font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('Some "Auto Add/Remove Rules" will be disabled in the Destination Listing. Cick <a href="%url_2%" target="_blank">here</a> to find out more.',
-                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Sell+on+another+eBay+Site#SellonanothereBaySite-Listing')
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/BQAJAQ#SellonanothereBaySite-Listing')
                 ); ?></div>
             </div>
         <?php endif; ?>

@@ -1,28 +1,30 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Synchronization_Edit
     extends Mage_Adminhtml_Block_Widget_Form_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingOtherSynchronizationEdit');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_other_synchronization';
         $this->_mode = 'edit';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         if (!Mage::helper('M2ePro/View_Ebay_Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
             $headerText = Mage::helper('M2ePro')->__("Edit %component_name% 3rd Party Synchronization Settings",
@@ -32,10 +34,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Synchronization_Edit
         }
 
         $this->_headerText = $headerText;
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
@@ -43,16 +45,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Synchronization_Edit
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getRequest()->getParam('back');
         $this->_addButton('save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'EbayListingOtherSynchronizationHandlerObj.save_click(\''.$url.'\')',
             'class'     => 'save'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $back = $this->getRequest()->getParam('back');
         $this->_addButton('save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
@@ -60,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Synchronization_Edit
                            'save_and_edit_click(\''.$back.'\',\'ebayListingOtherSynchronizationEditTabs\')',
             'class'     => 'save'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _toHtml()
@@ -75,16 +77,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Synchronization_Edit
 
         $translations = json_encode($translations);
 
-        $javascriptBefore =<<<JAVASCRIPT
+        $javascriptBefore =<<<HTML
 <script type="text/javascript">
     M2ePro.translator.add({$translations});
     EbayListingOtherSynchronizationHandlerObj = new EbayListingOtherSynchronizationHandler();
 </script>
-JAVASCRIPT;
+HTML;
 
         return $javascriptBefore . parent::_toHtml();
 
     }
 
-    // ####################################
+    //########################################
 }

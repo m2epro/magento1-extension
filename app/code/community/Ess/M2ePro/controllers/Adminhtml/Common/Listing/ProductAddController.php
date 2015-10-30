@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
@@ -10,7 +12,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
     protected $component;
     protected $sessionKeyPostfix = '_listing_product_add';
 
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -90,7 +92,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         }
     }
 
-    // ####################################
+    //########################################
 
     public function sourceMode()
     {
@@ -112,7 +114,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
             ->renderLayout();
     }
 
-    // ####################################
+    //########################################
 
     public function addProductsFromList()
     {
@@ -258,7 +260,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         $this->renderLayout();
     }
 
-    // ####################################
+    //########################################
 
     public function review()
     {
@@ -286,7 +288,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
             ->renderLayout();
     }
 
-    // ####################################
+    //########################################
 
     public function viewListingAction()
     {
@@ -330,7 +332,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         ));
     }
 
-    // ####################################
+    //########################################
 
     public function addProductsAction()
     {
@@ -388,7 +390,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         )));
     }
 
-    // ####################################
+    //########################################
 
     public function getCategoriesJsonAction()
     {
@@ -433,7 +435,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         $tempSession['products_ids'] = array_values(array_filter(array_flip($all)));
         $this->setSessionValue('source_categories', $tempSession);
 
-        // ---------------------
+        // ---------------------------------------
 
         $this->_forward('getTreeInfo');
     }
@@ -456,7 +458,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         $this->getResponse()->setBody($treeBlock->getInfoJson());
     }
 
-    // ####################################
+    //########################################
 
     public function getCategoriesSummaryHtmlAction()
     {
@@ -509,7 +511,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         $this->setSessionValue('source_categories',$tempSession);
     }
 
-    // ####################################
+    //########################################
 
     protected function setRuleData($prefix)
     {
@@ -554,7 +556,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         return $prefix;
     }
 
-    // ####################################
+    //########################################
 
     protected function getComponent()
     {
@@ -566,7 +568,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         return $this->getComponent().$this->sessionKeyPostfix;
     }
 
-    // ####################################
+    //########################################
 
     protected function setSessionValue($key, $value)
     {
@@ -593,14 +595,14 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         return isset($sessionData[$key]) ? $sessionData[$key] : NULL;
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     private function clearSession()
     {
         Mage::helper('M2ePro/Data_Session')->setValue($this->getSessionKey(), NULL);
     }
 
-    //#############################################
+    //########################################
 
     /** @return Ess_M2ePro_Model_Amazon_Listing
      * @throws Exception
@@ -614,5 +616,5 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         return Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing',$listingId)->getChildObject();
     }
 
-    //#############################################
+    //########################################
 }

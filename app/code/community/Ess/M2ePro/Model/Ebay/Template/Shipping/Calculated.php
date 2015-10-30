@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Model_Component_Abstract
@@ -20,7 +22,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     const WEIGHT_CUSTOM_VALUE           = 1;
     const WEIGHT_CUSTOM_ATTRIBUTE       = 2;
 
-    // ########################################
+    //########################################
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Shipping
@@ -32,7 +34,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
      */
     private $shippingCalculatedSourceModels = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -40,7 +42,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         $this->_init('M2ePro/Ebay_Template_Shipping_Calculated');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -50,7 +52,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         return $temp;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Shipping
@@ -74,7 +76,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
          $this->shippingTemplateModel = $instance;
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -97,27 +99,39 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         return $this->shippingCalculatedSourceModels[$productId];
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getMeasurementSystem()
     {
         return (int)$this->getData('measurement_system');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMeasurementSystemMetric()
     {
         return $this->getMeasurementSystem() == self::MEASUREMENT_SYSTEM_METRIC;
     }
 
+    /**
+     * @return bool
+     */
     public function isMeasurementSystemEnglish()
     {
         return $this->getMeasurementSystem() == self::MEASUREMENT_SYSTEM_ENGLISH;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getPackageSizeSource()
     {
         return array(
@@ -127,6 +141,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         );
     }
 
+    /**
+     * @return array
+     */
     public function getPackageSizeAttributes()
     {
         $attributes = array();
@@ -139,8 +156,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         return $attributes;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getDimensionSource()
     {
         return array(
@@ -157,6 +177,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         );
     }
 
+    /**
+     * @return array
+     */
     public function getDimensionAttributes()
     {
         $attributes = array();
@@ -171,8 +194,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         return $attributes;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getWeightSource()
     {
         return array(
@@ -183,6 +209,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         );
     }
 
+    /**
+     * @return array
+     */
     public function getWeightAttributes()
     {
         $attributes = array();
@@ -195,25 +224,37 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         return $attributes;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return float
+     */
     public function getLocalHandlingCost()
     {
         return (float)$this->getData('local_handling_cost');
     }
 
+    /**
+     * @return float
+     */
     public function getInternationalHandlingCost()
     {
         return (float)$this->getData('international_handling_cost');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         return array();
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         return array_unique(array_merge(
@@ -223,7 +264,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         ));
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -237,5 +278,5 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
         return parent::delete();
     }
 
-    // #######################################
+    //########################################
 }

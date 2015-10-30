@@ -1,31 +1,33 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Search_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buyTemplateNewProductSearchGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setFilterVisibility(false);
         $this->setPagerVisibility(false);
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -74,7 +76,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Search_Grid exte
 
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnTitle($title, $row, $column, $isExport)
     {
@@ -124,37 +126,37 @@ HTML;
         return $html;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    $$('#buyTemplateNewProductSearchGrid div.grid th').each(function(el){
+    $$('#buyTemplateNewProductSearchGrid div.grid th').each(function(el) {
         el.style.padding = '2px 2px';
     });
 
-    $$('#buyTemplateNewProductSearchGrid div.grid td').each(function(el){
+    $$('#buyTemplateNewProductSearchGrid div.grid td').each(function(el) {
         el.style.padding = '2px 2px';
     });
 
-    $$('#buyTemplateNewProductSearchGrid div.grid table').each(function(el){
+    $$('#buyTemplateNewProductSearchGrid div.grid table').each(function(el) {
         el.style.width = '99.9%';
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml() . $javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 
     public function getRowUrl($row)
     {
         return false;
     }
 
-    // ####################################
+    //########################################
 }

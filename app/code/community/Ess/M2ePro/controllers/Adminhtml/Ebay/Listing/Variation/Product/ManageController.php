@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
     extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -43,7 +45,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/Ebay/Listing/Transferring/PaymentHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Transferring/TranslateHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Transferring/InfoHandler.js')
-            ->addJs('M2ePro/Ebay/Motor/CompatibilityHandler.js')
+            ->addJs('M2ePro/Ebay/MotorsHandler.js')
         ;
 
         $this->_initPopUp();
@@ -61,13 +63,13 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/listings');
     }
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     protected function addNotificationMessages() {}
 
     protected function beforeAddContentEvent() {}
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     public function indexAction()
     {
@@ -84,7 +86,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
         return $this->getResponse()->setBody($view->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function viewVariationsGridAction()
     {
@@ -122,7 +124,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
         return $this->getResponse()->setBody($grid->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function setIdentifiersAction()
     {

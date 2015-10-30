@@ -1,11 +1,11 @@
 ListingGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     productIdCellIndex: 1,
     productTitleCellIndex: 2,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super,gridId,listingId)
     {
@@ -14,14 +14,14 @@ ListingGridHandler = Class.create(GridHandler, {
         $super(gridId);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getProductIdByRowId: function(rowId)
     {
         return this.getCellContent(rowId,this.productIdCellIndex);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getSelectedItemsParts: function(maxProductsInPart)
     {
@@ -44,14 +44,14 @@ ListingGridHandler = Class.create(GridHandler, {
         return result;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
         alert('abstract getMaxProductsInPart');
     },
 
-    //###############################################
+    //########################################
 
     prepareActions: function()
     {
@@ -63,10 +63,11 @@ ListingGridHandler = Class.create(GridHandler, {
             reviseAction: this.actionHandler.reviseAction.bind(this.actionHandler),
             stopAction: this.actionHandler.stopAction.bind(this.actionHandler),
             stopAndRemoveAction: this.actionHandler.stopAndRemoveAction.bind(this.actionHandler),
+            previewItemsAction: this.actionHandler.previewItemsAction.bind(this.actionHandler),
             startTranslateAction: this.actionHandler.startTranslateAction.bind(this.actionHandler),
             stopTranslateAction: this.actionHandler.stopTranslateAction.bind(this.actionHandler)
         };
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

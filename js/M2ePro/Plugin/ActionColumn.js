@@ -1,7 +1,7 @@
 ActionColumn = Class.create();
 ActionColumn.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(containerId) {},
 
@@ -24,7 +24,7 @@ ActionColumn.prototype = {
         }
     }
 
-    //----------------------------------
-}
+    // ---------------------------------------
+};
 
 ActionColumnObj = new ActionColumn();

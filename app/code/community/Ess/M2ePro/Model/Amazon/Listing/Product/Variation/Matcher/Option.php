@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
@@ -20,24 +22,31 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
     /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver $resolver */
     private $resolver = null;
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         $this->magentoProduct = $magentoProduct;
         return $this;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
+
+//    $destinationOptions = array(
+//        'B00005N5PF' => array(
+//          'Color' => 'Red',
+//          'Size'  => 'XL',
+//        ),
+//        ...
+//    )
 
     /**
-     *  $destinationOptions = array(
-     *      'B00005N5PF' => array(
-     *         'Color' => 'Red',
-     *         'Size'  => 'XL',
-     *      ),
-     *      ...
-     *  )
+     * @param array $destinationOptions
+     * @return $this
      */
     public function setDestinationOptions(array $destinationOptions)
     {
@@ -49,19 +58,27 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
         return $this;
     }
 
+    /**
+     * @param array $matchedAttributes
+     * @return $this
+     */
     public function setMatchedAttributes(array $matchedAttributes)
     {
         $this->matchedAttributes = $matchedAttributes;
         return $this;
     }
 
-    // ##########################################################
+    //########################################
+
+//    $sourceOption = array(
+//         'Color' => 'red',
+//         'Size'  => 'L'
+//    )
 
     /**
-     *  $sourceOption = array(
-     *      'Color' => 'red',
-     *      'Size'  => 'L',
-     *  )
+     * @param array $sourceOption
+     * @return null|int
+     * @throws Ess_M2ePro_Model_Exception
      */
     public function getMatchedOptionGeneralId(array $sourceOption)
     {
@@ -82,7 +99,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
         return null;
     }
 
-    // ##########################################################
+    //########################################
 
     private function validate()
     {
@@ -95,7 +112,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
         }
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function matchGeneralIdByNames(array $sourceOption)
     {
@@ -132,7 +149,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
         return $this->getResolver()->resolve()->getResolvedGeneralId();
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function getSourceOptionNames($sourceOption)
     {
@@ -189,7 +206,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
         return $this->destinationOptionsServerVocabularyNames;
     }
 
-    // ##########################################################
+    //########################################
 
     private function getResolver()
     {
@@ -212,5 +229,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option
         return $names;
     }
 
-    // ##########################################################
+    //########################################
 }

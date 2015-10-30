@@ -55,7 +55,7 @@
                     <?php if (!is_null($this->accountData)): ?>
                         <tr>
                             <td class="label" style="width: 110px;">
-                                <label style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>: </label>
+                                <label style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('Account'); ?>: </label>
                             </td>
                             <td class="value">
                                 <a target="_blank" href="<?php echo $this->getUrl('*/adminhtml_ebay_account/edit', array('id' => $this->accountData['id'])); ?>"><?php echo $this->accountData['title']; ?></a>

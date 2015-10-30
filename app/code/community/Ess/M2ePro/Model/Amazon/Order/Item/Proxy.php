@@ -1,13 +1,18 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item_Proxy
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return float
+     */
     public function getOriginalPrice()
     {
         $price = $this->item->getPrice()
@@ -21,13 +26,19 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
         return $price;
     }
 
+    /**
+     * @return int
+     */
     public function getOriginalQty()
     {
         return $this->item->getQtyPurchased();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array|null
+     */
     public function getGiftMessage()
     {
         $giftMessage = $this->item->getGiftMessage();
@@ -36,14 +47,17 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
         }
 
         return array(
-            'sender'    => '', //$this->item->getAmazonOrder()->getBuyerName(),
-            'recipient' => '', //$this->item->getAmazonOrder()->getShippingAddress()->getData('recipient_name'),
+            'sender'    => '',
+            'recipient' => '',
             'message'   => $this->item->getGiftMessage()
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getAdditionalData()
     {
         if (count($this->additionalData) == 0) {
@@ -54,5 +68,5 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
         return $this->additionalData;
     }
 
-    // ########################################
+    //########################################
 }

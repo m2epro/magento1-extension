@@ -1,6 +1,6 @@
 CommonListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getLogViewUrl: function(rowId)
     {
@@ -10,5 +10,5 @@ CommonListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

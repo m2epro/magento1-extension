@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_listing_product`
@@ -80,7 +80,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `variation_options` TEXT DEFAULT NULL after `store_id`;
 */
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -117,7 +117,7 @@ if (!isset($tempTableIndexList[strtoupper('is_variation_matched')])) {
     $connection->addKey($tempTable, 'is_variation_matched', 'is_variation_matched');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -154,7 +154,7 @@ if (!isset($tempTableIndexList[strtoupper('is_variation_matched')])) {
     $connection->addKey($tempTable, 'is_variation_matched', 'is_variation_matched');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -191,7 +191,7 @@ if (!isset($tempTableIndexList[strtoupper('is_variation_matched')])) {
     $connection->addKey($tempTable, 'is_variation_matched', 'is_variation_matched');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_general');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -208,7 +208,7 @@ if (!isset($tempTableIndexList[strtoupper('generate_sku_mode')])) {
     $connection->addKey($tempTable, 'generate_sku_mode', 'generate_sku_mode');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_general');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -225,7 +225,7 @@ if (!isset($tempTableIndexList[strtoupper('generate_sku_mode')])) {
     $connection->addKey($tempTable, 'generate_sku_mode', 'generate_sku_mode');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_template_general');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -242,7 +242,7 @@ if (!isset($tempTableIndexList[strtoupper('generate_sku_mode')])) {
     $connection->addKey($tempTable, 'generate_sku_mode', 'generate_sku_mode');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product_variation');
 
@@ -258,7 +258,7 @@ if ($connection->tableColumnExists($tempTable, 'online_qty') === true) {
     $connection->dropColumn($tempTable, 'online_qty');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -281,7 +281,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -304,7 +304,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -327,7 +327,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_item');
 
@@ -339,7 +339,7 @@ if ($connection->tableColumnExists($tempTable, 'variation_options') === false) {
     );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_item');
 
@@ -351,7 +351,7 @@ if ($connection->tableColumnExists($tempTable, 'variation_options') === false) {
     );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_item');
 
@@ -363,8 +363,8 @@ if ($connection->tableColumnExists($tempTable, 'variation_options') === false) {
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

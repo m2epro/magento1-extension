@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,14 +8,14 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion630 $migrationInstance */
 $migrationInstance = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion630');
 $migrationInstance->setInstaller($installer);
 $migrationInstance->migrate();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_listing_product`
@@ -53,7 +53,7 @@ $migrationInstance->migrate();
         DROP COLUMN `attribute_id`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 
@@ -65,7 +65,7 @@ if ($connection->tableColumnExists($tempTable, 'end_date') !== false) {
     $connection->dropColumn($tempTable, 'end_date');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_other');
 
@@ -77,7 +77,7 @@ if ($connection->tableColumnExists($tempTable, 'end_date') !== false) {
     $connection->dropColumn($tempTable, 'end_date');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_listing_product');
 
@@ -89,7 +89,7 @@ if ($connection->tableColumnExists($tempTable, 'end_date') !== false) {
     $connection->dropColumn($tempTable, 'end_date');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_listing_other');
 
@@ -97,7 +97,7 @@ if ($connection->tableColumnExists($tempTable, 'end_date') !== false) {
     $connection->dropColumn($tempTable, 'end_date');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_listing_product');
 
@@ -109,7 +109,7 @@ if ($connection->tableColumnExists($tempTable, 'end_date') !== false) {
     $connection->dropColumn($tempTable, 'end_date');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_listing_other');
 
@@ -121,7 +121,7 @@ if ($connection->tableColumnExists($tempTable, 'end_date') !== false) {
     $connection->dropColumn($tempTable, 'end_date');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -159,7 +159,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_category');
 
@@ -171,7 +171,7 @@ if ($connection->tableColumnExists($tempTable, 'attribute_set') !== false) {
     $connection->dropColumn($tempTable, 'attribute_set');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_category_specific');
 
@@ -183,7 +183,7 @@ if ($connection->tableColumnExists($tempTable, 'attribute_id') !== false) {
     $connection->dropColumn($tempTable, 'attribute_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQL
 
@@ -226,7 +226,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -244,7 +244,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -265,7 +265,7 @@ SQL
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $synchronizationTable = $installer->getTable('m2epro_synchronization_config');
 
@@ -305,7 +305,7 @@ if ($connection->tableColumnExists($tempTable, 'other_listings_synchronization_m
     $connection->dropColumn($tempTable, 'other_listings_synchronization_mapped_items_mode');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $date = date('Y-m-d H:i:s', gmdate('U'));
 
@@ -326,8 +326,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

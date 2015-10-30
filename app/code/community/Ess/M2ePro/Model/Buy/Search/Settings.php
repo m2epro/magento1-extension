@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Search_Settings
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Buy_Search_Settings
     const STEP_GENERAL_ID = 1;
     const STEP_MAGENTO_TITLE = 2;
 
-    // ########################################
+    //########################################
 
     private $step = null;
 
@@ -18,8 +20,12 @@ class Ess_M2ePro_Model_Buy_Search_Settings
     /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
     private $listingProduct = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @return $this
+     */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         $this->listingProduct = $listingProduct;
@@ -50,13 +56,17 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         return $this;
     }
 
+    /**
+     * @param array $result
+     * @return $this
+     */
     public function setStepData(array $result)
     {
         $this->stepData = $result;
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     private function getListingProduct()
     {
@@ -79,7 +89,7 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         );
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -95,13 +105,7 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         $this->stepData = array();
 
         if (!$this->setNextStep()) {
-            $this->getListingProduct()->setData(
-                'search_settings_status', Ess_M2ePro_Model_Buy_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND
-            );
-            $this->getListingProduct()->setData('search_settings_data', null);
-
-            $this->getListingProduct()->save();
-
+            $this->setNotFoundSearchStatus();
             return true;
         }
 
@@ -111,16 +115,23 @@ class Ess_M2ePro_Model_Buy_Search_Settings
             return $this->process();
         }
 
+        $connectorParams = array(
+            'step' => $this->step,
+            'query' => $this->getQueryParam(),
+            'search_method' => 'byQuery',
+            'listing_product_id' => $this->getListingProduct()->getId(),
+        );
+
         $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
-        $connectorObj = $dispatcherObject->getConnector('settings', $this->getSearchMethod(), 'requester',
-                                                        $this->getConnectorParams(),
+        $connectorObj = $dispatcherObject->getConnector('settings', 'byQuery', 'requester',
+                                                        $connectorParams,
                                                         $this->getListingProduct()->getAccount(),
                                                         'Ess_M2ePro_Model_Buy_Search');
 
         return $dispatcherObject->process($connectorObj);
     }
 
-    // ########################################
+    //########################################
 
     private function processResult()
     {
@@ -134,7 +145,7 @@ class Ess_M2ePro_Model_Buy_Search_Settings
 
         $type = 'string';
         if ($this->step != self::STEP_MAGENTO_TITLE) {
-            $type = strtolower($this->getSearchType());
+            $type = Mage::helper('M2ePro/Component_Buy')->isGeneralId($params['query']) ? 'sku' : false;
         }
 
         $searchSettingsData = array(
@@ -158,7 +169,17 @@ class Ess_M2ePro_Model_Buy_Search_Settings
 
         $result = reset($result);
 
+        if ($this->step == self::STEP_MAGENTO_TITLE && $result['title'] !== $params['query']) {
+            $this->setNotFoundSearchStatus();
+            return;
+        }
+
         $generalId = $this->getGeneralIdFromResult($result);
+
+        if ($this->step == self::STEP_GENERAL_ID && $generalId !== $params['query']) {
+            $this->setNotFoundSearchStatus();
+            return;
+        }
 
         $generalIdSearchInfo = array(
             'is_set_automatic' => true,
@@ -169,7 +190,6 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         $dataForUpdate = array(
             'general_id' => $generalId,
             'general_id_search_info' => json_encode($generalIdSearchInfo),
-            'is_isbn_general_id' => Mage::helper('M2ePro')->isISBN($generalId),
             'search_settings_status' => null,
             'search_settings_data'   => null,
         );
@@ -179,7 +199,7 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         return;
     }
 
-    // ########################################
+    //########################################
 
     private function validate()
     {
@@ -190,31 +210,15 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         return true;
     }
 
-    private function getConnectorParams()
-    {
-        $params = array(
-            'step' => $this->step,
-            'query' => $this->getQueryParam(),
-            'search_method' => $this->getSearchMethod(),
-            'listing_product_id' => $this->getListingProduct()->getId(),
-        );
-
-        if ($this->getSearchMethod() == 'byIdentifier') {
-            $params['search_type'] = $this->getSearchType();
-        }
-
-        return $params;
-    }
-
     private function getGeneralIdFromResult($result)
     {
-        if (!isset($result[0]['variations'])) {
-            return $result[0]['general_id'];
+        if (!isset($result['variations'])) {
+            return $result['general_id'];
         }
 
-        reset($result[0]['variations']['skus']);
+        reset($result['variations']['skus']);
 
-        return key($result[0]['variations']['skus']);
+        return key($result['variations']['skus']);
     }
 
     private function canPutResultToSuggestData($result)
@@ -247,71 +251,49 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         return $return;
     }
 
-    // ########################################
+    //########################################
 
     private function getQueryParam()
     {
+        $query = NULL;
+
         switch ($this->step) {
             case self::STEP_GENERAL_ID:
 
-                $query = $this->getBuyListingProduct()->getGeneralId();
-                empty($query) && $query = $this->getBuyListingProduct()->getListingSource()->getSearchGeneralId();
+                $generalIdMode = $this->getBuyListingProduct()->getGeneralId();
+
+                if (empty($generalIdMode)) {
+                    $generalIdValue = $this->getBuyListingProduct()->getListingSource()->getSearchGeneralId();
+
+                    Mage::helper('M2ePro/Component_Buy')
+                        ->isGeneralId($generalIdValue) && $query = $generalIdValue;
+                }
 
                 break;
 
             case self::STEP_MAGENTO_TITLE:
-
-                $query = false;
 
                 if ($this->getBuyListingProduct()->getBuyListing()->isSearchByMagentoTitleModeEnabled()) {
                     $query = $this->getBuyListingProduct()->getActualMagentoProduct()->getName();
                 }
 
                 break;
-
-            default:
-
-                $query = null;
         }
 
         return $query;
     }
 
-    private function getSearchMethod()
+    //########################################
+
+    private function setNotFoundSearchStatus()
     {
-        if ($this->step == self::STEP_GENERAL_ID) {
+        $this->getListingProduct()->setData(
+            'search_settings_status', Ess_M2ePro_Model_Buy_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND
+        );
+        $this->getListingProduct()->setData('search_settings_data', null);
 
-            if ($this->getBuyListingProduct()->getBuyListing()->isGeneralIdSellerSkuMode()) {
-                return 'bySellerSku';
-            }
-
-            if ($this->getBuyListingProduct()->getBuyListing()->isGeneralIdWorldwideMode() ||
-                $this->getBuyListingProduct()->getBuyListing()->isGeneralIdGeneralIdMode()
-            ) {
-                return 'byIdentifier';
-            }
-        }
-
-        return 'byQuery';
+        $this->getListingProduct()->save();
     }
 
-    private function getSearchType()
-    {
-        /* @var $listing Ess_M2ePro_Model_Buy_Listing */
-        $listing = $this->listingProduct->getListing()->getChildObject();
-
-        $searchType = false;
-
-        if ($listing->isGeneralIdGeneralIdMode()) {
-            $searchType = Ess_M2ePro_Model_Connector_Buy_Search_ByIdentifier_ItemsRequester::SEARCH_TYPE_GENERAL_ID;
-        }
-
-        if ($listing->isGeneralIdWorldwideMode()) {
-            $searchType = Ess_M2ePro_Model_Connector_Buy_Search_ByIdentifier_ItemsRequester::SEARCH_TYPE_UPC;
-        }
-
-        return $searchType;
-    }
-
-    // ########################################
+    //########################################
 }

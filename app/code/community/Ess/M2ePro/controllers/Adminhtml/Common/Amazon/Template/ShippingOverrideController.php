@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -17,6 +19,8 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
 
         $this->getLayout()->getBlock('head')
              ->addJs('M2ePro/Common/Amazon/Template/ShippingOverrideHandler.js');
+
+        $this->_initPopUp();
 
         $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Shipping+Override+Policy');
 
@@ -28,7 +32,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -37,7 +41,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
         ));
     }
 
-    //#############################################
+    //########################################
 
     public function newAction()
     {
@@ -65,7 +69,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
              ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function saveAction()
     {
@@ -76,7 +80,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
         $id = $this->getRequest()->getParam('id');
 
         // Base prepare
-        //--------------------
+        // ---------------------------------------
         $data = array();
 
         $keys = array(
@@ -152,7 +156,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
         );
     }
 
-    //#############################################
+    //########################################
 
     public function deleteAction()
     {
@@ -191,5 +195,5 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_ShippingOverrideController
         ));
     }
 
-    //#############################################
+    //########################################
 }

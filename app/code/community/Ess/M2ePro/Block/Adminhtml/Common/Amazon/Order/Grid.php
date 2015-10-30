@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -9,24 +11,24 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml
     /** @var $itemsCollection Ess_M2ePro_Model_Mysql4_Order_Item_Collection */
     private $itemsCollection = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonOrderGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('purchase_create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     public function getMassactionBlockName()
@@ -45,25 +47,25 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml
                        array('magento_order_num' => 'increment_id'));
 
         // Add Filter By Account
-        //------------------------------
+        // ---------------------------------------
         if ($accountId = $this->getRequest()->getParam('amazonAccount')) {
-            $collection->addFieldToFilter('`main_table`.account_id', $accountId);
+            $collection->addFieldToFilter('main_table.account_id', $accountId);
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Add Filter By Marketplace
-        //------------------------------
+        // ---------------------------------------
         if ($marketplaceId = $this->getRequest()->getParam('amazonMarketplace')) {
-            $collection->addFieldToFilter('`main_table`.marketplace_id', $marketplaceId);
+            $collection->addFieldToFilter('main_table.marketplace_id', $marketplaceId);
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Add Not Created Magento Orders Filter
-        //------------------------------
+        // ---------------------------------------
         if ($this->getRequest()->getParam('not_created_only')) {
             $collection->addFieldToFilter('magento_order_id', array('null' => true));
         }
-        //------------------------------
+        // ---------------------------------------
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -224,13 +226,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         // Set mass-action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('reservation_place', array(
              'label'    => Mage::helper('M2ePro')->__('Reserve QTY'),
              'url'      => $this->getUrl('*/adminhtml_order/reservationPlace'),
@@ -254,12 +256,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml
              'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    //##############################################################
+    //########################################
 
     public function callbackColumnAmazonOrderId($value, $row, $column, $isExport)
     {
@@ -295,16 +297,16 @@ HTML;
         $orderId = (int)$orderId;
 
         // Prepare collection
-        // --------------------------------
+        // ---------------------------------------
         $orderLogsCollection = Mage::getModel('M2ePro/Order_Log')->getCollection()
             ->addFieldToFilter('order_id', $orderId)
             ->setOrder('id', 'DESC');
         $orderLogsCollection->getSelect()
             ->limit(3);
-        // --------------------------------
+        // ---------------------------------------
 
         // Prepare logs data
-        // --------------------------------
+        // ---------------------------------------
         if ($orderLogsCollection->count() <= 0) {
             return '';
         }
@@ -315,12 +317,12 @@ HTML;
         foreach ($orderLogsCollection as $log) {
             $logRows[] = array(
                 'type' => $log->getData('type'),
-                'text' => Mage::helper('M2ePro/View')->getModifiedLogMessage($log->getData('message')),
+                'text' => Mage::helper('M2ePro/View')->getModifiedLogMessage($log->getData('description')),
                 'initiator' => $this->getInitiatorForAction($log->getData('initiator')),
                 'date' => Mage::app()->getLocale()->date(strtotime($log->getData('create_date')))->toString($format)
             );
         }
-        // --------------------------------
+        // ---------------------------------------
 
         $tips = array(
             Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'Last Order Action was completed successfully.',
@@ -365,7 +367,7 @@ HTML;
         return $string;
     }
 
-    //--------------------------------------------------------------
+    // ---------------------------------------
 
     public function callbackColumnItems($value, $row, $column, $isExport)
     {
@@ -518,7 +520,7 @@ HTML;
         return $value;
     }
 
-    //##############################################################
+    //########################################
 
     protected function callbackFilterItems($collection, $column)
     {
@@ -536,7 +538,7 @@ HTML;
         $orderItemsCollection->getSelect()->where('title LIKE ? OR sku LIKE ? or general_id LIKE ?', '%'.$value.'%');
 
         $totalResult = $orderItemsCollection->getColumnValues('order_id');
-        $collection->addFieldToFilter('`main_table`.id', array('in' => $totalResult));
+        $collection->addFieldToFilter('main_table.id', array('in' => $totalResult));
     }
 
     protected function callbackFilterBuyer($collection, $column)
@@ -551,7 +553,7 @@ HTML;
                 ->where('buyer_email LIKE ? OR buyer_name LIKE ?', '%'.$value.'%');
     }
 
-    //##############################################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -567,5 +569,5 @@ HTML;
         return $this->getUrl('*/adminhtml_common_amazon_order/view', array('id' => $row->getId(), 'back' => $back));
     }
 
-    // ####################################
+    //########################################
 }

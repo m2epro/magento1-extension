@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToV6_Installation_SellingFormatCurrencies_Tabs
     extends Mage_Adminhtml_Block_Widget_Tabs
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -17,13 +19,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToV6_Installation_SellingFormat
         $this->setDestElementId('tabs_container');
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareLayout()
     {
         $tabsBlockPath = 'M2ePro/adminhtml_wizard_migrationToV6_installation_sellingFormatCurrencies_tabs_';
 
-        $migrationModel = Mage::getSingleton('M2ePro/Wizard_MigrationToV6');
+        $migrationModel = Mage::helper('M2ePro/Module_Wizard')->getWizard('migrationToV6');
         $components = Mage::helper('M2ePro/Component')->getComponents();
         $componentTitles = Mage::helper('M2ePro/Component')->getComponentsTitles();
 
@@ -56,5 +58,5 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToV6_Installation_SellingFormat
         return parent::_toHtml() . '<form id="currencies_form"><div id="tabs_container"></div></form>';
     }
 
-    // ########################################
+    //########################################
 }

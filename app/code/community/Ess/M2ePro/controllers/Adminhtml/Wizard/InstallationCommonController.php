@@ -1,13 +1,15 @@
 <?php
 
-    /*
-    * @copyright  Copyright (c) 2013 by  ESS-UA.
-    */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Adminhtml_Wizard_InstallationCommonController
     extends Ess_M2ePro_Controller_Adminhtml_Common_WizardController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -25,7 +27,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationCommonController
         return Ess_M2ePro_Helper_View_Common::WIZARD_INSTALLATION_NICK;
     }
 
-    //#############################################
+    //########################################
 
     public function congratulationAction()
     {
@@ -44,7 +46,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationCommonController
         $this->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function createLicenseAction()
     {
@@ -90,5 +92,5 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationCommonController
         return $this->getResponse()->setBody(json_encode(array('result' => $licenseResult)));
     }
 
-    //#############################################
+    //########################################
 }

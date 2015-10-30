@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -42,10 +44,11 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
             ->addJs('M2ePro/Listing/MovingHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/ActionHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/ProductSearchHandler.js')
-            ->addJs('M2ePro/Common/Amazon/Listing/TemplateDescriptionHandler.js')
-            ->addJs('M2ePro/Common/Amazon/Listing/TemplateShippingOverrideHandler.js')
+            ->addJs('M2ePro/Common/Amazon/Listing/Template/DescriptionHandler.js')
+            ->addJs('M2ePro/Common/Amazon/Listing/Template/ShippingOverrideHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/VariationProductManageHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/FulfillmentHandler.js')
+            ->addJs('M2ePro/Common/Amazon/Listing/AfnQtyHandler.js')
 
             ->addJs('M2ePro/TemplateHandler.js')
             ->addJs('M2ePro/Common/Listing/SettingsHandler.js')
@@ -66,7 +69,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -87,7 +90,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function searchAction()
     {
@@ -103,7 +106,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function viewAction()
     {
@@ -140,21 +143,21 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         }
 
         // Check listing lock object
-        //----------------------------
+        // ---------------------------------------
         if ($model->isLockedObject('products_in_action')) {
             $this->_getSession()->addNotice(
                 Mage::helper('M2ePro')->__('Some Amazon request(s) are being processed now.')
             );
         }
-        //----------------------------
+        // ---------------------------------------
 
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
         Mage::helper('M2ePro/Data_Global')->setValue('marketplace_id', $model->getMarketplaceId());
 
         // Set rule model
-        // ---------------------------
+        // ---------------------------------------
         $this->setRuleData('amazon_rule_listing_view');
-        // ---------------------------
+        // ---------------------------------------
 
         $this->_initAction();
         $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Manage+M2E+Pro+Listings');
@@ -172,16 +175,16 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         Mage::helper('M2ePro/Data_Global')->setValue('marketplace_id', $model->getMarketplaceId());
 
         // Set rule model
-        // ---------------------------
+        // ---------------------------------------
         $this->setRuleData('amazon_rule_listing_view');
-        // ---------------------------
+        // ---------------------------------------
 
         $response = $this->loadLayout()->getLayout()
             ->createBlock('M2ePro/adminhtml_common_amazon_listing_view')->getGridHtml();
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function editAction()
     {
@@ -217,12 +220,12 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         $oldData = $model->getDataSnapshot();
 
         // Base prepare
-        //--------------------
+        // ---------------------------------------
         $data = array();
-        //--------------------
+        // ---------------------------------------
 
         // tab: settings
-        //--------------------
+        // ---------------------------------------
         $keys = array(
             'template_selling_format_id',
             'template_synchronization_id',
@@ -232,14 +235,14 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
                 $data[$key] = $post[$key];
             }
         }
-        //--------------------
+        // ---------------------------------------
 
         $model->addData($data)->save();
 
         $templateData = array();
 
         // tab: channel settings
-        //---------------
+        // ---------------------------------------
         $keys = array(
             'account_id',
             'marketplace_id',
@@ -297,7 +300,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
             $templateData['restock_date_value'] = Mage::helper('M2ePro')
                                                     ->timezoneDateToGmt($templateData['restock_date_value']);
         }
-        //---------------
+        // ---------------------------------------
 
         $model->addData($templateData)->save();
         $newData = $model->getDataSnapshot();
@@ -341,7 +344,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl());
     }
 
-    //#############################################
+    //########################################
 
     protected function processConnector($action, array $params = array())
     {
@@ -390,7 +393,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         );
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function runListProductsAction()
     {
@@ -434,7 +437,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         ));
     }
 
-    //#############################################
+    //########################################
 
     public function switchToAFNAction()
     {
@@ -543,7 +546,38 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         );
     }
 
-    //#############################################
+    // ---------------------------------------
+
+    public function getAFNQtyBySkuAction()
+    {
+        $accountId = $this->getRequest()->getParam('account_id');
+        $skus = $this->getRequest()->getParam('skus');
+
+        if (empty($skus) || empty($accountId)) {
+            return $this->getResponse()->setBody('You should provide correct parameters.');
+        }
+
+        if (!is_array($skus)) {
+            $skus = explode(',', $skus);
+        }
+
+        /** @var $dispatcherObject Ess_M2ePro_Model_Connector_Amazon_Dispatcher */
+        $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
+        $connectorObj = $dispatcherObject->getVirtualConnector('inventory','get','qtyAfnItems',
+            array(
+                'items' => $skus,
+                'only_realtime' => true
+            ),
+            null,
+            $accountId
+        );
+
+        $data = $dispatcherObject->process($connectorObj);
+
+        return $this->getResponse()->setBody(json_encode($data));
+    }
+
+    //########################################
 
     public function getSearchAsinMenuAction()
     {
@@ -589,7 +623,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         $this->getResponse()->setBody($response);
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function searchAsinManualAction()
     {
@@ -679,7 +713,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         return $this->getResponse()->setBody('0');
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function getCategoriesByAsinAction()
     {
@@ -707,7 +741,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         )));
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function getProductsSearchStatusAction()
     {
@@ -799,7 +833,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         )));
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function mapToAsinAction()
     {
@@ -864,7 +898,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         $optionsData = json_decode($optionsData, true);
 
         if ($variationManager->isRelationParentType()) {
-            if (empty($optionsData['virtual_matched_attributes'])){
+            if (empty($optionsData['virtual_matched_attributes'])) {
                 $matchedAttributes = $optionsData['matched_attributes'];
             } else {
                 $attributesData = $optionsData['virtual_matched_attributes'];
@@ -920,7 +954,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
             $parentTypeModel->setChannelAttributesSets($channelVariationsSet, false);
 
             $channelVariations = array();
-            foreach($optionsData['variations']['asins'] as $asin => $asinAttributes) {
+            foreach ($optionsData['variations']['asins'] as $asin => $asinAttributes) {
                 $channelVariations[$asin] = $asinAttributes['specifics'];
             }
             $parentTypeModel->setChannelVariations($channelVariations, false);
@@ -983,7 +1017,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         }
 
         $channelVariations = array();
-        foreach($optionsData as $asin => $asinAttributes) {
+        foreach ($optionsData as $asin => $asinAttributes) {
             $channelVariations[$asin] = $asinAttributes['specifics'];
         }
 
@@ -1200,6 +1234,26 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
             $errorMsgProductsCount += $tempCount;
         }
 
+        $filteredProductsIdsByParent = $variationHelper->filterParentProductsByVariationTheme(
+            $filteredProductsIdsByTpl
+        );
+
+        if (count($filteredProductsIdsByTpl) != count($filteredProductsIdsByParent)) {
+            $badThemeProductsIds = array_diff($filteredProductsIdsByTpl, $filteredProductsIdsByParent);
+            $badDescriptionProductsIds = array_merge(
+                $badDescriptionProductsIds,
+                $badThemeProductsIds
+            );
+
+            $tempCount = count($filteredProductsIdsByTpl) - count($filteredProductsIdsByParent);
+            $errors[] = Mage::helper('M2ePro')->__(
+                'The Category chosen in the Description Policies of %count% Items does not support creation of
+                 Variational Products at all.',
+                $tempCount
+            );
+            $errorMsgProductsCount += $tempCount;
+        }
+
         if (!empty($errors)) {
             $messages[] = array (
                 'type' => 'warning',
@@ -1207,16 +1261,16 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
             );
         }
 
-        if (!empty($filteredProductsIdsByTpl)) {
-            $this->mapToNewAsinByChunks($filteredProductsIdsByTpl);
-            $this->runProcessorForParents($filteredProductsIdsByTpl);
+        if (!empty($filteredProductsIdsByParent)) {
+            $this->mapToNewAsinByChunks($filteredProductsIdsByParent);
+            $this->runProcessorForParents($filteredProductsIdsByParent);
             array_unshift(
                 $messages,
                 array(
                     'type' => 'success',
                     'text' => Mage::helper('M2ePro')->__(
                         'New ASIN/ISBN creation feature was successfully added to %count% Products.',
-                        count($filteredProductsIdsByTpl)
+                        count($filteredProductsIdsByParent)
                     )
                 )
             );
@@ -1227,7 +1281,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
                 ->filterProductsByMagentoProductType($badDescriptionProductsIds);
 
             $descriptionTemplatesBlock = $this->loadLayout()->getLayout()
-                ->createBlock('M2ePro/adminhtml_common_amazon_listing_templateDescription_main');
+                ->createBlock('M2ePro/adminhtml_common_amazon_listing_template_description_main');
             $descriptionTemplatesBlock->setNewAsin(true);
             $descriptionTemplatesBlock->setMessages($messages);
             $descriptionTemplatesBlock = $descriptionTemplatesBlock->toHtml();
@@ -1240,7 +1294,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         )));
     }
 
-    //#############################################
+    //########################################
 
     public function mapToTemplateDescriptionAction()
     {
@@ -1356,7 +1410,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         )));
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function viewTemplateDescriptionsGridAction()
     {
@@ -1372,14 +1426,14 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         }
 
         $grid = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_common_amazon_listing_templateDescription_grid');
+            ->createBlock('M2ePro/adminhtml_common_amazon_listing_template_description_grid');
         $grid->setCheckNewAsinAccepted($checkNewAsinAccepted);
         $grid->setProductsIds($productsIds);
 
         return $this->getResponse()->setBody($grid->toHtml());
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function validateProductsForTemplateDescriptionAssignAction()
     {
@@ -1439,8 +1493,8 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         }
 
         $mainBlock = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_common_amazon_listing_templateDescription_main');
-        if (!empty($messages)){
+            ->createBlock('M2ePro/adminhtml_common_amazon_listing_template_description_main');
+        if (!empty($messages)) {
             $mainBlock->setMessages($messages);
         }
 
@@ -1451,7 +1505,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         )));
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function getDescriptionTemplatesListAction()
     {
@@ -1474,7 +1528,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         return $this->getResponse()->setBody(json_encode($descriptionTemplates));
     }
 
-    //#############################################
+    //########################################
 
     public function viewTemplateShippingOverridePopupAction()
     {
@@ -1508,7 +1562,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
 
         $mainBlock = $this->loadLayout()->getLayout()
             ->createBlock('M2ePro/adminhtml_common_amazon_listing_template_shippingOverride');
-        if (!empty($messages)){
+        if (!empty($messages)) {
             $mainBlock->setMessages($messages);
         }
 
@@ -1545,7 +1599,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         return $this->getResponse()->setBody($grid->toHtml());
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function assignShippingOverrideTemplateAction()
     {
@@ -1630,7 +1684,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         )));
     }
 
-    //#############################################
+    //########################################
 
     protected function setRuleData($prefix)
     {
@@ -1640,7 +1694,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         $prefix .= isset($listingData['id']) ? '_'.$listingData['id'] : '';
         Mage::helper('M2ePro/Data_Global')->setValue('rule_prefix', $prefix);
 
-        //----------------------------------------------
+        // ---------------------------------------
         $useCustomOptions = true;
         $magentoViewMode = Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View::VIEW_MODE_MAGENTO;
         $sessionParamName = Mage::getBlockSingleton('M2ePro/Adminhtml_Common_Amazon_Listing_View')->getId()
@@ -1651,7 +1705,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
             $magentoViewMode == Mage::helper('M2ePro/Data_Session')->getValue($sessionParamName)) {
             $useCustomOptions = false;
         }
-        //----------------------------------------------
+        // ---------------------------------------
 
         /** @var $ruleModel Ess_M2ePro_Model_Magento_Product_Rule */
         $ruleModel = Mage::getModel('M2ePro/Amazon_Magento_Product_Rule')->setData(
@@ -1690,7 +1744,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         return $prefix;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param $productsIdsParam
@@ -1789,7 +1843,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         );
     }
 
-    //#############################################
+    //########################################
 
     protected function setShippingOverrideTemplateForProducts($productsIds, $templateId)
     {
@@ -1802,7 +1856,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         );
     }
 
-    //#############################################
+    //########################################
 
     protected function mapToNewAsinByChunks($productsIds)
     {
@@ -1827,7 +1881,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         );
     }
 
-    //#############################################
+    //########################################
 
     protected function runProcessorForParents($productsIds)
     {
@@ -1850,5 +1904,5 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
         }
     }
 
-    //#############################################
+    //########################################
 }

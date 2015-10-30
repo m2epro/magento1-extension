@@ -1,13 +1,13 @@
 EbayListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'ebay';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getLogViewUrl: function(rowId)
     {
@@ -16,7 +16,7 @@ EbayListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getSelectedItemsParts: function()
     {
@@ -39,7 +39,7 @@ EbayListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
         return result;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
@@ -62,7 +62,7 @@ EbayListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
         return maxProductsInPart;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -77,5 +77,5 @@ EbayListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_Tabs
@@ -9,7 +11,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
 {
     protected $listingProductId;
 
-    // ####################################
+    //########################################
 
     /**
      * @param mixed $listingProductId
@@ -27,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         return $this->listingProductId;
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
     protected $listingProduct;
@@ -37,7 +39,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
      */
     public function getListingProduct()
     {
-        if(empty($this->listingProduct)) {
+        if (empty($this->listingProduct)) {
             $this->listingProduct = Mage::helper('M2ePro/Component_Amazon')
                 ->getObject('Listing_Product', $this->getListingProductId());
         }
@@ -45,22 +47,22 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         return $this->listingProduct;
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonVariationProductManageTabs');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('widget/tabshoriz.phtml');
         $this->setDestElementId('variation_product_manage_tabs_container');
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     protected function _beforeToHtml()
     {
@@ -81,18 +83,20 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         $settingsBlockLabel = Mage::helper('M2ePro')->__('Settings');
         $settingsBlockTitle = Mage::helper('M2ePro')->__('Settings');
 
-        if(count($settingsBlock->getMessages()) > 0) {
-            $iconPath = $this->getSkinUrl('M2ePro/images/'. $settingsBlock->getMessagesType() .'.png');
-            $problemIcon = '<img style="vertical-align: middle;" src="'
-                . $iconPath . '" alt="" width="16" height="15"> ';
-            $settingsBlockLabel = $problemIcon.$settingsBlockLabel;
-            $settingsBlockTitle = Mage::helper('M2ePro')->__(
-                'Action required.'
-            );
+        $iconPath = $this->getSkinUrl('M2ePro/images/'. $settingsBlock->getMessagesType() .'.png');
+        $iconTitle = Mage::helper('M2ePro')->__('Action required.');
+        $iconStyle = 'vertical-align: middle;';
+
+        if (count($settingsBlock->getMessages()) == 0) {
+            $iconStyle .= 'display:none;';
         }
 
+        $problemIcon = <<<HTML
+<img style="{$iconStyle}" src="{$iconPath}" title="{$iconTitle}" alt="" width="16" height="15">&nbsp;
+HTML;
+
         $this->addTab('settings', array(
-            'label'   => $settingsBlockLabel,
+            'label'   => $problemIcon . $settingsBlockLabel,
             'title'   => $settingsBlockTitle,
             'content' => $this->getLayout()
                     ->createBlock('M2ePro/adminhtml_common_amazon_listing_variation_product_manage_tabs_settings')
@@ -110,7 +114,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         ));
 
         $generalId = $this->getListingProduct()->getChildObject()->getGeneralId();
-        if(empty($generalId) && $this->getListingProduct()->getChildObject()->isGeneralIdOwner()) {
+        if (empty($generalId) && $this->getListingProduct()->getChildObject()->isGeneralIdOwner()) {
             $this->setActiveTab('settings');
         } else {
             $this->setActiveTab('variations');
@@ -124,7 +128,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         $generalId = $this->getListingProduct()->getChildObject()->getGeneralId();
 
         $showMask = 0;
-        if(!(empty($generalId) && $this->getListingProduct()->getChildObject()->isGeneralIdOwner())) {
+        if (!(empty($generalId) && $this->getListingProduct()->getChildObject()->isGeneralIdOwner())) {
             $showMask = 1;
         }
 
@@ -135,7 +139,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         );
         $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
 
-        $additionalJavascript = <<<JAVASCRIPT
+        $additionalJavascript = <<<HTML
 <script type="text/javascript">
     amazonVariationProductManageTabsJsTabs.moveTabContentInDest();
 
@@ -145,7 +149,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
 
     ListingGridHandlerObj.variationProductManageHandler.loadVariationsGrid({$showMask});
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml() .
             '<div id="variation_product_manage_tabs_container"></div>' .
@@ -153,5 +157,5 @@ JAVASCRIPT;
             $closeBtn->toHtml();
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,29 +1,31 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingCategoryMode');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listingId = $this->getRequest()->getParam('listing_id');
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',$listingId);
 
         $listingAdditionalData = $listing->getData('additional_data');
         $listingAdditionalData = json_decode($listingAdditionalData, true);
-        //------------------------------
+        // ---------------------------------------
 
         $this->_headerText = Mage::helper('M2ePro')->__('Set Your eBay Categories');
 
@@ -60,14 +62,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_B
         $this->setTemplate('M2ePro/ebay/listing/category/mode.phtml');
     }
 
-    // ####################################
+    //########################################
 
     public function getHeaderWidth()
     {
         return 'width:50%;';
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -84,15 +86,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_B
 
         $this->setChild('view_header', $viewHeaderBlock);
 
-        // ------------------------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'onclick' => '',
-            ) );
-        $this->setChild('mode_same_remember_pop_up_confirm_button',$buttonBlock);
+            ));
+        $this->setChild('mode_same_remember_pop_up_confirm_button', $buttonBlock);
     }
 
-    // ####################################
+    //########################################
 }

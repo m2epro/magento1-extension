@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
 {
     private $parentListingsProductsForProcessing = array();
 
-    // ########################################
+    //########################################
 
     public function process(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -40,7 +42,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         }
     }
 
-    // ########################################
+    //########################################
 
     private function checkChangeAsVariationProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -94,14 +96,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         return true;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function checkVariationStructureChanges(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
-
-        $typeModel = $variationManager->getTypeModel();
 
         if ($variationManager->isRelationParentType()) {
             $this->parentListingsProductsForProcessing[$listingProduct->getId()] = $listingProduct;
@@ -109,6 +109,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         }
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_PhysicalUnit $typeModel */
+        $typeModel = $variationManager->getTypeModel();
+
+        if (!$listingProduct->getMagentoProduct()->isSimpleType()) {
+            $typeModel->inspectAndFixProductOptionsIds();
+        }
 
         if (!$typeModel->isActualProductAttributes()) {
 
@@ -152,5 +157,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         }
     }
 
-    // ########################################
+    //########################################
 }

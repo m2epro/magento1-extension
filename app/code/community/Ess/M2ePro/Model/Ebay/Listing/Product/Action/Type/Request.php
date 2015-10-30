@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
@@ -25,8 +27,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
      */
     private $requests = array();
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         $this->initializeVariations();
@@ -40,11 +45,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $data;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     abstract protected function getActionData();
 
-    // ########################################
+    //########################################
 
     protected function initializeVariations()
     {
@@ -73,7 +78,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
     protected function beforeBuildDataEvent() {}
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     protected function prepareFinalData(array $data)
     {
@@ -160,9 +165,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
             $this->addWarningMessage(
                 Mage::helper('M2ePro')->__(
-                    'Item Specific "%specific_name%" will not be sent to eBay, because your Variational Product varies
-                    by the Attribute with the same Label. In case M2E Pro will send this information twice, eBay will
-                    return an error. So M2E Pro ignores the Value of this Item Specific to prevent the error message.',
+                    'Attribute "%specific_name%" will be shown as Variation Specific instead of Item Specific.',
                     $itemSpecific['name']
                 )
             );
@@ -232,7 +235,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $data;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     protected function collectRequestsWarningMessages()
     {
@@ -246,7 +249,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         }
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function getIsEpsImagesMode()
     {
@@ -270,7 +273,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $additionalData['out_of_stock_control'];
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Selling
@@ -288,7 +291,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $this->getRequest('description');
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
@@ -306,7 +309,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $this->getRequest('categories');
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Payment
@@ -332,7 +335,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $this->getRequest('return');
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param $type
@@ -356,5 +359,5 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $this->requests[$type];
     }
 
-    // ########################################
+    //########################################
 }

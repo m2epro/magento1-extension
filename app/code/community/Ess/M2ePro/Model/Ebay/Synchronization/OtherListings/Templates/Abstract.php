@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Abstract
@@ -19,39 +21,54 @@ abstract class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Abs
 
     protected $cache = array();
 
-    //####################################
+    //########################################
 
     protected function processTask($taskPath)
     {
         return parent::processTask('Templates_'.$taskPath);
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Synchronization_Templates_Runner $object
+     */
     public function setRunner(Ess_M2ePro_Model_Synchronization_Templates_Runner $object)
     {
         $this->runner = $object;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Synchronization_Templates_Runner
+     */
     public function getRunner()
     {
         return $this->runner;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector $object
+     */
     public function setInspector(Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector $object)
     {
         $this->inspector = $object;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
+     */
     public function getInspector()
     {
         return $this->inspector;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $cache
+     */
     public function setCache(array &$cache)
     {
         $this->cache = &$cache;
@@ -65,8 +82,13 @@ abstract class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Abs
         }
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @param array $attributes
+     * @param bool $withStoreFilter
+     * @return array
+     */
     protected function getChangedInstances(array $attributes, $withStoreFilter = false)
     {
         $args = func_get_args();
@@ -126,5 +148,5 @@ abstract class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Abs
         return $this->cache['listings_other_products_by_params'][$cacheKey];
     }
 
-    //####################################
+    //########################################
 }

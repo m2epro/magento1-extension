@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630
@@ -13,26 +15,32 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630
 
     private $forceAllSteps = false;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     */
     public function getInstaller()
     {
         return $this->installer;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     public function setForceAllSteps($value = true)
     {
         $this->forceAllSteps = $value;
     }
 
-    //####################################
+    //########################################
 
     public function migrate()
     {
@@ -56,7 +64,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630
         }
     }
 
-    //####################################
+    //########################################
 
     private function processGeneral()
     {
@@ -119,5 +127,5 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630
         $model->process();
     }
 
-    //####################################
+    //########################################
 }

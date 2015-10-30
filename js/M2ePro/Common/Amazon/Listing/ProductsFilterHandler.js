@@ -1,23 +1,23 @@
 AmazonListingProductsFilterHandler = Class.create();
 AmazonListingProductsFilterHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     templateSellingFormatId: null,
     marketplaceId: null,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     store_id_change: function()
     {
         AmazonListingProductsFilterHandlerObj.checkMessages();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     checkMessages: function()
     {
@@ -53,5 +53,5 @@ AmazonListingProductsFilterHandler.prototype = Object.extend(new CommonHandler()
             );
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

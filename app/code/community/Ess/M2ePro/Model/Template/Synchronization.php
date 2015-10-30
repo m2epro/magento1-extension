@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Template_Synchronization extends Ess_M2ePro_Model_Component_Parent_Abstract
@@ -12,7 +14,7 @@ class Ess_M2ePro_Model_Template_Synchronization extends Ess_M2ePro_Model_Compone
     const REVISE_CHANGE_SELLING_FORMAT_TEMPLATE_NONE = 0;
     const REVISE_CHANGE_SELLING_FORMAT_TEMPLATE_YES  = 1;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -20,27 +22,33 @@ class Ess_M2ePro_Model_Template_Synchronization extends Ess_M2ePro_Model_Compone
         $this->_init('M2ePro/Template_Synchronization');
     }
 
-    // ########################################
+    //########################################
 
     public function getTitle()
     {
         return $this->getData('title');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isReviseListing()
     {
         return (int)$this->getData('revise_change_listing') != self::REVISE_CHANGE_LISTING_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseSellingFormatTemplate()
     {
         return (int)$this->getData('revise_change_selling_format_template') !=
             self::REVISE_CHANGE_SELLING_FORMAT_TEMPLATE_NONE;
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -54,5 +62,5 @@ class Ess_M2ePro_Model_Template_Synchronization extends Ess_M2ePro_Model_Compone
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

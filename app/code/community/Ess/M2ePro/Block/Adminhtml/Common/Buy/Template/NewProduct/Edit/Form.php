@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buyTemplateNewProductEditForm');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareForm()
@@ -44,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Edit_Form extend
             ->query()
             ->fetchAll();
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'category_confirm_button',
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
@@ -52,9 +54,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Edit_Form extend
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('category_confirm_button',$buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'category_change_button',
             'label'   => Mage::helper('M2ePro')->__('Change Category'),
@@ -62,10 +64,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Edit_Form extend
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('category_change_button',$buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,11 +1,11 @@
 ListingCategoryTreeHandler = Class.create();
 ListingCategoryTreeHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     tree_buildCategory: function(parent, config)
     {
@@ -69,5 +69,5 @@ ListingCategoryTreeHandler.prototype = Object.extend(new CommonHandler(), {
         array_unique(categories_selected_items);
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

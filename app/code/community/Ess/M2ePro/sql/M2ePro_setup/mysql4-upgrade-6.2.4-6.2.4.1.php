@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_selling_format`
@@ -35,7 +35,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `qty_min_posted_value` int(11) UNSIGNED DEFAULT NULL
         AFTER `qty_modification_mode`;
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     ALTER TABLE `m2epro_amazon_template_synchronization`
     CHANGE COLUMN `stop_out_off_stock` `stop_out_off_stock` TINYINT(2) UNSIGNED NOT NULL;
@@ -44,7 +44,7 @@ $connection = $installer->getConnection();
     CHANGE COLUMN `stop_out_off_stock` `stop_out_off_stock` TINYINT(2) UNSIGNED NOT NULL;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTables = array(
     'm2epro_ebay_template_selling_format',
@@ -76,7 +76,7 @@ foreach ($tempTables as $tableName) {
     }
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_synchronization');
 $columnName = 'stop_out_off_stock';
@@ -98,7 +98,7 @@ if ($connection->tableColumnExists($tempTable, $columnName) !== false) {
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -117,7 +117,7 @@ SET `qty_min_posted_value` = 1;
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -128,8 +128,8 @@ WHERE `group` = '/installation/version/history/' AND `create_date` = `value`;
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

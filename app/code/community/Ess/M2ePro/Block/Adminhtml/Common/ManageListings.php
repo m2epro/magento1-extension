@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2012 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_ManageListings extends Ess_M2ePro_Block_Adminhtml_Widget_Container
@@ -10,24 +12,24 @@ class Ess_M2ePro_Block_Adminhtml_Common_ManageListings extends Ess_M2ePro_Block_
     const TAB_ID_LISTING_OTHER = 'listing_other';
     const TAB_ID_SEARCH = 'search';
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('commonManageListings');
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__('Listings');
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
@@ -35,12 +37,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_ManageListings extends Ess_M2ePro_Block_
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        //------------------------------
+        // ---------------------------------------
         $this->setTemplate('M2ePro/common/manageListings.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -68,14 +70,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_ManageListings extends Ess_M2ePro_Block_
                '<div id="tabs_container"></div>' . $script;
     }
 
-    // ########################################
+    //########################################
 
     protected function getActiveTab()
     {
         return $this->getRequest()->getParam('tab', self::TAB_ID_LISTING);
     }
 
-    // ########################################
+    //########################################
 
     private function prepareListingTab()
     {
@@ -128,7 +130,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_ManageListings extends Ess_M2ePro_Block_
         return $tab;
     }
 
-    // ########################################
+    //########################################
 
     private function getScriptFor3rdPartyControlVisibility($tabsContainer)
     {
@@ -166,5 +168,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_ManageListings extends Ess_M2ePro_Block_
                </script>";
     }
 
-    // ########################################
+    //########################################
 }

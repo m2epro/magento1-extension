@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Grid_Column_Filter_Qty
     extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Range
 {
-    // ####################################
+    //########################################
 
     public function getHtml()
     {
@@ -16,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Grid_Column_Filter_Qty
                 $this->_getHtmlName() . '[afn]" ' . $afnChecked . '></div></div>';
     }
 
-    // ####################################
+    //########################################
 
     public function getValue($index=null)
     {
@@ -32,5 +38,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Grid_Column_Filter_Qty
         return null;
     }
 
-    // ####################################
+    //########################################
 }

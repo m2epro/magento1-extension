@@ -1,6 +1,6 @@
 EbayTemplatePaymentHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -16,7 +16,7 @@ EbayTemplatePaymentHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     payPalModeChange: function()
     {
@@ -32,7 +32,7 @@ EbayTemplatePaymentHandler = Class.create(CommonHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     immediatePaymentChange: function()
     {
@@ -47,5 +47,5 @@ EbayTemplatePaymentHandler = Class.create(CommonHandler, {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

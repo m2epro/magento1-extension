@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Description_Builder
     extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
 {
-    // ########################################
+    //########################################
 
     public function build(array $data)
     {
@@ -15,18 +17,10 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
             return NULL;
         }
 
-        // validate input data
-        //------------------------------
         $this->validate($data);
-        //------------------------------
 
-        // prepare input data
-        //------------------------------
         $data = $this->prepareData($data);
-        //------------------------------
 
-        // create template
-        //------------------------------
         $template = Mage::helper('M2ePro/Component_Ebay')->getModel('Template_Description');
 
         if (isset($data['id'])) {
@@ -35,18 +29,16 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
 
         $template->addData($data);
         $template->save();
-        //------------------------------
 
         return $template;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareData(array &$data)
     {
         $prepared = parent::prepareData($data);
 
-        //------------------------------
         $isSimpleMode = Mage::helper('M2ePro/View_Ebay')->isSimpleMode();
 
         $defaultData = $isSimpleMode ?
@@ -58,7 +50,6 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         $defaultData['watermark_settings'] = json_decode($defaultData['watermark_settings'], true);
 
         $data = Mage::helper('M2ePro')->arrayReplaceRecursive($defaultData, $data);
-        //------------------------------
 
         if (isset($data['title_mode'])) {
             $prepared['title_mode'] = (int)$data['title_mode'];
@@ -180,6 +171,10 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
 
         if (isset($data['variation_configurable_images'])) {
             $prepared['variation_configurable_images'] = $data['variation_configurable_images'];
+
+            if (is_array($prepared['variation_configurable_images'])) {
+                $prepared['variation_configurable_images'] = json_encode($prepared['variation_configurable_images']);
+            }
         }
 
         if (isset($data['use_supersize_images'])) {
@@ -190,7 +185,8 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
             $prepared['watermark_mode'] = (int)$data['watermark_mode'];
         }
 
-        //-----------------------------
+        // ---------------------------------------
+
         $watermarkSettings = array();
         $hashChange = false;
 
@@ -220,9 +216,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
                 $hashChange = true;
             }
         }
-        //-----------------------------
 
-        //-----------------------------
+        // ---------------------------------------
+
         if (!empty($_FILES['watermark_image']['tmp_name'])) {
 
             $hashChange = true;
@@ -244,9 +240,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         } elseif (!empty($data['old_watermark_image']) && !isset($prepared['id'])) {
             $prepared['watermark_image'] = base64_decode($data['old_watermark_image']);
         }
-        //-----------------------------
 
-        //-----------------------------
+        // ---------------------------------------
+
         if ($hashChange) {
             $watermarkSettings['hashes']['previous'] = $data['old_watermark_settings']['hashes']['current'];
             $watermarkSettings['hashes']['current'] = substr(sha1(microtime()), 0, 5);
@@ -256,10 +252,11 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         }
 
         $prepared['watermark_settings'] = json_encode($watermarkSettings);
-        //-----------------------------
+
+        // ---------------------------------------
 
         return $prepared;
     }
 
-    // ########################################
+    //########################################
 }

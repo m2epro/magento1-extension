@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
@@ -85,7 +87,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     const MAGENTO_ORDERS_SHIPMENT_MODE_NO = 0;
     const MAGENTO_ORDERS_SHIPMENT_MODE_YES = 1;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -93,7 +95,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $this->_init('M2ePro/Ebay_Account');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -130,30 +132,57 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOtherCategoryTemplates($asObjects = false, array $filters = array())
     {
         return $this->getRelatedSimpleItems('Ebay_Template_OtherCategory','account_id',$asObjects,$filters);
     }
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getFeedbacks($asObjects = false, array $filters = array())
     {
         return $this->getRelatedSimpleItems('Ebay_Feedback','account_id',$asObjects,$filters);
     }
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getFeedbackTemplates($asObjects = false, array $filters = array())
     {
         return $this->getRelatedSimpleItems('Ebay_Feedback_Template','account_id',$asObjects,$filters);
     }
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getEbayItems($asObjects = false, array $filters = array())
     {
         return $this->getRelatedSimpleItems('Ebay_Item','account_id',$asObjects,$filters);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function hasFeedbackTemplate()
     {
         return (bool)Mage::getModel('M2ePro/Ebay_Feedback_Template')->getCollection()
@@ -161,8 +190,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
                                ->getSize();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getMode()
     {
         return (int)$this->getData('mode');
@@ -173,86 +205,134 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getData('server_hash');
     }
 
+    public function getUserId()
+    {
+        return $this->getData('user_id');
+    }
+
     public function getTranslationHash()
     {
         return $this->getData('translation_hash');
     }
 
+    /**
+     * @return bool
+     */
     public function isModeProduction()
     {
         return $this->getMode() == self::MODE_PRODUCTION;
     }
 
+    /**
+     * @return bool
+     */
     public function isModeSandbox()
     {
         return $this->getMode() == self::MODE_SANDBOX;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getFeedbacksReceive()
     {
         return (int)$this->getData('feedbacks_receive');
     }
 
+    /**
+     * @return bool
+     */
     public function isFeedbacksReceive()
     {
         return $this->getFeedbacksReceive() == self::FEEDBACKS_RECEIVE_YES;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getFeedbacksAutoResponse()
     {
         return (int)$this->getData('feedbacks_auto_response');
     }
 
+    /**
+     * @return bool
+     */
     public function isFeedbacksAutoResponseDisabled()
     {
         return $this->getFeedbacksAutoResponse() == self::FEEDBACKS_AUTO_RESPONSE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isFeedbacksAutoResponseCycled()
     {
         return $this->getFeedbacksAutoResponse() == self::FEEDBACKS_AUTO_RESPONSE_CYCLED;
     }
 
+    /**
+     * @return bool
+     */
     public function isFeedbacksAutoResponseRandom()
     {
         return $this->getFeedbacksAutoResponse() == self::FEEDBACKS_AUTO_RESPONSE_RANDOM;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getFeedbacksAutoResponseOnlyPositive()
     {
         return (int)$this->getData('feedbacks_auto_response_only_positive');
     }
 
+    /**
+     * @return bool
+     */
     public function isFeedbacksAutoResponseOnlyPositive()
     {
         return $this->getFeedbacksAutoResponseOnlyPositive() == self::FEEDBACKS_AUTO_RESPONSE_ONLY_POSITIVE_YES;
     }
 
-    // ################################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getOtherListingsSynchronization()
     {
         return (int)$this->getData('other_listings_synchronization');
     }
 
+    /**
+     * @return int
+     */
     public function getOtherListingsMappingMode()
     {
         return (int)$this->getData('other_listings_mapping_mode');
     }
 
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOtherListingsMappingSettings()
     {
         return $this->getSettings('other_listings_mapping_settings');
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getOtherListingsMappingSkuMode()
     {
         $setting = $this->getSetting('other_listings_mapping_settings',
@@ -262,6 +342,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
+    /**
+     * @return int
+     */
     public function getOtherListingsMappingSkuPriority()
     {
         $setting = $this->getSetting('other_listings_mapping_settings',
@@ -279,8 +362,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getOtherListingsMappingTitleMode()
     {
         $setting = $this->getSetting('other_listings_mapping_settings',
@@ -290,6 +376,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
+    /**
+     * @return int
+     */
     public function getOtherListingsMappingTitlePriority()
     {
         $setting = $this->getSetting('other_listings_mapping_settings',
@@ -306,67 +395,101 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting;
     }
 
-    // ################################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsSynchronizationEnabled()
     {
         return $this->getOtherListingsSynchronization() == self::OTHER_LISTINGS_SYNCHRONIZATION_YES;
     }
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingEnabled()
     {
         return $this->getOtherListingsMappingMode() == self::OTHER_LISTINGS_MAPPING_MODE_YES;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingSkuModeNone()
     {
         return $this->getOtherListingsMappingSkuMode() == self::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingSkuModeDefault()
     {
         return $this->getOtherListingsMappingSkuMode() == self::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT;
     }
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingSkuModeCustomAttribute()
     {
         return $this->getOtherListingsMappingSkuMode() == self::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingSkuModeProductId()
     {
         return $this->getOtherListingsMappingSkuMode() == self::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingTitleModeNone()
     {
         return $this->getOtherListingsMappingTitleMode() == self::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingTitleModeDefault()
     {
         return $this->getOtherListingsMappingTitleMode() == self::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT;
     }
 
+    /**
+     * @return bool
+     */
     public function isOtherListingsMappingTitleModeCustomAttribute()
     {
         return $this->getOtherListingsMappingTitleMode() == self::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param int $marketplaceId
+     * @return int
+     */
     public function getRelatedStoreId($marketplaceId)
     {
         $storeId = $this->getSetting('marketplaces_data', array((int)$marketplaceId, 'related_store_id'));
         return !is_null($storeId) ? (int)$storeId : Mage_Core_Model_App::ADMIN_STORE_ID;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersListingsModeEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing', 'mode'),
@@ -375,6 +498,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_LISTINGS_MODE_YES;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersListingsStoreCustom()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing', 'store_mode'),
@@ -383,6 +509,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM;
     }
 
+    /**
+     * @return int
+     */
     public function getMagentoOrdersListingsStoreId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing', 'store_id'), 0);
@@ -390,8 +519,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersListingsOtherModeEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'mode'),
@@ -400,6 +532,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES;
     }
 
+    /**
+     * @return int
+     */
     public function getMagentoOrdersListingsOtherStoreId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'store_id'), 0);
@@ -407,6 +542,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersListingsOtherProductImportEnabled()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_mode'),
@@ -415,6 +553,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT;
     }
 
+    /**
+     * @return int
+     */
     public function getMagentoOrdersListingsOtherProductTaxClassId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_tax_class_id'));
@@ -422,7 +563,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getMagentoOrdersNumberSource()
     {
@@ -432,18 +573,27 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersNumberSourceMagento()
     {
         return $this->getMagentoOrdersNumberSource() == self::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersNumberSourceChannel()
     {
         return $this->getMagentoOrdersNumberSource() == self::MAGENTO_ORDERS_NUMBER_SOURCE_CHANNEL;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersNumberPrefixEnable()
     {
         $setting = $this->getSetting(
@@ -457,7 +607,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getSetting('magento_orders_settings', array('number', 'prefix', 'prefix'), '');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getMagentoOrdersCreationMode()
     {
@@ -468,26 +618,41 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting;
     }
 
+    /**
+     * @return bool
+     */
     public function shouldCreateMagentoOrderImmediately()
     {
         return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_IMMEDIATELY;
     }
 
+    /**
+     * @return bool
+     */
     public function shouldCreateMagentoOrderWhenCheckedOut()
     {
         return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_CHECKOUT;
     }
 
+    /**
+     * @return bool
+     */
     public function shouldCreateMagentoOrderWhenPaid()
     {
         return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_PAID;
     }
 
+    /**
+     * @return bool
+     */
     public function shouldCreateMagentoOrderWhenCheckedOutAndPaid()
     {
         return $this->getMagentoOrdersCreationMode() == self::MAGENTO_ORDERS_CREATE_CHECKOUT_AND_PAID;
     }
 
+    /**
+     * @return int
+     */
     public function getMagentoOrdersReservationDays()
     {
         $setting = $this->getSetting(
@@ -497,6 +662,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
+    /**
+     * @return int
+     */
     public function getQtyReservationDays()
     {
         $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'));
@@ -504,8 +672,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersTaxModeNone()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
@@ -514,6 +685,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersTaxModeChannel()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
@@ -522,6 +696,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_CHANNEL;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersTaxModeMagento()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
@@ -530,6 +707,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_MAGENTO;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersTaxModeMixed()
     {
         $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
@@ -538,8 +718,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_MIXED;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersCustomerGuest()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
@@ -548,6 +731,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersCustomerPredefined()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
@@ -556,6 +742,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersCustomerNew()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
@@ -564,6 +753,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_NEW;
     }
 
+    /**
+     * @return int
+     */
     public function getMagentoOrdersCustomerId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'id'));
@@ -571,6 +763,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersCustomerNewSubscribed()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'subscription_mode'),
@@ -579,6 +774,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_YES;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersCustomerNewNotifyWhenCreated()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'notifications', 'customer_created'));
@@ -586,6 +784,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (bool)$setting;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersCustomerNewNotifyWhenOrderCreated()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'notifications', 'order_created'));
@@ -593,6 +794,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (bool)$setting;
     }
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersCustomerNewNotifyWhenInvoiceCreated()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'notifications', 'invoice_created'));
@@ -600,6 +804,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (bool)$setting;
     }
 
+    /**
+     * @return int
+     */
     public function getMagentoOrdersCustomerNewWebsiteId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'website_id'));
@@ -607,6 +814,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
+    /**
+     * @return int
+     */
     public function getMagentoOrdersCustomerNewGroupId()
     {
         $setting = $this->getSetting('magento_orders_settings', array('customer', 'group_id'));
@@ -614,8 +824,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return (int)$setting;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersStatusMappingDefault()
     {
         $setting = $this->getSetting('magento_orders_settings', array('status_mapping', 'mode'),
@@ -624,7 +837,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $setting == self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getMagentoOrdersStatusNew()
     {
@@ -653,8 +866,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getSetting('magento_orders_settings', array('status_mapping', 'shipped'));
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersInvoiceEnabled()
     {
         if ($this->isMagentoOrdersStatusMappingDefault()) {
@@ -664,8 +880,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getSetting('magento_orders_settings', 'invoice_mode') == self::MAGENTO_ORDERS_INVOICE_MODE_YES;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMagentoOrdersShipmentEnabled()
     {
         if ($this->isMagentoOrdersStatusMappingDefault()) {
@@ -675,7 +894,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getSetting('magento_orders_settings', 'shipment_mode') == self::MAGENTO_ORDERS_SHIPMENT_MODE_YES;
     }
 
-    // ########################################
+    //########################################
 
     public function getTokenSession()
     {
@@ -687,14 +906,14 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->getData('token_expired_date');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getFeedbacksLastUsedId()
     {
         return $this->getData('feedbacks_last_used_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getEbayStoreTitle()
     {
@@ -735,6 +954,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return count($categories) > 0 ? $categories[0] : array();
     }
 
+    /**
+     * @return array
+     */
     public function getEbayStoreCategories()
     {
         $tableAccountStoreCategories = Mage::getSingleton('core/resource')
@@ -779,7 +1001,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return $this->buildEbayStoreCategoriesTreeRec($this->getEbayStoreCategories(), 0);
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function updateEbayStoreInfo()
     {
@@ -831,12 +1053,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         }
     }
 
-    // ########################################
+    //########################################
 
     public function updateShippingDiscountProfiles($marketplaceId)
     {
-        // Get shipping discount profiles
-        //----------------------------
         $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector('account', 'get', 'shippingDiscountProfiles',
                                                             array(), NULL, $marketplaceId, $this->getId(),
@@ -857,10 +1077,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $profiles[$marketplaceId] = $data;
 
         $this->setData('ebay_shipping_discount_profiles', json_encode($profiles))->save();
-        //----------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -874,8 +1093,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getDefaultSettingsSimpleMode()
     {
         return array(
@@ -934,10 +1156,13 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         );
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultSettingsAdvancedMode()
     {
         return $this->getDefaultSettingsSimpleMode();
     }
 
-    // ########################################
+    //########################################
 }

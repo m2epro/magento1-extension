@@ -1,16 +1,22 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Category_Builder
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $data
+     * @return Ess_M2ePro_Model_Ebay_Template_Category|null
+     * @throws Exception
+     */
     public function build(array $data)
     {
-        //------------------------------
         $categoryTemplateData = array();
 
         $categoryTemplateData['category_main_mode']      = (int)$data['category_main_mode'];
@@ -29,10 +35,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder
 
         $categoryTemplate = Mage::getModel('M2ePro/Ebay_Template_Category')->setData($categoryTemplateData);
         $categoryTemplate->save();
-        //------------------------------
 
-        // save specifics
-        //------------------------------
         $transaction = Mage::getModel('core/resource_transaction');
 
         foreach ($data['specifics'] as $specific) {
@@ -55,12 +58,11 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder
         }
 
         $transaction->save();
-        //------------------------------
 
         return $categoryTemplate;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Is needed to reduce amount of the Items Specifics blocks an Categories in use
@@ -96,5 +98,5 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder
         return null;
     }
 
-    // ########################################
+    //########################################
 }

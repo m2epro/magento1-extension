@@ -1,21 +1,29 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_PhysicalUnit
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstract
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isVariationProductMatched()
     {
         return (bool)(int)$this->getAmazonListingProduct()->getData('is_variation_product_matched');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isActualProductAttributes()
     {
         $productAttributes = array_map('strtolower', array_keys($this->getProductOptions()));
@@ -27,6 +35,9 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         return $productAttributes == $magentoAttributes;
     }
 
+    /**
+     * @return bool
+     */
     public function isActualProductVariation()
     {
         $currentOptions = $this->getProductOptions();
@@ -56,8 +67,11 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         return false;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $variation
+     */
     public function setProductVariation(array $variation)
     {
         $this->unsetProductVariation();
@@ -95,9 +109,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
             return;
         }
 
-        $this->removeStructure();
         $this->resetProductOptions(false);
-
         $this->getListingProduct()->setData('is_variation_product_matched', 0);
 
         if ($this->getListingProduct()->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
@@ -105,9 +117,11 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         }
 
         $this->getListingProduct()->save();
+
+        $this->removeStructure();
     }
 
-    // ########################################
+    //########################################
 
     public function getProductOptions()
     {
@@ -119,7 +133,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         return $productOptions;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function setProductOptions(array $options, $save = true)
     {
@@ -133,7 +147,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         $this->setProductOptions($options, $save);
     }
 
-    // ########################################
+    //########################################
 
     public function clearTypeData()
     {
@@ -146,7 +160,50 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    public function inspectAndFixProductOptionsIds()
+    {
+        $currentVariations = $this->getListingProduct()->getVariations(true);
+
+        if (empty($currentVariations)) {
+            return;
+        }
+
+        /** @var Ess_M2ePro_Model_Listing_Product_Variation $currentVariation */
+        $currentVariation = reset($currentVariations);
+
+        $productOptions = array();
+        foreach ($currentVariation->getOptions(true) as $currentOption) {
+            /** @var Ess_M2ePro_Model_Listing_Product_Variation_Option $currentOption */
+            $productOptions[$currentOption->getAttribute()] = $currentOption->getOption();
+        }
+
+        $magentoVariation = $this->getMagentoProduct()
+                                 ->getVariationInstance()
+                                 ->getVariationTypeStandard($productOptions);
+
+        if (!is_array($magentoVariation)) {
+            return;
+        }
+
+        foreach ($currentVariation->getOptions(true) as $currentOption) {
+            foreach ($magentoVariation as $magentoOption) {
+
+                if ($currentOption->getAttribute() != $magentoOption['attribute'] ||
+                    $currentOption->getOption() != $magentoOption['option']) {
+                    continue;
+                }
+
+                if ($currentOption->getProductId() == $magentoOption['product_id']) {
+                    continue;
+                }
+
+                $currentOption->setData('product_id', $magentoOption['product_id']);
+                $currentOption->save();
+            }
+        }
+    }
+
+    //########################################
 
     private function removeStructure()
     {
@@ -179,7 +236,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         }
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function removeChannelItems()
     {
@@ -211,7 +268,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         Mage::getModel('M2ePro/Amazon_Item')->setData($data)->save();
     }
 
-    // ########################################
+    //########################################
 
     protected function getMagentoAttributes()
     {
@@ -223,5 +280,5 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
         return array_keys($magentoVariations['set']);
     }
 
-    // ########################################
+    //########################################
 }

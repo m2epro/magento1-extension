@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Child
@@ -12,7 +14,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
      */
     private $parentListingProduct = NULL;
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -44,8 +46,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         return $this->getAmazonParentListingProduct()->getVariationManager()->getTypeModel();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array|mixed|null
+     */
     public function getRealProductOptions()
     {
         $productOptions = $this->getProductOptions();
@@ -67,15 +72,21 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         return $realProductOptions;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isVariationChannelMatched()
     {
         return (bool)$this->getListingProduct()->getData('is_variation_channel_matched');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $options
+     */
     public function setChannelVariation(array $options)
     {
         $this->unsetChannelVariation();
@@ -98,13 +109,19 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return mixed|null
+     */
     public function getChannelOptions()
     {
         return $this->getListingProduct()->getSetting('additional_data', 'variation_channel_options', array());
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getRealChannelOptions()
     {
         $channelOptions = $this->getChannelOptions();
@@ -126,7 +143,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         return $realChannelOptions;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     private function setChannelOptions(array $options, $save = true)
     {
@@ -134,8 +151,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         $save && $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $matchedAttributes
+     * @param bool
+     */
     public function setCorrectMatchedAttributes(array $matchedAttributes, $save = true)
     {
         $this->getListingProduct()->setSetting(
@@ -144,6 +165,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         $save && $this->getListingProduct()->save();
     }
 
+    /**
+     * @return mixed
+     */
     public function getCorrectMatchedAttributes()
     {
         return $this->getListingProduct()->getSetting(
@@ -151,8 +175,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         );
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function isActualMatchedAttributes()
     {
         $correctMatchedAttributes = $this->getCorrectMatchedAttributes();
@@ -169,7 +197,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         return count(array_diff_assoc($correctMatchedAttributes, $currentMatchedAttributes)) <= 0;
     }
 
-    // ########################################
+    //########################################
 
     public function clearTypeData()
     {
@@ -185,5 +213,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 }

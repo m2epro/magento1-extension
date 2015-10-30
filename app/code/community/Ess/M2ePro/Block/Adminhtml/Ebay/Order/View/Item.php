@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Item extends Mage_Adminhtml_Block_Widget_Grid
@@ -12,26 +14,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Item extends Mage_Adminhtml_Blo
     /** @var $taxCalculator Mage_Tax_Model_Calculation */
     private $taxCalculator;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayOrderViewItem');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setPagerVisibility(false);
         $this->setFilterVisibility(false);
         $this->setUseAjax(true);
         $this->_defaultLimit = 200;
-        //------------------------------
+        // ---------------------------------------
 
         $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
         $this->taxCalculator = Mage::getSingleton('tax/calculation');
@@ -123,7 +125,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Item extends Mage_Adminhtml_Blo
         return parent::_prepareColumns();
     }
 
-    //##############################################################
+    //########################################
 
     /**
      * @param $value
@@ -302,5 +304,5 @@ HTML;
         return $this->getUrl('*/*/orderItemGrid', array('_current' => true));
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_marketplace`
@@ -40,7 +40,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `server_categories_version` INT(11) UNSIGNED NULL DEFAULT NULL after `client_categories_version`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -69,7 +69,7 @@ if (!isset($tempTableIndexList[strtoupper('is_metric_measurement_system')])) {
     $connection->addKey($tempTable, 'is_metric_measurement_system', 'is_metric_measurement_system');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_synchronization');
 
@@ -81,7 +81,7 @@ if ($connection->tableColumnExists($tempTable, 'revise_update_gallery') === fals
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order_change');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -106,7 +106,7 @@ if (!isset($tempTableIndexList[strtoupper('processing_attempt_count')])) {
     $connection->addKey($tempTable, 'processing_attempt_count', 'processing_attempt_count');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_marketplace');
 
@@ -126,7 +126,7 @@ if ($connection->tableColumnExists($tempTable, 'server_categories_version') === 
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -170,7 +170,7 @@ if ($connection->tableColumnExists($tempTable, 'tax_category_attribute') === fal
     );
 }
 
-//#############################################
+//########################################
 
 $shippingTable = $installer->getTable('m2epro_ebay_template_shipping');
 $listingMainTable = $installer->getTable('m2epro_listing');
@@ -252,7 +252,7 @@ if (!empty($combinedData)) {
     }
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_category`
@@ -260,7 +260,7 @@ if (!empty($combinedData)) {
     ADD INDEX `marketplace_id` (`marketplace_id`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -304,7 +304,7 @@ if (!isset($tempTableIndexList[strtoupper('marketplace_id')])) {
     $connection->addKey($tempTable, 'marketplace_id', 'marketplace_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_other_category');
 $otherCategoryTemplateTableExists = $installer->tableExists($tempTable);
@@ -367,7 +367,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_listing_product`
@@ -387,7 +387,7 @@ SQL
     ADD INDEX `adding_template_other_category_id` (`adding_template_other_category_id`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -404,7 +404,7 @@ if (!isset($tempTableIndexList[strtoupper('template_other_category_id')])) {
     $connection->addKey($tempTable, 'template_other_category_id', 'template_other_category_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -439,7 +439,7 @@ if (!isset($tempTableIndexList[strtoupper('auto_website_adding_template_other_ca
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_auto_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -456,7 +456,7 @@ if (!isset($tempTableIndexList[strtoupper('adding_template_other_category_id')])
     $connection->addKey($tempTable, 'adding_template_other_category_id', 'adding_template_other_category_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 if (!$otherCategoryTemplateTableExists) {
 
@@ -476,7 +476,7 @@ SQL
 );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 if (!$otherCategoryTemplateTableExists) {
 
@@ -508,7 +508,7 @@ SQL
 );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $configTable = $installer->getTable('m2epro_config');
 $tempQuery = <<<SQL
@@ -551,7 +551,7 @@ SQL;
     }
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 /*
     ALTER TABLE `m2epro_ebay_template_category`
@@ -573,7 +573,7 @@ SQL;
     DROP COLUMN `motors_specifics_attribute`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_category');
 
@@ -641,7 +641,7 @@ if ($connection->tableColumnExists($tempTable, 'motors_specifics_attribute') ===
     $connection->dropColumn($tempTable, 'motors_specifics_attribute');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_config');
 $tempQuery = <<<SQL
@@ -663,7 +663,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempQuery = <<<SQL
@@ -687,7 +687,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -743,7 +743,7 @@ DROP TABLE IF EXISTS `m2epro_ebay_listing_auto_filter`;
 SQL
 );
 
-//#############################################
+//########################################
 
 if (Mage::registry('M2EPRO_IS_INSTALLATION') === true) {
 
@@ -768,8 +768,8 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

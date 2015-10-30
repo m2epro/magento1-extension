@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Template_ShippingOverride_Grid
@@ -9,7 +11,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Template_ShippingOverride
 {
     protected $marketplaceId;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -18,17 +20,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Template_ShippingOverride
         $this->setId('amazonTemplateShippingOverrideGrid');
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setFilterVisibility(false);
-        //$this->setPagerVisibility(false);
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(false);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     /**
      * @return mixed
@@ -46,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Template_ShippingOverride
         $this->marketplaceId = $marketplaceId;
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     protected function _prepareCollection()
     {
@@ -99,21 +100,21 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Template_ShippingOverride
         return parent::_prepareLayout();
     }
 
-    // ####################################
+    //########################################
 
     public function getRefreshButtonHtml()
     {
         return $this->getChildHtml('refresh_button');
     }
 
-    // ####################################
+    //########################################
 
     public function getMainButtonsHtml()
     {
         return $this->getRefreshButtonHtml() . parent::getMainButtonsHtml();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
@@ -143,43 +144,42 @@ HTML;
 
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
-    $$('#amazonTemplateShippingOverrideGrid div.grid th').each(function(el){
+    $$('#amazonTemplateShippingOverrideGrid div.grid th').each(function(el) {
         el.style.padding = '5px 5px';
     });
 
-    $$('#amazonTemplateShippingOverrideGrid div.grid td').each(function(el){
+    $$('#amazonTemplateShippingOverrideGrid div.grid td').each(function(el) {
         el.style.padding = '5px 5px';
     });
+
+    ListingGridHandlerObj.templateShippingOverrideHandler.newTemplateUrl='{$this->getNewTemplateShippingOverrideUrl()}';
 
 </script>
-JAVASCRIPT;
+HTML;
 
-        //------------------------------
-        $templateDescriptionNewUrl = $this->getNewTemplateShippingOverrideUrl();
-
+        // ---------------------------------------
         $data = array(
             'label' => Mage::helper('M2ePro')->__('Add New Shipping Override Policy'),
             'class' => 'new-shipping-override-template',
-            'style' => 'float: right;',
-            'onclick' => 'this.newTemplateUrl = \''.$templateDescriptionNewUrl.'\''
+            'style' => 'float: right;'
         );
 
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        //------------------------------
+        // ---------------------------------------
 
         $buttonBlockHtml = ($this->canDisplayContainer()) ? $buttonBlock->toHtml(): '';
 
         return parent::_toHtml() . $buttonBlockHtml . $javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -196,19 +196,16 @@ JAVASCRIPT;
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function setNoTemplatesText()
     {
-        $templateDescriptionEditUrl = $this->getNewTemplateShippingOverrideUrl();
-
         $messageTxt = Mage::helper('M2ePro')->__('Shipping Override Policies are not found for current Marketplace.');
         $linkTitle = Mage::helper('M2ePro')->__('Create New Shipping Override Policy.');
 
         $message = <<<HTML
 <p>{$messageTxt} <a href="javascript:void(0);"
-    class="new-shipping-override-template"
-    newTemplateUrl="{$templateDescriptionEditUrl}">{$linkTitle}</a>
+    class="new-shipping-override-template">{$linkTitle}</a>
 </p>
 HTML;
 
@@ -222,5 +219,5 @@ HTML;
         ));
     }
 
-    // ####################################
+    //########################################
 }

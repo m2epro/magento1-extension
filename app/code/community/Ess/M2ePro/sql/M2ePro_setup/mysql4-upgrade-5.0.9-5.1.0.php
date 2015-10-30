@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -33,7 +33,7 @@ WHERE `marketplace_id` = 13;
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_listing_product`
@@ -45,7 +45,7 @@ SQL
     ADD INDEX `ignore_next_inventory_synch` (`ignore_next_inventory_synch`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 
@@ -53,7 +53,7 @@ if ($connection->tableColumnExists($tempTable, 'existance_check_status') === tru
     $connection->dropColumn($tempTable, 'existance_check_status');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -71,7 +71,7 @@ if (!isset($tempTableIndexList[strtoupper('ignore_next_inventory_synch')])) {
     $connection->addKey($tempTable, 'ignore_next_inventory_synch', 'ignore_next_inventory_synch');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -91,7 +91,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 // PLAY SCRIPT
 $installer->run(<<<SQL
@@ -461,7 +461,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('ess_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -485,7 +485,7 @@ SQL
 );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -552,7 +552,7 @@ SQL
 );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_marketplace');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -570,7 +570,7 @@ SQL
 );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_marketplace');
 $stmt = $connection->query("SELECT count(*) FROM `{$tempTable}`");
@@ -586,7 +586,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -596,8 +596,8 @@ WHERE `group` = '/cache/servicing/';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

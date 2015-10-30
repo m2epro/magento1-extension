@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Order
@@ -14,14 +16,14 @@ class Ess_M2ePro_Model_Magento_Order
 
     private $additionalData = array();
 
-    // ########################################
+    //########################################
 
     public function __construct(Mage_Sales_Model_Quote $quote)
     {
         $this->quote = $quote;
     }
 
-    // ########################################
+    //########################################
 
     public function setAdditionalData($additionalData)
     {
@@ -29,14 +31,17 @@ class Ess_M2ePro_Model_Magento_Order
         return $this;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return Mage_Sales_Model_Order
+     */
     public function getOrder()
     {
         return $this->order;
     }
 
-    // ########################################
+    //########################################
 
     public function buildOrder()
     {
@@ -49,16 +54,16 @@ class Ess_M2ePro_Model_Magento_Order
             $this->order = $this->placeOrder();
         } catch (Exception $e) {
             // Remove ordered items from customer cart
-            // ----------
+            // ---------------------------------------
             $this->quote->setIsActive(false)->save();
-            // ----------
+            // ---------------------------------------
             throw $e;
         }
 
         // Remove ordered items from customer cart
-        // ----------
+        // ---------------------------------------
         $this->quote->setIsActive(false)->save();
-        // ----------
+        // ---------------------------------------
     }
 
     private function placeOrder()
@@ -104,5 +109,5 @@ class Ess_M2ePro_Model_Magento_Order
         return $orderObj;
     }
 
-    // ########################################
+    //########################################
 }

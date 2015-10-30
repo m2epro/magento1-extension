@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
@@ -11,23 +13,23 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
     public $notInstalledTables = array();
     public $crashedTables      = array();
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('developmentInspectionDatabaseBrokenTables');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/development/inspection/databaseBrokenTables.phtml');
 
         $this->prepareTablesInfo();
     }
 
-    // ########################################
+    //########################################
 
     protected function isShown()
     {
@@ -36,7 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
                !empty($this->crashedTables);
     }
 
-    // ########################################
+    //########################################
 
     private function prepareTablesInfo()
     {
@@ -45,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
         $this->crashedTables      = $this->getCrashedTables();
     }
 
-    // ########################################
+    //########################################
 
     private function getEmptyTables()
     {
@@ -54,7 +56,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
         $emptyTables = array();
         foreach ($this->getGeneralTables() as $table) {
 
-            if(!$helper->isTableReady($table)) {
+            if (!$helper->isTableReady($table)) {
                 continue;
             }
 
@@ -93,7 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
         return $crashedTables;
     }
 
-    // ########################################
+    //########################################
 
     private function getGeneralTables()
     {
@@ -109,5 +111,5 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
         );
     }
 
-    // ########################################
+    //########################################
 }

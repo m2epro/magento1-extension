@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts
@@ -9,7 +11,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProdu
 {
     const LOCK_ITEM_PREFIX = 'synchronization_amazon_default_update_listings_products';
 
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -21,7 +23,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProdu
         return 'Update Listings Products';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -33,7 +35,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProdu
         return 100;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function intervalIsEnabled()
     {
@@ -75,7 +77,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProdu
         return $currentLastTime;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -135,7 +137,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProdu
         }
     }
 
-    //####################################
+    //########################################
 
     private function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
@@ -146,5 +148,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProdu
         return $lockItem->isExist();
     }
 
-    //####################################
+    //########################################
 }

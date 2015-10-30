@@ -1,8 +1,10 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
 {
@@ -22,7 +24,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
 
     private $cache = null;
 
-    // ########################################
+    //########################################
 
     /**
      * Wizards Factory
@@ -34,7 +36,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return Mage::getSingleton('M2ePro/Wizard_'.ucfirst($nick));
     }
 
-    // ########################################
+    //########################################
 
     public function isNotStarted($nick)
     {
@@ -63,7 +65,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return $this->isCompleted($nick) || $this->isSkipped($nick);
     }
 
-    // ########################################
+    //########################################
 
     private function getConfigValue($nick, $key)
     {
@@ -107,7 +109,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return $this;
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function getView($nick)
     {
@@ -144,7 +146,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return $this->getConfigValue($nick, self::KEY_TYPE);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param string $view
@@ -164,7 +166,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return null;
     }
 
-    // ------------------------------------------------------
+    // ---------------------------------------
 
     private function getAllWizards($view)
     {
@@ -182,7 +184,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return $wizards;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param string $block
@@ -199,7 +201,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 
     public function addWizardHandlerJs()
     {
@@ -208,7 +210,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getNick($wizard)
     {
@@ -218,7 +220,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return $nick;
     }
 
-    // ########################################
+    //########################################
 
     private function loadCache()
     {
@@ -257,7 +259,7 @@ FUNCTION;
                                                     60*60);
     }
 
-    // ########################################
+    //########################################
 
     public function getActiveBlockerWizard($view)
     {
@@ -278,5 +280,5 @@ FUNCTION;
         return null;
     }
 
-    // ########################################
+    //########################################
 }

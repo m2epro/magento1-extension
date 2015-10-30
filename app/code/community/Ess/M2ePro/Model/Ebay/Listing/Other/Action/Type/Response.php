@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
@@ -26,12 +28,15 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
      */
     protected $requestData = NULL;
 
-    // ########################################
+    //########################################
 
     abstract public function processSuccess(array $response, array $responseParams = array());
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $params
+     */
     public function setParams(array $params = array())
     {
         $this->params = $params;
@@ -45,8 +50,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->params;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $object
+     */
     public function setListingOther(Ess_M2ePro_Model_Listing_Other $object)
     {
         $this->listingOther = $object;
@@ -60,8 +68,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->listingOther;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Ebay_Listing_Other_Action_Configurator $object
+     */
     public function setConfigurator(Ess_M2ePro_Model_Ebay_Listing_Other_Action_Configurator $object)
     {
         $this->configurator = $object;
@@ -75,8 +86,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->configurator;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Ebay_Listing_Other_Action_RequestData $object
+     */
     public function setRequestData(Ess_M2ePro_Model_Ebay_Listing_Other_Action_RequestData $object)
     {
         $this->requestData = $object;
@@ -90,7 +104,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->requestData;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Other
@@ -100,7 +114,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->getListingOther()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -118,7 +132,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->getMarketplace()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -136,7 +150,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->getAccount()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Magento_Product_Cache
@@ -146,7 +160,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $this->getListingOther()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param $itemId
@@ -169,7 +183,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $object;
     }
 
-    // ########################################
+    //########################################
 
     protected function appendStatusChangerValue($data, $responseParams)
     {
@@ -184,7 +198,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $data;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function appendOnlineQtyValues($data)
     {
@@ -215,7 +229,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $data;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function appendStartDateEndDateValues($data, $response)
     {
@@ -234,5 +248,5 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Response
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

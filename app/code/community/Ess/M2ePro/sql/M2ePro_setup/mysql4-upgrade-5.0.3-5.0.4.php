@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -18,7 +18,7 @@ MODIFY `weight_custom_value` DECIMAL(10, 2) UNSIGNED DEFAULT NULL;
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_buy_template_new_product_core`
@@ -31,7 +31,7 @@ SQL
     DROP COLUMN `isbn_custom_value`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_new_product_core');
 
@@ -70,7 +70,7 @@ if ($connection->tableColumnExists($tempTable, 'isbn_custom_value') === true) {
     $connection->dropColumn($tempTable, 'isbn_custom_value');
 }
 
-//#############################################
+//########################################
 
 $tempStatus = Mage::registry('M2EPRO_IS_INSTALLATION') === true ? '3' : '0';
 
@@ -95,7 +95,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_template_new_product`
@@ -152,7 +152,7 @@ SQL
     ADD INDEX shipping_weight_unit_of_measure_mode (shipping_weight_unit_of_measure_mode);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_new_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -211,7 +211,7 @@ if (!isset($tempTableIndexList[strtoupper('number_of_items_mode')])) {
     $connection->addKey($tempTable, 'number_of_items_mode', 'number_of_items_mode');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_new_product_description');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -304,7 +304,7 @@ if (!isset($tempTableIndexList[strtoupper('shipping_weight_unit_of_measure_mode'
     $connection->addKey($tempTable, 'shipping_weight_unit_of_measure_mode', 'shipping_weight_unit_of_measure_mode');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -329,8 +329,8 @@ AND `key` = 'baseurl';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

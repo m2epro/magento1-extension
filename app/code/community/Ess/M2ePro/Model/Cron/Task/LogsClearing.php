@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Cron_Task_LogsClearing extends Ess_M2ePro_Model_Cron_Task_Abstract
@@ -9,7 +11,10 @@ final class Ess_M2ePro_Model_Cron_Task_LogsClearing extends Ess_M2ePro_Model_Cro
     const NICK = 'logs_clearing';
     const MAX_MEMORY_LIMIT = 128;
 
-    //####################################
+    const SYSTEM_LOG_MAX_DAYS = 30;
+    const SYSTEM_LOG_MAX_RECORDS = 100000;
+
+    //########################################
 
     protected function getNick()
     {
@@ -21,7 +26,7 @@ final class Ess_M2ePro_Model_Cron_Task_LogsClearing extends Ess_M2ePro_Model_Cro
         return self::MAX_MEMORY_LIMIT;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -38,40 +43,56 @@ final class Ess_M2ePro_Model_Cron_Task_LogsClearing extends Ess_M2ePro_Model_Cro
         return true;
     }
 
-    //####################################
+    //########################################
 
     private function clearSystemLog()
     {
-        $resource = Mage::getSingleton('core/resource');
+        $this->clearSystemLogByAmount();
+        $this->clearSystemLogByTime();
+    }
 
+    // ---------------------------------------
+
+    private function clearSystemLogByAmount()
+    {
+        $resource = Mage::getSingleton('core/resource');
         $tableName = $resource->getTableName('m2epro_system_log');
 
         $readConnection = $resource->getConnection('core_read');
+        $writeConnection = $resource->getConnection('core_write');
+
         $counts = (int)$readConnection->select()
                                       ->from($tableName, array(new Zend_Db_Expr('COUNT(*)')))
                                       ->query()
                                       ->fetchColumn();
 
-        $maxAllowedCount = 100000;
-        if ($counts > $maxAllowedCount) {
-
-            $ids = $readConnection->select()
-                                  ->from($tableName, 'id')
-                                  ->limit($counts - $maxAllowedCount)
-                                  ->order(array('id ASC'))
-                                  ->query()
-                                  ->fetchAll(Zend_Db::FETCH_COLUMN);
-
-            $resource->getConnection('core_write')->delete($tableName, 'id IN ('.implode(',',$ids).')');
+        if ($counts <= self::SYSTEM_LOG_MAX_RECORDS) {
+            return;
         }
+
+        $ids = $readConnection->select()
+                              ->from($tableName, 'id')
+                              ->limit($counts - self::SYSTEM_LOG_MAX_RECORDS)
+                              ->order(array('id ASC'))
+                              ->query()
+                              ->fetchAll(Zend_Db::FETCH_COLUMN);
+
+        $writeConnection->delete($tableName, 'id IN ('.implode(',',$ids).')');
+    }
+
+    private function clearSystemLogByTime()
+    {
+        $resource = Mage::getSingleton('core/resource');
+        $tableName = $resource->getTableName('m2epro_system_log');
+        $writeConnection = $resource->getConnection('core_write');
 
         $currentDate = Mage::helper('M2ePro')->getCurrentGmtDate();
         $dateTime = new DateTime($currentDate, new DateTimeZone('UTC'));
-        $dateTime->modify('-30 days');
+        $dateTime->modify('-'.self::SYSTEM_LOG_MAX_DAYS.' days');
         $minDate = $dateTime->format('Y-m-d 00:00:00');
 
-        $resource->getConnection('core_write')->delete($tableName,"create_date < '{$minDate}'");
+        $writeConnection->delete($tableName,"create_date < '{$minDate}'");
     }
 
-    //####################################
+    //########################################
 }

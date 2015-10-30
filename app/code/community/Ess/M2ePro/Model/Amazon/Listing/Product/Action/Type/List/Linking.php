@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
@@ -15,14 +17,22 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
 
     private $additionalData = array();
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @return $this
+     */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         $this->listingProduct = $listingProduct;
         return $this;
     }
 
+    /**
+     * @param $generalId
+     * @return $this
+     */
     public function setGeneralId($generalId)
     {
         if (!Mage::helper('M2ePro/Component_Amazon')->isASIN($generalId) &&
@@ -35,20 +45,31 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         return $this;
     }
 
+    /**
+     * @param $sku
+     * @return $this
+     */
     public function setSku($sku)
     {
         $this->sku = $sku;
         return $this;
     }
 
+    /**
+     * @param array $data
+     * @return bool
+     */
     public function setAdditionalData(array $data)
     {
         $this->additionalData = $data;
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function link()
     {
         $this->validate();
@@ -68,6 +89,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         return false;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Item
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Exception
+     */
     public function createAmazonItem()
     {
         $data = array(
@@ -108,7 +134,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         return $object;
     }
 
-    // ########################################
+    //########################################
 
     private function validate()
     {
@@ -128,7 +154,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         }
     }
 
-    // ########################################
+    //########################################
 
     private function linkSimpleOrIndividualProduct()
     {
@@ -221,7 +247,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -247,7 +273,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         return $this->getAmazonListingProduct()->getVariationManager();
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     private function getGeneralId()
     {
@@ -272,7 +298,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         return $this->additionalData = $this->getDataFromAmazon();
     }
 
-    // ########################################
+    //########################################
 
     private function getDataFromAmazon()
     {
@@ -289,5 +315,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         return $dispatcherObject->process($connectorObj);
     }
 
-    // ########################################
+    //########################################
 }

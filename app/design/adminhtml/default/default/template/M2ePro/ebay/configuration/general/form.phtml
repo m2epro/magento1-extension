@@ -6,8 +6,8 @@
     );
 
     M2ePro.php.setConstants(
-        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility'); ?>,
-        'Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility'
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Motors'); ?>,
+        'Ess_M2ePro_Helper_Component_Ebay_Motors'
     );
 
     M2ePro.translator.add(<?php echo json_encode(array(
@@ -33,10 +33,10 @@
 
 <style>
 
-    #ebay_configuration_general_parts_compatibility_manage_form .form-list td.label {
+    #ebay_configuration_general_motors_manage_form .form-list td.label {
         width: 125px;
     }
-    #ebay_configuration_general_parts_compatibility_manage_form .form-list td.label label {
+    #ebay_configuration_general_motors_manage_form .form-list td.label label {
         width: 100px;
     }
 
@@ -212,10 +212,13 @@
                             </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('
-                                    Select the Mode which you would like to use for uploading Images on eBay:</br>
-                                    <strong>Automatic</strong> — uses an EPS Service and/or the Images Links;</br>
-                                    <strong>Self-Hosted</strong> — uses direct links to the Images saved in your Magento;</br>
-                                    <strong>EPS-Hosted</strong> — uses eBay EPS Service.
+                                    Select the Mode which you would like to use for uploading Images on eBay:</br></br>
+                                    <strong>Automatic</strong> — if you try to upload more then 1 Image for an Item or
+                                    separate Variational Attribute the EPS-hosted mode will be used automatically.
+                                    Otherwise, the Self-hosted mode will be used automatically;</br>
+                                    <strong>Self-Hosted</strong> — all the Images are provided as a direct Links to the
+                                    Images saved in your Magento;</br>
+                                    <strong>EPS-Hosted</strong> — the Images are uploaded to eBay EPS service.
                                 '); ?></span>
                             </p>
                         </td>
@@ -230,8 +233,8 @@
 
     </div>
 
-    <?php if ($this->is_motors_specifics_marketplace_enabled): ?>
-        <div class="entry-edit" id="magento_block_ebay_configuration_general_parts_compatibility_epids">
+    <?php if ($this->is_motors_epids_marketplace_enabled): ?>
+        <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids">
 
             <div class="entry-edit-head">
                 <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs]'); ?></h4>
@@ -240,7 +243,7 @@
             <div class="fieldset">
                 <div class="hor-scroll">
 
-                    <div id="block_notice_ebay_category_parts_compatibility_epids" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs]'); ?>">
+                    <div id="block_notice_ebay_category_motors_epids" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs]'); ?>">
                         <?php echo Mage::helper('M2ePro')->__('
                             In this Section you can provide a Magento Attribute, where saved ePIDs Values for each
                             Product can be placed.<br/><br/>
@@ -255,20 +258,20 @@
 
                             <tr>
                                 <td class="label">
-                                    <label for="motors_specifics_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                                    <label for="motors_epids_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
                                 </td>
 
-                                <?php if (count($this->attributes_for_parts_compatibility) != 0): ?>
+                                <?php if (count($this->attributes_for_motors) != 0): ?>
 
                                     <td class="value">
-                                        <select id="motors_specifics_attribute" name="motors_specifics_attribute" class="select">
+                                        <select id="motors_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_attribute">
                                             <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
-                                            <?php foreach ($this->attributes_for_parts_compatibility as $attribute): ?>
-                                                <option value="<?php echo $attribute['attribute_code']; ?>"<?php if ($attribute['attribute_code'] == $this->motors_specifics_attribute): ?> selected="selected"<?php endif; ?>><?php echo $attribute['frontend_label']; ?></option>
+                                            <?php foreach ($this->attributes_for_motors as $attribute): ?>
+                                                <option value="<?php echo $attribute['attribute_code']; ?>"<?php if ($attribute['attribute_code'] == $this->motors_epids_attribute): ?> selected="selected"<?php endif; ?>><?php echo $attribute['frontend_label']; ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </td>
-                                    <td id="motors_specifics_attribute_td_note">
+                                    <td id="motors_epids_attribute_td_note">
                                         <p class="note">
                                             <span><?php echo Mage::helper('M2ePro')->__(
                                                 'Choose the Attribute below that contains the Product Reference IDs (ePIDs) of compatible vehicles for the part.
@@ -282,7 +285,7 @@
                                 <?php else: ?>
 
                                     <td class="value">
-                                        <div id="block_notice_ebay_configuration_motors_specifics_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                        <div id="block_notice_ebay_configuration_motors_epids_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                             <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
                                         </div>
                                     </td>
@@ -297,13 +300,13 @@
 
                                 <td class="value">
                                     <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
-                                    <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_specifics_dictionary_ebay_count; ?></span>
+                                    <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_epids_dictionary_ebay_count; ?></span>
 
                                     <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
-                                    <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_specifics_dictionary_custom_count; ?></span>
+                                    <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_dictionary_custom_count; ?></span>
 
                                     <span style="">
-                                        (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageCompatibilityRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::TYPE_SPECIFIC; ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                        (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID; ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                     </span>
                                 </td>
                             </tr>
@@ -319,7 +322,7 @@
 
     <?php if ($this->is_motors_ktypes_marketplace_enabled) : ?>
 
-        <div class="entry-edit" id="magento_block_ebay_configuration_general_parts_compatibility_ktypes">
+        <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_ktypes">
 
             <div class="entry-edit-head">
                 <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Parts Compatibility [kTypes]'); ?></h4>
@@ -328,7 +331,7 @@
             <div class="fieldset">
                 <div class="hor-scroll">
 
-                    <div id="block_notice_ebay_category_parts_compatibility_ktypes" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility [kTypes]'); ?>">
+                    <div id="block_notice_ebay_category_motors_ktypes" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility [kTypes]'); ?>">
                         <?php echo Mage::helper('M2ePro')->__('
                             In this Section you can provide a Magento Attribute, where saved kTypes Values
                             for each Product can be placed.<br/><br/>
@@ -346,12 +349,12 @@
                                     <label for="motors_ktypes_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
                                 </td>
 
-                                <?php if (count($this->attributes_for_parts_compatibility) != 0): ?>
+                                <?php if (count($this->attributes_for_motors) != 0): ?>
 
                                     <td class="value">
-                                        <select id="motors_ktypes_attribute" name="motors_ktypes_attribute" class="select">
+                                        <select id="motors_ktypes_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_ktypes_attribute">
                                             <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
-                                            <?php foreach ($this->attributes_for_parts_compatibility as $attribute): ?>
+                                            <?php foreach ($this->attributes_for_motors as $attribute): ?>
                                                 <option value="<?php echo $attribute['attribute_code']; ?>"<?php if ($attribute['attribute_code'] == $this->motors_ktypes_attribute): ?> selected="selected"<?php endif; ?>><?php echo $attribute['frontend_label']; ?></option>
                                             <?php endforeach; ?>
                                         </select>
@@ -391,7 +394,7 @@
                                     <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_ktypes_dictionary_custom_count; ?></span>
 
                                     <span style="">
-                                        (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageCompatibilityRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::TYPE_KTYPE; ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                        (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE; ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
                                     </span>
                                 </td>
                             </tr>
@@ -408,10 +411,10 @@
 </form>
 
 <!-- POPUP CONTENT -->
-<div id="manage_compatibility_popup_contents" style="display: none;">
+<div id="manage_motors_popup_contents" style="display: none;">
 
     <div style="padding-bottom: 35px;">
-        <div id="block_notice_ebay_configuration_general_parts_compatibility_manage" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility'); ?>" style="margin-top: 15px;">
+        <div id="block_notice_ebay_configuration_general_motors_manage" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility'); ?>" style="margin-top: 15px;">
 
             <?php echo Mage::helper('M2ePro')->__('
                 In this Section you can <strong>Add/Update</strong> Custom Compatible Vehicles information using prepared file.
@@ -437,10 +440,10 @@
 
         </div>
 
-        <form id="ebay_configuration_general_parts_compatibility_manage_form" action="<?php echo $this->getUrl('*/*/importPartsCompatibilityData'); ?>" method="post" enctype="multipart/form-data">
+        <form id="ebay_configuration_general_motors_manage_form" action="<?php echo $this->getUrl('*/*/importMotorsData'); ?>" method="post" enctype="multipart/form-data">
 
             <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
-            <input name="compatibility_type" id="compatibility_type" value="" type="hidden" />
+            <input name="motors_type" id="motors_type" value="" type="hidden" />
 
             <div class="fieldset" style="padding-top: 5px;">
                 <div class="hor-scroll">
@@ -452,11 +455,11 @@
                                 <label><?php echo Mage::helper('M2ePro')->__('Database'); ?>:</label>
                             </td>
                             <td class="value">
-                                <span id="database-statistic-popup-epids" style="font-weight: bold;"><?php echo $this->motors_specifics_dictionary_custom_count; ?></span>
+                                <span id="database-statistic-popup-epids" style="font-weight: bold;"><?php echo $this->motors_epids_dictionary_custom_count; ?></span>
                                 <span id="database-statistic-popup-ktypes" style="font-weight: bold;"><?php echo $this->motors_ktypes_dictionary_custom_count; ?></span>
                             </td>
                             <td class="value" style="width: 90px; text-align: right;">
-                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationGeneralHandlerObj.clearAddedCompatibilityRecords.bind(this)();"><?php echo Mage::helper('M2ePro')->__('Clear') ?></button>
+                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationGeneralHandlerObj.clearAddedMotorsRecords.bind(this)();"><?php echo Mage::helper('M2ePro')->__('Clear') ?></button>
                             </td>
                         </tr>
 
@@ -468,7 +471,7 @@
                                 <input name="source" id="source" type="file" accept=".csv" class="required-entry" />
                             </td>
                             <td class="value" style="text-align: right;">
-                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationGeneralHandlerObj.importCompatibilityRecords();"><?php echo Mage::helper('M2ePro')->__('Import') ?></button>
+                                <button type="button" style="min-width: 55px;" onclick="EbayConfigurationGeneralHandlerObj.importMotorsRecords();"><?php echo Mage::helper('M2ePro')->__('Import') ?></button>
                             </td>
                         </tr>
 

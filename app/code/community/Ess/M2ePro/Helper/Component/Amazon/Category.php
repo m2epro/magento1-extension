@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstract
 {
     const RECENT_MAX_COUNT = 20;
 
-    // ########################################
+    //########################################
 
     public function getRecent($marketplaceId, array $excludedCategory = array())
     {
@@ -35,7 +37,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
             }
         }
 
-        // -- some categories can be not accessible in the current marketplaces build
+        // some categories can be not accessible in the current marketplaces build
         $this->removeNotAccessibleCategories($marketplaceId, $recentCategories);
 
         return array_reverse($recentCategories);
@@ -82,7 +84,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
         ))->save();
     }
 
-    // ########################################
+    //########################################
 
     private function getConfigGroup()
     {
@@ -149,5 +151,5 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
         ))->save();
     }
 
-    // ########################################
+    //########################################
 }

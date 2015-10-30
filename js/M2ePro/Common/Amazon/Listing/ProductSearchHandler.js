@@ -6,7 +6,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
     searchData: {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super,gridHandler)
     {
@@ -52,7 +52,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -87,11 +87,11 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     params: {autoMapErrorFlag: false},
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(mode, title, productId, errorMsg)
     {
@@ -177,7 +177,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
 
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     clearSearchResultsAndOpenSearchMenu: function() {
         var self = this;
@@ -190,7 +190,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     clearSearchResultsAndManualSearch: function() {
         var self = this;
@@ -201,7 +201,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showSearchManualPrompt: function(title, listingProductId)
     {
@@ -248,7 +248,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         $('modal_dialog_message').insert(self.searchBlock);
         $('productSearch_pop_up_content').show();
         self.initSearchEvents();
-        //search manual
+        // search manual
         $('productSearch_form').show();
         $('productSearch_back_button').show();
         $('productSearch_buttons').show();
@@ -331,7 +331,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     searchGeneralIdManual: function(productId)
     {
@@ -485,7 +485,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     mapToGeneralId: function(productId, generalId, optionsData)
     {
@@ -706,7 +706,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     specificsChange: function(select)
     {
@@ -807,7 +807,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     attributesChange: function(select)
     {
@@ -852,7 +852,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         $('map_link_' + id).innerHTML = mapLinkTemplate;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showAsinCategories: function (link, rowId, asin, productId)
     {
@@ -906,7 +906,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderMatchedAttributesVirtualView: function(id)
     {
@@ -919,7 +919,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderMatchedAttributesVirtualAmazonView: function(id)
     {
@@ -1228,7 +1228,7 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderMatchedAttributesVirtualMagentoView: function(id)
     {
@@ -1533,5 +1533,5 @@ CommonAmazonListingProductSearchHandler = Class.create(ActionHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

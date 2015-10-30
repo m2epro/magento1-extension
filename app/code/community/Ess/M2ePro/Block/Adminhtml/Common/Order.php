@@ -1,39 +1,41 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Order extends Ess_M2ePro_Block_Adminhtml_Common_Component_Tabs_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__('Orders');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_common_account/index');
         $this->_addButton('accounts', array(
             'label'     => Mage::helper('M2ePro')->__('Accounts'),
             'onclick'   => 'setLocation(\'' . $url .'\')',
             'class'     => 'button_link'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_common_log/order');
         $this->_addButton('logs', array(
             'label'     => Mage::helper('M2ePro')->__('View Logs'),
             'onclick'   => 'window.open(\'' . $url .'\')',
             'class'     => 'button_link'
         ));
-        //------------------------------
+        // ---------------------------------------
 
         $this->useAjax = true;
         $this->tabsAjaxUrls = array(
@@ -42,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Order extends Ess_M2ePro_Block_Adminhtml
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function getHelpBlockJavascript()
     {
@@ -50,16 +52,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Order extends Ess_M2ePro_Block_Adminhtml
             return '';
         }
 
-        return <<<JAVASCRIPT
+        return <<<HTML
 <script type="text/javascript">
     setTimeout(function() {
         OrderHandlerObj.initializeGrids();
     }, 50);
 </script>
-JAVASCRIPT;
+HTML;
     }
 
-    // ########################################
+    //########################################
 
     protected function getAmazonTabBlock()
     {
@@ -105,7 +107,7 @@ JAVASCRIPT;
             . '</div>';
     }
 
-    // ########################################
+    //########################################
 
     protected function getBuyTabBlock()
     {
@@ -144,7 +146,7 @@ JAVASCRIPT;
             . '</div>';
     }
 
-    // ########################################
+    //########################################
 
     protected function _componentsToHtml()
     {
@@ -167,5 +169,5 @@ JAVASCRIPT;
                . parent::_componentsToHtml();
     }
 
-    // ########################################
+    //########################################
 }

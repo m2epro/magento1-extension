@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs
@@ -9,19 +11,25 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
     private $installer = NULL;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     */
     public function getInstaller()
     {
         return $this->installer;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    //####################################
+    //########################################
 
      /*
         ALTER TABLE `m2epro_synchronization_log`
@@ -49,7 +57,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs
         UPDATE `m2epro_order_log` SET `type` = 4 WHERE (`type` = 7);
      */
 
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -63,7 +71,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs
         $this->processOrderLogTable();
     }
 
-    //####################################
+    //########################################
 
     private function isNeedToSkip()
     {
@@ -77,7 +85,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs
         return false;
     }
 
-    //####################################
+    //########################################
 
     private function processSynchronizationLogTable()
     {
@@ -187,5 +195,5 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs
         $connection->update($tempTable, array('type' => 4), '`type` = '.(2 + $offset));
     }
 
-    //####################################
+    //########################################
 }

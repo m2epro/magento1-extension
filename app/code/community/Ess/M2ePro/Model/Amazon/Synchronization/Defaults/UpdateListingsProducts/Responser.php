@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Responser
@@ -10,7 +12,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
     protected $logsActionId = NULL;
     protected $synchronizationLog = NULL;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages(array $messages = array())
     {
@@ -46,8 +48,12 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -63,10 +69,10 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
 
         $lockItem->remove();
 
-        $this->getAccount()->deleteProcessingLocks(NULL, $processingRequest->getHash());
-        $this->getAccount()->deleteProcessingLocks('synchronization', $processingRequest->getHash());
-        $this->getAccount()->deleteProcessingLocks('synchronization_amazon', $processingRequest->getHash());
-        $this->getAccount()->deleteProcessingLocks(
+        $this->getAccount()->deleteObjectLocks(NULL, $processingRequest->getHash());
+        $this->getAccount()->deleteObjectLocks('synchronization', $processingRequest->getHash());
+        $this->getAccount()->deleteObjectLocks('synchronization_amazon', $processingRequest->getHash());
+        $this->getAccount()->deleteObjectLocks(
             Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts::LOCK_ITEM_PREFIX,
             $processingRequest->getHash()
         );
@@ -93,7 +99,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         $connWrite->delete($tempTable, array('`hash` = ?' => (string)$this->params['processed_inventory_hash']));
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData($response)
     {
@@ -114,7 +120,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateReceivedListingsProducts($receivedItems)
     {
@@ -169,7 +175,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
             ) {
                 $lastQtySynchDate = $existingAdditionalData['last_synchronization_dates']['qty'];
 
-                if (strtotime($lastQtySynchDate) > strtotime($this->params['request_date'])) {
+                if ($this->isProductInfoOutdated($lastQtySynchDate)) {
                     unset($newData['online_qty'], $newData['status'], $newData['is_afn_channel']);
                     unset($existingData['online_qty'], $existingData['status'], $existingData['is_afn_channel']);
                 }
@@ -180,9 +186,21 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
             ) {
                 $lastPriceSynchDate = $existingAdditionalData['last_synchronization_dates']['price'];
 
-                if (strtotime($lastPriceSynchDate) > strtotime($this->params['request_date'])) {
+                if ($this->isProductInfoOutdated($lastPriceSynchDate)) {
                     unset($newData['online_price']);
                     unset($existingData['online_price']);
+                }
+            }
+
+            if (!empty($existingAdditionalData['last_synchronization_dates']['fulfillment_switching']) &&
+                !empty($this->params['request_date'])
+            ) {
+                $lastFulfilmentSwitchingDate =
+                    $existingAdditionalData['last_synchronization_dates']['fulfillment_switching'];
+
+                if ($this->isProductInfoOutdated($lastFulfilmentSwitchingDate)) {
+                    unset($newData['online_qty'], $newData['status'], $newData['is_afn_channel']);
+                    unset($existingData['online_qty'], $existingData['status'], $existingData['is_afn_channel']);
                 }
             }
 
@@ -245,7 +263,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
                 }
             }
 
-            foreach($tempLogMessages as $tempLogMessage) {
+            foreach ($tempLogMessages as $tempLogMessage) {
                 $tempLog->addProductMessage(
                     $existingItem['listing_id'],
                     $existingItem['product_id'],
@@ -276,7 +294,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
         $tempTable = Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_processed_inventory');
 
-        //--------------------------
+        // ---------------------------------------
 
         foreach (array_chunk($receivedItems,1000) as $partReceivedItems) {
 
@@ -290,7 +308,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
 
             $connWrite->insertMultiple($tempTable, $inserts);
         }
-        //--------------------------
+        // ---------------------------------------
 
         if (!is_null($nextPart)) {
             return;
@@ -316,8 +334,8 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         $collection->getSelect()->having('`api`.sku IS NULL');
 
         $tempColumns = array('main_table.id','main_table.status','main_table.listing_id',
-                             'main_table.product_id','second_table.is_variation_product',
-                             'second_table.variation_parent_id','api.sku');
+                             'main_table.product_id','main_table.additional_data',
+                             'second_table.is_variation_product','second_table.variation_parent_id','api.sku');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns($tempColumns);
 
         /** @var $stmtTemp Zend_Db_Statement_Pdo */
@@ -330,6 +348,13 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
 
         $notReceivedIds = array();
         while ($notReceivedItem = $stmtTemp->fetch()) {
+
+            $additionalData = @json_decode($notReceivedItem['additional_data'], true);
+            if (is_array($additionalData) && !empty($additionalData['list_date']) &&
+                $this->isProductInfoOutdated($additionalData['list_date'])
+            ) {
+                continue;
+            }
 
             if (!in_array((int)$notReceivedItem['id'],$notReceivedIds)) {
                 $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
@@ -357,7 +382,9 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
                 );
 
-                if (!empty($existingItem['is_variation_product']) && !empty($existingItem['variation_parent_id'])) {
+                if (!empty($notReceivedItem['is_variation_product']) &&
+                    !empty($notReceivedItem['variation_parent_id'])
+                ) {
                     $parentIdsForProcessing[] = $notReceivedItem['variation_parent_id'];
                 }
             }
@@ -371,8 +398,8 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
             'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT
         );
 
-        $chunckedIds = array_chunk($notReceivedIds,1000);
-        foreach ($chunckedIds as $partIds) {
+        $chunkedIds = array_chunk($notReceivedIds,1000);
+        foreach ($chunkedIds as $partIds) {
             $where = '`id` IN ('.implode(',',$partIds).')';
             $connWrite->update($listingProductMainTable,$bind,$where);
         }
@@ -382,7 +409,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function getPdoStatementExistingListings($withData = false)
     {
@@ -447,7 +474,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         $massProcessor->execute();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -465,7 +492,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         return $this->getAccount()->getChildObject()->getMarketplace();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function getLogsActionId()
     {
@@ -489,5 +516,17 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         return $this->synchronizationLog;
     }
 
-    // ########################################
+    // ---------------------------------------
+
+    private function isProductInfoOutdated($lastDate)
+    {
+        $lastDate = new DateTime($lastDate, new DateTimeZone('UTC'));
+        $requestDate = new DateTime($this->params['request_date'], new DateTimeZone('UTC'));
+
+        $lastDate->modify('+1 hour');
+
+        return $lastDate > $requestDate;
+    }
+
+    //########################################
 }

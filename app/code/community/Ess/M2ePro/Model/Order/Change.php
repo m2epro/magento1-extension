@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
@@ -15,7 +17,7 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
 
     const MAX_ALLOWED_PROCESSING_ATTEMPTS = 3;
 
-    //####################################
+    //########################################
 
     public function _construct()
     {
@@ -23,8 +25,11 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         $this->_init('M2ePro/Order_Change');
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getOrderId()
     {
         return (int)$this->getData('order_id');
@@ -35,6 +40,9 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         return $this->getData('action');
     }
 
+    /**
+     * @return int
+     */
     public function getCreatorType()
     {
         return (int)$this->getData('creator_type');
@@ -45,6 +53,9 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         return $this->getData('component');
     }
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
         $params = json_decode($this->getData('params'), true);
@@ -57,8 +68,11 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         return $this->getData('hash');
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public static function getAllowedActions()
     {
         return array(
@@ -69,29 +83,41 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         );
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isPaymentUpdateAction()
     {
         return $this->getAction() == self::ACTION_UPDATE_PAYMENT;
     }
 
+    /**
+     * @return bool
+     */
     public function isShippingUpdateAction()
     {
         return $this->getAction() == self::ACTION_UPDATE_SHIPPING;
     }
 
+    /**
+     * @return bool
+     */
     public function isCancelAction()
     {
         return $this->getAction() == self::ACTION_CANCEL;
     }
 
+    /**
+     * @return bool
+     */
     public function isRefundAction()
     {
         return $this->getAction() == self::ACTION_CANCEL;
     }
 
-    //####################################
+    //########################################
 
     public static function create($orderId, $action, $creatorType, $component, array $params)
     {
@@ -133,12 +159,12 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         $change->save();
     }
 
-    //####################################
+    //########################################
 
     public static function generateHash($orderId, $action, array $params)
     {
         return sha1($orderId.'-'.$action.'-'.serialize($params));
     }
 
-    //####################################
+    //########################################
 }

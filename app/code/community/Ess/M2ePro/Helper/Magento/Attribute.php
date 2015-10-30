@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abstract
@@ -9,7 +11,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
     const PRICE_CODE = 'price';
     const SPECIAL_PRICE_CODE = 'special_price';
 
-    // ################################
+    //########################################
 
     public function getAll()
     {
@@ -38,7 +40,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $attributes;
     }
 
-    // --------------------------------
+    // ---------------------------------------
 
     public function getByCode($code, $returnType = self::RETURN_TYPE_ARRAYS)
     {
@@ -63,7 +65,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $resultAttributes;
     }
 
-    // --------------------------------
+    // ---------------------------------------
 
     public function getByAttributeSet($attributeSet, $returnType = self::RETURN_TYPE_ARRAYS)
     {
@@ -105,7 +107,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $resultAttributes;
     }
 
-    // ################################
+    //########################################
 
     public function getGeneralFromAttributeSets(array $attributeSets)
     {
@@ -161,7 +163,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $this->getGeneralFromAttributeSets($allAttributeSets);
     }
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     private function _getGeneralFromAttributeSets(array $attributeSetIds)
     {
@@ -177,7 +179,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $attributeCollection->getAllIds();
     }
 
-    // --------------------------------
+    // ---------------------------------------
 
     public function getGeneralFromProducts(array $products)
     {
@@ -188,7 +190,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $this->getGeneralFromAttributeSets($productsAttributeSetIds);
     }
 
-    // ################################
+    //########################################
 
     public function getConfigurableByAttributeSets(array $attributeSets)
     {
@@ -204,7 +206,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $this->getConfigurable();
     }
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     private function getConfigurable(array $attributeSetIds = array())
     {
@@ -237,7 +239,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $connRead->fetchAll($select);
     }
 
-    // ################################
+    //########################################
 
     public function getAttributeLabel($attributeCode, $storeId = Mage_Core_Model_App::ADMIN_STORE_ID)
     {
@@ -328,7 +330,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return $resultAttributes;
     }
 
-    // ################################
+    //########################################
 
     public function getSetsFromProductsWhichLacksAttributes(array $attributes, array $productIds)
     {
@@ -336,13 +338,13 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
             return array();
         }
 
-        //------------------------------
+        // ---------------------------------------
         $scopeAttributesOptionArray = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromProducts($productIds);
         $scopeAttributes = array();
         foreach ($scopeAttributesOptionArray as $scopeAttributesOption) {
             $scopeAttributes[] = $scopeAttributesOption['code'];
         }
-        //------------------------------
+        // ---------------------------------------
 
         $missingAttributes = array_diff($attributes, $scopeAttributes);
 
@@ -350,20 +352,20 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
             return array();
         }
 
-        //------------------------------
+        // ---------------------------------------
         $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection')
             ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
             ->addFieldToFilter('attribute_code', array('in' => $missingAttributes))
             ->addSetInfo(true);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $attributeSets = Mage::helper('M2ePro/Magento_AttributeSet')
             ->getFromProducts(
                 $productIds,
                 Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS
             );
-        //------------------------------
+        // ---------------------------------------
 
         $missingAttributesSets = array();
 
@@ -378,73 +380,5 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return array_unique($missingAttributesSets);
     }
 
-    // ################################
-
-    public function create($attributeCode,
-                           array $frontendLabel,
-                           $frontendInput = 'text',
-                           $isGlobal = 1,
-                           array $additionalParams = array())
-    {
-        if (!preg_match('/^[a-z][a-z_0-9]{1,254}$/', $attributeCode)) {
-            return false;
-        }
-
-        if (empty($frontendLabel)) {
-            return false;
-        }
-
-        if ($frontendInput != 'text' && $frontendInput != 'textarea') {
-            return false;
-        }
-
-        /** @var $validatorInputType Mage_Eav_Model_Adminhtml_System_Config_Source_Inputtype_Validator */
-        // doesn't exist in magento <= 1.4.1.1
-//        $validatorInputType = Mage::getModel('eav/adminhtml_system_config_source_inputtype_validator');
-//        if (!$validatorInputType->isValid($frontendInput)) {
-//            return false;
-//        }
-
-        $data = $additionalParams;
-        $data['attribute_code'] = $attributeCode;
-        $data['frontend_input'] = $frontendInput;
-        $data['frontend_label'] = $frontendLabel;
-        $data['is_global']      = (int)$isGlobal;
-
-        $data['source_model']  = NULL;
-        $data['backend_model'] = NULL;
-
-        !isset($data['is_configurable'])         && $data['is_configurable'] = 0;
-        !isset($data['is_filterable'])           && $data['is_filterable'] = 0;
-        !isset($data['is_filterable_in_search']) && $data['is_filterable_in_search'] = 0;
-
-        /* @var $model Mage_Catalog_Model_Entity_Attribute */
-        $model = Mage::getModel('catalog/resource_eav_attribute');
-
-        if (is_null($model->getIsUserDefined()) || $model->getIsUserDefined() != 0) {
-            $data['backend_type'] = $model->getBackendTypeByInput($frontendInput);
-        }
-
-        $defaultValueField = $model->getDefaultValueByInput($frontendInput);
-        if ($defaultValueField && isset($data[$defaultValueField])) {
-            $data['default_value'] = $data[$defaultValueField];
-        }
-
-        !isset($data['apply_to']) && $data['apply_to'] = array();
-
-        $model->addData($data);
-
-        $model->setEntityTypeId(Mage::getModel('catalog/product')->getResource()->getTypeId());
-        $model->setIsUserDefined(1);
-
-        try {
-            $model->save();
-        } catch (Exception $e) {
-            return false;
-        }
-
-        return (int)$model->getId();
-    }
-
-    // ################################
+    //########################################
 }

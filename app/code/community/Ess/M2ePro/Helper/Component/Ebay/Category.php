@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstract
@@ -13,7 +15,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
 
     const RECENT_MAX_COUNT = 20;
 
-    // ########################################
+    //########################################
 
     public function getEbayCategoryTypes()
     {
@@ -31,7 +33,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getRecent($marketplaceOrAccountId, $categoryType, $excludeCategory = null)
     {
@@ -101,7 +103,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         ))->save();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function getRecentConfigPath($categoryType)
     {
@@ -115,7 +117,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         return $configPaths[$categoryType];
     }
 
-    // ########################################
+    //########################################
 
     public function getSameTemplatesData($ids, $table, $modes)
     {
@@ -191,5 +193,5 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         }
     }
 
-    // ########################################
+    //########################################
 }

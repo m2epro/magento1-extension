@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Other_Source
@@ -28,7 +30,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Source
     const DESCRIPTION_SOURCE_PRODUCT_SHORT = 2;
     const DESCRIPTION_SOURCE_ATTRIBUTE = 3;
 
-    // ########################################
+    //########################################
 
     public function getSource($sourceId)
     {
@@ -48,127 +50,193 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Source
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getQtySource()
     {
         return (int)$this->getSource('qty');
     }
 
+    /**
+     * @return bool
+     */
     public function isQtySourceNone()
     {
         return $this->getQtySource() == self::QTY_SOURCE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtySourceProduct()
     {
         return $this->getQtySource() == self::QTY_SOURCE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtySourceAttribute()
     {
         return $this->getQtySource() == self::QTY_SOURCE_ATTRIBUTE;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtySourceProductFixed()
     {
         return $this->getQtySource() == self::QTY_SOURCE_PRODUCT_FIXED;
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getPriceSource()
     {
         return (int)$this->getSource('price');
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceSourceNone()
     {
         return $this->getPriceSource() == self::PRICE_SOURCE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceSourceProduct()
     {
         return $this->getPriceSource() == self::PRICE_SOURCE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceSourceSpecial()
     {
         return $this->getPriceSource() == self::PRICE_SOURCE_SPECIAL;
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceSourceAttribute()
     {
         return $this->getPriceSource() == self::PRICE_SOURCE_ATTRIBUTE;
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getTitleSource()
     {
         return (int)$this->getSource('title');
     }
 
+    /**
+     * @return bool
+     */
     public function isTitleSourceNone()
     {
         return $this->getTitleSource() == self::TITLE_SOURCE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isTitleSourceProduct()
     {
         return $this->getTitleSource() == self::TITLE_SOURCE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isTitleSourceAttribute()
     {
         return $this->getTitleSource() == self::TITLE_SOURCE_ATTRIBUTE;
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getSubTitleSource()
     {
         return (int)$this->getSource('sub_title');
     }
 
+    /**
+     * @return bool
+     */
     public function isSubTitleSourceNone()
     {
         return $this->getSubTitleSource() == self::SUB_TITLE_SOURCE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isSubTitleSourceAttribute()
     {
         return $this->getSubTitleSource() == self::SUB_TITLE_SOURCE_ATTRIBUTE;
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getDescriptionSource()
     {
         return (int)$this->getSource('description');
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionSourceNone()
     {
         return $this->getDescriptionSource() == self::DESCRIPTION_SOURCE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionSourceProductMain()
     {
         return $this->getDescriptionSource() == self::DESCRIPTION_SOURCE_PRODUCT_MAIN;
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionSourceProductShort()
     {
         return $this->getDescriptionSource() == self::DESCRIPTION_SOURCE_PRODUCT_SHORT;
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionSourceAttribute()
     {
         return $this->getDescriptionSource() == self::DESCRIPTION_SOURCE_ATTRIBUTE;
     }
 
-    // ########################################
+    //########################################
 
     public function getQtyAttribute()
     {
@@ -225,8 +293,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Source
         }
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         $tempArray = array();
@@ -265,5 +336,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Source
         return array_unique($tempArray);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
@@ -15,24 +17,24 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
     public $mergeMode = 0;
     public $component;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('developmentTable'.$this->getRequest()->getParam('table').'Grid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
 
         $this->init();
     }
@@ -66,7 +68,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
         }
     }
 
-    // ####################################
+    //########################################
 
     private function getModel()
     {
@@ -81,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
                Mage::helper('M2ePro/Module_Database_Structure')->isTableHorizontal($this->tableName);
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -96,13 +98,13 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
 
         if ($this->ifNeedToUseMergeMode()) {
 
-            array_walk($columns, function(&$el){ $el['is_parent'] = true; });
+            array_walk($columns, function(&$el) { $el['is_parent'] = true; });
 
             $modelName = 'M2ePro/'.ucfirst($this->component).'_'.$this->modelName;
             $table = Mage::getModel($modelName)->getResource()->getMainTable();
 
             $childColumns = Mage::helper('M2ePro/Module_Database_Structure')->getTableInfo($table);
-            array_walk($childColumns, function(&$el){ $el['is_parent'] = false; });
+            array_walk($childColumns, function(&$el) { $el['is_parent'] = false; });
 
             $columns = array_merge($columns, $childColumns);
         }
@@ -202,34 +204,34 @@ HTML;
         return parent::_toHtml() . $additionalJs . $commonJs;
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('deleteTableRows', array(
              'label'    => Mage::helper('M2ePro')->__('Delete'),
              'url'      => '',
         ));
-        //--------------------------------
+        // ---------------------------------------
 
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('updateTableCells', array(
             'label'    => Mage::helper('M2ePro')->__('Update'),
             'url'      => ''
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnData($value, $row, $column, $isExport)
     {
@@ -305,7 +307,58 @@ HTML;
         return $html;
     }
 
-    // ####################################
+    //########################################
+
+    protected function _addColumnFilterToCollection($column)
+    {
+        if (!$this->getCollection()) {
+            return $this;
+        }
+
+        $value = $column->getFilter()->getValue();
+        $field = ( $column->getFilterIndex() ) ? $column->getFilterIndex()
+                                               : $column->getIndex();
+
+        if ($this->isNullFilter($value)) {
+            $this->getCollection()->addFieldToFilter($field, array('null' => true));
+            return $this;
+        }
+
+        if ($this->isNotIsNullFilter($value)) {
+            $this->getCollection()->addFieldToFilter($field, array('notnull' => true));
+            return $this;
+        }
+
+        return parent::_addColumnFilterToCollection($column);
+    }
+
+    private function isNullFilter($value)
+    {
+        if ($value === 'isnull') {
+            return true;
+        }
+
+        if (isset($value['from'] ,$value['to']) && $value['from'] === 'isnull' && $value['to'] === 'isnull') {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isNotIsNullFilter($value)
+    {
+        if ($value === '!isnull') {
+            return true;
+        }
+
+        if (isset($value['from'] ,$value['to']) && $value['from'] === '!isnull' && $value['to'] === '!isnull') {
+            return true;
+        }
+
+        return false;
+    }
+
+    //########################################
 
     public function getGridUrl()
     {
@@ -317,7 +370,7 @@ HTML;
         //return $this->getUrl('*/*/editTableRow', array('id' => $row->getId()));
     }
 
-    // ####################################
+    //########################################
 
     private function getColumnType($columnData)
     {
@@ -332,5 +385,5 @@ HTML;
         return 'text';
     }
 
-    // ####################################
+    //########################################
 }

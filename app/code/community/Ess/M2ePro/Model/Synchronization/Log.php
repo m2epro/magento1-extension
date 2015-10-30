@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
@@ -39,7 +41,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
      */
     protected $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
 
-    //####################################
+    //########################################
 
     public function _construct()
     {
@@ -47,24 +49,33 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
         $this->_init('M2ePro/Synchronization_Log');
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @param int $id
+     */
     public function setOperationHistoryId($id)
     {
         $this->operationHistoryId = (int)$id;
     }
 
+    /**
+     * @param int $initiator
+     */
     public function setInitiator($initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN)
     {
         $this->initiator = (int)$initiator;
     }
 
+    /**
+     * @param int $task
+     */
     public function setSynchronizationTask($task = self::TASK_UNKNOWN)
     {
         $this->task = (int)$task;
     }
 
-    //####################################
+    //########################################
 
     public function addMessage($description = NULL, $type = NULL, $priority = NULL, array $additionalData = array())
     {
@@ -76,7 +87,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
         $this->createMessage($dataForAdd);
     }
 
-    //####################################
+    //########################################
 
     public function getActionTitle($type)
     {
@@ -88,7 +99,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
         return $this->getActionsTitlesByClass(__CLASS__,'TASK_');
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function clearMessages($task = NULL)
     {
@@ -101,7 +112,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
         return 'synchronization';
     }
 
-    //####################################
+    //########################################
 
     protected function createMessage($dataForAdd)
     {
@@ -144,5 +155,5 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
         return $dataForAdd;
     }
 
-    //####################################
+    //########################################
 }

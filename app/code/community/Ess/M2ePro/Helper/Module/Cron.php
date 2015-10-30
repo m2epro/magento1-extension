@@ -1,92 +1,84 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
 {
-    const TYPE_MAGENTO = 'magento';
-    const TYPE_SERVICE = 'service';
+    const RUNNER_MAGENTO = 'magento';
+    const RUNNER_SERVICE = 'service';
 
-    const STATE_IN_PROGRESS = 0;
-    const STATE_COMPLETED   = 1;
-    const STATE_NOT_FOUND   = 2;
+    const STRATEGY_SERIAL   = 'serial';
+    const STRATEGY_PARALLEL = 'parallel';
 
-    // ########################################
+    const RUNNER_SERVICE_MAX_INACTIVE_TIME = 300;
+
+    //########################################
 
     public function isModeEnabled()
     {
         return (bool)$this->getConfigValue('mode');
     }
 
-    public function isReadyToRun()
+    //########################################
+
+    public function getRunner()
     {
-        return Mage::helper('M2ePro/Module')->isMigrationWizardFinished() &&
-               (
-                   Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished() ||
-                   Mage::helper('M2ePro/View_Common')->isInstallationWizardFinished()
-               );
+        return $this->getConfigValue('runner');
     }
 
-    // ########################################
-
-    public function getType()
+    public function setRunner($value)
     {
-        return $this->getConfigValue('type');
-    }
-
-    public function setType($value)
-    {
-        return $this->setConfigValue('type', $value);
-    }
-
-    // ----------------------------------------
-
-    public function isTypeMagento()
-    {
-        return $this->getType() == self::TYPE_MAGENTO;
-    }
-
-    public function isTypeService()
-    {
-        return $this->getType() == self::TYPE_SERVICE;
-    }
-
-    // ########################################
-
-    public function getLastTypeChange()
-    {
-        return $this->getConfigValue('last_type_change');
-    }
-
-    public function setLastTypeChange($value)
-    {
-        $this->setConfigValue('last_type_change', $value);
-    }
-
-    // ----------------------------------------
-
-    public function isLastTypeChangeMoreThan($interval, $isHours = false)
-    {
-        $isHours && $interval *= 3600;
-        $lastTypeChange = $this->getLastTypeChange();
-
-        if (is_null($lastTypeChange)) {
-
-            $tempTimeCacheKey = 'cron_start_time_of_checking_last_type_change';
-            $lastTypeChange = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($tempTimeCacheKey);
-
-            if (empty($lastTypeChange)) {
-                $lastTypeChange = Mage::helper('M2ePro')->getCurrentGmtDate();
-                Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($tempTimeCacheKey,$lastTypeChange,array('cron'));
-            }
+        if ($this->getRunner() != $value) {
+            $this->log("Cron runner was changed from [" . $this->getRunner() . "] to [" . $value . "] - ".
+                        Mage::helper('M2ePro')->getCurrentGmtDate(), 'cron_runner_change');
         }
 
-        return Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastTypeChange) + $interval;
+        return $this->setConfigValue('runner', $value);
     }
 
-    // ########################################
+    // ---------------------------------------
+
+    public function isRunnerMagento()
+    {
+        return $this->getRunner() == self::RUNNER_MAGENTO;
+    }
+
+    public function isRunnerService()
+    {
+        return $this->getRunner() == self::RUNNER_SERVICE;
+    }
+
+    //########################################
+
+    public function getLastRunnerChange()
+    {
+        return $this->getConfigValue('last_runner_change');
+    }
+
+    public function setLastRunnerChange($value)
+    {
+        $this->setConfigValue('last_runner_change', $value);
+    }
+
+    // ---------------------------------------
+
+    public function isLastRunnerChangeMoreThan($interval, $isHours = false)
+    {
+        $isHours && $interval *= 3600;
+
+        $lastRunnerChange = $this->getLastRunnerChange();
+        if (is_null($lastRunnerChange)) {
+            return false;
+        }
+
+        return Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRunnerChange) + $interval;
+    }
+
+    //########################################
 
     public function getLastAccess()
     {
@@ -98,28 +90,21 @@ class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
         return $this->setConfigValue('last_access',$value);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function isLastAccessMoreThan($interval, $isHours = false)
     {
         $isHours && $interval *= 3600;
+
         $lastAccess = $this->getLastAccess();
-
         if (is_null($lastAccess)) {
-
-            $tempTimeCacheKey = 'cron_start_time_of_checking_last_access';
-            $lastAccess = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($tempTimeCacheKey);
-
-            if (empty($lastAccess)) {
-                $lastAccess = Mage::helper('M2ePro')->getCurrentGmtDate();
-                Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($tempTimeCacheKey,$lastAccess,array('cron'));
-            }
+            return false;
         }
 
         return Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastAccess) + $interval;
     }
 
-    // ########################################
+    //########################################
 
     public function getLastRun()
     {
@@ -131,35 +116,40 @@ class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
         return $this->setConfigValue('last_run',$value);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function isLastRunMoreThan($interval, $isHours = false)
     {
         $isHours && $interval *= 3600;
+
         $lastRun = $this->getLastRun();
-
         if (is_null($lastRun)) {
-
-            $tempTimeCacheKey = 'cron_start_time_of_checking_last_run';
-            $lastRun = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($tempTimeCacheKey);
-
-            if (empty($lastRun)) {
-                $lastRun = Mage::helper('M2ePro')->getCurrentGmtDate();
-                Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($tempTimeCacheKey,$lastRun,array('cron'));
-            }
+            return false;
         }
 
         return Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRun) + $interval;
     }
 
-    // ########################################
+    //########################################
+
+    public function getLastExecutedSlowTask()
+    {
+        return $this->getConfigValue('last_executed_slow_task');
+    }
+
+    public function setLastExecutedSlowTask($taskNick)
+    {
+        $this->setConfigValue('last_executed_slow_task', $taskNick);
+    }
+
+    //########################################
 
     private function getConfig()
     {
         return Mage::helper('M2ePro/Module')->getConfig();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getConfigValue($key)
     {
@@ -171,5 +161,18 @@ class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
         return $this->getConfig()->setGroupValue('/cron/', $key, $value);
     }
 
-    // ########################################
+    //########################################
+
+    private function log($message, $type)
+    {
+        /** @var Ess_M2ePro_Model_Log_System $log */
+        $log = Mage::getModel('M2ePro/Log_System');
+
+        $log->setType($type);
+        $log->setDescription($message);
+
+        $log->save();
+    }
+
+    //########################################
 }

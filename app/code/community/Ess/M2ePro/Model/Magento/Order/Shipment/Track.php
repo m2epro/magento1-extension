@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Order_Shipment_Track
@@ -15,45 +17,57 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
 
     private $tracks = array();
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Mage_Sales_Model_Order $magentoOrder
+     * @return $this
+     */
     public function setMagentoOrder(Mage_Sales_Model_Order $magentoOrder)
     {
         $this->magentoOrder = $magentoOrder;
         return $this;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $trackingDetails
+     * @return $this
+     */
     public function setTrackingDetails(array $trackingDetails)
     {
         $this->trackingDetails = $trackingDetails;
         return $this;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $supportedCarriers
+     * @return $this
+     */
     public function setSupportedCarriers(array $supportedCarriers)
     {
         $this->supportedCarriers = $supportedCarriers;
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function getTracks()
     {
         return $this->tracks;
     }
 
-    // ########################################
+    //########################################
 
     public function buildTracks()
     {
         $this->prepareTracks();
     }
 
-    // ########################################
+    //########################################
 
     private function prepareTracks()
     {
@@ -63,10 +77,10 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
         }
 
         // Skip shipment observer
-        // -----------------
+        // ---------------------------------------
         Mage::helper('M2ePro/Data_Global')->unsetValue('skip_shipment_observer');
         Mage::helper('M2ePro/Data_Global')->setValue('skip_shipment_observer', true);
-        // -----------------
+        // ---------------------------------------
 
         /** @var $shipment Mage_Sales_Model_Order_Shipment */
         $shipment = $this->magentoOrder->getShipmentsCollection()->getFirstItem();
@@ -83,7 +97,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
         }
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getFilteredTrackingDetails()
     {
@@ -92,7 +106,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
         }
 
         // Filter exist tracks
-        // ------------------------
+        // ---------------------------------------
         foreach ($this->magentoOrder->getTracksCollection() as $track) {
 
             foreach ($this->trackingDetails as $key => $trackingDetail) {
@@ -102,12 +116,12 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
             }
 
         }
-        // ------------------------
+        // ---------------------------------------
 
         return $this->trackingDetails;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getCarrierCode($title)
     {
@@ -116,5 +130,5 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
         return isset($this->supportedCarriers[$carrierCode]) ? $carrierCode : 'custom';
     }
 
-    // ########################################
+    //########################################
 }

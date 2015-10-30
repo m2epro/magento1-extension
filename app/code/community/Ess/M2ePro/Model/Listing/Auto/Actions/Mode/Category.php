@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
@@ -10,7 +12,7 @@ class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
     private $cacheLoadedListings = array();
     private $cacheAutoCategoriesByCategoryId = array();
 
-    //####################################
+    //########################################
 
     public function synchWithAddedCategoryId($categoryId, $websiteId)
     {
@@ -30,6 +32,13 @@ class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
 
             if (!$listing->isAutoModeCategory()) {
                 continue;
+            }
+
+            if (!$autoCategory->getGroup()->isAddingAddNotVisibleYes()) {
+                if ($this->getProduct()->getVisibility()
+                    == Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE) {
+                    continue;
+                }
             }
 
             $this->getListingObject($listing)->addProductByCategoryGroup(
@@ -67,7 +76,7 @@ class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
         }
     }
 
-    //####################################
+    //########################################
 
     private function getLoadedListing($listing)
     {
@@ -104,5 +113,5 @@ class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
                                         ->getItems();
     }
 
-    //####################################
+    //########################################
 }

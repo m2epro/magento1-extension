@@ -1,32 +1,34 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other
     extends Mage_Adminhtml_Block_Widget_Form_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayConfigurationCategoryEditOther');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_configuration_category_edit';
         $this->_mode = 'other';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__('Edit') . ' ' .
             $this->getCategoryTitle($this->getRequest()->getParam('type')) . ' ' .
             Mage::helper('M2ePro')->__('Category');
-        //------------------------------
+        // ---------------------------------------
 
         $this->removeButton('save');
         $this->removeButton('reset');
@@ -53,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other
         ));
     }
 
-    // ########################################
+    //########################################
 
     protected function getCategoryTitle($type)
     {
@@ -70,5 +72,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other
         return $titles[(int)$type];
     }
 
-    // ########################################
+    //########################################
 }

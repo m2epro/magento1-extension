@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other extends Ess_M2ePro_Block_Adminhtml_Common_Component_Tabs_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = '';
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate(NULL);
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
@@ -29,26 +31,26 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other extends Ess_M2ePro_Block_A
         $this->removeButton('edit');
 
         if (!is_null($this->getRequest()->getParam('back'))) {
-            //------------------------------
+            // ---------------------------------------
             $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_common_listing/index');
             $this->_addButton('back', array(
                 'label'     => Mage::helper('M2ePro')->__('Back'),
                 'onclick'   => 'CommonHandlerObj.back_click(\''.$url.'\')',
                 'class'     => 'back'
             ));
-            //------------------------------
+            // ---------------------------------------
         }
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_common_log/listingOther');
         $this->_addButton('view_log', array(
             'label'     => Mage::helper('M2ePro')->__('View Log'),
             'onclick'   => 'viewAllChannelLogs(\''.$url.'\')',
             'class'     => 'button_link'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->tabsContainerId = 'listings_other_tabs_container';
         $this->useAjax = true;
         $this->tabsAjaxUrls = array(
@@ -57,10 +59,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other extends Ess_M2ePro_Block_A
         );
 
         $this->isAjax = json_encode($this->getRequest()->isXmlHttpRequest());
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function getAmazonTabBlock()
     {
@@ -72,7 +74,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other extends Ess_M2ePro_Block_A
         return $this->getChild('amazon_tab');
     }
 
-    // ########################################
+    //########################################
 
     protected function getBuyTabBlock()
     {
@@ -85,7 +87,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other extends Ess_M2ePro_Block_A
         return $this->getChild('buy_tab');
     }
 
-    // ########################################
+    //########################################
 
     protected function getTabsContainerBlock()
     {
@@ -159,7 +161,7 @@ HTML;
 HTML;
     }
 
-    // ########################################
+    //########################################
 
     protected function getActiveTab()
     {
@@ -172,5 +174,5 @@ HTML;
         return $activeTab;
     }
 
-    // ########################################
+    //########################################
 }

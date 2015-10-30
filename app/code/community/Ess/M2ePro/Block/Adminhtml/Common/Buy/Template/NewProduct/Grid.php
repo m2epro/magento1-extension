@@ -1,29 +1,31 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('templateNewProductGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -113,29 +115,29 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Grid extends Mag
         ));
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         // Set delete action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('delete', array(
             'label'    => Mage::helper('M2ePro')->__('Delete'),
             'url'      => $this->getUrl('*/*/delete'),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnId($value, $row, $column, $isExport)
     {
@@ -175,7 +177,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Grid extends Mag
         return $actions;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -193,5 +195,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_NewProduct_Grid extends Mag
         ));
     }
 
-    // ####################################
+    //########################################
 }

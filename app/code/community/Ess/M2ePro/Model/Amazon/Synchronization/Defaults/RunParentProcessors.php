@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_RunParentProcessors
     extends Ess_M2ePro_Model_Amazon_Synchronization_Defaults_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_RunParentProcessors
         return 'Update Variation Parent Listing Products';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,14 +33,14 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_RunParentProcessors
         return 10;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function intervalIsEnabled()
     {
         return true;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -65,5 +67,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_RunParentProcessors
         $massProcessor->execute();
     }
 
-    //####################################
+    //########################################
 }

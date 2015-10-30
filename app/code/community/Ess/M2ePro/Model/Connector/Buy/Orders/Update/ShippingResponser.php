@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Buy_Orders_Update_ShippingResponser
@@ -14,10 +16,14 @@ class Ess_M2ePro_Model_Connector_Buy_Orders_Update_ShippingResponser
     // M2ePro_TRANSLATIONS
     // Tracking number "%num%" for "%code%" has been sent to Rakuten.com.
 
-    private $orders = array();
+    private $orders = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -27,32 +33,21 @@ class Ess_M2ePro_Model_Connector_Buy_Orders_Update_ShippingResponser
         }
     }
 
+    /**
+     * @param $message
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function eventFailedExecuting($message)
     {
         parent::eventFailedExecuting($message);
 
-        $logs = array();
-        $currentDate = Mage::helper('M2ePro')->getCurrentGmtDate();
-
-        $logMessage = Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
-            'Rakuten.com Order status was not updated. Reason: %msg%', array('msg' => $message)
-        );
-
-        foreach (array_keys($this->params) as $orderId) {
-            $logs[] = array(
-                'order_id'       => (int)$orderId,
-                'message'        => $logMessage,
-                'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                'component_mode' => Ess_M2ePro_Helper_Component_Buy::NICK,
-                'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                'create_date'    => $currentDate
-            );
+        foreach ($this->getOrders() as $order) {
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $order->addErrorLog('Rakuten.com Order status was not updated. Reason: %msg%', array('msg' => $message));
         }
-
-        $this->createLogEntries($logs);
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponseData($response)
     {
@@ -61,40 +56,32 @@ class Ess_M2ePro_Model_Connector_Buy_Orders_Update_ShippingResponser
 
     protected function processResponseData($response)
     {
-        $logs = array();
-        $currentDate = Mage::helper('M2ePro')->getCurrentGmtDate();
+        /** @var $orders Ess_M2ePro_Model_Order[] */
+        $orders = $this->getOrders();
 
         // Check global messages
-        //----------------------
+        // ---------------------------------------
         $globalMessages = $this->messages;
         if (isset($response['messages']['0-id']) && is_array($response['messages']['0-id'])) {
             $globalMessages = array_merge($globalMessages,$response['messages']['0-id']);
         }
 
         if (count($globalMessages) > 0) {
-            foreach ($this->getOrdersIds() as $orderId) {
+            foreach ($orders as $order) {
                 foreach ($globalMessages as $message) {
                     $text = $message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TEXT_KEY];
 
-                    $logs[] = array(
-                        'order_id'       => $orderId,
-                        'message'        => $text,
-                        'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                        'component_mode' => Ess_M2ePro_Helper_Component_Buy::NICK,
-                        'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                        'create_date'    => $currentDate
-                    );
+                    $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+                    $order->addErrorLog($text);
                 }
             }
 
-            $this->createLogEntries($logs);
-
             return;
         }
-        //----------------------
+        // ---------------------------------------
 
         // Check separate messages
-        //----------------------
+        // ---------------------------------------
         $failedOrdersIds = array();
 
         foreach ($response['messages'] as $orderItemId => $messages) {
@@ -115,56 +102,33 @@ class Ess_M2ePro_Model_Connector_Buy_Orders_Update_ShippingResponser
             foreach ($messages as $message) {
                 $text = $message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TEXT_KEY];
 
-                $logs[] = array(
-                    'order_id'       => $orderId,
-                    'message'        => $text,
-                    'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    'component_mode' => Ess_M2ePro_Helper_Component_Buy::NICK,
-                    'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                    'create_date'    => $currentDate
-                );
+                $orders[$orderId]->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+                $orders[$orderId]->addErrorLog($text);
             }
         }
-        //----------------------
+        // ---------------------------------------
 
-        //----------------------
-        foreach ($this->getOrdersIds() as $orderId) {
+        // ---------------------------------------
+        foreach ($orders as $order) {
 
-            if (in_array($orderId, $failedOrdersIds)) {
+            if (in_array($order->getId(), $failedOrdersIds)) {
                 continue;
             }
 
-            $logs[] = array(
-                'order_id'       => (int)$orderId,
-                'message'        => 'Rakuten.com Order status was updated to Shipped.',
-                'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                'component_mode' => Ess_M2ePro_Helper_Component_Buy::NICK,
-                'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                'create_date'    => $currentDate
-            );
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $order->addSuccessLog('Rakuten.com Order status was updated to Shipped.');
 
-            $logMessage = Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
-                'Tracking number "%num%" for "%code%" has been sent to Rakuten.com.', array(
-                    '!num' => $this->params[$orderId]['tracking_number'],
-                    'code' => $this->params[$orderId]['tracking_type']
+            $order->addSuccessLog('Tracking number "%num%" for "%code%" has been sent to Rakuten.com.',
+                array(
+                    '!num' => $this->params[$order->getId()]['tracking_number'],
+                    'code' => $this->params[$order->getId()]['tracking_type']
                 )
             );
-
-            $logs[] = array(
-                'order_id'       => (int)$orderId,
-                'message'        => $logMessage,
-                'type'           => Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                'component_mode' => Ess_M2ePro_Helper_Component_Buy::NICK,
-                'initiator'      => Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                'create_date'    => $currentDate
-            );
         }
-        //----------------------
-
-        $this->createLogEntries($logs);
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @throws Ess_M2ePro_Model_Exception_Logic
@@ -206,29 +170,5 @@ class Ess_M2ePro_Model_Connector_Buy_Orders_Update_ShippingResponser
         return null;
     }
 
-    private function getOrdersIds()
-    {
-        $ids = array();
-
-        foreach ($this->params as $requestData) {
-            $ids[] = (int)$requestData['order_id'];
-        }
-
-        return array_unique($ids);
-    }
-
-    // ########################################
-
-    private function createLogEntries(array $data)
-    {
-        if (empty($data)) {
-            return;
-        }
-
-        /** @var $writeConnection Varien_Db_Adapter_Interface */
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $writeConnection->insertMultiple(Mage::getResourceModel('M2ePro/Order_Log')->getMainTable(), $data);
-    }
-
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model_Component_Parent_Abstract
@@ -16,7 +18,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
      */
     protected $magentoProductModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -24,7 +26,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         $this->_init('M2ePro/Listing_Product_Variation_Option');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -34,7 +36,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         return $temp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product_Variation
@@ -58,7 +60,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
          $this->listingProductVariationModel = $instance;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Magento_Product_Cache
@@ -86,7 +88,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         $this->magentoProductModel = $instance;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -104,7 +106,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         return $this->getListingProductVariation()->getListingProduct();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -122,26 +124,35 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         return $this->getListingProductVariation()->getMarketplace();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getListingProductVariationId()
     {
         return (int)$this->getData('listing_product_variation_id');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getProductId()
     {
         return (int)$this->getData('product_id');
     }
 
+    /**
+     * @return mixed
+     */
     public function getProductType()
     {
         return $this->getData('product_type');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function getAttribute()
     {
@@ -153,5 +164,5 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         return $this->getData('option');
     }
 
-    // ########################################
+    //########################################
 }

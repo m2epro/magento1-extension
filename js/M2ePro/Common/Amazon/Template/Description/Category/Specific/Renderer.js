@@ -1,14 +1,14 @@
 CommonAmazonTemplateDescriptionCategorySpecificRenderer = Class.create();
 CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     MODE_NONE              : 'none',
     MODE_RECOMMENDED_VALUE : 'recommended_value',
     MODE_CUSTOM_VALUE      : 'custom_value',
     MODE_CUSTOM_ATTRIBUTE  : 'custom_attribute',
 
-    // --------------------------------
+    // ---------------------------------------
 
     indexedXPath : null,
     params       : {},
@@ -19,11 +19,11 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
     specificHandler  : null,
     dictionaryHelper : null,
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //###################################
+    //########################################
 
     load: function()
     {
@@ -41,7 +41,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         return true;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     setSpecificsHandler: function(handler)
     {
@@ -58,7 +58,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         this.params = params;
     },
 
-    //###################################
+    //########################################
 
     getRootIndexedXpath: function()
     {
@@ -82,7 +82,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         return this.indexedXPath + '/' + childSpecific.xml_tag + '-1'
     },
 
-    //###################################
+    //########################################
 
     isValueForceSet: function()
     {
@@ -94,7 +94,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         return this.params.hasOwnProperty('force_value') ? this.params['force_value'] : false;
     },
 
-    //###################################
+    //########################################
 
     isRemoveActionAllowed: function()
     {
@@ -136,7 +136,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
 
         $(this.indexedXPath).remove();
 
-        // -- make the latest clone button visible again
+        // make the latest clone button visible again
         var theSameSpecifics = this.specificHandler.getXpathesOfTheSameRenderedSpecific(this.indexedXPath);
         if (theSameSpecifics.length < this.specific.max_occurs) {
 
@@ -149,7 +149,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         return this.indexedXPath;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     isCloneActionAllowed: function()
     {
@@ -191,7 +191,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         return newIndexedXpath;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     hideButton: function(button)
     {
@@ -209,7 +209,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
                                                                                      : button.style.visibility = 'visible';
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     touchMyNeighbors: function()
     {
@@ -226,7 +226,7 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         });
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     onMyDuplicateRendered: function()
     {
@@ -243,9 +243,9 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         }
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
-    //-- my awesome firefox... simulate('change') does not work is element has a 'disabled' attribute
+    // my awesome firefox... simulate('change') does not work is element has a 'disabled' attribute
     simulateAction: function(obj, action)
     {
         if (obj.hasAttribute('disabled')) {
@@ -257,5 +257,5 @@ CommonAmazonTemplateDescriptionCategorySpecificRenderer.prototype = {
         }
     }
 
-    // --------------------------------
+    // ---------------------------------------
 };

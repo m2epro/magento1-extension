@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Description_Source
@@ -19,27 +21,41 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
      */
     private $descriptionTemplateModel = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         $this->magentoProduct = $magentoProduct;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Magento_Product
+     */
     public function getMagentoProduct()
     {
         return $this->magentoProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Template_Description $instance
+     * @return $this
+     */
     public function setDescriptionTemplate(Ess_M2ePro_Model_Template_Description $instance)
     {
         $this->descriptionTemplateModel = $instance;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Template_Description
+     */
     public function getDescriptionTemplate()
     {
         return $this->descriptionTemplateModel;
@@ -53,8 +69,11 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return $this->getDescriptionTemplate()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         $title = '';
@@ -82,6 +101,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return $title;
     }
 
+    /**
+     * @return string
+     */
     public function getSubTitle()
     {
         $subTitle = '';
@@ -100,6 +122,10 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return $subTitle;
     }
 
+    /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function getDescription()
     {
         $description = '';
@@ -132,8 +158,11 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return str_replace(array('<![CDATA[', ']]>'), '', $description);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int|string
+     */
     public function getCondition()
     {
         $src = $this->getEbayDescriptionTemplate()->getConditionSource();
@@ -149,6 +178,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return $src['value'];
     }
 
+    /**
+     * @return string
+     */
     public function getConditionNote()
     {
         $note = '';
@@ -163,7 +195,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return $note;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getProductDetail($type)
     {
@@ -180,8 +212,11 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return $this->getMagentoProduct()->getAttributeValue($attribute);
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getMainImageLink()
     {
         $imageLink = '';
@@ -202,6 +237,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return $this->addWatermarkIfNeed($imageLink);
     }
 
+    /**
+     * @return array|string
+     */
     public function getGalleryImages()
     {
         if ($this->getEbayDescriptionTemplate()->isImageMainModeNone()) {
@@ -268,6 +306,9 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return array_merge($mainImage, $galleryImages);
     }
 
+    /**
+     * @return array
+     */
     public function getVariationImages()
     {
         if ($this->getEbayDescriptionTemplate()->isImageMainModeNone() ||
@@ -312,8 +353,13 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return array_slice($variationImages, 0, $limitVariationImages);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param string $str
+     * @param int $length
+     * @return string
+     */
     private function cutLongTitles($str, $length = 80)
     {
         $str = trim($str);
@@ -325,7 +371,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return Mage::helper('core/string')->truncate($str, $length, '');
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function imageLinkToPath($imageLink)
     {
@@ -359,7 +405,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         return str_replace(' ', '%20', $imageLink);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function addWatermarkIfNeed($imageLink)
     {
@@ -474,17 +520,17 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
             $tagsNames = $tagsArr[1];
 
             $count = count($tags);
-            for($i = 0; $i < $count; $i++){
+            for ($i = 0; $i < $count; $i++) {
                 $dom = new DOMDocument();
                 $dom->loadHTML($tags[$i]);
                 $tag = $dom->getElementsByTagName($tagsNames[$i])->item(0);
 
                 $newTag = str_replace(' m2e_watermark="1"', '', $tags[$i]);
-                if($tagsNames[$i] === 'a') {
+                if ($tagsNames[$i] === 'a') {
                     $newTag = str_replace($tag->getAttribute('href'),
                         $this->addWatermarkIfNeed($tag->getAttribute('href')), $newTag);
                 }
-                if($tagsNames[$i] === 'img') {
+                if ($tagsNames[$i] === 'img') {
                     $newTag = str_replace($tag->getAttribute('src'),
                         $this->addWatermarkIfNeed($tag->getAttribute('src')), $newTag);
                 }
@@ -493,5 +539,5 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         }
     }
 
-    // ########################################
+    //########################################
 }

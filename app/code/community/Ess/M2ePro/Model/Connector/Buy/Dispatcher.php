@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Buy_Dispatcher
 {
-    //####################################
+    //########################################
 
     /**
      * @throws Exception
@@ -66,7 +68,7 @@ class Ess_M2ePro_Model_Connector_Buy_Dispatcher
         return $this->getConnector('virtual', '', '', $params, $account);
     }
 
-    //####################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Connector_Buy_Requester|Ess_M2ePro_Model_Connector_Buy_Abstract $connector
@@ -77,5 +79,5 @@ class Ess_M2ePro_Model_Connector_Buy_Dispatcher
         return $connector->process();
     }
 
-    //####################################
+    //########################################
 }

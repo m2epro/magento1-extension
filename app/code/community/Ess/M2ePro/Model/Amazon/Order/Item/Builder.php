@@ -1,17 +1,19 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstract
 {
-    // ########################################
+    //########################################
 
     public function initialize(array $data)
     {
         // Init general data
-        // ------------------
+        // ---------------------------------------
         $this->setData('amazon_order_item_id', $data['amazon_order_item_id']);
         $this->setData('order_id', $data['order_id']);
         $this->setData('sku', trim($data['sku']));
@@ -20,10 +22,10 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
         $this->setData('title', trim($data['title']));
         $this->setData('gift_type', trim($data['gift_type']));
         $this->setData('gift_message', trim($data['gift_message']));
-        // ------------------
+        // ---------------------------------------
 
         // Init sale data
-        // ------------------
+        // ---------------------------------------
         $this->setData('price', (float)$data['price']);
         $this->setData('gift_price', (float)$data['gift_price']);
         $this->setData('currency', trim($data['currency']));
@@ -31,17 +33,17 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
         $this->setData('qty_purchased', (int)$data['qty_purchased']);
         $this->setData('qty_shipped', (int)$data['qty_shipped']);
         $this->setData('tax_details', json_encode($data['tax_details']));
-        // ------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
         return $this->createOrderItem();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Order_Item
@@ -60,5 +62,5 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
         return $existItem;
     }
 
-    // ########################################
+    //########################################
 }

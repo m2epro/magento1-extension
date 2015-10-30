@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_template_new_product`
@@ -22,7 +22,7 @@ $connection = $installer->getConnection();
     ADD INDEX `node_id` (`node_id`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_new_product');
 
@@ -36,7 +36,7 @@ if ($connection->tableColumnExists($tempTable, 'worldwide_id_custom_attribute') 
         'VARCHAR(255) DEFAULT NULL AFTER `worldwide_id_mode`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_dictionary_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -59,7 +59,7 @@ if (!isset($tempTableIndexList[strtoupper('node_id')])) {
     $connection->addKey($tempTable, 'node_id', 'node_id');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -147,8 +147,8 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

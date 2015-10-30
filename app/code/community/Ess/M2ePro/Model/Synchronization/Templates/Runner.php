@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Synchronization_Templates_Runner
@@ -16,55 +18,79 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
     private $maxProductsPerStep = 10;
     private $connectorModel     = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Synchronization_LockItem $object
+     */
     public function setLockItem(Ess_M2ePro_Model_Synchronization_LockItem $object)
     {
         $this->lockItem = $object;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Synchronization_LockItem
+     */
     public function getLockItem()
     {
         return $this->lockItem;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param int $value
+     */
     public function setPercentsStart($value)
     {
         $this->percentsStart = $value;
     }
 
+    /**
+     * @return int
+     */
     public function getPercentsStart()
     {
         return $this->percentsStart;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param int $value
+     */
     public function setPercentsEnd($value)
     {
         $this->percentsEnd = $value;
     }
 
+    /**
+     * @return int
+     */
     public function getPercentsEnd()
     {
         return $this->percentsEnd;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param int $value
+     */
     public function setMaxProductsPerStep($value)
     {
         $this->maxProductsPerStep = $value;
     }
 
+    /**
+     * @return int
+     */
     public function getMaxProductsPerStep()
     {
         return $this->maxProductsPerStep;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function setConnectorModel($value)
     {
@@ -76,8 +102,14 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
         return $this->connectorModel;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param $product
+     * @param $action
+     * @param Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator
+     * @return bool
+     */
     public function addProduct($product,
                                $action,
                                Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator)
@@ -148,8 +180,14 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
         return false;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param $product
+     * @param $action
+     * @param Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator
+     * @return bool
+     */
     public function isExistProduct($product,
                                    $action,
                                    Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator)
@@ -170,7 +208,7 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
         $this->items = array();
     }
 
-    // ########################################
+    //########################################
 
     public function execute()
     {
@@ -219,7 +257,8 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
 
         foreach (array_chunk($products, $this->getMaxProductsPerStep()) as $stepProducts) {
 
-            $countString = count($stepProducts).' '.Mage::helper('M2ePro')->__('Product(s).');
+            $countString = Mage::helper('M2ePro')->__('%perStep% from %total% Product(s).',
+                                                      count($stepProducts), $totalProductsCount);
 
             if (count($stepProducts) < 10) {
 
@@ -252,7 +291,7 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
         return $results;
     }
 
-    // ########################################
+    //########################################
 
     private function getActionProducts($action)
     {
@@ -269,7 +308,7 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
         return $resultProducts;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function setPercents($value)
     {
@@ -298,12 +337,12 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
         $this->getLockItem()->activate();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getPercentsInterval()
     {
         return $this->getPercentsEnd() - $this->getPercentsStart();
     }
 
-    // ########################################
+    //########################################
 }

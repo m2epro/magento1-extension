@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_FailedProducts
     extends Ess_M2ePro_Block_Adminhtml_Listing_Moving_FailedProducts
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -18,7 +20,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_FailedProducts
 
     protected function _beforeToHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'    => 'confirm_button_failed_products',
             'label' => Mage::helper('M2ePro')->__('Confirm'),
@@ -26,9 +28,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_FailedProducts
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button',$buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
 
         $this->setChild(
             'failedProducts_grid',
@@ -37,10 +39,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_FailedProducts
                 array('grid_url' => $this->getData('grid_url'))
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
         parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,7 +1,7 @@
 CommonAmazonTemplateDescriptionCategorySpecificDictionary = Class.create();
 CommonAmazonTemplateDescriptionCategorySpecificDictionary.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     TYPE_TEXT      : 1,
     TYPE_SELECT    : 2,
@@ -9,18 +9,18 @@ CommonAmazonTemplateDescriptionCategorySpecificDictionary.prototype = {
 
     dictionarySpecifics: {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     setDictionarySpecifics: function(specifics)
     {
         this.dictionarySpecifics = specifics;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     isSpecificRequired: function(specific)
     {
@@ -53,7 +53,7 @@ CommonAmazonTemplateDescriptionCategorySpecificDictionary.prototype = {
         return parseInt(specific.type) == this.TYPE_SELECT;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     getParentSpecific: function(specific)
     {
@@ -101,7 +101,7 @@ CommonAmazonTemplateDescriptionCategorySpecificDictionary.prototype = {
         return specifics;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     sortSpecific: function(spA, spB)
     {
@@ -140,5 +140,5 @@ CommonAmazonTemplateDescriptionCategorySpecificDictionary.prototype = {
         return dictionarySpecific;
     }
 
-    // --------------------------------
+    // ---------------------------------------
 };

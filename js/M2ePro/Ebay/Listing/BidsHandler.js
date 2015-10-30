@@ -1,6 +1,6 @@
 EbayListingProductBidsHandler = Class.create(ActionHandler,{
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super,gridHandler)
     {
@@ -10,7 +10,7 @@ EbayListingProductBidsHandler = Class.create(ActionHandler,{
 
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -20,7 +20,7 @@ EbayListingProductBidsHandler = Class.create(ActionHandler,{
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     parseResponse: function(response)
     {
@@ -31,7 +31,7 @@ EbayListingProductBidsHandler = Class.create(ActionHandler,{
         return response.responseText.evalJSON();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(productId, title)
     {
@@ -73,5 +73,5 @@ EbayListingProductBidsHandler = Class.create(ActionHandler,{
         });
     }
 
-    //---------------------------------
+    // ---------------------------------------
 });

@@ -1,20 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Servicing_Task_Exceptions extends Ess_M2ePro_Model_Servicing_Task
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getPublicNick()
     {
         return 'exceptions';
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getRequestData()
     {
         return array();
@@ -43,22 +51,22 @@ class Ess_M2ePro_Model_Servicing_Task_Exceptions extends Ess_M2ePro_Model_Servic
         ))->save();
     }
 
-    // ########################################
+    //########################################
 
     private function prepareAndCheckReceivedData($data)
     {
-        //-- Send To Server
-        // -------------------------------------
+        // Send To Server
+        // ---------------------------------------
         if (!isset($data['send_to_server']['fatal']) || !is_bool($data['send_to_server']['fatal'])) {
             $data['send_to_server']['fatal'] = true;
         }
         if (!isset($data['send_to_server']['exception']) || !is_bool($data['send_to_server']['exception'])) {
             $data['send_to_server']['exception'] = true;
         }
-        // -------------------------------------
+        // ---------------------------------------
 
-        //-- Exceptions Filters
-        // -------------------------------------
+        // Exceptions Filters
+        // ---------------------------------------
         if (!isset($data['is_filter_enable']) || !is_bool($data['is_filter_enable'])) {
             $data['is_filter_enable'] = false;
         }
@@ -86,10 +94,10 @@ class Ess_M2ePro_Model_Servicing_Task_Exceptions extends Ess_M2ePro_Model_Servic
         }
 
         $data['filters'] = $validatedFilters;
-        // -------------------------------------
+        // ---------------------------------------
 
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

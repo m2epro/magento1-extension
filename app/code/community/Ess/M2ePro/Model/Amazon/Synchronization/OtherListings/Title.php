@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
     extends Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
         return 'Title';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -70,16 +72,16 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
         }
     }
 
-    //####################################
+    //########################################
 
     private function updateTitlesByAsins(Ess_M2ePro_Model_Account $account)
     {
-        for($i = 0; $i <= 5; $i++) {
+        for ($i = 0; $i <= 5; $i++) {
 
             /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
 
             $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
-            $listingOtherCollection->addFieldToFilter('`main_table`.account_id', (int)$account->getId());
+            $listingOtherCollection->addFieldToFilter('main_table.account_id', (int)$account->getId());
             $listingOtherCollection->getSelect()->where('`second_table`.`title` IS NULL');
             $listingOtherCollection->getSelect()->order('main_table.create_date ASC');
             $listingOtherCollection->getSelect()->limit(5);
@@ -115,7 +117,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
         }
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function updateReceivedTitles(array $responseData, Ess_M2ePro_Model_Account $account)
     {
@@ -156,9 +158,9 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
 
                 /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
                 $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other')
-                    ->addFieldToFilter('`main_table`.account_id',(int)$account->getId())
-                    ->addFieldToFilter('`second_table`.`general_id`',(int)$generalId)
-                    ->addFieldToFilter('`second_table`.`title`',array('null' => true));
+                    ->addFieldToFilter('main_table.account_id',(int)$account->getId())
+                    ->addFieldToFilter('second_table.general_id',(int)$generalId)
+                    ->addFieldToFilter('second_table.title',array('null' => true));
 
                 $listingsOthersWithEmptyTitles = $listingOtherCollection->getItems();
             }
@@ -224,5 +226,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
         }
     }
 
-    //####################################
+    //########################################
 }

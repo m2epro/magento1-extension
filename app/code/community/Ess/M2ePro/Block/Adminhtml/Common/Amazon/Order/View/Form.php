@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View_Form extends Ess_M2ePro_Block_Adminhtml_Widget_Container
@@ -10,17 +12,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View_Form extends Ess_M2ePr
 
     public $realMagentoOrderId = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonOrderViewForm');
         $this->setTemplate('M2ePro/common/amazon/order.phtml');
-        //------------------------------
+        // ---------------------------------------
 
         /** @var $order Ess_M2ePro_Model_Order */
         $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
@@ -29,16 +31,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View_Form extends Ess_M2ePr
     protected function _beforeToHtml()
     {
         // Magento order data
-        // ---------------
+        // ---------------------------------------
         $this->realMagentoOrderId = NULL;
 
         $magentoOrder = $this->order->getMagentoOrder();
         if (!is_null($magentoOrder)) {
             $this->realMagentoOrderId = $magentoOrder->getRealOrderId();
         }
-        // ---------------
+        // ---------------------------------------
 
-        // ---------------
+        // ---------------------------------------
         if (!is_null($magentoOrder) && $magentoOrder->hasShipments()) {
             $url = $this->getUrl('*/adminhtml_order/resubmitShippingInfo', array('id' => $this->order->getId()));
             $data = array(
@@ -49,16 +51,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View_Form extends Ess_M2ePr
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
             $this->setChild('resubmit_shipping_info', $buttonBlock);
         }
-        // ---------------
+        // ---------------------------------------
 
         // Shipping data
-        // ---------------
+        // ---------------------------------------
         /** @var $shippingAddress Ess_M2ePro_Model_Amazon_Order_ShippingAddress */
         $shippingAddress = $this->order->getShippingAddress();
 
         $this->shippingAddress = $shippingAddress->getData();
         $this->shippingAddress['country_name'] = $shippingAddress->getCountryName();
-        // ---------------
+        // ---------------------------------------
 
         $this->setChild('item', $this->getLayout()->createBlock('M2ePro/adminhtml_common_amazon_order_view_item'));
         $this->setChild('item_edit', $this->getLayout()->createBlock('M2ePro/adminhtml_order_item_edit'));
@@ -110,5 +112,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View_Form extends Ess_M2ePr
         return $currencyHelper->getConvertRateFromBase($this->order->getChildObject()->getCurrency(), $store) != 0;
     }
 
-    // ####################################
+    //########################################
 }

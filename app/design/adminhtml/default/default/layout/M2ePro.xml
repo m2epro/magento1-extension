@@ -11,6 +11,7 @@
             <action method="addJs"><script>M2ePro/Plugin/Magento/Message.js</script></action>
             <action method="addJs"><script>M2ePro/Plugin/Magento/Block.js</script></action>
             <action method="addJs"><script>M2ePro/Plugin/Magento/FieldTip.js</script></action>
+            <action method="addJs"><script>M2ePro/Plugin/Magento/AttributeCreator.js</script></action>
             <action method="addJs"><script>M2ePro/Plugin/BlockNotice.js</script></action>
             <action method="addJs"><script>M2ePro/Initialization.js</script></action>
             <action method="addCss"><stylesheet>M2ePro/css/main.css</stylesheet></action>
@@ -35,4 +36,10 @@
         <remove name="menu"/>
         <remove name="notifications"/>
     </m2epro_adminhtml_ebay_listing_variation_product_manage_viewvariationsgrid>
+    <m2epro_adminhtml_ebay_listing_previewitems>
+        <remove name="footer"/>
+        <remove name="header"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+    </m2epro_adminhtml_ebay_listing_previewitems>
 </layout>

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract extends Ess_M2ePro_Model_Observer_Product_Abstract
@@ -9,18 +11,21 @@ abstract class Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract extends Ess_
     private $affectedListingsProducts = array();
     private $affectedOtherListings = array();
 
-    //####################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function canProcess()
     {
         return (string)$this->getEvent()->getProduct()->getSku() != '';
     }
 
-    //####################################
+    //########################################
 
     abstract protected function isAddingProductProcess();
 
-    //####################################
+    //########################################
 
     protected function areThereAffectedItems()
     {
@@ -28,7 +33,7 @@ abstract class Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract extends Ess_
                count($this->getAffectedOtherListings()) > 0;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     protected function getAffectedListingsProducts()
     {
@@ -51,5 +56,5 @@ abstract class Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract extends Ess_
         );
     }
 
-    //####################################
+    //########################################
 }

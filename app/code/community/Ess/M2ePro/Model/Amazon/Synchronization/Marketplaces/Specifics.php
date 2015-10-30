@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Specifics
     extends Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Specifics
         return 'Specifics';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Specifics
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -82,7 +84,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Specifics
         $this->logSuccessfulOperation($marketplace);
     }
 
-    //####################################
+    //########################################
 
     protected function receiveFromAmazon(Ess_M2ePro_Model_Marketplace $marketplace, $partNumber)
     {
@@ -165,7 +167,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Specifics
 
     protected function logSuccessfulOperation(Ess_M2ePro_Model_Marketplace $marketplace)
     {
-        // ->__('The "Specifics" Action for %amazon% Marketplace: "%mrk%" has been successfully completed.');
+        //->__('The "Specifics" Action for %amazon% Marketplace: "%mrk%" has been successfully completed.');
 
         $tempString = Mage::getModel('M2ePro/Log_Abstract')->encodeDescription(
             'The "Specifics" Action for %amazon% Marketplace: "%mrk%" has been successfully completed.',
@@ -178,5 +180,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Specifics
                                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
     }
 
-    //####################################
+    //########################################
 }

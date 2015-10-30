@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Mage_Adminhtml_Block_Widget
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayTemplatePaymentEditFormData');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/template/payment/form/data.phtml');
     }
 
-    // ####################################
+    //########################################
 
     public function isCustom()
     {
@@ -46,7 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
         return $template->getTitle();
     }
 
-    // ####################################
+    //########################################
 
     public function getFormData()
     {
@@ -74,7 +76,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
         }
 
         // populate payment fields with the data from magento configuration
-        //------------------------------
+        // ---------------------------------------
         $store = Mage::helper('M2ePro/Data_Global')->getValue('ebay_store');
 
         $payPalConfig = Mage::getModel('paypal/config');
@@ -84,7 +86,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
             $default['pay_pal_mode'] = 1;
             $default['pay_pal_email_address'] = $payPalConfig->business_account;
         }
-        //------------------------------
+        // ---------------------------------------
 
         return $default;
     }
@@ -104,7 +106,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
 
         $policyLocalization = $this->getData('policy_localization');
 
-        if(!empty($policyLocalization)) {
+        if (!empty($policyLocalization)) {
             /** @var Ess_M2ePro_Model_Magento_Translate $translator */
             $translator = Mage::getModel('M2ePro/Magento_Translate');
             $translator->setLocale($policyLocalization);
@@ -118,5 +120,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
         return $data;
     }
 
-    // ####################################
+    //########################################
 }

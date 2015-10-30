@@ -1,29 +1,31 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToV6_Installation_Intro
     extends Ess_M2ePro_Block_Adminhtml_Wizard_MigrationToV6_Installation
 {
-    // ########################################
+    //########################################
 
     protected function getStep()
     {
         return 'intro';
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__(
             'M2E Pro Migration to v. %version%', Mage::helper('M2ePro/Module')->getVersion()
         );
-        //------------------------------
+        // ---------------------------------------
 
         $nextStep = Mage::helper('M2ePro/Module_Wizard')->getWizard($this->getNick())->getNextStep();
         $onClick = <<<JS
@@ -36,9 +38,9 @@ JS;
             'class' => 'next'
         ));
 
-        //------------------------------
+        // ---------------------------------------
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

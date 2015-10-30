@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_template_new_product_description`
@@ -31,7 +31,7 @@ $connection = $installer->getConnection();
     DROP COLUMN `relist_send_data`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_new_product_description');
 
@@ -53,7 +53,7 @@ if ($connection->tableColumnExists($tempTable, 'shipping_weight_custom_value')) 
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_dictionary_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -62,7 +62,7 @@ if (!isset($tempTableIndexList[strtoupper('category_id')])) {
     $connection->addKey($tempTable, 'category_id', 'category_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 
@@ -70,7 +70,7 @@ if ($connection->tableColumnExists($tempTable, 'is_get_it_fast') !== false) {
     $connection->dropColumn($tempTable, 'is_get_it_fast');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -78,7 +78,7 @@ if ($connection->tableColumnExists($tempTable, 'get_it_fast') !== false) {
     $connection->dropColumn($tempTable, 'get_it_fast');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_template_synchronization');
 
@@ -98,7 +98,7 @@ if ($connection->tableColumnExists($tempTable, 'relist_send_data') !== false) {
     $connection->dropColumn($tempTable,'relist_send_data');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("
@@ -118,7 +118,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -129,8 +129,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

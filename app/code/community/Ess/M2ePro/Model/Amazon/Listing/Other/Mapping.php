@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
@@ -13,7 +15,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
 
     protected $mappingSettings = NULL;
 
-    // ########################################
+    //########################################
 
     public function initialize(Ess_M2ePro_Model_Account $account = NULL)
     {
@@ -21,8 +23,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         $this->mappingSettings = NULL;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $otherListings
+     * @return bool
+     */
     public function autoMapOtherListingsProducts(array $otherListings)
     {
         $otherListingsFiltered = array();
@@ -66,6 +72,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return $result;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $otherListing
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function autoMapOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
         if ($otherListing->getProductId()) {
@@ -108,7 +119,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return false;
     }
 
-    // ########################################
+    //########################################
 
     protected function getMappingRulesByPriority()
     {
@@ -122,7 +133,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
             if ((int)$value['mode'] == 0) {
                 continue;
             }
-            for($i=0;$i<10;$i++) {
+            for ($i=0;$i<10;$i++) {
                 if (!isset($this->mappingSettings[(int)$value['priority']+$i])) {
                     $this->mappingSettings[(int)$value['priority']+$i] = (string)$key;
                     break;
@@ -135,7 +146,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return $this->mappingSettings;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function getGeneralIdMappedMagentoProductId(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
@@ -162,6 +173,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return NULL;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $otherListing
+     * @return null|int
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function getSkuMappedMagentoProductId(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
         $temp = $otherListing->getChildObject()->getSku();
@@ -214,6 +230,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return NULL;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $otherListing
+     * @return null|int
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function getTitleMappedMagentoProductId(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
         $temp = $otherListing->getChildObject()->getTitle();
@@ -259,7 +280,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return NULL;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -269,8 +290,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return $this->account;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $otherListing
+     */
     protected function setAccountByOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
         if (!is_null($this->account) && $this->account->getId() == $otherListing->getAccountId()) {
@@ -284,5 +308,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         $this->mappingSettings = NULL;
     }
 
-    // ########################################
+    //########################################
 }

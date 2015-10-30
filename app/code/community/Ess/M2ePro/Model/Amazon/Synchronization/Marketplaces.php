@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces
     extends Ess_M2ePro_Model_Amazon_Synchronization_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getType()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces
         return NULL;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function isPossibleToRun()
     {
@@ -74,6 +76,9 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces
         $this->getActualLockItem()->setTitle($componentName.Mage::helper('M2ePro')->__($marketplace->getTitle()));
     }
 
+    /**
+     * @return bool
+     */
     public function performActions()
     {
         $result = true;
@@ -87,5 +92,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces
         return $result;
     }
 
-    //####################################
+    //########################################
 }

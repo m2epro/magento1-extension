@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -31,7 +33,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -53,7 +55,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function editAction()
     {
@@ -172,11 +174,11 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $this->setSynchStatusNeed($oldSnapshots, $categoryModelName);
     }
 
-    //#############################################
+    //########################################
 
     public function getChooserHtmlAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $selectedCategoriesJson = $this->getRequest()->getParam('selected_categories');
         $marketplaceId = $this->getRequest()->getParam('marketplace_id');
         $accountId = $this->getRequest()->getParam('account_id');
@@ -192,7 +194,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         if (!is_null($selectedCategoriesJson)) {
             $selectedCategories = json_decode($selectedCategoriesJson, true);
         }
-        //------------------------------
+        // ---------------------------------------
 
         $ebayCategoryTypes = Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes();
         $storeCategoryTypes = Mage::helper('M2ePro/Component_Ebay_Category')->getStoreCategoryTypes();
@@ -248,7 +250,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             }
         }
 
-        //------------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser $chooserBlock */
         $chooserBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_chooser');
         $chooserBlock->setMarketplaceId($marketplaceId);
@@ -275,14 +277,14 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         if (!empty($unselectCallback)) {
             $chooserBlock->setUnselectCallback($unSelectCallback);
         }
-        //------------------------------
+        // ---------------------------------------
 
         $this->getResponse()->setBody($chooserBlock->toHtml());
     }
 
     public function getChooserEditHtmlAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $categoryType = $this->getRequest()->getParam('category_type');
         $selectedMode = $this->getRequest()->getParam(
             'selected_mode', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE
@@ -291,14 +293,14 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $selectedPath = $this->getRequest()->getParam('selected_path');
         $marketplaceId = $this->getRequest()->getParam('marketplace_id');
         $accountId = $this->getRequest()->getParam('account_id');
-        //------------------------------
+        // ---------------------------------------
 
         Mage::helper('M2ePro/Data_Global')->setValue('chooser_category_type', $categoryType);
 
-        //------------------------------
+        // ---------------------------------------
         $editBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_chooser_edit');
         $editBlock->setCategoryType($categoryType);
-        //------------------------------
+        // ---------------------------------------
 
         $ebayCategoryTypes = Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes();
 
@@ -375,7 +377,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
                 ->getCachedObject('Marketplace',$marketplaceId)
                 ->getChildObject()
                 ->getChildCategories($parentCategoryId);
-        } elseif (in_array($categoryType, $storeCategoryTypes))  {
+        } elseif (in_array($categoryType, $storeCategoryTypes)) {
             $tableAccountStoreCategories = Mage::getSingleton('core/resource')
                 ->getTableName('m2epro_ebay_account_store_category');
 
@@ -542,7 +544,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $this->getResponse()->setBody(json_encode($categories));
     }
 
-    //#############################################
+    //########################################
 
     public function refreshStoreCategoriesAction()
     {
@@ -616,7 +618,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $this->getResponse()->setBody($specificBlock->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     protected function _getSpecificsFromPost($post)
     {
@@ -718,7 +720,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         return $itemSpecifics;
     }
 
-    //#############################################
+    //########################################
 
     private function prepareCategoryUpdateBind($post, $typePrefix)
     {
@@ -824,5 +826,5 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         return $connRead->fetchOne($dbSelect);
     }
 
-    //#############################################
+    //########################################
 }

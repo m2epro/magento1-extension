@@ -1,6 +1,6 @@
 ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -10,7 +10,7 @@ ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     run: function()
     {
@@ -19,7 +19,7 @@ ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     mapProductsAuto: function(product_ids)
     {
@@ -114,5 +114,5 @@ ListingOtherAutoMappingHandler = Class.create(ActionHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -8,7 +8,7 @@
         <li><b>Full Revise</b> - contains groups of M2E Pro Settings. If any data in these groups (<i class="underline">Selling Format Policy</i>, <i class="underline">Listing Settings</i>) is changed, then Listings, which use these Policies in their Settings, will be automatically fully Revised.</li>
     </ul></br>
     More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'Revise+Rules')
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/_oMVAQ')
     ); ?>
 </div>
 
@@ -233,7 +233,7 @@ $isEdit = !!$this->getRequest()->getParam('id');
 
 </div>
 
-<script type="m2epro/template" id="revise_qty_max_applied_value_confirmation_popup_template">
+<div id="revise_qty_max_applied_value_confirmation_popup_template" style="display: none;">
     <div style="padding: 5px">
         <?php echo Mage::helper('M2ePro')->__('
             <br/>It is necessary to understand that Disabling this Option can <strong>negatively</strong> influence on M2E Pro Performance.<br/><br/>
@@ -251,9 +251,9 @@ $isEdit = !!$this->getRequest()->getParam('id');
         <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
         <button onclick="BuyTemplateSynchronizationHandlerObj.reviseQtyMaxAppliedValueDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
     </div>
-</script>
+</div>
 
-<script type="m2epro/template" id="revise_price_max_max_allowed_deviation_confirmation_popup_template">
+<div id="revise_price_max_max_allowed_deviation_confirmation_popup_template" style="display: none;">
     <div style="padding: 5px">
         <?php echo Mage::helper('M2ePro')->__('
             <br/>It is necessary to understand that Disabling this Option can <strong>negatively</strong> influence on <strong>M2E Pro Performance</strong>.<br/><br/>
@@ -270,4 +270,4 @@ $isEdit = !!$this->getRequest()->getParam('id');
         <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
         <button onclick="BuyTemplateSynchronizationHandlerObj.revisePriceMaxAllowedDeviationDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
     </div>
-</script>
+</div>

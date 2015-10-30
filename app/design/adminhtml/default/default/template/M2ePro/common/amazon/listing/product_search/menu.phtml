@@ -2,10 +2,10 @@
 /** @var $this Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Menu */
 ?>
 <div id="productSearchMenu_pop_up_content">
-    <div class="hor-scroll" style="padding-top: 15px; margin-bottom: 0px">
+    <div class="hor-scroll" style="padding-top: 15px; margin-bottom: 0">
 
         <div id="productSearchMenu_error_block" class="error-msg" style="display:none">
-            <div style="margin: 6px 0px 6px 35px">
+            <div style="margin: 6px 0 6px 35px">
                 <strong><?php echo Mage::helper('M2ePro')->__('There was an error during previous Automatic ASIN/ISBN Search:'); ?></strong><br/>
                 <div id="productSearchMenu_error_message"></div>
             </div>
@@ -51,7 +51,7 @@
 
         </div>
 
-        <div id="productSearchMenu_buttons" style="text-align: right; margin: 10px 0px;">
+        <div id="productSearchMenu_buttons" style="text-align: right; margin: 10px 0;">
             <?php echo $this->getChildHtml('productSearchMenu_cancel_button') ?>
         </div>
 

@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -16,17 +18,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
         $this->connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buyListingOtherGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     public function getMassactionBlockName()
@@ -34,7 +36,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
         return 'M2ePro/adminhtml_grid_massaction';
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -51,8 +53,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
         if (!empty($accountFilter)) {
             $collection->addFieldToFilter('account_id', $accountFilter);
         }
-
-        //var_dump($collection->getSelect()->__toString()); exit();
 
         $this->setCollection($collection);
 
@@ -175,10 +175,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
     protected function _prepareMassaction()
     {
         // Set mass-action identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('`main_table`.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         $this->getMassactionBlock()->setGroups(array(
             'mapping' => Mage::helper('M2ePro')->__('Mapping'),
@@ -186,7 +186,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
         ));
 
         // Set mass-action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('autoMapping', array(
             'label'   => Mage::helper('M2ePro')->__('Map Item(s) Automatically'),
             'url'     => '',
@@ -207,12 +207,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
         ), 'mapping');
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
@@ -351,14 +351,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
         $collection->getSelect()->where('second_table.title LIKE ? OR second_table.sku LIKE ?', '%'.$value.'%');
     }
 
-    // ####################################
+    //########################################
 
     public function getViewLogIconHtml($listingOtherId)
     {
         $listingOtherId = (int)$listingOtherId;
 
         // Get last messages
-        //--------------------------
+        // ---------------------------------------
         $dbSelect = $this->connRead->select()
             ->from(
                 Mage::getResourceModel('M2ePro/Listing_Other_Log')->getMainTable(),
@@ -370,10 +370,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
             ->limit(30);
 
         $logRows = $this->connRead->fetchAll($dbSelect);
-        //--------------------------
+        // ---------------------------------------
 
         // Get grouped messages by action_id
-        //--------------------------
+        // ---------------------------------------
         $actionsRows = array();
         $tempActionRows = array();
         $lastActionId = false;
@@ -491,11 +491,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
         return Mage::app()->getLocale()->date(strtotime($actionRows[0]['create_date']))->toString($format);
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     if (typeof BuyListingOtherGridHandlerObj != 'undefined') {
@@ -509,12 +509,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Other_View_Grid extends Mage
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml().$javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -526,5 +526,5 @@ JAVASCRIPT;
         return false;
     }
 
-    // ####################################
+    //########################################
 }

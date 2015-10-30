@@ -1,6 +1,6 @@
 EbayListingProductSourceCategoriesSummaryGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function()
     {
@@ -9,7 +9,7 @@ EbayListingProductSourceCategoriesSummaryGridHandler = Class.create(GridHandler,
         };
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     remove: function()
     {
@@ -26,12 +26,12 @@ EbayListingProductSourceCategoriesSummaryGridHandler = Class.create(GridHandler,
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function()
     {
         return true;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

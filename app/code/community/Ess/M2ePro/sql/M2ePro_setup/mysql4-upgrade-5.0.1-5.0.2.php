@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -21,7 +21,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_listing_log`
@@ -53,7 +53,7 @@ SQL
     ADD INDEX `qty_mode` (`qty_mode`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_log');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -67,7 +67,7 @@ if (!isset($tempTableIndexList[strtoupper('listing_product_id')])) {
     $connection->addKey($tempTable, 'listing_product_id', 'listing_product_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order_log');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -80,7 +80,7 @@ if (!isset($tempTableIndexList[strtoupper('initiator')])) {
     $connection->addKey($tempTable, 'initiator', 'initiator');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_category');
 
@@ -89,7 +89,7 @@ if ($connection->tableColumnExists($tempTable, 'registered_parameter') === false
         'VARCHAR(25) DEFAULT NULL AFTER `identifiers`');
 }
 
-// -------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_account');
 
@@ -97,7 +97,7 @@ if ($connection->tableColumnExists($tempTable, 'seller_id') === true) {
     $connection->dropColumn($tempTable, 'seller_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -111,7 +111,7 @@ if (!isset($tempTableIndexList[strtoupper('template_new_product_id')])) {
     $connection->addKey($tempTable, 'template_new_product_id', 'template_new_product_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -130,7 +130,7 @@ if (!isset($tempTableIndexList[strtoupper('qty_mode')])) {
     $connection->addKey($tempTable, 'qty_mode', 'qty_mode');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -149,7 +149,7 @@ if (!isset($tempTableIndexList[strtoupper('qty_mode')])) {
     $connection->addKey($tempTable, 'qty_mode', 'qty_mode');
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_synchronization`
@@ -174,7 +174,7 @@ if (!isset($tempTableIndexList[strtoupper('qty_mode')])) {
     ADD INDEX `tried_to_list` (`tried_to_list`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -268,7 +268,7 @@ if ($connection->tableColumnExists($tempTable, 'end_auto_stop') !== false) {
     $connection->dropColumn($tempTable, 'end_auto_stop');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -282,7 +282,7 @@ if (!isset($tempTableIndexList[strtoupper('tried_to_list')])) {
     $connection->addKey($tempTable, 'tried_to_list', 'tried_to_list');
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_template_synchronization`
@@ -308,7 +308,7 @@ if (!isset($tempTableIndexList[strtoupper('tried_to_list')])) {
     ADD INDEX `tried_to_list` (`tried_to_list`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -405,7 +405,7 @@ if ($connection->tableColumnExists($tempTable, 'end_auto_stop') !== false) {
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
 
-//--------------------------------------------
+// ---------------------------------------
 
 if ($connection->tableColumnExists($tempTable, 'tried_to_list') === false) {
     $connection->addColumn($tempTable, 'tried_to_list',
@@ -416,7 +416,7 @@ if (!isset($tempTableIndexList[strtoupper('tried_to_list')])) {
     $connection->addKey($tempTable, 'tried_to_list', 'tried_to_list');
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_buy_template_synchronization`
@@ -441,7 +441,7 @@ if (!isset($tempTableIndexList[strtoupper('tried_to_list')])) {
     ADD INDEX `tried_to_list` (`tried_to_list`);
 */
 
-// -------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -535,7 +535,7 @@ if ($connection->tableColumnExists($tempTable, 'end_auto_stop') !== false) {
     $connection->dropColumn($tempTable, 'end_auto_stop');
 }
 
-// -------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -549,7 +549,7 @@ if (!isset($tempTableIndexList[strtoupper('tried_to_list')])) {
     $connection->addKey($tempTable, 'tried_to_list', 'tried_to_list');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -565,7 +565,7 @@ SET `tried_to_list` = 1;
 SQL
 );
 
-// -------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -589,7 +589,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_listing_product`
@@ -621,7 +621,7 @@ SQL
     ADD COLUMN `search_terms` TEXT NOT NULL after `search_terms_mode`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -645,7 +645,7 @@ if (!isset($tempTableIndexList[strtoupper('template_new_product_id')])) {
     $connection->addKey($tempTable, 'template_new_product_id', 'template_new_product_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tablesList = $connection->listTables();
 
@@ -670,7 +670,7 @@ if (in_array($tempTable,$tablesList)) {
     $connection->query($query);
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempOldTable = $installer->getTable('m2epro_amazon_category');
 $tempNewTable = $installer->getTable('m2epro_amazon_template_new_product');
@@ -696,7 +696,7 @@ if (in_array($tempOldTable, $tablesList) && !in_array($tempNewTable, $tablesList
     $connection->query($query);
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_new_product');
 
@@ -704,7 +704,7 @@ if ($connection->tableColumnExists($tempTable, 'category_description_id') !== fa
     $connection->dropColumn($tempTable, 'category_description_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_new_product_specific');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -728,7 +728,7 @@ if (!isset($tempTableIndexList[strtoupper('template_new_product_id')])) {
     $connection->addKey($tempTable, 'template_new_product_id', 'template_new_product_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_new_product_description');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -770,7 +770,7 @@ if ($connection->tableColumnExists($tempTable, 'search_terms') === false) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempStatus = Mage::registry('M2EPRO_IS_INSTALLATION') === true ? '3' : '0';
 
@@ -789,8 +789,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

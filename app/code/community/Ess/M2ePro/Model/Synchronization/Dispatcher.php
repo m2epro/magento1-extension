@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Synchronization_Dispatcher
@@ -21,7 +23,7 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
     private $params = array();
     private $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
 
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -72,7 +74,7 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         return $result;
     }
 
-    // ----------------------------------
+    // ---------------------------------------
 
     protected function processComponent($component)
     {
@@ -106,56 +108,83 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         return $task;
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @param array $components
+     */
     public function setAllowedComponents(array $components)
     {
         $this->allowedComponents = $components;
     }
 
+    /**
+     * @return array
+     */
     public function getAllowedComponents()
     {
         return $this->allowedComponents;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $types
+     */
     public function setAllowedTasksTypes(array $types)
     {
         $this->allowedTasksTypes = $types;
     }
 
+    /**
+     * @return array
+     */
     public function getAllowedTasksTypes()
     {
         return $this->allowedTasksTypes;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $params
+     */
     public function setParams(array $params)
     {
         $this->params = $params;
     }
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param int $value
+     */
     public function setInitiator($value)
     {
         $this->initiator = (int)$value;
     }
 
+    /**
+     * @return int
+     */
     public function getInitiator()
     {
         return $this->initiator;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_LockItem $object
+     */
     public function setParentLockItem(Ess_M2ePro_Model_LockItem $object)
     {
         $this->parentLockItem = $object;
@@ -169,8 +198,11 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         return $this->parentLockItem;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_OperationHistory $object
+     */
     public function setParentOperationHistory(Ess_M2ePro_Model_OperationHistory $object)
     {
         $this->parentOperationHistory = $object;
@@ -184,7 +216,7 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         return $this->parentOperationHistory;
     }
 
-    //####################################
+    //########################################
 
     protected function initialize()
     {
@@ -210,7 +242,7 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         $this->setConfigValue(NULL,'last_run',$currentDateTime);
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function beforeStart()
     {
@@ -251,7 +283,7 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         $this->getLockItem()->remove();
     }
 
-    //####################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Synchronization_LockItem
@@ -288,7 +320,7 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         return $this->log;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function checkAndPrepareProductChange()
     {
@@ -309,14 +341,14 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         register_shutdown_function($shutdownFunction);
     }
 
-    //####################################
+    //########################################
 
     private function getConfig()
     {
         return Mage::helper('M2ePro/Module')->getSynchronizationConfig();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getConfigValue($group, $key)
     {
@@ -328,5 +360,5 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
         return $this->getConfig()->setGroupValue($group, $key, $value);
     }
 
-    //####################################
+    //########################################
 }

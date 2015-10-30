@@ -1,12 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    private $muteNotifications = false;
+
+    //########################################
 
     protected function _initAction()
     {
@@ -43,7 +47,13 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             ->addJs('M2ePro/Ebay/Listing/Transferring/PaymentHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Transferring/TranslateHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Transferring/InfoHandler.js')
-            ->addJs('M2ePro/Ebay/Motor/CompatibilityHandler.js');
+            ->addJs('M2ePro/Ebay/MotorsHandler.js')
+            ->addJs('M2ePro/Ebay/Motor/Add/Item/GridHandler.js')
+            ->addJs('M2ePro/Ebay/Motor/Add/Filter/GridHandler.js')
+            ->addJs('M2ePro/Ebay/Motor/Add/Group/GridHandler.js')
+            ->addJs('M2ePro/Ebay/Motor/View/Item/GridHandler.js')
+            ->addJs('M2ePro/Ebay/Motor/View/Filter/GridHandler.js')
+            ->addJs('M2ePro/Ebay/Motor/View/Group/GridHandler.js');
 
         $this->_initPopUp();
 
@@ -66,7 +76,27 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         return parent::_setActiveMenu($menuPath);
     }
 
-    //#############################################
+    // ---------------------------------------
+
+    protected function addNotificationMessages()
+    {
+        if ($this->muteNotifications) {
+            return;
+        }
+
+        parent::addNotificationMessages();
+    }
+
+    protected function beforeAddContentEvent()
+    {
+        if ($this->muteNotifications) {
+            return;
+        }
+
+        parent::beforeAddContentEvent();
+    }
+
+    //########################################
 
     public function indexAction()
     {
@@ -75,7 +105,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
              ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function getListingTabAction()
     {
@@ -139,7 +169,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         $this->_redirectUrl($url);
     }
 
-    //#############################################
+    //########################################
 
     public function searchAction()
     {
@@ -154,7 +184,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function viewAction()
     {
@@ -197,7 +227,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
 
         $this->setComponentPageHelpLink('Manage+M2E+Pro+Listings');
 
-        //------------------------------
+        // ---------------------------------------
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Listing/Category/TreeHandler.js')
             ->addJs('M2ePro/Listing/AutoActionHandler.js')
@@ -224,14 +254,14 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()) {
             $this->getLayout()->getBlock('head')->setCanLoadTinyMce(true);
         }
-        //------------------------------
+        // ---------------------------------------
 
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         // Set rule model
-        // ---------------------------
+        // ---------------------------------------
         $this->setRuleData('ebay_rule_view_listing');
-        // ---------------------------
+        // ---------------------------------------
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_view'))
              ->renderLayout();
@@ -245,15 +275,15 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
          // Set rule model
-        // ---------------------------
+        // ---------------------------------------
         $this->setRuleData('ebay_rule_view_listing');
-        // ---------------------------
+        // ---------------------------------------
 
         $response = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_view')->getGridHtml();
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function deleteAction()
     {
@@ -302,19 +332,19 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         Mage::getModel('M2ePro/Listing_Log')->updateListingTitle($listingId, $title);
     }
 
-    //#############################################
+    //########################################
 
     public function getEstimatedFeesAction()
     {
         session_write_close();
 
-        //------------------------------
+        // ---------------------------------------
         $listingId = $this->getRequest()->getParam('listing_id');
         $listingProductId = $this->getRequest()->getParam('listing_product_id');
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $listingId);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listingProductCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('listing_id', $listingId);
         $listingProductCollection->addFieldToFilter('status', array('in' => array(
@@ -331,14 +361,14 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         }
 
         $listingProductCollection->load();
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ($listingProductCollection->count() == 0) {
             $this->getResponse()->setBody(json_encode(array('error' => true)));
             return;
         }
-        //------------------------------
+        // ---------------------------------------
 
         $this->loadLayout();
 
@@ -379,7 +409,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             }
         }
 
-        //------------------------------
+        // ---------------------------------------
         if (empty($fees)) {
             if (empty($errors)) {
                 $this->getResponse()->setBody(json_encode(array('error' => true)));
@@ -391,9 +421,9 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             }
             return;
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ($listingProductId) {
             $details = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_view_fee_details');
             $details->setData('fees', $fees);
@@ -402,15 +432,15 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             $this->getResponse()->setBody(json_encode(array('html' => $details->toHtml())));
             return;
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listing->getChildObject()->setEstimatedFeesObtainAttemptCount(0);
         $listing->getChildObject()->setEstimatedFeesObtainRequired(false);
         $listing->getChildObject()->setEstimatedFees($fees);
         $listing->getChildObject()->setEstimatedFeesSourceProductName($sourceProduct->getMagentoProduct()->getName());
         $listing->save();
-        //------------------------------
+        // ---------------------------------------
 
         $preview = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_view_fee_preview');
         $preview->setData('fees', $fees);
@@ -419,252 +449,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         $this->getResponse()->setBody(json_encode(array('html' => $preview->toHtml())));
     }
 
-    //#############################################
-
-    public function motorSpecificGridAction()
-    {
-        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Specific_Grid $block */
-        $block = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_add_specific_grid');
-        $this->getResponse()->setBody($block->toHtml());
-    }
-
-    public function motorKtypeGridAction()
-    {
-        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Ktype_Grid $block */
-        $block = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_add_ktype_grid');
-        $this->getResponse()->setBody($block->toHtml());
-    }
-
-    public function motorViewDetailsAction()
-    {
-        $compatibilityType = $this->getRequest()->getParam('compatibility_type');
-        $listingProductId  = $this->getRequest()->getParam('listing_product_id');
-
-        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View $block */
-        $block = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_view');
-        $block->setCompatibilityType($compatibilityType);
-        $block->setListingProductId($listingProductId);
-
-        $this->getResponse()->setBody($block->toHtml());
-    }
-
-    public function motorViewGridAction()
-    {
-        $compatibilityType = $this->getRequest()->getParam('compatibility_type');
-        $listingProductId  = $this->getRequest()->getParam('listing_product_id');
-
-        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Grid $block */
-        $block = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_view_grid');
-        $block->setCompatibilityType($compatibilityType);
-        $block->setListingProductId($listingProductId);
-
-        if ($this->getRequest()->isXmlHttpRequest()) {
-            $this->getResponse()->setBody($block->toHtml());
-            return;
-        }
-
-        $this->_initAction()->_addContent($block)->renderLayout();
-    }
-
-    //#############################################
-
-    public function updateMotorsCompatibilityAttributesAction()
-    {
-        $listingId = $this->getRequest()->getParam('listing_id');
-        $listingProductIds = $this->getRequest()->getParam('listing_product_ids', '');
-        $ids = $this->getRequest()->getParam('ids', '');
-        $overwrite = $this->getRequest()->getParam('overwrite', '') == 'yes';
-        $compatibilityType = $this->getRequest()->getParam('compatibility_type');
-
-        $listingProductIds = explode(',', $listingProductIds);
-
-        $compatibilityAttribute = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility')
-            ->getAttribute($compatibilityType);
-
-        if (empty($compatibilityAttribute)) {
-            $message = Mage::helper('M2ePro')->__('Compatibility Attribute is not selected.');
-            return $this->getResponse()->setBody(json_encode(array(
-                'ok'      => false,
-                'message' => Mage::helper('M2ePro')->escapeJs($message)
-            )));
-        }
-
-        if (!$listingId || !$listingProductIds || empty($ids)) {
-            $message = Mage::helper('M2ePro')->__('Required parameters were not selected.');
-            return $this->getResponse()->setBody(json_encode(array(
-                'ok'      => false,
-                'message' => Mage::helper('M2ePro')->escapeJs($message)
-            )));
-        }
-
-        try {
-
-            Mage::getResourceModel('M2ePro/Ebay_Listing')->updatePartsCompatibilityAttributesData(
-                $listingId, $listingProductIds, $compatibilityAttribute, $ids, $overwrite
-            );
-
-        } catch (Exception $e) {
-
-            return $this->getResponse()->setBody(json_encode(array(
-                'ok'      => false,
-                'message' => Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__($e->getMessage()))
-            )));
-        }
-
-        if ($compatibilityType == Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility::TYPE_SPECIFIC) {
-            $typeTitle = 'ePIDs';
-        } else {
-            $typeTitle = 'kTypes';
-        }
-
-        $message = Mage::helper('M2ePro')->__(
-            '%type% were saved in Compatibility Attribute.', array('type' => $typeTitle)
-        );
-
-        return $this->getResponse()->setBody(json_encode(array(
-            'ok'      => true,
-            'message' => Mage::helper('M2ePro')->escapeJs($message))
-        ));
-    }
-
-    public function deleteIdsFromCompatibilityListAction()
-    {
-        $listingProductId = (int)$this->getRequest()->getPost('listing_product_id');
-        $ids = $this->getRequest()->getPost('ids');
-        $compatibilityType = $this->getRequest()->getPost('compatibility_type');
-
-        /** @var Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility $compatibilityHelper */
-        $compatibilityHelper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-
-        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Ebay')->getObject(
-            'Listing_Product', $listingProductId
-        );
-
-        /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
-        $magentoProduct = $listingProduct->getMagentoProduct();
-
-        $compatibilityAttribute = $compatibilityHelper->getAttribute($compatibilityType);
-        $attributeValue = $magentoProduct->getAttributeValue($compatibilityAttribute);
-
-        $compatibilityData = $compatibilityHelper->parseAttributeValue($attributeValue);
-
-        $idsForDelete = explode(',', $ids);
-
-        foreach ($compatibilityData as $identifierData) {
-            if (!in_array($identifierData['id'], $idsForDelete)) {
-                continue;
-            }
-
-            unset($compatibilityData[$identifierData['id']]);
-        }
-
-        Mage::getResourceModel('M2ePro/Ebay_Listing')->updatePartsCompatibilityAttributesData(
-            $listingProduct->getListingId(), array($listingProductId),
-            $compatibilityAttribute, $compatibilityHelper->buildAttributeValue($compatibilityData), true
-        );
-    }
-
-    public function setNoteToCompatibilityListAction()
-    {
-        $listingProductId = (int)$this->getRequest()->getPost('listing_product_id');
-        $ids = $this->getRequest()->getPost('ids');
-        $compatibilityType = $this->getRequest()->getPost('compatibility_type');
-        $note = $this->getRequest()->getPost('note');
-
-        /** @var Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility $compatibilityHelper */
-        $compatibilityHelper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-
-        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Ebay')->getObject(
-            'Listing_Product', $listingProductId
-        );
-
-        /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
-        $magentoProduct = $listingProduct->getMagentoProduct();
-
-        $compatibilityAttribute = $compatibilityHelper->getAttribute($compatibilityType);
-        $attributeValue = $magentoProduct->getAttributeValue($compatibilityAttribute);
-
-        $compatibilityData = $compatibilityHelper->parseAttributeValue($attributeValue);
-
-        $idsForAdding = explode(',', $ids);
-
-        foreach ($compatibilityData as &$identifierData) {
-            if (!in_array($identifierData['id'], $idsForAdding)) {
-                continue;
-            }
-
-            $identifierData['note'] = $note;
-        }
-
-        Mage::getResourceModel('M2ePro/Ebay_Listing')->updatePartsCompatibilityAttributesData(
-            $listingProduct->getListingId(), array($listingProductId),
-            $compatibilityAttribute, $compatibilityHelper->buildAttributeValue($compatibilityData), true
-        );
-    }
-
-    //---------------------------------------------
-
-    public function addCustomCompatibilityRecordAction()
-    {
-        $helper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-        $compatibilityType = $this->getRequest()->getParam('compatibility_type');
-
-        $insertData = $this->getRequest()->getParam('row', array());
-        foreach ($insertData as &$item) {
-            $item == '' && $item = null;
-        }
-        $insertData['is_custom'] = 1;
-
-        $tableName = $helper->getDictionaryTable($compatibilityType);
-        $idKey = $helper->getIdentifierKey($compatibilityType);
-
-        $existedItem = Mage::getSingleton('core/resource')->getConnection('core/read')
-              ->select()
-              ->from($tableName)
-              ->where("{$idKey} = ?", $insertData[$idKey])
-              ->query()
-              ->fetch();
-
-        if ($existedItem) {
-
-            return $this->getResponse()->setBody(json_encode(array(
-                 'result'  => false,
-                 'message' => Mage::helper('M2ePro')->__('Record with such identifier is already exists.')
-            )));
-        }
-
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core/write');
-        $connWrite->insert($tableName, $insertData);
-
-        return $this->getResponse()->setBody(json_encode(array('result' => true)));
-    }
-
-    public function removeCustomCompatibilityRecordAction()
-    {
-        $helper = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility');
-        $compatibilityType = $this->getRequest()->getParam('compatibility_type');
-        $keyId = $this->getRequest()->getParam('key_id');
-
-        if (!$compatibilityType || !$keyId) {
-
-            return $this->getResponse()->setBody(json_encode(array(
-                'result'  => false,
-                'message' => Mage::helper('M2ePro')->__('The some of required fields are not filled up.')
-            )));
-        }
-
-        $tableName = $helper->getDictionaryTable($compatibilityType);
-        $idKey = $helper->getIdentifierKey($compatibilityType);
-
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core/write');
-        $connWrite->delete($tableName, array("{$idKey} = ?" => $keyId));
-
-        return $this->getResponse()->setBody(json_encode(array('result' => true)));
-    }
-
-    //#############################################
+    //########################################
 
     public function getTranslationHtmlAction()
     {
@@ -695,19 +480,19 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         )));
     }
 
-    //#############################################
+    //########################################
 
     public function getCategoryChooserHtmlAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $listingId = $this->getRequest()->getParam('listing_id');
         $listingProductIds = $this->getRequestIds();
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $listingId);
-        //------------------------------
+        // ---------------------------------------
 
         $internalData = array();
 
-        //------------------------------
+        // ---------------------------------------
         $categoryTemplateIds  = Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getTemplateCategoryIds(
             $listingProductIds
         );
@@ -715,7 +500,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             $internalData,
             Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getSameTemplatesData($categoryTemplateIds)
         );
-        //------------------------------
+        // ---------------------------------------
         $otherCategoryTemplateIds = Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getTemplateOtherCategoryIds(
             $listingProductIds
         );
@@ -724,7 +509,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             $internalData,
             Mage::helper('M2ePro/Component_Ebay_Category_Store')->getSameTemplatesData($otherCategoryTemplateIds)
         );
-        //------------------------------
+        // ---------------------------------------
 
         $this->loadLayout();
 
@@ -735,25 +520,25 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         $chooserBlock->setMarketplaceId($listing->getMarketplaceId());
         $chooserBlock->setInternalData($internalData);
 
-        // ---------------------------------------------
+        // ---------------------------------------
         $wrapper = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_ebay_listing_view_settings_category_chooser_wrapper'
         );
         $wrapper->setChild('chooser', $chooserBlock);
-        // ---------------------------------------------
+        // ---------------------------------------
 
         $this->getResponse()->setBody($wrapper->toHtml());
     }
 
     public function getCategorySpecificHtmlAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $listingId = $this->getRequest()->getParam('listing_id');
         $listingProductIds = $this->getRequestIds();
         $categoryMode = $this->getRequest()->getParam('category_mode');
         $categoryValue = $this->getRequest()->getParam('category_value');
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $listingId);
-        //------------------------------
+        // ---------------------------------------
 
         $this->loadLayout();
 
@@ -763,7 +548,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         $specific->setCategoryMode($categoryMode);
         $specific->setCategoryValue($categoryValue);
 
-        //------------------------------
+        // ---------------------------------------
         /* @var $template Ess_M2ePro_Model_Ebay_Template_Category|null */
         $template = NULL;
 
@@ -813,17 +598,17 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             $specific->setSelectedSpecifics($template->getSpecifics());
         }
 
-        // ---------------------------------------------
+        // ---------------------------------------
         $wrapper = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_ebay_listing_view_settings_category_specific_wrapper'
         );
         $wrapper->setChild('specific', $specific);
-        // ---------------------------------------------
+        // ---------------------------------------
 
         $this->getResponse()->setBody($wrapper->toHtml());
     }
 
-    // ---------------------------------------------
+    // ---------------------------------------
 
     protected function getCategoryTemplate($id)
     {
@@ -832,7 +617,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         );
     }
 
-    // ---------------------------------------------
+    // ---------------------------------------
 
     protected function isMainCategoryWasChanged(Ess_M2ePro_Model_Ebay_Template_Category $template, $selectedValue)
     {
@@ -848,7 +633,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         );
     }
 
-    // ---------------------------------------------
+    // ---------------------------------------
 
     protected function loadLastCategoryTemplate($mode, $categoryValue, $marketplaceId)
     {
@@ -871,7 +656,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         return reset($existingTemplates);
     }
 
-    //#############################################
+    //########################################
 
     public function saveCategoryTemplateAction()
     {
@@ -883,36 +668,36 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             return;
         }
 
-        //------------------------------
+        // ---------------------------------------
         $listingId = $this->getRequest()->getParam('listing_id');
         $listingProductIds = $this->getRequestIds();
         $categoryTemplateData = $post['template_category_data'];
         $categoryTemplateData = json_decode($categoryTemplateData, true);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $listingId);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         Mage::helper('M2ePro/Component_Ebay_Category')->fillCategoriesPaths($categoryTemplateData, $listing);
 
         $builderData = $categoryTemplateData;
         $builderData['account_id'] = $listing->getAccountId();
         $builderData['marketplace_id'] = $listing->getMarketplaceId();
 
-        //------------------------------
+        // ---------------------------------------
         $builder = Mage::getModel('M2ePro/Ebay_Template_Category_Builder');
         $categoryTemplate = $builder->build($builderData);
-        //------------------------------
+        // ---------------------------------------
         $builder = Mage::getModel('M2ePro/Ebay_Template_OtherCategory_Builder');
         $otherCategoryTemplate = $builder->build($builderData);
-        //------------------------------
+        // ---------------------------------------
 
         $this->assignTemplatesToProducts($categoryTemplate->getId(),$otherCategoryTemplate->getId(),$listingProductIds);
     }
 
-    //#############################################
+    //########################################
 
     public function getListingProductBidsAction()
     {
@@ -947,7 +732,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         return $this->getResponse()->setBody($grid->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     protected function processConnector($action, array $params = array())
     {
@@ -978,7 +763,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         return json_encode(array('result'=>'error','action_id'=>$actionId));
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function runListProductsAction()
     {
@@ -1065,7 +850,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             if (!$listingProduct->getChildObject()->isTranslationStatusInProgress()) {
 
                 // Set message to log
-                //---------------
+                // ---------------------------------------
                 $logModel->addProductMessage(
                     $listingProduct->getListingId(),
                     $listingProduct->getProductId(),
@@ -1086,12 +871,10 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             $listingProductsForStopping[] = $listingProduct;
         }
 
-        //is need for correct logging stopping translation
+        // is need for correct logging stopping translation
         foreach ($listingProductsForStopping as $listingProduct) {
             $listingProduct->deleteProcessingRequests();
 
-            // Set message to log
-            //---------------
             $logModel->addProductMessage(
                 $listingProduct->getListingId(),
                 $listingProduct->getProductId(),
@@ -1112,7 +895,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
             : $this->getResponse()->setBody(json_encode(array('result'=>'success','action_id' => $logsActionId)));
     }
 
-    //#############################################
+    //########################################
 
     protected function setRuleData($prefix)
     {
@@ -1146,7 +929,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         Mage::helper('M2ePro/Data_Global')->setValue('rule_model', $ruleModel);
     }
 
-    //#############################################
+    //########################################
 
     public function reviewAction()
     {
@@ -1171,7 +954,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
              ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     private function assignTemplatesToProducts($categoryTemplateId, $otherCategoryTemplateId, $productsIds)
     {
@@ -1181,7 +964,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
 
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
         $collection->addFieldToFilter('id', array('in' => $productsIds));
-        //------------------------------
+        // ---------------------------------------
 
         if ($collection->getSize() == 0) {
             return;
@@ -1219,5 +1002,19 @@ class Ess_M2ePro_Adminhtml_Ebay_ListingController extends Ess_M2ePro_Controller_
         }
     }
 
-    //#############################################
+    //########################################
+
+    public function previewItemsAction()
+    {
+        $this->muteNotifications = true;
+
+        $this->_initAction()->_addContent(
+            $this->getLayout()
+                 ->createBlock('M2ePro/adminhtml_ebay_listing_preview')
+        )->renderLayout();
+
+        $this->muteNotifications = false;
+    }
+
+    //########################################
 }

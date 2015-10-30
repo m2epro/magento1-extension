@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -28,7 +30,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/orders');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -49,7 +51,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function viewAction()
     {
@@ -67,7 +69,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
              ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function orderItemGridAction()
     {
@@ -87,7 +89,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function createMagentoOrderAction()
     {
@@ -111,7 +113,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
         }
 
         // Create magento order
-        // -------------
+        // ---------------------------------------
         try {
             $order->createMagentoOrder();
             $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento Order was created.'));
@@ -122,28 +124,28 @@ class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
             );
             $this->_getSession()->addError($message);
         }
-        // -------------
+        // ---------------------------------------
 
         // Create invoice
-        // -------------
+        // ---------------------------------------
         if ($order->getChildObject()->canCreateInvoice()) {
             $result = $order->createInvoice();
             $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Invoice was created.'));
         }
-        // -------------
+        // ---------------------------------------
 
         // Create shipment
-        // -------------
+        // ---------------------------------------
         if ($order->getChildObject()->canCreateShipment()) {
             $result = $order->createShipment();
             $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Shipment was created.'));
         }
-        // -------------
+        // ---------------------------------------
 
         $this->_redirect('*/*/view', array('id' => $id));
     }
 
-    //#############################################
+    //########################################
 
     public function editShippingAddressAction()
     {
@@ -217,5 +219,5 @@ class Ess_M2ePro_Adminhtml_Common_Buy_OrderController
         $this->_redirect('*/adminhtml_common_buy_order/view', array('id' => $order->getId()));
     }
 
-    //#############################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 EbayListingVariationProductManageVariationsGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super, gridId)
     {
@@ -104,28 +104,28 @@ EbayListingVariationProductManageVariationsGridHandler = Class.create(GridHandle
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'ebay';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
         return 1000;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function()
     {
         return false;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     afterInitPage: function($super)
     {
@@ -134,7 +134,7 @@ EbayListingVariationProductManageVariationsGridHandler = Class.create(GridHandle
         $$('.attributes-options-filter').each(this.initAttributesOptionsFilter, this);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     parseResponse: function(response)
     {
@@ -145,7 +145,7 @@ EbayListingVariationProductManageVariationsGridHandler = Class.create(GridHandle
         return response.responseText.evalJSON();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initAttributesOptionsFilter: function(filterEl)
     {
@@ -235,7 +235,7 @@ EbayListingVariationProductManageVariationsGridHandler = Class.create(GridHandle
         srcElement.value = '';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editVariationIdentifiers: function(editBtn, variationId)
     {

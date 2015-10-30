@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
@@ -19,8 +21,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
      */
     private $descriptionTemplate = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         $data = array();
@@ -47,8 +52,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTitleData()
     {
         if (!$this->getConfigurator()->isTitleAllowed()) {
@@ -64,6 +72,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         );
     }
 
+    /**
+     * @return array
+     */
     public function getSubtitleData()
     {
         if (!$this->getConfigurator()->isSubtitleAllowed()) {
@@ -79,6 +90,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         );
     }
 
+    /**
+     * @return array
+     */
     public function getDescriptionData()
     {
         if (!$this->getConfigurator()->isDescriptionAllowed()) {
@@ -97,8 +111,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         );
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getImagesData()
     {
         if (!$this->getConfigurator()->isImagesAllowed()) {
@@ -120,8 +137,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getProductDetailsData()
     {
         $data = array();
@@ -164,8 +184,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         return $data;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getConditionData()
     {
         $this->searchNotFoundAttributes();
@@ -180,6 +203,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         );
     }
 
+    /**
+     * @return string
+     */
     public function getConditionNoteData()
     {
         $this->searchNotFoundAttributes();
@@ -189,7 +215,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         return $data;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Template_Description
@@ -220,7 +246,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         return $this->getEbayListingProduct()->getDescriptionTemplateSource();
     }
 
-    // ########################################
+    //########################################
 
     private function deleteNotAllowedIdentifier(array $data)
     {
@@ -264,5 +290,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

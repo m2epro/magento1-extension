@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abstract
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
     const STATUS_DISABLE = 0;
     const STATUS_ENABLE = 1;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,8 +19,11 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         $this->_init('M2ePro/Marketplace');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isLocked()
     {
         return true;
@@ -46,8 +51,14 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOtherListings($asObjects = false, array $filters = array())
     {
         $otherListings = $this->getRelatedComponentItems('Listing_Other','marketplace_id',$asObjects,$filters);
@@ -62,6 +73,12 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         return $otherListings;
     }
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getOrders($asObjects = false, array $filters = array())
     {
         $orders = $this->getRelatedComponentItems('Order','marketplace_id',$asObjects,$filters);
@@ -76,19 +93,22 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         return $orders;
     }
 
-    // ########################################
+    //########################################
 
     public function getIdByCode($code)
     {
         return $this->load($code,'code')->getId();
     }
 
+    /**
+     * @return bool
+     */
     public function isStatusEnabled()
     {
         return $this->getStatus() == self::STATUS_ENABLE;
     }
 
-    // ########################################
+    //########################################
 
     public function getTitle()
     {
@@ -105,6 +125,9 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         return $this->getData('url');
     }
 
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return (int)$this->getData('status');
@@ -115,12 +138,15 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         return $this->getData('group_title');
     }
 
+    /**
+     * @return int
+     */
     public function getNativeId()
     {
         return (int)$this->getData('native_id');
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -134,5 +160,5 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Abstract
@@ -12,7 +14,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
     const PRODUCT_IDENTIFIER_STATUS_ENABLED  = 1;
     const PRODUCT_IDENTIFIER_STATUS_REQUIRED = 2;
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $categoryId
@@ -66,7 +68,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
         return $topLevel;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param int $categoryId
@@ -105,7 +107,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
         return false;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $categoryId
@@ -147,7 +149,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
         return $features;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param int $categoryId
@@ -210,7 +212,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
         return $specifics;
     }
 
-    // ########################################
+    //########################################
 
     public function getSameTemplatesData($ids)
     {
@@ -244,7 +246,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
         $edcTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_category');
 
         // prepare category main select
-        // -------------------------------------------
+        // ---------------------------------------
         $etcSelect = $connRead->select();
         $etcSelect->from(
                 array('etc' => $etcTable)
@@ -256,10 +258,10 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
             ))
             ->where('category_main_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
             ->group(array('category_id', 'marketplace_id'));
-        // -------------------------------------------
+        // ---------------------------------------
 
         // prepare category secondary select
-        // -------------------------------------------
+        // ---------------------------------------
         $etocSelect = $connRead->select();
         $etocSelect->from(
                 array('etc' => $etocTable)
@@ -271,7 +273,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
             ))
             ->where('category_secondary_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
             ->group(array('category_id', 'marketplace_id'));
-        // -------------------------------------------
+        // ---------------------------------------
 
         $unionSelect = $connRead->select();
         $unionSelect->union(array(
@@ -292,5 +294,5 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
         return $connRead->query($mainSelect)->fetchColumn() !== false;
     }
 
-    // ########################################
+    //########################################
 }

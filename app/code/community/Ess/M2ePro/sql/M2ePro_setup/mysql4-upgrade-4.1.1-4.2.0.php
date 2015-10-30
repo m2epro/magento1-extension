@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -37,7 +37,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_account`
@@ -108,7 +108,7 @@ SQL
     ADD COLUMN `gift_type` VARCHAR(255) DEFAULT NULL AFTER `gift_message`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_account');
 
@@ -131,7 +131,7 @@ if ($connection->tableColumnExists($tempTable, 'other_listings_synchronization_m
         'tinyint(2) NOT NULL DEFAULT \'1\' AFTER `other_listings_mapping_settings`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_general');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -159,7 +159,7 @@ if (!isset($tempTableIndexList[strtoupper('use_ebay_international_shipping_rate_
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_other');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -172,7 +172,7 @@ if (!isset($tempTableIndexList[strtoupper('status_changer')])) {
     $connection->addKey($tempTable, 'status_changer', 'status_changer');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_other');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -185,7 +185,7 @@ if (!isset($tempTableIndexList[strtoupper('sku')])) {
     $connection->addKey($tempTable, 'sku', 'sku');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 
@@ -194,7 +194,7 @@ if ($connection->tableColumnExists($tempTable, 'related_store_id') === false) {
         'INT(11) UNSIGNED NOT NULL DEFAULT 0 AFTER `categories_version`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_order_item');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -208,7 +208,7 @@ if (!isset($tempTableIndexList[strtoupper('unpaid_item_process_state')])) {
     $connection->addKey($tempTable, 'unpaid_item_process_state', 'unpaid_item_process_state');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_processing_request');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -221,7 +221,7 @@ if (!isset($tempTableIndexList[strtoupper('next_part')])) {
     $connection->addKey($tempTable, 'next_part', 'next_part');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -263,7 +263,7 @@ if (isset($tempTableIndexList[strtoupper('sale_price_end_date')])) {
     $connection->dropKey($tempTable, 'sale_price_end_date');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_other');
 
@@ -279,7 +279,7 @@ if ($connection->tableColumnExists($tempTable, 'item_id') === true) {
     $connection->dropColumn($tempTable, 'item_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 
@@ -287,7 +287,7 @@ if ($connection->tableColumnExists($tempTable, 'item_id') === true) {
     $connection->dropColumn($tempTable, 'item_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_general');
 
@@ -320,7 +320,7 @@ if ($connection->tableColumnExists($tempTable, 'restock_date_custom_attribute') 
         'VARCHAR(255) NOT NULL AFTER `restock_date_value`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_order_item');
 
@@ -339,7 +339,7 @@ if ($connection->tableColumnExists($tempTable, 'gift_type') === false) {
         'VARCHAR(255) DEFAULT NULL AFTER `gift_message`');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -443,7 +443,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -492,7 +492,7 @@ AND   `variation_enabled` = 1;
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_amazon_account');
 $tempAccounts = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -531,7 +531,7 @@ foreach ($tempAccounts as $account) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_template_description');
 $tempTemplates = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -557,7 +557,7 @@ foreach ($tempTemplates as $template) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_account');
 $tempAccounts = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -570,17 +570,17 @@ foreach ($tempAccounts as $account) {
     }
 
     // old format setting
-    // ----------
+    // ---------------------------------------
     $rules = isset($magentoOrdersSettings['rules']) ? $magentoOrdersSettings['rules'] : array();
-    // ----------
+    // ---------------------------------------
 
     // new format settings
-    // ----------
+    // ---------------------------------------
     $creation = array(
         'mode' => 4, // checkout & payment completed
         'reservation_days' => 0
     );
-    // ----------
+    // ---------------------------------------
 
     if (isset($rules['checkout_mode']) && isset($rules['payment_mode'])) {
         $checkout = (int)$rules['checkout_mode'];
@@ -604,7 +604,7 @@ foreach ($tempAccounts as $account) {
     );
 }
 
-//#############################################
+//########################################
 
 $currentDateTime = date('c');
 
@@ -663,7 +663,7 @@ if (!empty($insertSql)) {
     $connection->query($insertSql);
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $currentDateTime = date('c');
 
@@ -707,7 +707,7 @@ if (!empty($insertSql)) {
     $connection->query($insertSql);
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $currentDateTime = date('c');
 
@@ -769,7 +769,7 @@ if (!empty($insertSql)) {
     $connection->query($insertSql);
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_listing_log');
 $tempRow = $connection->query("SELECT max(`action_id`) as `max_id`
@@ -780,7 +780,7 @@ $installer->run("UPDATE `m2epro_config`
                  WHERE `group` = '/logs/listings/'
                  AND   `key` = 'last_action_id'");
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_other_log');
 $tempRow = $connection->query("SELECT max(`action_id`) as `max_id`
@@ -791,7 +791,7 @@ $installer->run("UPDATE `m2epro_config`
                  WHERE `group` = '/logs/other_listings/'
                  AND   `key` = 'last_action_id'");
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -870,8 +870,8 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

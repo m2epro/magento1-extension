@@ -1,10 +1,10 @@
 CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(CommonAmazonTemplateDescriptionCategorySpecificRenderer, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     attributeHandler: null,
 
-    // --------------------------------
+    // ---------------------------------------
 
     process: function()
     {
@@ -46,7 +46,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         this.renderSpecificAttributes();
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     load: function($super)
     {
@@ -54,7 +54,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return $super();
     },
 
-    //###################################
+    //########################################
 
     renderParentSpecific: function()
     {
@@ -79,16 +79,16 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         this.renderChooseMode();
         this.renderValueInputs();
 
-        //-- affects the appearance of the actions buttons
+        // affects the appearance of the actions buttons
         this.specificHandler.markSpecificAsRendered(this.indexedXPath);
 
         this.renderButtons();
 
-        //--
+        // ---------------------------------------
         $(this.indexedXPath).observe('my-duplicate-is-rendered', this.onMyDuplicateRendered.bind(this));
-        //--
+        // ---------------------------------------
 
-        //-- like grid visibility or view of 'Add Specific' container
+        // like grid visibility or view of 'Add Specific' container
         this.throwEventsToParents();
     },
 
@@ -113,7 +113,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         });
     },
 
-    //###################################
+    //########################################
 
     renderLabel: function()
     {
@@ -144,7 +144,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         this.getRowContainer().appendChild(td);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderChooseMode: function()
     {
@@ -203,13 +203,13 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         }
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderValueInputs: function()
     {
         var td = this.getRowContainer().appendChild(new Element('td'));
 
-        // --
+        // ---------------------------------------
         if (this.dictionaryHelper.isSpecificTypeText(this.specific)) {
 
             var note = this.getCustomValueTypeNote();
@@ -221,19 +221,19 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         if (this.dictionaryHelper.isSpecificTypeSelect(this.specific)) {
             td.appendChild(this.getSelectTypeInput());
         }
-        // --
+        // ---------------------------------------
 
-        // --
+        // ---------------------------------------
         note = this.getCustomAttributeTypeNote();
         if (note) td.appendChild(this.getToolTipBlock(this.indexedXPath + '_custom_attribute_note', note));
 
         td.appendChild(this.getCustomAttributeSelect());
-        // --
+        // ---------------------------------------
 
         td.appendChild(this.getRecommendedValuesSelect());
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     getTextTypeInput: function()
     {
@@ -321,7 +321,8 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
             'specific_id' : this.specific.specific_id,
             'mode'        : this.MODE_CUSTOM_ATTRIBUTE,
             'class'       : 'attributes M2ePro-required-when-visible',
-            'style'       : 'display: none; width: 93.2%;'
+            'style'       : 'display: none; width: 93.2%;',
+            'apply_to_all_attribute_sets' : '0'
         });
 
         select.appendChild(new Element('option', {'style': 'display: none', 'value': ''}));
@@ -331,6 +332,11 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         select.value = '';
 
         select.observe('change', this.onChangeValue.bind(this));
+
+        var handlerObj = new AttributeCreator(select.id);
+        handlerObj.setSelectObj(select);
+        handlerObj.injectAddOption();
+
         return select;
     },
 
@@ -366,7 +372,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         this.specificHandler.markSpecificAsSelected(this.indexedXPath, selectedObj);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderButtons: function()
     {
@@ -379,26 +385,26 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         if(removeButton !== null) td.appendChild(removeButton);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     throwEventsToParents: function()
     {
         var myEvent,
             parentXpath;
 
-        // --
+        // ---------------------------------------
         myEvent = new CustomEvent('child-specific-rendered');
         parentXpath = this.getParentIndexedXpath();
 
         $(parentXpath + '_grid').dispatchEvent(myEvent);
         $(parentXpath + '_add_row').dispatchEvent(myEvent);
-        // --
+        // ---------------------------------------
 
-        // -- my duplicate is already rendered
+        // my duplicate is already rendered
         this.touchMyNeighbors();
-        // -
+        // ---------------------------------------
 
-        // --
+        // ---------------------------------------
         if (this.isValueForceSet()) {
 
             this.hideButton($(this.indexedXPath + '_remove_button'));
@@ -406,10 +412,10 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
             myEvent = new CustomEvent('undeleteble-specific-appear');
             $(this.getParentIndexedXpath()).dispatchEvent(myEvent);
         }
-        // --
+        // ---------------------------------------
     },
 
-    //###################################
+    //########################################
 
     checkSelection: function()
     {
@@ -465,7 +471,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         valueObj.setAttribute('disabled', 'disabled');
     },
 
-    //###################################
+    //########################################
 
     getToolTipBlock: function(id, messageHtml)
     {
@@ -492,7 +498,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return container;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     getCustomValueTypeNote: function()
     {
@@ -613,7 +619,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return M2ePro.translator.translate('Can take any value.');
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     getCustomAttributeTypeNote: function()
     {
@@ -636,7 +642,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return span.outerHTML;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     getDefinitionNote: function(definitionPart)
     {
@@ -670,7 +676,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return div.outerHTML;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     getSpecificOverriddenNotice: function()
     {
@@ -720,7 +726,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return container;
     },
 
-    //###################################
+    //########################################
 
     observeToolTips: function(indexedXpath)
     {
@@ -735,14 +741,14 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         });
     },
 
-    //###################################
+    //########################################
 
     removeAction: function($super, event)
     {
-        // -- for attributes removing
+        // for attributes removing
         var myEvent = new CustomEvent('parent-specific-row-is-removed');
         $(this.indexedXPath).dispatchEvent(myEvent);
-        // --
+        // ---------------------------------------
 
         var deleteResult = $super(event);
         this.throwEventsToParents();
@@ -761,7 +767,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return newIndexedXpath;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     getRowContainer: function()
     {
@@ -773,5 +779,5 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
         return grid.appendChild(new Element('tr', {id: this.indexedXPath}));
     }
 
-    // --------------------------------
+    // ---------------------------------------
 });

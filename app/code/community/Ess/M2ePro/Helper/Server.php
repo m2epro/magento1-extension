@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 {
     const MAX_INTERVAL_OF_RETURNING_TO_DEFAULT_BASEURL = 86400;
 
-    // ########################################
+    //########################################
 
     public function getEndpoint()
     {
@@ -47,7 +49,7 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function getAdminKey()
     {
@@ -62,7 +64,7 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 
     public function sendRequest(array $postData,
                                 array $headers,
@@ -71,7 +73,7 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
     {
         $curlObject = curl_init();
 
-        //set the server we are using
+        // set the server we are using
         curl_setopt($curlObject, CURLOPT_URL, $this->getEndpoint());
 
         // stop CURL from verifying the peer's certificate
@@ -82,6 +84,9 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         curl_setopt($curlObject, CURLOPT_HEADER, false);
 
         // set the headers using the array of headers
+        if ($hostName = $this->getCurrentHostName()) {
+            $headers[] = "Host:{$hostName}";
+        }
         curl_setopt($curlObject, CURLOPT_HTTPHEADER, $headers);
 
         // set the data body of the request
@@ -102,8 +107,9 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
         if ($response === false) {
 
-            if ($errorNumber !== CURLE_OPERATION_TIMEOUTED &&
-                !$secondAttempt && $this->switchEndpoint()) {
+            $switchingResult = $this->switchEndpoint();
+
+            if ($errorNumber !== CURLE_OPERATION_TIMEOUTED && !$secondAttempt && $switchingResult) {
                 return $this->sendRequest($postData,$headers,$timeout,true);
             }
 
@@ -129,14 +135,19 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 
     private function getCurrentBaseUrl()
     {
         return $this->getBaseUrlByIndex($this->getCurrentBaseUrlIndex());
     }
 
-    // ----------------------------------------
+    private function getCurrentHostName()
+    {
+        return $this->getHostNameByIndex($this->getCurrentBaseUrlIndex());
+    }
+
+    // ---------------------------------------
 
     private function getDefaultBaseUrlIndex()
     {
@@ -162,7 +173,7 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         return $index;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function setDefaultBaseUrlIndex($index)
     {
@@ -176,7 +187,7 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
                 ->setGroupValue('/server/baseurl/','current_index',$index);
     }
 
-    // ########################################
+    //########################################
 
     private function getMaxBaseUrlIndex()
     {
@@ -201,5 +212,10 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','baseurl_'.$index);
     }
 
-    // ########################################
+    private function getHostNameByIndex($index)
+    {
+        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','hostname_'.$index);
+    }
+
+    //########################################
 }

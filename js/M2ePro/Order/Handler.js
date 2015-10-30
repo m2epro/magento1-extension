@@ -1,7 +1,7 @@
 OrderHandler = Class.create();
 OrderHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(gridIds)
     {
@@ -70,7 +70,7 @@ OrderHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     viewOrderHelp: function(rowId, data)
     {
@@ -87,11 +87,11 @@ OrderHandler.prototype = Object.extend(new CommonHandler(), {
             $('grid_help_content_'+rowId).show();
 
             // Restore grid callback
-            // ------------------------------
+            // ---------------------------------------
             setTimeout(function() {
                 OrderHandlerObj.restoreGridCallback(gridId);
             },150);
-            // ------------------------------
+            // ---------------------------------------
             return;
         }
 
@@ -197,5 +197,5 @@ OrderHandler.prototype = Object.extend(new CommonHandler(), {
         return '<div class="hl_footer"><a target="_blank" href="'+url+'">'+ M2ePro.translator.translate('View All Order Logs.')+'</a></div>';
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

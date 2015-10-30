@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
     extends Ess_M2ePro_Model_Connector_Translation_Requester
 {
-    // ########################################
+    //########################################
 
     /**
      * @var Ess_M2ePro_Model_Marketplace|null
@@ -25,7 +27,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
 
     const MAX_LIFE_TIME_INTERVAL = 864000; // 10 days
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array(), array $listingsProducts)
     {
@@ -45,7 +47,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
             throw new Ess_M2ePro_Model_Exception('Product Connector has received empty array');
         }
 
-        foreach($listingsProducts as $listingProduct) {
+        foreach ($listingsProducts as $listingProduct) {
             if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
                 throw new Ess_M2ePro_Model_Exception('Product Connector has received invalid Product data type');
             }
@@ -57,7 +59,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         $tempService      = $listingsProducts[0]->getTranslationService();
 
         $tempListing = $listingsProducts[0]->getListing();
-        foreach($listingsProducts as $listingProduct) {
+        foreach ($listingsProducts as $listingProduct) {
             if ($tempListing->getId() != $listingProduct->getListing()->getId()) {
                 throw new Ess_M2ePro_Model_Exception('Product Connector has received Products from different Listings');
             }
@@ -95,7 +97,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         $this->checkUnlockListings();
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingData()
     {
@@ -110,15 +112,21 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getCommand()
     {
         return array('product','add','entities');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
@@ -154,8 +162,11 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         $this->status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isProcessingItems()
     {
         return (bool)$this->isProcessingItems;
@@ -166,7 +177,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         $this->isProcessingItems = (bool)$isProcessingItems;
     }
 
-    // ########################################
+    //########################################
 
     protected function getRequestData()
     {
@@ -199,7 +210,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         return $requestData;
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -245,6 +256,10 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         );
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function setProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::setProcessingLocks($processingRequest);
@@ -268,7 +283,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateOrLockListingProducts()
     {
@@ -297,7 +312,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         $this->neededRemoveLocks = array();
     }
 
-    // ########################################
+    //########################################
 
     protected function addListingsProductsLogsMessage(Ess_M2ePro_Model_Listing_Product $listingProduct,
                                                       $text, $type = Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
@@ -341,7 +356,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
                                      $action , $text, $type , $priority);
     }
 
-    // ########################################
+    //########################################
 
     protected function filterLockedListingsProducts($listingsProducts)
     {
@@ -395,5 +410,5 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleRequester
         return array_values($listingProducts);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category_Grid
@@ -10,28 +12,28 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category_Grid
     /** @var Ess_M2ePro_Model_Listing */
     private $listing = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('newAsinCategoryGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
 
         $this->prepareDataByCategories();
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -48,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category_Grid
         return parent::_prepareCollection();
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareColumns()
     {
@@ -110,14 +112,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category_Grid
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         $this->setMassactionIdField('entity_id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('setDescriptionTemplateByCategory', array(
             'label' => Mage::helper('M2ePro')->__('Set Description Policy'),
             'url'   => ''
@@ -127,12 +129,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category_Grid
             'label' => Mage::helper('M2ePro')->__('Reset Description Policy'),
             'url'   => ''
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ########################################
+    //########################################
 
     public function callbackColumnDescriptionTemplateCallback($value, $row, $column, $isExport)
     {
@@ -179,7 +181,7 @@ HTML;
 HTML;
     }
 
-    // ########################################
+    //########################################
 
     protected function callbackColumnDescriptionTemplateFilterCallback($collection, $column)
     {
@@ -213,19 +215,19 @@ HTML;
 
         if ($value) {
             $collection->addFieldToFilter('entity_id', array('in' => $filteredProductsCategories));
-        } else if (!empty($filteredProductsCategories)){
+        } else if (!empty($filteredProductsCategories)) {
             $collection->addFieldToFilter('entity_id', array('nin' => $filteredProductsCategories));
         }
     }
 
-    // ########################################
+    //########################################
 
     public function getRowUrl($row)
     {
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -244,7 +246,7 @@ JS;
 
         }
 
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     if (typeof ListingGridHandlerObj != 'undefined') {
@@ -260,12 +262,12 @@ JS;
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml() . $javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing
@@ -285,7 +287,7 @@ JAVASCRIPT;
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 
     private function prepareDataByCategories()
     {
@@ -340,5 +342,5 @@ JAVASCRIPT;
         $this->getListing()->save();
     }
 
-    // ####################################
+    //########################################
 }

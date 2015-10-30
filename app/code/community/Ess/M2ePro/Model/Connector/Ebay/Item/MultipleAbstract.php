@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
@@ -27,7 +29,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
      */
     protected $requestsDataObjects = array();
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $params
@@ -48,7 +50,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         $listingProductIds   = array();
         $actionConfigurators = array();
 
-        foreach($listingsProducts as $listingProduct) {
+        foreach ($listingsProducts as $listingProduct) {
 
             if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
                 throw new Ess_M2ePro_Model_Exception('Multiple Item Connector has received invalid Product data type');
@@ -94,7 +96,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         parent::__construct($params,$marketplace,$account);
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -119,7 +121,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
 
         foreach ($result['result'] as $listingProductId => $listingsProductResult) {
 
-            if (!isset($listingsProductResult['messages'])){
+            if (!isset($listingsProductResult['messages'])) {
                 continue;
             }
 
@@ -140,14 +142,14 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         return $result;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function eventAfterProcess()
     {
         $this->unlockListingsProducts();
     }
 
-    // ########################################
+    //########################################
 
     protected function isNeedSendRequest()
     {
@@ -207,7 +209,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         return parent::getRequestTimeout() + $imagesTimeout;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     protected function lockListingsProducts()
     {
@@ -229,7 +231,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         }
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     abstract protected function filterManualListingsProducts();
 
@@ -242,7 +244,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         unset($this->listingsProducts[$listingProduct->getId()]);
     }
 
-    // ########################################
+    //########################################
 
     protected function logRequestMessages(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -292,7 +294,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
@@ -320,7 +322,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         return $this->responsesObjects[$listingProduct->getId()];
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
@@ -344,5 +346,5 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
         return $this->requestsDataObjects[$listingProduct->getId()];
     }
 
-    // ########################################
+    //########################################
 }

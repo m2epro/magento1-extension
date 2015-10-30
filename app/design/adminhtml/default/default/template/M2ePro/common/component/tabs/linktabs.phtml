@@ -26,7 +26,7 @@
 
         <?php echo $this->getId() ?>JsTabs = new varienTabs('<?php echo $this->getId() ?>', '<?php echo $this->getDestElementId() ?>', '<?php echo $this->getActiveTabId() ?>', <?php echo $this->getAllShadowTabs()?>);
         <?php echo $this->getId() ?>JsTabs.moveTabContentInDest();
-    }
+    };
 
     Event.observe(window,'load', <?php echo $this->getId() ?>InitLinkTabs);
 

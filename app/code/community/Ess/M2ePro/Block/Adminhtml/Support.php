@@ -1,48 +1,50 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     private $referrer = NULL;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('supportContainer');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml';
 
         $this->_mode = 'support';
         $this->referrer = $this->getRequest()->getParam('referrer');
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $m2eProVersion = '<span style="color: #777; font-size: small; font-weight: normal">' .
                             '(M2E Pro ver. '.Mage::helper('M2ePro/Module')->getVersion().')' .
                          '</span>';
         $this->_headerText = Mage::helper('M2ePro')->__('Support') . " {$m2eProVersion}";
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = Mage::helper('M2ePro/View_Development')->getPageUrl();
         $this->_addButton('goto_development', array(
             'label'     => 'Control Panel',
@@ -50,9 +52,9 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
             'class'     => 'button_link development',
             'style'     => 'display: none;'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $migrationData = Mage::getModel('M2ePro/Registry')->load('/wizard/migrationToV6_notes_html/', 'key');
         $html = $migrationData->getData('value');
         $createDate = Mage::helper('M2ePro')->getDate($migrationData->getData('create_date'), true);
@@ -66,9 +68,9 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
                 'onclick'   => 'window.open(\''.$url.'\', \'_blank\'); return false;',
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if (is_null($this->referrer)) {
 
             $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl();
@@ -136,10 +138,10 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
                 }
             }
         }
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getHeaderHtml()
     {
@@ -173,13 +175,13 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
         .$dropDownBlockVideoTutorial->toHtml();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getVideoTutorialDropDownItems()
     {
         $items = array();
 
-        //------------------------------
+        // ---------------------------------------
         $items[] = array(
             'url'    => Mage::helper('M2ePro/Module_Support')->getVideoTutorialsUrl(
                     Ess_M2ePro_Helper_Component_Amazon::NICK
@@ -187,9 +189,9 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
             'label'  => Mage::helper('M2ePro/Component_Amazon')->getTitle(),
             'target' => '_blank'
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $items[] = array(
             'url'    => Mage::helper('M2ePro/Module_Support')->getVideoTutorialsUrl(
                     Ess_M2ePro_Helper_Component_Buy::NICK
@@ -197,7 +199,7 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
             'label'  => Mage::helper('M2ePro/Component_Buy')->getTitle(),
             'target' =>'_blank'
         );
-        //------------------------------
+        // ---------------------------------------
 
         return $items;
     }
@@ -206,7 +208,7 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
     {
         $items = array();
 
-        //------------------------------
+        // ---------------------------------------
         $items[] = array(
             'url'    => Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
                     Ess_M2ePro_Helper_Component_Amazon::NICK
@@ -214,9 +216,9 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
             'label'  => Mage::helper('M2ePro/Component_Amazon')->getTitle(),
             'target' => '_blank'
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $items[] = array(
             'url'    => Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
                     Ess_M2ePro_Helper_Component_Buy::NICK
@@ -224,10 +226,10 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
             'label'  => Mage::helper('M2ePro/Component_Buy')->getTitle(),
             'target' =>'_blank'
         );
-        //------------------------------
+        // ---------------------------------------
 
         return $items;
     }
 
-    // ########################################
+    //########################################
 }

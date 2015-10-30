@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
     extends Ess_M2ePro_Model_Connector_Ebay_Item_MultipleAbstract
 {
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array(), array $listingsProducts)
     {
@@ -31,7 +33,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -48,7 +50,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
         return Ess_M2ePro_Model_Listing_Product::ACTION_LIST;
     }
 
-    // ########################################
+    //########################################
 
     protected function filterManualListingsProducts()
     {
@@ -73,7 +75,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
                 continue;
             }
 
-            if(!$listingProduct->getChildObject()->isSetCategoryTemplate()) {
+            if (!$listingProduct->getChildObject()->isSetCategoryTemplate()) {
 
                 $message = array(
                     // M2ePro_TRANSLATIONS
@@ -137,7 +139,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
         return $data;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function prepareResponseData($response)
     {
@@ -173,7 +175,17 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
         return $response;
     }
 
-    // ########################################
+    //########################################
+
+    protected function isResponseValid($response)
+    {
+        if (parent::isResponseValid($response)) {
+            return true;
+        }
+
+        $this->processAsPotentialDuplicate();
+        return false;
+    }
 
     protected function processResponseInfo($responseInfo)
     {
@@ -206,5 +218,5 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
         }
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,35 +1,37 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Synchronization_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     private $component = Ess_M2ePro_Helper_Component_Buy::NICK;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buySynchronizationForm');
         $this->setContainerId('magento_block_buy_synchronization');
         $this->setTemplate('M2ePro/common/buy/synchronization.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _beforeToHtml()
     {
-        //----------------------------
+        // ---------------------------------------
         $this->templatesMode = Mage::helper('M2ePro/Module')->getSynchronizationConfig()
             ->getGroupValue('/buy/templates/', 'mode');
-        //----------------------------
+        // ---------------------------------------
 
-        //----------------------------
+        // ---------------------------------------
         $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
 
         $this->reviseAllInProcessingState = !is_null(
@@ -51,9 +53,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Synchronization_Form extends Mage_Ad
         $this->reviseAllEndDate && $this->reviseAllEndDate = Mage::app()->getLocale()
             ->date(strtotime($this->reviseAllEndDate))
             ->toString($format);
-        //----------------------------
+        // ---------------------------------------
 
-        //----------------------------
+        // ---------------------------------------
         $component = Ess_M2ePro_Helper_Component_Buy::NICK;
         $data = array(
             'class'   => 'ok_button',
@@ -62,18 +64,18 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Synchronization_Form extends Mage_Ad
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('revise_all_confirm_popup_ok_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $this->inspectorMode = (int)Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
             '/defaults/inspector/','mode'
         );
-        //-------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 
     public function isShowReviseAll()
     {
@@ -82,5 +84,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Synchronization_Form extends Mage_Ad
         );
     }
 
-    // ####################################
+    //########################################
 }

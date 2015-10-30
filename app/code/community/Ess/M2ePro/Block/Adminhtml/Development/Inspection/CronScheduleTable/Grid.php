@@ -1,33 +1,35 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('cronScheduleTable');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -45,7 +47,6 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
         $this->addColumn('schedule_id', array(
             'header'    => Mage::helper('M2ePro')->__('ID'),
             'align'     => 'right',
-            //'width'     => '200px',
             'type'      => 'number',
             'index'     => 'schedule_id',
             'filter_index' => 'schedule_id',
@@ -54,7 +55,6 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
         $this->addColumn('job_code', array(
             'header'    => Mage::helper('M2ePro')->__('Job Code'),
             'align'     => 'left',
-            //'width'     => '200px',
             'type'      => 'text',
             'index'     => 'job_code',
             'filter_index' => 'job_code',
@@ -121,7 +121,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnIfEmptyThenNotAvailable($value, $row, $column, $isExport)
     {
@@ -141,5 +141,5 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
 HTML;
     }
 
-    // ####################################
+    //########################################
 }

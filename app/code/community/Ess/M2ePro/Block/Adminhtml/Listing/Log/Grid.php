@@ -1,52 +1,54 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
 {
     protected $viewComponentHelper = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialize view
-        //------------------------------
+        // ---------------------------------------
         $view = Mage::helper('M2ePro/View')->getCurrentView();
         $this->viewComponentHelper = Mage::helper('M2ePro/View')->getComponentHelper($view);
-        //------------------------------
+        // ---------------------------------------
 
         $channel = $this->getRequest()->getParam('channel');
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId($view . ucfirst($channel) . 'ListingLogGrid' . $this->getEntityId());
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
         // Get collection logs
-        //--------------------------------
+        // ---------------------------------------
         $collection = Mage::getModel('M2ePro/Listing_Log')->getCollection();
-        //--------------------------------
+        // ---------------------------------------
 
         // Set listing filter
-        //--------------------------------
+        // ---------------------------------------
         if ($this->getEntityId()) {
             if ($this->isListingProductLog() && $this->getListingProduct()->isComponentModeAmazon() &&
                 $this->getListingProduct()->getChildObject()->getVariationManager()->isRelationParentType()) {
@@ -70,10 +72,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
                 $collection->addFieldToFilter($this->getEntityField(), $this->getEntityId());
             }
         }
-        //--------------------------------
+        // ---------------------------------------
 
         // prepare components
-        //--------------------------------
+        // ---------------------------------------
         $channel = $this->getRequest()->getParam('channel');
         if (!empty($channel) && $channel != Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::CHANNEL_ID_ALL) {
             $collection->getSelect()->where('component_mode = ?', $channel);
@@ -82,14 +84,14 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
             $collection->getSelect()
                 ->where('component_mode IN(\'' . implode('\',\'', $components) . '\') OR component_mode IS NULL');
         }
-        //--------------------------------
+        // ---------------------------------------
 
         // we need sort by id also, because create_date may be same for some adjustment entries
-        //--------------------------------
+        // ---------------------------------------
         if ($this->getRequest()->getParam('sort', 'create_date') == 'create_date') {
             $collection->setOrder('id', $this->getRequest()->getParam('dir', 'DESC'));
         }
-        //--------------------------------
+        // ---------------------------------------
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -165,7 +167,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         $this->addColumn('description', array(
             'header'    => Mage::helper('M2ePro')->__('Description'),
             'align'     => 'left',
-            //'width'     => '300px',
             'type'      => 'text',
             'index'     => 'description',
             'filter_index' => 'main_table.description',
@@ -200,13 +201,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnListingTitleID($value, $row, $column, $isExport)
     {
@@ -243,7 +244,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
                  '</a><br/>ID: '.$row->getData('product_id');
 
         $additionalData = json_decode($row->getData('additional_data'), true);
-        if(empty($additionalData['variation_options'])) {
+        if (empty($additionalData['variation_options'])) {
             return $value;
         }
 
@@ -280,7 +281,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         return $result;
     }
 
-    // ####################################
+    //########################################
 
     protected function callbackFilterListingTitleID($collection, $column)
     {
@@ -321,7 +322,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         $collection->getSelect()->where('additional_data LIKE ?', '%'. $value .'%');
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -336,9 +337,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         return false;
     }
 
-    // ####################################
+    //########################################
 
     abstract protected function getActionTitles();
 
-    // ####################################
+    //########################################
 }

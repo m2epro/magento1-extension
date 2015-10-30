@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
@@ -9,19 +11,25 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
     private $installer = NULL;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     */
     public function getInstaller()
     {
         return $this->installer;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    //####################################
+    //########################################
 
     /*
         ALTER TABLE `m2epro_lock_item`
@@ -61,7 +69,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
         $this->processProcessingRequestTable();
     }
 
-    //####################################
+    //########################################
 
     private function isNeedToSkip()
     {
@@ -75,7 +83,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
         return false;
     }
 
-    //####################################
+    //########################################
 
     private function processLockItemTable()
     {
@@ -195,5 +203,5 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
             array("responser_model = 'M2ePro/Amazon_Synchronization_Orders_Responser'"));
     }
 
-    //####################################
+    //########################################
 }

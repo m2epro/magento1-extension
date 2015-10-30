@@ -1,41 +1,43 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category
     extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('newAsinDescriptionTemplateCategory');
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__("Set Description Policy for New ASIN/ISBN Creation");
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_amazon_listing_add_newAsin_category';
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/*/resetNewAsin', array(
             '_current' => true
         ));
@@ -44,17 +46,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category
             'onclick'   => 'ListingGridHandlerObj.back_click(\'' . $url . '\')',
             'class'     => 'back'
         ));
-        //------------------------------
+        // ---------------------------------------
 
         $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 3));
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('save_and_go_to_listing_view', array(
             'id'        => 'save_and_go_to_listing_view',
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'onclick'   => 'ListingGridHandlerObj.checkCategoryProducts(\''.$url.'\')',
             'class'     => 'scalable next'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
     public function getGridHtml()
@@ -75,11 +77,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category
     {
         $helper = Mage::helper('M2ePro');
 
-        // --------TEXT------------------
+        // TEXT
         $templateDescriptionPopupTitle = $helper->escapeJs($helper->__('Assign Description Policy'));
-        // -------------------------------
+        // ---------------------------------------
 
-        // ---------URL-------------------
+        // URL
         $mapToTemplateDescription = $this->getUrl('*/adminhtml_common_amazon_listing/mapToTemplateDescription');
         $unmapFromTemplateDescription = $this->getUrl('*/adminhtml_common_amazon_listing/unmapFromTemplateDescription');
         $validateProductsForTemplateDescriptionAssign = $this->getUrl(
@@ -90,7 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Category
         $unmapFromNewAsin = $this->getUrl('*/adminhtml_common_amazon_listing/unmapFromAsin');
 
         $checkNewAsinCategoryProducts = $this->getUrl('*/*/checkNewAsinCategoryProducts', array('_current' => true));
-        // -------------------------------
+        // ---------------------------------------
 
         $javascript = <<<HTML
 <script type="text/javascript">
@@ -141,7 +143,7 @@ HTML;
         '</div>';
     }
 
-    // ####################################
+    //########################################
 
     public function getListing()
     {
@@ -157,5 +159,5 @@ HTML;
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 }

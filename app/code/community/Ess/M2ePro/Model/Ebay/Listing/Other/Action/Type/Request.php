@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Request
@@ -20,8 +22,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Request
      */
     private $requests = array();
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         $this->beforeBuildDataEvent();
@@ -34,15 +39,15 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Request
         return $data;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     abstract protected function getActionData();
 
-    // ########################################
+    //########################################
 
     protected function beforeBuildDataEvent() {}
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     protected function prepareFinalData(array $data)
     {
@@ -61,7 +66,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Request
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Other_Action_Request_Selling
@@ -79,7 +84,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Request
         return $this->getRequest('description');
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param $type
@@ -102,5 +107,5 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Request
         return $this->requests[$type];
     }
 
-    // ########################################
+    //########################################
 }

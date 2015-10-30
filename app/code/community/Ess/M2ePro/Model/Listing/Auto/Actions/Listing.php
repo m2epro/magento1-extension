@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
@@ -11,7 +13,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
      */
     private $listing = NULL;
 
-    //####################################
+    //########################################
 
     public function setListing(Ess_M2ePro_Model_Listing $listing)
     {
@@ -31,7 +33,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
         return $this->listing;
     }
 
-    //####################################
+    //########################################
 
     public function deleteProduct(Mage_Catalog_Model_Product $product, $deletingMode)
     {
@@ -67,7 +69,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
         }
     }
 
-    //####################################
+    //########################################
 
     abstract public function addProductByCategoryGroup(Mage_Catalog_Model_Product $product,
                                                        Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup);
@@ -78,5 +80,5 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
     abstract public function addProductByWebsiteListing(Mage_Catalog_Model_Product $product,
                                                         Ess_M2ePro_Model_Listing $listing);
 
-    //####################################
+    //########################################
 }

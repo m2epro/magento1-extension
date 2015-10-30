@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_StepThree extends Mage_Adminhtml_Block_Widget_Form_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct($attributes)
     {
@@ -15,15 +17,15 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_StepThree extends Mage_Admin
         $this->setData($attributes);
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId($this->getData('component').'ListingAddStepThree');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_'.$this->getData('component').'_listing';
         $this->_mode = 'add';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         if (!Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_'.ucfirst($this->getData('component')))->getTitle();
             $headerText = Mage::helper('M2ePro')
@@ -32,19 +34,19 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_StepThree extends Mage_Admin
             $headerText = Mage::helper('M2ePro')->__("Creating A New M2E Pro Listing");
         }
         $this->_headerText = $headerText;
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_common_listing_create/index', array(
             '_current' => true,
             'step' => '2',
@@ -55,9 +57,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_StepThree extends Mage_Admin
             'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
             'class'     => 'back'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_common_listing_create/index', array(
             '_current' => true
         ));
@@ -66,8 +68,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_StepThree extends Mage_Admin
             'onclick'   => 'CommonHandlerObj.save_click(\'' . $url . '\')',
             'class'     => 'next'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 }

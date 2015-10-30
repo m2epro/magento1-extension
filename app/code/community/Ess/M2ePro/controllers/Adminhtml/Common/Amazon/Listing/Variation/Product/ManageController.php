@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -34,10 +36,11 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
             ->addJs('M2ePro/Listing/MovingHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/ActionHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/ProductSearchHandler.js')
-            ->addJs('M2ePro/Common/Amazon/Listing/TemplateDescriptionHandler.js')
+            ->addJs('M2ePro/Common/Amazon/Listing/Template/DescriptionHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/VariationProductManageHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/VariationProductManageVariationsGridHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/FulfillmentHandler.js')
+            ->addJs('M2ePro/Common/Amazon/Listing/AfnQtyHandler.js')
 
             ->addJs('M2ePro/TemplateHandler.js')
             ->addJs('M2ePro/Common/Listing/Category/TreeHandler.js')
@@ -61,13 +64,13 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings');
     }
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     protected function addNotificationMessages() {}
 
     protected function beforeAddContentEvent() {}
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     public function indexAction()
     {
@@ -87,7 +90,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         return $this->getResponse()->setBody($tabs->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function viewVariationsGridAction()
     {
@@ -217,7 +220,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         return $this->getResponse()->setBody(json_encode(array('success' => true)));
     }
 
-    //#############################################
+    //########################################
 
     public function viewVariationsSettingsAjaxAction()
     {
@@ -235,7 +238,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         $messages = $settings->getMessages();
 
         return $this->getResponse()->setBody(json_encode(array(
-            'errors_count' => count($messages),
+            'error_icon' => count($messages) > 0 ? $settings->getMessagesType() : '',
             'html' => $html
         )));
     }
@@ -265,7 +268,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
 
         if (!$data['success']) {
             $mainBlock = $this->loadLayout()->getLayout()
-                ->createBlock('M2ePro/adminhtml_common_amazon_listing_templateDescription_main');
+                ->createBlock('M2ePro/adminhtml_common_amazon_listing_template_description_main');
             $mainBlock->setMessages(array(
                 array(
                 'type' => 'warning',
@@ -341,7 +344,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         }
 
         $grid = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_common_amazon_listing_templateDescription_grid');
+            ->createBlock('M2ePro/adminhtml_common_amazon_listing_template_description_grid');
         $grid->setCheckNewAsinAccepted(true);
         $grid->setProductsIds(array($productId));
         $grid->setMapToTemplateJsFn('ListingGridHandlerObj.variationProductManageHandler.mapToTemplateDescription');
@@ -707,7 +710,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         }
     }
 
-    //#############################################
+    //########################################
 
     public function viewVocabularyAjaxAction()
     {
@@ -797,7 +800,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         $this->getResponse()->setBody(json_encode(array('success' => true)));
     }
 
-    //#############################################
+    //########################################
 
     private function isExistInM2eProListings($listingProduct, $sku)
     {
@@ -931,7 +934,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         return $data;
     }
 
-    //#############################################
+    //########################################
 
     protected function hasChildWithWarning($productId)
     {
@@ -951,5 +954,5 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_Variation_Product_ManageControl
         return (bool)Mage::getResourceModel('core/config')->getReadConnection()->fetchCol($select);
     }
 
-    //#############################################
+    //########################################
 }

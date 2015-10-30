@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
@@ -16,7 +18,7 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
     private $processedPlaceholders = array();
     private $processedArgs = array();
 
-    // ##################################
+    //########################################
 
     public function translate(array $args)
     {
@@ -36,14 +38,14 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
         $this->replacePlaceholdersByArgs();
 
         $unprocessedArgs = array_diff($this->args, $this->processedArgs);
-        if(!$unprocessedArgs) {
+        if (!$unprocessedArgs) {
             return $this->translatedText;
         }
 
         return vsprintf($this->translatedText, $unprocessedArgs);
     }
 
-    // ##################################
+    //########################################
 
     private function reset()
     {
@@ -56,7 +58,7 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
         $this->translatedText = null;
     }
 
-    // ----------------------------------
+    // ---------------------------------------
 
     private function parseInput(array $input)
     {
@@ -75,7 +77,7 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
         $this->placeholders = array_unique($placeholders[0]);
     }
 
-    // ##################################
+    //########################################
 
     private function replacePlaceholdersByValue()
     {
@@ -112,5 +114,5 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
         }
     }
 
-    // ##################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -45,7 +47,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     private $shippingSourceModels = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -53,13 +55,20 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         $this->_init('M2ePro/Ebay_Template_Shipping');
     }
 
+    /**
+     * @return string
+     */
     public function getNick()
     {
         return Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -104,7 +113,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return true;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -128,7 +137,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         $this->marketplaceModel = $instance;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -149,7 +158,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $this->shippingSourceModels[$productId];
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated
@@ -181,8 +190,15 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
          $this->calculatedShippingModel = $instance;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @param array $sort
+     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getServices($asObjects = false, array $filters = array(),
                                 array $sort = array('priority'=>Varien_Data_Collection::SORT_ORDER_ASC))
     {
@@ -199,24 +215,30 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $services;
     }
 
-    // #######################################
+    //########################################
 
     public function getTitle()
     {
         return $this->getData('title');
     }
 
+    /**
+     * @return bool
+     */
     public function isCustomTemplate()
     {
         return (bool)$this->getData('is_custom_template');
     }
 
+    /**
+     * @return int
+     */
     public function getMarketplaceId()
     {
         return (int)$this->getData('marketplace_id');
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     public function getCreateDate()
     {
@@ -228,8 +250,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $this->getData('update_date');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getCountryMode()
     {
         return (int)$this->getData('country_mode');
@@ -245,6 +270,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $this->getData('country_custom_attribute');
     }
 
+    /**
+     * @return array
+     */
     public function getCountrySource()
     {
         return array(
@@ -254,8 +282,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         );
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getPostalCodeMode()
     {
         return (int)$this->getData('postal_code_mode');
@@ -271,6 +302,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $this->getData('postal_code_custom_attribute');
     }
 
+    /**
+     * @return array
+     */
     public function getPostalCodeSource()
     {
         return array(
@@ -280,8 +314,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         );
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getAddressMode()
     {
         return (int)$this->getData('address_mode');
@@ -297,6 +334,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $this->getData('address_custom_attribute');
     }
 
+    /**
+     * @return array
+     */
     public function getAddressSource()
     {
         return array(
@@ -306,56 +346,83 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         );
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isGlobalShippingProgramEnabled()
     {
         return (bool)$this->getData('global_shipping_program');
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isLocalShippingRateTableEnabled()
     {
         return (bool)$this->getData('local_shipping_rate_table_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isInternationalShippingRateTableEnabled()
     {
         return (bool)$this->getData('international_shipping_rate_table_mode');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getDispatchTime()
     {
         return (int)$this->getData('dispatch_time');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isLocalShippingFlatEnabled()
     {
         return (int)$this->getData('local_shipping_mode') == self::SHIPPING_TYPE_FLAT;
     }
 
+    /**
+     * @return bool
+     */
     public function isLocalShippingCalculatedEnabled()
     {
         return (int)$this->getData('local_shipping_mode') == self::SHIPPING_TYPE_CALCULATED;
     }
 
+    /**
+     * @return bool
+     */
     public function isLocalShippingFreightEnabled()
     {
         return (int)$this->getData('local_shipping_mode') == self::SHIPPING_TYPE_FREIGHT;
     }
 
+    /**
+     * @return bool
+     */
     public function isLocalShippingLocalEnabled()
     {
         return (int)$this->getData('local_shipping_mode') == self::SHIPPING_TYPE_LOCAL;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isLocalShippingDiscountEnabled()
     {
         return (bool)$this->getData('local_shipping_discount_mode');
@@ -374,32 +441,47 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return !isset($data[$accountId]) ? NULL : $data[$accountId];
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isClickAndCollectEnabled()
     {
         return (bool)$this->getData('click_and_collect_mode');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isInternationalShippingNoInternationalEnabled()
     {
         return (int)$this->getData('international_shipping_mode') == self::SHIPPING_TYPE_NO_INTERNATIONAL;
     }
 
+    /**
+     * @return bool
+     */
     public function isInternationalShippingFlatEnabled()
     {
         return (int)$this->getData('international_shipping_mode') == self::SHIPPING_TYPE_FLAT;
     }
 
+    /**
+     * @return bool
+     */
     public function isInternationalShippingCalculatedEnabled()
     {
         return (int)$this->getData('international_shipping_mode') == self::SHIPPING_TYPE_CALCULATED;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isInternationalShippingDiscountEnabled()
     {
         return (bool)$this->getData('international_shipping_discount_mode');
@@ -418,8 +500,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return !isset($data[$accountId]) ? NULL : $data[$accountId];
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getExcludedLocations()
     {
         $excludedLocations = $this->getData('excluded_locations');
@@ -427,6 +512,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return is_array($excludedLocations) ? $excludedLocations : array();
     }
 
+    /**
+     * @return float|null
+     */
     public function getCashOnDeliveryCost()
     {
         $tempData = $this->getData('cash_on_delivery_cost');
@@ -438,29 +526,41 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return NULL;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getCrossBorderTrade()
     {
         return (int)$this->getData('cross_border_trade');
     }
 
+    /**
+     * @return bool
+     */
     public function isCrossBorderTradeNone()
     {
         return $this->getCrossBorderTrade() == self::CROSS_BORDER_TRADE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isCrossBorderTradeNorthAmerica()
     {
         return $this->getCrossBorderTrade() == self::CROSS_BORDER_TRADE_NORTH_AMERICA;
     }
 
+    /**
+     * @return bool
+     */
     public function isCrossBorderTradeUnitedKingdom()
     {
         return $this->getCrossBorderTrade() == self::CROSS_BORDER_TRADE_UNITED_KINGDOM;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Shipping_Service[]
@@ -502,8 +602,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $returns;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         $attributes = array();
@@ -521,6 +624,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return array_unique($attributes);
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         $attributes = array();
@@ -538,7 +644,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return array_unique($attributes);
     }
 
-    // #######################################
+    //########################################
 
     public function getDataSnapshot()
     {
@@ -561,11 +667,17 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultSettingsSimpleMode()
     {
         return $this->getDefaultSettingsAdvancedMode();
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultSettingsAdvancedMode()
     {
         return array(
@@ -597,7 +709,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             'international_shipping_rate_table_mode' => 0,
 
             // CALCULATED SHIPPING
-            //----------------------------------
+            // ---------------------------------------
             'measurement_system' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_ENGLISH,
 
             'package_size_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_VALUE,
@@ -619,15 +731,13 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
             'local_handling_cost' => NULL,
             'international_handling_cost' => NULL,
-            //----------------------------------
+            // ---------------------------------------
 
-            //----------------------------------
             'services' => array()
-            //----------------------------------
         );
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param bool $asArrays
@@ -675,7 +785,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -689,5 +799,5 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return parent::delete();
     }
 
-    // #######################################
+    //########################################
 }

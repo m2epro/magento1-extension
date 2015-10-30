@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_View_Development_Controller extends Mage_Core_Helper_Abstract
 {
     const REAL_MODULE = 'Ess_M2ePro';
 
-    // ########################################
+    //########################################
 
     public function loadControllerAndGetClassName($controller)
     {
@@ -30,7 +32,7 @@ class Ess_M2ePro_Helper_View_Development_Controller extends Mage_Core_Helper_Abs
         return $controllerClassName;
     }
 
-    // ########################################
+    //########################################
 
     public function getControllerFileName($controller)
     {
@@ -49,14 +51,14 @@ class Ess_M2ePro_Helper_View_Development_Controller extends Mage_Core_Helper_Abs
         return $fileName && is_readable($fileName) && false===strpos($fileName, '//');
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function getControllerClassName($controller)
     {
         return self::REAL_MODULE.'_'.uc_words($controller).'Controller';
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function _includeControllerClass($controllerFileName, $controllerClassName)
     {
@@ -78,5 +80,5 @@ class Ess_M2ePro_Helper_View_Development_Controller extends Mage_Core_Helper_Abs
         return true;
     }
 
-    // ########################################
+    //########################################
 }

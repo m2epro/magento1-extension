@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_account`
@@ -18,7 +18,7 @@ $connection = $installer->getConnection();
     DROP COLUMN `related_store_id`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_account');
 
@@ -26,7 +26,7 @@ if ($connection->tableColumnExists($tempTable, 'marketplaces_data') === false) {
     $connection->addColumn($tempTable, 'marketplaces_data', 'TEXT DEFAULT NULL AFTER `token_expired_date`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 $existsMarketplaces = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -44,7 +44,7 @@ $connection->query(
      SET `marketplaces_data` = {$tempMarketplacesDataMySql}"
 );
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 
@@ -52,7 +52,7 @@ if ($connection->tableColumnExists($tempTable, 'related_store_id') !== false) {
     $connection->dropColumn($tempTable, 'related_store_id');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -72,7 +72,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -114,7 +114,7 @@ AND `status` != 0;
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_processing_request');
 $tempRow = $connection->query("SELECT `id`
@@ -134,7 +134,7 @@ if ($tempRow !== false) {
     $connection->query("DELETE FROM `{$tempTable}`");
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_account');
 $tempAccounts = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -157,8 +157,8 @@ foreach ($tempAccounts as $account) {
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

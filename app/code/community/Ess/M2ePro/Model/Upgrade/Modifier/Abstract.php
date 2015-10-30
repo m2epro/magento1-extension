@@ -1,100 +1,138 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    protected $installer = NULL;
+    private $installer = NULL;
 
     /** @var Varien_Db_Adapter_Pdo_Mysql */
-    protected $connection = NULL;
+    private $connection = NULL;
+
+    /** @var Ess_M2ePro_Model_Upgrade_Tables */
+    private $tablesObject = NULL;
 
     protected $tableName = NULL;
-    protected $queryLog = array();
+    protected $queriesLog = array();
 
-    //####################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     * @return $this
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
+        $this->connection = $installer->getConnection();
+        $this->tablesObject = $installer->getTablesObject();
         return $this;
     }
 
+    /**
+     * @param string $tableName
+     * @return $this
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     */
+    public function setTableName($tableName)
+    {
+        if (!$this->getTablesObject()->isExists($tableName)) {
+            throw new Ess_M2ePro_Model_Exception_Setup("Table Name does not exist.");
+        }
+
+        $this->tableName = $this->getTablesObject()->getFullName($tableName);
+        return $this;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     */
     public function getInstaller()
     {
         if (is_null($this->installer)) {
-            throw new Zend_Db_Exception("Installer is not exists.");
+            throw new Ess_M2ePro_Model_Exception_Setup("Installer does not exist.");
         }
 
         return $this->installer;
     }
 
-    // ----------------------------------
-
-    public function setConnection(Varien_Db_Adapter_Pdo_Mysql $connection)
-    {
-        $this->connection = $connection;
-        return $this;
-    }
-
+    /**
+     * @return Varien_Db_Adapter_Pdo_Mysql
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     */
     public function getConnection()
     {
         if (is_null($this->connection)) {
-            throw new Zend_Db_Exception("Connection is not exists.");
+            throw new Ess_M2ePro_Model_Exception_Setup("Connection does not exist.");
         }
 
         return $this->connection;
     }
 
-    // ----------------------------------
-
-    public function setTableName($tableName)
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_Tables
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     */
+    public function getTablesObject()
     {
-        $result = $this->getConnection()->showTableStatus($tableName);
-
-        if ($result !== false) {
-            $this->tableName = $this->getInstaller()->getTable($tableName);
+        if (is_null($this->tablesObject)) {
+            throw new Ess_M2ePro_Model_Exception_Setup("Tables Object does not exist.");
         }
 
-        return $this;
+        return $this->tablesObject;
     }
 
+    /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     */
     public function getTableName()
     {
+        if (is_null($this->tableName)) {
+            throw new Ess_M2ePro_Model_Exception_Setup("Table Name does not exist.");
+        }
+
         return $this->tableName;
     }
 
-    public function isTableExists()
-    {
-        $tableName = $this->getTableName();
-        return !empty($tableName);
-    }
+    //########################################
 
-    //####################################
-
-    protected function runQuery($query)
+    public function runQuery($query)
     {
-        $this->setQueryLog($query);
+        $this->addQueryToLog($query);
+
         $this->getConnection()->query($query);
         $this->getConnection()->resetDdlCache();
+
         return $this;
     }
 
-    //####################################
-
-    public function setQueryLog($query)
+    public function addQueryToLog($query)
     {
-        $this->queryLog[] = $query;
+        $this->queriesLog[] = $query;
         return $this;
     }
 
-    public function getQueryLog()
+    // ---------------------------------------
+
+    public function setQueriesLog(array $queriesLog = array())
     {
-        return $this->queryLog;
+        $this->queriesLog = $queriesLog;
+        return $this;
     }
 
-    //####################################
+    public function getQueriesLog()
+    {
+        return $this->queriesLog;
+    }
+
+    //########################################
 }

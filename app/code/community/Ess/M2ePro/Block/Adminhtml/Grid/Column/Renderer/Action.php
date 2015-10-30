@@ -1,20 +1,26 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
     extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Action
 {
-    // ####################################
+    //########################################
 
     public function render(Varien_Object $row)
     {
         $actions = $this->getColumn()->getActions();
-        if ( empty($actions) || !is_array($actions) ) {
+        if (empty($actions) || !is_array($actions) ) {
             return '&nbsp;';
         }
 
-        if(sizeof($actions)==1 && !$this->getColumn()->getNoLink()) {
+        if (sizeof($actions)==1 && !$this->getColumn()->getNoLink()) {
             foreach ($actions as $action) {
-                if ( is_array($action) ) {
+                if (is_array($action)) {
                     return $this->_toLinkHtml($action, $row);
                 }
             }
@@ -87,5 +93,5 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
         return $outHtml . $notGroupedOptions;
     }
 
-    // ####################################
+    //########################################
 }

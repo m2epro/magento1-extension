@@ -1,23 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template extends Ess_M2ePro_Block_Adminhtml_Common_Template
 {
     protected $nick = Ess_M2ePro_Helper_Component_Amazon::NICK;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('commonAmazonTemplate');
-        //------------------------------
+        // ---------------------------------------
 
     }
 
@@ -51,6 +53,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template extends Ess_M2ePro_Block
                         '*/adminhtml_common_template/new',
                         array(
                             'channel' => $this->nick,
+                            'type' => Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Grid::TEMPLATE_DESCRIPTION
+                        )
+                    ),
+                    'label' => Mage::helper('M2ePro')->__('Description')
+                ),
+                array(
+                    'url'   => $this->getUrl(
+                        '*/adminhtml_common_template/new',
+                        array(
+                            'channel' => $this->nick,
                             'type' => Ess_M2ePro_Block_Adminhtml_Common_Template_Grid::TEMPLATE_SYNCHRONIZATION,
                         )
                     ),
@@ -64,5 +76,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template extends Ess_M2ePro_Block
         return $dropDownBlock->toHtml();
     }
 
-    // ########################################
+    //########################################
 }

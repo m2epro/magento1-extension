@@ -1,48 +1,50 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Chooser_Edit
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    // ########################################
+    //########################################
 
     protected $_marketplaceId;
     protected $_selectedCategory = array();
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonTemplateDescriptionCategoryChooserEdit');
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->setTemplate('M2ePro/common/amazon/template/description/category/chooser/edit.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'category_edit_confirm_button',
             'class'   => '',
@@ -50,7 +52,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Cho
             'onclick' => 'AmazonTemplateDescriptionCategoryChooserHandlerObj.confirmCategory();',
         );
         $doneButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        //------------------------------
+        // ---------------------------------------
 
         $cancelWord = Mage::helper('M2ePro')->__('Cancel');
 
@@ -74,7 +76,7 @@ HTML;
                $buttonsContainer;
     }
 
-    // ########################################
+    //########################################
 
     public function getSelectedCategory()
     {
@@ -87,7 +89,7 @@ HTML;
         return $this;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function setMarketplaceId($value)
     {
@@ -95,5 +97,5 @@ HTML;
         return $this;
     }
 
-    // ########################################
+    //########################################
 }

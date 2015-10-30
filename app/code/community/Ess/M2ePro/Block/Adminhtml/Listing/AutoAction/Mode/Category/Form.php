@@ -1,28 +1,30 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     protected $listing;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingAutoActionModeCategoryForm');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/listing/auto_action/mode/category/form.phtml');
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareForm()
     {
@@ -39,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form extends M
         return parent::_prepareForm();
     }
 
-    // ####################################
+    //########################################
 
     public function hasFormData()
     {
@@ -69,12 +71,12 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form extends M
             'title' => NULL,
             'category_id' => NULL,
             'adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
-            'adding_description_template_id' => NULL
         );
     }
 
-    // ####################################
+    //########################################
 
     public function getCategoriesFromOtherGroups()
     {
@@ -91,7 +93,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form extends M
         return $categories;
     }
 
-    // ####################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -107,13 +109,13 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form extends M
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $selectedCategories = array();
         if ($this->getRequest()->getParam('group_id')) {
             $selectedCategories = Mage::getModel('M2ePro/Listing_Auto_Category')
@@ -128,12 +130,12 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form extends M
         $block->setCallback('ListingAutoActionHandlerObj.magentoCategorySelectCallback');
         $block->setSelectedCategories($selectedCategories);
         $this->setChild('category_tree', $block);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->setChild('confirm', $this->getLayout()->createBlock('M2ePro/adminhtml_widget_dialog_confirm'));
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 }

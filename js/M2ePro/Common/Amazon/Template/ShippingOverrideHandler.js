@@ -3,31 +3,28 @@ CommonAmazonTemplateShippingOverrideHandler.prototype = Object.extend(new Common
 
     rulesIndex: 0,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
         this.setValidationCheckRepetitionValue('M2ePro-shipping-override-tpl-title',
             M2ePro.translator.translate('The specified Title is already used for other Policy. Policy Title must be unique.'),
-            'Template_ShippingOverride', 'title', 'id',
-            M2ePro.formData.id,
-            M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::NICK'));
+            'Amazon_Template_ShippingOverride', 'title', 'id',
+            M2ePro.formData.id);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     duplicate_click: function($headId)
     {
         this.setValidationCheckRepetitionValue('M2ePro-shipping-override-tpl-title',
             M2ePro.translator.translate('The specified Title is already used for other Policy. Policy Title must be unique.'),
-            'Template_ShippingOverride', 'title', 'id',
-            M2ePro.formData.id,
-            M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon::NICK'));
+            'Amazon_Template_ShippingOverride', 'title', 'id', '');
 
         CommonHandlerObj.duplicate_click($headId, M2ePro.translator.translate('Add Shipping Override Policy.'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addRow: function(ruleData)
     {
@@ -71,9 +68,16 @@ CommonAmazonTemplateShippingOverrideHandler.prototype = Object.extend(new Common
             serviceEl.value = ruleData.service;
             self.ruleServiceChange.call(self, serviceEl, ruleData);
         }
+
+        var attributeEl = row.down('.shipping-override-cost-custom-attribute');
+        attributeEl.addClassName('M2ePro-custom-attribute-can-be-created');
+
+        var handlerObj = new AttributeCreator('shipping_override_cost_custom_attribute_' + this.rulesIndex);
+        handlerObj.setSelectObj(attributeEl);
+        handlerObj.injectAddOption();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     removeRow: function(el)
     {
@@ -84,7 +88,7 @@ CommonAmazonTemplateShippingOverrideHandler.prototype = Object.extend(new Common
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderRules: function(data)
     {
@@ -97,7 +101,7 @@ CommonAmazonTemplateShippingOverrideHandler.prototype = Object.extend(new Common
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     marketplaceChange: function()
     {
@@ -116,7 +120,7 @@ CommonAmazonTemplateShippingOverrideHandler.prototype = Object.extend(new Common
         AmazonTemplateShippingOverrideHandlerObj.addRow();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     ruleServiceChange: function(el, ruleData)
     {
@@ -257,6 +261,6 @@ CommonAmazonTemplateShippingOverrideHandler.prototype = Object.extend(new Common
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 
 });

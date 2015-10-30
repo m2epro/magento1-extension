@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Cron_Task_Synchronization extends Ess_M2ePro_Model_Cron_Task_Abstract
 {
     const NICK = 'synchronization';
 
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -20,7 +22,7 @@ final class Ess_M2ePro_Model_Cron_Task_Synchronization extends Ess_M2ePro_Model_
         return Ess_M2ePro_Model_Synchronization_Dispatcher::MAX_MEMORY_LIMIT;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -50,5 +52,5 @@ final class Ess_M2ePro_Model_Cron_Task_Synchronization extends Ess_M2ePro_Model_
         return $dispatcher->process();
     }
 
-    //####################################
+    //########################################
 }

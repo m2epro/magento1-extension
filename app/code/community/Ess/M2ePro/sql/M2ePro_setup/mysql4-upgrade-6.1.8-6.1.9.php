@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_dictionary_motor_specific`
@@ -21,7 +21,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `cost_surcharge_value` VARCHAR(255) NOT NULL AFTER `cost_additional_value`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_motor_specific');
 
@@ -29,7 +29,7 @@ if ($connection->tableColumnExists($tempTable, 'marketplace_id') !== false) {
     $connection->dropColumn($tempTable, 'marketplace_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_order');
 
@@ -41,7 +41,7 @@ if ($connection->tableColumnExists($tempTable, 'buyer_tax_id') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping_service');
 
@@ -53,7 +53,7 @@ if ($connection->tableColumnExists($tempTable, 'cost_surcharge_value') === false
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -92,7 +92,7 @@ WHERE `marketplace_id` = 9;
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_config');
 $tempQuery = <<<SQL
@@ -116,8 +116,8 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

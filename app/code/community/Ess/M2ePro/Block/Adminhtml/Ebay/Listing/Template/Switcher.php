@@ -1,28 +1,30 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adminhtml_Block_Widget
 {
     private $templates = NULL;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingTemplateSwitcher');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/listing/template/switcher.phtml');
     }
 
-    // ########################################
+    //########################################
 
     public function getHeaderText()
     {
@@ -52,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
         return $title;
     }
 
-    // ########################################
+    //########################################
 
     public function getHeaderWidth()
     {
@@ -80,7 +82,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
         return $width;
     }
 
-    // ########################################
+    //########################################
 
     public static function getSwitcherUrlHtml()
     {
@@ -100,33 +102,33 @@ HTML;
         $params = array();
 
         // initiate account param
-        //------------------------------
+        // ---------------------------------------
         $account = Mage::helper('M2ePro/Data_Global')->getValue('ebay_account');
         $params['account_id'] = $account->getId();
-        //------------------------------
+        // ---------------------------------------
 
         // initiate marketplace param
-        //------------------------------
+        // ---------------------------------------
         $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
         $params['marketplace_id'] = $marketplace->getId();
-        //------------------------------
+        // ---------------------------------------
 
         // initiate attribute sets param
-        //------------------------------
+        // ---------------------------------------
         $attributeSets = Mage::helper('M2ePro/Data_Global')->getValue('ebay_attribute_sets');
         $params['attribute_sets'] = implode(',', $attributeSets);
-        //------------------------------
+        // ---------------------------------------
 
         // initiate display use default option param
-        //------------------------------
+        // ---------------------------------------
         $displayUseDefaultOption = Mage::helper('M2ePro/Data_Global')->getValue('ebay_display_use_default_option');
         $params['display_use_default_option'] = (int)(bool)$displayUseDefaultOption;
-        //------------------------------
+        // ---------------------------------------
 
         return Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_ebay_template/getTemplateHtml', $params);
     }
 
-    // ########################################
+    //########################################
 
     public function getTemplateNick()
     {
@@ -170,7 +172,7 @@ HTML;
         return NULL;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function isTemplateModeParentForced()
     {
@@ -195,7 +197,7 @@ HTML;
         return $this->getTemplateMode() == Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE;
     }
 
-    // ########################################
+    //########################################
 
     public function getFormDataBlock()
     {
@@ -257,7 +259,7 @@ HTML;
 HTML;
     }
 
-    // ########################################
+    //########################################
 
     public function canDisplaySwitcher()
     {
@@ -285,7 +287,7 @@ HTML;
         return (bool)$displayUseDefaultOption;
     }
 
-    // ########################################
+    //########################################
 
     public function getTemplates()
     {
@@ -310,7 +312,7 @@ HTML;
         return $this->templates;
     }
 
-    // ########################################
+    //########################################
 
     public function getSwitcherJsObjectName()
     {
@@ -330,7 +332,7 @@ HTML;
         return "template_{$nick}";
     }
 
-    // ########################################
+    //########################################
 
     public function getButtonsHtml()
     {
@@ -350,13 +352,13 @@ HTML;
 HTML;
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $nick = $this->getTemplateNick();
         $data = array(
             'class'   => 'save-custom-template-' . $nick,
@@ -365,15 +367,15 @@ HTML;
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('save_custom_as_template', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
         return parent::_toHtml() . $this->getFormDataBlockHtml() . $this->getButtonsHtml();
     }
 
-    // ########################################
+    //########################################
 }

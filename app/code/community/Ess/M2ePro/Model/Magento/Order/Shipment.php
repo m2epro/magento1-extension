@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Order_Shipment
@@ -12,8 +14,12 @@ class Ess_M2ePro_Model_Magento_Order_Shipment
     /** @var $shipment Mage_Sales_Model_Order_Shipment */
     private $shipment = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Mage_Sales_Model_Order $magentoOrder
+     * @return $this
+     */
     public function setMagentoOrder(Mage_Sales_Model_Order $magentoOrder)
     {
         $this->magentoOrder = $magentoOrder;
@@ -21,14 +27,14 @@ class Ess_M2ePro_Model_Magento_Order_Shipment
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function getShipment()
     {
         return $this->shipment;
     }
 
-    // ########################################
+    //########################################
 
     public function buildShipment()
     {
@@ -36,15 +42,15 @@ class Ess_M2ePro_Model_Magento_Order_Shipment
         $this->magentoOrder->getShipmentsCollection()->addItem($this->shipment);
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareShipment()
     {
         // Skip shipment observer
-        // -----------------
+        // ---------------------------------------
         Mage::helper('M2ePro/Data_Global')->unsetValue('skip_shipment_observer');
         Mage::helper('M2ePro/Data_Global')->setValue('skip_shipment_observer', true);
-        // -----------------
+        // ---------------------------------------
 
         $qtys = array();
         foreach ($this->magentoOrder->getAllItems() as $item) {
@@ -58,7 +64,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment
         }
 
         // Create shipment
-        // -----------------
+        // ---------------------------------------
         $this->shipment = $this->magentoOrder->prepareShipment($qtys);
         $this->shipment->register();
         // it is necessary for updating qty_shipped field in sales_flat_order_item table
@@ -68,8 +74,8 @@ class Ess_M2ePro_Model_Magento_Order_Shipment
             ->addObject($this->shipment)
             ->addObject($this->shipment->getOrder())
             ->save();
-        // -----------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 }

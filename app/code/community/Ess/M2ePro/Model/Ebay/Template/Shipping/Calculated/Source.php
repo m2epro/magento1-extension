@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated_Source
@@ -16,34 +18,51 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated_Source
      */
     private $shippingCalculatedTemplateModel = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         $this->magentoProduct = $magentoProduct;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Magento_Product
+     */
     public function getMagentoProduct()
     {
         return $this->magentoProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated $instance
+     * @return $this
+     */
     public function setShippingCalculatedTemplate(Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated $instance)
     {
         $this->shippingCalculatedTemplateModel = $instance;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated
+     */
     public function getShippingCalculatedTemplate()
     {
         return $this->shippingCalculatedTemplateModel;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getPackageSize()
     {
         $src = $this->getShippingCalculatedTemplate()->getPackageSizeSource();
@@ -55,6 +74,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated_Source
         return $src['value'];
     }
 
+    /**
+     * @return array
+     */
     public function getDimension()
     {
         $src = $this->getShippingCalculatedTemplate()->getDimensionSource();
@@ -83,6 +105,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated_Source
         );
     }
 
+    /**
+     * @return array
+     */
     public function getWeight()
     {
         $src = $this->getShippingCalculatedTemplate()->getWeightSource();
@@ -139,5 +164,5 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated_Source
         );
     }
 
-    // ########################################
+    //########################################
 }

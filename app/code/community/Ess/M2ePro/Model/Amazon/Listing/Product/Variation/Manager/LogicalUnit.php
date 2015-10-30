@@ -1,14 +1,19 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_LogicalUnit
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstract
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isActualProductAttributes()
     {
         $productAttributes = array_map('strtolower', (array)$this->getProductAttributes());
@@ -20,7 +25,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Logical
         return $productAttributes == $magentoAttributes;
     }
 
-    // ########################################
+    //########################################
 
     public function getProductAttributes()
     {
@@ -36,7 +41,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Logical
         $save && $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
     public function clearTypeData()
     {
@@ -47,7 +52,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Logical
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
     protected function getMagentoAttributes()
     {
@@ -55,5 +60,5 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Logical
         return array_keys($magentoVariations['set']);
     }
 
-    // ########################################
+    //########################################
 }

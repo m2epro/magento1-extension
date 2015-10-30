@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
     private $nick = 'undefined';
     private $maxInactiveTime = 1800; // 30 min
 
-    //####################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +19,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         $this->_init('M2ePro/LockItem');
     }
 
-    //####################################
+    //########################################
 
     public function setNick($value)
     {
@@ -29,7 +31,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return $this->nick;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     public function setMaxInactiveTime($value)
     {
@@ -41,7 +43,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return $this->maxInactiveTime;
     }
 
-    //####################################
+    //########################################
 
     public function create($parentId = NULL)
     {
@@ -79,8 +81,12 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return true;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isExist()
     {
         /** @var $lockModel Ess_M2ePro_Model_LockItem **/
@@ -129,7 +135,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return true;
     }
 
-    //####################################
+    //########################################
 
     public function getRealId()
     {
@@ -138,7 +144,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return $lockModel->getId() ? $lockModel->getId() : NULL;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     public function addContentData($key, $value)
     {
@@ -178,7 +184,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return true;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     public function getContentData($key = NULL)
     {
@@ -206,7 +212,7 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return NULL;
     }
 
-    //####################################
+    //########################################
 
     public function makeShutdownFunction()
     {
@@ -224,5 +230,5 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
         return true;
     }
 
-    //####################################
+    //########################################
 }

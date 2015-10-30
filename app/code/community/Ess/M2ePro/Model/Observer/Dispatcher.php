@@ -1,19 +1,21 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Observer_Dispatcher
 {
-    //####################################
+    //########################################
 
     public function systemConfigurationSaveAction(Varien_Event_Observer $eventObserver)
     {
         $this->process('Magento_Configuration', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     public function catalogProductSaveBefore(Varien_Event_Observer $eventObserver)
     {
@@ -25,21 +27,21 @@ class Ess_M2ePro_Model_Observer_Dispatcher
         $this->process('Product_AddUpdate_After', $eventObserver);
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function catalogProductDeleteBefore(Varien_Event_Observer $eventObserver)
     {
         $this->process('Product_Delete', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     public function catalogProductAttributeUpdateBefore(Varien_Event_Observer $eventObserver)
     {
         $this->process('Product_Attribute_Update_Before', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     public function catalogCategoryChangeProducts(Varien_Event_Observer $eventObserver)
     {
@@ -51,7 +53,7 @@ class Ess_M2ePro_Model_Observer_Dispatcher
         $this->process('StockItem', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     public function synchronizationBeforeStart(Varien_Event_Observer $eventObserver)
     {
@@ -63,7 +65,7 @@ class Ess_M2ePro_Model_Observer_Dispatcher
         $this->process('Indexes_Enable', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     public function salesOrderInvoicePay(Varien_Event_Observer $eventObserver)
     {
@@ -95,7 +97,7 @@ class Ess_M2ePro_Model_Observer_Dispatcher
         $this->process('Order_Quote', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     public function associateEbayItemWithProduct(Varien_Event_Observer $eventObserver)
     {
@@ -112,17 +114,23 @@ class Ess_M2ePro_Model_Observer_Dispatcher
         $this->process('Buy_Order_Item', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     public function revertAmazonOrderedQty(Varien_Event_Observer $eventObserver)
     {
         $this->process('Amazon_Order', $eventObserver);
     }
 
-    //####################################
+    //########################################
 
     private function process($observerModel, Varien_Event_Observer $eventObserver)
     {
+        if (!Mage::helper('M2ePro/Module')->isReadyToWork() ||
+            !Mage::helper('M2ePro/Component')->getActiveComponents()) {
+
+            return;
+        }
+
         try {
 
             /** @var Ess_M2ePro_Model_Observer_Abstract $observer */
@@ -142,5 +150,5 @@ class Ess_M2ePro_Model_Observer_Dispatcher
         }
     }
 
-    //####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Synchronization_Task
@@ -14,7 +16,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
     const OTHER_LISTINGS = 'other_listings';
     const POLICIES = 'policies';
 
-    //####################################
+    //########################################
 
     private $allowedTasksTypes = array();
 
@@ -28,7 +30,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
     private $params = array();
     private $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
 
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -102,7 +104,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $task;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     abstract protected function getComponent();
 
@@ -110,54 +112,75 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
 
     abstract protected function getNick();
 
-    // ----------------------------------
+    // ---------------------------------------
 
     abstract protected function getPercentsStart();
 
     abstract protected function getPercentsEnd();
 
-    // ----------------------------------
+    // ---------------------------------------
 
     abstract protected function performActions();
 
-    //####################################
+    //########################################
 
+    /**
+     * @param array $types
+     */
     public function setAllowedTasksTypes(array $types)
     {
         $this->allowedTasksTypes = $types;
     }
 
+    /**
+     * @return array
+     */
     public function getAllowedTasksTypes()
     {
         return $this->allowedTasksTypes;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $params
+     */
     public function setParams(array $params)
     {
         $this->params = $params;
     }
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param int $value
+     */
     public function setInitiator($value)
     {
         $this->initiator = (int)$value;
     }
 
+    /**
+     * @return int
+     */
     public function getInitiator()
     {
         return $this->initiator;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Synchronization_LockItem $object
+     */
     public function setParentLockItem(Ess_M2ePro_Model_Synchronization_LockItem $object)
     {
         $this->parentLockItem = $object;
@@ -171,8 +194,11 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->parentLockItem;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Synchronization_OperationHistory $object
+     */
     public function setParentOperationHistory(Ess_M2ePro_Model_Synchronization_OperationHistory $object)
     {
         $this->parentOperationHistory = $object;
@@ -186,8 +212,11 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->parentOperationHistory;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Synchronization_Log $object
+     */
     public function setLog(Ess_M2ePro_Model_Synchronization_Log $object)
     {
         $this->log = $object;
@@ -201,7 +230,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->log;
     }
 
-    //####################################
+    //########################################
 
     protected function initialize() {}
 
@@ -239,7 +268,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return true;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function beforeStart()
     {
@@ -286,7 +315,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         }
     }
 
-    //####################################
+    //########################################
 
     protected function getOperationHistory()
     {
@@ -306,7 +335,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->lockItem;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Synchronization_OperationHistory
@@ -342,15 +371,21 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->getParentLockItem();
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     private function isComponentTask()
     {
         return (bool)$this->getComponent();
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     private function isComponentLauncherTask()
     {
         return $this->isComponentTask() &&
@@ -358,20 +393,29 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
                !(bool)$this->getNick();
     }
 
+    /**
+     * @return bool
+     */
     private function isContainerTask()
     {
         return (bool)$this->getType() &&
                !(bool)$this->getNick();
     }
 
+    /**
+     * @return bool
+     */
     private function isStandardTask()
     {
         return !$this->isComponentLauncherTask() &&
                !$this->isContainerTask();
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         if ($this->isComponentLauncherTask()) {
@@ -385,6 +429,9 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $title;
     }
 
+    /**
+     * @return int
+     */
     protected function getLogTask()
     {
         switch ($this->getType()) {
@@ -407,8 +454,11 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return Ess_M2ePro_Model_Synchronization_Log::TASK_UNKNOWN;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return string
+     */
     protected function getFullSettingsPath()
     {
         $path = '/'.($this->getComponent() ? strtolower($this->getComponent()).'/' : '');
@@ -421,7 +471,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->getPercentsEnd() - $this->getPercentsStart();
     }
 
-    //####################################
+    //########################################
 
     protected function configureLogBeforeStart()
     {
@@ -445,7 +495,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         }
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function configureProfilerBeforeStart()
     {
@@ -474,7 +524,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         $this->getActualOperationHistory()->saveBufferString();
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function configureLockItemBeforeStart()
     {
@@ -546,7 +596,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status,$title));
     }
 
-    //####################################
+    //########################################
 
     protected function intervalIsEnabled()
     {
@@ -564,7 +614,7 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return strtotime($lastTime) + $interval > Mage::helper('M2ePro')->getCurrentGmtDate(true);
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     protected function intervalSetLastTime($time)
     {
@@ -587,14 +637,14 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->getConfigValue($this->getFullSettingsPath(),'last_time');
     }
 
-    //####################################
+    //########################################
 
     private function getConfig()
     {
         return Mage::helper('M2ePro/Module')->getSynchronizationConfig();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function getConfigValue($group, $key)
     {
@@ -606,5 +656,5 @@ abstract class Ess_M2ePro_Model_Synchronization_Task
         return $this->getConfig()->setGroupValue($group, $key, $value);
     }
 
-    //####################################
+    //########################################
 }

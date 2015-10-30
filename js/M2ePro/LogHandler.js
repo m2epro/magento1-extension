@@ -1,11 +1,11 @@
 LogHandler = Class.create();
 LogHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     showFullText: function(element)
     {
@@ -33,5 +33,5 @@ LogHandler.prototype = Object.extend(new CommonHandler(), {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

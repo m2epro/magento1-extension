@@ -1,23 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Synchronization_Templates_Inspector
 {
-    //####################################
+    //########################################
 
     abstract public function isMeetListRequirements(Ess_M2ePro_Model_Listing_Product $listingProduct);
     abstract public function isMeetRelistRequirements(Ess_M2ePro_Model_Listing_Product $listingProduct);
     abstract public function isMeetStopRequirements(Ess_M2ePro_Model_Listing_Product $listingProduct);
 
-    // -----------------------------------
+    // ---------------------------------------
 
     abstract public function isMeetReviseQtyRequirements(Ess_M2ePro_Model_Listing_Product $listingProduct);
     abstract public function isMeetRevisePriceRequirements(Ess_M2ePro_Model_Listing_Product $listingProduct);
 
-    //####################################
+    //########################################
 
     protected function isTriedToList(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -62,5 +64,5 @@ abstract class Ess_M2ePro_Model_Synchronization_Templates_Inspector
         return true;
     }
 
-    //####################################
+    //########################################
 }

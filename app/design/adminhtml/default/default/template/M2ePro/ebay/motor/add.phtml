@@ -1,54 +1,6 @@
 <?php
-
     /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add $this */
-
-    $compatibleAttribute = Mage::helper('M2ePro/Component_Ebay_Motor_Compatibility')->getAttribute($this->getCompatibilityType());
-
-    $translations = array();
-    // M2ePro_TRANSLATIONS
-    // Please specify eBay Motors compatibility Attribute in %menu_label% <a target="_blank" href="%url%">General</a>
-    $text = 'Please specify eBay Motors compatibility Attribute in %menu_label% <a target="_blank" href="%url%">General</a>';
-    $translations[$text] = Mage::helper('M2ePro')->__(
-        $text,
-        Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration'),
-        $this->getUrl('*/adminhtml_ebay_configuration')
-    );
-
-    $translations['Set Note'] = Mage::helper('M2ePro')->__('Set Note');
-    $translations['Add Custom Compatible Vehicle'] = Mage::helper('M2ePro')->__('Add Custom Compatible Vehicle');
-
-    // ->__('Please edit Categories Settings for selected Products and select the compatibility attribute.')
-    $text = 'Please edit Categories Settings for selected Products and select the compatibility Attribute.';
-    $translations[$text] = Mage::helper('M2ePro')->__($text);
-
-    $translations = json_encode($translations);
 ?>
-
-<style type="text/css">
-    #compatibility_grid_container table td, #compatibility_grid_container table th {
-        padding: 5px;
-    }
-
-    #generate_attribute_content_container td.label {
-        width: 100px;
-    }
-
-    #generate_attribute_content_container label {
-        width: 100px;
-    }
-
-    a.remove-custom-created-record-link {
-        display: inline-block;
-        width: 8px;
-        height: 9px;
-        margin-left: 3px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-image: url("<?php echo $this->getSkinUrl('M2ePro/images/delete.png')?>");
-    }
-
-</style>
-
 <script type="text/javascript">
 
     // General for all tabs
@@ -61,95 +13,139 @@
         M2ePro.text = {};
     }
 
-    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Template_Category'); ?>, 'Ess_M2ePro_Model_Ebay_Template_Category');
-    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility'); ?>, 'Ess_M2ePro_Helper_Component_Ebay_Motor_Compatibility');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Motors'); ?>, 'Ess_M2ePro_Helper_Component_Ebay_Motors');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Motor_Group'); ?>, 'Ess_M2ePro_Model_Ebay_Motor_Group');
 
-    M2ePro.url.add(<?php echo json_encode(array(
-        'adminhtml_ebay_listing/motorSpecificGrid' => $this->getUrl('*/adminhtml_ebay_listing/motorSpecificGrid'),
-        'adminhtml_ebay_listing/motorKtypeGrid' => $this->getUrl('*/adminhtml_ebay_listing/motorKtypeGrid'),
-        'adminhtml_ebay_listing/updateMotorsCompatibilityAttributes' => $this->getUrl('*/adminhtml_ebay_listing/updateMotorsCompatibilityAttributes'),
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Add Custom Compatible Vehicle' => Mage::helper('M2ePro')->__('Add Custom Compatible Vehicle'),
+        'The specified Title is already used for other Filter. Filter Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Filter. Filter Title must be unique.'),
+        'The specified Title is already used for other Group. Group Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Group. Group Title must be unique.')
     )) ?>);
 
-    M2ePro.translator.add(<?php echo $translations ?>);
+    CommonHandlerObj.setValidationCheckRepetitionValue('M2ePro-filter-title',
+        M2ePro.translator.translate('The specified Title is already used for other Filter. Filter Title must be unique.'),
+        'Ebay_Motor_Filter', 'title', 'id', null, null, 'type', <?php echo $this->getMotorsType() ?>);
 
-    var init = function() {
-
-        EbayMotorCompatibilityHandlerObj = new EbayMotorCompatibilityHandler(
-            <?php echo (int)$this->getRequest()->getParam('id') ?>,
-            '<?php echo Mage::helper('M2ePro')->escapeJs($this->getCompatibilityType()) ?>',
-            '<?php echo Mage::helper('M2ePro')->escapeJs($this->getCompatibilityGridId()) ?>',
-            '<?php echo Mage::helper('M2ePro')->escapeJs($this->getProductGridId()) ?>',
-            <?php echo json_encode(empty($compatibleAttribute)); ?>
-        );
-
-        EbayMotorCompatibilityHandlerObj.initPopUp('<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Add Compatible Vehicles')); ?>', 'pop_up_content');
-
-        addCustomCompatibilyRecordForm = new varienForm('add_custom_compatibility_record_form', '<?php echo $this->getValidationUrl(); ?>');
-    };
-
-    <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
-        init();
-    <?php else: ?>
-        Event.observe(window, 'load', init);
-    <?php endif; ?>
+    CommonHandlerObj.setValidationCheckRepetitionValue('M2ePro-group-title',
+        M2ePro.translator.translate('The specified Title is already used for other Group. Group Title must be unique.'),
+        'Ebay_Motor_Group', 'title', 'id', null, null, 'type', <?php echo $this->getMotorsType() ?>);
 
 </script>
 
-<?php if (!$this->getRequest()->isXmlHttpRequest()): ?>
-<div id="pop_up_content" style="display: none;">
+<div id="add_custom_motors_record_instruction_container" <?php if ($this->wasInstructionShown()) : ?>style="display: none;"<?php endif; ?>>
+    <div id="add_custom_motors_record_instruction" class="block_notices_module" subtitle="" style="margin-top: 15px;" collapseable="no" hideblock="no" always_show="yes">
+        <?php echo Mage::helper('M2ePro')->__('
+            This Tool allows you to select the appropriate Compatible Vehicles for your Parts on eBay.</br></br>
 
-    <div class="content-header skip-header">
-        <table cellspacing="0">
-            <tbody>
-            <tr>
-                <td style="width: 50%;">
-                    <h3 class="icon-head head-adminhtml-ebay-template-general-motor-compatibility">
-                        <?php echo Mage::helper('M2ePro')->__('Add Compatible Vehicles') ?>
-                    </h3>
-                </td>
-                <td class="form-buttons"></td>
-            </tr>
-            </tbody>
-        </table>
+            There are a <strong>few ways</strong> you can use to Add necessary Compatible Vehicles.</br></br>
+
+            <ul style="padding-left: 30px !important;">
+                <li><strong>1)</strong> By Manually choosing the appropriate ePID(s)/kType(s) from the Common Grid and applying Select Action
+                from the Mass Action, you will prepare the Compatible Vehicles to be imported to the Parts Compatibility
+                Magento Attribute which is configured in %general_path%.</li></br>
+
+                <li><strong>2)</strong> Besides the manual adding, an ability to save ePID/kType Filters is also available. After you
+                press the Save Filter Button, the specified in the Grid Columns Filter will be saved for future usage.</br></br>
+
+                <strong>Note:</strong> Saving a Filter does not imply its Automatic Application. If you want to apply any of
+                the saved Filters, you should go to the Filters Tab, select the appropriate Filter(s) and apply them
+                by choosing Select Action from the mass action bulk.</li></br>
+
+                <li><strong>3) </strong>Also, you have an Option to Group the appropriate ePIDs/kTypes or Filters. You can do it by
+                selecting certain ePID(s)/kType(s) from the Common Grid and applying Save as a Group Action or by
+                choosing the particular saved Filters under the Filters Tab and also applying Save as a Group
+                Action. The Group of ePID(s)/kType(s) or Filters can be reapplied multiple times without any need
+                to Manually Search for the same  Compatible Vehicles all over again.</li>
+            </ul></br>
+
+            Thus, using these methods lets you Create a set of data which will be further added to the Parts Compatibility
+            Magento Attribute. You can use either Add or Override Option to import the Filtered or Grouped data to
+            the Parts Compatibility Magento Attribute.</br></br>
+
+            <ul style="padding-left: 30px !important;">
+                <li><strong>1)</strong> In case of using Add Option, the prepared ePIDs/kTypes, Filters or Groups Values
+                will be Added to the already present in the Attribute Values. For example, if the Parts Compatibility
+                Magento Attribute contains 5 ePIDs/kTypes Values, the 3 newly selected Values will be added on top of
+                them, and eventually 8 values will be available in the Magento Attribute.</li></br>
+
+                <li><strong>2)</strong> In case of using Override Option, all of the previously present in the Magento
+                Attribute Values will be Overridden, and only the newly selected ePIDs/kTypes, Filters or Groups Values
+                will be applied.</li>
+            </ul>
+        ', Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'General')); ?>
     </div>
 
-    <div id="block_notice_motors_compatibility_generate_attribute_value" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Add Compatible Vehicles'); ?>" style="margin-top: 15px;">
+    <div style="float: right; margin-top: 10px; margin-bottom: 8px;">
+        <?php echo $this->getChildHtml('motor_confirm_btn'); ?>
+    </div>
+</div>
 
-        <?php
-            $idTitle = $this->isCompatibilityTypeEpid() ? 'ePIDs' : 'kTypes';
-        ?>
+<div id="add_custom_motors_record_data_container" <?php if (!$this->wasInstructionShown()) : ?>style="display: none;"<?php endif; ?>>
+
+    <div id="block_notice_motors_generate_attribute_value" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Add Compatible Vehicles'); ?>" style="margin-top: 15px;">
 
         <?php echo Mage::helper('M2ePro')->__('
-        Select Items, compatible with your part and choose appropriate option in the Actions Dropdown:
-        <ul class="list">
-        <li><strong>Overwrite ePIDs in Compatibility Attribute</strong> - replaces Items ePIDs in the Compatibility Attribute chosen in
-        %general_path% with selected ones.</li>
-        <li><strong>Add ePIDs to Compatibility Attribute</strong> - adds selected Items ePIDs to existing ones in Compatibility Attribute
-        chosen in the General Settings.</li>
-        </ul>
-        If you have not found the Compatible Vehicle you need, but you are sure that it is existing and it can be used -
-        you can always add it to a database in two ways:
-        <ul class="list">
-        <li>1. using <strong>Add Custom Compatibility Vehicle</strong> Button at the end of this page to add one value;</li>
-        <li>2. using <strong>Import Tool</strong> in %general_path% to add several values.</li>
-        </ul>',
-        Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'General')
+            In this Block you can <strong>Filter</strong> and <strong>Select</strong> Compatible Vehicles. Also, various
+            Actions may be applied.</br></br>
+
+            The appropriate Vehicles which are compatible with your Parts can be selected and assigned Manually.</br></br>
+            The Compatible Vehicles can also be <strong>Filtered</strong> based on <strong>various Conditions</strong>, e.g.
+            Type, Model, etc. Use the <strong>corresponding Options</strong> available in the Columns of the Grid
+            to Filter the ePID(s)/kType(s).</br></br>
+
+            By pressing the Save Filter Button, you can Save the preselected Filter Settings and reapply them in
+            future if needed. All of the saved Filters can be found under the Filters Tab.</br></br>
+
+            The selected ePID(s)/kType(s) or Filters can be saved as a Group by selecting the appropriate Option in
+            mass actions bulk. The Group of ePID(s)/kType(s) or Filters can be applied <strong>multiple times</strong>.</br></br>
+        ', Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'General')
         ); ?>
 
     </div>
 
-    <div id="generate_attribute_content_container" class="<?php echo Mage::helper('M2ePro/Magento')->isGoEdition() ? '' : 'switcher'; ?>" style="display: none; margin-top: 15px;">
+    <div id="selected_motors_data_container" class="switcher" style="display: none; margin-top: 15px; padding: 5px;">
+
+        <?php
+        $idTitle = $this->isMotorsTypeEpid() ? Mage::helper('M2ePro')->__('ePID(s)') : Mage::helper('M2ePro')->__('kType(s)');
+        ?>
 
         <table cellspacing="0" class="form-list">
             <tbody>
-                <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Selected %identifier_title%', $idTitle) ?>:</label>
-                    </td>
-                    <td class="value" style="width: 100%; padding-right: 10px;">
-                        <input class="left-col-block input-text" style="width: 100%;" name="attribute_content" id="attribute_content" readonly>
-                    </td>
-                </tr>
+            <tr>
+                <td class="label">
+                    <label style="width: 90px;"><?php echo Mage::helper('M2ePro')->__('Selected Items') ?>:</label>
+                </td>
+                <td class="value" style="width: 100%; padding-right: 10px;">
+                    <div id="selected_motors_data" style="width: 640px; float: left;">
+                        <span class="items" style="margin-left: 16%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsHandlerObj.viewSelectedItemPopup()"><span class="count"></span> <?php echo $idTitle ?></a></span>
+                        &nbsp;&nbsp;
+                        <span class="filters" style="margin-left: 20%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsHandlerObj.viewSelectedFilterPopup()"><span class="count"></span> <?php echo Mage::helper('M2ePro')->__('Filter(s)') ?></a></span>
+                        &nbsp;&nbsp;
+                        <span class="groups" style="margin-left: 20%;display: none"><a href="javascript:void(0)" onclick="EbayMotorsHandlerObj.viewSelectedGroupPopup()"><span class="count"></span> <?php echo Mage::helper('M2ePro')->__('Group(s)') ?></a></span>
+                    </div>
+                    <div style="float: right">
+                        <?php echo $this->getChildHtml('motor_add_btn'); ?>
+                        <?php echo $this->getChildHtml('motor_override_btn'); ?>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div id="generate_attribute_content_container" class="switcher" style="display: none; margin-top: 15px;">
+
+        <table cellspacing="0" class="form-list">
+            <tbody>
+            <tr>
+                <td class="label">
+                    <label><?php echo Mage::helper('M2ePro')->__('Selected %identifier_title%', $idTitle) ?>:</label>
+                </td>
+                <td class="value" style="width: 100%; padding-right: 10px;">
+                    <input class="left-col-block input-text" style="width: 100%;" name="attribute_content" id="attribute_content" readonly>
+                </td>
+            </tr>
             </tbody>
         </table>
 
@@ -157,73 +153,70 @@
 
     <div class="hor-scroll">
 
-        <div id="compatibility">
-            <div id="compatibility_grid_container"></div>
+        <div id="motors">
+            <?php echo $this->getChildHtml('motor_add_tabs'); ?>
         </div>
 
     </div>
 
-    <div style="float: right; margin-top: 3px; margin-bottom: 8px;">
-        <?php echo $this->getChildHtml('add_custom_compatibility_record_button'); ?>
+    <div style="float: right; margin-top: 10px; margin-bottom: 8px;">
+        <?php echo $this->getChildHtml('motor_close_btn'); ?>
     </div>
 
-</div>
-<?php endif; ?>
+    <div id="add_custom_motors_record_pop_up_content" style="display: none;">
 
-<?php if (!$this->getRequest()->isXmlHttpRequest()): ?>
-<div id="add_custom_compatibility_record_pop_up_content" style="display: none;">
+        <div style="padding-top: 15px;">
 
-    <div style="padding-top: 15px;">
-        <form id="add_custom_compatibility_record_form" action="<?php echo $this->getUrl('*/*/addCustomCompatibilityRecord'); ?>" method="post" style="min-height: 265px; display: block;">
+            <form id="add_custom_motors_record_form" action="<?php echo $this->getUrl('*/*/addCustomMotorsRecord'); ?>" method="post" style="min-height: 265px; display: block;">
 
-            <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
-            <input name="compatibility_type" value="<?php echo $this->getCompatibilityType(); ?>" type="hidden" />
+                <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+                <input name="motors_type" value="<?php echo $this->getMotorsType(); ?>" type="hidden" />
 
-            <div class="fieldset">
-                <div class="hor-scroll">
+                <div class="fieldset">
+                    <div class="hor-scroll">
 
-                    <table class="form-list" cellspacing="0" cellpadding="0">
+                        <table class="form-list" cellspacing="0" cellpadding="0">
 
-                        <?php foreach($this->getRecordColumns() as $column) : ?>
+                            <?php foreach($this->getRecordColumns() as $column) : ?>
 
-                            <tr id="tr_column_id_<?php echo $column['title']; ?>">
-                                <td style="min-width: 120px; height: 23px;">
-                                    <?php echo $column['title']; ?>:
-                                    <?php if ($column['is_required']) : echo '<span class="required">*</span>'; endif; ?>
-                                </td>
-                                <td>
-                                    <?php if (isset($column['options'])) { ?>
-                                        <select id="<?php echo $column['name']; ?>" name="row[<?php echo $column['name']; ?>]" style="width: 314px;" class="popup-validate-entry <?php if ($column['is_required']) : echo 'required-entry'; endif; ?>" >
-                                            <option style="display: none;"></option>
-                                            <?php foreach ($column['options'] as $optionValue => $optionName) : ?>
-                                                <option value="<?php echo $optionValue; ?>"><?php echo Mage::helper('M2ePro')->__($optionName) ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    <?php } else { ?>
-                                        <input id="<?php echo $column['name']; ?>" name="row[<?php echo $column['name']; ?>]" type="text" style="width: 310px;" class="popup-validate-entry input-text
-                                                                                                                                                             <?php if ($column['is_required']) : echo ' required-entry '; endif; ?>
-                                                                                                                                                             <?php if (isset($column['type']) && $column['type'] == 'numeric') : echo ' validate-digits '; endif; ?>" />
-                                    <?php } ?>
-                                </td>
-                            </tr>
+                                <tr id="tr_column_id_<?php echo $column['title']; ?>">
+                                    <td style="min-width: 120px; height: 23px;">
+                                        <?php echo $column['title']; ?>:
+                                        <?php if ($column['is_required']) : echo '<span class="required">*</span>'; endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if (isset($column['options'])) { ?>
+                                            <select id="<?php echo $column['name']; ?>" name="row[<?php echo $column['name']; ?>]" style="width: 314px;" class="popup-validate-entry <?php if ($column['is_required']) : echo 'required-entry'; endif; ?>" >
+                                                <option style="display: none;"></option>
+                                                <?php foreach ($column['options'] as $optionValue => $optionName) : ?>
+                                                    <option value="<?php echo $optionValue; ?>"><?php echo Mage::helper('M2ePro')->__($optionName) ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        <?php } else { ?>
+                                            <input id="<?php echo $column['name']; ?>" name="row[<?php echo $column['name']; ?>]" type="text" style="width: 310px;" class="popup-validate-entry input-text
+                                                                                                                                                                 <?php if ($column['is_required']) : echo ' required-entry '; endif; ?>
+                                                                                                                                                                 <?php if (isset($column['type']) && $column['type'] == 'numeric') : echo ' validate-digits '; endif; ?>" />
+                                        <?php } ?>
+                                    </td>
+                                </tr>
 
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
 
-                    </table>
+                        </table>
 
+                    </div>
                 </div>
+
+            </form>
+
+            <div style="text-align: right; margin-top: 10px; margin-bottom: 10px;">
+                <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close();">
+                    <?php echo Mage::helper('M2ePro')->__('Cancel'); ?>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <button onclick="Dialog.okCallback()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
             </div>
 
-        </form>
-
-        <div style="text-align: right; margin-top: 10px; margin-bottom: 10px;">
-            <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close();">
-                <?php echo Mage::helper('M2ePro')->__('Cancel'); ?>
-            </a>&nbsp;&nbsp;&nbsp;&nbsp;
-            <button onclick="Dialog.okCallback()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
         </div>
-
     </div>
 
 </div>
-<?php endif; ?>

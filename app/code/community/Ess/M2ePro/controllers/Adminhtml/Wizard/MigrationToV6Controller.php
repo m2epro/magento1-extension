@@ -1,17 +1,19 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
     extends Ess_M2ePro_Controller_Adminhtml_WizardController
 {
-    //#############################################
+    //########################################
 
     protected function getNick()
     {
-        return Ess_M2ePro_Helper_Module::WIZARD_MIGRATION_NICK;
+        return 'migrationToV6';
     }
 
     protected function getMenuRootNodeNick()
@@ -32,7 +34,7 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
         return Mage::helper('M2ePro/View_Common')->getMenuRootNodeLabel();
     }
 
-    //#############################################
+    //########################################
 
     protected function getCustomViewNick()
     {
@@ -48,7 +50,7 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
         return Mage::getSingleton('admin/session')->isAllowed($menuNickTemp);
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -71,7 +73,7 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
 
     public function installationAction()
     {
-        Mage::getSingleton('M2ePro/Wizard_MigrationToV6')->removeEmptySteps();
+        Mage::helper('M2ePro/Module_Wizard')->getWizard('migrationToV6')->removeEmptySteps();
 
         if ($this->isFinished() || $this->isNotStarted()) {
             return $this->_redirect('*/*/index');
@@ -105,7 +107,7 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
         !empty($data['buy']) && $this->saveBuySellingFormatData($data['buy']);
     }
 
-    //#############################################
+    //########################################
 
     private function renderSimpleStep()
     {
@@ -117,7 +119,7 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
                     ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function introAction()
     {
@@ -134,7 +136,7 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
         $this->renderSimpleStep();
     }
 
-    //#############################################
+    //########################################
 
     protected function saveEbaySellingFormatData($data)
     {
@@ -178,7 +180,7 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
         $this->saveSellingFormatData($data, $coefficientIds, 'm2epro_buy_template_selling_format');
     }
 
-    // ------------------------------------------
+    // ---------------------------------------
 
     protected function saveSellingFormatData($data, $coefficientIds, $tableName)
     {
@@ -203,5 +205,5 @@ class Ess_M2ePro_Adminhtml_Wizard_MigrationToV6Controller
         }
     }
 
-    //#############################################
+    //########################################
 }

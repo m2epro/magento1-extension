@@ -1,6 +1,6 @@
 ListingMovingHandler = Class.create(ActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -10,7 +10,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     run: function()
     {
@@ -19,7 +19,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(gridHtml,popup_title)
     {
@@ -40,7 +40,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
         $('modal_dialog_message').insert(gridHtml).style.paddingTop = '20px';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getGridHtml: function(selectedProducts)
     {
@@ -100,7 +100,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     tryToSubmit: function(listingId)
     {
@@ -151,7 +151,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     submit: function(listingId)
     {
@@ -189,7 +189,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     offerListingCreation: function(accountId,marketplaceId,callback) {
 
@@ -210,7 +210,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     startListingCreation: function(url, response) {
         var self = this;
@@ -227,5 +227,5 @@ ListingMovingHandler = Class.create(ActionHandler, {
         }, 1000);
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

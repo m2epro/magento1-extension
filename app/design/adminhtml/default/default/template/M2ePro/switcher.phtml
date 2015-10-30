@@ -1,12 +1,16 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_Switcher $this */
+?>
+
 <?php if ($items = $this->getItems()) { ?>
 
-    <p class="<?php echo Mage::helper('M2ePro/Magento')->isGoEdition() ? '' : 'switcher'; ?>">
+    <p class="switcher">
 
         <label for="<?php echo $this->getParamName(); ?>_switcher"><?php echo $this->getLabel(); ?>:</label>
 
         <select id="<?php echo $this->getParamName(); ?>_switcher" name="<?php echo $this->getParamName(); ?>_switcher" onchange="return <?php echo $this->getSwitchCallback() ?>(this);">
             <?php if ($this->hasDefaultOption()) { ?>
-                <option value=""><?php echo Mage::helper('M2ePro')->escapeHtml($this->getDefaultOptionName()); ?></option>
+                <option value="<?php echo $this->getDefaultOptionValue(); ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getDefaultOptionName()); ?></option>
             <?php } ?>
 
             <?php foreach ($items as $item) { ?>
@@ -32,10 +36,15 @@
 
         <?php echo $this->getSwitchCallback() ?> = function(obj)
         {
-            var switchUrl = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getSwitchUrl()); ?>';
+            var switchUrl        = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getSwitchUrl()); ?>';
+            var paramName        = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getParamName()); ?>';
             var paramPlaceHolder = '<?php echo Mage::helper('M2ePro')->escapeJs($this->getParamPlaceHolder()); ?>';
 
-            switchUrl = switchUrl.replace(paramPlaceHolder, obj.value);
+            if (obj.value == '<?php echo $this->getDefaultOptionValue(); ?>') {
+                switchUrl = switchUrl.replace(paramName +'/'+ paramPlaceHolder +'/', '');
+            } else {
+                switchUrl = switchUrl.replace(paramPlaceHolder, obj.value);
+            }
 
             <?php if ($this->getUseConfirm()) { ?>
 

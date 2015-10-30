@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Grid_Column_Filter_AttributesOptions
     extends Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Select
 {
-    // ####################################
+    //########################################
 
     public function getHtml()
     {
@@ -13,7 +19,7 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Filter_AttributesOptions
                         '<select name="'.$this->_getHtmlName().'" id="'.$this->_getHtmlId() .
                         '" class="no-changes">';
 
-        foreach ($this->_getOptions() as $option){
+        foreach ($this->_getOptions() as $option) {
             $html .= $this->_renderOption($option, null);
         }
 
@@ -21,10 +27,10 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Filter_AttributesOptions
                     '<div class="attributes-options-filter-values">';
 
         $values = $this->getValue();
-        if(is_array($values)) {
+        if (is_array($values)) {
             $i = 0;
-            foreach ($values as $option){
-                if(is_array($option) && isset($option['value'])) {
+            foreach ($values as $option) {
+                if (is_array($option) && isset($option['value'])) {
                     $i++;
                     $html .= $this->renderAttrValue($i, $option);
                 }
@@ -78,5 +84,5 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Filter_AttributesOptions
         return $conditions;
     }
 
-    // ####################################
+    //########################################
 }

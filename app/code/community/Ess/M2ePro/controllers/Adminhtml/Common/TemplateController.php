@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_TemplateController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -28,7 +30,7 @@ class Ess_M2ePro_Adminhtml_Common_TemplateController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -53,7 +55,7 @@ class Ess_M2ePro_Adminhtml_Common_TemplateController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function newAction()
     {
@@ -78,7 +80,7 @@ class Ess_M2ePro_Adminhtml_Common_TemplateController
         return $this->_redirect("*/adminhtml_common_{$channel}_template_{$type}/edit");
     }
 
-    //#############################################
+    //########################################
 
     public function editAction()
     {
@@ -156,7 +158,7 @@ class Ess_M2ePro_Adminhtml_Common_TemplateController
         ));
     }
 
-    //#############################################
+    //########################################
 
     private function prepareTemplateType($type)
     {
@@ -164,5 +166,5 @@ class Ess_M2ePro_Adminhtml_Common_TemplateController
             'SellingFormat' : ucfirst($type);
     }
 
-    //#############################################
+    //########################################
 }

@@ -1,29 +1,31 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('orderViewLogGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setFilterVisibility(false);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
 
         /** @var $order Ess_M2ePro_Model_Order */
         $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
@@ -48,8 +50,8 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
             'type'      => 'text',
             'sortable'  => false,
             'filter_index' => 'id',
-            'index'     => 'message',
-            'frame_callback' => array($this, 'callbackColumnMessage')
+            'index'     => 'description',
+            'frame_callback' => array($this, 'callbackColumnDescription')
         ));
 
         $this->addColumn('type', array(
@@ -73,7 +75,6 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
                 Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION => Mage::helper('M2ePro')->__('Automatic'),
                 Ess_M2ePro_Helper_Data::INITIATOR_USER      => Mage::helper('M2ePro')->__('Manual'),
             ),
-            'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnInitiator')
         ));
 
@@ -89,11 +90,11 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
         return parent::_prepareColumns();
     }
 
-    //##############################################################
+    //########################################
 
-    public function callbackColumnMessage($value, $row, $column, $isExport)
+    public function callbackColumnDescription($value, $row, $column, $isExport)
     {
-        return Mage::helper('M2ePro/View')->getModifiedLogMessage($row->getData('message'));
+        return Mage::helper('M2ePro/View')->getModifiedLogMessage($row->getData('description'));
     }
 
     public function callbackColumnType($value, $row, $column, $isExport)
@@ -137,7 +138,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
         return $message;
     }
 
-    //##############################################################
+    //########################################
 
     public function getRowUrl($row)
     {
@@ -149,5 +150,5 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
         return $this->getUrl('*/adminhtml_order/viewLogGrid', array('_current' => true));
     }
 
-    // ####################################
+    //########################################
 }

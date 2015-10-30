@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
@@ -9,7 +11,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
 {
     const LOCK_ITEM_PREFIX = 'synchronization_buy_other_listings_update';
 
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -21,7 +23,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
         return 'Update';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -30,10 +32,10 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
 
     protected function getPercentsEnd()
     {
-        return 90;
+        return 100;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function intervalIsEnabled()
     {
@@ -68,7 +70,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
         return strtotime($synchronizationStartTime) > strtotime($updateListingsProductsLastTime);
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -98,7 +100,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
         }
     }
 
-    //####################################
+    //########################################
 
     private function processAccountInventory(Ess_M2ePro_Model_Account $account)
     {
@@ -132,7 +134,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
         $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
     }
 
-    //####################################
+    //########################################
 
     private function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
@@ -143,5 +145,5 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Update
         return $lockItem->isExist();
     }
 
-    //####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_OrderItem_Dispatcher extends Mage_Core_Model_Abstract
@@ -12,7 +14,7 @@ class Ess_M2ePro_Model_Connector_Ebay_OrderItem_Dispatcher extends Mage_Core_Mod
     const ACTION_ADD_DISPUTE   = 1;
     const ACTION_UPDATE_STATUS = 2;
 
-    // ########################################
+    //########################################
 
     public function process($action, $items, array $params = array())
     {
@@ -35,7 +37,7 @@ class Ess_M2ePro_Model_Connector_Ebay_OrderItem_Dispatcher extends Mage_Core_Mod
         return $this->processItems($items, $connector, $params);
     }
 
-    // ########################################
+    //########################################
 
     protected function processItems(array $items, $connectorName, array $params = array())
     {
@@ -69,7 +71,7 @@ class Ess_M2ePro_Model_Connector_Ebay_OrderItem_Dispatcher extends Mage_Core_Mod
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function prepareItems($items)
     {
@@ -88,5 +90,5 @@ class Ess_M2ePro_Model_Connector_Ebay_OrderItem_Dispatcher extends Mage_Core_Mod
         return $preparedItems;
     }
 
-    // ########################################
+    //########################################
 }

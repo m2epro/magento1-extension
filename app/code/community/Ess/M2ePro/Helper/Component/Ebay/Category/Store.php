@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_Abstract
 {
-    // ########################################
+    //########################################
 
     public function getPath($categoryId, $accountId, $delimiter = ' > ')
     {
@@ -43,7 +45,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         return implode($delimiter, $pathData);
     }
 
-    // ########################################
+    //########################################
 
     public function getSameTemplatesData($ids)
     {
@@ -62,7 +64,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         $eascTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_account_store_category');
 
         // prepare category main select
-        // -------------------------------------------
+        // ---------------------------------------
         $primarySelect = $connRead->select();
         $primarySelect->from(
                 array('primary_table' => $etocTable)
@@ -74,10 +76,10 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
             ))
             ->where('store_category_main_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
             ->group(array('category_id', 'account_id'));
-        // -------------------------------------------
+        // ---------------------------------------
 
         // prepare category secondary select
-        // -------------------------------------------
+        // ---------------------------------------
         $secondarySelect = $connRead->select();
         $secondarySelect->from(
                 array('secondary_table' => $etocTable)
@@ -89,7 +91,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
             ))
             ->where('store_category_secondary_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
             ->group(array('category_id', 'account_id'));
-        // -------------------------------------------
+        // ---------------------------------------
 
         $unionSelect = $connRead->select();
         $unionSelect->union(array(
@@ -110,5 +112,5 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         return $connRead->query($mainSelect)->fetchColumn() !== false;
     }
 
-    // ########################################
+    //########################################
 }

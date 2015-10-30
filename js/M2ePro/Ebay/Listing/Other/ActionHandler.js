@@ -1,10 +1,10 @@
 EbayListingOtherActionHandler = Class.create(ActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     sendPartsResponses: [],
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -14,7 +14,7 @@ EbayListingOtherActionHandler = Class.create(ActionHandler, {
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     startActions: function(title,url,selectedProductsParts)
     {
@@ -201,7 +201,7 @@ EbayListingOtherActionHandler = Class.create(ActionHandler, {
         return;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     relistAction: function()
     {
@@ -242,5 +242,5 @@ EbayListingOtherActionHandler = Class.create(ActionHandler, {
         );
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

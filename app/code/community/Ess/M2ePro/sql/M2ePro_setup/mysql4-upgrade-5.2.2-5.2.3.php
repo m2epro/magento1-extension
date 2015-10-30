@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_amazon_account');
 $tempAccounts = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -36,8 +36,8 @@ foreach ($tempAccounts as $account) {
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

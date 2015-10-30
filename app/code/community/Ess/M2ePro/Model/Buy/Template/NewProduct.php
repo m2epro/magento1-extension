@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Component_Abstract
@@ -11,7 +13,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
      */
     private $newProductCoreTemplateModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -19,8 +21,11 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
         $this->_init('M2ePro/Buy_Template_NewProduct');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     static public function isAllowedUpcExemption()
     {
         return (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
@@ -28,8 +33,12 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -73,7 +82,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Buy_Template_NewProduct_Core
@@ -112,7 +121,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
     public function getCategoryPath()
     {
@@ -129,8 +138,12 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
         return $this->getData('category_id');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $listingProductIds
+     * @return bool
+     */
     public function map($listingProductIds)
     {
         if (count($listingProductIds) < 0) {
@@ -143,7 +156,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
 
             $generalId = $listingProductInstance->getChildObject()->getData('general_id');
 
-            if (!is_null($generalId)){
+            if (!is_null($generalId)) {
                 continue;
             }
 
@@ -153,7 +166,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -167,5 +180,5 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct extends Ess_M2ePro_Model_Componen
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

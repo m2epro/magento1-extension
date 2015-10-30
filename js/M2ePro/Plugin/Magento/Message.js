@@ -1,11 +1,11 @@
 MagentoMessage = Class.create();
 MagentoMessage.prototype = {
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     show: function()
     {
@@ -17,7 +17,7 @@ MagentoMessage.prototype = {
         $('messages').hide();
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     add: function(message, type, id)
     {
@@ -61,7 +61,7 @@ MagentoMessage.prototype = {
         this.add(message,'error',id);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     remove: function(type, id)
     {
@@ -108,7 +108,7 @@ MagentoMessage.prototype = {
         this.remove('error',id);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     clear: function(type)
     {
@@ -151,7 +151,7 @@ MagentoMessage.prototype = {
         this.clear('success');
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     prepareType: function(type)
     {
@@ -174,5 +174,5 @@ MagentoMessage.prototype = {
         }
     }
 
-    // --------------------------------
-}
+    // ---------------------------------------
+};

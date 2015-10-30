@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Order_Shipment_Handler
 {
-    // ##########################################################
+    //########################################
 
     public function handle(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
     {
@@ -43,7 +45,7 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
         return $succeeded ? self::HANDLE_RESULT_SUCCEEDED : self::HANDLE_RESULT_FAILED;
     }
 
-    // ##########################################################
+    //########################################
 
     private function processOrder(Ess_M2ePro_Model_Order $order, array $trackingDetails = array())
     {
@@ -66,19 +68,16 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
         return $item->getChildObject()->updateShippingStatus($trackingDetails);
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function createChange(Ess_M2ePro_Model_Order $order, array $params)
     {
-        // save change
-        //------------------------------
         $orderId   = $order->getId();
         $action    = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
         $creator   = Ess_M2ePro_Model_Order_Change::CREATOR_TYPE_OBSERVER;
         $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
 
         Mage::getModel('M2ePro/Order_Change')->create($orderId, $action, $creator, $component, $params);
-        //------------------------------
     }
 
     private function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
@@ -160,5 +159,5 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
         return $resultItems;
     }
 
-    // ##########################################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_listing_product`
@@ -20,7 +20,7 @@ $connection = $installer->getConnection();
     ADD INDEX `online_sale_price` (`online_sale_price`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -33,7 +33,7 @@ if (!isset($tempTableIndexList[strtoupper('online_sale_price')])) {
     $connection->addKey($tempTable, 'online_sale_price', 'online_sale_price');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product_variation');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -46,7 +46,7 @@ if (!isset($tempTableIndexList[strtoupper('online_sale_price')])) {
     $connection->addKey($tempTable, 'online_sale_price', 'online_sale_price');
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_dictionary_specific`
@@ -68,7 +68,7 @@ if (!isset($tempTableIndexList[strtoupper('online_sale_price')])) {
     ADD COLUMN `recommended_value` VARCHAR(255) DEFAULT NULL AFTER `mode`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_specific');
 
@@ -80,7 +80,7 @@ if ($connection->tableColumnExists($tempTable, 'data_definition') === false) {
     $connection->addColumn($tempTable, 'data_definition', 'TEXT NULL DEFAULT NULL AFTER `params`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_category_description');
 
@@ -143,7 +143,7 @@ if ($connection->tableColumnExists($tempTable, 'gallery_images_attribute') === f
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_category_specific');
 
@@ -151,7 +151,7 @@ if ($connection->tableColumnExists($tempTable, 'recommended_value') === false) {
     $connection->addColumn($tempTable, 'recommended_value', 'VARCHAR(255) DEFAULT NULL AFTER `mode`');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -163,7 +163,7 @@ AND   `key` = 'mode';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -216,7 +216,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -236,8 +236,8 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

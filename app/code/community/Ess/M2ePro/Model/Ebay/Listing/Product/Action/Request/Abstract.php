@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request
 {
-    // ########################################
+    //########################################
 
     protected function searchNotFoundAttributes()
     {
@@ -27,7 +29,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract
         return false;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     protected function addNotFoundAttributesMessages($title, array $attributes)
     {
@@ -38,8 +40,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract
                                        ->getAttributeLabel($attribute,
                                                            $this->getListing()->getStoreId());
         }
-    // M2ePro_TRANSLATIONS
-    // %attribute_title%: Attribute(s) %attributes% were not found in this Product and its value was not sent.
+        // M2ePro_TRANSLATIONS
+        // %attribute_title%: Attribute(s) %attributes% were not found in this Product and its value was not sent.
         $this->addWarningMessage(
             Mage::helper('M2ePro')->__(
                 '%attribute_title%: Attribute(s) %attributes% were not found'.
@@ -49,5 +51,5 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 }

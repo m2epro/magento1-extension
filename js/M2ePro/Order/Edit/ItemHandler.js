@@ -1,7 +1,7 @@
 OrderEditItemHandler = Class.create();
 OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -10,7 +10,7 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
         this.orderItemId = null;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(title, content, customConfig)
     {
@@ -143,7 +143,7 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     assignProduct: function(id, productSku)
     {
@@ -183,7 +183,7 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     assignProductDetails: function()
     {
@@ -205,7 +205,7 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     unassignProduct: function(gridId, orderItemId)
     {
@@ -232,5 +232,5 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

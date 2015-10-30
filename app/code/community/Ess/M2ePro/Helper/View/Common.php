@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
@@ -14,14 +16,14 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
     const WIZARD_INSTALLATION_NICK = 'installationCommon';
     const MENU_ROOT_NODE_NICK = 'm2epro_common';
 
-    // ########################################
+    //########################################
 
     public function getTitle()
     {
         return Mage::helper('M2ePro')->__('Sell On Multi-Channels');
     }
 
-    // ########################################
+    //########################################
 
     public function getMenuRootNodeLabel()
     {
@@ -34,7 +36,7 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
         return array_shift($activeComponents);
     }
 
-    // ########################################
+    //########################################
 
     public function getActiveComponentsLabels()
     {
@@ -51,7 +53,7 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
         return $labels;
     }
 
-    // ########################################
+    //########################################
 
     public function getPageNavigationPath($pathNick, $tabName = NULL, $channel = NULL, $additionalEnd = NULL,
                                           $params = array())
@@ -124,7 +126,7 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
         return join($resultPath, ' > ');
     }
 
-    // ########################################
+    //########################################
 
     public function getWizardInstallationNick()
     {
@@ -138,7 +140,7 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getAutocompleteMaxItems()
     {
@@ -147,7 +149,7 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
         return $temp <= 0 ? 100 : $temp;
     }
 
-    // ########################################
+    //########################################
 
     public function prepareMenu(array $menuArray)
     {
@@ -164,7 +166,7 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
         !empty($tempTitle) && $menuArray[self::MENU_ROOT_NODE_NICK]['label'] = $tempTitle;
 
         // Add wizard menu item
-        //---------------------------------
+        // ---------------------------------------
         /* @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
@@ -182,12 +184,12 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
 
             return $menuArray;
         }
-        //---------------------------------
+        // ---------------------------------------
 
         return $menuArray;
     }
 
-    // ########################################
+    //########################################
 
     public function is3rdPartyShouldBeShown($component)
     {
@@ -235,5 +237,5 @@ class Ess_M2ePro_Helper_View_Common extends Mage_Core_Helper_Abstract
         return $result;
     }
 
-    // ########################################
+    //########################################
 }

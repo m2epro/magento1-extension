@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -47,7 +47,7 @@ DELETE FROM `m2epro_product_change`;
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_category`
@@ -89,7 +89,7 @@ SQL
     ADD INDEX `customer_group_id` (`customer_group_id`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -110,7 +110,7 @@ if (!isset($tempTableIndexList[strtoupper('template_description_id')])) {
     $connection->addKey($tempTable, 'template_description_id', 'template_description_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_description');
 
@@ -134,7 +134,7 @@ if ($connection->tableColumnExists($tempTable, 'manufacturer_part_number_templat
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_other_log');
 
@@ -142,7 +142,7 @@ if ($connection->tableColumnExists($tempTable, 'identifier') === false) {
     $connection->addColumn($tempTable, 'identifier', 'VARCHAR(32) DEFAULT NULL after `listing_other_id`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_description');
 
@@ -174,7 +174,7 @@ SQL
 );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -188,7 +188,7 @@ if (!isset($tempTableIndexList[strtoupper('is_m2epro_listed_item')])) {
     $connection->addKey($tempTable, 'is_m2epro_listed_item', 'is_m2epro_listed_item');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_general');
 
@@ -197,7 +197,7 @@ if ($connection->tableColumnExists($tempTable, 'motors_specifics_attribute') ===
         'VARCHAR(255) DEFAULT NULL AFTER `condition_attribute`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_product_change');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -210,7 +210,7 @@ if (!isset($tempTableIndexList[strtoupper('store_id')])) {
     $connection->addKey($tempTable, 'store_id', 'store_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -224,7 +224,7 @@ if (!isset($tempTableIndexList[strtoupper('customer_group_id')])) {
     $connection->addKey($tempTable, 'customer_group_id', 'customer_group_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -238,7 +238,7 @@ if (!isset($tempTableIndexList[strtoupper('customer_group_id')])) {
     $connection->addKey($tempTable, 'customer_group_id', 'customer_group_id');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -267,7 +267,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -298,7 +298,7 @@ AND `key` = 'baseurl';
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_amazon_category');
 $stmt = $connection->query("SELECT COUNT(*) FROM `{$tempTable}`");
@@ -320,7 +320,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_amazon_account');
 $tempAccounts = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -359,7 +359,7 @@ foreach ($tempAccounts as $account) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_account');
 $tempAccounts = $connection->query("SELECT * FROM `{$tempTable}`")->fetchAll();
@@ -398,7 +398,7 @@ foreach ($tempAccounts as $account) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempStatus = Mage::registry('M2EPRO_IS_INSTALLATION') === true ? '3' : '0';
 
@@ -417,8 +417,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

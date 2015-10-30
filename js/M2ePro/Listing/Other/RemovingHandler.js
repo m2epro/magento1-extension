@@ -1,6 +1,6 @@
 ListingOtherRemovingHandler = Class.create(ActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -10,7 +10,7 @@ ListingOtherRemovingHandler = Class.create(ActionHandler, {
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     run: function()
     {
@@ -42,5 +42,5 @@ ListingOtherRemovingHandler = Class.create(ActionHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

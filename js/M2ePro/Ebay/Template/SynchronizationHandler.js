@@ -1,7 +1,7 @@
 EbayTemplateSynchronizationHandler = Class.create();
 EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -18,7 +18,7 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
             return true;
         });
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-conditions-between', M2ePro.translator.translate('Must be greater than "Min".'), function(value, el) {
 
             var minValue = $(el.id.replace('_max','')).value;
@@ -29,9 +29,9 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
 
             return parseInt(value) > parseInt(minValue);
         });
-        //-----------------
+        // ---------------------------------------
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-stop-relist-conditions-product-status', M2ePro.translator.translate('Inconsistent Settings in Relist and Stop Rules.'), function(value, el) {
 
             if (EbayTemplateSynchronizationHandlerObj.isRelistModeDisabled()) {
@@ -102,9 +102,9 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
 
             return true;
         });
-        //-----------------
+        // ---------------------------------------
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-schedule-interval-date', M2ePro.translator.translate('Wrong value.'), function(value, el) {
 
             if (!el.up('tr').visible()) {
@@ -147,9 +147,9 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
 
             return countUnselectedControls == 0;
         });
-        //-----------------
+        // ---------------------------------------
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-schedule-wrong-interval-date', M2ePro.translator.translate('Must be greater than "Active From" Date.'), function(value, el) {
 
             if (!el.up('tr').visible()) {
@@ -178,10 +178,10 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
 
             return (toTime - fromTime) > 0;
         });
-        //-----------------
+        // ---------------------------------------
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     isRelistModeDisabled: function()
     {
@@ -193,14 +193,14 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         return $('schedule_mode').value == 1;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getNavigationTabName: function(element)
     {
         return $('ebay_template_synchronization_edit_form_navigation_bar_' + element.id.split('_').shift());
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setVirtualTabsAsInactive: function()
     {
@@ -242,7 +242,7 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     listMode_change: function()
     {
@@ -280,7 +280,7 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     reviseQty_change: function()
     {
@@ -345,7 +345,7 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         $('revise_update_qty_max_applied_value_mode').simulate('change');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     revisePrice_change: function()
     {
@@ -411,7 +411,7 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         $('revise_update_price_max_allowed_deviation_mode').simulate('change');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     relistMode_change: function()
     {
@@ -453,7 +453,7 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     stopQty_change: function()
     {
@@ -482,7 +482,7 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     scheduleModeChange: function()
     {
@@ -530,5 +530,5 @@ EbayTemplateSynchronizationHandler.prototype = Object.extend(new CommonHandler()
         $(inputId).value =  hours + ':' + minutes + ' ' + ampm;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

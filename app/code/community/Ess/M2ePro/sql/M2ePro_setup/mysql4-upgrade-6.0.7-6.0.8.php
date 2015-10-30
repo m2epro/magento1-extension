@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_order`
@@ -21,7 +21,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `global_shipping_program` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0 AFTER `international_trade`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_order');
 
@@ -33,7 +33,7 @@ if ($connection->tableColumnExists($tempTable, 'global_shipping_details') === fa
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 
@@ -45,7 +45,7 @@ if ($connection->tableColumnExists($tempTable, 'is_global_shipping_program') ===
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -57,7 +57,7 @@ if ($connection->tableColumnExists($tempTable, 'global_shipping_program') === fa
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -68,8 +68,8 @@ WHERE `marketplace_id` = '1';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

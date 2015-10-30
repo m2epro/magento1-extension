@@ -1,7 +1,7 @@
 DropDown = Class.create();
 DropDown.prototype = {
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -10,7 +10,7 @@ DropDown.prototype = {
         }.bind(this));
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     observe: function()
     {
@@ -20,7 +20,7 @@ DropDown.prototype = {
         });
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     prepare: function(node)
     {
@@ -58,7 +58,7 @@ DropDown.prototype = {
         $(realNode).observe('click', DropDownObj.toggleItems);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     toggleItems: function(event)
     {
@@ -101,5 +101,5 @@ DropDown.prototype = {
         $(document).stopObserving('click', DropDownObj.hideItems);
     }
 
-    // --------------------------------
-}
+    // ---------------------------------------
+};

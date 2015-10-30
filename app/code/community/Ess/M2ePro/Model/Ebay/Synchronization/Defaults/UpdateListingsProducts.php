@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProducts
@@ -11,41 +13,48 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
     const EBAY_STATUS_ENDED = 'Ended';
     const EBAY_STATUS_COMPLETED = 'Completed';
 
-    private $sinceTime = NULL;
-    private $toTime = NULL;
-
     private $logsActionId = NULL;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/update_listings_products/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Update Listings Products';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 20;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 80;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
-        $this->initSinceTime();
-
         $accounts = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account')->getItems();
 
         if (count($accounts) <= 0) {
@@ -85,15 +94,26 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
 
             $iteration++;
         }
-
-        $this->updateSinceTime();
     }
 
-    // ----------------------------------
+    // ---------------------------------------
 
     private function processAccount(Ess_M2ePro_Model_Account $account)
     {
-        foreach ($this->getChangesByAccount($account) as $change) {
+        $sinceTime = $this->prepareSinceTime($account->getData('defaults_last_synchronization'));
+        $changesByAccount = $this->getChangesByAccount($account, $sinceTime);
+
+        if (!isset($changesByAccount['items']) || !isset($changesByAccount['to_time'])) {
+            return;
+        }
+
+        $account->getChildObject()->setData('defaults_last_synchronization', $changesByAccount['to_time'])->save();
+
+        Mage::helper('M2ePro/Data_Cache_Session')->setValue(
+            'item_get_changes_data_' . $account->getId(), $changesByAccount
+        );
+
+        foreach ($changesByAccount['items'] as $change) {
 
             /* @var $listingProduct Ess_M2ePro_Model_Listing_Product */
 
@@ -184,18 +204,18 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         }
     }
 
-    //####################################
+    //########################################
 
-    private function getChangesByAccount(Ess_M2ePro_Model_Account $account)
+    private function getChangesByAccount(Ess_M2ePro_Model_Account $account, $sinceTime)
     {
-        $nextSinceTime = new DateTime($this->getSinceTime(), new DateTimeZone('UTC'));
+        $nextSinceTime = new DateTime($sinceTime, new DateTimeZone('UTC'));
 
-        // from stored value
-        $response = $this->receiveFromEbay($account, array('since_time' => $nextSinceTime->format('Y-m-d H:i:s')));
+        $response = $this->receiveChangesFromEbay(
+            $account, array('since_time' => $nextSinceTime->format('Y-m-d H:i:s'))
+        );
 
         if ($response) {
-            $this->toTime = (string)$response['to_time'];
-            return (array)$response['items'];
+            return (array)$response;
         }
 
         $previousSinceTime = $nextSinceTime;
@@ -206,11 +226,12 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         if ($previousSinceTime->format('U') < $nextSinceTime->format('U')) {
 
             // from day behind now
-            $response = $this->receiveFromEbay($account, array('since_time' => $nextSinceTime->format('Y-m-d H:i:s')));
+            $response = $this->receiveChangesFromEbay(
+                $account, array('since_time' => $nextSinceTime->format('Y-m-d H:i:s'))
+            );
 
             if ($response) {
-                $this->toTime = (string)$response['to_time'];
-                return (array)$response['items'];
+                return (array)$response;
             }
 
             $previousSinceTime = $nextSinceTime;
@@ -221,18 +242,19 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         if ($previousSinceTime->format('U') < $nextSinceTime->format('U')) {
 
             // from now
-            $response = $this->receiveFromEbay($account, array('since_time' => $nextSinceTime->format('Y-m-d H:i:s')));
+            $response = $this->receiveChangesFromEbay(
+                $account, array('since_time' => $nextSinceTime->format('Y-m-d H:i:s'))
+            );
 
             if ($response) {
-                $this->toTime = (string)$response['to_time'];
-                return (array)$response['items'];
+                return (array)$response;
             }
         }
 
         return array();
     }
 
-    private function receiveFromEbay(Ess_M2ePro_Model_Account $account, array $paramsConnector = array())
+    private function receiveChangesFromEbay(Ess_M2ePro_Model_Account $account, array $paramsConnector = array())
     {
         $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector('item','get','changes',
@@ -272,7 +294,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         }
     }
 
-    //####################################
+    //########################################
 
     private function getProductPriceChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
     {
@@ -348,7 +370,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         );
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     private function getProductStatusChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
     {
@@ -409,7 +431,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         return $data;
     }
 
-    //####################################
+    //########################################
 
     private function getVariationsSnapshot(array $variations)
     {
@@ -461,46 +483,22 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         return true;
     }
 
-    //####################################
+    //########################################
 
-    private function initSinceTime()
+    private function prepareSinceTime($sinceTime)
     {
-        $sinceTime = $this->getSinceTime();
-
         $minTime = new DateTime('now', new DateTimeZone('UTC'));
         $minTime->modify("-1 month");
 
         if (empty($sinceTime) || strtotime($sinceTime) < (int)$minTime->format('U')) {
-
             $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
-            $sinceTime->modify("-10 days");
             $sinceTime = $sinceTime->format('Y-m-d H:i:s');
-
-            $this->setSinceTime($sinceTime);
         }
 
-        $this->sinceTime = $sinceTime;
-        $this->toTime = $sinceTime;
+        return $sinceTime;
     }
 
-    private function updateSinceTime()
-    {
-        $this->setSinceTime($this->toTime);
-    }
-
-    // ----------------------------------
-
-    private function getSinceTime()
-    {
-        return $this->getConfigValue($this->getFullSettingsPath(), 'since_time');
-    }
-
-    private function setSinceTime($time)
-    {
-        $this->setConfigValue($this->getFullSettingsPath(), 'since_time', $time);
-    }
-
-    //####################################
+    // ---------------------------------------
 
     private function getLogsActionId()
     {
@@ -535,7 +533,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         return $result;
     }
 
-    //####################################
+    //########################################
 
     private function logReportChange(Ess_M2ePro_Model_Listing_Product $listingProduct, $logMessage)
     {
@@ -559,5 +557,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         );
     }
 
-    //####################################
+    //########################################
 }

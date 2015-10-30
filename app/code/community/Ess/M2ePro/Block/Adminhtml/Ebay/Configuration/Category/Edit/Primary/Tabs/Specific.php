@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs_Specific
     extends Mage_Adminhtml_Block_Widget
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayConfigurationCategoryEditPrimaryTabsSpecific');
         $this->setTemplate('M2ePro/ebay/configuration/category/primary/specific.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -75,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs_S
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     private function createSpecificsBlock($specifics, $uniqueId)
     {
@@ -95,7 +97,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs_S
         return $specificBlock;
     }
 
-    // ------------------------------------------
+    // ---------------------------------------
 
     private function getSpecificsSets()
     {
@@ -138,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs_S
         return $specificsSets;
     }
 
-    // ########################################
+    //########################################
 
     public function specificsSetsSortCallback($first, $second)
     {
@@ -149,5 +151,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs_S
         return ($first['create_date'] > $second['create_date']) ? -1 : 1;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,7 @@
 EbayTemplateSellingFormatHandler = Class.create();
 EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -86,22 +86,14 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     simple_mode_disallowed_hide: function()
     {
         $$('#template_selling_format_data_container .simple_mode_disallowed').invoke('hide');
     },
 
-    //----------------------------------
-
-    updateHiddenValue: function(elementMode, elementHidden)
-    {
-        var value = elementMode.options[elementMode.selectedIndex].getAttribute('value_hack');
-        elementHidden.value = value;
-    },
-
-    //----------------------------------
+    // ---------------------------------------
 
     isSimpleMode: function()
     {
@@ -123,7 +115,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         return M2ePro.formData.isStpAdvancedEnabled;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     listing_type_change: function(event)
     {
@@ -176,6 +168,11 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         } else {
             outOfStockControlMode.value = 0;
         }
+    },
+
+    duration_attribute_change: function()
+    {
+        EbayTemplateSellingFormatHandlerObj.updateHiddenValue(this, $('listing_duration_attribute_value'));
     },
 
     updateQtyMode: function()
@@ -357,7 +354,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     qty_mode_change: function()
     {
@@ -417,7 +414,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     taxCategoryChange: function()
     {
@@ -437,7 +434,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     fixed_price_mode_change: function()
     {
@@ -529,7 +526,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
             percentSpan         = $(this.id.replace('mode','') + 'percent_span'),
             examplesContainer   = $(this.id.replace('coefficient_mode','') + 'example_container');
 
-        //-----------------------------
+        // ---------------------------------------
 
         coefficientInputDiv.show();
         examplesContainer.show();
@@ -538,9 +535,9 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
             coefficientInputDiv.hide();
             examplesContainer.hide();
         }
-        //-----------------------------
+        // ---------------------------------------
 
-        //-----------------------------
+        // ---------------------------------------
         signSpan.innerHTML    = '';
         percentSpan.innerHTML = '';
         $$('.' + this.id.replace('coefficient_mode','') + 'example').invoke('hide');
@@ -578,7 +575,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
 
             $(this.id.replace('coefficient_mode','') + 'example_percentage_decrease').show();
         }
-        //-----------------------------
+        // ---------------------------------------
     },
 
     price_discount_stp_mode_change: function()
@@ -630,7 +627,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     charity_id_change: function()
     {
@@ -695,7 +692,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         $('charity_percent_none').hide();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     best_offer_mode_change: function()
     {
@@ -743,7 +740,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     selectMagentoAttribute: function(elementSelect, elementAttribute)
     {
@@ -751,7 +748,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         elementAttribute.value = attributeCode;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     checkMessages: function()
     {
@@ -788,7 +785,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUpCharity: function(title)
     {
@@ -951,5 +948,5 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         });
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 });

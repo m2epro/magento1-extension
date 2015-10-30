@@ -1,32 +1,34 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('templateSynchronizationGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -36,9 +38,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization_Grid extends Ma
         $components = Mage::helper('M2ePro/View_Common_Component')->getActiveComponents();
         $collection->addFieldToFilter('main_table.component_mode', array('in'=>$components));
 
-        //exit($collection->getSelect()->__toString());
-
-        // Set collection to grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -58,7 +57,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization_Grid extends Ma
         $this->addColumn('title', array(
             'header'    => Mage::helper('M2ePro')->__('Title'),
             'align'     => 'left',
-            //'width'     => '200px',
             'type'      => 'text',
             'index'     => 'title',
             'escape'    => true,
@@ -128,24 +126,24 @@ class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization_Grid extends Ma
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         // Set delete action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('delete', array(
              'label'    => Mage::helper('M2ePro')->__('Delete'),
              'url'      => $this->getUrl('*/*/delete'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -158,5 +156,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization_Grid extends Ma
             ->getUrl($row, 'template_synchronization', 'edit', array('id' => $row->getData('id')));
     }
 
-    // ####################################
+    //########################################
 }

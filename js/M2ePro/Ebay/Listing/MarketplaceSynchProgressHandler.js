@@ -1,10 +1,10 @@
 EbayListingMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     runningNow: false,
 
-    //----------------------------------
+    // ---------------------------------------
 
     start: function($super,title,status)
     {
@@ -97,7 +97,7 @@ EbayListingMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, 
 
                     self.progressBarObj.setPercents(100,0);
 
-                    //-----------------
+                    // ---------------------------------------
                     setTimeout(function() {
 
                         if (callBackWhenEnd != '') {
@@ -107,11 +107,11 @@ EbayListingMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, 
                         }
 
                     },1500);
-                    //-----------------
+                    // ---------------------------------------
                 }
             }
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

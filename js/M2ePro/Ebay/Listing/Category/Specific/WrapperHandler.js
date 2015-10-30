@@ -1,6 +1,6 @@
 EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(currentCategory,wrapperObj)
     {
@@ -10,7 +10,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         this.setCurrentCategory(currentCategory);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     refreshButtons: function()
     {
@@ -27,7 +27,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setCurrentCategory: function(category)
     {
@@ -68,7 +68,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         return prevLi.id;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderPrevCategory: function()
     {
@@ -124,7 +124,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         }.bind(this));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getSpecificsData: function(category, callback)
     {
@@ -141,7 +141,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     saveCategory: function(callback)
     {
@@ -162,7 +162,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     save: function()
     {
@@ -183,7 +183,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showPopup: function()
     {
@@ -210,7 +210,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         this.popup.hide();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     lock: function()
     {
@@ -229,5 +229,5 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
         this.loadingMask.setStyle({visibility: 'visible'});
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

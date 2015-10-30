@@ -1,6 +1,6 @@
 ListingAutoActionHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     controller: 'adminhtml_common_listing_autoAction',
 
@@ -9,7 +9,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
     magentoCategoryIdsFromOtherGroups: {},
     magentoCategoryTreeChangeEventInProgress: false,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -43,7 +43,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         this.magentoCategoryTreeChangeEventInProgress = false;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     loadAutoActionHtml: function(mode, callback)
     {
@@ -68,7 +68,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(title, content)
     {
@@ -106,15 +106,22 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         }, 50);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addingModeChange: function()
     {
         $('continue_button').hide();
         $('confirm_button').show();
+
+        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Listing::ADDING_MODE_NONE')) {
+            $$('[id$="adding_add_not_visible_field"]')[0].show();
+        } else {
+            $$('[id$="adding_add_not_visible"]')[0].value = M2ePro.php.constant('Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES');
+            $$('[id$="adding_add_not_visible_field"]')[0].hide();
+        }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     loadAutoCategoryForm: function(groupId, callback)
     {
@@ -194,7 +201,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     highlightBreadcrumbStep: function(step)
     {
@@ -203,7 +210,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         $('step_' + step).addClassName('selected');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     globalStepTwo: function()
     {
@@ -238,7 +245,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         ListingAutoActionHandlerObj.loadSpecific(callback);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     websiteStepTwo: function()
     {
@@ -273,7 +280,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         ListingAutoActionHandlerObj.loadSpecific(callback);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     isCategoryAlreadyUsed: function(categoryId)
     {
@@ -330,7 +337,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         };
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     categoryDeleteGroup: function(groupId)
     {
@@ -351,7 +358,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validate: function()
     {
@@ -404,7 +411,8 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
                 case M2ePro.php.constant('Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL'):
                     ListingAutoActionHandlerObj.internalData = {
                         auto_mode: $('auto_mode').value,
-                        auto_global_adding_mode: $('auto_global_adding_mode').value
+                        auto_global_adding_mode: $('auto_global_adding_mode').value,
+                        auto_global_adding_add_not_visible: $('auto_global_adding_add_not_visible').value,
                     };
                     break;
 
@@ -412,6 +420,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
                     ListingAutoActionHandlerObj.internalData = {
                         auto_mode: $('auto_mode').value,
                         auto_website_adding_mode: $('auto_website_adding_mode').value,
+                        auto_website_adding_add_not_visible: $('auto_website_adding_add_not_visible').value,
                         auto_website_deleting_mode: $('auto_website_deleting_mode').value
                     };
                     break;
@@ -422,6 +431,7 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
                         title: $('group_title').value,
                         auto_mode: $('auto_mode').value,
                         adding_mode: $('adding_mode').value,
+                        adding_add_not_visible: $('adding_add_not_visible').value,
                         deleting_mode: $('deleting_mode').value,
                         categories: categories_selected_items
                     };
@@ -466,5 +476,5 @@ ListingAutoActionHandler = Class.create(CommonHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

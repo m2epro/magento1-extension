@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other_Form extends Mage_Adminhtml_Block_Widget_Form
@@ -10,26 +12,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other_Form ext
 
     protected $marketplaceData = null;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayConfigurationCategoryEditChooser');
         $this->setTemplate('M2ePro/ebay/configuration/category/chooser.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         $chooserBlockData = Mage::helper('M2ePro/Data_Global')->getValue('chooser_data');
 
-        // ---------------------------------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser $chooserBlock */
         $chooserBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_chooser');
         $chooserBlock->setMarketplaceId($chooserBlockData['marketplace']);
@@ -49,9 +51,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other_Form ext
         ));
 
         $this->setChild('chooser_block', $chooserBlock);
-        // ---------------------------------------------------
+        // ---------------------------------------
 
-        // ---------------------------------------------------
+        // ---------------------------------------
         if (
             in_array($chooserBlockData['type'], Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes())
         ) {
@@ -72,14 +74,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other_Form ext
                 'title' => $accountTitle,
             );
         }
-        // ---------------------------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->setChild('confirm', $this->getLayout()->createBlock('M2ePro/adminhtml_widget_dialog_confirm'));
-        //------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,13 +1,15 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2015 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
     extends Ess_M2ePro_Controller_Adminhtml_Common_WizardController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -19,14 +21,14 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
         return $this;
     }
 
-    //#############################################
+    //########################################
 
     protected function getNick()
     {
         return 'fullAmazonCategories';
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -64,7 +66,7 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
         return $this->_redirect('*/adminhtml_common_listing/index/');
     }
 
-    //#############################################
+    //########################################
 
     public function marketplacesSynchronizationAction()
     {
@@ -88,5 +90,5 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
         return $this->getResponse()->setBody('success');
     }
 
-    //#############################################
+    //########################################
 }

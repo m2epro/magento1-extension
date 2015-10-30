@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
@@ -9,8 +11,11 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     /** @var $order Ess_M2ePro_Model_Buy_Order */
     protected $order = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getCheckoutMethod()
     {
         if ($this->order->getBuyAccount()->isMagentoOrdersCustomerPredefined() ||
@@ -21,13 +26,19 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return self::CHECKOUT_GUEST;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isOrderNumberPrefixSourceChannel()
     {
         return $this->order->getBuyAccount()->isMagentoOrdersNumberSourceChannel();
     }
 
+    /**
+     * @return bool
+     */
     public function isOrderNumberPrefixSourceMagento()
     {
         return $this->order->getBuyAccount()->isMagentoOrdersNumberSourceMagento();
@@ -47,15 +58,19 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $this->order->getBuyAccount()->getMagentoOrdersNumberPrefix();
     }
 
-    // ########################################
+    //########################################
 
     public function getBuyerEmail()
     {
         return $this->order->getBuyerEmail();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return Mage_Customer_Model_Customer
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function getCustomer()
     {
         /** @var $customer Mage_Customer_Model_Customer */
@@ -82,31 +97,29 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
             $customerInfo['website_id'] = $this->order->getBuyAccount()->getMagentoOrdersCustomerNewWebsiteId();
             $customerInfo['group_id'] = $this->order->getBuyAccount()->getMagentoOrdersCustomerNewGroupId();
-//            $customerInfo['is_subscribed'] = $this->order->getBuyAccount()->isMagentoOrdersCustomerNewSubscribed();
 
             /** @var $customerBuilder Ess_M2ePro_Model_Magento_Customer */
             $customerBuilder = Mage::getModel('M2ePro/Magento_Customer')->setData($customerInfo);
             $customerBuilder->buildCustomer();
 
             $customer = $customerBuilder->getCustomer();
-
-//            if ($this->order->getBuyAccount()->isMagentoOrdersCustomerNewNotifyWhenCreated()) {
-//                $customer->sendNewAccountEmail();
-//            }
         }
 
         return $customer;
     }
 
-    // ########################################
+    //########################################
 
     public function getCurrency()
     {
         return $this->order->getCurrency();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getPaymentData()
     {
         $paymentData = array(
@@ -121,8 +134,11 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $paymentData;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getShippingData()
     {
         return array(
@@ -132,68 +148,101 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         );
     }
 
+    /**
+     * @return float
+     */
     protected function getShippingPrice()
     {
         return $this->order->getShippingPrice();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function hasTax()
     {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function isSalesTax()
     {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function isVatTax()
     {
         return false;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getProductPriceTaxRate()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     public function getShippingPriceTaxRate()
     {
         return 0;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isProductPriceIncludeTax()
     {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function isShippingPriceIncludeTax()
     {
         return false;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isTaxModeNone()
     {
         return $this->order->getBuyAccount()->isMagentoOrdersTaxModeNone();
     }
 
+    /**
+     * @return bool
+     */
     public function isTaxModeChannel()
     {
         return $this->order->getBuyAccount()->isMagentoOrdersTaxModeChannel();
     }
 
+    /**
+     * @return bool
+     */
     public function isTaxModeMagento()
     {
         return $this->order->getBuyAccount()->isMagentoOrdersTaxModeMagento();
     }
 
-    // ########################################
+    //########################################
 }

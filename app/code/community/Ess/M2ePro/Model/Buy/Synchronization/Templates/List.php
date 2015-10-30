@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Buy_Synchronization_Templates_List
     extends Ess_M2ePro_Model_Buy_Synchronization_Templates_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_List
         return 'List';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_List
         return 5;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -39,7 +41,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_List
         $this->immediatelyNotCheckedProducts();
     }
 
-    //####################################
+    //########################################
 
     private function immediatelyChangedProducts()
     {
@@ -119,7 +121,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_List
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 
     private function setListAttemptData(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -130,5 +132,5 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_List
         $listingProduct->save();
     }
 
-    //####################################
+    //########################################
 }

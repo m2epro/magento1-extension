@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization
@@ -55,7 +57,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization
     const MODE_NONE = 0;
     const MODE_YES  = 1;
 
-    // ########################################
+    //########################################
 
     public function getConfigValue($tab, $key)
     {
@@ -66,73 +68,109 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization
         return $value;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isMode()
     {
         return $this->getConfigValue('synchronization', 'mode') != self::MODE_NONE;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangeQty()
     {
         return $this->getConfigValue('revise', 'revise_update_qty') != self::REVISE_UPDATE_QTY_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangePrice()
     {
         return $this->getConfigValue('revise', 'revise_update_price') != self::REVISE_UPDATE_PRICE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangeTitle()
     {
         return $this->getConfigValue('revise', 'revise_update_title') != self::REVISE_UPDATE_TITLE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangeSubTitle()
     {
         return $this->getConfigValue('revise', 'revise_update_sub_title') != self::REVISE_UPDATE_SUB_TITLE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isReviseWhenChangeDescription()
     {
         return $this->getConfigValue('revise', 'revise_update_description') != self::REVISE_UPDATE_DESCRIPTION_NONE;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isRelistMode()
     {
         return $this->getConfigValue('relist', 'relist_mode') != self::RELIST_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistFilterUserLock()
     {
         return $this->getConfigValue('relist', 'relist_filter_user_lock') != self::RELIST_FILTER_USER_LOCK_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistSendData()
     {
         return $this->getConfigValue('relist', 'relist_send_data') != self::RELIST_SEND_DATA_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistStatusEnabled()
     {
         return $this->getConfigValue('relist', 'relist_status_enabled') != self::RELIST_STATUS_ENABLED_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistIsInStock()
     {
         return $this->getConfigValue('relist', 'relist_is_in_stock') != self::RELIST_IS_IN_STOCK_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isRelistWhenQtyHasValue()
     {
         return $this->getConfigValue('relist', 'relist_qty') != self::RELIST_QTY_NONE;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     public function getRelistWhenQtyHasValueType()
     {
@@ -149,24 +187,33 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization
         return $this->getConfigValue('relist', 'relist_qty_value_max');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isStopStatusDisabled()
     {
         return $this->getConfigValue('stop', 'stop_status_disabled') != self::STOP_STATUS_DISABLED_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isStopOutOfStock()
     {
         return $this->getConfigValue('stop', 'stop_out_off_stock') != self::STOP_OUT_OFF_STOCK_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isStopWhenQtyHasValue()
     {
         return $this->getConfigValue('stop', 'stop_qty') != self::STOP_QTY_NONE;
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     public function getStopWhenQtyHasValueType()
     {
@@ -183,5 +230,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization
         return $this->getConfigValue('stop', 'stop_qty_value_max');
     }
 
-    //######################################
+    //########################################
 }

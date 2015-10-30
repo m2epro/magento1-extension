@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_Template_SellingFormatController
     extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     public function getSearchCharityPopUpHtmlAction()
     {
@@ -68,5 +70,5 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_SellingFormatController
         return $this->getResponse()->setBody(json_encode($response));
     }
 
-    //#############################################
+    //########################################
 }

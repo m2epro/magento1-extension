@@ -1,7 +1,7 @@
 SynchronizationHandler = Class.create();
 SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(synchProgressObj)
     {
@@ -9,7 +9,7 @@ SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
         this.synchProgressObj.addProcessingNowWarning();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     completeStep: function()
     {
@@ -44,7 +44,7 @@ SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     runAllEnabledNow: function(components)
     {
@@ -55,7 +55,7 @@ SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     moveChildBlockContent: function(childBlockId, destinationBlockId)
     {
@@ -66,7 +66,7 @@ SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
         $(destinationBlockId).appendChild($(childBlockId));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showReviseAllConfirmPopup: function(component)
     {
@@ -117,5 +117,5 @@ SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

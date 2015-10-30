@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
@@ -11,14 +13,14 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
     /** @var $customer Mage_Customer_Model_Customer */
     private $customer = NULL;
 
-    // ########################################
+    //########################################
 
     public function getCustomer()
     {
         return $this->customer;
     }
 
-    // ########################################
+    //########################################
 
     public function buildCustomer()
     {
@@ -31,14 +33,12 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
             ->setData('group_id', $this->getData('group_id'))
             ->setData('email', $this->getData('email'))
             ->setData('confirmation', $password);
-//        $this->customer->setData('is_subscribed', $this->getData('is_subscribed'));
         $this->customer->setPassword($password);
         $this->customer->save();
 
         $this->customer->setOrigData();
 
         // Add customer address
-        // ---------------------------
         // do not replace setCustomerId with setData('customer_id', ..)
         $customerAddress = Mage::getModel('customer/address')
             ->setData('firstname', $this->getData('firstname'))
@@ -56,8 +56,8 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
 
         $customerAddress->implodeStreetAddress();
         $customerAddress->save();
-        // --------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 }

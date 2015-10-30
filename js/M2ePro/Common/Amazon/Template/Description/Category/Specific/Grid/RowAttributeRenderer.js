@@ -1,11 +1,11 @@
 CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.create(CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     attribute      : null,
     attributeIndex : null,
 
-    // --------------------------------
+    // ---------------------------------------
 
     process: function()
     {
@@ -30,7 +30,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         return $super();
     },
 
-    //###################################
+    //########################################
 
     renderSelf: function()
     {
@@ -43,7 +43,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         $(this.indexedXPath).observe('parent-specific-row-is-removed', this.onParentRemovedAction.bind(this));
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderLabel: function()
     {
@@ -66,7 +66,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         this.getRowContainer().appendChild(td);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderChooseMode: function()
     {
@@ -110,7 +110,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         }
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderValueInputs: function()
     {
@@ -128,12 +128,12 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
             td.appendChild(this.getSelectTypeInput());
         }
 
-        // --
+        // ---------------------------------------
         var note = this.getCustomAttributeTypeNote();
         if (note) td.appendChild(this.getToolTipBlock(this.indexedXPath + '_attribute_' + this.attribute.title + '_custom_attribute_note', note));
 
         td.appendChild(this.getCustomAttributeSelect());
-        // --
+        // ---------------------------------------
     },
 
     getTextTypeInput: function()
@@ -184,7 +184,8 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
             'attribute_index' : this.attributeIndex,
             'mode'            : this.MODE_CUSTOM_ATTRIBUTE,
             'class'           : 'attributes M2ePro-required-when-visible',
-            'style'           : 'display: none; width: 93.2%;'
+            'style'           : 'display: none; width: 93.2%;',
+            'apply_to_all_attribute_sets' : '0'
         });
 
         select.appendChild(new Element('option', {'style': 'display: none', 'value': ''}));
@@ -194,6 +195,11 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         select.value = '';
 
         select.observe('change', this.onChangeValue.bind(this));
+
+        var handlerObj = new AttributeCreator(select.id);
+        handlerObj.setSelectObj(select);
+        handlerObj.injectAddOption();
+
         return select;
     },
 
@@ -213,14 +219,14 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         this.specificHandler.markSpecificAsSelected(this.indexedXPath, selectedObj);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderButtons: function()
     {
         this.getRowContainer().appendChild(new Element('td'));
     },
 
-    //###################################
+    //########################################
 
     checkSelection: function()
     {
@@ -269,7 +275,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         }
     },
 
-    //###################################
+    //########################################
 
     getCustomValueTypeNote: function()
     {
@@ -304,7 +310,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         return span.outerHTML;
     },
 
-    //###################################
+    //########################################
 
     isAttributeRequired: function()
     {
@@ -321,7 +327,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         return this.attribute.values && this.attribute.values.length > 0;
     },
 
-    //###################################
+    //########################################
 
     observeToolTips: function(indexedXpath)
     {
@@ -336,7 +342,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         });
     },
 
-    //###################################
+    //########################################
 
     onParentClonedAction: function(event)
     {
@@ -349,7 +355,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         attributesRows.invoke('remove');
     },
 
-    //###################################
+    //########################################
 
     getRowContainer: function()
     {
@@ -366,5 +372,5 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowAttributeRenderer = Class.
         }));
     }
 
-    // --------------------------------
+    // ---------------------------------------
 });

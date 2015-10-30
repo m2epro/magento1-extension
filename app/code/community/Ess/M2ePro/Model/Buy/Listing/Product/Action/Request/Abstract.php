@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_Abstract
@@ -12,14 +14,17 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_Abstract
      */
     protected $validatorsData = array();
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $data
+     */
     public function setValidatorsData(array $data)
     {
         $this->validatorsData = $data;
     }
 
-    // ########################################
+    //########################################
 
     protected function searchNotFoundAttributes()
     {
@@ -39,7 +44,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_Abstract
         return false;
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     protected function addNotFoundAttributesMessages($title, array $attributes)
     {
@@ -61,5 +66,5 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,20 +1,22 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Mysql4_Listing_Product
     extends Ess_M2ePro_Model_Mysql4_Component_Parent_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Listing_Product', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function getProductIds(array $listingProductIds)
     {
@@ -41,7 +43,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product
             ->select()
             ->from(
                 $this->getMainTable(),
-                array('id','component_mode')
+                array('id','component_mode', 'option_id' => new Zend_Db_Expr('NULL'))
             )
             ->where("`product_id` = ?",(int)$productId);
 
@@ -68,9 +70,10 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product
             ->join(
                 array('lpvo' => $optionTable),
                 '`lpv`.`id` = `lpvo`.`listing_product_variation_id`',
-                array()
+                array('option_id' => 'id')
             )
-            ->where("`lpvo`.`product_id` = ?",(int)$productId);
+            ->where("`lpvo`.`product_id` = ?",(int)$productId)
+            ->where("`lpvo`.`product_type` != ?", "simple");
 
         if (!empty($filters)) {
             foreach ($filters as $column => $value) {
@@ -84,20 +87,38 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product
         ));
 
         $result = array();
+        $foundOptionsIds = array();
 
         foreach ($unionSelect->query()->fetchAll() as $item) {
+            $tempListingProductId = $item['id'];
 
-            $result[] = Mage::helper('M2ePro/Component')->getComponentObject(
-                $item['component_mode'], 'Listing_Product', (int)$item['id']
+            if (!empty($item['option_id'])) {
+                $foundOptionsIds[$tempListingProductId][] = $item['option_id'];
+            }
+
+            if (!empty($result[$tempListingProductId])) {
+                continue;
+            }
+
+            $result[$tempListingProductId] = Mage::helper('M2ePro/Component')->getComponentObject(
+                $item['component_mode'], 'Listing_Product', (int)$tempListingProductId
             );
+        }
+
+        foreach ($foundOptionsIds as $listingProductId => $optionsIds) {
+            if (empty($result[$listingProductId]) || empty($optionsIds)) {
+                continue;
+            }
+
+            $result[$listingProductId]->setData('found_options_ids', $optionsIds);
         }
 
         Mage::helper('M2ePro/Data_Cache_Session')->setValue($cacheKey, $result);
 
-        return $result;
+        return array_values($result);
     }
 
-    // ########################################
+    //########################################
 
     public function getChangedItems(array $attributes,
                                     $componentMode = NULL,
@@ -260,5 +281,5 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product
         return array_values($results);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,14 +1,14 @@
 ListingProductGridHandler = Class.create();
 ListingProductGridHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(AddListingHandlerObj)
     {
         this.addListingHandlerObj = AddListingHandlerObj || null;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     save_click: function(back)
     {
@@ -18,7 +18,7 @@ ListingProductGridHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     save_and_list_click: function(back)
     {
@@ -27,7 +27,7 @@ ListingProductGridHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setFilter: function(event)
     {
@@ -102,7 +102,7 @@ ListingProductGridHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setGridId:  function(id)
     {
@@ -114,7 +114,7 @@ ListingProductGridHandler.prototype = Object.extend(new CommonHandler(), {
         return this.gridId;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getSelectedProducts: function()
     {
@@ -127,5 +127,5 @@ ListingProductGridHandler.prototype = Object.extend(new CommonHandler(), {
         return selectedProducts;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE m2epro_amazon_template_synchronization
@@ -43,7 +43,7 @@ $connection = $installer->getConnection();
        ADD COLUMN stop_qty_calculated_value int(11) UNSIGNED NOT NULL AFTER stop_qty_calculated,
        ADD COLUMN stop_qty_calculated_value_max int(11) UNSIGNED NOT NULL AFTER stop_qty_calculated_value;
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     ALTER TABLE m2epro_amazon_template_synchronization
        CHANGE COLUMN list_qty list_qty_magento tinyint(2) UNSIGNED NOT NULL,
@@ -77,7 +77,7 @@ $connection = $installer->getConnection();
       ADD COLUMN list_qty_calculated_value int(11) UNSIGNED NOT NULL AFTER list_qty_calculated,
       ADD COLUMN list_qty_calculated_value_max int(11) UNSIGNED NOT NULL AFTER list_qty_calculated_value;
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     ALTER TABLE m2epro_amazon_template_synchronization
        CHANGE COLUMN relist_qty relist_qty_magento tinyint(2) UNSIGNED NOT NULL,
@@ -112,7 +112,7 @@ $connection = $installer->getConnection();
        ADD COLUMN relist_qty_calculated_value_max int(11) UNSIGNED NOT NULL AFTER relist_qty_calculated_value;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTables = array('m2epro_amazon_template_synchronization',
                     'm2epro_buy_template_synchronization',
@@ -185,8 +185,8 @@ foreach ($tempTables as $tempTable) {
     }
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

@@ -2,9 +2,6 @@
 
 <script type="text/javascript">
 
-    // TODO NEXT (var isTutorialFinished = false;)
-    var isTutorialFinished = true;
-
     M2eProBuyWelcomeTutorialHandlerObj = new VideoTutorialHandler(
         'buy_welcome_video_tutorial_pop_up',
         '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('M2E Pro - Rakuten.com/Magento Integration : Configuration Wizard')); ?>',
@@ -15,19 +12,8 @@
 
 <div id="block_notice_wizard_welcome_content" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
     <table>
-
         <tr>
-
-            <!-- TODO NEXT (uncomment) -->
-            <!--            <td>-->
-            <!--                <a id="tutorial_image_container" href="javascript:" onclick="isTutorialFinished = true; M2eProBuyWelcomeTutorialHandlerObj.openPopUp()">-->
-            <!--                    <img src="--><?php //echo $this->getSkinUrl('M2ePro/images/buy-video-thumbnail.png'); ?><!--" alt="">-->
-            <!--                </a>-->
-            <!--                <h4 style="text-align: center">--><?php //echo Mage::helper('M2ePro')->__('Rakuten.com Configuration (6 min. video)'); ?><!--</h4>-->
-            <!--            </td>-->
-
             <td style="padding: 0;">
-
                 <h3>
                     <?php echo Mage::helper('M2ePro')->__('With M2E Pro, Listing your Magento Inventory on Rakuten.com couldn\'t be easier.'); ?>
                 </h3>
@@ -38,7 +24,7 @@
                         'This part of Extension facilitates quick and Simple Listings creation as well as management of Product Listings.<br/>
                         Also, it is possible to Import and Map existing Items (created directly on Rakuten.com or with the help of 3rd party tools) to Magento Products. <br/>
                         The M2E Pro fully supports multiple Rakuten.com Accounts and multiple Magento Stores. <br/><br/>
-                        <u>Among the features:</u> <br/>
+                        <u>Among the features:</u><br/>
                         <ul class="list">
                         <li>Ability to import Rakuten.com Products into Magento catalogue for Rakuten.com Order, if such Product is not found in exiting catalogue;</li>
                         <li>Ability to import of Rakuten.com Orders and many other Tasks which would significantly reduce a time required for Listings maintenance;</li>
@@ -53,9 +39,7 @@
                 <br/>
                 <div><?php echo $this->getChildHtml('start_wizard_button'); ?></div>
             </td>
-
         </tr>
-
     </table>
 </div>
 

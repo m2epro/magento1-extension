@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
@@ -11,7 +13,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
     const LISTING_PRODUCT_ID_FIELD = 'listing_product_id';
     const LISTING_PARENT_PRODUCT_ID_FIELD = 'parent_listing_product_id';
 
-    //####################################
+    //########################################
 
     protected function getEntityId()
     {
@@ -54,7 +56,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
         return 'listingGrid';
     }
 
-    //####################################
+    //########################################
 
     public function isListingLog()
     {
@@ -68,14 +70,14 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
         return !empty($listingProductId);
     }
 
-    //####################################
+    //########################################
 
     public function getListingProductId()
     {
         return $this->getRequest()->getParam('listing_product_id', false);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
     protected $listingProduct = NULL;
@@ -93,7 +95,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
         return $this->listingProduct;
     }
 
-    //####################################
+    //########################################
 
     protected function _getLogTypeList()
     {
@@ -122,7 +124,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
         );
     }
 
-    //####################################
+    //########################################
 
     public function callbackColumnType($value, $row, $column, $isExport)
     {
@@ -185,5 +187,5 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
         return $renderedText;
     }
 
-    //####################################
+    //########################################
 }

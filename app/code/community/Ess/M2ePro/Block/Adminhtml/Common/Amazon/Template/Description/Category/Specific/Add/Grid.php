@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Specific_Add_Grid
@@ -18,29 +20,29 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Spe
     public $selectedSpecifics = array();
     public $renderedSpecifics = array();
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonTemplateDescriptionCategorySpecificAddGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setFilterVisibility(false);
         $this->setPagerVisibility(false);
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -136,7 +138,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Spe
         ));
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnTitle($title, $row, $column, $isExport)
     {
@@ -181,7 +183,7 @@ HTML;
 HTML;
     }
 
-    // ####################################
+    //########################################
 
     public function setMarketplaceId($marketplaceId)
     {
@@ -225,14 +227,14 @@ HTML;
         return $this;
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     private function replaceWithDictionaryXpathes(array $xPathes)
     {
         return array_map(function($el) { return preg_replace('/-\d+/', '', $el); }, $xPathes);
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -244,5 +246,5 @@ HTML;
         return false;
     }
 
-    // ####################################
+    //########################################
 }

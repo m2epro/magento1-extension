@@ -1,11 +1,11 @@
 MagentoBlock = Class.create();
 MagentoBlock.prototype = {
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     getHashedCookie: function(id)
     {
@@ -38,7 +38,7 @@ MagentoBlock.prototype = {
         deleteCookie(id, '/', '');
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     show: function(blockClass,init)
     {
@@ -114,7 +114,7 @@ MagentoBlock.prototype = {
         return true;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     observePrepareStart: function(blockObj)
     {
@@ -146,5 +146,5 @@ MagentoBlock.prototype = {
         }
     }
 
-    // --------------------------------
-}
+    // ---------------------------------------
+};

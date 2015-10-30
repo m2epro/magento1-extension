@@ -1,50 +1,52 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Marketplace extends Ess_M2ePro_Block_Adminhtml_Common_Component_Tabs_Container
 {
     const TAB_ID_RAKUTEN = 'rakuten';
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('marketplace');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_marketplace';
-        //------------------------------
+        // ---------------------------------------
 
         // Form id of marketplace_general_form
-        //------------------------------
+        // ---------------------------------------
         $this->tabsContainerId = 'edit_form';
-        //------------------------------
+        // ---------------------------------------
 
         $this->_headerText = '';
 
         $this->setTemplate(NULL);
 
-        //------------------------------
+        // ---------------------------------------
         $this->addButton('run_update_all', array(
             'label' => Mage::helper('M2ePro')->__('Update All Now'),
             'onclick' => 'MarketplaceHandlerObj.updateAction()',
             'class' => 'save update_all_marketplace'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('run_synch_now', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'MarketplaceHandlerObj.saveAction();',
             'class'     => 'save save_and_update_marketplaces'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function initializeTabs()
@@ -60,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Marketplace extends Ess_M2ePro_Block_Adm
         }
     }
 
-    // ########################################
+    //########################################
 
     public function setEnabledTab($id)
     {
@@ -81,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Marketplace extends Ess_M2ePro_Block_Adm
         return $activeTab;
     }
 
-    // ########################################
+    //########################################
 
     protected function getAmazonTabBlock()
     {
@@ -115,7 +117,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Marketplace extends Ess_M2ePro_Block_Adm
         return $this->getRakutenTabBlock()->toHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function getTabLabelById($id)
     {
@@ -180,7 +182,7 @@ HTML;
         return '';
     }
 
-    // ########################################
+    //########################################
 
     protected function getTabsContainerBlock()
     {
@@ -191,5 +193,5 @@ HTML;
         return $this->tabsContainerBlock;
     }
 
-    // ########################################
+    //########################################
 }

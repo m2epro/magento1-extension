@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -368,7 +368,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -393,7 +393,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('ess_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -417,7 +417,7 @@ SQL
 );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -496,7 +496,7 @@ SQL
 );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_marketplace');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -514,7 +514,7 @@ SQL
 );
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_marketplace');
 $stmt = $connection->query("SELECT count(*) FROM `{$tempTable}`");
@@ -530,7 +530,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -540,8 +540,8 @@ WHERE `group` = '/cache/license/status/';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

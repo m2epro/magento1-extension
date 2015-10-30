@@ -1,15 +1,17 @@
 <?php
 
-    /*
-    * @copyright  Copyright (c) 2013 by  ESS-UA.
-    */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
     private $listingProductIds = array();
 
-    //#############################################
+    //########################################
 
     public function preDispatch()
     {
@@ -17,7 +19,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         $this->listingProductIds = Mage::helper('M2ePro/Data_Session')->getValue('buy_listing_product_ids');
     }
 
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -46,7 +48,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -91,7 +93,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function addAction()
     {
@@ -128,7 +130,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
             return $this->_redirect('*/adminhtml_common_buy_template_newProduct/index');
         }
 
-        //----------------------------
+        // ---------------------------------------
         /** @var $buyTemplateNewProductInstance Ess_M2ePro_Model_Buy_Template_NewProduct */
         $buyTemplateNewProductInstance = Mage::getModel('M2ePro/Buy_Template_NewProduct');
         if ($post['category']['category_id']) {
@@ -136,7 +138,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         }
 
         // Saving general data
-        //-----------------------------
+        // ---------------------------------------
 
         $buyTemplateNewProductInstance->addData(array(
             'title'          => $post['category']['title'],
@@ -147,7 +149,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         $buyTemplateNewProductInstance->save();
 
         // Saving core info
-        //----------------------------
+        // ---------------------------------------
         $data = array();
         $keys = array(
             'seller_sku_custom_attribute',
@@ -157,9 +159,6 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
 
             'isbn_mode',
             'isbn_custom_attribute',
-
-            'asin_mode',
-            'asin_custom_attribute',
 
             'mfg_name_template',
 
@@ -205,10 +204,10 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         $data['title'] = $post['category']['path'];
         $data['features_template'] = json_encode(array_filter($post['category']['features_template']));
         $data['template_new_product_id'] = $buyTemplateNewProductInstance->getId();
-        //----------------------------
+        // ---------------------------------------
 
         // Add or update model
-        //--------------------
+        // ---------------------------------------
         /* @var $templateCoreInstance Ess_M2ePro_Model_Buy_Template_NewProduct_Core */
         $templateCoreInstance = Mage::getModel('M2ePro/Buy_Template_NewProduct_Core');
         if ($post['category']['category_id']) {
@@ -216,10 +215,10 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         }
 
         $templateCoreInstance->addData($data)->save();
-        //----------------------------
+        // ---------------------------------------
 
         // Saving attributes info
-        //----------------------------
+        // ---------------------------------------
         /* @var $templateAttributesInstance Ess_M2ePro_Model_Buy_Template_NewProduct */
         $templateAttributesInstance = Mage::getModel('M2ePro/Buy_Template_NewProduct')
             ->loadInstance($buyTemplateNewProductInstance->getId());
@@ -284,7 +283,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
             ));
             $buyTemplateNewProductAttributeInstance->save();
         }
-        //----------------------------
+        // ---------------------------------------
 
         if ($this->getRequest()->getParam('do_map')) {
             return $this->map($buyTemplateNewProductInstance);
@@ -459,7 +458,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         return $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     private function map(Ess_M2ePro_Model_Buy_Template_NewProduct $buyTemplateNewProductInstance)
     {
@@ -487,7 +486,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         ));
     }
 
-    //#############################################
+    //########################################
 
     private function saveListingProductIds()
     {
@@ -505,5 +504,5 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_NewProductController
         $this->listingProductIds = Mage::helper('M2ePro/Data_Session')->getValue('buy_listing_product_ids');
     }
 
-    //#############################################
+    //########################################
 }

@@ -1,13 +1,13 @@
 EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     storeId: null,
     marketplaceId: null,
     checkAttributesAvailability: false,
     listingProductIds: '',
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -26,7 +26,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getSwitcherNickByElementId: function(id)
     {
@@ -102,7 +102,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         return $('template_'+templateNick+'_data_container');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     change: function()
     {
@@ -135,7 +135,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     clearMessages: function(templateNick)
     {
@@ -185,7 +185,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     updateEditVisibility: function(templateNick)
     {
@@ -239,7 +239,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     scrollToFirstFailedElement: function()
     {
@@ -251,7 +251,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         firstFailed.up('table').scrollIntoView();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     saveSwitchers: function(callback)
     {
@@ -296,7 +296,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     isTemplateTitleUnique: function(templateNick, templateTitle)
     {
@@ -317,7 +317,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         return unique;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validateCustomTemplate: function(templateNick)
     {
@@ -331,7 +331,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         return true;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     customSaveAsTemplate: function(templateNick)
     {
@@ -426,7 +426,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editTemplate: function(templateNick)
     {
@@ -435,7 +435,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         window.open(M2ePro.url.get('adminhtml_ebay_template/edit', {id: templateId, nick: templateNick}) , '_blank');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     customizeTemplate: function(templateNick)
     {
@@ -448,7 +448,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         this.getSwitcher(templateNick).selectedIndex = 0;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     clearContent: function(templateNick)
     {
@@ -456,7 +456,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         this.getTemplateDataContainer(templateNick).hide();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     reloadContent: function(templateNick, callback)
     {
@@ -486,7 +486,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addToSwitcher: function(templateNick, templateId, templateTitle)
     {
@@ -527,5 +527,5 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         return optionGroup;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

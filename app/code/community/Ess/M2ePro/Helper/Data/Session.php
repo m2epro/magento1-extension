@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Data_Session extends Mage_Core_Helper_Abstract
 {
-    // ########################################
+    //########################################
 
     public function getValue($key, $clear = false)
     {
@@ -20,7 +22,7 @@ class Ess_M2ePro_Helper_Data_Session extends Mage_Core_Helper_Abstract
         Mage::getSingleton('adminhtml/session')->setData(Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER.'_'.$key, $value);
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getAllValues()
     {
@@ -38,7 +40,7 @@ class Ess_M2ePro_Helper_Data_Session extends Mage_Core_Helper_Abstract
         return $return;
     }
 
-    // ########################################
+    //########################################
 
     public function removeValue($key)
     {
@@ -58,5 +60,5 @@ class Ess_M2ePro_Helper_Data_Session extends Mage_Core_Helper_Abstract
         }
     }
 
-    // ########################################
+    //########################################
 }

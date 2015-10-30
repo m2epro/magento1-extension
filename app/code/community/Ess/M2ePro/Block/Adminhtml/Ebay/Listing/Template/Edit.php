@@ -1,53 +1,55 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     private $isEdit = false;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingTemplateEdit');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_template';
         $this->_mode = 'edit';
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listing = Mage::helper('M2ePro/Data_Global')->getValue('ebay_listing');
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         if ($listing) {
             $this->_headerText = Mage::helper('M2ePro')->__('Edit Listing Settings "%listing_title%"',
                                                             $listing->getTitle());
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Creating A New M2E Pro Listing');
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
         if ($listing) {
-            //------------------------------
+            // ---------------------------------------
             $url = $this->getUrl('*/adminhtml_ebay_listing/view', array('id' => $listing->getId()));
 
             if ($this->getRequest()->getParam('back')) {
@@ -59,9 +61,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
                 'class'     => 'back'
             ));
-            //------------------------------
+            // ---------------------------------------
 
-            //------------------------------
+            // ---------------------------------------
             $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
                 '*/adminhtml_ebay_listing/view', array('id' => $listing->getId())
             );
@@ -78,9 +80,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 'onclick'   => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
                 'class'     => 'save'
             ));
-            //------------------------------
+            // ---------------------------------------
 
-            //------------------------------
+            // ---------------------------------------
             $backUrl = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_template/editListing');
             $url = $this->getUrl('*/adminhtml_ebay_template/saveListing',
                 array(
@@ -95,17 +97,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 'onclick'   => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
                 'class'     => 'save'
             ));
-            //------------------------------
+            // ---------------------------------------
         }
 
         if (!$listing) {
-            //------------------------------
+            // ---------------------------------------
             $currentStep = (int)$this->getRequest()->getParam('step', 2);
             $prevStep = $currentStep - 1;
-            //------------------------------
+            // ---------------------------------------
 
             if ($prevStep >= 1 && $prevStep <= 4) {
-                //------------------------------
+                // ---------------------------------------
                 $url = $this->getUrl(
                     '*/adminhtml_ebay_listing_create/index',
                     array('_current' => true, 'step' => $prevStep)
@@ -115,7 +117,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                     'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
                     'class'     => 'back'
                 ));
-                //------------------------------
+                // ---------------------------------------
             }
 
             $nextStepBtnText = 'Next Step';
@@ -127,7 +129,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
 
                 $nextStepBtnText = 'Complete';
             }
-            //------------------------------
+            // ---------------------------------------
             $url = $this->getUrl(
                 '*/adminhtml_ebay_listing_create/index', array('_current' => true, 'step' => $currentStep)
             );
@@ -137,29 +139,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 'onclick'   => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
                 'class'     => 'next'
             ));
-            //------------------------------
+            // ---------------------------------------
         }
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'allowed_tabs' => $this->getAllowedTabs()
         );
         $tabs = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_template_edit_tabs');
         $tabs->addData($data);
         $this->setChild('tabs', $tabs);
-        //------------------------------
+        // ---------------------------------------
 
         return $this;
     }
 
-    // ####################################
+    //########################################
 
     public function getAllowedTabs()
     {
@@ -170,34 +172,34 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
         return $this->_data['allowed_tabs'];
     }
 
-    // ####################################
+    //########################################
 
     public function getFormHtml()
     {
         $html = '';
         $tabs = $this->getChild('tabs');
 
-        //------------------------------
+        // ---------------------------------------
         $html .= $this->getLayout()
             ->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher_initialization')
             ->toHtml();
-        //------------------------------
+        // ---------------------------------------
 
         // initiate template switcher url
-        //------------------------------
+        // ---------------------------------------
         $html .= Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher::getSwitcherUrlHtml();
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'display_tab_buttons' => false
         );
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_floatingToolbarFixer');
         $block->addData($data);
         $html .= $block->toHtml();
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listing = Mage::helper('M2ePro/Data_Global')->getValue('ebay_listing');
         $headerHtml = '';
         if ($listing) {
@@ -208,10 +210,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 )
             )->toHtml();
         }
-        //------------------------------
+        // ---------------------------------------
 
         // hide tabs selector if only one tab is allowed for displaying
-        //------------------------------
+        // ---------------------------------------
         if (count($this->getAllowedTabs()) == 1) {
             $html .= <<<HTML
 <script type="text/javascript">
@@ -221,10 +223,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
 </script>
 HTML;
         }
-        //------------------------------
+        // ---------------------------------------
 
         return $html . $headerHtml . $tabs->toHtml() . parent::getFormHtml();
     }
 
-    // ####################################
+    //########################################
 }

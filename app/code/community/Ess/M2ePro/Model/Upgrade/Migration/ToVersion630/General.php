@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
@@ -11,26 +13,32 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
 
     private $forceAllSteps = false;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     */
     public function getInstaller()
     {
         return $this->installer;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     public function setForceAllSteps($value = true)
     {
         $this->forceAllSteps = $value;
     }
 
-    //####################################
+    //########################################
 
     /*
 
@@ -48,7 +56,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
 
     */
 
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -63,7 +71,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
         $this->processWizard();
     }
 
-    //####################################
+    //########################################
 
     private function isNeedToSkip()
     {
@@ -81,7 +89,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
         return false;
     }
 
-    //####################################
+    //########################################
 
     private function processAttributeSet()
     {
@@ -260,5 +268,5 @@ SQL
         );
     }
 
-    //####################################
+    //########################################
 }

@@ -156,17 +156,9 @@
                                 <label><?php echo Mage::helper('M2ePro')->__('License Key'); ?>: </label>
                             </td>
                             <td id="license_text_key_container" class="value">
-                                <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                    <span style="display: block; padding: 4px 0 0;">
-                                <?php } ?>
-
                                 <?php echo $this->key; ?>
                                 <?php if ($this->key == '') { echo $this->getChildHtml('enter_key'); } ?>
                                 &nbsp;&nbsp;
-
-                                <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                    </span>
-                                <?php } ?>
                             </td>
                             <td id="license_input_key_container" class="value" style="display: none;">
                                 <input id="key" name="key" value="<?php echo $this->escapeHtml($this->key); ?>" type="text" class="input-text required-entry" />
@@ -241,9 +233,6 @@
                                         <label><?php echo Mage::helper('M2ePro')->__('Domain'); ?>: </label>
                                     </td>
                                     <td class="value">
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            <span style="display: block; padding: 4px 0 0;">
-                                        <?php } ?>
 
                                         <span <?php echo $this->licenseData['valid']['domain'] ? '' : 'style="color: red;"'?>>
                                             <?php echo $this->licenseData['domain']; ?>
@@ -253,10 +242,6 @@
                                                   !is_null($this->licenseData['connection']['domain'])): ?>
                                             <span> (<?php echo Mage::helper('M2ePro')->__('Your Domain') . ': ' . Mage::helper('M2ePro')->escapeHtml($this->licenseData['connection']['domain']);?>)</span>
                                         <?php endif;?>
-
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            </span>
-                                        <?php } ?>
                                     </td>
                                 </tr>
 
@@ -269,9 +254,6 @@
                                         <label><?php echo Mage::helper('M2ePro')->__('IP'); ?>: </label>
                                     </td>
                                     <td class="value">
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            <span style="display: block; padding: 4px 0 0;">
-                                        <?php } ?>
 
                                         <span <?php echo $this->licenseData['valid']['ip'] ? '' : 'style="color: red;"'?>>
                                             <?php echo $this->licenseData['ip']; ?>
@@ -282,9 +264,6 @@
                                             <span> (<?php echo Mage::helper('M2ePro')->__('Your IP') . ': ' . Mage::helper('M2ePro')->escapeHtml($this->licenseData['connection']['ip']);?>)</span>
                                         <?php endif;?>
 
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            </span>
-                                        <?php } ?>
                                     </td>
                                 </tr>
 
@@ -297,9 +276,6 @@
                                         <label><?php echo Mage::helper('M2ePro')->__('Directory'); ?>: </label>
                                     </td>
                                     <td class="value">
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            <span style="display: block; padding: 4px 0 0;">
-                                        <?php } ?>
 
                                         <span <?php echo $this->licenseData['valid']['directory'] ? '' : 'style="color: red;"'?>>
                                             <?php echo $this->licenseData['directory']; ?>
@@ -310,9 +286,6 @@
                                             <span> (<?php echo Mage::helper('M2ePro')->__('Your Directory') . ': ' . Mage::helper('M2ePro')->escapeHtml($this->licenseData['connection']['directory']);?>)</span>
                                         <?php endif;?>
 
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            </span>
-                                        <?php } ?>
                                     </td>
                                 </tr>
 
@@ -390,9 +363,6 @@
                                         <label><?php echo Mage::helper('M2ePro')->__('Current Status'); ?>: </label>
                                     </td>
                                     <td class="value">
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            <span style="display: block; padding: 4px 0 0;">
-                                        <?php } ?>
 
                                         <strong>
                                             <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_NONE) echo Mage::helper('M2ePro')->__('Not Activated License'); ?>
@@ -401,10 +371,7 @@
                                             <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_LIVE) echo Mage::helper('M2ePro')->__('Live License'); ?>
                                         </strong>
 
-                                        <?php if ($componentData['mode'] != Ess_M2ePro_Helper_Module_License::MODE_NONE &&
-                                                 ($componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_SUSPENDED ||
-                                                  $componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_CLOSED ||
-                                                  $componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_CANCELED)) { ?>
+                                        <?php if ($componentData['status'] != Ess_M2ePro_Helper_Module_License::STATUS_ACTIVE) { ?>
                                                     <span style="color:red;">(<?php
                                                         if ($componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_SUSPENDED) echo Mage::helper('M2ePro')->__('Suspended');
                                                         if ($componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_CLOSED) echo Mage::helper('M2ePro')->__('Closed');
@@ -412,15 +379,15 @@
                                                     ?>)</span>
                                         <?php } ?>
 
-                                        <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                            </span>
-                                        <?php } ?>
                                     </td>
-                                    <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_NONE) {?>
+
+                                    <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_NONE &&
+                                              $componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_ACTIVE) {?>
                                         <td id="component_<?php echo $componentName?>">
                                             <?php echo $this->getChildHtml('set_trial_key'); ?>
                                         </td>
                                     <?php } ?>
+
                                 </tr>
 
                                 <?php if ($componentData['mode'] != Ess_M2ePro_Helper_Module_License::MODE_NONE) { ?>
@@ -430,15 +397,9 @@
                                             <label><?php echo Mage::helper('M2ePro')->__('Expiration Date'); ?>: </label>
                                         </td>
                                         <td class="value">
-                                            <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                                <span style="display: block; padding: 4px 0 0;">
-                                            <?php } ?>
 
                                             <?php echo $componentData['expiration_date']; ?>
 
-                                            <?php if (Mage::helper('M2ePro/Magento')->isGoEdition()) { ?>
-                                                </span>
-                                            <?php } ?>
                                         </td>
                                     </tr>
 

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
@@ -14,15 +16,19 @@ class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
     private $cache = NULL;
     private $cacheGroup = '/backup/settings/';
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         $this->cache = Mage::helper('M2ePro/Module')->getCacheConfig();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $settings
+     * @return $this
+     */
     public function setSettings(array $settings)
     {
         if (isset($settings['tables']) && is_array($settings['tables'])) {
@@ -54,7 +60,7 @@ class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function setSetting($key, $value, $tableName = NULL)
     {
@@ -71,7 +77,7 @@ class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
         return $this->cache->getGroupValue($group, $key);
     }
 
-    // ########################################
+    //########################################
 
     private function prepareSettingGroup($tableName = NULL)
     {
@@ -84,7 +90,7 @@ class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
         return $group;
     }
 
-    // ########################################
+    //########################################
 
     public function canBackupTable($tableName)
     {
@@ -126,7 +132,7 @@ class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getTableDump($tableName, $columns = '*', $count = NULL, $offset = NULL)
     {
@@ -147,7 +153,7 @@ class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
         return $query->fetchAll();
     }
 
-    // ########################################
+    //########################################
 
     private function getAvailableTables()
     {
@@ -157,5 +163,5 @@ class Ess_M2ePro_Model_Servicing_Task_Backups_Manager
         return $this->availableTables;
     }
 
-    // ########################################
+    //########################################
 }

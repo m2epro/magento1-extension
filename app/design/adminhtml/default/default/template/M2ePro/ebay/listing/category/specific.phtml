@@ -128,7 +128,7 @@
                 </ul>
                 </br>
                 More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Ebay::NICK, 'Set+Item+Specifics')
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/TQAJAQ')
             ); ?>
         </div>
 
@@ -205,8 +205,12 @@
 
 <script type="text/m2e-template-html" id="<?php echo $uniqueId; ?>specific_template">
 
-    <input id="<?php echo $uniqueId; ?>item_specifics_mode_%i%" name="item_specifics_mode_%i%" value="%relation_mode%" type="hidden" />
-    <input id="<?php echo $uniqueId; ?>item_specifics_attribute_title_%i%" name="item_specifics_attribute_title_%i%" value="%attribute_title%" type="hidden" />
+    <tr style="display: none;">
+        <td style="display: none;">
+            <input id="<?php echo $uniqueId; ?>item_specifics_attribute_title_%i%" name="item_specifics_attribute_title_%i%" value="%attribute_title%" type="hidden" />
+            <input id="<?php echo $uniqueId; ?>item_specifics_mode_%i%" name="item_specifics_mode_%i%" value="%relation_mode%" type="hidden" />
+        </td>
+    </tr>
 
     <tr id="<?php echo $uniqueId; ?>specific_%i%_row" class="specific-row not-custom" style="height: 25px;">
         <td style="vertical-align:top;">
@@ -244,7 +248,7 @@
                 </a>
             </div>
             <select id="<?php echo $uniqueId; ?>item_specifics_value_ebay_recommended_%i%" name="item_specifics_value_ebay_recommended_%i%" style="display: none; width: 100%;" class="M2ePro-required-when-visible item-specific"></select>
-            <select id="<?php echo $uniqueId; ?>item_specifics_value_custom_attribute_%i%" name="item_specifics_value_custom_attribute_%i%" style="display: none; width: 100%;"></select>
+            <select id="<?php echo $uniqueId; ?>item_specifics_value_custom_attribute_%i%" class="M2ePro-custom-attribute-can-be-created" name="item_specifics_value_custom_attribute_%i%" apply_to_all_attribute_sets="0" style="display: none; width: 100%;"></select>
         </td>
         <td id="<?php echo $uniqueId; ?>custom_item_specific_remove_%i%" style="display: none; text-align: center; vertical-align: middle;">
             <?php echo $this->getChildHtml('remove_custom_specific_button'); ?>

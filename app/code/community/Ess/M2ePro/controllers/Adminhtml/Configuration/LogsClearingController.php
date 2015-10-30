@@ -1,18 +1,20 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
     extends Ess_M2ePro_Controller_Adminhtml_Configuration_MainController
 {
-    //#############################################
+    //########################################
 
     public function saveAction()
     {
         // Save settings
-        //--------------------
+        // ---------------------------------------
         if ($this->getRequest()->isPost()) {
 
             $post = $this->getRequest()->getPost();
@@ -42,10 +44,10 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                 Mage::helper('M2ePro')->__('The clearing Settings has been successfully saved.')
             );
         }
-        //--------------------
+        // ---------------------------------------
 
         // Get actions
-        //--------------------
+        // ---------------------------------------
         $task = $this->getRequest()->getParam('task');
         $log = $this->getRequest()->getParam('log');
 
@@ -71,10 +73,10 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                     break;
             }
         }
-        //--------------------
+        // ---------------------------------------
 
         $this->_redirectUrl($this->_getRefererUrl());
     }
 
-    //#############################################
+    //########################################
 }

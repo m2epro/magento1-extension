@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Order_Item_Proxy
@@ -16,7 +18,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
 
     protected $additionalData = array();
 
-    // ########################################
+    //########################################
 
     public function __construct(Ess_M2ePro_Model_Component_Child_Abstract $item)
     {
@@ -24,15 +26,22 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         $this->subtotal = $this->getOriginalPrice() * $this->getOriginalQty();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Order_Proxy
+     */
     public function getProxyOrder()
     {
         return $this->item->getParentObject()->getOrder()->getProxy();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Order_Item_Proxy $that
+     * @return bool
+     */
     public function equals(Ess_M2ePro_Model_Order_Item_Proxy $that)
     {
         if (is_null($this->getProductId()) || is_null($that->getProductId())) {
@@ -74,13 +83,11 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
 
     public function merge(Ess_M2ePro_Model_Order_Item_Proxy $that)
     {
-        // --------
         $this->setQty($this->getQty() + $that->getOriginalQty());
         $this->subtotal += $that->getOriginalPrice() * $that->getOriginalQty();
-        // --------
 
         // merge additional data
-        // --------
+        // ---------------------------------------
         $thisAdditionalData = $this->getAdditionalData();
         $thatAdditionalData = $that->getAdditionalData();
 
@@ -89,10 +96,10 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         $thisAdditionalData[$identifier]['items'][] = $thatAdditionalData[$identifier]['items'][0];
 
         $this->additionalData = $thisAdditionalData;
-        // --------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function getProduct()
     {
@@ -109,7 +116,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         return $this->item->getParentObject()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 
     public function getOptions()
     {
@@ -121,7 +128,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         return $this->item->getParentObject()->getAssociatedProducts();
     }
 
-    // ########################################
+    //########################################
 
     public function getBasePrice()
     {
@@ -156,7 +163,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         return $this->getOriginalQty();
     }
 
-    // ########################################
+    //########################################
 
     public function hasTax()
     {
@@ -178,16 +185,16 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         return $this->getProxyOrder()->getProductPriceTaxRate();
     }
 
-    // ########################################
+    //########################################
 
     public function getGiftMessage()
     {
         return null;
     }
 
-    // ########################################
+    //########################################
 
     abstract public function getAdditionalData();
 
-    // ########################################
+    //########################################
 }

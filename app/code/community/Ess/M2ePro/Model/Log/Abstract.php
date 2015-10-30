@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
@@ -17,7 +19,7 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
 
     protected $componentMode = NULL;
 
-    //####################################
+    //########################################
 
     public function setComponentMode($mode)
     {
@@ -31,7 +33,7 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
         return $this->componentMode;
     }
 
-    //####################################
+    //########################################
 
     public function getNextActionId()
     {
@@ -60,13 +62,22 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
         return $nextActionId;
     }
 
+    /**
+     * @return string
+     */
     public function getLastActionIdConfigKey()
     {
         return 'general';
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param string $string
+     * @param array $params
+     * @param array $links
+     * @return string
+     */
     public function encodeDescription($string, array $params = array(), array $links = array())
     {
         if (count($params) <= 0 && count($links) <= 0) {
@@ -82,6 +93,10 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
         return json_encode($descriptionData);
     }
 
+    /**
+     * @param string $string
+     * @return string
+     */
     public function decodeDescription($string)
     {
         if (!is_string($string) || $string == '') {
@@ -106,7 +121,7 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
         return $string;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     protected function addPlaceholdersToMessage($string, $params)
     {
@@ -176,7 +191,7 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
         return $resultString;
     }
 
-    //####################################
+    //########################################
 
     protected function getActionTitleByClass($class, $type)
     {
@@ -216,7 +231,7 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
         return $actionsValues;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     protected function clearMessagesByTable($tableNameOrModelName, $columnName = NULL, $columnId = NULL)
     {
@@ -234,5 +249,5 @@ class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
         Mage::getSingleton('core/resource')->getConnection('core_write')->delete($logsTable,$where);
     }
 
-    //####################################
+    //########################################
 }

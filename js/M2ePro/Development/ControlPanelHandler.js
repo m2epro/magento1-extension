@@ -1,7 +1,7 @@
 DevelopmentControlPanelHandler = Class.create();
 DevelopmentControlPanelHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -37,5 +37,5 @@ DevelopmentControlPanelHandler.prototype = Object.extend(new CommonHandler(), {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

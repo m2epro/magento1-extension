@@ -1,37 +1,39 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingSearchGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
         // Get collection products in listing
-        //--------------------------------
+        // ---------------------------------------
         $nameAttribute = Mage::getResourceModel('catalog/product')->getAttribute('name');
         $nameAttributeId = $nameAttribute ? (int)$nameAttribute->getId() : 0;
 
@@ -65,16 +67,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
             '(`ebit`.`id` = `second_table`.`ebay_item_id`)',
             array('item_id')
         );
-        //------------------------------
+        // ---------------------------------------
 
         // add stock availability, status & visibility to select
-        //------------------------------
+        // ---------------------------------------
         $listingProductCollection->getSelect()->joinLeft(
             array('cisi' => Mage::getResourceModel('cataloginventory/stock_item')->getMainTable()),
             '(`cisi`.`product_id` = `main_table`.`product_id` AND `cisi`.`stock_id` = 1)',
             array('is_in_stock')
         );
-        //------------------------------
+        // ---------------------------------------
 
         $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingProductCollection->getSelect()->columns(
@@ -98,7 +100,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
                 'online_current_price'  => 'second_table.online_current_price',
                 'online_reserve_price'  => 'second_table.online_reserve_price',
                 'online_buyitnow_price' => 'second_table.online_buyitnow_price',
-                'min_online_price'      => 'second_table.online_current_price',
+                'min_online_price'      => 'IF(
+                    (`t`.`variation_min_price` IS NULL),
+                    `second_table`.`online_current_price`,
+                    `t`.`variation_min_price`
+                )',
                 'max_online_price'      => 'IF(
                     (`t`.`variation_max_price` IS NULL),
                     `second_table`.`online_current_price`,
@@ -114,6 +120,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
             new Zend_Db_Expr('(
                 SELECT
                     `mlpv`.`listing_product_id`,
+                    MIN(`melpv`.`online_price`) as variation_min_price,
                     MAX(`melpv`.`online_price`) as variation_max_price
                 FROM `'. Mage::getResourceModel('M2ePro/Listing_Product_Variation')->getMainTable() .'` AS `mlpv`
                 INNER JOIN `' .
@@ -125,23 +132,24 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
             )'),
             'second_table.listing_product_id=t.listing_product_id',
             array(
+                'variation_min_price' => 'variation_min_price',
                 'variation_max_price' => 'variation_max_price',
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listingOtherCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
         $listingOtherCollection->getSelect()->distinct();
 
         // add stock availability, type id, status & visibility to select
-        //------------------------------
+        // ---------------------------------------
         $listingOtherCollection->getSelect()->joinLeft(
             array('cisi' => Mage::getResourceModel('cataloginventory/stock_item')->getMainTable()),
             '(`cisi`.`product_id` = `main_table`.`product_id` AND cisi.stock_id = 1)',
             array('is_in_stock')
         );
-        //------------------------------
+        // ---------------------------------------
 
         $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingOtherCollection->getSelect()->columns(
@@ -171,12 +179,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
                 'listing_title'         => new Zend_Db_Expr('NULL'),
                 'is_m2epro_listing'     => new Zend_Db_Expr(0),
                 'is_in_stock'           => 'cisi.is_in_stock',
+                'variation_min_price'   => new Zend_Db_Expr('NULL'),
                 'variation_max_price'   => new Zend_Db_Expr('NULL'),
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $selects = array($listingProductCollection->getSelect());
         if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
             $selects[] = $listingOtherCollection->getSelect();
@@ -216,10 +225,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
                 'is_in_stock'
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
         $this->setCollection($resultCollection);
-//        exit($resultCollection->getSelect().'');
 
         return parent::_prepareCollection();
     }
@@ -241,7 +249,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
         $this->addColumn('product_name', array(
             'header'    => $helper->__('Product Title / Listing / Product SKU'),
             'align'     => 'left',
-            //'width'     => '300px',
             'type'      => 'text',
             'index'     => 'product_name',
             'filter_index' => 'product_name',
@@ -362,7 +369,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
@@ -520,6 +527,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_Adminhtml
 
         if ($value <= 0) {
             return '<span style="color: red;">0</span>';
+        }
+
+        if ($row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
+            return '<span style="color: gray; text-decoration: line-through;">' . $value . '</span>';
         }
 
         return $value;
@@ -704,7 +715,7 @@ HTML;
 HTML;
     }
 
-    // ####################################
+    //########################################
 
     protected function callbackFilterTitle($collection, $column)
     {
@@ -757,7 +768,7 @@ HTML;
         $collection->getSelect()->where($condition);
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -769,5 +780,5 @@ HTML;
         return false;
     }
 
-    // ####################################
+    //########################################
 }

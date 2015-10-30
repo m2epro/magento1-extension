@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -14,7 +16,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
      */
     private $marketplaceModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -22,13 +24,20 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         $this->_init('M2ePro/Ebay_Template_Payment');
     }
 
+    /**
+     * @return string
+     */
     public function getNick()
     {
         return Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -66,7 +75,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         return true;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -90,7 +99,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
          $this->marketplaceModel = $instance;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param bool $asObjects
@@ -103,24 +112,30 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
                                             $asObjects, $filters);
     }
 
-    // #######################################
+    //########################################
 
     public function getTitle()
     {
         return $this->getData('title');
     }
 
+    /**
+     * @return bool
+     */
     public function isCustomTemplate()
     {
         return (bool)$this->getData('is_custom_template');
     }
 
+    /**
+     * @return int
+     */
     public function getMarketplaceId()
     {
         return (int)$this->getData('marketplace_id');
     }
 
-    //--------------------------------------
+    // ---------------------------------------
 
     public function getCreateDate()
     {
@@ -132,8 +147,11 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         return $this->getData('update_date');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isPayPalEnabled()
     {
         return (bool)$this->getData('pay_pal_mode');
@@ -144,24 +162,33 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         return $this->getData('pay_pal_email_address');
     }
 
+    /**
+     * @return bool
+     */
     public function isPayPalImmediatePaymentEnabled()
     {
         return (bool)$this->getData('pay_pal_immediate_payment');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         return array();
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         return array();
     }
 
-    // #######################################
+    //########################################
 
     public function getDataSnapshot()
     {
@@ -178,6 +205,9 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultSettingsSimpleMode()
     {
         return array(
@@ -188,12 +218,15 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         );
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultSettingsAdvancedMode()
     {
         return $this->getDefaultSettingsSimpleMode();
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param bool $asArrays
@@ -241,7 +274,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -255,5 +288,5 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
         return parent::delete();
     }
 
-    // #######################################
+    //########################################
 }

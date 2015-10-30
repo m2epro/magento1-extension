@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
     extends Ess_M2ePro_Model_Amazon_Synchronization_Templates_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         return 'Revise';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         return 20;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -45,7 +47,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         $this->executeTotal();
     }
 
-    //####################################
+    //########################################
 
     private function executeQtyChanged()
     {
@@ -58,6 +60,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
 
         foreach ($changedListingsProducts as $listingProduct) {
 
+            /** @var $configurator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowQty();
@@ -93,6 +96,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
 
         foreach ($changedListingsProducts as $listingProduct) {
 
+            /** @var $configurator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowPrice();
@@ -117,7 +121,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 
     private function executeDetailsChanged()
     {
@@ -183,6 +187,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
                 continue;
             }
 
+            /** @var $configurator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowDetails();
@@ -257,6 +262,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
                 continue;
             }
 
+            /** @var $configurator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowImages();
@@ -281,14 +287,20 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 
     private function executeNeedSynchronize()
     {
         $this->getActualOperationHistory()->addTimePoint(__METHOD__,'Execute is need synchronize');
 
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('status', Ess_M2ePro_Model_Listing_Product::STATUS_LISTED);
+        $listingProductCollection->addFieldToFilter(
+            'status',
+            array('in' => array(
+                Ess_M2ePro_Model_Listing_Product::STATUS_LISTED,
+                Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN,
+            ))
+        );
         $listingProductCollection->addFieldToFilter('synch_status',Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_NEED);
         $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
 
@@ -299,6 +311,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
 
             $listingProduct->setData('synch_status',Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_SKIP)->save();
 
+            /** @var $configurator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
 
             $isExistInRunner = $this->getRunner()->isExistProduct(
@@ -348,6 +361,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         /* @var $listingProduct Ess_M2ePro_Model_Listing_Product */
         foreach ($collection->getItems() as $listingProduct) {
 
+            /** @var $configurator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
 
             $isExistInRunner = $this->getRunner()->isExistProduct(
@@ -387,7 +401,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 
     /**
      * @param array $trackingAttributes
@@ -437,5 +451,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         return $filteredChangedListingsProducts;
     }
 
-    //####################################
+    //########################################
 }

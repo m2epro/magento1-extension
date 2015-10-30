@@ -1,7 +1,7 @@
 CommonBuyListingChannelSettingsHandler = Class.create();
 CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -49,7 +49,7 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     save_click: function(url)
     {
@@ -65,14 +65,14 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         this.submitForm(url);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     account_id_change: function()
     {
         BuyListingChannelSettingsHandlerObj.hideEmptyOption($('account_id'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     sku_mode_change: function()
     {
@@ -84,7 +84,7 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     sku_modification_mode_change: function()
     {
@@ -103,38 +103,19 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     general_id_mode_change: function()
     {
         var self = BuyListingChannelSettingsHandlerObj;
 
-        if (this.value == self.GENERAL_ID_MODE_WORLDWIDE) {
-            $('general_id_attribute_label').innerHTML = M2ePro.text.general_id_label_upc;
-        }
-        if (this.value == self.GENERAL_ID_MODE_GENERAL_ID) {
-            $('general_id_attribute_label').innerHTML = M2ePro.text.general_id_label_bsku;
-        }
-        if (this.value == self.GENERAL_ID_MODE_SELLER_SKU) {
-            $('general_id_attribute_label').innerHTML = M2ePro.text.general_id_label_ssku;
-        }
-        if (this.value == self.GENERAL_ID_MODE_ISBN) {
-            $('general_id_attribute_label').innerHTML = M2ePro.text.general_id_label_isbn;
-        }
-
-        if (this.value == self.GENERAL_ID_MODE_NOT_SET) {
-            $('general_id_custom_attribute_container').hide();
-        } else {
-            $('general_id_custom_attribute_container').show();
+        $('general_id_custom_attribute').value = '';
+        if (this.value == self.GENERAL_ID_MODE_CUSTOM_ATTRIBUTE) {
+            self.updateHiddenValue(this, $('general_id_custom_attribute'));
         }
     },
 
-    general_id_custom_attribute_change: function()
-    {
-        BuyListingChannelSettingsHandlerObj.hideEmptyOption($('general_id_custom_attribute'));
-    },
-
-    //----------------------------------
+    // ---------------------------------------
 
     shipping_standard_mode_change: function()
     {
@@ -290,7 +271,7 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     condition_mode_change: function()
     {
@@ -307,7 +288,7 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     condition_note_mode_change: function()
     {
@@ -320,7 +301,7 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     appendToText: function(ddId, targetId)
     {
@@ -358,5 +339,5 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

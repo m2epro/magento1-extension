@@ -1,35 +1,37 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     private $cacheData = array();
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingOtherGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setSaveParametersInSession(true);
         $this->setPagerVisibility(false);
         $this->setUseAjax(true);
         $this->setFilterVisibility(false);
         $this->setDefaultLimit(100);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -37,8 +39,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
 
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
         $collection->getSelect()->group(array('account_id','marketplace_id'));
-
-//        exit($collection->getSelect()->__toString());
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -49,9 +49,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
     protected function _prepareColumns()
     {
         $this->addColumn('account', array(
-            'header'    => Mage::helper('M2ePro')->__('eBay User ID'),
+            'header'    => Mage::helper('M2ePro')->__('Account'),
             'align'     => 'left',
-            //'width'     => '200px',
             'type'      => 'text',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnAccount')
@@ -60,7 +59,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
         $this->addColumn('marketplace', array(
             'header'    => Mage::helper('M2ePro')->__('eBay Site'),
             'align'     => 'left',
-            //'width'     => '200px',
             'type'      => 'text',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnMarketplace')
@@ -113,7 +111,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnAccount($value, $row, $column, $isExport)
     {
@@ -199,7 +197,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
         return $value;
     }
 
-    // ####################################
+    //########################################
 
     public function getRowUrl($row)
     {
@@ -212,7 +210,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
         ));
     }
 
-    // ####################################
+    //########################################
 
     private function prepareCacheData()
     {
@@ -251,5 +249,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
 
     }
 
-    // ####################################
+    //########################################
 }

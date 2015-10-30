@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
 {
     protected $synchronizationLog = NULL;
 
-    // ##########################################################
+    //########################################
 
     protected function processResponseMessages(array $messages = array())
     {
@@ -45,8 +47,12 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
         return true;
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -79,12 +85,10 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
         );
     }
 
-    // ##########################################################
+    //########################################
 
     protected function processResponseData($response)
     {
-        Mage::getSingleton('M2ePro/Order_Log_Manager')->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
-
         try {
 
             $amazonOrders = $this->processAmazonOrders($response, $this->getAccount());
@@ -106,7 +110,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
         }
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function processAmazonOrders($response, Ess_M2ePro_Model_Account $account)
     {
@@ -146,6 +150,8 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
     {
         foreach ($amazonOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+
             if ($order->canCreateMagentoOrder()) {
                 try {
                     $order->createMagentoOrder();
@@ -170,7 +176,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
         }
     }
 
-    // ##########################################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -188,7 +194,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
         return $this->getAccount()->getChildObject()->getMarketplace();
     }
 
-    // ##########################################################
+    //########################################
 
     private function getSynchronizationLog()
     {
@@ -203,5 +209,5 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
         return $this->synchronizationLog;
     }
 
-    // ##########################################################
+    //########################################
 }

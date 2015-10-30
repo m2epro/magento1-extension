@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
@@ -9,7 +11,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
 {
     const LOCK_ITEM_PREFIX = 'synchronization_buy_default_update_listings_products';
 
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -21,7 +23,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
         return 'Update Listings Products';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -33,7 +35,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
         return 100;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function intervalIsEnabled()
     {
@@ -75,7 +77,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
         return $currentLastTime;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -122,8 +124,8 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
                 $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
             }
 
-        // M2ePro_TRANSLATIONS
-        // The "Update Listings Products" Action for Rakuten.com Account: "%account_title%" is finished. Please wait...
+            // M2ePro_TRANSLATIONS
+            // The "Update Listings Products" Action for Rakuten.com Account: "%account_title%" is finished. Please wait...
             $status = 'The "Update Listings Products" Action for Rakuten.com Account: "%account_title%" is finished.'.
                 ' Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
@@ -134,7 +136,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
         }
     }
 
-    //####################################
+    //########################################
 
     private function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
@@ -145,5 +147,5 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts
         return $lockItem->isExist();
     }
 
-    //####################################
+    //########################################
 }

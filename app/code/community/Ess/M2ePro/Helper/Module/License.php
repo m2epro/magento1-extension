@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
@@ -20,7 +22,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
     const IS_FREE_NO = 0;
     const IS_FREE_YES = 1;
 
-    // ########################################
+    //########################################
 
     public function getKey()
     {
@@ -30,7 +32,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return !is_null($key) ? (string)$key : '';
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getDomain()
     {
@@ -56,7 +58,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return !is_null($directory) ? (string)$directory : '';
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getEmail()
     {
@@ -66,7 +68,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return !is_null($email) ? (string)$email : '';
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function isValidDomain()
     {
@@ -89,7 +91,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return is_null($isValid) || (bool)$isValid;
     }
 
-    // ########################################
+    //########################################
 
     public function getMode($component)
     {
@@ -126,7 +128,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return $this->getMode($component) == self::MODE_LIVE;
     }
 
-    //--------------------------
+    // ---------------------------------------
 
     public function getStatus($component)
     {
@@ -169,7 +171,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return $this->getStatus($component) == self::STATUS_CANCELED;
     }
 
-    //--------------------------
+    // ---------------------------------------
 
     public function getIsFree($component)
     {
@@ -196,7 +198,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return $this->getIsFree($component) == self::IS_FREE_NO;
     }
 
-    // ########################################
+    //########################################
 
     public function isExpirationDate($component)
     {
@@ -238,7 +240,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return $timeStampExpDate - $timeStampCurrentDate;
     }
 
-    // ########################################
+    //########################################
 
     public function obtainRecord($email = NULL, $firstName = NULL, $lastName = NULL,
                                  $country = NULL, $city = NULL, $postalCode = NULL)
@@ -314,5 +316,5 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         return true;
     }
 
-    // ########################################
+    //########################################
 }

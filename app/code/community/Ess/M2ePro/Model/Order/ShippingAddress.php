@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -18,7 +20,7 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
     /** @var Mage_Directory_Model_Region */
     protected $region;
 
-    // ########################################
+    //########################################
 
     abstract public function getRawData();
 
@@ -62,6 +64,9 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
         return $this->region;
     }
 
+    /**
+     * @return bool
+     */
     public function isRegionValidationRequired()
     {
         return false;
@@ -103,5 +108,5 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
         return $this->getData('state');
     }
 
-    // ########################################
+    //########################################
 }

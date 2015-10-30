@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abstract
 {
     const DATA_REGISTRY_KEY  = 'amazon_variation_themes_usage';
 
-    // #############################################
+    //########################################
 
     public function filterProductsNotMatchingForNewAsin($productsIds)
     {
@@ -21,7 +23,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         return $productsIds;
     }
 
-    // #############################################
+    //########################################
 
     public function filterProductsByGeneralId($productsIds)
     {
@@ -157,7 +159,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         return $listingProductsIds;
     }
 
-    // #############################################
+    //########################################
 
     public function filterProductsByDescriptionTemplate($productsIds)
     {
@@ -212,19 +214,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
                 $amazonListingProduct->getAmazonDescriptionTemplate()->getProductDataNick()
             );
 
-            $productAttributes = $amazonListingProduct->getVariationManager()
-                ->getTypeModel()
-                ->getProductAttributes();
-
-            $isCountEqual = false;
-            foreach ($themes as $theme) {
-                if (count($theme['attributes']) == count($productAttributes)) {
-                    $isCountEqual = true;
-                    break;
-                }
-            }
-
-            if (!$isCountEqual) {
+            if (empty($themes)) {
                 unset($productsIds[$key]);
             }
         }
@@ -232,7 +222,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         return $productsIds;
     }
 
-    // #############################################
+    //########################################
 
     public function increaseThemeUsageCount($theme, $marketplaceId)
     {
@@ -254,7 +244,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         $this->removeThemeUsageDataCache();
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     public function getThemesUsageData()
     {
@@ -272,7 +262,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         return $data;
     }
 
-    // #############################################
+    //########################################
 
     private function getThemeUsageDataCache()
     {
@@ -280,7 +270,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     private function setThemeUsageDataCache(array $data)
     {
@@ -288,7 +278,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey, $data);
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     private function removeThemeUsageDataCache()
     {
@@ -296,5 +286,5 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue($cacheKey);
     }
 
-    // #############################################
+    //########################################
 }

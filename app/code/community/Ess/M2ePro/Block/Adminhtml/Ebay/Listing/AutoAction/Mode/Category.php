@@ -1,39 +1,41 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category extends Mage_Adminhtml_Block_Widget
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingAutoActionModeCategory');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/listing/auto_action/mode/category.phtml');
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $groupGrid = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_ebay_listing_autoAction_mode_category_group_grid');
         $groupGrid->prepareGrid();
         $this->setChild('group_grid', $groupGrid);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'confirm_button',
             'class'   => 'confirm_button',
@@ -43,9 +45,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category extends M
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'close_button',
             'class'   => 'close_button',
@@ -54,9 +56,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category extends M
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('close_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'continue_button',
             'class'   => 'continue_button next',
@@ -66,9 +68,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category extends M
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('continue_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'add_button',
             'class'   => 'add_button add',
@@ -78,9 +80,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category extends M
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('add_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'add_first_button',
             'class'   => 'add_first_button add',
@@ -89,14 +91,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AutoAction_Mode_Category extends M
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('add_first_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $breadcrumb = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_autoAction_mode_breadcrumb');
         $breadcrumb->setData('step', 1);
         $this->setChild('breadcrumb', $breadcrumb);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_template_synchronization`
@@ -24,7 +24,7 @@ $connection = $installer->getConnection();
     ADD INDEX `relist_schedule_week` (`relist_schedule_week`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -43,7 +43,7 @@ if (!isset($tempTableIndexList[strtoupper('relist_schedule_week')])) {
     $connection->addKey($tempTable, 'relist_schedule_week', 'relist_schedule_week');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -62,7 +62,7 @@ if (!isset($tempTableIndexList[strtoupper('relist_schedule_week')])) {
     $connection->addKey($tempTable, 'relist_schedule_week', 'relist_schedule_week');
 }
 
-//#############################################
+//########################################
 
 if ((string)Mage::getConfig()->getTablePrefix() != '') {
 
@@ -85,7 +85,7 @@ if ((string)Mage::getConfig()->getTablePrefix() != '') {
     }
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $priceMode = $connection->query("
@@ -109,7 +109,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -121,8 +121,8 @@ AND `key` = 'baseurl';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

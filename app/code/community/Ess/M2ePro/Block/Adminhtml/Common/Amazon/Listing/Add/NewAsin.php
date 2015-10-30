@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonListingAddNewAsin');
-        //------------------------------
+        // ---------------------------------------
 
         $this->_headerText = Mage::helper('M2ePro')->__('New ASIN/ISBN Creation');
 
@@ -38,14 +40,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin extends Ess_M
         $this->setTemplate('M2ePro/common/amazon/listing/add/new_asin.phtml');
     }
 
-    // ####################################
+    //########################################
 
     public function getHeaderWidth()
     {
         return 'width:50%;';
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -62,17 +64,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin extends Ess_M
 
         $this->setChild('view_header', $viewHeaderBlock);
 
-        // ------------------------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'onclick' => '',
-            ) );
-        $this->setChild('mode_same_remember_pop_up_confirm_button',$buttonBlock);
+            ));
+        $this->setChild('mode_same_remember_pop_up_confirm_button', $buttonBlock);
     }
 
-    // ####################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -92,14 +94,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin extends Ess_M
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 
     public function getProductsIds()
     {
         return $this->getListing()->getSetting('additional_data', 'adding_new_asin_listing_products_ids');
     }
 
-    // ####################################
+    //########################################
 
     public function getDescriptionTemplateMode()
     {
@@ -120,5 +122,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin extends Ess_M
         return $mode;
     }
 
-    // ####################################
+    //########################################
 }

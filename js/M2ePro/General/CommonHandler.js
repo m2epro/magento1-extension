@@ -1,11 +1,11 @@
 CommonHandler = Class.create();
 CommonHandler.prototype = {
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     initCommonValidators: function()
     {
@@ -73,7 +73,7 @@ CommonHandler.prototype = {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     scroll_page_to_top: function()
     {
@@ -89,7 +89,7 @@ CommonHandler.prototype = {
         setLocation(url.replace(/#$/, ''));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     save_click: function(url)
     {
@@ -113,7 +113,7 @@ CommonHandler.prototype = {
         this.submitForm(url);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     duplicate_click: function($headId, chapter_when_duplicate_text)
     {
@@ -141,7 +141,7 @@ CommonHandler.prototype = {
         setLocation(M2ePro.url.get('deleteAction'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     submitForm: function(url, newWindow)
     {
@@ -175,7 +175,7 @@ CommonHandler.prototype = {
         setTimeout(form.submit.bind(form), 250);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openWindow: function(url)
     {
@@ -184,7 +184,7 @@ CommonHandler.prototype = {
         return w;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     updateHiddenValue : function(elementMode, elementHidden)
     {
@@ -206,7 +206,7 @@ CommonHandler.prototype = {
         $(el) && $(el).removeClassName('required-entry');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setConstants: function(data)
     {
@@ -216,9 +216,11 @@ CommonHandler.prototype = {
         }
     },
 
-    setValidationCheckRepetitionValue: function(idInput, textError, model, dataField, idField, idValue, component)
+    setValidationCheckRepetitionValue: function(idInput, textError, model, dataField, idField, idValue, component, filterField, filterValue)
     {
         component = component || null;
+        filterField = filterField || null;
+        filterValue = filterValue || null;
 
         Validation.add(idInput, textError, function(value) {
             var checkResult = false;
@@ -232,7 +234,9 @@ CommonHandler.prototype = {
                     data_value: value,
                     id_field: idField,
                     id_value: idValue,
-                    component: component
+                    component: component,
+                    filter_field: filterField,
+                    filter_value: filterValue
                 },
                 onSuccess: function(transport) {
                     checkResult = transport.responseText.evalJSON()['result'];
@@ -243,7 +247,7 @@ CommonHandler.prototype = {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     autoHeightFix: function()
     {
@@ -253,5 +257,5 @@ CommonHandler.prototype = {
         }, 50);
     }
 
-    //----------------------------------
+    // ---------------------------------------
 }

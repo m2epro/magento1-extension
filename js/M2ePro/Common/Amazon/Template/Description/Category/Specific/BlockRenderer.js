@@ -1,6 +1,6 @@
 CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(CommonAmazonTemplateDescriptionCategorySpecificRenderer, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     isRootBlock : false,
     isFlatBlock : false,
@@ -14,7 +14,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         rows       : []
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     process: function()
     {
@@ -51,7 +51,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
             return loadResult;
         }
 
-        // -- check nesting level
+        // check nesting level
         if (this.indexedXPath.split('/').length >= 4) {
             this.isFlatBlock = true;
         }
@@ -59,7 +59,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         return loadResult;
     },
 
-    //###################################
+    //########################################
 
     prepareFilteredChildSpecifics: function()
     {
@@ -83,7 +83,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         };
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     renderParentSpecific: function()
     {
@@ -106,10 +106,10 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
     {
         this.prepareDomStructure();
 
-        // --
+        // ---------------------------------------
         $(this.indexedXPath).observe('my-duplicate-is-rendered', this.onMyDuplicateRendered.bind(this));
         $(this.indexedXPath).observe('undeleteble-specific-appear', this.onWhenUndeletebleSpecificAppears.bind(this));
-        // --
+        // ---------------------------------------
 
         this.specificHandler.markSpecificAsRendered(this.indexedXPath);
         this.specificHandler.markSpecificAsSelected(this.indexedXPath, {mode: this.MODE_NONE});
@@ -139,7 +139,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         });
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     tuneStyles: function()
     {
@@ -168,7 +168,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
             blockStyles['width'] = '100%';
         }
 
-        // -- container in container. like Product Type for example
+        // container in container. like Product Type for example
         if (this.withOneBlockOnly) {
             headerStyles['display'] = 'none';
             blockStyles = {};
@@ -178,9 +178,9 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         if (this.parentWithOneBlockOnly) {
             header.down('span.title').innerHTML = this.parentSpecific.title + ' > ' + header.down('span.title').innerHTML;
         }
-        // --
+        // ---------------------------------------
 
-        // -- margin ParentGrid => Block
+        // margin ParentGrid => Block
         var parentGrid = $(this.getParentIndexedXpath() + '_grid');
         if (parentGrid) {
             blockStyles['margin-top'] = '13px';
@@ -213,12 +213,12 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         var myEvent = new CustomEvent('child-specific-rendered');
         parentXpath && $(parentXpath).dispatchEvent(myEvent);
 
-        // -- my duplicate is already rendered
+        // my duplicate is already rendered
         this.touchMyNeighbors();
-        // --
+        // ---------------------------------------
     },
 
-    //###################################
+    //########################################
 
     prepareDomStructure: function()
     {
@@ -294,7 +294,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         return button;
     },
 
-    //###################################
+    //########################################
 
     removeAction: function($super, event)
     {
@@ -304,7 +304,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         return deleteResult;
     },
 
-    //###################################
+    //########################################
 
     getContainer: function()
     {
@@ -315,5 +315,5 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         return $(this.getParentIndexedXpath());
     }
 
-    // --------------------------------
+    // ---------------------------------------
 });

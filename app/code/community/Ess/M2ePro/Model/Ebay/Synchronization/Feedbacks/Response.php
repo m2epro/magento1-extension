@@ -1,44 +1,61 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Feedbacks_Response
     extends Ess_M2ePro_Model_Ebay_Synchronization_Feedbacks_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/response/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Response';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 50;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 100;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     protected function intervalIsEnabled()
     {
         return true;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -63,7 +80,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Feedbacks_Response
         }
     }
 
-    //####################################
+    //########################################
 
     private function getLastUnanswered($daysAgo = 30)
     {
@@ -117,7 +134,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Feedbacks_Response
         return $result;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     private function processFeedback(Ess_M2ePro_Model_Ebay_Feedback $feedback)
     {
@@ -212,5 +229,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Feedbacks_Response
         return '';
     }
 
-    //####################################
+    //########################################
 }

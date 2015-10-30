@@ -1,12 +1,12 @@
 WizardInstallationEbay = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     licenseForm      : null,
     popupLicenseForm : null,
 
-    // -- License
-    //----------------------------------
+    // License
+    // ---------------------------------------
 
     initLicense: function()
     {
@@ -14,7 +14,7 @@ WizardInstallationEbay = Class.create(CommonHandler, {
         this.popupLicenseForm = new varienForm('popup_license_form');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopupAction: function()
     {
@@ -54,7 +54,7 @@ WizardInstallationEbay = Class.create(CommonHandler, {
         this.closePopupAction();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     copyValuesFromPopup: function()
     {
@@ -73,7 +73,7 @@ WizardInstallationEbay = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     createLicenseAndGetToken: function(accountMode)
     {
@@ -129,8 +129,8 @@ WizardInstallationEbay = Class.create(CommonHandler, {
         return false;
     },
 
-    // -- Account
-    //----------------------------------
+    // Account
+    // ---------------------------------------
 
     initAccountSettings: function()
     {
@@ -169,8 +169,8 @@ WizardInstallationEbay = Class.create(CommonHandler, {
         }, 1000);
     },
 
-    // -- Mode
-    //----------------------------------
+    // Mode
+    // ---------------------------------------
 
     initAccountMode: function(accountMode)
     {
@@ -207,5 +207,5 @@ WizardInstallationEbay = Class.create(CommonHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

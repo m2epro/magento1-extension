@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Form
@@ -11,16 +13,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Fo
     private $attributes = NULL;
     private $overrideDictionaryData = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonTemplateShippingOverrideEditForm');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/common/amazon/template/shippingOverride/form.phtml');
     }
@@ -44,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Fo
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData(array(
@@ -52,21 +54,21 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Fo
                 'class' => 'add add_shipping_override_rule_button'
             ));
         $this->setChild('add_shipping_override_rule_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                 'label'   => Mage::helper('M2ePro')->__('Remove'),
                 'onclick' => 'AmazonTemplateShippingOverrideHandlerObj.removeRow(this);',
                 'class' => 'delete icon-btn remove_shipping_override_rule_button'
-            ) );
-        $this->setChild('remove_shipping_override_rule_button',$buttonBlock);
-        //------------------------------
+            ));
+        $this->setChild('remove_shipping_override_rule_button', $buttonBlock);
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function getAttributes()
     {
@@ -77,7 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Fo
         return $this->attributes;
     }
 
-    // ####################################
+    //########################################
 
     public function getEnabledMarketplaces()
     {
@@ -93,7 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Fo
         return $this->enabledMarketplaces->getItems();
     }
 
-    // ####################################
+    //########################################
 
     public function getOverrideDictionaryData()
     {
@@ -108,5 +110,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_ShippingOverride_Edit_Fo
         return $this->overrideDictionaryData;
     }
 
-    // ####################################
+    //########################################
 }

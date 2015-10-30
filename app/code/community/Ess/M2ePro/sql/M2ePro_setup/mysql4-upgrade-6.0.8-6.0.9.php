@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_selling_format`
@@ -54,7 +54,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `online_sale_price_end_date` DATETIME DEFAULT NULL AFTER `online_sale_price_start_date`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 
@@ -98,7 +98,7 @@ if ($connection->tableColumnExists($tempTable, 'price_increase_vat_percent') ===
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -166,7 +166,7 @@ if (!isset($tempTableIndexList[strtoupper('is_charity')])) {
     $connection->addKey($tempTable, 'is_charity', 'is_charity');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_item');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -195,7 +195,7 @@ if (!isset($tempTableIndexList[strtoupper('marketplace_id')])) {
     $connection->addKey($tempTable, 'marketplace_id', 'marketplace_id');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_category');
 
@@ -206,7 +206,7 @@ if ($connection->tableColumnExists($tempTable, 'variation_enabled') !== false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_product');
 
@@ -217,7 +217,7 @@ if ($connection->tableColumnExists($tempTable, 'is_m2epro_listed_item') !== fals
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_synchronization');
 
@@ -226,7 +226,7 @@ if ($connection->tableColumnExists($tempTable, 'revise_update_gallery') !== fals
     $connection->changeColumn($tempTable,'revise_update_gallery','revise_update_images','TINYINT(2) UNSIGNED NOT NULL');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $orderItemTable = $installer->getTable('m2epro_order_item');
 
@@ -238,7 +238,7 @@ if ($connection->tableColumnExists($orderItemTable, 'qty_reserved') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 
@@ -258,7 +258,7 @@ if ($connection->tableColumnExists($tempTable, 'online_sale_price_end_date') ===
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -319,7 +319,7 @@ WHERE `marketplace_id` IN (3, 8);
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempQuery = <<<SQL
@@ -341,7 +341,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $ebayListingProductTable = $installer->getTable('m2epro_ebay_listing_product');
 $listingProductTable = $installer->getTable('m2epro_listing_product');
@@ -409,7 +409,7 @@ foreach ($preparedData as $dataKey => $ebayItemIds) {
     }
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -457,7 +457,7 @@ foreach ($connection->select()->from($lockItemTable,'*')->query() as $row) {
     }
 }
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_selling_format`
@@ -468,7 +468,7 @@ foreach ($connection->select()->from($lockItemTable,'*')->query() as $row) {
     ADD COLUMN `tax_category_attribute` VARCHAR(255) NOT NULL AFTER `tax_category_value`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 
@@ -507,14 +507,14 @@ if ($connection->tableColumnExists($tempTable, 'tax_category_attribute') === fal
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 try {
     $migrationTool = new Ess_M2ePro_Migration_Tool_To_Version_6_0_9($installer);
     $migrationTool->process();
 } catch (Exception $exception) {}
 
-//---------------------------------------------
+// ---------------------------------------
 
 /*
     ALTER TABLE `m2epro_ebay_template_shipping`
@@ -525,7 +525,7 @@ try {
     DROP COLUMN `tax_category_attribute`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -549,11 +549,11 @@ if ($connection->tableColumnExists($tempTable, 'tax_category_attribute') !== fal
     $connection->dropColumn($tempTable, 'tax_category_attribute');
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################
 
 class Ess_M2ePro_Migration_Tool_To_Version_6_0_9
 {
@@ -570,7 +570,7 @@ class Ess_M2ePro_Migration_Tool_To_Version_6_0_9
     const RESULT_LISTINGS_PRODUCTS_KEY = 'listings_products';
     const RESULT_CHANGED_MODES         = 'changed_modes';
 
-    //#############################################
+    //########################################
 
     /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
     private $installer = null;
@@ -578,14 +578,14 @@ class Ess_M2ePro_Migration_Tool_To_Version_6_0_9
     private $buffer = array();
     private $result = array();
 
-    //#############################################
+    //########################################
 
     public function __construct(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    //#############################################
+    //########################################
 
     public function process()
     {
@@ -618,21 +618,21 @@ class Ess_M2ePro_Migration_Tool_To_Version_6_0_9
         }
     }
 
-    //#############################################
+    //########################################
 
     public function getInstaller()
     {
         return $this->installer;
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function getMigrationBuffer()
     {
         return $this->buffer;
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function getMigrationResult($key = null)
     {
@@ -643,7 +643,7 @@ class Ess_M2ePro_Migration_Tool_To_Version_6_0_9
         return isset($this->result[$key]) ? $this->result[$key] : array();
     }
 
-    //#############################################
+    //########################################
 
     private function isNeedToMigrate()
     {
@@ -655,7 +655,7 @@ class Ess_M2ePro_Migration_Tool_To_Version_6_0_9
                $connection->tableColumnExists($tempTable, 'tax_category_mode') !== false;
     }
 
-    //#############################################
+    //########################################
 
     private function backup()
     {
@@ -669,7 +669,7 @@ SQL
 );
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function migrateListings($affectedShippingTemplatesIds)
     {
@@ -752,7 +752,7 @@ SQL
         }
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function updateMigratedItems($key)
     {
@@ -807,7 +807,7 @@ SQL
         }
     }
 
-    //#############################################
+    //########################################
 
     private function getAffectedShippingTemplatesIds()
     {
@@ -826,7 +826,7 @@ SQL
         return $result;
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function getAffectedListings($shippingTemplatesIds)
     {
@@ -929,7 +929,7 @@ SQL
         return $result;
     }
 
-    //#############################################
+    //########################################
 
     private function getNewSellingTemplateIdFromBuffer($shippingTemplateId, $sellingTemplateId)
     {
@@ -944,7 +944,7 @@ SQL
         $this->buffer[$shippingTemplateId.'#'.$sellingTemplateId] = $newSellingTemplateId;
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function appendMigrationResult($key, $templateMode, $newSellingTemplateId, $targetId)
     {
@@ -956,7 +956,7 @@ SQL
         $this->result[self::RESULT_CHANGED_MODES][$templateMode][] = $listingProductId;
     }
 
-    //#############################################
+    //########################################
 
     private function createNewSellingTemplate($sellingTemplateId, $shippingTemplateId)
     {
@@ -1034,7 +1034,7 @@ SQL
         return $newTemplateId;
     }
 
-    //#############################################
+    //########################################
 
     private function arrayReplaceRecursive($base, $replacements)
     {
@@ -1062,13 +1062,13 @@ SQL
                     }
 
                 }
-            } while(count($head_stack));
+            } while (count($head_stack));
         }
 
         return $base;
     }
 
-    //#############################################
+    //########################################
 }
 
-//#############################################
+//########################################

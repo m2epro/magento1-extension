@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Relist
     extends Ess_M2ePro_Model_Amazon_Synchronization_Templates_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Relist
         return 'Relist';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,14 +33,14 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Relist
         return 35;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
         $this->immediatelyChangedProducts();
     }
 
-    //####################################
+    //########################################
 
     private function immediatelyChangedProducts()
     {
@@ -56,6 +58,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Relist
 
             $amazonSynchronizationTemplate = $amazonListingProduct->getAmazonSynchronizationTemplate();
 
+            /** @var $configurator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
 
             if (!$amazonSynchronizationTemplate->isRelistSendData()) {
@@ -83,5 +86,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Relist
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 }

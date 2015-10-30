@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,14 +8,14 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_selling_format`
     ADD COLUMN `restricted_to_business` tinyint(2) UNSIGNED DEFAULT 0 AFTER `listing_is_private`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 $columnName = 'restricted_to_business';
@@ -26,7 +26,7 @@ if ($connection->tableColumnExists($tempTable, $columnName) === false) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -48,7 +48,7 @@ SQL
 }
 
 // clearing of forgotten indexes from previous versions
-//#############################################
+//########################################
 
 $indexesToDrop = array('title', 'type');
 dropIndexes($installer, 'm2epro_exceptions_filters', $indexesToDrop);
@@ -100,7 +100,7 @@ $indexesToDrop = array('server_hash', 'login', 'related_store_id', 'other_listin
                        'other_listings_mapping_mode', 'other_listings_move_mode');
 dropIndexes($installer, 'm2epro_play_account', $indexesToDrop);
 
-//---------------------------------------------
+// ---------------------------------------
 
 function dropIndexes(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer, $tableName, $indexesToDrop)
 {
@@ -119,7 +119,7 @@ function dropIndexes(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer, $tableName,
     }
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -136,8 +136,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

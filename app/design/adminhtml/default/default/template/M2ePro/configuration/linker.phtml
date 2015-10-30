@@ -25,7 +25,7 @@
     if (Mage::helper('M2ePro/View')->isCurrentViewEbay()) : ?>
         <?php echo Mage::helper('M2ePro')->__('
             </br></br>More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Global+Settings')
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/CwAJAQ')
         ); ?>
     <?php else :
 
@@ -39,9 +39,9 @@
             <?php echo Mage::helper('M2ePro')->__('
                 </br></br>More detailed information about ability to work with this page you can find on <a target="_blank" href="%url1%">%amazon%</a> and
                 <a target="_blank" href="%url2%">%buy%</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Global+Settings'),
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/NYMVAQ'),
                 Mage::helper('M2ePro/Component_Amazon')->getTitle(),
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'Global+Settings'),
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/C4QVAQ'),
                 Mage::helper('M2ePro/Component_Buy')->getTitle()
             ); ?>
         <?php endif; ?>

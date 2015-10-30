@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -14,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
      */
     private $marketplaceModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -22,8 +24,12 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         $this->_init('M2ePro/Amazon_Template_ShippingOverride');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -53,7 +59,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         return true;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -77,8 +83,14 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         $this->marketplaceModel = $instance;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array|Ess_M2ePro_Model_Abstract[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getServices($asObjects = false, array $filters = array())
     {
         $services = $this->getRelatedSimpleItems('Amazon_Template_ShippingOverride_Service',
@@ -94,19 +106,22 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         return $services;
     }
 
-    // #######################################
+    //########################################
 
     public function getTitle()
     {
         return $this->getData('title');
     }
 
+    /**
+     * @return int
+     */
     public function getMarketplaceId()
     {
         return (int)$this->getData('marketplace_id');
     }
 
-    //---------------------------------------
+    // ---------------------------------------
 
     public function getCreateDate()
     {
@@ -118,8 +133,11 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         return $this->getData('update_date');
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         $attributes = array();
@@ -132,6 +150,9 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         return array_unique($attributes);
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         $attributes = array();
@@ -144,8 +165,11 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         return array_unique($attributes);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return array
+     */
     public function getDataSnapshot()
     {
         $data = parent::getDataSnapshot();
@@ -162,7 +186,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         return $data;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param bool $asArrays
@@ -198,7 +222,7 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
-    // #######################################
+    //########################################
 
     public function save()
     {
@@ -212,5 +236,5 @@ class Ess_M2ePro_Model_Amazon_Template_ShippingOverride extends Ess_M2ePro_Model
         return parent::delete();
     }
 
-    // #######################################
+    //########################################
 }

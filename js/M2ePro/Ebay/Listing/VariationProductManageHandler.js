@@ -1,6 +1,6 @@
 EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function($super,gridHandler)
     {
@@ -10,7 +10,7 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
 
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {},
 
@@ -20,7 +20,7 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
         return this;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     parseResponse: function(response)
     {
@@ -31,7 +31,7 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
         return response.responseText.evalJSON();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(productId, title, filter)
     {
@@ -53,7 +53,7 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
                     closable: true,
                     className: "magento",
                     windowClassName: "popup-window",
-                    title: title,
+                    title: title.escapeHTML(),
                     top: 5,
                     width: 1100,
                     height: 600,
@@ -111,5 +111,5 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
         gridIframe.contentWindow.EbayListingEbayGridHandlerObj.actionHandler.gridHandler.unselectAllAndReload();
     }
 
-    //---------------------------------
+    // ---------------------------------------
 });

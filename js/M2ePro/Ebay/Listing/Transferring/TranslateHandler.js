@@ -1,13 +1,13 @@
 EbayListingTransferringTranslateHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
         this.actionHandler = new EbayListingTransferringActionHandler();
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     loadActionHtml: function(selectedProductsIds, confirmCallback, closeCallback)
     {
@@ -38,7 +38,7 @@ EbayListingTransferringTranslateHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(title, content)
     {
@@ -81,7 +81,7 @@ EbayListingTransferringTranslateHandler = Class.create(CommonHandler, {
         }, 50);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     translationServiceChange: function(el)
     {
@@ -142,7 +142,7 @@ EbayListingTransferringTranslateHandler = Class.create(CommonHandler, {
 
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function()
     {
@@ -171,11 +171,11 @@ EbayListingTransferringTranslateHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     close: function() {
         this.popUp.close();
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

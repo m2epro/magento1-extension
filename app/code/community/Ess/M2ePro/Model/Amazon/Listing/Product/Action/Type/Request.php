@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
@@ -28,7 +30,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
      */
     private $requests = array();
 
-    // ########################################
+    //########################################
 
     public function setValidatorsData(array $data)
     {
@@ -43,8 +45,11 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         return $this->validatorsData;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         $this->beforeBuildDataEvent();
@@ -56,13 +61,13 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         return $data;
     }
 
-    // ########################################
+    //########################################
 
     protected function beforeBuildDataEvent() {}
 
     abstract protected function getActionData();
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     protected function prepareFinalData(array $data)
     {
@@ -81,7 +86,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request_Details
@@ -99,7 +104,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         return $this->getRequest('images');
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request_Price
@@ -125,7 +130,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         return $this->getRequest('shippingOverride');
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param $type
@@ -149,5 +154,5 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
         return $this->requests[$type];
     }
 
-    // ########################################
+    //########################################
 }

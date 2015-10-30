@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Mysql4_Collection_Component_Parent_Abstract
@@ -9,7 +11,7 @@ abstract class Ess_M2ePro_Model_Mysql4_Collection_Component_Parent_Abstract
 {
     protected $childMode = NULL;
 
-    // ########################################
+    //########################################
 
     public function __construct($resource = NULL)
     {
@@ -21,7 +23,7 @@ abstract class Ess_M2ePro_Model_Mysql4_Collection_Component_Parent_Abstract
         parent::__construct($resource);
     }
 
-    // ########################################
+    //########################################
 
     public function setChildMode($mode)
     {
@@ -35,7 +37,7 @@ abstract class Ess_M2ePro_Model_Mysql4_Collection_Component_Parent_Abstract
         return $this->childMode;
     }
 
-    // ########################################
+    //########################################
 
     protected function _initSelect()
     {
@@ -116,5 +118,5 @@ abstract class Ess_M2ePro_Model_Mysql4_Collection_Component_Parent_Abstract
         return parent::addItem($item);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,11 +1,11 @@
 AutoComplete = Class.create();
 AutoComplete.prototype = {
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function () {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     bind: function (id, url, selectedId, selectedValue, callBack, maxResults)
     {
@@ -39,7 +39,7 @@ AutoComplete.prototype = {
         });
     }
 
-    // --------------------------------
+    // ---------------------------------------
 }
 
 /*
@@ -370,4 +370,4 @@ Autocomplete.prototype = {
 
 Event.observe(document, 'dom:loaded', function(){Autocomplete.isDomLoaded = true; }, false);
 
-//-------------------------------------------
+// ---------------------------------------

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
@@ -9,14 +11,14 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
 {
     private $variationsProductsIds = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Listing_Product_Variation', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function isAllStatusesEnabled($listingProductId, $storeId)
     {
@@ -44,7 +46,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         return (int)min($statuses) == Mage_Catalog_Model_Product_Status::STATUS_DISABLED;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function isAllHaveStockAvailabilities($listingProductId)
     {
@@ -72,7 +74,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         return !(int)max($stocks);
     }
 
-    // ########################################
+    //########################################
 
     private function getVariationsProductsIds($listingProductId)
     {
@@ -108,7 +110,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         return $this->variationsProductsIds[$listingProductId] = $result;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getVariationsStatuses(array $variationsProductsIds, $storeId)
     {
@@ -165,8 +167,8 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         foreach ($variationsProductsIds as $key => $variationProductsIds) {
             foreach ($variationProductsIds as $id) {
                 $count = count($stocks);
-                for($i = 0; $i < $count; $i++){
-                    if($stocks[$i]['product_id'] == $id) {
+                for ($i = 0; $i < $count; $i++) {
+                    if ($stocks[$i]['product_id'] == $id) {
                         $stockAvailability = Ess_M2ePro_Model_Magento_Product::calculateStockAvailability(
                             $stocks[$i]['is_in_stock'],
                             $stocks[$i]['manage_stock'],
@@ -187,5 +189,5 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         return $variationsStocks;
     }
 
-    // ########################################
+    //########################################
 }

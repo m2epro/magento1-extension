@@ -1,7 +1,7 @@
 CommonListingAddListingHandler = Class.create();
 CommonListingAddListingHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(M2ePro, ProgressBarObj, WrapperObj)
     {
@@ -20,7 +20,7 @@ CommonListingAddListingHandler.prototype = Object.extend(new CommonHandler(), {
         this.wrapperObj = WrapperObj;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     add: function(items, back, isList)
     {
@@ -145,12 +145,12 @@ CommonListingAddListingHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setHideProductsPresentedInOtherListings: function(hideProductsOthersListings)
     {
         this.hideProductsOthersListings = hideProductsOthersListings;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

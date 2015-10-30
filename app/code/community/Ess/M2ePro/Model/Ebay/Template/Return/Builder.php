@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Return_Builder
     extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
 {
-    // ########################################
+    //########################################
 
     public function build(array $data)
     {
@@ -15,24 +17,14 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
             return NULL;
         }
 
-        // validate input data
-        //------------------------------
         $this->validate($data);
-        //------------------------------
 
-        // prepare input data
-        //------------------------------
         $data = $this->prepareData($data);
-        //------------------------------
 
-        //------------------------------
         $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
             'Marketplace', $data['marketplace_id']
         );
-        //------------------------------
 
-        // create template
-        //------------------------------
         $template = Mage::getModel('M2ePro/Ebay_Template_Return');
 
         if (isset($data['id'])) {
@@ -42,20 +34,19 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
         $template->addData($data);
         $template->save();
         $template->setMarketplace($marketplace);
-        //------------------------------
 
         return $template;
     }
 
-    // ########################################
+    //########################################
 
     protected function validate(array $data)
     {
-        //------------------------------
+        // ---------------------------------------
         if (empty($data['marketplace_id'])) {
             throw new Ess_M2ePro_Model_Exception_Logic('eBay Site ID is empty.');
         }
-        //------------------------------
+        // ---------------------------------------
 
         parent::validate($data);
     }
@@ -64,11 +55,8 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
     {
         $prepared = parent::prepareData($data);
 
-        //------------------------------
         $prepared['marketplace_id'] = (int)$data['marketplace_id'];
-        //------------------------------
 
-        //------------------------------
         if (isset($data['accepted'])) {
             $prepared['accepted'] = $data['accepted'];
         }
@@ -96,7 +84,6 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
         if (isset($data['description'])) {
             $prepared['description'] = $data['description'];
         }
-        //------------------------------
 
         if ($prepared['accepted'] != 'ReturnsAccepted') {
             $prepared['holiday_mode'] = 0;
@@ -105,5 +92,5 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
         return $prepared;
     }
 
-    // ########################################
+    //########################################
 }

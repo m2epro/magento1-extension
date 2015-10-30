@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Development_Tools_M2ePro_InstallController
     extends Ess_M2ePro_Controller_Adminhtml_Development_CommandController
 {
-    //#############################################
+    //########################################
 
     /**
      * @title "Show Installation History"
@@ -70,7 +72,7 @@ HTML;
         print str_replace('%count%', count($history), $html);
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Repeat Upgrade > 4.1.0"
@@ -118,7 +120,7 @@ HTML;
               </form>';
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Check Files Validity"
@@ -447,7 +449,7 @@ HTML;
         print str_replace('%count%',count($differenses),$html);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @hidden
@@ -552,7 +554,7 @@ HTML;
         print str_replace('%count%',count($unWritableDirectories),$html);
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Reset Module (Clear Installation)"
@@ -581,7 +583,7 @@ HTML;
         $skipWizards = array('migrationToV6','migrationNewAmazon','removedPay','ebayProductDetails',
                              'fullAmazonCategories','amazonShippingOverridePolicy');
 
-        array_walk($skipWizards, function(&$el, $key){ $el = "'{$el}'"; });
+        array_walk($skipWizards, function(&$el, $key) { $el = "'{$el}'"; });
         $skipWizards = implode(',', $skipWizards);
 
         $connWrite->update(
@@ -625,7 +627,7 @@ HTML;
         $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageToolsTabUrl());
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function truncateModuleTables()
     {
@@ -653,7 +655,7 @@ HTML;
         }
     }
 
-    //#############################################
+    //########################################
 
     private function getEmptyResultsHtml($messageText)
     {
@@ -667,5 +669,5 @@ HTML;
 HTML;
     }
 
-    //#############################################
+    //########################################
 }

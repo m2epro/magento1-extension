@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
@@ -12,14 +14,14 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
     const LISTING_CREATION_MODE_FULL = 0;
     const LISTING_CREATION_MODE_LISTING_ONLY = 1;
 
-    // ########################################
+    //########################################
 
     public function isBaseControllerLoaded()
     {
         return (bool)Mage::helper('M2ePro/Data_Global')->getValue('is_base_controller_loaded');
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param string $viewNick
@@ -93,7 +95,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         return $helper;
     }
 
-    // ########################################
+    //########################################
 
     public function getCurrentView()
     {
@@ -123,7 +125,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         return NULL;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function isCurrentViewEbay()
     {
@@ -145,7 +147,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         return $this->getCurrentView() == Ess_M2ePro_Helper_View_Configuration::NICK;
     }
 
-    // ########################################
+    //########################################
 
     public function getUrl($row, $controller, $action, array $params = array())
     {
@@ -189,7 +191,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro')->escapeHtml($description, array('a'), ENT_NOQUOTES);
     }
 
-    // ########################################
+    //########################################
 
     public function getMenuPath(SimpleXMLElement $parentNode, $pathNick, $rootMenuLabel = '')
     {
@@ -246,5 +248,5 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         return $paths;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_shipping`
@@ -23,7 +23,7 @@ $connection = $installer->getConnection();
         ADD INDEX `is_holiday_return` (`is_holiday_return`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -35,7 +35,7 @@ if ($connection->tableColumnExists($tempTable, 'click_and_collect_mode') === fal
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_return');
 
@@ -47,7 +47,7 @@ if ($connection->tableColumnExists($tempTable, 'holiday_mode') === false) {
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -64,7 +64,7 @@ if (!isset($tempTableIndexList[strtoupper('is_holiday_return')])) {
     $connection->addKey($tempTable, 'is_holiday_return', 'is_holiday_return');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -83,8 +83,8 @@ WHERE `marketplace_id` = 1 OR -- US --
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Translation_Product_Add_Dispatcher
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_Dispatcher
     private $logsActionId = NULL;
     private $isProcessingItems = false;
 
-    // ########################################
+    //########################################
 
     /**
      * @param array|Ess_M2ePro_Model_Listing_Product $products
@@ -47,19 +49,25 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_Dispatcher
         return Mage::helper('M2ePro')->getMainStatus($results);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getLogsActionId()
     {
         return (int)$this->logsActionId;
     }
 
+    /**
+     * @return bool
+     */
     public function isProcessingItems()
     {
         return (bool)$this->isProcessingItems;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $products
@@ -107,7 +115,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareProducts($products)
     {
@@ -170,7 +178,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_Dispatcher
         return array_values($sortedProducts);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function recognizeInitiatorForLogging(array $params)
     {
@@ -190,6 +198,5 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_Dispatcher
         return $initiator;
     }
 
-    // ########################################
-
+    //########################################
 }

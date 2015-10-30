@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('developmentDatabaseTable');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_development_tabs_database_table';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $tableName = $this->getRequest()->getParam('table');
         $component = $this->getRequest()->getParam('component');
         $this->_headerText = Mage::helper('M2ePro')->__('Manage Table "%table_name%"', $tableName);
@@ -29,53 +31,53 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table extends Mage_Ad
             Mage::helper('M2ePro/Module_Database_Structure')->isTableHorizontalParent($tableName)) {
             $this->_headerText .= " <span style='color: grey; font-size: small;'>[merged {$component} data]</span>";
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = Mage::helper('M2ePro/View_Development')->getPageDatabaseTabUrl();
         $this->_addButton('back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'onclick'   => "window.open('{$url}','_blank')",
             'class'     => 'back'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('additional-actions', array(
             'label'     => Mage::helper('M2ePro')->__('Additional Actions'),
             'onclick'   => '',
             'class'     => 'button_link additional-actions-button-drop-down',
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/*/truncateTables', array('tables' => $tableName));
         $this->_addButton('delete_all', array(
             'label'     => Mage::helper('M2ePro')->__('Truncate Table'),
             'onclick'   => 'deleteConfirm(\'Are you sure?\', \''.$url.'\')',
             'class'     => 'delete_all delete'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('add_row', array(
             'label'     => Mage::helper('M2ePro')->__('Append Row'),
             'onclick'   => 'DevelopmentDatabaseGridHandlerObj.openTableCellsPopup(\'add\')',
             'class'     => 'success'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $helper = Mage::helper('M2ePro/Module_Database_Structure');
 
         if ($helper->isTableHorizontalChild($tableName) ||
@@ -89,7 +91,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table extends Mage_Ad
                 'class'     => !$this->isMergeModeEnabled() ? 'success' : 'fail'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareLayout()
@@ -106,7 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table extends Mage_Ad
         return $this->getAdditionalActionsButtonHtml() . parent::_toHtml();
     }
 
-    // ########################################
+    //########################################
 
     public function getAdditionalActionsButtonHtml()
     {
@@ -132,5 +134,5 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table extends Mage_Ad
         return (bool)Mage::app()->getCookie()->get($key);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
 {
-    //####################################
+    //########################################
 
     public function _construct()
     {
@@ -14,7 +16,7 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
         $this->_init('M2ePro/StopQueue');
     }
 
-    //####################################
+    //########################################
 
     public function getItemData()
     {
@@ -26,7 +28,7 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
         return json_decode($this->getItemData(),true);
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function getAccountHash()
     {
@@ -43,13 +45,21 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
         return $this->getData('component_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isProcessed()
     {
         return (bool)$this->getData('is_processed');
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function add(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         if (!$listingProduct->isStoppable()) {
@@ -103,5 +113,5 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
         return array_shift($itemData['data']['items']);
     }
 
-    //####################################
+    //########################################
 }

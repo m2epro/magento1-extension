@@ -1,27 +1,29 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation_Manage
     extends Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation
 {
-    //##############################################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingProductVariationEdit');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/common/listing/product/variation/manage.phtml');
     }
 
-    //##############################################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -30,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation_Manage
         return parent::_beforeToHtml();
     }
 
-    //##############################################################
+    //########################################
 
     protected function _prepareButtons()
     {
@@ -44,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation_Manage
             ));
         $this->setChild('add_more_variation_button', $buttonBlock);
 
-        //------------------------------
+        // ---------------------------------------
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
@@ -56,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation_Manage
             ));
         $this->setChild('variation_manage_confirm', $buttonBlock);
 
-        //------------------------------
+        // ---------------------------------------
 
         $onClick = 'ListingProductVariationHandlerObj.manageGenerateAction(false);';
         $buttonBlock = $this->getLayout()
@@ -81,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation_Manage
         $this->setChild('variation_manage_generate_unique', $buttonBlock);
     }
 
-    //##############################################################
+    //########################################
 
     public function getComponentTitle()
     {
@@ -89,5 +91,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation_Manage
         return Mage::helper('M2ePro/Component_' . ucfirst($component))->getChannelTitle();
     }
 
-    //##############################################################
+    //########################################
 }

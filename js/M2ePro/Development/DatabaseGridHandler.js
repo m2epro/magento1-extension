@@ -1,10 +1,10 @@
 DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     mergeModeCookieKey: 'database_tables_merge_mode_cookie_key',
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function()
     {
@@ -14,7 +14,7 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     switchMergeMode: function()
     {
@@ -33,7 +33,7 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
         setCookie(this.mergeModeCookieKey, value, 3*365, '/');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     mergeParentTable: function(component)
     {
@@ -41,7 +41,7 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
         window.location = M2ePro.url.get('adminhtml_development_database/manageTable', {component: component});
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     deleteTableRows: function(id)
     {
@@ -136,7 +136,7 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     mouseOverCell: function(cellId)
     {
@@ -160,7 +160,7 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
         $(cellId + '_save_link').hide();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     switchCellToView: function(cellId)
     {
@@ -213,7 +213,7 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
         return false;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     switcherStateChange: function()
     {
@@ -241,5 +241,5 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
         return result;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

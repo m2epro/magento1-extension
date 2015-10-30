@@ -1,40 +1,42 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingOtherView');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_other_view';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if (!is_null($this->getRequest()->getParam('back'))) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton('back', array(
@@ -43,17 +45,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
                 'class'   => 'back'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function getGridHtml()
     {
         $accountId = $this->getRequest()->getParam('account');
         $marketplaceId = $this->getRequest()->getParam('marketplace');
 
-        //------------------------------
+        // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_other_view_header','',
             array(
@@ -61,12 +63,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
                 'marketplace' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', $marketplaceId)
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
         return $viewHeaderBlock->toHtml() . parent::getGridHtml();
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -86,7 +88,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
             'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU')
         ));
 
-        // TODO NEXT (change)
         $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
 
         $logViewUrl = $this->getUrl('*/adminhtml_ebay_log/listingOther', array(
@@ -200,13 +201,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         ));
         $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
 
-        $javascript = <<<JAVASCRIPT
+        $javascript = <<<HTML
 <script type="text/javascript">
 
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
-
-    // TODO NEXT (change)
 
     M2eProEbay = {};
     M2eProEbay.url = {};
@@ -279,7 +278,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     M2eProEbay.customData.componentMode = '{$component}';
     M2eProEbay.customData.gridId = 'ebayListingOtherGrid';
 
-    //
+    // ---------------------------------------
 
     Event.observe(window,'load',function() {
 
@@ -298,7 +297,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
 
@@ -311,5 +310,5 @@ JAVASCRIPT;
                 '</div>';
     }
 
-    // ####################################
+    //########################################
 }

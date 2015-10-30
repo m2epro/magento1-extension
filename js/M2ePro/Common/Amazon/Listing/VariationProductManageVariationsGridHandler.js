@@ -1,20 +1,20 @@
 CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(CommonListingGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'amazon';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
         return 1000;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -27,7 +27,7 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     parseResponse: function(response)
     {
@@ -38,7 +38,7 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         return response.responseText.evalJSON();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     afterInitPage: function($super)
     {
@@ -320,7 +320,7 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         return valid;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showNewChildForm: function(createNewAsin)
     {
@@ -355,7 +355,7 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         $('add_new_child_button').show();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validateNewChildAttributeOptions: function(type, variations, i)
     {
@@ -447,7 +447,7 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         return valid;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addNewChildProduct: function()
     {
@@ -480,7 +480,7 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     createNewAsinBtn: function()
     {
@@ -521,7 +521,7 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         ListingGridHandlerObj.validateNewChildAttributeOptions('channel');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     unselectAllAndReload: function($super)
     {
@@ -531,5 +531,5 @@ CommonAmazonListingVariationProductManageVariationsGridHandler = Class.create(Co
         window.parent.ListingGridHandlerObj.variationProductManageHandler.reloadVocabulary(null, true);
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

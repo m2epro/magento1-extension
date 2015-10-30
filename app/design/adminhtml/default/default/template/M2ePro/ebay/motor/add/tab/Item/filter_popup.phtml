@@ -1,0 +1,71 @@
+<style type="text/css">
+#save_items_filter_form .form-list td.label {
+    width: 130px;
+}
+
+#save_items_filter_form .form-list td.label label {
+    width: 130px;
+}
+
+#save_items_filter_form textarea {
+    height: 65px;
+}
+</style>
+
+<div id="save_items_filter_popup" style="display: none;">
+
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+
+        <div id="block_notice_ebay_motor_add_item_filter_popup" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Save Filter'); ?>">
+            <?php echo Mage::helper('M2ePro')->__('
+                This Option allows you to Save the <strong>ePIDs/kTypes</strong> Grid Filter
+                and reapply it in future without Manually Setting up the Filter Parameters
+                again. If some ePID(s)/kType(s) are added or removed, according of the Filter,
+                their Values will <strong>Automatically</strong> be <strong>Added</strong>
+                to or <strong>Removed</strong> from of eBay Item.
+            '); ?>
+        </div>
+
+        <form id="save_items_filter_form" action="javascript:void(0);">
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title') ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" type="text" name="title" class="input-text required-entry M2ePro-filter-title">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="note"><?php echo Mage::helper('M2ePro')->__('Note') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <textarea id="note" name="note" class="textarea"></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="filter"><?php echo Mage::helper('M2ePro')->__('Filter') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <ul class="filter_conditions"></ul>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+
+        <div style="float: right;">
+            <a href="javascript:void(0);" onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+            &nbsp;&nbsp;
+            <?php echo $this->getChildHtml('save_btn'); ?>
+        </div>
+
+        <div class="clear"></div>
+
+    </div>
+
+</div>

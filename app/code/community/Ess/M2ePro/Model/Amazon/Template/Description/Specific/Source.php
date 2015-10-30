@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
@@ -16,34 +18,51 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
      */
     private $descriptionSpecificTemplateModel = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         $this->magentoProduct = $magentoProduct;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Magento_Product
+     */
     public function getMagentoProduct()
     {
         return $this->magentoProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Amazon_Template_Description_Specific $instance
+     * @return $this
+     */
     public function setDescriptionSpecificTemplate(Ess_M2ePro_Model_Amazon_Template_Description_Specific $instance)
     {
         $this->descriptionSpecificTemplateModel = $instance;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Template_Description_Specific
+     */
     public function getDescriptionSpecificTemplate()
     {
         return $this->descriptionSpecificTemplateModel;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getPath()
     {
         $xpath = $this->getDescriptionSpecificTemplate()->getXpath();
@@ -118,5 +137,5 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
         return $path;
     }
 
-    // ########################################
+    //########################################
 }

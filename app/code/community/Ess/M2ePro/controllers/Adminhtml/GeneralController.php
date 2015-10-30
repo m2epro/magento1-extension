@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_GeneralController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
-    //#############################################
+    //########################################
 
     public function getAccountsAction()
     {
@@ -34,7 +36,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
         $this->getResponse()->setBody(json_encode($accounts));
     }
 
-    //#############################################
+    //########################################
 
     public function validationCheckRepetitionValueAction()
     {
@@ -66,10 +68,17 @@ class Ess_M2ePro_Adminhtml_GeneralController
             $collection->addFieldToFilter('component_mode', $component);
         }
 
+        $filterField = $this->getRequest()->getParam('filter_field');
+        $filterValue = $this->getRequest()->getParam('filter_value');
+
+        if ($filterField && $filterValue) {
+            $collection->addFieldToFilter($filterField, $filterValue);
+        }
+
         return $this->getResponse()->setBody(json_encode(array('result'=>!(bool)$collection->getSize())));
     }
 
-    //#############################################
+    //########################################
 
     public function synchCheckStateAction()
     {
@@ -127,7 +136,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
         return $this->getResponse()->setBody(json_encode($response));
     }
 
-    //#############################################
+    //########################################
 
     public function modelGetAllAction()
     {
@@ -162,7 +171,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
         return $this->getResponse()->setBody(json_encode($data['items']));
     }
 
-    //#############################################
+    //########################################
 
     public function magentoRuleGetNewConditionHtmlAction()
     {
@@ -252,7 +261,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
         }
     }
 
-    //#############################################
+    //########################################
 
     public function categoriesJsonAction()
     {
@@ -294,14 +303,14 @@ class Ess_M2ePro_Adminhtml_GeneralController
         return $category;
     }
 
-    //#############################################
+    //########################################
 
     public function requirementsPopupCloseAction()
     {
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/view/requirements/popup/', 'closed', 1);
     }
 
-    //#############################################
+    //########################################
 
     public function checkCustomerIdAction()
     {
@@ -311,5 +320,91 @@ class Ess_M2ePro_Adminhtml_GeneralController
         )));
     }
 
-    //#############################################
+    //########################################
+
+    public function getCreateAttributeHtmlPopupAction()
+    {
+        $post = $this->getRequest()->getPost();
+
+        /** @var Ess_M2ePro_Block_Adminhtml_General_CreateAttribute $block */
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_general_createAttribute');
+        $block->handlerId($post['handler_id']);
+
+        if (isset($post['allowed_attribute_types'])) {
+            $block->allowedTypes(explode(',', $post['allowed_attribute_types']));
+        }
+
+        if (isset($post['apply_to_all_attribute_sets']) && !$post['apply_to_all_attribute_sets']) {
+            $block->applyToAll(false);
+        }
+
+        $this->getResponse()->setBody($block->toHtml());
+    }
+
+    public function generateAttributeCodeByLabelAction()
+    {
+        $label = $this->getRequest()->getParam('store_label');
+        $this->getResponse()->setBody(json_encode(
+            Ess_M2ePro_Model_Magento_Attribute_Builder::generateCodeByLabel($label))
+        );
+    }
+
+    public function isAttributeCodeUniqueAction()
+    {
+        $attributeObj = Mage::getModel('eav/entity_attribute')->loadByCode(
+            Mage::getModel('catalog/product')->getResource()->getTypeId(),
+            $this->getRequest()->getParam('code')
+        );
+
+        $isAttributeUnique = is_null($attributeObj->getId());
+        $this->getResponse()->setBody(json_encode($isAttributeUnique));
+    }
+
+    public function createAttributeAction()
+    {
+        /** @var Ess_M2ePro_Model_Magento_Attribute_Builder $model */
+        $model = Mage::getModel('M2ePro/Magento_Attribute_Builder');
+
+        $model->setLabel($this->getRequest()->getParam('store_label'))
+              ->setCode($this->getRequest()->getParam('code'))
+              ->setInputType($this->getRequest()->getParam('input_type'))
+              ->setDefaultValue($this->getRequest()->getParam('default_value'))
+              ->setScope($this->getRequest()->getParam('scope'));
+
+        $attributeResult = $model->save();
+
+        if (!isset($attributeResult['result']) || !$attributeResult['result']) {
+
+            $this->getResponse()->setBody(json_encode($attributeResult));
+            return;
+        }
+
+        foreach ($this->getRequest()->getParam('attribute_sets', array()) as $seId) {
+
+            /** @var Mage_Eav_Model_Entity_Attribute_Set $set */
+            $set = Mage::getModel('eav/entity_attribute_set')->load($seId);
+
+            if (!$set->getId()) {
+                continue;
+            }
+
+            /** @var Ess_M2ePro_Model_Magento_Attribute_Relation $model */
+            $model = Mage::getModel('M2ePro/Magento_Attribute_Relation');
+            $model->setAttributeObj($attributeResult['obj'])
+                  ->setAttributeSetObj($set);
+
+            $setResult = $model->save();
+
+            if (!isset($setResult['result']) || !$setResult['result']) {
+
+                $this->getResponse()->setBody(json_encode($setResult));
+                return;
+            }
+        }
+
+        unset($attributeResult['obj']);
+        $this->getResponse()->setBody(json_encode($attributeResult));
+    }
+
+    //########################################
 }

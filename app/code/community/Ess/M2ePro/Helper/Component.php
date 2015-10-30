@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 {
-    // ########################################
+    //########################################
 
     public function getComponents()
     {
@@ -24,7 +26,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         );
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getComponentsTitles()
     {
@@ -42,7 +44,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getEnabledComponents()
     {
@@ -72,7 +74,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getEnabledComponentsTitles()
     {
@@ -102,7 +104,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    // ########################################
+    //########################################
 
     public function getDisabledComponents()
     {
@@ -132,7 +134,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getDisabledComponentsTitles()
     {
@@ -162,7 +164,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    // ########################################
+    //########################################
 
     public function getAllowedComponents()
     {
@@ -192,7 +194,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getAllowedComponentsTitles()
     {
@@ -222,7 +224,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    // ########################################
+    //########################################
 
     public function getForbiddenComponents()
     {
@@ -252,7 +254,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getForbiddenComponentsTitles()
     {
@@ -282,7 +284,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    // ########################################
+    //########################################
 
     public function getActiveComponents()
     {
@@ -312,7 +314,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getActiveComponentsTitles()
     {
@@ -342,7 +344,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    // ########################################
+    //########################################
 
     public function getInactiveComponents()
     {
@@ -372,7 +374,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getInactiveComponentsTitles()
     {
@@ -402,7 +404,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $components;
     }
 
-    // ########################################
+    //########################################
 
     public function isRakutenEnabled()
     {
@@ -419,14 +421,14 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $this->isRakutenEnabled() && $this->isRakutenAllowed();
     }
 
-    // ########################################
+    //########################################
 
     public function isSingleActiveComponent()
     {
         return count($this->getActiveComponents()) == 1;
     }
 
-    // ########################################
+    //########################################
 
     public function getComponentTitle($component)
     {
@@ -447,7 +449,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $title;
     }
 
-    // ########################################
+    //########################################
 
     public function getComponentMode($modelName, $value, $field = NULL)
     {
@@ -490,7 +492,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $this->getComponentModel($mode, $modelName)->getCollection();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getUnknownObject($modelName, $value, $field = NULL)
     {
@@ -515,7 +517,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $model->loadInstance($value, $field);
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function getCachedUnknownObject($modelName, $value, $field = NULL, array $tags = array())
     {
@@ -556,5 +558,5 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return $cacheData;
     }
 
-    // ########################################
+    //########################################
 }

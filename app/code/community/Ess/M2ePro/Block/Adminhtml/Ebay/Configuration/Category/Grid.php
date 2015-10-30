@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -10,25 +12,25 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
 
     private $accountsOptions = NULL;
 
-    // ##########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayConfigurationCategoryGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ##########################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -36,7 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         // Prepare ebay main category
-        // ----------------------------------
+        // ---------------------------------------
         $ebayPrimarySelect = $connRead->select();
         $ebayPrimarySelect->from(
                 array('etc' => Mage::getModel('M2ePro/Ebay_Template_Category')->getResource()->getMainTable())
@@ -55,10 +57,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             ))
             ->where('category_main_mode != ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE)
             ->group(array('mode', 'value', 'marketplace'));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare ebay secondary category
-        // ----------------------------------
+        // ---------------------------------------
         $ebaySecondarySelect = $connRead->select();
         $ebaySecondarySelect->from(
                 array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
@@ -77,10 +79,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             ))
             ->where('category_secondary_mode != ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE)
             ->group(array('mode', 'value', 'marketplace'));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare store main category
-        // ----------------------------------
+        // ---------------------------------------
         $storePrimarySelect = $connRead->select();
         $storePrimarySelect->from(
                 array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
@@ -99,10 +101,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             ))
             ->where('store_category_main_mode != ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE)
             ->group(array('mode', 'value', 'account'));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare store secondary category
-        // ----------------------------------
+        // ---------------------------------------
         $categoryModeEbay = Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY;
         $categoryModeNone = Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE;
 
@@ -124,10 +126,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             ))
             ->where('store_category_secondary_mode != ?', $categoryModeNone)
             ->group(array('mode', 'value', 'account'));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare union select
-        // ----------------------------------
+        // ---------------------------------------
         $unionSelect = $connRead->select();
         $unionSelect->union(array(
             $ebayPrimarySelect,
@@ -135,18 +137,18 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             $storePrimarySelect,
             $storeSecondarySelect,
         ));
-        // ----------------------------------
+        // ---------------------------------------
 
         // Prepare result collection
-        // ----------------------------------
+        // ---------------------------------------
         $resultCollection = new Varien_Data_Collection_Db($connRead);
         $resultCollection->getSelect()->reset()->from(
             array('main_table' => $unionSelect)
         );
-        // ----------------------------------
+        // ---------------------------------------
 
         // Join dictionary tables
-        // ----------------------------------
+        // ---------------------------------------
         $edcTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_category');
         $eascTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_account_store_category');
 
@@ -159,9 +161,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             array('easc' => $eascTable),
             'easc.category_id = main_table.value AND easc.account_id = main_table.account'
         );
-        // ----------------------------------
+        // ---------------------------------------
 
-        // ----------------------------------
+        // ---------------------------------------
         $resultCollection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns(array(
             'mode', 'value', 'path', 'type', 'marketplace', 'account',
             'edc.category_id as state_ebay', 'easc.category_id as state_store',
@@ -173,7 +175,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
 //                ), 1) as state'
 //            ),
         ));
-        // ----------------------------------
+        // ---------------------------------------
 
 //        var_dump($resultCollection->getSelectSql(true)); exit;
 
@@ -228,7 +230,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         ));
 
         $this->addColumn('account', array(
-            'header'        => $helper->__('eBay User ID'),
+            'header'        => $helper->__('Account'),
             'align'         => 'left',
             'type'          => 'options',
             'width'         => '100px',
@@ -285,7 +287,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         return parent::_prepareColumns();
     }
 
-    // ##########################################
+    //########################################
 
     public function callbackColumnPath($value, $row, $column, $isExport)
     {
@@ -412,7 +414,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         }
     }
 
-    // ##########################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -449,7 +451,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         return '';
     }
 
-    // ##########################################
+    //########################################
 
     private function getMarketplacesOptions()
     {
@@ -477,5 +479,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         return $this->accountsOptions;
     }
 
-    // ##########################################
+    //########################################
 }

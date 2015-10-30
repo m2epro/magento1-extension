@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Development_DatabaseController
     extends Ess_M2ePro_Controller_Adminhtml_Development_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -20,7 +22,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         return $this;
     }
 
-    //#############################################
+    //########################################
 
     public function manageTableAction()
     {
@@ -87,7 +89,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDatabaseTabUrl());
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function addTableRowAction()
     {
@@ -185,7 +187,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         }
     }
 
-    //#############################################
+    //########################################
 
     private function getModel()
     {
@@ -225,7 +227,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         return $bindArray;
     }
 
-    //#############################################
+    //########################################
 
     public function databaseGridAction()
     {
@@ -254,12 +256,12 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function redirectToTablePage($tableName)
     {
         $this->_redirect('*/*/manageTable', array('table' => $tableName));
     }
 
-    //#############################################
+    //########################################
 }

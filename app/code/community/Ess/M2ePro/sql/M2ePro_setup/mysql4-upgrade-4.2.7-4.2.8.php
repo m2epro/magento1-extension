@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 if ((string)Mage::getConfig()->getTablePrefix() != '') {
 
@@ -31,7 +31,7 @@ if ((string)Mage::getConfig()->getTablePrefix() != '') {
     }
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $priceMode = $connection->query("
@@ -55,7 +55,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -67,7 +67,7 @@ AND `key` = 'baseurl';
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("SELECT * FROM `{$tempTable}`
@@ -87,8 +87,8 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

@@ -1,8 +1,10 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstract
 {
@@ -18,7 +20,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
     const TABLE_GROUP_TEMPLATES      = 'templates';
     const TABLE_GROUP_OTHER          = 'other';
 
-    //#############################################
+    //########################################
 
     public function getMySqlTables()
     {
@@ -70,7 +72,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_ebay_account_store_category',
             'm2epro_ebay_dictionary_category',
             'm2epro_ebay_dictionary_marketplace',
-            'm2epro_ebay_dictionary_motor_specific',
+            'm2epro_ebay_dictionary_motor_epid',
             'm2epro_ebay_dictionary_motor_ktype',
             'm2epro_ebay_dictionary_shipping',
             'm2epro_ebay_feedback',
@@ -83,6 +85,9 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_ebay_listing_product_variation',
             'm2epro_ebay_listing_product_variation_option',
             'm2epro_ebay_marketplace',
+            'm2epro_ebay_motor_filter',
+            'm2epro_ebay_motor_group',
+            'm2epro_ebay_motor_filter_to_group',
             'm2epro_ebay_order',
             'm2epro_ebay_order_item',
             'm2epro_ebay_order_external_transaction',
@@ -177,7 +182,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return $result;
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function getTableComponent($tableName)
     {
@@ -216,7 +221,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return self::TABLE_GROUP_OTHER;
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function isModuleTable($tableName)
     {
@@ -244,7 +249,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return array_key_exists($tableName, $this->getHorizontalTables());
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function isTableExists($tableName)
     {
@@ -290,7 +295,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return $this->isTableExists($tableName) && $this->isTableStatusOk($tableName);
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function getCountOfRecords($tableName)
     {
@@ -322,7 +327,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return round($dataLength / 1024 / 1024, 2);
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function getTablesInfo()
     {
@@ -389,7 +394,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return null;
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function getIdColumn($table)
     {
@@ -407,7 +412,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return isset($columnInfo['extra']) && strpos($columnInfo['extra'], 'increment') !== false;
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function getConfigSnapshot($table)
     {
@@ -431,7 +436,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return $result;
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function getStoreRelatedColumns()
     {
@@ -456,5 +461,5 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return $result;
     }
 
-    //#############################################
+    //########################################
 }

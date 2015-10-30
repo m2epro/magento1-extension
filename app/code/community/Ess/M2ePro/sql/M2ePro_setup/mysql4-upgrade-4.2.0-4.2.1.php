@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -18,7 +18,7 @@ MODIFY COLUMN `restock_date_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1;
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_template_general`
@@ -27,7 +27,7 @@ SQL
     ADD INDEX `search_by_magento_title_mode` (`search_by_magento_title_mode`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_general');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -41,7 +41,7 @@ if (!isset($tempTableIndexList[strtoupper('search_by_magento_title_mode')])) {
     $connection->addKey($tempTable, 'search_by_magento_title_mode', 'search_by_magento_title_mode');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -69,8 +69,8 @@ WHERE `categories_mode` = 1;
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

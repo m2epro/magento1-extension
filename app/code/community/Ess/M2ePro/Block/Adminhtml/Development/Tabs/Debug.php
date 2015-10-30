@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Debug extends Mage_Adminhtml_Block_Widget
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('developmentDebug');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/development/tabs/debug.phtml');
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -31,7 +33,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Debug extends Mage_Adminhtml_B
         $this->commands = Mage::helper('M2ePro/View_Development_Command')
                     ->parseDebugCommandsData(Ess_M2ePro_Helper_View_Development_Command::CONTROLLER_DEBUG);
 
-        //-------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_development/enableMaintenanceMode/');
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Enable'),
@@ -49,9 +51,9 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Debug extends Mage_Adminhtml_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('disable_maintenance',$buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_development/enableDevelopmentMode/');
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Enable'),
@@ -69,10 +71,10 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Debug extends Mage_Adminhtml_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('disable_development_mode',$buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

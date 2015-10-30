@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract
@@ -13,7 +15,7 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
      */
     private $proxy = NULL;
 
-    //####################################
+    //########################################
 
     public function beforeProcess()
     {
@@ -27,7 +29,7 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
         $this->storeProxy();
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     public function process()
     {
@@ -55,14 +57,14 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
         $this->getProxy()->setAttributes($this->getTrackingAttributesWithValues());
     }
 
-    //####################################
+    //########################################
 
     protected function isAddingProductProcess()
     {
         return $this->getProductId() <= 0 || (string)$this->getEvent()->getProduct()->getOrigData('sku') == '';
     }
 
-    //####################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Observer_Product_AddUpdate_Before_Proxy
@@ -82,7 +84,7 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
         return $this->proxy = $object;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     private function clearStoredProxy()
     {
@@ -104,7 +106,7 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
         self::$proxyStorage[$key] = $this->getProxy();
     }
 
-    //####################################
+    //########################################
 
     private function getTrackingAttributes()
     {
@@ -133,5 +135,5 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
         return $attributes;
     }
 
-    //####################################
+    //########################################
 }

@@ -1,19 +1,21 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
 {
-    // ########################################
+    //########################################
 
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
     private $listingProduct = NULL;
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
@@ -23,7 +25,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         $this->listingProduct = $listingProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -41,20 +43,29 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         return $this->getListingProduct()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isVariationProduct()
     {
         return (bool)(int)$this->getBuyListingProduct()->getData('is_variation_product');
     }
 
+    /**
+     * @return bool
+     */
     public function isVariationProductMatched()
     {
         return (bool)(int)$this->getBuyListingProduct()->getData('is_variation_product_matched');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isActualProductAttributes()
     {
         $productAttributes = array_map('strtolower', array_keys($this->getProductOptions()));
@@ -66,6 +77,9 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         return $productAttributes == $magentoAttributes;
     }
 
+    /**
+     * @return bool
+     */
     public function isActualProductVariation()
     {
         $currentOptions = $this->getProductOptions();
@@ -95,8 +109,11 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         return false;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $variation
+     */
     public function setProductVariation(array $variation)
     {
         $this->unsetProductVariation();
@@ -146,7 +163,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
     public function getProductOptions()
     {
@@ -155,7 +172,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
                       $additionalData['variation_product_options'] : NULL;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function setProductOptions(array $options, $save = true)
     {
@@ -172,7 +189,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         $this->setProductOptions($options,$save);
     }
 
-    // ########################################
+    //########################################
 
     public function clearVariationData()
     {
@@ -185,7 +202,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
     private function removeStructure()
     {
@@ -218,7 +235,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         }
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function removeChannelItems()
     {
@@ -250,7 +267,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         Mage::getModel('M2ePro/Buy_Item')->setData($data)->save();
     }
 
-    // ########################################
+    //########################################
 
     private function getCurrentMagentoAttributes()
     {
@@ -261,5 +278,5 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         return array_keys($magentoVariations['set']);
     }
 
-    // ########################################
+    //########################################
 }

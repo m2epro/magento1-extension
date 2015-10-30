@@ -1,173 +1,208 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Tables
 {
+    const M2E_PRO_TABLE_PREFIX = 'm2epro_';
+
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
     private $installer = NULL;
 
+    /** @var Varien_Db_Adapter_Pdo_Mysql */
+    private $connection = NULL;
+
+    /**
+     * @var string[]
+     */
     private $entities = array();
 
-    //####################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     * @return $this
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
+        $this->connection = $installer->getConnection();
         return $this;
     }
 
+    /**
+     * return $this
+     */
+    public function initialize()
+    {
+        $oldTables = array(
+            'ebay_listing_auto_filter',
+            'synchronization_run',
+            'ebay_listing_auto_category',
+            'ebay_dictionary_policy',
+            'ebay_template_policy',
+            'ebay_account_policy',
+            'play_listing_auto_category_group',
+            'ess_config',
+            'order_repair',
+            'exceptions_filters',
+            'attribute_set',
+            'listing_category',
+            'template_general',
+            'translation_custom_suggestion',
+            'translation_language',
+            'translation_text',
+            'amazon_template_general',
+            'amazon_template_new_product',
+            'amazon_template_new_product_description',
+            'amazon_template_new_product_specific',
+            'ebay_dictionary_shipping_category',
+            'ebay_message',
+            'ebay_motor_specific',
+            'ebay_dictionary_motor_specific',
+            'ebay_template_general',
+            'ebay_template_general_calculated_shipping',
+            'ebay_template_general_payment',
+            'ebay_template_general_shipping',
+            'ebay_template_general_specific',
+            'buy_template_description',
+            'buy_template_general',
+            'play_account',
+            'play_item',
+            'play_listing',
+            'play_listing_other',
+            'play_listing_product',
+            'play_listing_product_variation',
+            'play_listing_product_variation_option',
+            'play_marketplace',
+            'play_order',
+            'play_order_item',
+            'play_processed_inventory',
+            'play_template_description',
+            'play_template_general',
+            'play_template_selling_format',
+            'play_template_synchronization',
+            'amazon_category',
+            'amazon_category_description',
+            'amazon_category_specific',
+            'primary_config',
+            'cache_config',
+            'synchronization_config'
+        );
+
+        $currentTables = array_map(function($tableName) {
+            return str_replace('m2epro_', '', $tableName);
+        }, Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables());
+        $allTables = array_values(array_unique(array_merge($oldTables, $currentTables)));
+
+        usort($allTables, function ($a,$b) {
+            return strlen($b) - strlen($a);
+        });
+
+        foreach ($allTables as $table) {
+            if ($table == 'ess_config') {
+                $this->entities[$table] = $this->getInstaller()->getTable($table);
+                continue;
+            }
+
+            $this->entities[$table] = $this->getInstaller()->getTable(self::M2E_PRO_TABLE_PREFIX . $table);
+        }
+
+        return $this;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     */
     public function getInstaller()
     {
         if (is_null($this->installer)) {
-            throw new Zend_Db_Exception("Installer is not exists.");
+            throw new Ess_M2ePro_Model_Exception_Setup("Installer does not exist.");
         }
 
         return $this->installer;
     }
 
-    //####################################
+    /**
+     * @return Varien_Db_Adapter_Pdo_Mysql
+     * @throws Ess_M2ePro_Model_Exception_Setup
+     */
+    public function getConnection()
+    {
+        if (is_null($this->connection)) {
+            throw new Ess_M2ePro_Model_Exception_Setup("Connection does not exist.");
+        }
+
+        return $this->connection;
+    }
+
+    //########################################
 
     public function getCurrentEntities()
     {
-        if (empty($this->entities)) {
-            $this->prepareEntities();
-        }
-
+        $result = array();
         $currentTables = Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables();
-        $preparedTables = array();
 
         foreach ($currentTables as $table) {
-            $preparedTables[$table] = $this->entities[$table];
+            $result[$table] = $this->entities[$table];
         }
 
-        return $preparedTables;
+        return $result;
     }
 
     public function getAllHistoryEntities()
     {
-        if (empty($this->entities)) {
-            $this->prepareEntities();
-        }
-
         return $this->entities;
     }
 
-    // ----------------------------------
+    // ---------------------------------------
 
     public function getCurrentConfigEntities()
     {
-        if (empty($this->entities)) {
-            $this->prepareEntities();
-        }
+        $result = array();
 
         $currentConfigTables = array(
-            'm2epro_primary_config',
-            'm2epro_config',
-            'm2epro_cache_config',
-            'm2epro_synchronization_config'
+            'primary_config',
+            'config',
+            'cache_config',
+            'synchronization_config'
         );
-        $preparedCurrentConfigTables = array();
 
-        foreach ($currentConfigTables as $currentConfigTable) {
-            $preparedCurrentConfigTables[$currentConfigTable] = $this->entities[$currentConfigTable];
+        foreach ($currentConfigTables as $table) {
+            $result[$table] = $this->entities[$table];
         }
 
-        return $preparedCurrentConfigTables;
+        return $result;
     }
 
     public function getAllHistoryConfigEntities()
     {
-        if (empty($this->entities)) {
-            $this->prepareEntities();
-        }
-
         return array_merge($this->getCurrentConfigEntities(),
                            array('ess_config' => $this->entities['ess_config']));
     }
 
-    //####################################
+    //########################################
 
-    private function prepareEntities()
+    public function isExists($tableName)
     {
-        $mysqlTables = Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables();
-
-        $oldTables = array(
-            'm2epro_ebay_listing_auto_filter',
-            'm2epro_synchronization_run',
-            'm2epro_ebay_listing_auto_category',
-            'm2epro_ebay_dictionary_policy',
-            'm2epro_ebay_template_policy',
-            'm2epro_ebay_account_policy',
-            'm2epro_play_listing_auto_category_group',
-            'ess_config',
-            'm2epro_order_repair',
-            'm2epro_exceptions_filters',
-            'm2epro_attribute_set',
-            'm2epro_listing_category',
-            'm2epro_template_general',
-            'm2epro_translation_custom_suggestion',
-            'm2epro_translation_language',
-            'm2epro_translation_text',
-            'm2epro_amazon_template_general',
-            'm2epro_amazon_template_new_product',
-            'm2epro_amazon_template_new_product_description',
-            'm2epro_amazon_template_new_product_specific',
-            'm2epro_ebay_dictionary_shipping_category',
-            'm2epro_ebay_message',
-            'm2epro_ebay_motor_specific',
-            'm2epro_ebay_template_general',
-            'm2epro_ebay_template_general_calculated_shipping',
-            'm2epro_ebay_template_general_payment',
-            'm2epro_ebay_template_general_shipping',
-            'm2epro_ebay_template_general_specific',
-            'm2epro_buy_template_description',
-            'm2epro_buy_template_general',
-            'm2epro_play_account',
-            'm2epro_play_item',
-            'm2epro_play_listing',
-            'm2epro_play_listing_other',
-            'm2epro_play_listing_product',
-            'm2epro_play_listing_product_variation',
-            'm2epro_play_listing_product_variation_option',
-            'm2epro_play_marketplace',
-            'm2epro_play_order',
-            'm2epro_play_order_item',
-            'm2epro_play_processed_inventory',
-            'm2epro_play_template_description',
-            'm2epro_play_template_general',
-            'm2epro_play_template_selling_format',
-            'm2epro_play_template_synchronization',
-            'm2epro_amazon_category',
-            'm2epro_amazon_category_description',
-            'm2epro_amazon_category_specific',
-            'm2epro_primary_config',
-            'm2epro_cache_config',
-            'm2epro_synchronization_config'
-        );
-
-        $allTables = array_merge($oldTables, $mysqlTables);
-        $allTables = array_values(array_unique($allTables));
-
-        //sort table by length
-        do {
-            $hasChanges = false;
-            for ($i = 0; $i < count($allTables) - 1; $i++) {
-                if (strlen($allTables[$i]) < strlen($allTables[$i+1])) {
-                    $temp = $allTables[$i];
-                    $allTables[$i] = $allTables[$i+1];
-                    $allTables[$i+1] = $temp;
-                    $hasChanges = true;
-                }
-            }
-        } while ($hasChanges);
-
-        foreach ($allTables as $tableName) {
-            $this->entities[$tableName] = $this->getInstaller()->getTable($tableName);
-        }
+        return $this->getInstaller()->tableExists($this->getFullName($tableName));
     }
 
-    //####################################
+    public function getFullName($tableName)
+    {
+        if (!isset($this->entities[$tableName])) {
+            throw new Ess_M2ePro_Model_Exception_Setup("Table '{$tableName}' does not exist.");
+        }
+
+        return $this->entities[$tableName];
+    }
+
+    //########################################
 }

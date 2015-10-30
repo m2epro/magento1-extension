@@ -1,31 +1,33 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Order_View_Item extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buyOrderViewItem');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setPagerVisibility(false);
         $this->setFilterVisibility(false);
         $this->setUseAjax(true);
         $this->_defaultLimit = 200;
-        //------------------------------
+        // ---------------------------------------
 
         /** @var $order Ess_M2ePro_Model_Order */
         $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
@@ -106,7 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Order_View_Item extends Mage_Adminht
         return parent::_prepareColumns();
     }
 
-    //##############################################################
+    //########################################
 
     /**
      * @param $value
@@ -127,13 +129,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Order_View_Item extends Mage_Adminht
 <b>{$skuLabel}:</b> {$sku}<br/>
 HTML;
         }
-
-//        $referenceIdLabel = Mage::helper('M2ePro')->__('Reference ID');
-//        $referenceId = Mage::helper('M2ePro')->escapeHtml($row->getGeneralId());
-//
-//        $generalIdHtml = <<<HTML
-//<b>{$referenceIdLabel}:</b> {$referenceId}<br/>
-//HTML;
 
         $itemUrl = Mage::helper('M2ePro/Component_Buy')->getItemUrl($row->getGeneralId());
         $itemLinkText = Mage::helper('M2ePro')->__('View on Rakuten.com');
@@ -238,5 +233,5 @@ HTML;
         return $this->getUrl('*/*/orderItemGrid', array('_current' => true));
     }
 
-    // ####################################
+    //########################################
 }

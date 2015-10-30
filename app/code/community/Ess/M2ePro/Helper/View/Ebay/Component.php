@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
 {
-    // ########################################
+    //########################################
 
     public function getComponents()
     {
@@ -18,7 +20,7 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return $this->removeCommonFromComponentsArray(Mage::helper('M2ePro/Component')->getComponentsTitles());
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     public function getEnabledComponents()
     {
@@ -30,7 +32,7 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return $this->removeCommonFromComponentsArray(Mage::helper('M2ePro/Component')->getEnabledComponentsTitles());
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     public function getDisabledComponents()
     {
@@ -42,7 +44,7 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return $this->removeCommonFromComponentsArray(Mage::helper('M2ePro/Component')->getDisabledComponentsTitles());
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     public function getAllowedComponents()
     {
@@ -54,7 +56,7 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return $this->removeCommonFromComponentsArray(Mage::helper('M2ePro/Component')->getAllowedComponentsTitles());
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     public function getForbiddenComponents()
     {
@@ -66,7 +68,7 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return $this->removeCommonFromComponentsArray(Mage::helper('M2ePro/Component')->getForbiddenComponentsTitles());
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     public function getActiveComponents()
     {
@@ -78,7 +80,7 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return $this->removeCommonFromComponentsArray(Mage::helper('M2ePro/Component')->getActiveComponentsTitles());
     }
 
-    //------------------------------------------
+    // ---------------------------------------
 
     public function getInactiveComponents()
     {
@@ -90,14 +92,14 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return $this->removeCommonFromComponentsArray(Mage::helper('M2ePro/Component')->getInactiveComponentsTitles());
     }
 
-    // ########################################
+    //########################################
 
     public function isSingleActiveComponent()
     {
         return count($this->getActiveComponents()) == 1;
     }
 
-    // ########################################
+    //########################################
 
     private function removeCommonFromComponentsArray($components)
     {
@@ -116,5 +118,5 @@ class Ess_M2ePro_Helper_View_Ebay_Component extends Mage_Core_Helper_Abstract
         return array();
     }
 
-    // ########################################
+    //########################################
 }

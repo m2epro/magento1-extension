@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Adminhtml_Block_Widget
@@ -10,21 +12,21 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Ad
     protected $component = null;
     protected $listing = null;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingAddTabsSelling');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _beforeToHtml()
     {
-        //-------------------------------
+        // ---------------------------------------
         $data = $this->getListingData();
 
         $this->setData(
@@ -40,13 +42,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Ad
         foreach ($data as $key=>$value) {
             $this->setData($key, $value);
         }
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $maxRecordsQuantity = Mage::helper('M2ePro/View_Common')->getAutocompleteMaxItems();
-        //-------------------------------
+        // ---------------------------------------
 
-        //----------------------------
+        // ---------------------------------------
         $templates = $this->getSellingFormatTemplates();
         if (count($templates) < $maxRecordsQuantity) {
             $this->sellingFormatTemplatesDropDown = true;
@@ -55,9 +57,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Ad
             $this->sellingFormatTemplatesDropDown = false;
             $this->sellingFormatTemplates = array();
         }
-        //----------------------------
+        // ---------------------------------------
 
-        //----------------------------
+        // ---------------------------------------
         $synchronizationTemplatesCollection = Mage::helper('M2ePro/Component')
             ->getComponentCollection($this->component, 'Template_Synchronization')
             ->setOrder('title', Varien_Data_Collection::SORT_ORDER_ASC);
@@ -76,7 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Ad
             $this->synchronizationsTemplatesDropDown = false;
             $this->synchronizationsTemplates = array();
         }
-        //----------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
@@ -101,7 +103,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Ad
         return $data['items'];
     }
 
-    // #############################################
+    //########################################
 
     protected function getListingData()
     {
@@ -115,14 +117,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Ad
         return $data;
     }
 
-    // ####################################
+    //########################################
 
     protected function getDefaults()
     {
         return array();
     }
 
-    // ####################################
+    //########################################
 
     protected function getListing()
     {
@@ -137,5 +139,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling extends Mage_Ad
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_ListingController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -37,6 +39,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
             ->addJs('M2ePro/Common/Listing.js')
             ->addJs('M2ePro/Common/Listing/Other/GridHandler.js')
             ->addJs('M2ePro/Common/Buy/Listing/Other/GridHandler.js')
+            ->addJs('M2ePro/Common/Amazon/Listing/AfnQtyHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/Other/GridHandler.js')
 
             ->addJs('M2ePro/Listing/Other/AutoMappingHandler.js')
@@ -56,7 +59,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -75,7 +78,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
              ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function getListingTabAction()
     {
@@ -110,7 +113,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         );
     }
 
-    //#############################################
+    //########################################
 
     public function saveTitleAction()
     {
@@ -127,7 +130,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         Mage::getModel('M2ePro/Listing_Log')->updateListingTitle($listingId, $title);
     }
 
-    //#############################################
+    //########################################
 
     public function searchAction()
     {
@@ -142,7 +145,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function goToSellingFormatTemplateAction()
     {
@@ -188,7 +191,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         $this->_redirectUrl($url);
     }
 
-    //#############################################
+    //########################################
 
     public function confirmTutorialAction()
     {
@@ -211,7 +214,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         );
     }
 
-    //#############################################
+    //########################################
 
     public function getVariationEditPopupAction()
     {
@@ -239,7 +242,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         )));
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function getVariationManagePopupAction()
     {
@@ -267,7 +270,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         )));
     }
 
-    //#############################################
+    //########################################
 
     public function variationEditAction()
     {
@@ -453,7 +456,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
 
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function variationManageGenerateAction()
     {
@@ -536,7 +539,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
 
     }
 
-    //#############################################
+    //########################################
 
     public function duplicateProductsAction()
     {
@@ -568,7 +571,7 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         )));
     }
 
-    //#############################################
+    //########################################
 
     private function duplicateListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -592,5 +595,5 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
         return $duplicatedListingProduct;
     }
 
-    //#############################################
+    //########################################
 }

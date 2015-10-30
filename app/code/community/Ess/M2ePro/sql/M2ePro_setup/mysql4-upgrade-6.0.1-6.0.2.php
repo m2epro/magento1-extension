@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_listing_product`
@@ -24,7 +24,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `charity` VARCHAR(255) DEFAULT NULL AFTER `best_offer_reject_attribute`;
 */
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -53,7 +53,7 @@ if (!isset($tempTableIndexList[strtoupper('online_title')])) {
     $connection->addKey($tempTable, 'online_title', 'online_title');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_marketplace');
 
@@ -64,7 +64,7 @@ if ($connection->tableColumnExists($tempTable, 'charities') === false) {
         'LONGTEXT NOT NULL AFTER `tax_categories`');
 }
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 
@@ -75,7 +75,7 @@ if ($connection->tableColumnExists($tempTable, 'charity') === false) {
         'VARCHAR(255) DEFAULT NULL AFTER `best_offer_reject_attribute`');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempQuery = <<<SQL
@@ -105,7 +105,7 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -131,8 +131,8 @@ AND   `key` = 'video_tutorials_url';
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

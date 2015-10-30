@@ -1,15 +1,21 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
+
 class Ess_M2ePro_Model_Magento_Product_Index
 {
     /** @var Mage_Index_Model_Indexer */
     private $indexer = null;
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Mage_Index_Model_Indexer
+     */
     public function getIndexer()
     {
         if (is_null($this->indexer)) {
@@ -18,6 +24,9 @@ class Ess_M2ePro_Model_Magento_Product_Index
         return $this->indexer;
     }
 
+    /**
+     * @return array
+     */
     public function getIndexes()
     {
         return array(
@@ -25,7 +34,7 @@ class Ess_M2ePro_Model_Magento_Product_Index
         );
     }
 
-    //####################################
+    //########################################
 
     public function disableReindex($code)
     {
@@ -63,7 +72,7 @@ class Ess_M2ePro_Model_Magento_Product_Index
         return true;
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     public function requireReindex($code)
     {
@@ -95,8 +104,11 @@ class Ess_M2ePro_Model_Magento_Product_Index
         return true;
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isIndexManagementEnabled()
     {
         return (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
@@ -109,7 +121,7 @@ class Ess_M2ePro_Model_Magento_Product_Index
                             ->getGroupValue('/product/index/'.$code.'/', 'disabled');
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     public function rememberDisabledIndex($code)
     {
@@ -123,5 +135,5 @@ class Ess_M2ePro_Model_Magento_Product_Index
             ->setGroupValue('/product/index/'.$code.'/', 'disabled', 0);
     }
 
-    //####################################
+    //########################################
 }

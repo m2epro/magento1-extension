@@ -1,13 +1,13 @@
 CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Class.create(CommonAmazonTemplateDescriptionCategorySpecificRenderer, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     childAllSpecifics  : [],
     childRowsSpecifics : [],
 
     selectedSpecifics : [],
 
-    // --------------------------------
+    // ---------------------------------------
 
     process: function()
     {
@@ -19,7 +19,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         this.tuneStyles();
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     prepareDomStructure: function()
     {
@@ -32,7 +32,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         addSpecificBlockButtonObj.observe('click', this.addSpecificAction.bind(this));
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     onChildSpecificRendered: function()
     {
@@ -48,14 +48,14 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         $(this.getParentIndexedXpath()) && $(this.getParentIndexedXpath()).dispatchEvent(myEvent);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     tuneStyles: function()
     {
         var addSpecificsRowObj        = $(this.indexedXPath + '_add_row'),
             addSpecificBlockButtonObj = $(this.indexedXPath + '_add_button');
 
-        // --
+        // ---------------------------------------
         addSpecificsRowObj && addSpecificsRowObj.show();
 
         if ((this.getRootIndexedXpath() != this.indexedXPath && this.isAnyOfChildSpecificsRendered()) ||
@@ -63,15 +63,15 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         {
             addSpecificsRowObj && addSpecificsRowObj.hide();
         }
-        // --
+        // ---------------------------------------
 
-        //--
+        // ---------------------------------------
         addSpecificBlockButtonObj && addSpecificBlockButtonObj.show();
 
         if (this.getRootIndexedXpath() == this.indexedXPath || this.isAllOfSpecificsRendered() || !this.isAnyOfChildSpecificsRendered()) {
             addSpecificBlockButtonObj && addSpecificBlockButtonObj.hide();
         }
-        //--
+        // ---------------------------------------
     },
 
     isAnyOfChildSpecificsRendered: function()
@@ -100,7 +100,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         return countOfRenderedSpecifics == allChildSpecifics.length;
     },
 
-    //###################################
+    //########################################
 
     isAlreadyRendered: function()
     {
@@ -123,7 +123,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
     },
 
     // POPUP
-    //###################################
+    //########################################
 
     addSpecificAction: function(event)
     {
@@ -212,7 +212,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         });
     },
 
-    //###################################
+    //########################################
 
     specificsDoneButton: function(event)
     {
@@ -307,7 +307,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         this.specificsFilterButton(event);
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     reloadSearchingGrid: function(query, onlyDesired)
     {
@@ -332,7 +332,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         });
     },
 
-    //###################################
+    //########################################
 
     getNewSpecificXpath: function(dictionaryXpath)
     {
@@ -348,5 +348,5 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridAddSpecificRenderer = Cl
         return this.indexedXPath + newIndexedXpath;
     }
 
-    // --------------------------------
+    // ---------------------------------------
 });

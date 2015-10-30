@@ -1,13 +1,13 @@
 EbayConfigurationCategoryHandler = Class.create();
 EbayConfigurationCategoryHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     categoryMode: null,
     categoryValue: null,
     templates: null,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(categoryMode, categoryValue)
     {
@@ -15,14 +15,14 @@ EbayConfigurationCategoryHandler.prototype = Object.extend(new CommonHandler(), 
         this.categoryValue = categoryValue;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setTemplates: function(templates)
     {
         this.templates = templates;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     save_click: function(type, isEdit)
     {
@@ -86,7 +86,7 @@ EbayConfigurationCategoryHandler.prototype = Object.extend(new CommonHandler(), 
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     chooserDoneCallback: function()
     {
@@ -209,5 +209,5 @@ EbayConfigurationCategoryHandler.prototype = Object.extend(new CommonHandler(), 
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

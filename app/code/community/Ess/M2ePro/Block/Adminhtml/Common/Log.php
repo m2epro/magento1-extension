@@ -1,41 +1,43 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Log extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('commonLog');
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')->__('Logs');
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        //------------------------------
+        // ---------------------------------------
         $this->setTemplate('M2ePro/common/log/log.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function getHeaderHtml()
     {
@@ -48,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log extends Ess_M2ePro_Block_Adminhtml_W
         );
         $dropDownBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_button_dropDown');
         $dropDownBlock->setData($data);
-        //------------------------------
+        // ---------------------------------------
 
         return parent::getHeaderHtml() . $dropDownBlock->toHtml();
     }
@@ -89,14 +91,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log extends Ess_M2ePro_Block_Adminhtml_W
         return $items;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getHeaderText()
     {
-        //------------------------------
+        // ---------------------------------------
         $headerText = parent::getHeaderText();
         $channelTitle = '';
-        //------------------------------
+        // ---------------------------------------
 
         $enabledComponents = Mage::helper('M2ePro/View_Common_Component')->getActiveComponents();
 
@@ -123,7 +125,7 @@ HTML;
         return $headerText . $channelTitle;
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -165,5 +167,5 @@ JAVASCIRPT;
             '<div id="tabs_container"></div>';
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,10 +1,10 @@
 ListingOtherGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     productTitleCellIndex: 2,
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function()
     {
@@ -21,5 +21,5 @@ ListingOtherGridHandler = Class.create(GridHandler, {
         };
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

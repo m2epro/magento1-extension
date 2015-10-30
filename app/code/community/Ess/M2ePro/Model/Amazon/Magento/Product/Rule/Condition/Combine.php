@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Combine
     extends Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -11,14 +17,14 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Combine
         $this->setType('M2ePro/Amazon_Magento_Product_Rule_Condition_Combine');
     }
 
-    // ####################################
+    //########################################
 
     protected function getConditionCombine()
     {
         return $this->getType() . '|amazon|';
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     protected function getCustomLabel()
     {
@@ -47,5 +53,5 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Condition_Combine
         );
     }
 
-    // ####################################
+    //########################################
 }

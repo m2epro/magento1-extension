@@ -11,6 +11,13 @@ ListingAutoActionHandler.prototype.addingModeChange = function(el)
         $('adding_description_template_id').value = '';
     }
 
+    if (el.target.value != M2ePro.php.constant('Ess_M2ePro_Model_Listing::ADDING_MODE_NONE')) {
+        $$('[id$="adding_add_not_visible_field"]')[0].show();
+    } else {
+        $$('[id$="adding_add_not_visible"]')[0].value = M2ePro.php.constant('Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES');
+        $$('[id$="adding_add_not_visible_field"]')[0].hide();
+    }
+
     $('continue_button').hide();
     $('confirm_button').show();
 };
@@ -33,6 +40,7 @@ ListingAutoActionHandler.prototype.collectData = function()
                 ListingAutoActionHandlerObj.internalData = {
                     auto_mode: $('auto_mode').value,
                     auto_global_adding_mode: $('auto_global_adding_mode').value,
+                    auto_global_adding_add_not_visible: $('auto_global_adding_add_not_visible').value,
                     adding_description_template_id: $('adding_description_template_id').value
                 };
                 break;
@@ -41,6 +49,7 @@ ListingAutoActionHandler.prototype.collectData = function()
                 ListingAutoActionHandlerObj.internalData = {
                     auto_mode: $('auto_mode').value,
                     auto_website_adding_mode: $('auto_website_adding_mode').value,
+                    auto_website_adding_add_not_visible: $('auto_website_adding_add_not_visible').value,
                     auto_website_deleting_mode: $('auto_website_deleting_mode').value,
                     adding_description_template_id: $('adding_description_template_id').value
                 };
@@ -52,6 +61,7 @@ ListingAutoActionHandler.prototype.collectData = function()
                     title: $('group_title').value,
                     auto_mode: $('auto_mode').value,
                     adding_mode: $('adding_mode').value,
+                    adding_add_not_visible: $('adding_add_not_visible').value,
                     deleting_mode: $('deleting_mode').value,
                     categories: categories_selected_items,
                     adding_description_template_id: $('adding_description_template_id').value

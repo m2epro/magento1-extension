@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Mysql4_Ebay_Motor_Ktypes_Collection
     extends Varien_Data_Collection_Db
 {
-    // ########################################
+    //########################################
 
     public function __construct($idFieldName = NULL)
     {
@@ -26,12 +28,11 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Motor_Ktypes_Collection
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getAllIds()
     {
         $idsSelect = clone $this->getSelect();
-        $idsSelect->reset(Zend_Db_Select::ORDER);
         $idsSelect->reset(Zend_Db_Select::LIMIT_COUNT);
         $idsSelect->reset(Zend_Db_Select::LIMIT_OFFSET);
         $idsSelect->reset(Zend_Db_Select::COLUMNS);
@@ -42,5 +43,5 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Motor_Ktypes_Collection
         return $this->getConnection()->fetchCol($idsSelect);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,13 +1,20 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Model_Listing_Auto_Actions_Listing
 {
-    //####################################
+    //########################################
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @param $deletingMode
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function deleteProduct(Mage_Catalog_Model_Product $product, $deletingMode)
     {
         if ($deletingMode == Ess_M2ePro_Model_Listing::DELETING_MODE_NONE) {
@@ -64,8 +71,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         }
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @param Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function addProductByCategoryGroup(Mage_Catalog_Model_Product $product,
                                               Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup)
     {
@@ -85,6 +97,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $this->processAddedListingProduct($listingProduct, $params);
     }
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @param Ess_M2ePro_Model_Listing $listing
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function addProductByGlobalListing(Mage_Catalog_Model_Product $product, Ess_M2ePro_Model_Listing $listing)
     {
         $listingProduct = $this->getListing()->addProduct($product);
@@ -103,6 +120,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $this->processAddedListingProduct($listingProduct, $params);
     }
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @param Ess_M2ePro_Model_Listing $listing
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function addProductByWebsiteListing(Mage_Catalog_Model_Product $product, Ess_M2ePro_Model_Listing $listing)
     {
         $listingProduct = $this->getListing()->addProduct($product);
@@ -121,7 +143,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $this->processAddedListingProduct($listingProduct, $params);
     }
 
-    //####################################
+    //########################################
 
     protected function processAddedListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct, array $params)
     {
@@ -190,5 +212,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Auto_Actions_Listing extends Ess_M2ePro_Mo
         $processor->process();
     }
 
-    //####################################
+    //########################################
 }

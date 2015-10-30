@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
@@ -13,7 +15,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
 
     protected $tempObjectsCache = array();
 
-    // ########################################
+    //########################################
 
     public function initialize(Ess_M2ePro_Model_Account $account = NULL)
     {
@@ -21,8 +23,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         $this->tempObjectsCache = array();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $otherListings
+     * @return bool
+     */
     public function autoMoveOtherListingsProducts(array $otherListings)
     {
         $otherListingsFiltered = array();
@@ -62,6 +68,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         return $result;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $otherListing
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function autoMoveOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
         $this->setAccountByOtherListingProduct($otherListing);
@@ -107,7 +118,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         $listingProduct->addData($dataForUpdate)->save();
 
         // Set listing store id to Amazon Item
-        //---------------------------------
+        // ---------------------------------------
         $itemsCollection = Mage::getModel('M2ePro/Amazon_Item')->getCollection();
 
         $itemsCollection->addFieldToFilter('account_id', $otherListing->getAccountId());
@@ -127,7 +138,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
             );
             Mage::getModel('M2ePro/Amazon_Item')->setData($dataForAdd)->save();
         }
-        //---------------------------------
+        // ---------------------------------------
 
         $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
@@ -157,8 +168,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
 
         if (!$this->getAmazonAccount()->isOtherListingsMoveToListingsSynchModeNone()) {
             Mage::getModel('M2ePro/ProductChange')
-                ->addUpdateAction( $otherListing->getProductId(),
-                                   Ess_M2ePro_Model_ProductChange::INITIATOR_UNKNOWN );
+                ->addUpdateAction($otherListing->getProductId(),
+                                   Ess_M2ePro_Model_ProductChange::INITIATOR_UNKNOWN);
         }
 
         $otherListing->deleteInstance();
@@ -166,7 +177,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Other $otherListing
@@ -224,7 +235,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         return $tempModel;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Listing_Other $otherListing
@@ -369,7 +380,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         return $tempModel;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -395,8 +406,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         return $this->getAmazonAccount()->getMarketplace();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $otherListing
+     */
     protected function setAccountByOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
         if (!is_null($this->account) && $this->account->getId() == $otherListing->getAccountId()) {
@@ -408,5 +422,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
         );
     }
 
-    // ########################################
+    //########################################
 }

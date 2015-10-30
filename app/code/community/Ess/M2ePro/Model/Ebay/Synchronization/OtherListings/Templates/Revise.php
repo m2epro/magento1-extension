@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
     extends Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/revise/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Revise';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 50;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 60;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -43,7 +57,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
         $this->executeDescriptionChanged();
     }
 
-    //####################################
+    //########################################
 
     private function executeQtyChanged()
     {
@@ -56,6 +70,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
         /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
         foreach ($changedListingsOthers as $listingOther) {
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Other_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowQty();
@@ -90,6 +105,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
 
         /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
         foreach ($changedListingsOthers as $listingOther) {
+
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Other_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowPrice();
@@ -135,6 +152,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
         /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
         foreach ($changedListingsOthers as $listingOther) {
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Other_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowTitle();
@@ -178,6 +196,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
         /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
         foreach ($changedListingsOthers as $listingOther) {
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Other_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowSubtitle();
@@ -225,6 +244,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
         /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
         foreach ($changedListingsOthers as $listingOther) {
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Other_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowDescription();
@@ -249,5 +269,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Revise
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 }

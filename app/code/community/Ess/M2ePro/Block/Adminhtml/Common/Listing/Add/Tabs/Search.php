@@ -1,28 +1,30 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Search extends Mage_Adminhtml_Block_Widget
 {
     protected $sessionKey = 'listing_create';
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingAddTabsGeneral');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _beforeToHtml()
     {
-        //-------------------------------
+        // ---------------------------------------
         $data = $this->getListingData();
 
         $this->setData(
@@ -33,12 +35,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Search extends Mage_Adm
         foreach ($data as $key=>$value) {
             $this->setData($key, $value);
         }
-        //-------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // #############################################
+    //########################################
 
     protected  function getListingData()
     {
@@ -70,5 +72,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Search extends Mage_Adm
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 }

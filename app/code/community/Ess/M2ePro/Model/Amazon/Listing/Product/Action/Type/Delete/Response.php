@@ -1,14 +1,19 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Delete_Response
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $params
+     */
     public function processSuccess($params = array())
     {
         $data = array(
@@ -25,5 +30,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Delete_Response
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 }

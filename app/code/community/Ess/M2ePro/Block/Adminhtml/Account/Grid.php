@@ -1,40 +1,42 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     protected $viewComponentHelper = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialize view
-        //------------------------------
+        // ---------------------------------------
         $view = Mage::helper('M2ePro/View')->getCurrentView();
         $this->viewComponentHelper = Mage::helper('M2ePro/View')->getComponentHelper($view);
-        //------------------------------
+        // ---------------------------------------
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId($view . 'AccountGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('title');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -109,13 +111,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         // Set delete action
-        //--------------------------------
+        // ---------------------------------------
         $confirm = 'Attention! By deleting Account you delete all information on it from M2E Pro Server. ';
         $confirm .= 'This will cause inappropriate work of all Accounts\' copies.';
         $confirm  = Mage::helper('M2ePro')->__($confirm);
@@ -125,12 +127,12 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
              'url'      => $this->getUrl('*/*/delete'),
              'confirm'  => $confirm
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -143,5 +145,5 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
             ->getUrl($row, 'account', 'edit', array('id' => $row->getData('id')));
     }
 
-    // ####################################
+    //########################################
 }

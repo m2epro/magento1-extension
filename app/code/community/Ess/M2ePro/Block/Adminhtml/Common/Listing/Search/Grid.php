@@ -1,51 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingSearchGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
         // Get collection products in listing
-        //--------------------------------
+        // ---------------------------------------
         $activeComponents = Mage::helper('M2ePro/View_Common_Component')->getActiveComponents();
 
         /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::getModel('M2ePro/Listing_Product')->getCollection();
-        $listingProductCollection->addFieldToFilter(
-            '`main_table`.`component_mode`', array('in' => $activeComponents)
-        );
+        $listingProductCollection->addFieldToFilter('main_table.component_mode', array('in' => $activeComponents));
         $listingProductCollection->getSelect()->distinct();
         $listingProductCollection->getSelect()->join(
             array('l'=>Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
             '(`l`.`id` = `main_table`.`listing_id`)',
             array('listing_title'=>'title','store_id')
         );
-        //--------------------------------
+        // ---------------------------------------
 
         $listingProductCollection->getSelect()->joinLeft(
             array('alp' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable()),
@@ -60,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
         )');
 
         // Communicate with magento product table
-        //--------------------------------
+        // ---------------------------------------
         $table = Mage::getSingleton('core/resource')->getTableName('catalog_product_entity_varchar');
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                                      ->select()
@@ -90,7 +90,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
             array()
         );
         $listingProductCollection->getSelect()->where('`cpev`.`store_id` = ('.$dbSelect->__toString().')');
-        //--------------------------------
+        // ---------------------------------------
 
         $listingProductCollection->getSelect()->joinLeft(
             new Zend_Db_Expr('(
@@ -145,15 +145,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
             )
         );
 
-        //------------------------------
+        // ---------------------------------------
         $listingOtherCollection = Mage::getModel('M2ePro/Listing_Other')->getCollection();
-        $listingOtherCollection->addFieldToFilter(
-            '`main_table`.`component_mode`', array('in' => $activeComponents)
-        );
+        $listingOtherCollection->addFieldToFilter('main_table.component_mode', array('in' => $activeComponents));
         $listingOtherCollection->getSelect()->distinct();
 
         // add stock availability, type id, status & visibility to select
-        //------------------------------
+        // ---------------------------------------
         $listingOtherCollection->getSelect()
             ->joinLeft(
                 array('cisi' => Mage::getResourceModel('cataloginventory/stock_item')->getMainTable()),
@@ -162,7 +160,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
             ->joinLeft(array('cpe'=>Mage::getSingleton('core/resource')->getTableName('catalog_product_entity')),
                 '(cpe.entity_id = `main_table`.product_id)',
                 array('magento_sku'=>'sku'));
-        //------------------------------
+        // ---------------------------------------
 
         $listingOtherCollection->getSelect()->joinLeft(
             new Zend_Db_Expr('(
@@ -216,9 +214,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
                 'online_sku'                    => 't.sku'
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $selects = array(
             $listingProductCollection->getSelect(),
             $listingOtherCollection->getSelect()
@@ -250,8 +248,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
             )
         );
 
-//        exit($resultCollection->getSelect()->__toString());
-
         // Set collection to grid
         $this->setCollection($resultCollection);
 
@@ -273,7 +269,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
         $this->addColumn('name', array(
             'header'    => Mage::helper('M2ePro')->__('Product Title / Listing / Product SKU'),
             'align'     => 'left',
-            //'width'     => '300px',
             'type'      => 'text',
             'index'     => 'product_name',
             'filter_index' => 'product_name',
@@ -379,7 +374,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
@@ -477,7 +472,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
                     if (empty($virtualProductAttributes) && empty($virtualChannelAttributes)) {
                         $attributesStr = implode(', ', $productAttributes);
                     } else {
-                        foreach($productAttributes as $attribute) {
+                        foreach ($productAttributes as $attribute) {
                             if (in_array($attribute, array_keys($virtualProductAttributes))) {
 
                                 $attributesStr .= '<span style="border-bottom: 2px dotted grey">' . $attribute .
@@ -576,7 +571,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
         $url = '';
         if ($row->getData('component_mode') == Ess_M2ePro_Helper_Component_Amazon::NICK) {
             $url = Mage::helper('M2ePro/Component_Amazon')->getItemUrl($value, $row->getData('marketplace_id'));
-        } else if($row->getData('component_mode') == Ess_M2ePro_Helper_Component_Buy::NICK) {
+        } else if ($row->getData('component_mode') == Ess_M2ePro_Helper_Component_Buy::NICK) {
             $url = Mage::helper('M2ePro/Component_Buy')->getItemUrl($value);
         }
 
@@ -651,7 +646,7 @@ HTML;
         return $html;
     }
 
-    //-------------------------------------
+    // ---------------------------------------
 
     protected function callbackFilterTitle($collection, $column)
     {
@@ -665,7 +660,7 @@ HTML;
             ->where('product_name LIKE ? OR magento_sku LIKE ? OR listing_title LIKE ?', '%'.$value.'%');
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -677,5 +672,5 @@ HTML;
         return false;
     }
 
-    // ####################################
+    //########################################
 }

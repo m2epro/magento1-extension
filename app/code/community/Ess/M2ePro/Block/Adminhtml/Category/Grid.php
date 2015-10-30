@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function getStoreId()
     {
@@ -19,7 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
         return $this;
     }
 
-    // ####################################
+    //########################################
 
     public function setCollection($collection)
     {
@@ -74,7 +76,7 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
         $this->setData('categories_cache', $cacheData);
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnMagentoCategory($value, $row, $column, $isExport)
     {
@@ -93,12 +95,12 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
         return Mage::helper('M2ePro')->escapeHtml($path);
     }
 
-    // ####################################
+    //########################################
 
     public function getMultipleRows($item)
     {
         return false;
     }
 
-    // ####################################
+    //########################################
 }

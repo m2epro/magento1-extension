@@ -1,36 +1,38 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Adminhtml_MainController
 {
-    //#############################################
+    //########################################
 
     protected function getCustomViewNick()
     {
         return NULL;
     }
 
-    //#############################################
+    //########################################
 
     public function checkMessagesAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $id   = $this->getRequest()->getParam('id');
         $nick = $this->getRequest()->getParam('nick');
         $data = $this->getRequest()->getParam($nick);
         $component = $this->getRequest()->getParam('component_mode');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $template = NULL;
         $templateData = $data ? $data : array();
         $templateUsedAttributes = array();
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         switch ($component) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
                 $manager = Mage::getSingleton('M2ePro/Ebay_Template_Manager');
@@ -45,19 +47,19 @@ class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Admi
                 }
                 break;
         }
-        //------------------------------
+        // ---------------------------------------
 
         if (!is_null($template) && $template->getId()) {
             $templateData = $template->getData();
             $templateUsedAttributes = $template->getUsedAttributes();
         }
 
-        //------------------------------
+        // ---------------------------------------
         if (is_null($template) && empty($templateData)) {
             $this->getResponse()->setBody(json_encode(array('messages' => '')));
             return;
         }
-        //------------------------------
+        // ---------------------------------------
 
         $this->loadLayout();
 
@@ -74,5 +76,5 @@ class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Admi
         $this->getResponse()->setBody(json_encode(array('messages' => $messagesBlock->getMessagesHtml())));
     }
 
-    //#############################################
+    //########################################
 }

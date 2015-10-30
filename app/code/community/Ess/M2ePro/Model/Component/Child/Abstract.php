@@ -1,15 +1,20 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Component_Child_Abstract extends Ess_M2ePro_Model_Component_Abstract
 {
     protected $parentObject = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Component_Parent_Abstract $object
+     */
     public function setParentObject(Ess_M2ePro_Model_Component_Parent_Abstract $object)
     {
         if (is_null($object->getId())) {
@@ -49,7 +54,7 @@ abstract class Ess_M2ePro_Model_Component_Child_Abstract extends Ess_M2ePro_Mode
         return $this->parentObject;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param string $modelName
@@ -82,12 +87,12 @@ abstract class Ess_M2ePro_Model_Component_Child_Abstract extends Ess_M2ePro_Mode
         return $this->getRelatedItems($tempModel,$fieldName,$asObjects,$filters,$sort);
     }
 
-    // ########################################
+    //########################################
 
     protected function getComponentMode()
     {
         return NULL;
     }
 
-    // ########################################
+    //########################################
 }

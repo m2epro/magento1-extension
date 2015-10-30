@@ -39,7 +39,7 @@
         <b>Full Revise</b> - Conditions here relate to changes that are made to the Policies made in the M2E Pro Listing.
         If Conditions here are met, eBay Items will be updated in full, with all data being sent to eBay.</br></br>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, 'pages/viewpage.action?pageId=17367083')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/KwAJAQ')
     ); ?>
 </div>
 
@@ -341,7 +341,7 @@
 
 </div>
 
-<script type="m2epro/template" id="revise_qty_max_applied_value_confirmation_popup_template">
+<div id="revise_qty_max_applied_value_confirmation_popup_template" style="display: none;">
     <div style="padding: 5px">
         <?php echo Mage::helper('M2ePro')->__('
             <br/>It is necessary to understand that Disabling this Option can <strong>negatively</strong> influence on <strong>M2E Pro Performance</strong>.<br/><br/>
@@ -358,9 +358,9 @@
         <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
         <button onclick="EbayTemplateSynchronizationHandlerObj.reviseQtyMaxAppliedValueDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
     </div>
-</script>
+</div>
 
-<script type="m2epro/template" id="revise_price_max_max_allowed_deviation_confirmation_popup_template">
+<div id="revise_price_max_max_allowed_deviation_confirmation_popup_template" style="display: none;">
     <div style="padding: 5px">
         <?php echo Mage::helper('M2ePro')->__('
             <br/>It is necessary to understand that Disabling this Option can <strong>negatively</strong> influence on <strong>M2E Pro Performance</strong>.<br/><br/>
@@ -377,4 +377,4 @@
         <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>&nbsp;&nbsp;
         <button onclick="EbayTemplateSynchronizationHandlerObj.revisePriceMaxAllowedDeviationDisableConfirm()"><?php echo Mage::helper('M2ePro')->__('Confirm') ?></button>
     </div>
-</script>
+</div>

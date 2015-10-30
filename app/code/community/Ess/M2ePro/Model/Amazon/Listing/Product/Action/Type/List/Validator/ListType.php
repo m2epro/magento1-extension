@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListType
@@ -11,21 +13,23 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
 
     private $cachedData = array();
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $generalIds
+     * @return $this
+     */
     public function setChildGeneralIdsForParent(array $generalIds)
     {
         $this->childGeneralIdsForParent = $generalIds;
         return $this;
     }
 
-    public function getChildGeneralIdsForParent()
-    {
-        return $this->childGeneralIdsForParent;
-    }
+    //########################################
 
-    // ########################################
-
+    /**
+     * @return bool
+     */
     public function validate()
     {
         $generalId = $this->recognizeByListingProductGeneralId();
@@ -126,7 +130,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
         return false;
     }
 
-    // ########################################
+    //########################################
 
     private function recognizeByListingProductGeneralId()
     {
@@ -493,7 +497,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
             return false;
         }
 
-        if ($this->isExistInChildGeneralIdsForParent($parentGeneralId, $generalId)) {
+        if ($this->isExistInChildGeneralIdsForParent($generalId)) {
 // M2ePro_TRANSLATIONS
 // The Product with the same %worldwide_id_type% %worldwide_id% provided in Description Policy was found on Amazon. Linking was failed because this %worldwide_id_type% has already been assigned to another Child Product of this parent. Please provide the correct value and try again.
             $this->addMessage(
@@ -574,7 +578,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
         return $generalId;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function validateNewProduct()
     {
@@ -685,7 +689,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function validateComplexMagentoProductTypes()
     {
@@ -700,7 +704,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function getDataFromAmazon($identifier)
     {
@@ -744,7 +748,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
         return $this->cachedData['amazon_data'][$identifier] = $result['items'];
     }
 
-    // ########################################
+    //########################################
 
     private function getChannelTheme()
     {
@@ -766,7 +770,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
         return $typeModel->getChannelTheme();
     }
 
-    // ########################################
+    //########################################
 
     private function setListType($listType)
     {
@@ -776,30 +780,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
     private function setGeneralId($generalId)
     {
         $this->data['general_id'] = $generalId;
-
-        if ($this->getVariationManager()->isRelationChildType()) {
-            $this->addChildGeneralIdForParent(
-                $this->getVariationManager()->getTypeModel()->getParentListingProduct()->getId(),
-                $generalId
-            );
-        }
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
-    private function isExistInChildGeneralIdsForParent($parentGeneralId, $childGeneralId)
+    private function isExistInChildGeneralIdsForParent($childGeneralId)
     {
-        if (!isset($this->childGeneralIdsForParent[$parentGeneralId])) {
-            return false;
-        }
-
-        return in_array($childGeneralId, $this->childGeneralIdsForParent[$parentGeneralId]);
+        return in_array($childGeneralId, $this->childGeneralIdsForParent);
     }
 
-    private function addChildGeneralIdForParent($parentGeneralId, $childGeneralId)
-    {
-        $this->childGeneralIdsForParent[$parentGeneralId][] = $childGeneralId;
-    }
-
-    // ########################################
+    //########################################
 }

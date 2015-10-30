@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Request
@@ -21,11 +23,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Request
      */
     private $warningMessages = array();
 
-    // ########################################
+    //########################################
 
     abstract public function getData();
 
-    // ########################################
+    //########################################
 
     public function setParams(array $params = array())
     {
@@ -40,7 +42,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Request
         return $this->params;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function setConfigurator(Ess_M2ePro_Model_Ebay_Listing_Action_Configurator $object)
     {
@@ -55,7 +57,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Request
         return $this->configurator;
     }
 
-    // ########################################
+    //########################################
 
     protected function addWarningMessage($message)
     {
@@ -70,7 +72,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Request
         return $this->warningMessages;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -85,7 +87,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Request
         return $this->getMarketplace()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -100,12 +102,12 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Request
         return $this->getAccount()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Magento_Product
      */
     abstract protected function getMagentoProduct();
 
-    // ########################################
+    //########################################
 }

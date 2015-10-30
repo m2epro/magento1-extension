@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Order_Reserve
@@ -19,7 +21,7 @@ class Ess_M2ePro_Model_Order_Reserve
 
     private $flags = array();
 
-    // ########################################
+    //########################################
 
     public function __construct(Ess_M2ePro_Model_Order $order)
     {
@@ -40,21 +42,33 @@ class Ess_M2ePro_Model_Order_Reserve
         return null;
     }
 
+    /**
+     * @return bool
+     */
     public function isNotProcessed()
     {
         return $this->order->getReservationState() == self::STATE_UNKNOWN;
     }
 
+    /**
+     * @return bool
+     */
     public function isPlaced()
     {
         return $this->order->getReservationState() == self::STATE_PLACED;
     }
 
+    /**
+     * @return bool
+     */
     public function isReleased()
     {
         return $this->order->getReservationState() == self::STATE_RELEASED;
     }
 
+    /**
+     * @return bool
+     */
     public function isCanceled()
     {
         return $this->order->getReservationState() == self::STATE_CANCELED;
@@ -288,5 +302,5 @@ class Ess_M2ePro_Model_Order_Reserve
         return $products;
     }
 
-    // ########################################
+    //########################################
 }

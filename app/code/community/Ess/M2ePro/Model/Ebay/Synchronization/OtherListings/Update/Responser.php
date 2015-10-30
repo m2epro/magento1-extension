@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update_Responser
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update_Responser
 {
     protected $synchronizationLog = NULL;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages(array $messages = array())
     {
@@ -45,8 +47,12 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update_Responser
         return true;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -82,7 +88,7 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update_Responser
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData($response)
     {
@@ -103,7 +109,7 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update_Responser
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -121,7 +127,7 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update_Responser
         return $this->getObjectByParam('Marketplace','marketplace_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     protected function getSynchronizationLog()
     {
@@ -136,5 +142,5 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update_Responser
         return $this->synchronizationLog;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,42 +1,43 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     protected $cacheData = array();
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('commonListingOtherGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setSaveParametersInSession(true);
         $this->setPagerVisibility(false);
         $this->setUseAjax(true);
         $this->setFilterVisibility(false);
         $this->setDefaultLimit(100);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareColumns()
     {
         $this->addColumn('account', array(
             'header'    => Mage::helper('M2ePro')->__('Account'),
             'align'     => 'left',
-            //'width'     => '200px',
             'type'      => 'text',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnAccount')
@@ -78,7 +79,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Grid extends Mage
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnAccount($value, $row, $column, $isExport)
     {
@@ -133,9 +134,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Grid extends Mage
         return $value;
     }
 
-    // ####################################
+    //########################################
 
     abstract protected function prepareCacheData();
 
-    // ####################################
+    //########################################
 }

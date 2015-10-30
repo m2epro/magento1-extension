@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
     extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
 {
-    // ########################################
+    //########################################
 
     public function build(array $data)
     {
@@ -15,18 +17,10 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
             return NULL;
         }
 
-        // validate input data
-        //------------------------------
         $this->validate($data);
-        //------------------------------
 
-        // prepare input data
-        //------------------------------
         $data = $this->prepareData($data);
-        //------------------------------
 
-        // create template
-        //------------------------------
         $template = Mage::helper('M2ePro/Component_Ebay')->getModel('Template_Synchronization');
 
         if (isset($data['id'])) {
@@ -35,18 +29,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
 
         $template->addData($data);
         $template->save();
-        //------------------------------
 
         return $template;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareData(array &$data)
     {
         $prepared = parent::prepareData($data);
 
-        //------------------------------
         $isSimpleMode = Mage::helper('M2ePro/View_Ebay')->isSimpleMode();
 
         $defaultData = $isSimpleMode
@@ -57,7 +49,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         $defaultData['schedule_week_settings'] = json_decode($defaultData['schedule_week_settings'], true);
 
         $data = Mage::helper('M2ePro')->arrayReplaceRecursive($defaultData, $data);
-        //------------------------------
 
         $prepared = array_merge(
             $prepared,
@@ -71,7 +62,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         return $prepared;
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     private function prepareListData(array $data)
     {
@@ -163,7 +154,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
             $prepared['revise_update_images'] = (int)$data['revise_update_images'];
         }
 
-        //------------------------------
+        // ---------------------------------------
 
         if (isset($data['revise_change_selling_format_template'])) {
             $prepared['revise_change_selling_format_template'] = (int)$data['revise_change_selling_format_template'];
@@ -290,7 +281,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
             $prepared['schedule_mode'] = (int)$data['schedule_mode'];
         }
 
-        //--
+        // ---------------------------------------
+
         $intervalSettings = array(
             'mode'      => 0,
             'date_from' => null,
@@ -315,9 +307,9 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         }
 
         $prepared['schedule_interval_settings'] = json_encode($intervalSettings);
-        //--
 
-        //--
+        // ---------------------------------------
+
         $weekSettings = array();
         if (isset($data['schedule_week_days']) && $prepared['schedule_mode']) {
 
@@ -337,10 +329,11 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         }
 
         $prepared['schedule_week_settings'] = json_encode($weekSettings);
-        //--
+
+        // ---------------------------------------
 
         return $prepared;
     }
 
-    // ########################################
+    //########################################
 }

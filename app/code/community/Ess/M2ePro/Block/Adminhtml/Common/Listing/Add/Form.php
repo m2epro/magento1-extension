@@ -1,29 +1,31 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     protected $component;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingEditForm');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareForm()
     {
         // Prepare action
-        // -------------------
+        // ---------------------------------------
         $step = $this->getRequest()->getParam('step');
 
         if (is_null($step)) {
@@ -35,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Form extends Mage_Adminhtml_
                 'step' => (int)$step
             ));
         }
-        // -------------------
+        // ---------------------------------------
 
         $form = new Varien_Data_Form(array(
             'id'      => 'edit_form',
@@ -53,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Form extends Mage_Adminhtml_
     protected function _beforeToHtml()
     {
         // Add listing mode
-        // -------------------
+        // ---------------------------------------
         $child = NULL;
         $step = $this->getRequest()->getParam('step');
 
@@ -74,12 +76,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Form extends Mage_Adminhtml_
                                             ->createBlock('M2ePro/adminhtml_common_listing_add_main'));
             $this->setChild('content', $child);
         }
-        // -------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -91,5 +93,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Form extends Mage_Adminhtml_
         return $breadcrumb->_toHtml() . parent::_toHtml();
     }
 
-    // ########################################
+    //########################################
 }

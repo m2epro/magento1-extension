@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -45,7 +47,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -64,7 +66,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         $this->getResponse()->setBody($response);
     }
 
-    //#############################################
+    //########################################
 
     public function newAction()
     {
@@ -73,12 +75,12 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
     public function editAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $id = $this->getRequest()->getParam('id');
         $nick = $this->getRequest()->getParam('nick');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $manager = Mage::getSingleton('M2ePro/Ebay_Template_Manager')->setTemplate($nick);
         $template = $manager
             ->getTemplateModel()
@@ -86,20 +88,20 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                     ->addFieldToFilter('id', $id)
                     ->addFieldToFilter('is_custom_template', 0)
                     ->getFirstItem();
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if (!$template->getId() && $id) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Policy does not exist.'));
             return $this->_redirect('*/adminhtml_ebay_template/index');
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader $dataLoader */
         $dataLoader = Mage::getBlockSingleton('M2ePro/adminhtml_ebay_listing_template_switcher_dataLoader');
         $dataLoader->load($template);
-        //------------------------------
+        // ---------------------------------------
 
         $data = array(
             'template_nick' => $nick
@@ -107,18 +109,46 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         $content = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_template_edit', '', $data);
 
         $this->_initAction();
+
+        switch ($nick) {
+
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN:
+                $this->setComponentPageHelpLink('Return+Settings');
+                break;
+
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT:
+                $this->setComponentPageHelpLink('Payment+Settings');
+                break;
+
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING:
+                $this->setComponentPageHelpLink('Shipping+Settings');
+                break;
+
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION:
+                $this->setComponentPageHelpLink('Description');
+                break;
+
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:
+                $this->setComponentPageHelpLink('Price%2C+Quantity+and+Format+Settings');
+                break;
+
+            case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION:
+                $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367081');
+                break;
+        }
+
         $this->_addContent($content);
         $this->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function saveAction()
     {
         $templates = array();
         $templateNicks = Mage::getSingleton('M2ePro/Ebay_Template_Manager')->getAllTemplates();
 
-        //------------------------------
+        // ---------------------------------------
         foreach ($templateNicks as $nick) {
             if ($this->isSaveAllowed($nick)) {
                 $template = $this->saveTemplate($nick);
@@ -134,15 +164,15 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                 }
             }
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ($this->getRequest()->isXmlHttpRequest()) {
             $this->loadLayout();
             $this->getResponse()->setBody(json_encode($templates));
             return;
         }
-        //------------------------------
+        // ---------------------------------------
 
         if (count($templates) == 0) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Policy was not saved.'));
@@ -167,7 +197,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         );
     }
 
-    //#############################################
+    //########################################
 
     protected function isSaveAllowed($templateNick)
     {
@@ -188,7 +218,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         return false;
     }
 
-    //#############################################
+    //########################################
 
     protected function saveTemplate($nick)
     {
@@ -223,16 +253,16 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         return $template;
     }
 
-    //#############################################
+    //########################################
 
     public function deleteAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $id = $this->getRequest()->getParam('id');
         $nick = $this->getRequest()->getParam('nick');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $manager = Mage::getSingleton('M2ePro/Ebay_Template_Manager')->setTemplate($nick);
         $template = $manager
             ->getTemplateModel()
@@ -240,7 +270,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                     ->addFieldToFilter('id', $id)
                     ->addFieldToFilter('is_custom_template', 0)
                     ->getFirstItem();
-        //------------------------------
+        // ---------------------------------------
 
         if (!$template->getId()) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Policy does not exist.'));
@@ -263,7 +293,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         $this->_redirect('*/*/index');
     }
 
-    //#############################################
+    //########################################
 
     public function editListingAction()
     {
@@ -275,15 +305,15 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             return $this->_redirect('*/adminhtml_ebay_listing/index');
         }
 
-        //------------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader $dataLoader */
         $dataLoader = Mage::getBlockSingleton('M2ePro/adminhtml_ebay_listing_template_switcher_dataLoader');
         $dataLoader->load($model);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         Mage::helper('M2ePro/Data_Global')->setValue('ebay_listing', $model);
-        //------------------------------
+        // ---------------------------------------
 
         $this->_initAction();
 
@@ -308,18 +338,18 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             return $this->_redirect('*/adminhtml_ebay_listing/index');
         }
 
-        //------------------------------
+        // ---------------------------------------
         $oldData = $model->getChildObject()->getDataSnapshot();
-        //------------------------------
+        // ---------------------------------------
         $data = $this->getPostedTemplatesData();
         $model->addData($data);
         $model->getChildObject()->setEstimatedFeesObtainAttemptCount(0);
         $model->getChildObject()->setEstimatedFeesObtainRequired(true);
         $model->save();
-        //------------------------------
+        // ---------------------------------------
         $newData = $model->getChildObject()->getDataSnapshot();
         $model->getChildObject()->setSynchStatusNeed($newData,$oldData);
-        //------------------------------
+        // ---------------------------------------
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('The Listing was successfully saved.'));
 
@@ -333,7 +363,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), $extendedParams));
     }
 
-    //#############################################
+    //########################################
 
     public function editListingProductAction()
     {
@@ -345,22 +375,22 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             return;
         }
 
-        //------------------------------
+        // ---------------------------------------
         $collection = Mage::helper('M2ePro/Component_Ebay')
                 ->getCollection('Listing_Product')
                 ->addFieldToFilter('id', array('in' => $ids));
-        //------------------------------
+        // ---------------------------------------
 
         if ($collection->getSize() == 0) {
             $this->getResponse()->setBody('');
             return;
         }
 
-        //------------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader $dataLoader */
         $dataLoader = Mage::getBlockSingleton('M2ePro/adminhtml_ebay_listing_template_switcher_dataLoader');
         $dataLoader->load($collection);
-        //------------------------------
+        // ---------------------------------------
 
         $data = array();
         if ($tab) {
@@ -381,21 +411,21 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             return;
         }
 
-        //------------------------------
+        // ---------------------------------------
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
         $collection->addFieldToFilter('id', array('in' => $ids));
-        //------------------------------
+        // ---------------------------------------
 
         if ($collection->getSize() == 0) {
             $this->getResponse()->setBody('');
             return;
         }
 
-        //------------------------------
+        // ---------------------------------------
         $data = $this->getPostedTemplatesData();
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $transaction = Mage::getModel('core/resource_transaction');
 
         $snapshots = array();
@@ -413,7 +443,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             $snapshots = false;
             $transaction->rollback();
         }
-        //------------------------------
+        // ---------------------------------------
 
         $this->getResponse()->setBody('');
 
@@ -429,7 +459,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         }
     }
 
-    //#############################################
+    //########################################
 
     public function getTemplateHtmlAction()
     {
@@ -437,13 +467,13 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         try {
 
-            //------------------------------
+            // ---------------------------------------
             /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader $dataLoader */
             $dataLoader = Mage::getBlockSingleton('M2ePro/adminhtml_ebay_listing_template_switcher_dataLoader');
             $dataLoader->load($this->getRequest());
-            //------------------------------
+            // ---------------------------------------
 
-            //------------------------------
+            // ---------------------------------------
             $templateNick = $this->getRequest()->getParam('nick');
             $templateDataForce = (bool)$this->getRequest()->getParam('data_force', false);
 
@@ -453,7 +483,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher $switcherBlock */
             $switcherBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher');
             $switcherBlock->setData($data);
-            //------------------------------
+            // ---------------------------------------
 
             $this->getResponse()->setBody($switcherBlock->getFormDataBlockHtml($templateDataForce));
 
@@ -462,7 +492,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         }
     }
 
-    //#############################################
+    //########################################
 
     public function isTitleUniqueAction()
     {
@@ -490,7 +520,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         return $this->getResponse()->setBody(json_encode(array('unique' => !(bool)$collection->getSize())));
     }
 
-    //#############################################
+    //########################################
 
     private function getPostedTemplatesData()
     {
@@ -498,9 +528,9 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
             return array();
         }
 
-        //------------------------------
+        // ---------------------------------------
         $data = array();
-        foreach(Mage::getSingleton('M2ePro/Ebay_Template_Manager')->getAllTemplates() as $nick) {
+        foreach (Mage::getSingleton('M2ePro/Ebay_Template_Manager')->getAllTemplates() as $nick) {
             $manager = Mage::getModel('M2ePro/Ebay_Template_Manager')
                 ->setTemplate($nick);
 
@@ -524,7 +554,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
             $this->clearTemplatesFieldsNotRelatedToMode($data, $nick, $templateMode);
         }
-        //------------------------------
+        // ---------------------------------------
 
         return $data;
     }
@@ -552,5 +582,5 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         }
     }
 
-    //#############################################
+    //########################################
 }

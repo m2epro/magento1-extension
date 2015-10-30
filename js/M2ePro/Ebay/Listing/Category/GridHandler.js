@@ -1,6 +1,6 @@
 EbayListingCategoryGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function()
     {
@@ -30,7 +30,7 @@ EbayListingCategoryGridHandler = Class.create(GridHandler, {
         };
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editPrimaryCategories: function()
     {
@@ -102,19 +102,19 @@ EbayListingCategoryGridHandler = Class.create(GridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editCategories: function()
     {
         alert('abstract editCategories');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'ebay';
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

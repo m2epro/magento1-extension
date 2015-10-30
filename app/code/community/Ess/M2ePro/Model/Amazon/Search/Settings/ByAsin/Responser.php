@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Search_Settings_ByAsin_Responser
     extends Ess_M2ePro_Model_Connector_Amazon_Search_ByAsin_ItemsResponser
 {
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -17,8 +19,12 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByAsin_Responser
         return $this->getObjectByParam('Listing_Product', 'listing_product_id');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
         parent::unsetProcessingLocks($processingRequest);
@@ -51,7 +57,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByAsin_Responser
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData($response)
     {
@@ -69,5 +75,5 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByAsin_Responser
         $settingsSearch->process();
     }
 
-    // ########################################
+    //########################################
 }

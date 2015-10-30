@@ -1,7 +1,7 @@
 CommonAmazonTemplateDescriptionCategoryChooserHandler = Class.create();
 CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     specificHandler: null,
 
@@ -11,7 +11,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
 
     variationThemes: {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -19,14 +19,14 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         this.categoryPathHiddenInput   = $('category_path');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setSpecificHandler: function(object)
     {
         this.specificHandler = object;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showEditCategoryPopUp: function()
     {
@@ -103,7 +103,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         self.popUp.close();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderTopLevelCategories: function(containerId)
     {
@@ -149,7 +149,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     browseClickCategory: function(selectObj, categoryId)
     {
@@ -204,7 +204,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         return 'category_chooser_children_' + categoryId;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirmCategory: function()
     {
@@ -236,7 +236,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         $('selected_category_path').innerHTML = '<span style="color: grey; font-style: italic">' + M2ePro.translator.translate('Not Selected') + '</span>';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     refreshAmazonCategories: function()
     {
@@ -276,7 +276,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     search: function()
     {
@@ -358,14 +358,14 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     recentClickCategory: function(browseNodeId, categoryPath)
     {
         this.selectAndLoadCategory(browseNodeId, categoryPath);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     selectAndLoadCategory: function(browseNodeId, categoryPath)
     {
@@ -382,7 +382,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         this.getCategoryInfoFromDictionaryBrowseNodeId(browseNodeId, categoryPath, callback);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getCategoryInfoFromDictionaryByCategoryId: function(categoryId, callback)
     {
@@ -419,7 +419,7 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     updateCurrentlySelectedCategorySpan: function(categoryInfo)
     {
@@ -429,5 +429,5 @@ CommonAmazonTemplateDescriptionCategoryChooserHandler.prototype = Object.extend(
         $('category_reset_link').show();
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

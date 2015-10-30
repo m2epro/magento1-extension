@@ -1,3 +1,56 @@
+* 6.3.8 (r9727) (29/10/2015)
+
+* Added: Ability to create Magento Attributes 'on-the-fly' with drop-down and multi-selection types
+* Added: Ability to use Magento Attributes creation 'on-the-fly for QTY/Price and Categories settings
+* Improvement: More stable connections with M2E Pro servers (direct calls to the IP address, DNS is not used)
+* Improvement: [Amazon] Number of Items and Item Package Quantity moved to the Definition Tab of Description Policy
+* Improvement: [Rakuten.com] Automatic and Manual Search + List action performance/features
+* Fix: Fatal error: Call to a member function getStoreId() on a non-object (Orders/Invoices/Shipments)
+* Fix: Exception during Magento Product saving if it has a relation with unmatched Amazon Individual Product
+
+* 6.3.7 (r9707) (27/10/2015)
+
+* Added: Ability to create New Magento Attribute on fly during Policies configuring
+* Added: Auto Add Rules can ignore Magento Products with "Not visible individually" visibility
+* Added: [eBay] Item Preview Tool with Values which will be sent to the Channel
+* Added: [eBay] Ability to set Parts Compatibilities dynamically (groups of ePIDs/kTypes)
+* Added: [eBay] Ability to select several Configurable Attributes for Variation Images
+* Added: [Amazon] Ability to show Quantity value for Amazon Fulfillment Products
+* Added: [Amazon/Rakuten.com] Ability to set VAT settings to increase Product Prices automatically
+* Improvement: Backward compatibility with Magento Security Patch (SUPEE-6788)
+* Improvement: Many improvements of Help Blocks / Tips / Documentation links
+* Improvement: More stable connections with M2E Pro servers (connect time was reduced)
+* Improvement: [eBay] Performance of Channel changes receiving for Listings Items and 3rd Party Listings
+* Improvement: [eBay] Do not revise Item Images if they are not changed in Magento (EPS mode)
+* Improvement: [eBay] Additional features to prevent Items duplicates on Channel (connection issue)
+* Improvement: [eBay] Variation Attributes/Options are shown for Products in Listings Log
+* Improvement: [eBay] SKU column is added to the Variations Grid of Manage Variations popup
+* Improvement: [Amazon] Child Product can be shown on Amazon by clicking on Variation Attributes link
+* Improvement: [Amazon] Description Policy is Managed at the same place with other Policies
+* Improvement: [Amazon] Number of Items and Item Package Quantity can be sent ot Amazon at any time
+* Improvement: [Amazon] Performance during Actions Calculations for Parent/Child Products
+* Improvement: [Rakuten.com] Many improvements to work properly due to the Rakuten Team requirements
+* Fix: Magento Attribute could not be used if it has numbers in its Attribute Code
+* Fix: Inline Magento blocks did not work in Custom Description if custom Package/Theme is used in Magento
+* Fix: In some cases Magento Attribute Value could not be retrieved if attribute has select/multi-select type
+* Fix: [eBay] Some Variations could be sent to the eBay for Magento Configurable Products
+* Fix: [eBay] Wrong Statuses for Variations in Manage Variations popup for some cases
+* Fix: [eBay] Price column filter issue for Items with Out Of Stock Control enabled
+* Fix: [eBay] Variation Images were not revised automatically if they were changed in Magento Product
+* Fix: [eBay] Wrong value of current Item Quantity on Channel for 3rd Party Listings
+* Fix: [eBay] Synchronization Policy settings could not be shown in Custom Settings mode
+* Fix: [eBay] "Notice: Array to string conversion" when Description Policy is created
+* Fix: [Amazon] Price could not be revised for FBA Product if it was changed in Magento
+* Fix: [Amazon] Wrong Inactive (Blocked) status for many Products in some cases (List action issue)
+* Fix: [Amazon] Full revise was not performed for FBA Product automatically if Policy was changed
+* Fix: [Amazon] Some sort of Javascript issues during working on Description Policy Specifics Tab
+* Fix: [Amazon] Memory leak during the List action a lot of Amazon Child Products
+* Fix: [Amazon] Sometimes Parent Product can stuck at "Child Products In Action" state
+* Fix: [Rakuten.com] Many fixes to work properly due to the Rakuten Team requirements
+* Deleted: [Rakuten.com] Ability to get Rakuten Product Title for 3rd Party Listings (technical issue)
+* Deleted: [Rakuten.com] Mapping Rakuten Product to Magento Products by Title automatically
+* Deleted: [Rakuten.com] Ability to List Products automatically using Seller SKU (technical issue)
+
 * 6.3.6 (r9445) (01/09/2015)
 
 * Added: [eBay] Ability to set Upload Images mode manually (Auto/Self-Hosted/EPS-hosted)

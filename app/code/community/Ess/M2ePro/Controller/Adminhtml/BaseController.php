@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
@@ -11,7 +13,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
 
     protected $pageHelpLink = NULL;
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -23,7 +25,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         return Mage::getSingleton('admin/session')->isLoggedIn();
     }
 
-    //#############################################
+    //########################################
 
     protected function setPageHelpLink($component = NULL, $article = NULL)
     {
@@ -39,7 +41,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         return $this->pageHelpLink;
     }
 
-    //#############################################
+    //########################################
 
     public function preDispatch()
     {
@@ -49,7 +51,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         if ($this->getRequest()->isXmlHttpRequest() &&
             !Mage::getSingleton('admin/session')->isLoggedIn()) {
 
-            exit(json_encode( array(
+            exit(json_encode(array(
                 'ajaxExpired' => 1,
                 'ajaxRedirect' => $this->_getRefererUrl()
             )));
@@ -107,7 +109,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         }
     }
 
-    //#############################################
+    //########################################
 
     public function loadLayout($ids=null, $generateBlocks=true, $generateXml=true)
     {
@@ -116,7 +118,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         return parent::loadLayout($ids, $generateBlocks, $generateXml);
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     protected function _addLeft(Mage_Core_Block_Abstract $block)
     {
@@ -132,13 +134,13 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         return $this->addContent($block);
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     protected function beforeAddLeftEvent() {}
 
     protected function beforeAddContentEvent() {}
 
-    //#############################################
+    //########################################
 
     public function getSession()
     {
@@ -170,7 +172,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         return array_filter($requestIds);
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     protected function _initPopUp()
     {
@@ -206,7 +208,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         return $this;
     }
 
-    //#############################################
+    //########################################
 
     protected function appendGeneralBlock(Mage_Core_Block_Abstract $block)
     {
@@ -232,5 +234,5 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         return parent::_addContent($block);
     }
 
-    //#############################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,14 +8,14 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE m2epro_amazon_dictionary_category
         DROP COLUMN product_data_required_specifics;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_category');
 
@@ -23,7 +23,7 @@ if ($connection->tableColumnExists($tempTable, 'product_data_required_specifics'
     $connection->dropColumn($tempTable, 'product_data_required_specifics');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -56,7 +56,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -77,8 +77,8 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

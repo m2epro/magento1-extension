@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /*
@@ -32,7 +34,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     protected $changes = array();
 
-    //####################################
+    //########################################
 
     public function needPreventDuplicates($value = null)
     {
@@ -44,7 +46,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         return $this;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function applyChanges()
     {
@@ -60,13 +62,16 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         return $this->flushChanges();
     }
 
+    /**
+     * @return $this
+     */
     public function flushChanges()
     {
         $this->changes = array();
         return $this;
     }
 
-    //####################################
+    //########################################
 
     public function markProductChanged($productId)
     {
@@ -106,7 +111,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         return $this->_addChange($change);
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function markProductCreated($productId)
     {
@@ -128,7 +133,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         return $this->_addChange($change);
     }
 
-    //####################################
+    //########################################
 
     private function _getSkeleton()
     {
@@ -167,7 +172,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         return $this;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     private function getAffectedProductsIds()
     {
@@ -195,7 +200,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         return true;
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     private function filterOnlyAffectedChanges()
     {
@@ -295,5 +300,5 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         $connWrite->insertMultiple($tableName, $this->changes);
     }
 
-    //####################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ### amazon dictionary tables improvements
@@ -89,7 +89,7 @@ $connection = $installer->getConnection();
     ### -------------------------------
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_category_product_data');
 
@@ -117,7 +117,7 @@ SQL
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQL
 
@@ -128,13 +128,13 @@ $installer->run(<<<SQL
 SQL
 );
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_category');
 $tempTableIndexList = $connection->getIndexList($tempTable);
 
 if ($connection->tableColumnExists($tempTable, 'product_data_nicks') === false &&
-    $connection->tableColumnExists($tempTable, 'product_data_nick') !== false ) {
+    $connection->tableColumnExists($tempTable, 'product_data_nick') !== false) {
     $connection->changeColumn(
         $tempTable, 'product_data_nick', 'product_data_nicks',
         'VARCHAR(500) DEFAULT NULL AFTER `browsenode_id`'
@@ -153,7 +153,7 @@ if (!isset($tempTableIndexList[strtoupper('product_data_nicks')])) {
     $connection->addKey($tempTable, 'product_data_nicks', 'product_data_nicks');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -165,7 +165,7 @@ if ($connection->tableColumnExists($tempTable, 'country_mode') === false) {
 }
 
 if ($connection->tableColumnExists($tempTable, 'country_custom_value') === false &&
-    $connection->tableColumnExists($tempTable, 'country') !== false ) {
+    $connection->tableColumnExists($tempTable, 'country') !== false) {
     $connection->changeColumn(
         $tempTable, 'country', 'country_custom_value',
         'VARCHAR(255) NOT NULL AFTER `country_mode`'
@@ -187,7 +187,7 @@ if ($connection->tableColumnExists($tempTable, 'postal_code_mode') === false) {
 }
 
 if ($connection->tableColumnExists($tempTable, 'postal_code_custom_value') === false &&
-    $connection->tableColumnExists($tempTable, 'postal_code') !== false ) {
+    $connection->tableColumnExists($tempTable, 'postal_code') !== false) {
     $connection->changeColumn(
         $tempTable, 'postal_code', 'postal_code_custom_value',
         'VARCHAR(255) NOT NULL AFTER `postal_code_mode`'
@@ -209,7 +209,7 @@ if ($connection->tableColumnExists($tempTable, 'address_mode') === false) {
 }
 
 if ($connection->tableColumnExists($tempTable, 'address_custom_value') === false &&
-    $connection->tableColumnExists($tempTable, 'address') !== false ) {
+    $connection->tableColumnExists($tempTable, 'address') !== false) {
     $connection->changeColumn(
         $tempTable, 'address', 'address_custom_value',
         'VARCHAR(255) NOT NULL AFTER `address_mode`'
@@ -223,7 +223,7 @@ if ($connection->tableColumnExists($tempTable, 'address_custom_attribute') === f
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_description_definition');
 
@@ -241,7 +241,7 @@ if ($connection->tableColumnExists($tempTable, 'image_variation_difference_attri
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $orderRepairTable = $installer->getTable('m2epro_order_repair');
 $orderMatchingTable = $installer->getTable('m2epro_order_matching');
@@ -257,7 +257,7 @@ SQL
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order_matching');
 
@@ -281,7 +281,7 @@ if ($connection->tableColumnExists($tempTable, 'output_variation_options') === f
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_item');
 
@@ -289,7 +289,7 @@ if ($connection->tableColumnExists($tempTable, 'variations') === false) {
     $connection->addColumn($tempTable, 'variations', 'TEXT DEFAULT NULL AFTER `store_id`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_item');
 
@@ -308,7 +308,7 @@ if ($connection->tableColumnExists($tempTable, 'variation_channel_options') === 
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_item');
 
@@ -320,7 +320,7 @@ if ($connection->tableColumnExists($tempTable, 'variation_product_options') === 
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_wizard');
 
@@ -372,7 +372,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_processing_request');
 
@@ -427,7 +427,7 @@ if (!empty($processingRequests)) {
     $connection->insertOnDuplicate($tempTable, $processingRequests, array('responser_params'));
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_template_description');
 
@@ -486,7 +486,7 @@ if ($result !== false) {
     }
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_registry');
 
@@ -521,7 +521,7 @@ if (!empty($localVocabularyData)) {
     }
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -566,8 +566,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

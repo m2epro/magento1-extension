@@ -1,17 +1,17 @@
 EbayListingTransferringInfoHandler = Class.create(EbayListingViewGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     showTranslationDetails: function(title, content)
     {
         this.openPopUp(title, content, {width: 500, height: 405});
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(title, content, params)
     {
@@ -47,5 +47,5 @@ EbayListingTransferringInfoHandler = Class.create(EbayListingViewGridHandler, {
         } catch (ignored) {}
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

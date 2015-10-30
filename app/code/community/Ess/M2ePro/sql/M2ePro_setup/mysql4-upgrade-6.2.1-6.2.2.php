@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_shipping`
@@ -16,7 +16,7 @@ $connection = $installer->getConnection();
             AFTER `local_shipping_discount_profile_id`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -29,7 +29,7 @@ if ($connection->tableColumnExists($tempTable, 'click_and_collect_mode')) {
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -40,8 +40,8 @@ WHERE `marketplace_id` = 9;   -- Motor --
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

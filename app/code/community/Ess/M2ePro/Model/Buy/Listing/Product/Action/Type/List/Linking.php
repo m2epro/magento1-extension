@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Linking
@@ -13,27 +15,39 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Linking
 
     private $sku = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @return $this
+     */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         $this->listingProduct = $listingProduct;
         return $this;
     }
 
+    /**
+     * @param $generalId
+     * @return $this
+     */
     public function setGeneralId($generalId)
     {
         $this->generalId = $generalId;
         return $this;
     }
 
+    /**
+     * @param $sku
+     * @return $this
+     */
     public function setSku($sku)
     {
         $this->sku = $sku;
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function link()
     {
@@ -49,6 +63,10 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Linking
         $this->createBuyItem();
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Buy_Item
+     * @throws Exception
+     */
     public function createBuyItem()
     {
         $data = array(
@@ -73,7 +91,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Linking
         return $object;
     }
 
-    // ########################################
+    //########################################
 
     private function validate()
     {
@@ -93,7 +111,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Linking
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -119,7 +137,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Linking
         return $this->getBuyListingProduct()->getVariationManager();
     }
 
-    // -----------------------------------------
+    // ---------------------------------------
 
     private function getGeneralId()
     {
@@ -135,5 +153,5 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Linking
         return $this->getBuyListingProduct()->getSku();
     }
 
-    // ########################################
+    //########################################
 }

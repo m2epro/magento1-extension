@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
@@ -26,12 +28,15 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
      */
     protected $requestData = NULL;
 
-    // ########################################
+    //########################################
 
     abstract public function processSuccess($params = array());
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $params
+     */
     public function setParams(array $params = array())
     {
         $this->params = $params;
@@ -45,8 +50,11 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->params;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $object
+     */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $object)
     {
         $this->listingProduct = $object;
@@ -60,8 +68,11 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->listingProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Buy_Listing_Product_Action_Configurator $object
+     */
     public function setConfigurator(Ess_M2ePro_Model_Buy_Listing_Product_Action_Configurator $object)
     {
         $this->configurator = $object;
@@ -75,8 +86,11 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->configurator;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Buy_Listing_Product_Action_RequestData $object
+     */
     public function setRequestData(Ess_M2ePro_Model_Buy_Listing_Product_Action_RequestData $object)
     {
         $this->requestData = $object;
@@ -90,7 +104,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->requestData;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Buy_Listing_Product
@@ -100,7 +114,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->getListingProduct()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -118,7 +132,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->getListing()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
@@ -136,7 +150,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->getMarketplace()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -154,7 +168,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->getAccount()->getChildObject();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Magento_Product
@@ -164,7 +178,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $this->getListingProduct()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 
     protected function appendStatusChangerValue($data)
     {
@@ -175,7 +189,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $data;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function appendConditionValues($data)
     {
@@ -190,7 +204,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $data;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function appendQtyValues($data)
     {
@@ -220,7 +234,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $data;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function appendShippingValues($data)
     {
@@ -259,7 +273,7 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         return $data;
     }
 
-    // ########################################
+    //########################################
 
     protected function setLastSynchronizationDates()
     {
@@ -280,5 +294,5 @@ abstract class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_Response
         $this->getListingProduct()->setSettings('additional_data', $additionalData);
     }
 
-    // ########################################
+    //########################################
 }

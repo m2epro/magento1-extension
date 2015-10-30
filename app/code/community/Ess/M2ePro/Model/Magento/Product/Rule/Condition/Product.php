@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
@@ -15,7 +17,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
 
     protected $_customFiltersCache = array();
 
-    // ####################################
+    //########################################
 
     public function getValue()
     {
@@ -30,7 +32,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
         return $this->getData('value');
     }
 
-    // ####################################
+    //########################################
 
     /**
      * Validate product attribute value for condition
@@ -98,7 +100,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
         }
     }
 
-    // ####################################
+    //########################################
 
     public function getAttributeElement()
     {
@@ -117,7 +119,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
         return Mage::getBlockSingleton('M2ePro/adminhtml_magento_product_rule_renderer_editable');
     }
 
-    // ####################################
+    //########################################
 
     /**
      * Retrieve value element chooser URL
@@ -140,7 +142,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
         return Mage::helper('adminhtml')->getUrl('*/adminhtml_general/getRuleConditionChooserHtml', $urlParameters);
     }
 
-    // ####################################
+    //########################################
 
     /**
      * Customize default operator input by type mapper for some types
@@ -534,7 +536,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
         return $op;
     }
 
-    // ####################################
+    //########################################
 
     protected function getCustomFilters()
     {
@@ -570,5 +572,5 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
         return $this->_customFiltersCache[$filterId];
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Client_Cache extends Ess_M2ePro_Helper_Magento_Abstract
@@ -13,7 +15,7 @@ class Ess_M2ePro_Helper_Client_Cache extends Ess_M2ePro_Helper_Magento_Abstract
     const BACKEND_TYPE_SQLITE    = 'sqlite';
     const BACKEND_TYPE_DB        = 'database';
 
-    // ################################
+    //########################################
 
     public function isApcAvailable()
     {
@@ -31,14 +33,14 @@ class Ess_M2ePro_Helper_Client_Cache extends Ess_M2ePro_Helper_Magento_Abstract
         return extension_loaded('redis') && class_exists('Redis', false);
     }
 
-    //---------------------------------
+    // ---------------------------------------
 
     public function isZendOpcacheAvailable()
     {
         return function_exists('opcache_get_status');
     }
 
-    // ################################
+    //########################################
 
     public function getBackend()
     {
@@ -55,7 +57,7 @@ class Ess_M2ePro_Helper_Client_Cache extends Ess_M2ePro_Helper_Magento_Abstract
         return strtolower((string)Mage::getConfig()->getNode('global/cache/slow_backend'));
     }
 
-    // ################################
+    //########################################
 
     public function isApcEnabled()
     {
@@ -85,7 +87,7 @@ class Ess_M2ePro_Helper_Client_Cache extends Ess_M2ePro_Helper_Magento_Abstract
        return (bool)Mage::getConfig()->getNode('global/cache/auto_refresh_fast_cache');
     }
 
-    //---------------------------------
+    // ---------------------------------------
 
     public function isWrongCacheConfiguration()
     {
@@ -114,5 +116,5 @@ class Ess_M2ePro_Helper_Client_Cache extends Ess_M2ePro_Helper_Magento_Abstract
         return false;
     }
 
-    // ################################
+    //########################################
 }

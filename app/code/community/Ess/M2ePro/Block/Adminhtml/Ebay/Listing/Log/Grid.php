@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log_Grid extends Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid
 {
-    // ########################################
+    //########################################
 
     protected function getActionTitles()
     {
@@ -26,5 +28,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log_Grid extends Ess_M2ePro_Block_
         return array_diff_key($allActions, $excludeActions);
     }
 
-    // ########################################
+    //########################################
 }

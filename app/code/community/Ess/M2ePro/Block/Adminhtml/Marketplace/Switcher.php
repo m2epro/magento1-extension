@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_Adminhtml_Component_Switcher
 {
     protected $paramName = 'marketplace';
 
-    // ########################################
+    //########################################
 
     public function getLabel()
     {
@@ -58,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
         return $items;
     }
 
-    // ########################################
+    //########################################
 
     public function getDefaultOptionName()
     {
@@ -69,5 +71,5 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
         return Mage::helper('M2ePro')->__('All Marketplaces');
     }
 
-    // ########################################
+    //########################################
 }

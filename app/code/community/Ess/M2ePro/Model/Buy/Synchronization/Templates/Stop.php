@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Buy_Synchronization_Templates_Stop
     extends Ess_M2ePro_Model_Buy_Synchronization_Templates_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_Stop
         return 'Stop';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,14 +33,14 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_Stop
         return 50;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
         $this->immediatelyChangedProducts();
     }
 
-    //####################################
+    //########################################
 
     private function immediatelyChangedProducts()
     {
@@ -73,5 +75,5 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Templates_Stop
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 }

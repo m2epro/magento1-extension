@@ -2,7 +2,7 @@
     <?php echo Mage::helper('M2ePro')->__('
     On this Page you have to fill in General information on your Rakuten.com Account and provide all necessary accesses for the further work.</br></br>
     More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'General')
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/ooMVAQ')
     ); ?>
 </div>
 
@@ -112,6 +112,32 @@ $isEdit = !!$this->getRequest()->getParam('id');
     </div>
 
 </div>
+
+<?php if (!empty($formData['seller_id'])) : ?>
+<div class="entry-edit" id="magento_block_buy_accounts_access_details">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Access Details'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr id="buy_account_access_details">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Seller ID'); ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input id="seller_id" type="text" name="seller_id" disabled="disabled" value="<?php echo $formData['seller_id'];?>" class="input-text M2ePro-required-when-visible" />
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+<?php endif; ?>
 
 <?php if (!$this->marketplace) { ?>
 <div class="entry-edit" id="magento_block_buy_accounts_general_none_marketplace">

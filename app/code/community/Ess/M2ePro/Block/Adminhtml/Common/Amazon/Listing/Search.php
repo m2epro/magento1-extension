@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingAmazonSearch');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_amazon_listing_search';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         if (!Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
             $headerText = Mage::helper('M2ePro')->__("Search %component_name% Listings Items", $componentName);
@@ -29,32 +31,32 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search extends Mage_Admin
         }
 
         $this->_headerText = $headerText;
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
         if (!is_null($this->getRequest()->getParam('back'))) {
-            //------------------------------
+            // ---------------------------------------
             $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_common_amazon_listing/search');
             $this->_addButton('back', array(
                 'label'     => Mage::helper('M2ePro')->__('Back'),
                 'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
                 'class' => 'back'
             ));
-            //------------------------------
+            // ---------------------------------------
         }
 
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_common_amazon_listing/search');
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_common_listing/index',
             array(
@@ -67,17 +69,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search extends Mage_Admin
             'onclick'   => 'setLocation(\'' . $url . '\')',
             'class'     => 'button_link'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('goto_templates', array(
             'label'     => Mage::helper('M2ePro')->__('Policies'),
             'onclick'   => '',
             'class'     => 'button_link drop_down templates-drop-down'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_common_log/listing',
             array(
@@ -89,10 +91,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search extends Mage_Admin
             'onclick'   => 'window.open(\'' . $url . '\')',
             'class'     => 'button_link'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -105,7 +107,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search extends Mage_Admin
         return $helpBlock->toHtml() . parent::getGridHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function getTemplatesButtonJavascript()
     {
@@ -125,25 +127,25 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search extends Mage_Admin
 
         $filter = base64_encode('component_mode=' . Ess_M2ePro_Helper_Component_Amazon::NICK);
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_common_template_sellingFormat/index', array('filter' => $filter));
         $items[] = array(
             'url' => $url,
             'label' => Mage::helper('M2ePro')->__('Selling Format Policies'),
             'target' => '_blank'
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_common_template_synchronization/index', array('filter' => $filter));
         $items[] = array(
             'url' => $url,
             'label' => Mage::helper('M2ePro')->__('Synchronization Policies'),
             'target' => '_blank'
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_common_amazon_template_description/index'
         );
@@ -153,10 +155,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search extends Mage_Admin
                                                    Mage::helper('M2ePro/Component_Amazon')->getTitle()),
             'target' => '_blank'
         );
-        //------------------------------
+        // ---------------------------------------
 
         return $items;
     }
 
-    // ########################################
+    //########################################
 }

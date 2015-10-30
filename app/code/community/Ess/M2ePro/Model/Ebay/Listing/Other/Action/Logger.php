@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Logger extends Ess_M2ePro_Model_Ebay_Listing_Action_Logger
@@ -13,8 +15,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Logger extends Ess_M2ePro_Model
      */
     private $listingOtherLog = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $messageData
+     * @param int $priority
+     */
     public function logGlobalMessage(array $messageData,
                                      $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM)
     {
@@ -37,6 +43,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Logger extends Ess_M2ePro_Model
                                 $priority);
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @param array $messageData
+     * @param int $priority
+     */
     public function logListingOtherMessage(Ess_M2ePro_Model_Listing_Other $listingOther,
                                            array $messageData,
                                            $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM)
@@ -61,7 +72,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Logger extends Ess_M2ePro_Model
                                 $priority);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Other_Log
@@ -80,5 +91,5 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Action_Logger extends Ess_M2ePro_Model
         return $this->listingOtherLog;
     }
 
-    // ########################################
+    //########################################
 }

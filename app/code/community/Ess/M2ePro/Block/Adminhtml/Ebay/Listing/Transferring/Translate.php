@@ -1,32 +1,34 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mage_Adminhtml_Block_Widget
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingTransferringTranslate');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/listing/transferring/translate.phtml');
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'confirm_button_translation',
             'class'   => 'confirm_button',
@@ -35,9 +37,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mag
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $account = $this->getAccount();
 
         if ($account) {
@@ -55,10 +57,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mag
 
         $this->addData($info);
 
-        //-------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function getTranslationServices()
     {
@@ -100,14 +102,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mag
         return Mage::helper('M2ePro/Component_Ebay')->getDefaultTranslationService();
     }
 
-    // ####################################
+    //########################################
 
     public function getAccount()
     {
         return $this->_getEbayListing()->getAccount();
     }
 
-    // ####################################
+    //########################################
 
     private function _getEbayListing()
     {
@@ -118,7 +120,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mag
         return Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',(int)$listingId)->getChildObject();
     }
 
-    // ####################################
+    //########################################
 
     private function _getMixedServices()
     {
@@ -130,7 +132,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mag
             ->addFieldToFilter('id', array('in' => ($productsIds)));
 
         $mixedServices = array();
-        foreach($collection->getItems() as $listingProduct) {
+        foreach ($collection->getItems() as $listingProduct) {
             $tempService = $listingProduct->getTranslationService();
 
             if (!isset($mixedServices[$tempService])) {
@@ -148,7 +150,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mag
         $totalAvgCost = 0;
         $totalProducts = 0;
 
-        foreach($mixedServices as $serviceName => $countProducts) {
+        foreach ($mixedServices as $serviceName => $countProducts) {
             if (!isset($translationServices[$serviceName])) {
                 continue;
             }
@@ -160,5 +162,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Translate extends Mag
         return number_format((doubleval($totalAvgCost)/$totalProducts), 2);
     }
 
-    // ####################################
+    //########################################
 }

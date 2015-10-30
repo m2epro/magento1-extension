@@ -1,14 +1,11 @@
 CommonBuyTemplateNewProductAttributeHandler = Class.create();
 CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
-
-    popups: [],
-    attributesDataDefinion: [],
+    // ---------------------------------------
 
     attrData: '',
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -51,7 +48,7 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     intTypeValidator: function(value,element) {
 
@@ -100,7 +97,7 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
         return element.value != '';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     clearAttributes: function()
     {
@@ -150,7 +147,7 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
 
         attributes.each(function(attribute) {
 
-            var attributeName =  attribute.attribute_name.replace(/[\s()]/gi,'_');
+            var attributeName =  attribute.attribute_name.replace(/[\s()\/]/gi,'_');
 
             $('attributes[' + attributeName + '][mode]').value = attribute.mode;
 
@@ -171,10 +168,15 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
                 $('input_' + attributeName).show();
                 $('custom_value_' + attributeName).value = attribute.custom_value;
             } else if (attribute.mode == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::ATTRIBUTE_MODE_CUSTOM_ATTRIBUTE')) {
-                $('attribute_' + attributeName).show();
                 $('custom_attribute_' + attributeName).value = attribute.custom_attribute;
-            } else {
-                console.log(attribute);
+                var tmpOptions = $('attributes[' + attributeName + '][mode]').options;
+
+                for (var j = 0; j < tmpOptions.length; j++) {
+                    if (tmpOptions[j].getAttribute('attribute_code') == attribute.custom_attribute) {
+                        tmpOptions[j].selected = true;
+                        break;
+                    }
+                }
             }
         })
     },
@@ -191,6 +193,7 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
             attributes.each(function(attribute) {
                     iterations ++;
                     var requiredGroupId = '';
+                    var helpIcon = new Element('td', {'class': 'value'});
 
                     if (attribute.required_group_id != '0' && typeof attribute.required_group_id !== 'undefined') {
                         requiredGroupId = attribute.required_group_id;
@@ -208,23 +211,23 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
 
                     case M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::TYPE_MULTISELECT'):
 
-                        self.renderAttributeMode(attribute, requiredGroupId);
+                        self.renderHelpTips(
+                            attribute, M2ePro.translator.translate('Multiple values ​​must be separated by comma.'), helpIcon
+                        );
+
+                        self.renderAttributeMode(attribute, requiredGroupId, helpIcon);
                         self.renderRecommendedValues(attribute);
                         self.renderCustomValue(attribute);
-                        self.renderCustomAttribute(attribute);
-
-                        self.renderHelpIconAllowedValues(attribute, M2ePro.translator.translate('Multiple values ​​must be separated by comma.'));
 
                         break;
 
                     case M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::TYPE_SELECT'):
 
-                        self.renderAttributeMode(attribute, requiredGroupId);
+                        self.renderHelpTips(attribute, '', helpIcon);
+
+                        self.renderAttributeMode(attribute, requiredGroupId, helpIcon);
                         self.renderRecommendedValues(attribute);
                         self.renderCustomValue(attribute);
-                        self.renderCustomAttribute(attribute);
-
-                        self.renderHelpIconAllowedValues(attribute);
 
                         break;
 
@@ -234,11 +237,10 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
                         dataDefinition.tips = '';
                         dataDefinition.example = '33';
 
-                        self.renderAttributeMode(attribute,requiredGroupId);
-                        self.renderCustomValue(attribute);
-                        self.renderCustomAttribute(attribute);
+                        self.renderHelpTips(attribute, dataDefinition, helpIcon);
 
-                        self.renderHelpIconDataDefinition(attribute, dataDefinition);
+                        self.renderAttributeMode(attribute,requiredGroupId, helpIcon);
+                        self.renderCustomValue(attribute);
 
                         break;
 
@@ -248,11 +250,10 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
                         dataDefinition.tips = '';
                         dataDefinition.example = '10.99';
 
-                        self.renderAttributeMode(attribute, requiredGroupId);
-                        self.renderCustomValue(attribute);
-                        self.renderCustomAttribute(attribute);
+                        self.renderHelpTips(attribute, dataDefinition, helpIcon);
 
-                        self.renderHelpIconDataDefinition(attribute, dataDefinition);
+                        self.renderAttributeMode(attribute, requiredGroupId, helpIcon);
+                        self.renderCustomValue(attribute);
 
                         break;
 
@@ -262,11 +263,10 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
                         dataDefinition.tips = '';
                         dataDefinition.example = 'Red, Small, Long, Male, XXL';
 
-                        self.renderAttributeMode(attribute, requiredGroupId);
-                        self.renderCustomValue(attribute);
-                        self.renderCustomAttribute(attribute);
+                        self.renderHelpTips(attribute, dataDefinition, helpIcon);
 
-                        self.renderHelpIconDataDefinition(attribute, dataDefinition);
+                        self.renderAttributeMode(attribute, requiredGroupId, helpIcon);
+                        self.renderCustomValue(attribute);
 
                         break;
 
@@ -286,24 +286,37 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
         }
     },
 
-    //---------------------------------------
+    // ---------------------------------------
 
-    renderAttributeMode: function(attribute, requiredGroupId)
+    renderAttributeMode: function(attribute, requiredGroupId, helpIcon)
     {
         var self = BuyTemplateNewProductHandlerObj.attributesHandler,
-            title = attribute.title.replace(/[\s()]/gi,'_');
+            title = attribute.title.replace(/[\s()\/]/gi,'_');
 
         var tr = $('buy_attr_container').appendChild(new Element('tr'));
+        tr.appendChild(new Element('input', {
+            type: 'hidden',
+            id: 'custom_attribute_' + title,
+            name: 'attributes[' + attribute.title + '][custom_attribute]',
+            value: ''
+        }));
         var td = tr.appendChild(new Element('td', {'class': 'label'}));
 
         td.appendChild(new Element('label')).insert(attribute.title + ': ' + (attribute.is_required == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::TYPE_IS_REQUIRED') ? '<span class="required">*</span>' : ''));
 
-        td = tr.appendChild(new Element('td', {'class': 'value'}));
+        td = tr.appendChild(new Element('td', {'class': 'value', 'style': 'width: 280px !important;'}));
         var select = td.appendChild(
             new Element('select', {
                 'name': 'attributes[' + attribute.title + '][mode]',
                 'id': 'attributes[' + title + '][mode]',
-                'class': 'select attributes required-entry ' + requiredGroupId}));
+                'class': 'select attributes required-entry ' + requiredGroupId + ' M2ePro-custom-attribute-can-be-created',
+                'allowed_attribute_types': 'text,price,select',
+                'apply_to_all_attribute_sets': '0'
+            }));
+
+        if (typeof helpIcon !== 'undefined') {
+            tr.appendChild(helpIcon);
+        }
 
         attribute.is_required == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::TYPE_IS_REQUIRED')
             ? select.appendChild(new Element('option', {'style': 'display: none; '}))
@@ -316,14 +329,24 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
         }
 
         select.appendChild(new Element('option', {'value': M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::ATTRIBUTE_MODE_CUSTOM_VALUE')})).insert(M2ePro.translator.translate('Custom Value'));
-        select.appendChild(new Element('option', {'value': M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::ATTRIBUTE_MODE_CUSTOM_ATTRIBUTE')})).insert(M2ePro.translator.translate('Custom Attribute'));
+
+        var optgroup = new Element('optgroup', {
+            label: 'Magento Attributes',
+            class: 'M2ePro-custom-attribute-optgroup'
+        });
+        optgroup.insert(BuyTemplateNewProductHandlerObj.attributeHandler.attrData);
+        select.appendChild(optgroup);
+
+        var handlerObj = new AttributeCreator(title);
+        handlerObj.setSelectObj(select);
+        handlerObj.injectAddOption();
 
         self.setObserver(attribute, select);
     },
 
     renderRecommendedValues: function(attribute)
     {
-        var title = attribute.title.replace(/[\s()]/gi,'_');
+        var title = attribute.title.replace(/[\s()\/]/gi,'_');
 
         var tr = $('buy_attr_container').appendChild(new Element('tr', {'id': 'select_' + title,'style': 'display: none;'}));
         var td = tr.appendChild(new Element('td', {'class': 'label'}));
@@ -352,7 +375,7 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
     renderCustomValue: function(attribute)
     {
         var self = BuyTemplateNewProductHandlerObj.attributesHandler,
-            title = attribute.title.replace(/[\s()]/gi,'_');
+            title = attribute.title.replace(/[\s()\/]/gi,'_');
 
         var tr = $('buy_attr_container').appendChild(new Element('tr', {'id': 'input_' + title,'style': 'display: none;'}));
         var td = tr.appendChild(new Element('td', {'class': 'label'}));
@@ -365,25 +388,6 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
             'name': 'attributes[' + attribute.title + '][custom_value]',
             'type': 'text',
             'class': 'input-text M2ePro-required-when-visible ' + self.getValidator(attribute)}));
-    },
-
-    renderCustomAttribute: function(attribute)
-    {
-        var title = attribute.title.replace(/[\s()]/gi,'_');
-
-        var tr = $('buy_attr_container').appendChild(new Element('tr', {'id': 'attribute_' + title,'style': 'display: none;'}));
-        var td = tr.appendChild(new Element('td', {'class': 'label'}));
-        var label = td.appendChild(new Element('label')).insert(M2ePro.translator.translate('Custom Attribute') + '<span class="required">*</span> : ');
-
-        td = tr.appendChild(new Element('td', {'class': 'value'}));
-        var select = td.appendChild(new Element('select', {
-            'id': 'custom_attribute_' + title,
-            'name': 'attributes[' + attribute.title + '][custom_attribute]',
-            'class': 'attributes M2ePro-required-when-visible select',
-            'style': 'width: 280px'
-        }));
-
-        select.insert('<option style="display: none;"></option>\n' + BuyTemplateNewProductHandlerObj.attributeHandler.attrData);
     },
 
     getValidator: function(attribute)
@@ -401,11 +405,13 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
 
     setObserver: function(attribute, element)
     {
+        var self = BuyTemplateNewProductHandlerObj.attributesHandler
+
         element.observe('change', function() {
 
-            var title = attribute.title.replace(/[\s()]/gi,'_');
+            var title = attribute.title.replace(/[\s()\/]/gi,'_'),
+                customAttribute = $('custom_attribute_' + title);
 
-            $('attribute_' + title).hide();
             $('input_'+ title).hide();
 
             if (attribute.type == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::TYPE_SELECT') ||
@@ -416,15 +422,17 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
 
             if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::ATTRIBUTE_MODE_RECOMMENDED_VALUE')) {
                 $('select_'+ title).show();
+                customAttribute.value = '';
             } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::ATTRIBUTE_MODE_CUSTOM_VALUE')) {
                 $('input_'+ title).show();
+                customAttribute.value = '';
             } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::ATTRIBUTE_MODE_CUSTOM_ATTRIBUTE')) {
-                $('attribute_' + title).show();
+                self.updateHiddenValue(this, customAttribute);
             }
         });
     },
 
-    //---------------------------------------
+    // ---------------------------------------
 
     renderDefaultNoType: function(attribute)
     {
@@ -442,142 +450,49 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
             .appendChild(new Element('hr', {'style': 'border: 1px solid silver; border-bottom: none;'}));
     },
 
-    //----------------------------------------------
+    // ---------------------------------------
 
-    renderHelpIconDataDefinition: function(attribute, dataDefinition, container)
+    renderHelpTips: function(attribute, dataDefinition, container)
     {
-        if (!dataDefinition.definition) {
-            return;
-        }
-
         var self = BuyTemplateNewProductHandlerObj.attributesHandler;
 
-        if (typeof container === 'undefined') {
+        var winContent = '';
 
-            var title = attribute.title.replace(/[\s()]/gi,'_'),
-                attributeLabel = $('attribute_' + title).down('label'),
-                inputLabel = $('input_' + title).down('label');
+        if (typeof dataDefinition === 'object' && dataDefinition.definition) {
+            winContent = '<div style="padding: 3px 0"></div><h4>' + M2ePro.translator.translate('Definition:') + ' </h4>';
+            winContent += '<div>' + dataDefinition.definition + '</div>';
 
-            self.renderHelpIconDataDefinition(attribute, dataDefinition, attributeLabel);
-            self.renderHelpIconDataDefinition(attribute, dataDefinition, inputLabel);
-            return;
-        }
-
-        container.insert('&nbsp;(');
-
-        var helpIcon = container.appendChild(new Element('a', {'href': 'javascript:','title': M2ePro.translator.translate('Help')}));
-
-        helpIcon.insert('?');
-        container.insert(')');
-
-        var winContent = new Element('div');
-        winContent.innerHTML += '<div style="padding: 3px 0"></div><h2>' + M2ePro.translator.translate('Definition:') + ' </h2>';
-        winContent.innerHTML += '<div>' + dataDefinition.definition + '</div>';
-
-        if (dataDefinition.tips) {
-            winContent.innerHTML += '<div style="padding: 5px 0"></div><h2>' + M2ePro.translator.translate('Tips:') + ' </h2>';
-            winContent.innerHTML += '<div>' + dataDefinition.tips + '</div>'
-        }
-        if (dataDefinition.example) {
-            winContent.innerHTML += '<div style="padding: 5px 0"></div><h2>' + M2ePro.translator.translate('Examples:') + ' </h2>';
-            winContent.innerHTML += '<div>' + dataDefinition.example + '</div>'
-        }
-        self.attributesDataDefinion[attribute.id] = winContent;
-
-        var win;
-
-        helpIcon.observe('click',function() {
-            var position = helpIcon.positionedOffset();
-
-            win = win || new Window({
-                className: "magento",
-                zIndex: 100,
-                title: attribute.title + ' ' + M2ePro.translator.translate('Helpful Info:') + ' ',
-                width: 400,
-                top: position.top - 30,
-                left: position.left + 30
-            });
-
-            winContent = self.attributesDataDefinion[attribute.id];
-            win.setHTMLContent(winContent.innerHTML);
-
-            win.height = win.content.firstChild.getStyle('height');
-
-            if (win.visible) {
-                win.hide();
-            } else {
-                self.popups.each(function(popup) { popup.close(); });
-                win.show();
+            if (dataDefinition.tips) {
+                winContent += '<div style="padding: 5px 0"></div><h4>' + M2ePro.translator.translate('Tips:') + ' </h4>';
+                winContent += '<div>' + dataDefinition.tips + '</div>'
             }
-
-            self.popups = [win];
-        });
-    },
-
-    renderHelpIconAllowedValues: function(attribute, notes)
-    {
-        notes = notes || '';
-
-        var container = $('attribute_' + attribute.title.replace(/[\s()]/gi,'_')).down('label');
-        container.insert('&nbsp;(');
-
-        var helpIcon = container.appendChild(new Element('a', {
-            'href': 'javascript:',
-            'title': M2ePro.translator.translate('Help')
-        }));
-
-        helpIcon.insert('?');
-        container.insert(')');
-
-        var win;
-        var self = this;
-        var notesHeight = 20;
-
-        helpIcon.observe('click',function() {
-            var position = helpIcon.positionedOffset()
-
-            win = win || new Window({
-                className: "magento",
-                zIndex: 100,
-                title: M2ePro.translator.translate('Allowed Values') + ' ',
-                top: position.top - 200,
-                left: position.left + 30,
-                width: 350
-            });
-
-            var winContent = new Element('ul', {'style': 'text-align: center; margin-top: 10px'});
+            if (dataDefinition.example) {
+                winContent += '<div style="padding: 5px 0"></div><h4>' + M2ePro.translator.translate('Examples:') + ' </h4>';
+                winContent += '<div>' + dataDefinition.example + '</div>'
+            }
+        } else {
+            winContent = '<h4>' + M2ePro.translator.translate('Allowed Values') + ': </h4>';
+            winContent += '<ul style="text-align: center; margin-top: 10px; max-height: 200px; overflow-y: auto;">';
 
             var valuesIn = attribute.values.evalJSON();
             valuesIn.each(function(value) {
-                winContent.insert('<li><p>' + value + '</p></li>');
+                winContent += '<li><p>' + value + '</p></li>';
             });
+            winContent += '</ul>';
 
-            if (notes.length > 0) {
-                winContent.innerHTML += '<div style="padding: 5px 0"></div><h3>' + M2ePro.translator.translate('Notes:') + '</h3>';
-                winContent.innerHTML += '<div style="text-align: center"><h4>' + notes + '</h4></div>'
-                notesHeight = 100;
+            if (dataDefinition.length > 0) {
+                winContent += '<div style="padding: 5px 0"></div><h4>' + M2ePro.translator.translate('Notes:') + '</h4>';
+                winContent += '<div style="text-align: center"><p>' + dataDefinition + '</p></div>';
             }
+        }
 
-            win.setHTMLContent(winContent.outerHTML);
-
-            if (valuesIn.length * 20 + 100 < 300) {
-                win.height = valuesIn.length * 20 + notesHeight;
-            } else {
-                win.height = 300;
-            }
-
-            if (win.visible) {
-                win.hide();
-            } else {
-                self.popups.each(function(popup) {
-                    popup.close();
-                });
-                win.show();
-            }
-
-            self.popups = [win];
-        });
+        var imgPath = M2ePro.url.get('m2epro_skin_url') + '/images/';
+        container.innerHTML = '<img src="'+ imgPath +'tool-tip-icon.png" class="tool-tip-image">' +
+                              '<span class="tool-tip-message" style="display: none;">' +
+                              '<img src="'+ imgPath +'help.png">' +
+                              '<span>'+ winContent +'</span>' +
+                              '</span>';
     }
 
-    //----------------------------------------------
+    // ---------------------------------------
 });

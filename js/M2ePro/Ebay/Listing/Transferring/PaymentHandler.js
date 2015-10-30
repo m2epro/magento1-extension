@@ -1,10 +1,10 @@
 EbayListingTransferringPaymentHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     payNowAction: function(amount, currency, account, closeCallback)
     {
@@ -49,7 +49,7 @@ EbayListingTransferringPaymentHandler = Class.create(CommonHandler, {
         initializationMagentoBlocks();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(title, content, closeCallback)
     {
@@ -89,7 +89,7 @@ EbayListingTransferringPaymentHandler = Class.create(CommonHandler, {
         }, 50);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validate: function()
     {
@@ -106,7 +106,7 @@ EbayListingTransferringPaymentHandler = Class.create(CommonHandler, {
         return true;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function()
     {
@@ -150,5 +150,5 @@ EbayListingTransferringPaymentHandler = Class.create(CommonHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

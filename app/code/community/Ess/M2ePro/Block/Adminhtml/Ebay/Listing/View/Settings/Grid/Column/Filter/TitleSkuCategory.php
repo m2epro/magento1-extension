@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid_Column_Filter_TitleSkuCategory extends
     Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Abstract
 {
-    // ####################################
+    //########################################
 
     protected function _renderOption($option, $value)
     {
@@ -24,7 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid_Column_Filter_T
         $value = $this->getValue('select');
 
         $optionsHtml = '';
-        foreach ($this->_getOptions() as $option){
+        foreach ($this->_getOptions() as $option) {
             $optionsHtml .= $this->_renderOption($option, $value);
         }
 
@@ -63,5 +65,5 @@ HTML;
         );
     }
 
-    // ####################################
+    //########################################
 }

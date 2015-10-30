@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Order_PaymentTransaction extends Mage_Core_Model_Abstract
@@ -12,22 +14,26 @@ class Ess_M2ePro_Model_Magento_Order_PaymentTransaction extends Mage_Core_Model_
     /** @var $transaction Mage_Sales_Model_Order_Payment_Transaction */
     private $transaction = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Mage_Sales_Model_Order $magentoOrder
+     * @return $this
+     */
     public function setMagentoOrder(Mage_Sales_Model_Order $magentoOrder)
     {
         $this->magentoOrder = $magentoOrder;
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function getPaymentTransaction()
     {
         return $this->transaction;
     }
 
-    // ########################################
+    //########################################
 
     public function buildPaymentTransaction()
     {
@@ -65,5 +71,5 @@ class Ess_M2ePro_Model_Magento_Order_PaymentTransaction extends Mage_Core_Model_
         $this->transaction->save();
     }
 
-    // ########################################
+    //########################################
 }

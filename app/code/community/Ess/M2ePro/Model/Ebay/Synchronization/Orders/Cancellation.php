@@ -1,43 +1,63 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
     extends Ess_M2ePro_Model_Ebay_Synchronization_Orders_Abstract
 {
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/cancellation/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Cancellation';
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 100;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     protected function intervalIsEnabled()
     {
         return true;
     }
 
+    /**
+     * @return bool
+     */
     protected function intervalIsLocked()
     {
         if ($this->getInitiator() == Ess_M2ePro_Helper_Data::INITIATOR_USER ||
@@ -48,7 +68,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         return parent::intervalIsLocked();
     }
 
-    // ##########################################################
+    //########################################
 
     protected function performActions()
     {
@@ -63,31 +83,29 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         foreach ($permittedAccounts as $account) {
             /** @var $account Ess_M2ePro_Model_Account **/
 
-            // ----------------------------------------------------------
             $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
 
             // M2ePro_TRANSLATIONS
             // The "Cancellation" Action for eBay Account: "%account_title%" is started. Please wait...
             $status = 'The "Cancellation" Action for eBay Account: "%account_title%" is started. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             $this->processAccount($account);
 
-            // ----------------------------------------------------------
             // M2ePro_TRANSLATIONS
             // The "Cancellation" Action for eBay Account: "%account_title%" is finished. Please wait...
             $status = 'The "Cancellation" Action for eBay Account: "%account_title%" is finished. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep);
             $this->getActualLockItem()->activate();
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             $iteration++;
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function getPermittedAccounts()
     {
@@ -96,7 +114,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         return $accountsCollection->getItems();
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function processAccount(Ess_M2ePro_Model_Account $account)
     {
@@ -127,7 +145,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function getUnpaidOrdersUpdates(Ess_M2ePro_Model_Account $account)
     {
@@ -241,7 +259,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         return $order;
     }
 
-    // ##########################################################
+    //########################################
 
     private function processOrder(Ess_M2ePro_Model_Order $order)
     {
@@ -319,7 +337,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         $order->getItemsCollection()->walk('setProduct', array(null));
     }
 
-    // ##########################################################
+    //########################################
 
     private function openUnpaidItemProcess(Ess_M2ePro_Model_Order $order)
     {
@@ -351,7 +369,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         return $collection->getItems();
     }
 
-    // ##########################################################
+    //########################################
 
     private function getCheckoutStatus($orderData)
     {
@@ -372,5 +390,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         );
     }
 
-    // ##########################################################
+    //########################################
 }

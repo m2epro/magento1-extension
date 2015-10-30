@@ -8,7 +8,7 @@
 
         In case you are planning to use Description Policy for New ASIN/ISBN Creation, you should enable New ASIN/ISBN Creation feature.</br></br>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Description+Policy')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/HoMVAQ')
     ); ?>
 </div>
 
@@ -33,15 +33,7 @@
 
             'registered_parameter'          => '',
             'worldwide_id_mode'             => Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_NONE,
-            'worldwide_id_custom_attribute' => '',
-
-            'item_package_quantity_mode'             => Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_NONE,
-            'item_package_quantity_custom_value'     => '',
-            'item_package_quantity_custom_attribute' => '',
-
-            'number_of_items_mode'             => Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_NONE,
-            'number_of_items_custom_value'     => '',
-            'number_of_items_custom_attribute' => '',
+            'worldwide_id_custom_attribute' => ''
         )
     );
 
@@ -128,14 +120,6 @@
 
         $('registered_parameter')
             .observe('change', AmazonTemplateDescriptionHandlerObj.onChangeRegisteredParameter)
-            .simulate('change');
-
-        $('item_package_quantity_mode')
-            .observe('change', AmazonTemplateDescriptionHandlerObj.onChangeItemPackageQuantityMode)
-            .simulate('change');
-
-        $('number_of_items_mode')
-            .observe('change', AmazonTemplateDescriptionHandlerObj.onChangeNumberOfItemsMode)
             .simulate('change');
 
         <?php if ($isEdit) { ?>
@@ -373,10 +357,10 @@
                     <td class="value">
                         <input type="hidden" id="worldwide_id_custom_attribute" name="general[worldwide_id_custom_attribute]" value="<?php echo $formData['general']['worldwide_id_custom_attribute']; ?>" />
 
-                        <select name="general[worldwide_id_mode]" id="worldwide_id_mode" class="M2ePro-required-when-visible" data-current-value="<?php echo $formData['general']['worldwide_id_custom_attribute'];?>" >
+                        <select name="general[worldwide_id_mode]" id="worldwide_id_mode" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" data-current-value="<?php echo $formData['general']['worldwide_id_custom_attribute'];?>" >
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_NONE ?>" <?php if ($formData['general']['worldwide_id_mode'] == Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php if ($formData['general']['worldwide_id_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['general']['worldwide_id_custom_attribute'], $generalAttributesByInputTypes['text'])) : ?>
                                     <option attribute_code="<?php echo $formData['general']['worldwide_id_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
                                         <?php echo $magentoAttributeHelper->getAttributeLabel($formData['general']['worldwide_id_custom_attribute']); ?>
@@ -420,98 +404,6 @@
                                 Please, contact Amazon Support to apply for approval. '); ?>
                             </span>
                         </p>
-                    </td>
-                </tr>
-
-                <tr class="hide-when-asin-is-disabled">
-                    <td colspan="2" style="padding: 10px 0">
-                        <hr style="border: 1px solid silver; border-bottom: none;">
-                    </td>
-                </tr>
-
-                <tr class="hide-when-asin-is-disabled entry-edit" id="item_package_quantity_mode_tr">
-                    <td class="label">
-                        <label for="item_package_quantity_mode"><?php echo Mage::helper('M2ePro')->__('Package Quantity') ?>: </label>
-                    </td>
-                    <td class="value">
-                        <input type="hidden" id="item_package_quantity_custom_attribute" name="general[item_package_quantity_custom_attribute]" value="<?php echo $formData['general']['item_package_quantity_custom_attribute']; ?>" />
-
-                        <select name="general[item_package_quantity_mode]" id="item_package_quantity_mode">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_NONE; ?>" <?php if ($formData['general']['item_package_quantity_mode'] == Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['general']['item_package_quantity_mode'] == Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
-
-                            <optgroup label="Magento Attribute">
-                                <?php if ($formData['general']['item_package_quantity_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['general']['item_package_quantity_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
-                                    <option attribute_code="<?php echo $formData['general']['item_package_quantity_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
-                                        <?php echo $magentoAttributeHelper->getAttributeLabel($formData['general']['item_package_quantity_custom_attribute']); ?>
-                                    </option>
-                                <?php endif; ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
-                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['general']['item_package_quantity_custom_attribute']): ?>selected="selected"<?php endif; ?>>
-                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </optgroup>
-                        </select>
-                        <p class="note">
-                            <?php echo Mage::helper('M2ePro')->__(
-                                'The number of units included in the Item you are offering for sale, <br/>such that each unit is packaged for individual sale.'
-                            ); ?>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr class="hide-when-asin-is-disabled entry-edit" id="item_package_quantity_custom_value_tr">
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Package Quantity Value'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value">
-                        <input id="item_package_quantity_custom_value" name="general[item_package_quantity_custom_value]" value="<?php echo Mage::helper('M2ePro')->__($formData['general']['item_package_quantity_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validate-greater-than" min_value="1" />
-                    </td>
-                </tr>
-
-                <tr class="hide-when-asin-is-disabled entry-edit" id="number_of_items_mode_tr">
-                    <td class="label">
-                        <label for="number_of_items_mode"><?php echo Mage::helper('M2ePro')->__('Number of Items') ?>: </label>
-                    </td>
-                    <td class="value">
-                        <input type="hidden" id="number_of_items_custom_attribute" name="general[number_of_items_custom_attribute]" value="<?php echo $formData['general']['number_of_items_custom_attribute']; ?>" />
-
-                        <select name="general[number_of_items_mode]" id="number_of_items_mode" class="M2ePro-required-when-visible">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_NONE; ?>" <?php if ($formData['general']['number_of_items_mode'] == Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['general']['number_of_items_mode'] == Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
-
-                            <optgroup label="Magento Attribute">
-                                <?php if ($formData['general']['number_of_items_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['general']['number_of_items_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
-                                    <option attribute_code="<?php echo $formData['general']['number_of_items_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
-                                        <?php echo $magentoAttributeHelper->getAttributeLabel($formData['general']['number_of_items_custom_attribute']); ?>
-                                    </option>
-                                <?php endif; ?>
-                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
-                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['general']['number_of_items_custom_attribute']): ?>selected="selected"<?php endif; ?>>
-                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </optgroup>
-                        </select>
-                        <p class="note">
-                            <?php echo Mage::helper('M2ePro')->__(
-                                'The number of discrete Items included in the Item you are offering for sale,
-                                 such that each Item is not packaged for individual sale.<br/><br/>
-                                <strong>For ex.</strong>, if you are selling a case of 10 packages of socks,
-                                and each package contains
-                                <br/>3 pairs of socks, the case would have Package Quantity = 10 and Number of Items = 30.'
-                            ); ?>
-                        </p>
-                    </td>
-                </tr>
-
-                <tr class="hide-when-asin-is-disabled entry-edit" id="number_of_items_custom_value_tr">
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Number of Items Value'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value">
-                        <input id="number_of_items_custom_value" name="general[number_of_items_custom_value]" value="<?php echo Mage::helper('M2ePro')->__($formData['general']['number_of_items_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validate-greater-than" min_value="1" />
                     </td>
                 </tr>
 

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_Existence
@@ -9,16 +11,23 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_Existe
 {
     private $existenceResult = array();
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $result
+     * @return $this
+     */
     public function setExistenceResult(array $result)
     {
         $this->existenceResult = $result;
         return $this;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function validate()
     {
         if (empty($this->existenceResult['general_id'])) {
@@ -42,7 +51,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_Existe
         return false;
     }
 
-    // ########################################
+    //########################################
 
     private function link($generalId, $sku)
     {
@@ -63,5 +72,5 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_Existe
         );
     }
 
-    // ########################################
+    //########################################
 }

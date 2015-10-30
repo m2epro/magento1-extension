@@ -1,7 +1,7 @@
 CommonBuyTemplateSellingFormatHandler = Class.create();
 CommonBuyTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -40,9 +40,24 @@ CommonBuyTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandle
 
             return true;
         });
+
+        Validation.add('M2ePro-validate-vat-percent', M2ePro.translator.translate('Wrong value. Must be no more than 30. Max applicable length is 6 characters, including the decimal (e.g., 12.345).'), function(value) {
+
+            if (value.length > 6) {
+                return false;
+            }
+
+            if (value < 0) {
+                return false;
+            }
+
+            value = Math.ceil(value);
+
+            return value > 0 && value <= 30;
+        });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     duplicate_click: function($headId)
     {
@@ -54,7 +69,7 @@ CommonBuyTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandle
         CommonHandlerObj.duplicate_click($headId, M2ePro.translator.translate('Add Selling Format Policy.'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     qty_mode_change: function()
     {
@@ -105,7 +120,7 @@ CommonBuyTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandle
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     price_mode_change: function()
     {
@@ -117,7 +132,27 @@ CommonBuyTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandle
         }
 
         $('price_note').innerHTML = M2ePro.translator.translate('Product Price for Rakuten.com Listing(s).');
+    },
+
+    // ---------------------------------------
+
+    price_increase_vat_percent_mode_change: function()
+    {
+        var vatPercentTr = $('price_vat_percent_tr'),
+            vatPercent = $('price_vat_percent');
+
+        vatPercentTr.hide();
+        vatPercent.removeClassName('required-entry');
+        vatPercent.removeClassName('M2ePro-validate-vat-percent');
+
+        if (+this.value) {
+            vatPercentTr.show();
+            vatPercent.addClassName('M2ePro-validate-vat-percent');
+            vatPercent.addClassName('required-entry');
+        } else {
+            vatPercent.value = '';
+        }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

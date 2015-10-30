@@ -1,25 +1,27 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
     extends Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingSettingsGrid');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function getAdvancedFilterButtonHtml()
     {
@@ -30,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         return parent::getAdvancedFilterButtonHtml();
     }
 
-    // ####################################
+    //########################################
 
     protected function isShowRuleBlock()
     {
@@ -41,7 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         return parent::isShowRuleBlock();
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassactionItems()
     {
@@ -55,14 +57,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         return $this;
     }
 
-    // ####################################
+    //########################################
 
     protected function getGridHandlerJs()
     {
         return 'EbayListingProductAddSettingsGridHandler';
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -70,17 +72,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         $listingProductIds = array_filter((array)json_decode($listingProductIds));
         $listingProductIds = empty($listingProductIds) ? 0 : implode(',',$listingProductIds);
 
-        //--------------------------------
+        // ---------------------------------------
         // Get collection
-        //----------------------------
+        // ---------------------------------------
         /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
         $collection = Mage::getModel('catalog/product')->getCollection();
         $collection->addAttributeToSelect('sku');
         $collection->addAttributeToSelect('name');
-        //--------------------------------
+        // ---------------------------------------
 
         // Join listing product tables
-        //----------------------------
+        // ---------------------------------------
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
             'product_id=entity_id',
@@ -106,9 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
                 'template_synchronization_mode' => 'template_synchronization_mode',
             )
         );
-        //----------------------------
-
-//        exit($collection->getSelect()->__toString());
+        // ---------------------------------------
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -123,7 +123,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         $this->addColumnAfter('name', array(
             'header'    => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
             'align'     => 'left',
-            //'width'     => '300px',
             'type'      => 'text',
             'index'     => 'name',
             'filter_index' => 'name',
@@ -134,7 +133,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     protected function getGroupOrder()
     {
@@ -157,7 +156,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         return $actions;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -169,7 +168,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -177,7 +176,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
             return parent::_toHtml();
         }
 
-        //------------------------------
+        // ---------------------------------------
         $urls = Mage::helper('M2ePro')->getControllerActions(
             'adminhtml_ebay_listing_autoAction',
             array('listing_id' => $this->getListing()->getId())
@@ -193,17 +192,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         $urls[$path] = $this->getUrl('*/' . $path, array('_current' => true));
 
         $urls = json_encode($urls);
-        //------------------------------
+        // ---------------------------------------
 
         $helper = Mage::helper('M2ePro');
-        //------------------------------
+        // ---------------------------------------
         $translations = json_encode(array(
             'Auto Add/Remove Rules'                    => $helper->__('Auto Add/Remove Rules'),
             'Based on Magento Categories'              => $helper->__('Based on Magento Categories'),
             'You must select at least 1 Category.'     => $helper->__('You must select at least 1 Category.'),
             'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.'),
         ));
-        //------------------------------
+        // ---------------------------------------
 
         $js = <<<HTML
 <script type="text/javascript">
@@ -217,7 +216,7 @@ HTML;
         return parent::_toHtml() . $js;
     }
 
-    // ####################################
+    //########################################
 
     /**
      * @inheritdoc
@@ -233,5 +232,5 @@ HTML;
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 }

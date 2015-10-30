@@ -1,18 +1,18 @@
 EbayOrderMigrationToV611Handler = Class.create();
 EbayOrderMigrationToV611Handler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     orderCountPerAjaxRequest: 0,
     notMigratedOrdersCount: 0,
     currentRequest: 1,
     progressBarObj: null,
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     setProgressBarObj: function(progressBarObj)
     {
@@ -29,7 +29,7 @@ EbayOrderMigrationToV611Handler.prototype = Object.extend(new CommonHandler(), {
         this.notMigratedOrdersCount = ordersCount;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     runMigration: function()
     {
@@ -85,5 +85,5 @@ EbayOrderMigrationToV611Handler.prototype = Object.extend(new CommonHandler(), {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

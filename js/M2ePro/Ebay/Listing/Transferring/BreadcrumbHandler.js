@@ -1,15 +1,15 @@
 EbayListingTransferringBreadcrumbHandler = Class.create();
 EbayListingTransferringBreadcrumbHandler.prototype = {
 
-    // --------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     clear: function() {},
 
-    // --------------------------------
+    // ---------------------------------------
 
     highlightStep: function(stepName)
     {
@@ -61,5 +61,5 @@ EbayListingTransferringBreadcrumbHandler.prototype = {
         }
     }
 
-    // --------------------------------
+    // ---------------------------------------
 };

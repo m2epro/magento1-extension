@@ -1,14 +1,16 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Model_Wizard extends Ess_M2ePro_Model_Abstract
 {
     protected $steps = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -16,20 +18,29 @@ class Ess_M2ePro_Model_Wizard extends Ess_M2ePro_Model_Abstract
         $this->_init('M2ePro/Wizard');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isActive()
     {
         return true;
     }
 
+    /**
+     * @return null
+     */
     public function getNick()
     {
         return NULL;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getSteps()
     {
         return $this->steps;
@@ -40,7 +51,7 @@ class Ess_M2ePro_Model_Wizard extends Ess_M2ePro_Model_Abstract
         return reset($this->steps);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getPrevStep()
     {
@@ -56,5 +67,5 @@ class Ess_M2ePro_Model_Wizard extends Ess_M2ePro_Model_Abstract
         return isset($this->steps[$nextStepIndex]) ? $this->steps[$nextStepIndex] : false;
     }
 
-    // ########################################
+    //########################################
 }

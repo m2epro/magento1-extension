@@ -1,50 +1,52 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationNewAmazon_Installation_DescriptionTemplates
     extends Mage_Adminhtml_Block_Template
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('wizardInstallationDescriptionTemplates');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/wizard/migrationNewAmazon/installation/descriptionTemplates.phtml');
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         /** @var Ess_M2ePro_Model_Wizard_MigrationNewAmazon $wizardModel */
-        $wizardModel = Mage::getSingleton('M2ePro/Wizard_MigrationNewAmazon');
+        $wizardModel = Mage::helper('M2ePro/Module_Wizard')->getWizard('migrationNewAmazon');
         $descriptionTemplatesData = $wizardModel->getDataForDescriptionTemplatesStep();
         $grid = $this->createMagentoGridFromArray($descriptionTemplatesData);
         $this->setData('description_templates_grid', $grid->toHtml());
-        //-------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                     'label'   => Mage::helper('M2ePro')->__('Confirm'),
                     'onclick' => 'WizardHandlerObj.skipStep(\'descriptionTemplates\');',
                     'class' => 'process_template_description_button'
-                ) );
-        $this->setChild('process_description_templates_button',$buttonBlock);
-        //-------------------------------
+                ));
+        $this->setChild('process_description_templates_button', $buttonBlock);
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function createMagentoGridFromArray(array $data) {
         $collection = new Varien_Data_Collection();
@@ -88,5 +90,5 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationNewAmazon_Installation_Descript
         return $grid;
     }
 
-    // ########################################
+    //########################################
 }

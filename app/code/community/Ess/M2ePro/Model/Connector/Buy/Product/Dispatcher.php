@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Buy_Product_Dispatcher
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Connector_Buy_Product_Dispatcher
     private $logsActionId = NULL;
     private $isProcessingItems = false;
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $action
@@ -120,19 +122,25 @@ class Ess_M2ePro_Model_Connector_Buy_Product_Dispatcher
         return $result;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getLogsActionId()
     {
         return (int)$this->logsActionId;
     }
 
+    /**
+     * @return bool
+     */
     public function isProcessingItems()
     {
         return (bool)$this->isProcessingItems;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $sortedProductsData
@@ -219,8 +227,12 @@ class Ess_M2ePro_Model_Connector_Buy_Product_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array|Ess_M2ePro_Model_Listing_Product $products
+     * @return array
+     */
     protected function prepareProducts($products)
     {
         $productsTemp = array();
@@ -250,6 +262,10 @@ class Ess_M2ePro_Model_Connector_Buy_Product_Dispatcher
         return $productsTemp;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product[] $products
+     * @return array
+     */
     protected function sortProductsByAccount($products)
     {
         $sortedProducts = array();
@@ -263,26 +279,33 @@ class Ess_M2ePro_Model_Connector_Buy_Product_Dispatcher
         return array_values($sortedProducts);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param array $params
+     * @return int
+     */
     protected function recognizeInitiatorForLogging(array $params)
     {
         $statusChanger = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN;
         isset($params['status_changer']) && $statusChanger = $params['status_changer'];
 
-        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
+        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
 
         if ($statusChanger == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN) {
             $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
         } else if ($statusChanger == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
             $initiator = Ess_M2ePro_Helper_Data::INITIATOR_USER;
-        } else {
-            $initiator = Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
         }
 
         return $initiator;
     }
 
+    /**
+     * @param string $connectorName
+     * @param array $params
+     * @return int
+     */
     protected function recognizeActionForLogging($connectorName, array $params)
     {
         $action = Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN;
@@ -313,5 +336,5 @@ class Ess_M2ePro_Model_Connector_Buy_Product_Dispatcher
         return $action;
     }
 
-    // ########################################
+    //########################################
 }

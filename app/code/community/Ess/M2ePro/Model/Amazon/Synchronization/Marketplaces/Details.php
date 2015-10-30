@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Details
     extends Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Abstract
 {
-    //####################################
+    //########################################
 
     protected function getNick()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Details
         return 'Details';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Details
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -63,7 +65,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Details
         $this->logSuccessfulOperation($marketplace);
     }
 
-    //####################################
+    //########################################
 
     protected function receiveFromAmazon(Ess_M2ePro_Model_Marketplace $marketplace)
     {
@@ -133,5 +135,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Marketplaces_Details
                                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
     }
 
-    //####################################
+    //########################################
 }

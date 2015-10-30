@@ -1,20 +1,20 @@
 CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonListingGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'amazon';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
         return 1000;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -32,7 +32,7 @@ CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonLi
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     parseResponse: function(response)
     {
@@ -43,7 +43,7 @@ CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonLi
         return response.responseText.evalJSON();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     afterInitPage: function($super)
     {
@@ -60,7 +60,7 @@ CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonLi
         this.unmapFromNewAsin(id);
     },
 
-    //-----------------------------------
+    // ---------------------------------------
 
     setDescriptionTemplateByCategoryRowAction: function(id)
     {
@@ -72,7 +72,7 @@ CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonLi
         this.unmapFromNewAsin(this.getSelectedProductsStringFromCategory(id));
     },
 
-    //-----------------------------------
+    // ---------------------------------------
 
     getSelectedProductsStringFromCategory: function(categoryIds)
     {
@@ -92,7 +92,7 @@ CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonLi
         return productsIdsStr;
     },
 
-    //-----------------------------------
+    // ---------------------------------------
 
     mapToNewAsin: function(listingProductIds)
     {
@@ -246,5 +246,5 @@ CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonLi
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

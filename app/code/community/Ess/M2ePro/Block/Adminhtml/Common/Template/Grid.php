@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Common_Template_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -11,25 +13,25 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Template_Grid extends Mage_Admi
 
     protected $nick;
 
-    // ##########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('commonTemplateGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ##########################################
+    //########################################
 
     protected function _prepareColumns()
     {
@@ -119,7 +121,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Template_Grid extends Mage_Admi
         return parent::_prepareColumns();
     }
 
-    // ##########################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -138,5 +140,5 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Template_Grid extends Mage_Admi
         );
     }
 
-    // ##########################################
+    //########################################
 }

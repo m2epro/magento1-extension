@@ -1,5 +1,5 @@
-<?php $url = $this->isEditMode() ? Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'Edit+Selling+Settings') :
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'Step+2%3A+Selling+Settings');
+<?php $url = $this->isEditMode() ? Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/nYsVAQ') :
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LosVAQ');
 ?>
 <div id="block_notice_buy_listing_add_selling_settings" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selling Settings'); ?>">
     <?php echo Mage::helper('M2ePro')->__('
@@ -121,7 +121,7 @@
         AutoCompleteHandler = new AutoComplete();
 
         if (M2ePro.autoCompleteData.flags.sellingFormatTemplatesDropDown) {
-            $('template_selling_format_id').observe('change', CommonListingSettingsHandlerObj.selling_format_template_id_change)
+            $('template_selling_format_id').observe('change', CommonListingSettingsHandlerObj.selling_format_template_id_change);
             if ($('template_selling_format_id').value) {
                 $('template_selling_format_id').simulate('change');
             }
@@ -137,7 +137,7 @@
         }
 
         if (M2ePro.autoCompleteData.flags.synchronizationsTemplatesDropDown) {
-            $('template_synchronization_id').observe('change', CommonListingSettingsHandlerObj.synchronization_template_id_change)
+            $('template_synchronization_id').observe('change', CommonListingSettingsHandlerObj.synchronization_template_id_change);
             if ($('template_synchronization_id').value) {
                 $('template_synchronization_id').simulate('change');
             }
@@ -196,11 +196,11 @@
                     <td class="value">
                         <input type="hidden" id="sku_custom_attribute" name="sku_custom_attribute" value="<?php echo $this->getData('sku_custom_attribute'); ?>" />
 
-                        <select name="sku_mode" id="sku_mode">
+                        <select name="sku_mode" id="sku_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
                             <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::SKU_MODE_PRODUCT_ID ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Model_Buy_Listing::SKU_MODE_PRODUCT_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product ID') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::SKU_MODE_DEFAULT ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Model_Buy_Listing::SKU_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product SKU') ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach ($generalAttributesByInputTypes['text'] as $attribute): ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Buy_Listing::SKU_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('sku_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach ?>
@@ -409,7 +409,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select name="shipping_standard_custom_attribute" id="shipping_standard_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible">
+                                    <select name="shipping_standard_custom_attribute" id="shipping_standard_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                                         <?php if ($this->getData('shipping_standard_custom_attribute') == ''): ?>
                                             <option class="empty"></option>
                                         <?php endif; ?>
@@ -432,7 +432,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select name="shipping_expedited_custom_attribute" id="shipping_expedited_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible">
+                                    <select name="shipping_expedited_custom_attribute" id="shipping_expedited_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                                         <?php if ($this->getData('shipping_expedited_custom_attribute') == ''): ?>
                                             <option class="empty"></option>
                                         <?php endif; ?>
@@ -455,7 +455,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select name="shipping_two_day_custom_attribute" id="shipping_two_day_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible">
+                                    <select name="shipping_two_day_custom_attribute" id="shipping_two_day_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                                         <?php if ($this->getData('shipping_two_day_custom_attribute') == ''): ?>
                                             <option class="empty"></option>
                                         <?php endif; ?>
@@ -478,7 +478,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select name="shipping_one_day_custom_attribute" id="shipping_one_day_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible">
+                                    <select name="shipping_one_day_custom_attribute" id="shipping_one_day_custom_attribute" style="width: 300px;" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                                         <?php if ($this->getData('shipping_one_day_custom_attribute') == ''): ?>
                                             <option class="empty"></option>
                                         <?php endif; ?>
@@ -521,7 +521,7 @@
                         <input type="hidden" id="condition_custom_attribute" name="condition_custom_attribute" value="<?php echo $this->getData('condition_custom_attribute'); ?>" />
                         <input type="hidden" id="condition_value" name="condition_value" value="<?php echo $this->getData('condition_value'); ?>" />
 
-                        <select name="condition_mode" id="condition_mode">
+                        <select name="condition_mode" id="condition_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
                             <optgroup label="Recommended Value">
                                 <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::CONDITION_MODE_DEFAULT ?>" attribute_code="<?php echo Ess_M2ePro_Model_Buy_Listing::CONDITION_NEW ?>" <?php if ($this->getData('condition_value') == Ess_M2ePro_Model_Buy_Listing::CONDITION_NEW) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('New') ?></option>
                                 <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::CONDITION_MODE_DEFAULT ?>" attribute_code="<?php echo Ess_M2ePro_Model_Buy_Listing::CONDITION_USED_LIKE_NEW ?>" <?php if ($this->getData('condition_value') == Ess_M2ePro_Model_Buy_Listing::CONDITION_USED_LIKE_NEW) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Used - Like New') ?></option>
@@ -531,7 +531,7 @@
                                 <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::CONDITION_MODE_DEFAULT ?>" attribute_code="<?php echo Ess_M2ePro_Model_Buy_Listing::CONDITION_REFURBISHED ?>" <?php if ($this->getData('condition_value') == Ess_M2ePro_Model_Buy_Listing::CONDITION_REFURBISHED) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Refurbished') ?></option>
                             </optgroup>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach ($generalAttributesByInputTypes['text_select'] as $attribute): ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Buy_Listing::CONDITION_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('condition_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach ?>
@@ -566,7 +566,7 @@
                         <textarea name="condition_note_value" id="condition_note_value" class="M2ePro-required-when-visible M2ePro-validate-condition-note-length"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('condition_note_value')) ?></textarea>
                     </td>
                     <td class="value">
-                        <select name="condition_note_custom_attribute" id="condition_note_custom_attribute" style="width: 150px; margin-top: -4px;">
+                        <select name="condition_note_custom_attribute" id="condition_note_custom_attribute" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea" apply_to_all_attribute_sets="0" style="width: 150px; margin-top: -4px;">
                             <?php foreach ($attributesByInputTypes['text_textarea'] as $attribute): ?>
                                 <option value="<?php echo $attribute['code']; ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                             <?php endforeach ?>

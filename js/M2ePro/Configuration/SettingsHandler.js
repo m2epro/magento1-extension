@@ -1,11 +1,11 @@
 ConfigurationSettingsHandler = Class.create();
 ConfigurationSettingsHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     changeForceQtyMode: function()
     {
@@ -25,5 +25,5 @@ ConfigurationSettingsHandler.prototype = Object.extend(new CommonHandler(), {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

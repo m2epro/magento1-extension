@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -12,14 +14,14 @@
 class Ess_M2ePro_Model_Buy_Listing_Product_QtyCalculator
     extends Ess_M2ePro_Model_Listing_Product_QtyCalculator
 {
-    // ########################################
+    //########################################
 
     /**
      * @var bool
      */
     private $isMagentoMode = false;
 
-    // ########################################
+    //########################################
 
     /**
      * @param bool $value
@@ -39,7 +41,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_QtyCalculator
         return $this->isMagentoMode;
     }
 
-    // ########################################
+    //########################################
 
     public function getProductValue()
     {
@@ -68,7 +70,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_QtyCalculator
         return parent::getOptionBaseValue($option);
     }
 
-    // ########################################
+    //########################################
 
     protected function applySellingFormatTemplateModifications($value)
     {
@@ -79,5 +81,5 @@ class Ess_M2ePro_Model_Buy_Listing_Product_QtyCalculator
         return parent::applySellingFormatTemplateModifications($value);
     }
 
-    // ########################################
+    //########################################
 }

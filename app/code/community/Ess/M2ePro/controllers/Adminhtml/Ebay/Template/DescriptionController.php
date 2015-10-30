@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
     extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     public function saveWatermarkImageAction()
     {
@@ -37,7 +39,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         $template->save();
     }
 
-    // ----------------------------------
+    // ---------------------------------------
 
     public function previewAction()
     {
@@ -66,7 +68,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         $this->printOutput($title, $description);
     }
 
-    //#############################################
+    //########################################
 
     private function printOutput($title = NULL, $description = NULL, $errorMessage = NULL)
     {
@@ -104,9 +106,9 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
 
         if ($descriptionTemplateData['description_mode'] == $descriptionModeProduct) {
             $description = $magentoProduct->getProduct()->getDescription();
-        } elseif ($descriptionTemplateData['description_mode'] == $descriptionModeShort){
+        } elseif ($descriptionTemplateData['description_mode'] == $descriptionModeShort) {
             $description = $magentoProduct->getProduct()->getShortDescription();
-        } elseif ($descriptionTemplateData['description_mode'] == $descriptionModeCustom){
+        } elseif ($descriptionTemplateData['description_mode'] == $descriptionModeCustom) {
             $description = $descriptionTemplateData['description_template'];
         } else {
             $description = '';
@@ -119,7 +121,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         $renderer = Mage::helper('M2ePro/Module_Renderer_Description');
         $description = $renderer->parseTemplate($description, $magentoProduct);
 
-        if (!is_null($listingProduct)){
+        if (!is_null($listingProduct)) {
 
             /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Description_Renderer $renderer */
             $renderer = Mage::getSingleton('M2ePro/Ebay_Listing_Product_Description_Renderer');
@@ -141,7 +143,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         preg_match_all('/<img [^>]*\bm2e_watermark[^>]*>/i', $description, $tagsArr);
 
         $count = count($tagsArr[0]);
-        for($i = 0; $i < $count; $i++){
+        for ($i = 0; $i < $count; $i++) {
 
             $dom = new DOMDocument();
             $dom->loadHTML($tagsArr[0][$i]);
@@ -150,7 +152,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
             $newTag = str_replace(' m2e_watermark="1"', '', $tagsArr[0][$i]);
             $newTag = '<div class="description-preview-watermark-info">'.$newTag;
 
-            if($tag->getAttribute('width') == '' || $tag->getAttribute('width') > 100) {
+            if ($tag->getAttribute('width') == '' || $tag->getAttribute('width') > 100) {
                 $newTag = $newTag.'<p>Watermark will be applied to this picture.</p></div>';
             } else {
                 $newTag = $newTag.'<p>Watermark.</p></div>';
@@ -159,7 +161,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         }
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function getProductsEntities()
     {
@@ -226,7 +228,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         return $magentoProduct;
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function getListingProductByMagentoProductId($productId, $storeId)
     {
@@ -274,5 +276,5 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         return array_shift($listingProducts);
     }
 
-    //#############################################
+    //########################################
 }

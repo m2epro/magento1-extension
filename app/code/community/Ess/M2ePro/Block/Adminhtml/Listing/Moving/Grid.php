@@ -1,31 +1,33 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingMovingGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('product_id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setPagerVisibility(false);
         $this->setDefaultLimit(100);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -42,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
             ->getCollection();
 
         foreach ($ignoreListings as $listingId) {
-            $collection->addFieldToFilter('`main_table`.`id`', array('neq'=>$listingId));
+            $collection->addFieldToFilter('main_table.id', array('neq'=>$listingId));
         }
 
         $this->addAccountAndMarketplaceFilter($collection);
@@ -106,7 +108,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
         ));
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnId($value, $row, $column, $isExport)
     {
@@ -154,33 +156,33 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
         return $actions;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
         $buttonBlockHtml = ($this->canDisplayContainer()) ? $this->getNewListingBtnHtml(): '';
 
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     var warning_msg_block = $('empty_grid_warning');
     warning_msg_block && warning_msg_block.remove();
 
-    $$('#listingMovingGrid div.grid th').each(function(el){
+    $$('#listingMovingGrid div.grid th').each(function(el) {
         el.style.padding = '2px 4px';
     });
 
-    $$('#listingMovingGrid div.grid td').each(function(el){
+    $$('#listingMovingGrid div.grid td').each(function(el) {
         el.style.padding = '2px 4px';
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml() . $buttonBlockHtml . $javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -192,24 +194,24 @@ JAVASCRIPT;
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function addAccountAndMarketplaceFilter($collection)
     {
         $accountId = Mage::helper('M2ePro/Data_Global')->getValue('accountId');
         $marketplaceId = Mage::helper('M2ePro/Data_Global')->getValue('marketplaceId');
 
-        $collection->addFieldToFilter('`main_table`.`marketplace_id`', $marketplaceId);
-        $collection->addFieldToFilter('`main_table`.`account_id`', $accountId);
+        $collection->addFieldToFilter('main_table.marketplace_id', $marketplaceId);
+        $collection->addFieldToFilter('main_table.account_id', $accountId);
     }
 
-    // ####################################
+    //########################################
 
     protected function getNewListingBtnHtml()
     {
         $componentMode = Mage::helper('M2ePro/Data_Global')->getValue('componentMode');
 
-        //------------------------------
+        // ---------------------------------------
         $newListingUrl = $this->getUrl('*/adminhtml_common_listing_create/index', array(
             'step' => 1,
             'clear' => 1,
@@ -226,10 +228,10 @@ JAVASCRIPT;
             'onclick' => $this->getData('moving_handler_js') . '.startListingCreation(\''.$newListingUrl.'\')'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        //------------------------------
+        // ---------------------------------------
 
         return $buttonBlock->toHtml();
     }
 
-    // ####################################
+    //########################################
 }

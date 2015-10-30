@@ -1,6 +1,6 @@
 <?php if ($websites = $this->getWebsites()): ?>
 
-    <p class="<?php echo Mage::helper('M2ePro/Magento')->isGoEdition() ? '' : 'switcher'; ?>">
+    <p class="switcher">
 
         <select id="<?php echo $this->getStoreSelectId(); ?>" name="<?php echo $this->getStoreSelectName(); ?>" style="width: 250px;" class="left-col-block store-switcher
                     <?php if ($this->isRequiredOption()) : ?> M2ePro-store-switcher-validation<?php endif; ?>"

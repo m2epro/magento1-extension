@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction extends Mage_Core_Model_Abstract
@@ -11,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction extends Mage_Core_Model_Ab
     /** @var $order Ess_M2ePro_Model_Order */
     private $order = NULL;
 
-    // ##########################################################
+    //########################################
 
     public function _construct()
     {
@@ -19,14 +21,21 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction extends Mage_Core_Model_Ab
         $this->_init('M2ePro/Ebay_Order_ExternalTransaction');
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Order $order
+     * @return $this
+     */
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
         $this->order = $order;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Order
+     */
     public function getOrder()
     {
         if (is_null($this->order)) {
@@ -35,18 +44,24 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction extends Mage_Core_Model_Ab
         return $this->order;
     }
 
-    // ##########################################################
+    //########################################
 
     public function getTransactionId()
     {
         return $this->getData('transaction_id');
     }
 
+    /**
+     * @return float
+     */
     public function getSum()
     {
         return (float)$this->getData('sum');
     }
 
+    /**
+     * @return float
+     */
     public function getFee()
     {
         return (float)$this->getData('fee');
@@ -57,13 +72,20 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction extends Mage_Core_Model_Ab
         return $this->getData('transaction_date');
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isPaypal()
     {
         return $this->getTransactionId() != self::NOT_PAYPAL_TRANSACTION;
     }
 
+    /**
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getPaypalUrl()
     {
         if (!$this->isPaypal()) {
@@ -81,5 +103,5 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction extends Mage_Core_Model_Ab
         return 'https://www.' . $modePrefix . $baseUrl . '?' . http_build_query($params, '', '&');
     }
 
-    // ##########################################################
+    //########################################
 }

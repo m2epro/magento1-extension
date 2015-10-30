@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
@@ -22,7 +24,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
      */
     protected $changesHelper = NULL;
 
-    //####################################
+    //########################################
 
     protected function getType()
     {
@@ -39,7 +41,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
         return 'Inventory';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -51,7 +53,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
         return 100;
     }
 
-    //####################################
+    //########################################
 
     protected function beforeStart()
     {
@@ -81,7 +83,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
         parent::afterEnd();
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     protected function performActions()
     {
@@ -106,7 +108,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
         return $task;
     }
 
-    //####################################
+    //########################################
 
     private function executeRunner()
     {
@@ -148,5 +150,5 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
         $this->getActualOperationHistory()->addText('Updating Products on Amazon ended with '.$resultString.'.');
     }
 
-    //####################################
+    //########################################
 }

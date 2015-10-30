@@ -1,23 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data extends Mage_Adminhtml_Block_Widget
 {
     public $attributes = array();
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayTemplateSellingFormatEditFormData');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/template/sellingFormat/form/data.phtml');
 
@@ -33,7 +35,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         }
     }
 
-    // ####################################
+    //########################################
 
     public function isCustom()
     {
@@ -59,7 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return $template->getTitle();
     }
 
-    // ####################################
+    //########################################
 
     public function getFormData()
     {
@@ -83,7 +85,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettingsAdvancedMode();
     }
 
-    // ####################################
+    //########################################
 
     public function getCurrency()
     {
@@ -193,7 +195,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return false;
     }
 
-    // ####################################
+    //########################################
 
     public function isCharity()
     {
@@ -208,7 +210,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
 
     public function isStpAvailable()
     {
-        if (is_null($marketplace = $this->getMarketplace())){
+        if (is_null($marketplace = $this->getMarketplace())) {
             return true;
         }
 
@@ -221,7 +223,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
 
     public function isStpAdvancedAvailable()
     {
-        if (is_null($marketplace = $this->getMarketplace())){
+        if (is_null($marketplace = $this->getMarketplace())) {
             return true;
         }
 
@@ -234,7 +236,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
 
     public function isMapAvailable()
     {
-        if (is_null($marketplace = $this->getMarketplace())){
+        if (is_null($marketplace = $this->getMarketplace())) {
             return true;
         }
 
@@ -245,7 +247,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return false;
     }
 
-    // ####################################
+    //########################################
 
     public function isShowMultiCurrencyNotification()
     {
@@ -276,7 +278,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return true;
     }
 
-    // ####################################
+    //########################################
 
     public function getTaxCategoriesInfo()
     {
@@ -296,5 +298,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         return array_shift($marketplaces)->getChildObject()->getTaxCategoryInfo();
     }
 
-    // ####################################
+    //########################################
 }

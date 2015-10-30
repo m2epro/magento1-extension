@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_Dispatcher
 {
-    //####################################
+    //########################################
 
     /**
      * @throws Exception
@@ -78,7 +80,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Dispatcher
         return $this->getConnector('virtual','','',$params,$marketplace,$account,$mode);
     }
 
-    //####################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Connector_Ebay_Requester|Ess_M2ePro_Model_Connector_Ebay_Abstract $connector
@@ -89,5 +91,5 @@ class Ess_M2ePro_Model_Connector_Ebay_Dispatcher
         return $connector->process();
     }
 
-    //####################################
+    //########################################
 }

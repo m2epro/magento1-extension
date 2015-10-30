@@ -1,13 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
- * Shipping method with custom title and price
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Support_Uservoice extends Mage_Core_Helper_Abstract
 {
-    //#############################################
+    //########################################
 
     public function search($query)
     {
@@ -39,7 +40,7 @@ class Ess_M2ePro_Helper_Module_Support_Uservoice extends Mage_Core_Helper_Abstra
         return array_merge($articles, $suggestions);
     }
 
-    //#############################################
+    //########################################
 
     private function getApiUrl()
     {
@@ -51,13 +52,13 @@ class Ess_M2ePro_Helper_Module_Support_Uservoice extends Mage_Core_Helper_Abstra
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/uservoice/', 'api_client_key');
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     private function sendRequestAsGet($baseUrl, $action, $params)
     {
         $curlObject = curl_init();
 
-        //set the server we are using
+        // set the server we are using
         curl_setopt($curlObject, CURLOPT_URL, $baseUrl . $action . '?'.http_build_query($params,'','&'));
 
         // stop CURL from verifying the peer's certificate
@@ -79,5 +80,5 @@ class Ess_M2ePro_Helper_Module_Support_Uservoice extends Mage_Core_Helper_Abstra
         return $response;
     }
 
-    //#############################################
+    //########################################
 }

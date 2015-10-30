@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_General
@@ -9,8 +11,11 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_Genera
 {
     const SKU_MAX_LENGTH = 30;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function validate()
     {
         $sku = $this->getSku();
@@ -38,7 +43,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_Genera
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function getSku()
     {
@@ -63,5 +68,5 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_Genera
         return $this->getBuyListingProduct()->getListingSource()->getSku();
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,16 +1,17 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_OtherCategory_Builder
 {
-    // ########################################
+    //########################################
 
     public function build(array $data)
     {
-        //------------------------------
         $otherCategoryTemplateData = array();
 
         $categoryPrefixes = array(
@@ -40,12 +41,11 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory_Builder
 
         $categoryTemplate = Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->setData($otherCategoryTemplateData);
         $categoryTemplate->save();
-        //------------------------------
 
         return $categoryTemplate;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * Is needed to reduce amount of the Items Specifics blocks an Categories in use
@@ -68,5 +68,5 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory_Builder
         return null;
     }
 
-    // ########################################
+    //########################################
 }

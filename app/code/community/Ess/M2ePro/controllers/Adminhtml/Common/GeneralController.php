@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_GeneralController
     extends Ess_M2ePro_Controller_Adminhtml_Common_SimpleController
 {
-    //#############################################
+    //########################################
 
     public function searchAutocompleteAction()
     {
@@ -45,7 +47,7 @@ class Ess_M2ePro_Adminhtml_Common_GeneralController
         $collection = Mage::helper('M2ePro/Component')
             ->getComponentModel($component, $model)
             ->getCollection()
-            ->addFieldToFilter("`main_table`.`title`", $where)
+            ->addFieldToFilter("main_table.title", $where)
             ->setOrder('relevance', 'DESC');
 
         $collection->getSelect()->columns(array('relevance' => new Zend_Db_Expr($relevanceQueryString)));
@@ -70,5 +72,5 @@ class Ess_M2ePro_Adminhtml_Common_GeneralController
         return $this->getResponse()->setBody(json_encode($array));
     }
 
-    //#############################################
+    //########################################
 }

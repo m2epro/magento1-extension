@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Mysql4_Ebay_Listing
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
 {
     protected $_isPkAutoIncrement = false;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +19,7 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
         $this->_isPkAutoIncrement = false;
     }
 
-    // ########################################
+    //########################################
 
     public function updateStatisticColumns()
     {
@@ -26,7 +28,7 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
         $this->updateItemsSoldCount();
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     private function updateProductsSoldCount()
     {
@@ -95,7 +97,7 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
         $this->_getWriteAdapter()->query($query);
     }
 
-    // ########################################
+    //########################################
 
     public function getProductCollection($listingId)
     {
@@ -117,11 +119,11 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
         return $collection;
     }
 
-    public function updatePartsCompatibilityAttributesData($listingId,
-                                                           array $listingProductIds,
-                                                           $attribute,
-                                                           $data,
-                                                           $overwrite = false) {
+    public function updateMotorsAttributesData($listingId,
+                                               array $listingProductIds,
+                                               $attribute,
+                                               $data,
+                                               $overwrite = false) {
         if (count($listingProductIds) == 0) {
             return;
         }
@@ -167,5 +169,5 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
         }
     }
 
-    // ########################################
+    //########################################
 }

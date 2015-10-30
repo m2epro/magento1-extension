@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
@@ -10,7 +12,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     /** @var Ess_M2ePro_Helper_Module_Wizard|null  */
     protected $wizardHelper = NULL;
 
-    //#############################################
+    //########################################
 
     abstract protected function getNick();
 
@@ -18,23 +20,23 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
     abstract protected function getMenuRootNodeLabel();
 
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
         $this->loadLayout();
 
         // Popup
-        //-------------
+        // ---------------------------------------
         $this->_initPopUp();
-        //-------------
+        // ---------------------------------------
 
         Mage::helper('M2ePro/Module_Wizard')->addWizardHandlerJs();
 
         return $this;
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -49,7 +51,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         $this->_redirect('*/*/congratulation',array('wizard'=>true));
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function welcomeAction()
     {
@@ -93,7 +95,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         $this->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function skipAction()
     {
@@ -113,7 +115,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         $this->_redirect('*/*/index');
     }
 
-    //#############################################
+    //########################################
 
     protected function getWizardHelper()
     {
@@ -124,7 +126,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $this->wizardHelper;
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     protected function setStatus($status)
     {
@@ -137,7 +139,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $this->getWizardHelper()->getStatus($this->getNick());
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     protected function setStep($step)
     {
@@ -170,7 +172,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $this->getWizardHelper()->getWizard($this->getNick())->getNextStep();
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     protected function isNotStarted()
     {
@@ -197,7 +199,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $this->getWizardHelper()->isFinished($this->getNick());
     }
 
-    //#############################################
+    //########################################
 
     public function setStepAction()
     {
@@ -235,7 +237,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         )));
     }
 
-    //#############################################
+    //########################################
 
     protected function _addNextWizardPresentation()
     {
@@ -250,7 +252,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $this;
     }
 
-    //#############################################
+    //########################################
 
     protected function _isAllowed()
     {
@@ -265,5 +267,5 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         return $tempResult;
     }
 
-    //#############################################
+    //########################################
 }

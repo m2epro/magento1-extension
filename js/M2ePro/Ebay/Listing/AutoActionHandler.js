@@ -1,10 +1,10 @@
 EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     controller: 'adminhtml_ebay_listing_autoAction',
 
-    //----------------------------------
+    // ---------------------------------------
 
     addingModeChange: function()
     {
@@ -17,9 +17,16 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
             $('breadcrumb_container').hide();
             $('confirm_button').show();
         }
+
+        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Listing::ADDING_MODE_NONE')) {
+            $$('[id$="adding_add_not_visible_field"]')[0].show();
+        } else {
+            $$('[id$="adding_add_not_visible"]')[0].value = M2ePro.php.constant('Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES');
+            $$('[id$="adding_add_not_visible_field"]')[0].hide();
+        }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     loadCategoryChooser: function(callback)
     {
@@ -45,7 +52,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
 
     loadSpecific: function(callback)
     {
-        var category = EbayListingCategoryChooserHandlerObj.getSelectedCategory(0); // TODO NEXT (constant)
+        var category = EbayListingCategoryChooserHandlerObj.getSelectedCategory(0);
 
         if (!category.mode) {
             return;
@@ -79,7 +86,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     globalStepTwo: function()
     {
@@ -114,7 +121,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         ListingAutoActionHandlerObj.loadSpecific(callback);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     websiteStepTwo: function()
     {
@@ -149,7 +156,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         ListingAutoActionHandlerObj.loadSpecific(callback);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     categoryStepOne: function(groupId)
     {
@@ -200,7 +207,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         ListingAutoActionHandlerObj.loadSpecific(callback);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     categoryDeleteGroup: function(groupId)
     {
@@ -220,7 +227,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validate: function()
     {
@@ -274,6 +281,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
                     ListingAutoActionHandlerObj.internalData = {
                         auto_mode: $('auto_mode').value,
                         auto_global_adding_mode: $('auto_global_adding_mode').value,
+                        auto_global_adding_add_not_visible: $('auto_global_adding_add_not_visible').value,
                         auto_global_adding_template_category_id: null
                     };
                     break;
@@ -282,6 +290,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
                     ListingAutoActionHandlerObj.internalData = {
                         auto_mode: $('auto_mode').value,
                         auto_website_adding_mode: $('auto_website_adding_mode').value,
+                        auto_website_adding_add_not_visible: $('auto_website_adding_add_not_visible').value,
                         auto_website_adding_template_category_id: null,
                         auto_website_deleting_mode: $('auto_website_deleting_mode').value
                     };
@@ -293,6 +302,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
                         title: $('group_title').value,
                         auto_mode: $('auto_mode').value,
                         adding_mode: $('adding_mode').value,
+                        adding_add_not_visible: $('adding_add_not_visible').value,
                         deleting_mode: $('deleting_mode').value,
                         categories: categories_selected_items
                     };
@@ -309,5 +319,5 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -1,7 +1,7 @@
 EbayListingCategoryChooserBrowseHandler = Class.create();
 EbayListingCategoryChooserBrowseHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -13,7 +13,7 @@ EbayListingCategoryChooserBrowseHandler.prototype = Object.extend(new CommonHand
         };
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setMarketplaceId: function(marketplaceId)
     {
@@ -69,7 +69,7 @@ EbayListingCategoryChooserBrowseHandler.prototype = Object.extend(new CommonHand
         return selectedCategories;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderTopLevelCategories: function(containerId)
     {
@@ -163,7 +163,7 @@ EbayListingCategoryChooserBrowseHandler.prototype = Object.extend(new CommonHand
         parentDiv.appendChild(childrenDiv);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     observe: function(event, observer)
     {
@@ -206,5 +206,5 @@ EbayListingCategoryChooserBrowseHandler.prototype = Object.extend(new CommonHand
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

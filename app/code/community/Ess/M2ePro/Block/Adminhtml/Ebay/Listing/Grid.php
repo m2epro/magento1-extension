@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Adminhtml_Listing_Grid
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingGrid');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -33,26 +35,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
                                        '(`m`.`id` = `main_table`.`marketplace_id`)',
                                        array('marketplace_title'=>'title'));
 
-        //exit($collection->getSelect()->__toString());
-
-        // Set collection to grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('`main_table`.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         // Set clear log action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('clear_logs', array(
              'label'    => Mage::helper('M2ePro')->__('Clear Log(s)'),
              'url'      => $this->getUrl('*/adminhtml_listing/clearLog',array(
@@ -62,21 +61,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
              )),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         // Set remove listings action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('delete_listings', array(
              'label'    => Mage::helper('M2ePro')->__('Delete Listing(s)'),
              'url'      => $this->getUrl('*/adminhtml_ebay_listing/delete'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     protected function setColumns()
     {
@@ -227,7 +226,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
         return $actions;
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
@@ -248,7 +247,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
             $storeView = Mage::helper('M2ePro')->__('Admin (Default Values)');
         }
 
-        $account = Mage::helper('M2ePro')->__('eBay User ID');
+        $account = Mage::helper('M2ePro')->__('Account');
         $marketplace = Mage::helper('M2ePro')->__('eBay Site');
         $store = Mage::helper('M2ePro')->__('Magento Store View');
 
@@ -268,7 +267,7 @@ HTML;
         return $this->getColumnValue($value);
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -282,7 +281,7 @@ HTML;
         ));
     }
 
-    // ####################################
+    //########################################
 
     protected function callbackFilterTitle($collection, $column)
     {
@@ -298,7 +297,7 @@ HTML;
         );
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -355,5 +354,5 @@ HTML;
         return parent::_toHtml().$javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 // move from listing to listing
@@ -9,7 +11,7 @@
 class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_MovingController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
-    //#############################################
+    //########################################
 
     public function moveToListingGridAction()
     {
@@ -38,5 +40,5 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_MovingController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 }

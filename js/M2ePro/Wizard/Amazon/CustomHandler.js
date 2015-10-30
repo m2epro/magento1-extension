@@ -1,7 +1,7 @@
 WizardAmazonCustomHandler = Class.create();
 WizardAmazonCustomHandler.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -11,7 +11,7 @@ WizardAmazonCustomHandler.prototype = {
         this.percent = 0;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     marketplacesSynchronizationAction: function(obj)
     {
@@ -22,7 +22,7 @@ WizardAmazonCustomHandler.prototype = {
         setTimeout(function() { self.synchronizeMarketplaces(); }, 0);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setNextStep: function(nextStep)
     {
@@ -52,7 +52,7 @@ WizardAmazonCustomHandler.prototype = {
         $('wizard_complete').show();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     synchronizeMarketplaces: function()
     {
@@ -102,7 +102,7 @@ WizardAmazonCustomHandler.prototype = {
         })
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     progressBarStartLoad: function(from, to, callback)
     {
@@ -159,5 +159,5 @@ WizardAmazonCustomHandler.prototype = {
         element.addClassName('synchProcess');
     }
 
-    //----------------------------------
+    // ---------------------------------------
 };

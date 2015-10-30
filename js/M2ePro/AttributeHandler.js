@@ -1,24 +1,24 @@
 AttributeHandler = Class.create();
 AttributeHandler.prototype = {
 
-    //----------------------------------
+    // ---------------------------------------
 
     attrData: '',
 
     availableAttributes: [],
 
-    //----------------------------------
+    // ---------------------------------------
 
     setAvailableAttributes: function(attributes)
     {
         this.availableAttributes = attributes;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(selectId) {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     appendToText: function(ddId, targetId)
     {
@@ -72,7 +72,7 @@ AttributeHandler.prototype = {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     checkAttributesSelect: function(id, value)
     {
@@ -86,35 +86,40 @@ AttributeHandler.prototype = {
         }
     },
 
-    renderAttributes: function(name, insertTo, value, width)
+    renderAttributes: function(id, insertTo, value, width)
     {
         var style = width ? ' style="width: ' + width + 'px;"' : '';
-        var txt = '<select name="' + name + '" id="' + name + '"' + style + '>\n';
+        var txt = '<select name="' + id + '" id="' + id + '"' + style + '>\n';
 
         txt += this.attrData;
         txt += '</select>';
 
         $(insertTo).innerHTML = txt;
-        this.checkAttributesSelect(name, value);
+        this.checkAttributesSelect(id, value);
     },
 
-    renderAttributesWithEmptyHiddenOption: function(name, insertTo, value, width)
+    renderAttributesWithEmptyHiddenOption: function(id, insertTo, value, width)
     {
         var style = width ? ' style="width: ' + width + 'px;"' : '';
-        var txt = '<select name="' + name + '" id="' + name + '" class="M2ePro-required-when-visible"' + style + '>\n';
+        var txt = '<select name="' + id + '" id="' + id + '" class="M2ePro-required-when-visible"' + style + '>\n';
 
         txt += '<option style="display: none;"></option>\n';
         txt += this.attrData;
         txt += '</select>';
 
         $(insertTo).innerHTML = txt;
-        this.checkAttributesSelect(name, value);
+        this.checkAttributesSelect(id, value);
     },
 
-    renderAttributesWithEmptyOption: function(name, insertTo, value, notRequiried)
+    renderAttributesWithEmptyOption: function(id, insertTo, value, notRequiried)
     {
-        var className = notRequiried ? '' : ' class="M2ePro-required-when-visible"';
-        var txt = '<select name="' + name + '" id="' + name + '" ' + className + '>\n';
+        var classes = 'M2ePro-custom-attribute-can-be-created';
+
+        if (!notRequiried) {
+            classes += ' M2ePro-required-when-visible';
+        }
+
+        var txt = '<select name="' + id + '" id="' + id + '" class="' + classes + '" allowed_attribute_types="text,price,select">\n';
 
         txt += '<option class="empty"></option>\n';
         txt += this.attrData;
@@ -126,8 +131,8 @@ AttributeHandler.prototype = {
             $(insertTo).innerHTML = txt;
         }
 
-        this.checkAttributesSelect(name, value);
+        this.checkAttributesSelect(id, value);
     }
 
-    //----------------------------------
+    // ---------------------------------------
 };

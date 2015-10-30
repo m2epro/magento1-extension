@@ -1,20 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Connector_Ebay_Inventory_Get_ItemsRequester
     extends Ess_M2ePro_Model_Connector_Ebay_Requester
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getCommand()
     {
         return array('inventory','get','items');
     }
 
-    // ########################################
+    //########################################
 
     protected function getResponserParams()
     {
@@ -24,14 +29,14 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Inventory_Get_ItemsRequester
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function getRequestData()
     {
         return array();
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingData()
     {
@@ -41,5 +46,5 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Inventory_Get_ItemsRequester
         );
     }
 
-    // ########################################
+    //########################################
 }

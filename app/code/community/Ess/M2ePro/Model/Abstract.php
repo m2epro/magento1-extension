@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
@@ -9,7 +11,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
     const SETTING_FIELD_TYPE_JSON          = 'json';
     const SETTING_FIELD_TYPE_SERIALIZATION = 'serialization';
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $id
@@ -22,7 +24,10 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         $this->load($id,$field);
 
         if (is_null($this->getId())) {
-            throw new Ess_M2ePro_Model_Exception_Logic('Instance does not exist.');
+            throw new Ess_M2ePro_Model_Exception_Logic('Instance does not exist.',
+                                                       array('id'    => $id,
+                                                             'field' => $field,
+                                                             'model' => $this->_resourceName));
         }
 
         return $this;
@@ -63,7 +68,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function delete()
     {
@@ -93,7 +98,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         }
     }
 
-    // ########################################
+    //########################################
 
     public function addObjectLock($tag = NULL, $relatedHash = NULL, $description = NULL)
     {
@@ -131,7 +136,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         }
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     public function isLockedObject($tag = false, $relatedHash = false)
     {
@@ -160,7 +165,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         return $lockedCollection->getItems();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param string $modelName
@@ -205,7 +210,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
 
         /** @var $tempCollection Mage_Core_Model_Mysql4_Collection_Abstract */
         $tempCollection = $model->getCollection();
-        $tempCollection->addFieldToFilter($fieldName, $this->getId());
+        $tempCollection->addFieldToFilter(new Zend_Db_Expr("`{$fieldName}`"), $this->getId());
 
         foreach ($filters as $field=>$filter) {
 
@@ -214,7 +219,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
                 continue;
             }
 
-            $tempCollection->addFieldToFilter('`'.$field.'`', $filter);
+            $tempCollection->addFieldToFilter(new Zend_Db_Expr("`{$field}`"), $filter);
         }
 
         foreach ($sort as $field => $order) {
@@ -234,7 +239,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         return $tempArray['items'];
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param string $fieldName
@@ -302,7 +307,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         return $settings;
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param string $fieldName
@@ -376,7 +381,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function getDataSnapshot()
     {
@@ -389,5 +394,5 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
 {
-    // ########################################
+    //########################################
 
     public function process($logData, $type = NULL, $sendToServer = true)
     {
@@ -30,7 +32,7 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
         } catch (Exception $exceptionTemp) {}
     }
 
-    // ########################################
+    //########################################
 
     private function prepareLogMessage($logData, $type)
     {
@@ -55,7 +57,7 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
         $log->save();
     }
 
-    // ########################################
+    //########################################
 
     private function getCurrentUserActionInfo()
     {
@@ -74,7 +76,7 @@ ACTION;
         return $actionInfo;
     }
 
-    // ########################################
+    //########################################
 
     private function send($logData, $type)
     {
@@ -85,5 +87,5 @@ ACTION;
         $dispatcherObject->process($connectorObj);
     }
 
-    // ########################################
+    //########################################
 }

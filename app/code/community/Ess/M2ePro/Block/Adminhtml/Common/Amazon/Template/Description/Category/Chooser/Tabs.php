@@ -1,19 +1,21 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Chooser_Tabs
     extends Mage_Adminhtml_Block_Widget_Tabs
 {
-    // ########################################
+    //########################################
 
     const TAB_ID_RECENT = 'recent';
     const TAB_ID_BROWSE = 'browse';
     const TAB_ID_SEARCH = 'search';
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -24,7 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Cho
         $this->setDestElementId('chooser_tabs_container');
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareLayout()
     {
@@ -60,12 +62,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Category_Cho
         return parent::_prepareLayout();
     }
 
-    // ########################################
+    //########################################
 
     public function isNeedToHideRecent()
     {
         return Mage::helper('M2ePro/Data_Global')->getValue('category_chooser_hide_recent', true);
     }
 
-    // ########################################
+    //########################################
 }

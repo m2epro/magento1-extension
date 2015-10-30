@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -66,7 +66,7 @@ WHERE `group` = '/support/form/' AND
 SQL
 );
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_template_synchronization`
@@ -112,7 +112,7 @@ SQL
     ADD INDEX `state` (`state`);
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -126,7 +126,7 @@ if (!isset($tempTableIndexList[strtoupper('revise_update_qty_max_applied_value')
     $connection->addKey($tempTable, 'revise_update_qty_max_applied_value', 'revise_update_qty_max_applied_value');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -140,7 +140,7 @@ if (!isset($tempTableIndexList[strtoupper('revise_update_qty_max_applied_value')
     $connection->addKey($tempTable, 'revise_update_qty_max_applied_value', 'revise_update_qty_max_applied_value');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_synchronization');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -154,7 +154,7 @@ if (!isset($tempTableIndexList[strtoupper('revise_update_qty_max_applied_value')
     $connection->addKey($tempTable, 'revise_update_qty_max_applied_value', 'revise_update_qty_max_applied_value');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -168,7 +168,7 @@ if (!isset($tempTableIndexList[strtoupper('qty_max_posted_value')])) {
     $connection->addKey($tempTable, 'qty_max_posted_value', 'qty_max_posted_value');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_buy_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -182,7 +182,7 @@ if (!isset($tempTableIndexList[strtoupper('qty_max_posted_value')])) {
     $connection->addKey($tempTable, 'qty_max_posted_value', 'qty_max_posted_value');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -196,7 +196,7 @@ if (!isset($tempTableIndexList[strtoupper('qty_max_posted_value')])) {
     $connection->addKey($tempTable, 'qty_max_posted_value', 'qty_max_posted_value');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -220,7 +220,7 @@ if (!isset($tempTableIndexList[strtoupper('reservation_state')])) {
     $connection->addKey($tempTable, 'reservation_state', 'reservation_state');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order_item');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -237,7 +237,7 @@ if (!isset($tempTableIndexList[strtoupper('state')])) {
     $connection->addKey($tempTable, 'state', 'state');
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempRow = $connection->query("
@@ -280,8 +280,8 @@ SQL
 );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

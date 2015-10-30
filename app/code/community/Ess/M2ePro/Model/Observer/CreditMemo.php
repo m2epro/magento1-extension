@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Observer_Creditmemo extends Ess_M2ePro_Model_Observer_Abstract
 {
-    //####################################
+    //########################################
 
     public function process()
     {
@@ -39,7 +41,7 @@ class Ess_M2ePro_Model_Observer_Creditmemo extends Ess_M2ePro_Model_Observer_Abs
                 return;
             }
 
-            Mage::getSingleton('M2ePro/Order_Log_Manager')->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
             $itemsForCancel = array();
 
@@ -117,7 +119,7 @@ class Ess_M2ePro_Model_Observer_Creditmemo extends Ess_M2ePro_Model_Observer_Abs
         }
     }
 
-    //####################################
+    //########################################
 
     private function addSessionSuccessMessage()
     {
@@ -143,5 +145,5 @@ class Ess_M2ePro_Model_Observer_Creditmemo extends Ess_M2ePro_Model_Observer_Abs
         Mage::getSingleton('adminhtml/session')->addError($message);
     }
 
-    //####################################
+    //########################################
 }

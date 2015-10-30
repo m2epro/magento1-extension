@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -11,27 +13,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_B
 
     protected $listingProductId;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingProductBidsGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setPagerVisibility(false);
         $this->setFilterVisibility(false);
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     /**
      * @param mixed $listingProductId
@@ -48,14 +50,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_B
         return $this->listingProductId;
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
     protected $listingProduct;
 
     protected function getListingProduct()
     {
-        if(empty($this->listingProduct)) {
+        if (empty($this->listingProduct)) {
             $this->listingProduct = Mage::helper('M2ePro/Component_Ebay')
                 ->getObject('Listing_Product', $this->getListingProductId());
         }
@@ -63,7 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_B
         return $this->listingProduct;
     }
 
-    //------------------------------
+    // ---------------------------------------
 
     /**
      * @return mixed
@@ -81,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_B
         $this->bidsData = $bidsData;
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -144,7 +146,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_B
         ));
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnEmail($value, $row, $column, $isExport)
     {
@@ -163,14 +165,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_B
         return '<div style="margin-right: 5px;">'.$value.'</div>';
     }
 
-    // ####################################
+    //########################################
 
     public function getRowUrl($row)
     {
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -197,5 +199,5 @@ HTML;
 
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 EbayListingTransferringHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -9,7 +9,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         this.marketplaceProgressHandlerObj = null;
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     loadActionHtml: function(selectedProductsIds, callback, productName)
     {
@@ -37,7 +37,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(title, content, clearMessages)
     {
@@ -80,11 +80,11 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         }, 50);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showStep: function(refreshBreadcrumb, refreshButtons)
     {
-        //need for correct render helper-blocks
+        // need for correct render helper-blocks
         initializationMagentoBlocks();
 
         var itemStep = this.actionHandler.getItemStep();
@@ -112,7 +112,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         this.showStep(true, false);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     go: function(callback)
     {
@@ -120,7 +120,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         this.actionHandler.setShownTutorial(callback);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderStepTutorial: function()
     {
@@ -128,7 +128,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         this.showStep(true, true);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderStepDestination: function()
     {
@@ -261,7 +261,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderStepPolicy: function()
     {
@@ -282,7 +282,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderStepTranslation: function()
     {
@@ -301,7 +301,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderStepCategories: function()
     {
@@ -309,7 +309,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         this.showStep(true, true);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     refreshBreadcrumb: function()
     {
@@ -343,7 +343,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     refreshButtons: function()
     {
@@ -498,7 +498,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validate: function()
     {
@@ -526,7 +526,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         return true;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     createTranslationAccount: function()
     {
@@ -565,7 +565,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function(needToSetCategoryPolicies)
     {
@@ -705,7 +705,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addAccountClick: function()
     {
@@ -918,5 +918,5 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

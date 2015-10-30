@@ -1,7 +1,7 @@
 WizardAmazonMarketplaceHandler = Class.create();
 WizardAmazonMarketplaceHandler.prototype = Object.extend(new MarketplaceHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     proceedAction: function(step)
     {
@@ -27,7 +27,7 @@ WizardAmazonMarketplaceHandler.prototype = Object.extend(new MarketplaceHandler(
         }.bind(this), 300);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     saveWizardSettings: function(callback)
     {
@@ -152,7 +152,7 @@ WizardAmazonMarketplaceHandler.prototype = Object.extend(new MarketplaceHandler(
         return true;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     checkAllOptions: function()
     {
@@ -182,5 +182,5 @@ WizardAmazonMarketplaceHandler.prototype = Object.extend(new MarketplaceHandler(
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

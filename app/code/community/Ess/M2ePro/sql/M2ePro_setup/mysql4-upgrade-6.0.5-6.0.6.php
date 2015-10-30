@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_listing_product`
@@ -20,7 +20,7 @@ $connection = $installer->getConnection();
     ADD COLUMN `ignore_variations` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0 AFTER `charity`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -46,7 +46,7 @@ if (!isset($tempTableIndexList[strtoupper('synch_status')])) {
     $connection->addKey($tempTable, 'synch_status', 'synch_status');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_selling_format');
 
@@ -58,7 +58,7 @@ if ($connection->tableColumnExists($tempTable, 'ignore_variations') === false) {
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -157,8 +157,8 @@ WHERE `id` = 23;
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

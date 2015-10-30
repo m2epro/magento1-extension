@@ -1,27 +1,29 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingTemplateEditTabs');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('widget/tabshoriz.phtml');
         $this->setDestElementId('edit_form');
     }
 
-    // ####################################
+    //########################################
 
     public function getAllowedTabs()
     {
@@ -47,11 +49,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Mage_Ad
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         if ($this->isTabAllowed('general')) {
             $block = $this->getLayout()
                           ->createBlock('M2ePro/adminhtml_ebay_listing_template_edit_tabs_general','',
@@ -65,9 +67,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Mage_Ad
                 )
             );
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ($this->isTabAllowed('selling')) {
             $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_template_edit_tabs_selling');
             $this->addTab(
@@ -79,9 +81,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Mage_Ad
                 )
             );
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ($this->isTabAllowed('synchronization') && Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
             $block = $this->getLayout()
                           ->createBlock('M2ePro/adminhtml_ebay_listing_template_edit_tabs_synchronization');
@@ -94,14 +96,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Mage_Ad
                 )
             );
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->setActiveTab($this->getRequest()->getParam('tab', 'general'));
-        //------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 }

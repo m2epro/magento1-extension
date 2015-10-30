@@ -1,19 +1,21 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Adminhtml_Component_Switcher
 {
     protected $paramName = 'account';
 
-    // ########################################
+    //########################################
 
     public function getLabel()
     {
         if ($this->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK) {
-            return Mage::helper('M2ePro')->__('eBay User ID');
+            return Mage::helper('M2ePro')->__('Account');
         }
 
         return Mage::helper('M2ePro')->__($this->getComponentLabel('%component% Account'));
@@ -56,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
         return $items;
     }
 
-    // ########################################
+    //########################################
 
     public function getDefaultOptionName()
     {
@@ -67,5 +69,5 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
         return Mage::helper('M2ePro')->__('All Accounts');
     }
 
-    // ########################################
+    //########################################
 }

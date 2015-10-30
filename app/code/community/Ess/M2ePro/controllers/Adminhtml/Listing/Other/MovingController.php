@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 // move from 3rd party to listing
@@ -9,7 +11,7 @@
 class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
-    //#############################################
+    //########################################
 
     public function moveToListingGridAction()
     {
@@ -41,7 +43,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function getFailedProductsGridAction()
     {
@@ -65,7 +67,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function prepareMoveToListingAction()
     {
@@ -79,7 +81,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
                 ->getComponentModel($componentMode, 'Listing_Other')
                 ->getCollection();
 
-            $listingOtherCollection->addFieldToFilter('`main_table`.`id`', array('in' => $selectedProductsPart));
+            $listingOtherCollection->addFieldToFilter('main_table.id', array('in' => $selectedProductsPart));
             $tempData = $listingOtherCollection
                 ->getSelect()
                 ->query()
@@ -118,7 +120,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         return $this->getResponse()->setBody(json_encode($response));
     }
 
-    //#############################################
+    //########################################
 
     public function tryToMoveToListingAction()
     {
@@ -155,7 +157,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         )));
     }
 
-    //#############################################
+    //########################################
 
     public function moveToListingAction()
     {
@@ -238,7 +240,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         }
     }
 
-    //#############################################
+    //########################################
 
     public function createDefaultListingAction()
     {
@@ -278,5 +280,5 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         $movingModel->getDefaultListing($otherListingInstance);
     }
 
-    //#############################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
@@ -12,12 +14,12 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
     const SORT_VALUE_ASC = 3;
     const SORT_VALUE_DESC = 4;
 
-    // ########################################
+    //########################################
 
     private $_ormConfig = '';
     private $_cacheData = array();
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -33,7 +35,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         parent::__construct();
     }
 
-    // ########################################
+    //########################################
 
     public function getGlobalValue($key)
     {
@@ -50,7 +52,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return $this->deleteValue(NULL, $key);
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function getAllGlobalValues($sort = self::SORT_NONE)
     {
@@ -62,7 +64,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return $this->deleteAllValues(NULL);
     }
 
-    // ########################################
+    //########################################
 
     public function getGroupValue($group, $key)
     {
@@ -82,7 +84,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return $this->deleteValue($group, $key);
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function getAllGroupValues($group, $sort = self::SORT_NONE)
     {
@@ -96,7 +98,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return $this->deleteAllValues($group);
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     public function clear()
     {
@@ -107,7 +109,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         $this->updatePermanentCacheData();
     }
 
-    // ########################################
+    //########################################
 
     private function getValue($group, $key)
     {
@@ -139,12 +141,12 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         $temp = $this->getCollection();
 
         if (is_null($group)) {
-            $temp->addFieldToFilter('`group`', array('null' => true));
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter('`group`', $group);
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         }
 
-        $temp->addFieldToFilter('`key`', $key);
+        $temp->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
         $temp = $temp->toArray();
 
         if (count($temp['items']) > 0) {
@@ -180,12 +182,12 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         $temp = $this->getCollection();
 
         if (is_null($group)) {
-            $temp->addFieldToFilter('`group`', array('null' => true));
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter('`group`', $group);
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         }
 
-        $temp->addFieldToFilter('`key`', $key);
+        $temp->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
         $temp = $temp->toArray();
 
         if (count($temp['items']) <= 0) {
@@ -198,7 +200,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return $this->deleteCacheValue($existItem['group'], $existItem['key']);
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     private function getAllValues($group = NULL, $sort = self::SORT_NONE)
     {
@@ -213,9 +215,9 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         $temp = $this->getCollection();
 
         if (is_null($group)) {
-            $temp->addFieldToFilter('`group`', array('null' => true));
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter('`group`', $group);
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         }
 
         $temp = $temp->toArray();
@@ -240,9 +242,9 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         $temp = $this->getCollection();
 
         if (is_null($group)) {
-            $temp->addFieldToFilter('`group`', array('null' => true));
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter('`group`', array("like"=>$group.'%'));
+            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array("like"=>$group.'%'));
         }
 
         $temp = $temp->toArray();
@@ -255,7 +257,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function prepareGroup($group = NULL)
     {
@@ -292,7 +294,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         }
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     private function getCacheValue($group = NULL, $key)
     {
@@ -350,7 +352,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return true;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
     private function loadCacheData()
     {
@@ -397,5 +399,5 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($key,$this->_cacheData,array(),60*60);
     }
 
-    // ########################################
+    //########################################
 }

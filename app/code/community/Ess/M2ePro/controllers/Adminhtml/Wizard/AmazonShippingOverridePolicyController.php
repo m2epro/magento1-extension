@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Adminhtml_Wizard_AmazonShippingOverridePolicyController
     extends Ess_M2ePro_Controller_Adminhtml_Common_WizardController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -15,14 +21,14 @@ class Ess_M2ePro_Adminhtml_Wizard_AmazonShippingOverridePolicyController
         return $this;
     }
 
-    //#############################################
+    //########################################
 
     protected function getNick()
     {
         return 'amazonShippingOverridePolicy';
     }
 
-    //#############################################
+    //########################################
 
     public function welcomeAction()
     {
@@ -51,7 +57,7 @@ class Ess_M2ePro_Adminhtml_Wizard_AmazonShippingOverridePolicyController
         return $this->_redirect('*/adminhtml_common_listing/index/');
     }
 
-    //#############################################
+    //########################################
 
     public function marketplacesSynchronizationAction()
     {
@@ -75,5 +81,5 @@ class Ess_M2ePro_Adminhtml_Wizard_AmazonShippingOverridePolicyController
         return $this->getResponse()->setBody('success');
     }
 
-    //#############################################
+    //########################################
 }

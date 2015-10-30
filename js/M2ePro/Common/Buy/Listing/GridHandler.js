@@ -1,20 +1,20 @@
 CommonBuyListingGridHandler = Class.create(CommonListingGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'buy';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
         return 100;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -32,5 +32,5 @@ CommonBuyListingGridHandler = Class.create(CommonListingGridHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

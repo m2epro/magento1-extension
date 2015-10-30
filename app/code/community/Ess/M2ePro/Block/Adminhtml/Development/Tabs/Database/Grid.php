@@ -1,29 +1,31 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('developmentDatabaseGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('component');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareLayout()
@@ -33,7 +35,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
         return parent::_prepareLayout();
     }
 
-   // ########################################
+   //########################################
 
     protected function _prepareCollection()
     {
@@ -91,7 +93,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
             'filter_condition_callback' => array($this, '_customColumnFilter'),
         ));
 
-        //--------------------
+        // ---------------------------------------
         $options['general'] = 'General';
         $options = array_merge($options,Mage::helper('M2ePro/Component')->getComponentsTitles());
 
@@ -105,9 +107,9 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
             'filter_index' => 'component',
             'filter_condition_callback' => array($this, '_customColumnFilter'),
         ));
-        //--------------------
+        // ---------------------------------------
 
-        //--------------------
+        // ---------------------------------------
         $options = array(
             Ess_M2ePro_Helper_Module_Database_Structure::TABLE_GROUP_CONFIGS        => 'Configs',
             Ess_M2ePro_Helper_Module_Database_Structure::TABLE_GROUP_ACCOUNTS       => 'Accounts',
@@ -132,7 +134,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
             'filter_index' => 'group',
             'filter_condition_callback' => array($this, '_customColumnFilter'),
         ));
-        //--------------------
+        // ---------------------------------------
 
         $this->addColumn('records', array(
             'header'    => Mage::helper('M2ePro')->__('Records'),
@@ -154,7 +156,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
         return parent::_prepareColumns();
     }
 
-    // ########################################
+    //########################################
 
     public function callbackColumnTableName($value, $row, $column, $isExport)
     {
@@ -173,7 +175,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
         return "<p>{$value}</p>";
     }
 
-    // ########################################
+    //########################################
 
     public function getMassactionBlockName()
     {
@@ -183,55 +185,55 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('table_name');
         $this->getMassactionBlock()->setFormFieldName('tables');
         $this->getMassactionBlock()->setUseSelectAll(false);
-        //--------------------------------
+        // ---------------------------------------
 
         // Set edit action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('edit', array(
             'label'    => Mage::helper('M2ePro')->__('Edit Table(s)'),
             'url'      => $this->getUrl('*/adminhtml_development_database/manageTables')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         // Set truncate action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('truncate', array(
             'label'    => Mage::helper('M2ePro')->__('Truncate Table(s)'),
             'url'      => $this->getUrl('*/adminhtml_development_database/truncateTables'),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
         $gridJsObj = $this->getId().'JsObject';
 
-        $javascript = <<<JAVASCRIPT
+        $javascript = <<<HTML
 <script>
 
     $$('#developmentDatabaseGrid_table select[name="component"]',
        '#developmentDatabaseGrid_table select[name="status"]',
        '#developmentDatabaseGrid_table select[name="group"]').each(function(el)
         {
-            el.observe('change', function(){ $gridJsObj.doFilter(); });
+            el.observe('change', function() { $gridJsObj.doFilter(); });
         });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml().$javascript;
     }
 
-    // ########################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -248,7 +250,7 @@ JAVASCRIPT;
                              array('table' => $row->getData('table_name')));
     }
 
-    // ####################################
+    //########################################
 
     protected function _addColumnFilterToCollection($column)
     {
@@ -258,7 +260,7 @@ JAVASCRIPT;
         return $this;
     }
 
-    // ####################################
+    //########################################
 
     protected function _customColumnFilter($collection, $column)
     {
@@ -274,7 +276,7 @@ JAVASCRIPT;
         return $this;
     }
 
-    //--------------------------------
+    // ---------------------------------------
 
     protected function _filterByTableNameField($field, $value)
     {
@@ -300,7 +302,7 @@ JAVASCRIPT;
         $this->setCollection($filteredCollection);
     }
 
-    // ####################################
+    //########################################
 
     protected function _setCollectionOrder($column)
     {
@@ -314,7 +316,7 @@ JAVASCRIPT;
         return $this;
     }
 
-    //--------------------------------
+    // ---------------------------------------
 
     protected function _orderByColumn($column, $direction)
     {
@@ -337,5 +339,5 @@ JAVASCRIPT;
         $this->setCollection($sortedCollection);
     }
 
-    // ####################################
+    //########################################
 }

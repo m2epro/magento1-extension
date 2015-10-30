@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Order_Item_Importer
@@ -9,14 +11,14 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
     /** @var $item Ess_M2ePro_Model_Ebay_Order_Item */
     private $item = NULL;
 
-    // ########################################
+    //########################################
 
     public function __construct(Ess_M2ePro_Model_Ebay_Order_Item $item)
     {
         $this->item = $item;
     }
 
-    // ########################################
+    //########################################
 
     public function getDataFromChannel()
     {
@@ -36,8 +38,12 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
         return $dispatcherObj->process($connectorObj);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $rawData
+     * @return array
+     */
     public function prepareDataForProductCreation(array $rawData)
     {
         $preparedData = array();
@@ -81,6 +87,10 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
         return $preparedData;
     }
 
+    /**
+     * @param array $itemData
+     * @return float
+     */
     private function getNewProductPrice(array $itemData)
     {
         $allowedCurrencies = Mage::getSingleton('directory/currency')->getConfigAllowCurrencies();
@@ -109,6 +119,10 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
         return round($price / $convertRate, 2);
     }
 
+    /**
+     * @param array $itemData
+     * @return array
+     */
     private function getNewProductImages(array $itemData)
     {
         if (count($itemData['pictureUrl']) == 0) {
@@ -162,17 +176,13 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
         return $destinationFolder;
     }
 
-    // ########################################
+    //########################################
 
     public function downloadImage($url, $imagePath)
     {
-        // Prepare image file
-        // ---------
         $fileHandler = fopen($imagePath, 'w+');
-        // ---------
+        // ---------------------------------------
 
-        // Send request
-        // ---------
         $curlHandler = curl_init();
         curl_setopt($curlHandler, CURLOPT_URL, $url);
 
@@ -186,10 +196,8 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
         curl_close($curlHandler);
 
         fclose($fileHandler);
-        // ---------
+        // ---------------------------------------
 
-        // Check if download was successful
-        // ---------
         $imageInfo = is_file($imagePath) ? getimagesize($imagePath) : NULL;
 
         if (empty($imageInfo)) {
@@ -197,8 +205,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Importer
             // Image %url% was not downloaded.
             throw new Ess_M2ePro_Model_Exception("Image {$url} was not downloaded.");
         }
-        // ---------
     }
 
-    // ########################################
+    //########################################
 }

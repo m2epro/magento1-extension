@@ -1,20 +1,22 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Mysql4_Order_Change
     extends Ess_M2ePro_Model_Mysql4_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Order_Change', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteByIds(array $ids)
     {
@@ -59,7 +61,7 @@ class Ess_M2ePro_Model_Mysql4_Order_Change
         );
     }
 
-    // ########################################
+    //########################################
 
     public function incrementAttemptCount(array $ids, $increment = 1)
     {
@@ -81,5 +83,5 @@ class Ess_M2ePro_Model_Mysql4_Order_Change
         );
     }
 
-    // ########################################
+    //########################################
 }

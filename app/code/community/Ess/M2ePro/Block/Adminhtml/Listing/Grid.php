@@ -1,26 +1,32 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     protected $_groupedActions = array();
     protected $_actions        = array();
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function getMassactionBlockName()
     {
@@ -41,7 +47,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         $this->addColumn('title', array(
             'header'    => Mage::helper('M2ePro')->__('Title / Info'),
             'align'     => 'left',
-            //'width'     => '200px',
             'type'      => 'text',
             'index'     => 'title',
             'filter_index' => 'main_table.title',
@@ -100,7 +105,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
 
     protected function setColumns() {}
 
-    // ########################################
+    //########################################
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
@@ -109,7 +114,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
 
     protected function callbackFilterTitle($collection, $column) {}
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function callbackColumnTotalProducts($value, $row, $column, $isExport)
     {
@@ -126,7 +131,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         return $this->getColumnValue($value);
     }
 
-    // ########################################
+    //########################################
 
     protected function getColumnValue($value)
     {
@@ -139,7 +144,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         return $value;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function getGroupOrder()
     {
@@ -155,5 +160,5 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         return array();
     }
 
-    // ########################################
+    //########################################
 }

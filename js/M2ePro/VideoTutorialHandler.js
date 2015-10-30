@@ -1,14 +1,14 @@
 VideoTutorialHandler = Class.create();
 VideoTutorialHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     // determines either to close or not to close popup window
     closeCallback: function() {
         return confirm(M2ePro.translator.translate('Are you sure?'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(popUpBlockId,title,callbackWhenClose)
     {
@@ -17,7 +17,7 @@ VideoTutorialHandler.prototype = Object.extend(new CommonHandler(), {
         this.callbackWhenClose = callbackWhenClose;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function()
     {
@@ -53,5 +53,5 @@ VideoTutorialHandler.prototype = Object.extend(new CommonHandler(), {
         this.callbackWhenClose();
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -1,6 +1,6 @@
 CommonListingGridHandler = Class.create(ListingGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getLogViewUrl: function(rowId)
     {
@@ -9,7 +9,7 @@ CommonListingGridHandler = Class.create(ListingGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -20,7 +20,7 @@ CommonListingGridHandler = Class.create(ListingGridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     duplicateProducts: function()
     {
@@ -51,5 +51,5 @@ CommonListingGridHandler = Class.create(ListingGridHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

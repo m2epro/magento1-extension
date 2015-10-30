@@ -1,6 +1,6 @@
 CommonListingSummaryGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function()
     {
@@ -9,7 +9,7 @@ CommonListingSummaryGridHandler = Class.create(GridHandler, {
         };
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     remove: function()
     {
@@ -26,12 +26,12 @@ CommonListingSummaryGridHandler = Class.create(GridHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function()
     {
         return true;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -1,32 +1,34 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('templateDescriptionGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -143,36 +145,36 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Grid extends
         ));
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         // Set delete action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('delete', array(
              'label'    => Mage::helper('M2ePro')->__('Delete'),
              'url'      => $this->getUrl('*/*/delete'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnId($value, $row, $column, $isExport)
     {
         return $value.'&nbsp;';
     }
 
-    //--------------------------------
+    // ---------------------------------------
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
@@ -190,7 +192,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Template_Description_Grid extends
 HTML;
     }
 
-    // ####################################
+    //########################################
 
     protected function callbackFilterTitle($collection, $column)
     {
@@ -206,7 +208,7 @@ HTML;
         );
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -218,5 +220,5 @@ HTML;
         return $this->getUrl('*/adminhtml_common_amazon_template_description/edit', array('id' => $row->getData('id')));
     }
 
-    // ####################################
+    //########################################
 }

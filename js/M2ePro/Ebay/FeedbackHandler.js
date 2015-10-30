@@ -1,7 +1,7 @@
 EbayFeedbackHandler = Class.create();
 EbayFeedbackHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -10,7 +10,7 @@ EbayFeedbackHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     feedback_template_change: function()
     {
@@ -18,7 +18,7 @@ EbayFeedbackHandler.prototype = Object.extend(new CommonHandler(), {
         $('feedback_text').focus();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openFeedback: function(self,feedbackId,transactionId,itemId,buyerText)
     {
@@ -80,7 +80,7 @@ EbayFeedbackHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     cancelFeedback: function()
     {
@@ -91,7 +91,7 @@ EbayFeedbackHandler.prototype = Object.extend(new CommonHandler(), {
         $('item_id').value = '';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     sendFeedback: function()
     {
@@ -120,5 +120,5 @@ EbayFeedbackHandler.prototype = Object.extend(new CommonHandler(), {
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

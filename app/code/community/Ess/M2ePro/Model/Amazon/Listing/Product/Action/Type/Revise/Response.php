@@ -1,14 +1,19 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @param array $params
+     */
     public function processSuccess($params = array())
     {
         $data = array();
@@ -33,8 +38,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         $this->getListingProduct()->save();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getSuccessfulMessage()
     {
         if ($this->getConfigurator()->isAllAllowed()) {
@@ -101,7 +109,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         return ucfirst(trim($sequenceString,',')).' was successfully Revised';
     }
 
-    // ########################################
+    //########################################
 
     protected function appendQtyValues($data)
     {
@@ -126,5 +134,24 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         return parent::appendQtyValues($data);
     }
 
-    // ########################################
+    // ---------------------------------------
+
+    protected function setLastSynchronizationDates()
+    {
+        parent::setLastSynchronizationDates();
+
+        $params = $this->getParams();
+        if (!isset($params['switch_to'])) {
+            return;
+        }
+
+        $additionalData = $this->getListingProduct()->getAdditionalData();
+
+        $additionalData['last_synchronization_dates']['fulfillment_switching']
+                = Mage::helper('M2ePro')->getCurrentGmtDate();
+
+        $this->getListingProduct()->setSettings('additional_data', $additionalData);
+    }
+
+    //########################################
 }

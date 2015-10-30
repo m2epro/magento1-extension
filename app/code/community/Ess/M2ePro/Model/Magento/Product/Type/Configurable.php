@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
+
 /**
  * Due to strange changes in addStoreFilter method since Magento version 1.9.x,
  * we were forced to setStore for collection manually
@@ -7,7 +13,7 @@
 
 class Ess_M2ePro_Model_Magento_Product_Type_Configurable extends Mage_Catalog_Model_Product_Type_Configurable
 {
-    // ########################################
+    //########################################
 
     /**
      * Retrieve related products collection
@@ -26,5 +32,5 @@ class Ess_M2ePro_Model_Magento_Product_Type_Configurable extends Mage_Catalog_Mo
         return $collection;
     }
 
-    // ########################################
+    //########################################
 }

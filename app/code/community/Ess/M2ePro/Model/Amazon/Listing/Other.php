@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -9,7 +11,7 @@
  */
 class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +19,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_C
         $this->_init('M2ePro/Amazon_Listing_Other');
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -43,59 +45,84 @@ class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_C
         return $this->getParentObject()->getMagentoProduct();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getSku()
     {
         return $this->getData('sku');
     }
 
+    /**
+     * @return mixed
+     */
     public function getGeneralId()
     {
         return $this->getData('general_id');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return $this->getData('title');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return float
+     */
     public function getOnlinePrice()
     {
         return (float)$this->getData('online_price');
     }
 
+    /**
+     * @return int
+     */
     public function getOnlineQty()
     {
         return (int)$this->getData('online_qty');
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isAfnChannel()
     {
         return (int)$this->getData('is_afn_channel') ==
             Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_YES;
     }
 
+    /**
+     * @return bool
+     */
     public function isIsbnGeneralId()
     {
         return (int)$this->getData('is_isbn_general_id') ==
             Ess_M2ePro_Model_Amazon_Listing_Product::IS_ISBN_GENERAL_ID_YES;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return mixed
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getRelatedStoreId()
     {
         return $this->getAccount()->getChildObject()->getRelatedStoreId();
     }
 
-    // ########################################
+    //########################################
 
     public function afterMapProduct()
     {
@@ -122,5 +149,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_C
                     ));
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,13 +1,15 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
     extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -19,6 +21,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Ebay/Listing/Other/SynchronizationHandler.js');
 
+        $this->_initPopUp();
+
+        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367048');
+
         return $this;
     }
 
@@ -27,14 +33,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/listings');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
         return $this->_redirect('*/adminhtml_ebay_listing_other_synchronization/edit');
     }
 
-    //#############################################
+    //########################################
 
     public function editAction()
     {
@@ -67,13 +73,13 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
         }
 
         // Base prepare
-        //--------------------
+        // ---------------------------------------
         $data = array();
         $configModel = Mage::helper('M2ePro/Module')->getSynchronizationConfig();
-        //--------------------
+        // ---------------------------------------
 
         // tab: Source
-        //--------------------
+        // ---------------------------------------
         $keys = array(
             'qty',
             'price',
@@ -120,12 +126,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
 
         $tempSourceData = $data;
         $data = array();
-        //--------------------
+        // ---------------------------------------
 
         $configModel->setGroupValue('/ebay/other_listing/synchronization/', 'mode', (int)$post['synchronization_mode']);
 
         // tab: Revise
-        //--------------------
+        // ---------------------------------------
         $keys = array(
             'revise_update_qty',
             'revise_update_price',
@@ -170,10 +176,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
         }
 
         $data = array();
-        //--------------------
+        // ---------------------------------------
 
         // tab: Relist
-        //--------------------
+        // ---------------------------------------
         $keys = array(
             'relist_mode',
             'relist_filter_user_lock',
@@ -200,10 +206,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
         }
 
         $data = array();
-        //--------------------
+        // ---------------------------------------
 
         // tab: Stop
-        //--------------------
+        // ---------------------------------------
         $keys = array(
             'stop_status_disabled',
             'stop_out_off_stock',
@@ -225,7 +231,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
         foreach ($data as $key => $value) {
             $configModel->setGroupValue('/ebay/other_listing/stop/', $key, $value);
         }
-        //--------------------
+        // ---------------------------------------
 
         $this->_getSession()->addSuccess(
             Mage::helper('M2ePro')->__('Synchronization Settings was successfully saved.')
@@ -241,5 +247,5 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Other_SynchronizationController
         );
     }
 
-    //#############################################
+    //########################################
 }

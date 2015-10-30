@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update
@@ -9,31 +11,43 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update
 {
     const LOCK_ITEM_PREFIX = 'synchronization_ebay_other_listings_update';
 
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/update/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Update';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 0;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 40;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -86,11 +100,11 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update
         }
     }
 
-    //####################################
+    //########################################
 
     private function executeUpdateInventoryDataAccount(Ess_M2ePro_Model_Account $account)
     {
-        $sinceTime = $this->getSinceTimeByAccount($account);
+        $sinceTime = $account->getData('other_listings_last_synchronization');
 
         if (empty($sinceTime)) {
 
@@ -119,33 +133,58 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update
         $updatingModel->processResponseData($changes);
     }
 
-    //####################################
+    //########################################
 
     private function getChangesByAccount(Ess_M2ePro_Model_Account $account, $sinceTime)
     {
-        $response = $this->receiveChangesFromEbay($account, array('since_time'=>$sinceTime));
+        $cacheData = Mage::helper('M2ePro/Data_Cache_Session')->getValue('item_get_changes_data_' . $account->getId());
+
+        if (!empty($cacheData) &&
+            strtotime($cacheData['from_time']) <= strtotime($sinceTime) &&
+            strtotime($sinceTime) <= strtotime($cacheData['to_time'])) {
+
+            return $cacheData;
+        }
+
+        $nextSinceTime = new DateTime($sinceTime, new DateTimeZone('UTC'));
+
+        $response = $this->receiveChangesFromEbay(
+            $account, array('since_time'=>$nextSinceTime->format('Y-m-d H:i:s'))
+        );
 
         if ($response) {
             return (array)$response;
         }
 
-        $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
-        $sinceTime->modify("-1 day");
-        $sinceTime = $sinceTime->format('Y-m-d H:i:s');
+        $previousSinceTime = $nextSinceTime;
 
-        $response = $this->receiveChangesFromEbay($account, array('since_time'=>$sinceTime));
+        $nextSinceTime = new DateTime('now', new DateTimeZone('UTC'));
+        $nextSinceTime->modify("-1 day");
 
-        if ($response) {
-            return (array)$response;
+        if ($previousSinceTime->format('U') < $nextSinceTime->format('U')) {
+
+            $response = $this->receiveChangesFromEbay(
+                $account, array('since_time'=>$nextSinceTime->format('Y-m-d H:i:s'))
+            );
+
+            if ($response) {
+                return (array)$response;
+            }
+
+            $previousSinceTime = $nextSinceTime;
         }
 
-        $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
-        $sinceTime = $sinceTime->format('Y-m-d H:i:s');
+        $nextSinceTime = new DateTime('now', new DateTimeZone('UTC'));
 
-        $response = $this->receiveChangesFromEbay($account, array('since_time'=>$sinceTime));
+        if ($previousSinceTime->format('U') < $nextSinceTime->format('U')) {
 
-        if ($response) {
-            return (array)$response;
+            $response = $this->receiveChangesFromEbay(
+                $account, array('since_time'=>$nextSinceTime->format('Y-m-d H:i:s'))
+            );
+
+            if ($response) {
+                return (array)$response;
+            }
         }
 
         return array();
@@ -187,12 +226,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update
         }
     }
 
-    //####################################
-
-    private function getSinceTimeByAccount(Ess_M2ePro_Model_Account $account)
-    {
-        return $account->getData('other_listings_last_synchronization');
-    }
+    //########################################
 
     private function prepareSinceTime($sinceTime)
     {
@@ -201,7 +235,6 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update
 
         if (empty($sinceTime) || strtotime($sinceTime) < (int)$minTime->format('U')) {
             $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
-            $sinceTime->modify("-10 days");
             $sinceTime = $sinceTime->format('Y-m-d H:i:s');
         }
 
@@ -217,5 +250,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Update
         return $lockItem->isExist();
     }
 
-    //####################################
+    //########################################
 }

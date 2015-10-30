@@ -19,7 +19,7 @@
         function() {}
     );
 
-    VideoTutorialHandlerObj.closeCallback = function() { return true; }
+    VideoTutorialHandlerObj.closeCallback = function() { return true; };
 
     M2ePro.url.add(<?php echo json_encode(array(
         'adminhtml_ebay_account/edit' => $this->getUrl('M2ePro/adminhtml_ebay_account/edit/')
@@ -40,7 +40,7 @@
             <?php echo Mage::helper('M2ePro')->__(
                 'This Page sets the eBay details and Magento Store View you want to use for this M2E Pro Listing.</br></br>
                 More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Step+1%3A+General+Settings')
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YAAJAQ')
             ); ?>
         </div>
 
@@ -85,7 +85,7 @@
 
                         <tr>
                             <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>: <span class="required">*</span></label>
+                                <label><?php echo Mage::helper('M2ePro')->__('Account'); ?>: <span class="required">*</span></label>
                             </td>
                             <td class="value" style="min-width: 280px;">
                                 <span id="account_label"></span>

@@ -1,14 +1,19 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Condition_Product
     extends Ess_M2ePro_Model_Magento_Product_Rule_Condition_Product
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     protected function getCustomFilters()
     {
         $ebayFilters = array(
@@ -53,8 +58,12 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Condition_Product
         return $this->_customFiltersCache[$filterId];
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param mixed $validatedValue
+     * @return bool
+     */
     public function validateAttribute($validatedValue)
     {
         if (is_array($validatedValue)) {
@@ -73,5 +82,5 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_Rule_Condition_Product
         return parent::validateAttribute($validatedValue);
     }
 
-    // ########################################
+    //########################################
 }

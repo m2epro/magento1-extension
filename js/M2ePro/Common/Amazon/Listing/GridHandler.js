@@ -1,20 +1,20 @@
 CommonAmazonListingGridHandler = Class.create(CommonListingGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     getComponent: function()
     {
         return 'amazon';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getMaxProductsInPart: function()
     {
         return 1000;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function($super)
     {
@@ -67,7 +67,7 @@ CommonAmazonListingGridHandler = Class.create(CommonListingGridHandler, {
 
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     unassignTemplateDescriptionIdActionConfrim: function (id)
     {
@@ -78,7 +78,7 @@ CommonAmazonListingGridHandler = Class.create(CommonListingGridHandler, {
         this.templateDescriptionHandler.unassignFromTemplateDescrition(id)
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     unassignTemplateShippingOverrideIdActionConfrim: function (id)
     {
@@ -89,5 +89,5 @@ CommonAmazonListingGridHandler = Class.create(CommonListingGridHandler, {
         this.templateShippingOverrideHandler.unassign(id)
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

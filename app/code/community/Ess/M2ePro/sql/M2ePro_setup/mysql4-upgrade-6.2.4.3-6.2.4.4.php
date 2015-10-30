@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 $lockItemTable = $installer->getTable('m2epro_lock_item');
 
@@ -105,8 +105,8 @@ if (!empty($updatedSkusQueueLockItems)) {
     $connection->insertOnDuplicate($lockItemTable, $updatedSkusQueueLockItems);
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
@@ -18,7 +20,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
      */
     private $accountModel = NULL;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -26,7 +28,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         $this->_init('M2ePro/Ebay_Feedback');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -35,7 +37,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         return $temp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -59,7 +61,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
          $this->accountModel = $instance;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Account
@@ -69,7 +71,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         return $this->getAccount()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
     public function isNeutral()
     {
@@ -86,7 +88,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         return $this->getData('buyer_feedback_type') == self::TYPE_POSITIVE;
     }
 
-    // ########################################
+    //########################################
 
     public function sendResponse($text, $type = self::TYPE_POSITIVE)
     {
@@ -158,5 +160,5 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         return !is_null($order->getId()) ? $order : NULL;
     }
 
-    // ########################################
+    //########################################
 }

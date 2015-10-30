@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
@@ -13,7 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtm
     const TAB_ID_TEMPLATE               = 'template';
     const TAB_ID_DESCRIPTION_TEMPLATE   = 'description_template';
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -23,7 +25,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtm
         $this->setDestElementId('tabs_container');
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareLayout()
     {
@@ -31,9 +33,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtm
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
         $this->addTab(self::TAB_ID_MARKETPLACE, $this->prepareTabMarketplace());
         $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
-        if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $this->addTab(self::TAB_ID_DESCRIPTION_TEMPLATE, $this->prepareTabDescriptionTemplate());
-        }
         $this->addTab(self::TAB_ID_SYNCHRONIZATION, $this->prepareTabSynchronization());
         $this->addTab(self::TAB_ID_GLOBAL, $this->prepareTabGlobal());
 
@@ -42,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtm
         return parent::_prepareLayout();
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareTabMarketplace()
     {
@@ -98,30 +97,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtm
         return $tab;
     }
 
-    protected function prepareTabDescriptionTemplate()
-    {
-        $componentName = !Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()
-            ? Mage::helper('M2ePro/Component_Amazon')->getTitle().' ' : '';
-
-        $title = Mage::helper('M2ePro')->__("%sDescription Policies", $componentName);
-
-        $tab = array(
-            'label' => Mage::helper('M2ePro')->__($title),
-            'title' => Mage::helper('M2ePro')->__($title)
-        );
-
-        if ($this->getData('active_tab') == self::TAB_ID_DESCRIPTION_TEMPLATE) {
-            $tab['content'] = $this->getLayout()
-                ->createBlock('M2ePro/adminhtml_common_amazon_template_description_help')->toHtml();
-            $tab['content'] .= $this->getLayout()
-                ->createBlock('M2ePro/adminhtml_common_amazon_template_description')->toHtml();
-        } else {
-            $tab['url'] = $this->getUrl('*/adminhtml_common_amazon_template_description/index');
-        }
-
-        return $tab;
-    }
-
     protected function prepareTabAccount()
     {
         $tab = array(
@@ -155,7 +130,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtm
         return $tab;
     }
 
-    // ########################################
+    //########################################
 
     protected function getActiveChannelTab()
     {
@@ -170,5 +145,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs extends Mage_Adminhtm
         return $activeTab;
     }
 
-    // ########################################
+    //########################################
 }

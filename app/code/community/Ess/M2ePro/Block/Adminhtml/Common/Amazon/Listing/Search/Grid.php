@@ -1,37 +1,39 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('amazonListingSearchGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
         // Get collection products in listing
-        //--------------------------------
+        // ---------------------------------------
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->getSelect()->distinct();
         $listingProductCollection->getSelect()
@@ -41,13 +43,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                    ->join(array('al'=>Mage::getResourceModel('M2ePro/Amazon_Listing')->getMainTable()),
                                 '(`al`.`listing_id` = `l`.`id`)',
                                 array('template_selling_format_id'));
-        //--------------------------------
+        // ---------------------------------------
 
         // only parents and individuals
         $listingProductCollection->getSelect()->where('second_table.variation_parent_id IS NULL');
 
         // Communicate with magento product table
-        //--------------------------------
+        // ---------------------------------------
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                                      ->select()
                                      ->from(Mage::getSingleton('core/resource')
@@ -75,7 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                                 '(`cpev`.`attribute_id` = `ea`.`attribute_id` AND `ea`.`attribute_code` = \'name\')',
                                 array())
                    ->where('`cpev`.`store_id` = ('.$dbSelect->__toString().')');
-        //--------------------------------
+        // ---------------------------------------
 
         $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingProductCollection->getSelect()->columns(
@@ -170,12 +172,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             )
         );
 
-        //------------------------------
+        // ---------------------------------------
         $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
         $listingOtherCollection->getSelect()->distinct();
 
         // add stock availability, type id, status & visibility to select
-        //------------------------------
+        // ---------------------------------------
         $listingOtherCollection->getSelect()
             ->joinLeft(
                 array('cisi' => Mage::getResourceModel('cataloginventory/stock_item')->getMainTable()),
@@ -184,7 +186,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             ->joinLeft(array('cpe'=>Mage::getSingleton('core/resource')->getTableName('catalog_product_entity')),
                 '(cpe.entity_id = `main_table`.product_id)',
                 array('magento_sku'=>'sku'));
-        //------------------------------
+        // ---------------------------------------
 
         $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingOtherCollection->getSelect()->columns(
@@ -219,9 +221,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'variation_max_price'           => new Zend_Db_Expr('NULL')
             )
         );
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $selects = array(
             $listingProductCollection->getSelect(),
             $listingOtherCollection->getSelect()
@@ -265,8 +267,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             )
         );
 
-//        exit($resultCollection->getSelect()->__toString());
-
         // Set collection to grid
         $this->setCollection($resultCollection);
 
@@ -288,7 +288,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
         $this->addColumn('name', array(
             'header'    => Mage::helper('M2ePro')->__('Product Title / Listing / Product SKU'),
             'align'     => 'left',
-            //'width'     => '300px',
             'type'      => 'text',
             'index'     => 'product_name',
             'filter_index' => 'product_name',
@@ -407,7 +406,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
@@ -504,7 +503,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             if (empty($virtualProductAttributes) && empty($virtualChannelAttributes)) {
                 $attributesStr = implode(', ', $productAttributes);
             } else {
-                foreach($productAttributes as $attribute) {
+                foreach ($productAttributes as $attribute) {
                     if (in_array($attribute, array_keys($virtualProductAttributes))) {
 
                         $attributesStr .= '<span style="border-bottom: 2px dotted grey">' . $attribute .
@@ -601,7 +600,33 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             }
 
             if ((bool)$row->getData('is_afn_channel')) {
-                return Mage::helper('M2ePro')->__('AFN');
+                $sku = $row->getData('online_sku');
+
+                if (empty($sku)) {
+                    return Mage::helper('M2ePro')->__('AFN');
+                }
+
+                $productId = Mage::helper('M2ePro')->generateUniqueHash();
+
+                $afn = Mage::helper('M2ePro')->__('AFN');
+                $total = Mage::helper('M2ePro')->__('Total');
+                $inStock = Mage::helper('M2ePro')->__('In Stock');
+                $accountId = $row->getData('account_id');
+
+                return <<<HTML
+<div id="m2ePro_afn_qty_value_{$productId}">
+    <span class="m2ePro-online-sku-value" productId="{$productId}" style="display: none">{$sku}</span>
+    <span class="m2epro-empty-afn-qty-data" style="display: none">{$afn}</span>
+    <div class="m2epro-afn-qty-data" style="display: none">
+        <div class="total">{$total}: <span></span></div>
+        <div class="in-stock">{$inStock}: <span></span></div>
+    </div>
+    <a href="javascript:void(0)"
+        onclick="CommonAmazonListingAfnQtyHandlerObj.showAfnQty(this,'{$sku}','{$productId}',{$accountId})">
+        {$afn}
+    </a>
+</div>
+HTML;
             }
 
             if (is_null($value) || $value === '') {
@@ -857,7 +882,7 @@ HTML;
         return $html;
     }
 
-    // ####################################
+    //########################################
 
     protected function callbackFilterTitle($collection, $column)
     {
@@ -939,7 +964,7 @@ HTML;
         $collection->getSelect()->where($condition);
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -951,5 +976,22 @@ HTML;
         return false;
     }
 
-    // ####################################
+    //########################################
+
+    protected function _toHtml() {
+
+        $getAFNQtyBySku = $this->getUrl('*/adminhtml_common_amazon_listing/getAFNQtyBySku');
+
+        $js = <<<HTML
+<script type="text/javascript">
+    M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
+
+    CommonAmazonListingAfnQtyHandlerObj = new CommonAmazonListingAfnQtyHandler();
+</script>
+HTML;
+
+        return parent::_toHtml() . $js;
+    }
+
+    //########################################
 }

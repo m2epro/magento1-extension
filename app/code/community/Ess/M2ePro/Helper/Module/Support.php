@@ -1,8 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
- * Shipping method with custom title and price
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
@@ -11,7 +12,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
     const TYPE_SILVER  = 'silver';
     const TYPE_GOLD    = 'gold';
 
-    //#############################################
+    //########################################
 
     public function getPageUrl(array $params = array())
     {
@@ -28,15 +29,17 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return 'adminhtml_support';
     }
 
-    //#############################################
+    //########################################
 
-    public function getDocumentationUrl($component = NULL, $articleUrl = NULL)
+    public function getDocumentationUrl($component = NULL, $articleUrl = NULL, $tinyLink = NULL)
     {
         $urlParts[] = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'documentation_url');
-        $urlParts[] = 'display';
+
+        if ($component || $articleUrl) {
+            $urlParts[] = 'display';
+        }
 
         if ($component) {
-
             if ($component == Ess_M2ePro_Helper_Component_Ebay::NICK) {
                 $urlParts[] = 'eBayMagentoV6X';
             } elseif ($component == Ess_M2ePro_Helper_Component_Amazon::NICK) {
@@ -50,6 +53,10 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
         if ($articleUrl) {
             $urlParts[] = trim($articleUrl, '/');
+        }
+
+        if ($tinyLink) {
+            $urlParts[] = $tinyLink;
         }
 
         return implode('/', $urlParts);
@@ -72,7 +79,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return $this->getDocumentationUrl($component,'Video+Tutorials');
     }
 
-    //#############################################
+    //########################################
 
     public function getMainWebsiteUrl()
     {
@@ -84,7 +91,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'clients_portal_url');
     }
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     public function getMainSupportUrl()
     {
@@ -96,7 +103,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'magento_connect_url');
     }
 
-    //#############################################
+    //########################################
 
     public function getContactEmail()
     {
@@ -151,12 +158,12 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return $type;
     }
 
-    //---------------------------------------------
+    // ---------------------------------------
 
     public function isTypePremium()
     {
         return $this->getType() == self::TYPE_GOLD || $this->getType() == self::TYPE_SILVER;
     }
 
-    //#############################################
+    //########################################
 }

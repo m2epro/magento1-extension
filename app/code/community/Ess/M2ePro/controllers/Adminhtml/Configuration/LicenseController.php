@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Configuration_LicenseController
     extends Ess_M2ePro_Controller_Adminhtml_Configuration_MainController
 {
-    //############################################
+    //########################################
 
     public function confirmKeyAction()
     {
@@ -16,12 +18,12 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
             $post = $this->getRequest()->getPost();
 
             // Save settings
-            //--------------------
+            // ---------------------------------------
             $key = strip_tags($post['key']);
             Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
                 '/'.Mage::helper('M2ePro/Module')->getName().'/license/','key',(string)$key
             );
-            //--------------------
+            // ---------------------------------------
 
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
                 Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
@@ -48,7 +50,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
         $this->_redirectUrl($this->_getRefererUrl());
     }
 
-    //--------------------------------------------
+    // ---------------------------------------
 
     public function checkLicenseAction()
     {
@@ -69,7 +71,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
         return $this->getResponse()->setBody(json_encode(array('ok' => $result)));
     }
 
-    // -------------------------------------------
+    // ---------------------------------------
 
     public function componentSetTrialAction()
     {
@@ -88,5 +90,5 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
         $this->_redirectUrl($this->_getRefererUrl());
     }
 
-    //#############################################
+    //########################################
 }

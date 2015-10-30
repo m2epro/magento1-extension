@@ -1,5 +1,5 @@
-<?php $url = $this->isEditMode() ? Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Edit+Search+Settings') :
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Step+3%3A+Search+Settings');
+<?php $url = $this->isEditMode() ? Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YYkVAQ') :
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/FYgVAQ');
 ?>
 <div id="block_notice_amazon_listing_general_search" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Search Settings'); ?>">
     <?php echo Mage::helper('M2ePro')->__('In this Section you can specify the sources from which the values for ASIN/ISBN and UPC/EAN will be taken in case you have those for your Items. <br/><br/>
@@ -53,12 +53,6 @@ $attributesByInputTypes = array(
         $('general_id_mode').observe('change', AmazonListingChannelSettingsHandlerObj.general_id_mode_change);
         $('worldwide_id_mode').observe('change', AmazonListingChannelSettingsHandlerObj.worldwide_id_mode_change);
 
-        $('general_id_custom_attribute').observe('change', AmazonListingChannelSettingsHandlerObj.general_id_custom_attribute_change);
-        $F('general_id_custom_attribute') && $('general_id_custom_attribute').simulate('change');
-
-        $('worldwide_id_custom_attribute').observe('change', AmazonListingChannelSettingsHandlerObj.worldwide_id_custom_attribute_change);
-        $F('worldwide_id_custom_attribute') && $('worldwide_id_custom_attribute').simulate('change');
-
     });
     //-----------------------------
 
@@ -82,18 +76,18 @@ $attributesByInputTypes = array(
                     <td class="value">
                         <input type="hidden" id="general_id_custom_attribute" name="general_id_custom_attribute" value="<?php echo $this->getData('general_id_custom_attribute');?>"/>
 
-                        <select name="general_id_mode" id="general_id_mode">
+                        <select name="general_id_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" id="general_id_mode">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_NOT_SET ?>" <?php if ($this->getData('general_id_mode') == Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php if ($this->getData('general_id_mode') == Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($this->getData('general_id_custom_attribute'), $attributesByInputTypes['text']) && $this->getData('general_id_custom_attribute') != '') : ?>
                                     <?php $showWarning = true; ?>
-                                    <option attribute_code="<?php echo $this->getData('general_id_custom_attribute')?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
+                                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE ?>" attribute_code="<?php echo $this->getData('general_id_custom_attribute')?>" selected="selected">
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($this->getData('general_id_custom_attribute'))) ?>
                                     </option>
                                 <?php endif; ?>
                                 <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
-                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('general_id_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                    <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE ?>" attribute_code="<?php echo $attribute['code']; ?>" <?php if ($this->getData('general_id_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach ?>
                             </optgroup>
                         </select>
@@ -129,10 +123,10 @@ $attributesByInputTypes = array(
                     <td class="value">
                         <input type="hidden" id="worldwide_id_custom_attribute" name="worldwide_id_custom_attribute" value="<?php echo $this->getData('worldwide_id_custom_attribute');?>"/>
 
-                        <select name="worldwide_id_mode" id="worldwide_id_mode">
+                        <select name="worldwide_id_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" id="worldwide_id_mode">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::WORLDWIDE_ID_MODE_NOT_SET ?>" <?php if ($this->getData('worldwide_id_mode') == Ess_M2ePro_Model_Amazon_Listing::WORLDWIDE_ID_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php if ($this->getData('worldwide_id_mode') == Ess_M2ePro_Model_Amazon_Listing::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($this->getData('worldwide_id_custom_attribute'), $attributesByInputTypes['text']) && $this->getData('worldwide_id_custom_attribute') != '') : ?>
                                     <?php $showWarning = true; ?>
                                     <option attribute_code="<?php echo $this->getData('worldwide_id_custom_attribute')?>" value="<?php echo Ess_M2ePro_Model_Amazon_Listing::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">

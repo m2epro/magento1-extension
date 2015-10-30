@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
@@ -9,8 +11,11 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     /** @var $order Ess_M2ePro_Model_Ebay_Order */
     protected $order = NULL;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getCheckoutMethod()
     {
         if ($this->order->getEbayAccount()->isMagentoOrdersCustomerNew() ||
@@ -21,13 +26,19 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return self::CHECKOUT_GUEST;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isOrderNumberPrefixSourceChannel()
     {
         return $this->order->getEbayAccount()->isMagentoOrdersNumberSourceChannel();
     }
 
+    /**
+     * @return bool
+     */
     public function isOrderNumberPrefixSourceMagento()
     {
         return $this->order->getEbayAccount()->isMagentoOrdersNumberSourceMagento();
@@ -47,7 +58,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $this->order->getEbayAccount()->getMagentoOrdersNumberPrefix();
     }
 
-    // ########################################
+    //########################################
 
     public function getBuyerEmail()
     {
@@ -55,8 +66,12 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $addressData['email'];
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return false|Mage_Customer_Model_Customer
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function getCustomer()
     {
         $customer = Mage::getModel('customer/customer');
@@ -82,24 +97,22 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
             $customerInfo['website_id'] = $this->order->getEbayAccount()->getMagentoOrdersCustomerNewWebsiteId();
             $customerInfo['group_id'] = $this->order->getEbayAccount()->getMagentoOrdersCustomerNewGroupId();
-//            $customerInfo['is_subscribed'] = $this->order->getEbayAccount()->isMagentoOrdersCustomerNewSubscribed();
 
             /** @var $customerBuilder Ess_M2ePro_Model_Magento_Customer */
             $customerBuilder = Mage::getModel('M2ePro/Magento_Customer')->setData($customerInfo);
             $customerBuilder->buildCustomer();
 
             $customer = $customerBuilder->getCustomer();
-
-//            if ($this->order->getEbayAccount()->isMagentoOrdersCustomerNewNotifyWhenCreated()) {
-//                $customer->sendNewAccountEmail('registered');
-//            }
         }
 
         return $customer;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getAddressData()
     {
         if (!$this->order->isUseGlobalShippingProgram() && !$this->order->isUseClickAndCollect()) {
@@ -132,7 +145,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         $addressData['company']    = !empty($rawAddressData['company']) ? $rawAddressData['company'] : '';
 
         // Adding reference id into street array
-        // ----------------------------------------------
+        // ---------------------------------------
         if ($this->order->isUseGlobalShippingProgram()) {
             $globalShippingDetails = $this->order->getGlobalShippingDetails();
             $referenceId = 'Ref #'.$globalShippingDetails['warehouse_address']['reference_id'];
@@ -153,13 +166,16 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             array_unshift($streetParts, $referenceId);
             $addressData['street'] = $streetParts;
         }
-        // ----------------------------------------------
+        // ---------------------------------------
 
         $addressData['save_in_address_book'] = 0;
 
         return $addressData;
     }
 
+    /**
+     * @return array
+     */
     public function getBillingAddressData()
     {
         if (!$this->order->isUseGlobalShippingProgram()) {
@@ -169,15 +185,18 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return parent::getAddressData();
     }
 
-    // ########################################
+    //########################################
 
     public function getCurrency()
     {
         return $this->order->getCurrency();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getPaymentData()
     {
         $paymentMethodTitle = $this->order->getPaymentMethod();
@@ -196,6 +215,9 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $paymentData;
     }
 
+    /**
+     * @return array
+     */
     public function getPaymentTransactions()
     {
         /** @var Ess_M2ePro_Model_Ebay_Order_ExternalTransaction[] $externalTransactions */
@@ -214,8 +236,11 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $paymentTransactions;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getShippingData()
     {
         return array(
@@ -225,6 +250,9 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         );
     }
 
+    /**
+     * @return float
+     */
     protected function getShippingPrice()
     {
         if ($this->order->isUseGlobalShippingProgram()) {
@@ -244,8 +272,11 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $price;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getChannelComments()
     {
         $comments = array();
@@ -267,25 +298,37 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $comments;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function hasTax()
     {
         return $this->order->hasTax();
     }
 
+    /**
+     * @return bool
+     */
     public function isSalesTax()
     {
         return $this->order->isSalesTax();
     }
 
+    /**
+     * @return bool
+     */
     public function isVatTax()
     {
         return $this->order->isVatTax();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return float|int
+     */
     public function getProductPriceTaxRate()
     {
         if (!$this->hasTax()) {
@@ -299,6 +342,9 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $this->order->getTaxRate();
     }
 
+    /**
+     * @return float|int
+     */
     public function getShippingPriceTaxRate()
     {
         if (!$this->hasTax()) {
@@ -316,8 +362,11 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $this->getProductPriceTaxRate();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool|null
+     */
     public function isProductPriceIncludeTax()
     {
         $configValue = Mage::helper('M2ePro/Module')
@@ -335,6 +384,9 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return null;
     }
 
+    /**
+     * @return bool|null
+     */
     public function isShippingPriceIncludeTax()
     {
         $configValue = Mage::helper('M2ePro/Module')
@@ -352,8 +404,11 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return null;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isTaxModeNone()
     {
         if ($this->order->isUseGlobalShippingProgram()) {
@@ -363,15 +418,21 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         return $this->order->getEbayAccount()->isMagentoOrdersTaxModeNone();
     }
 
+    /**
+     * @return bool
+     */
     public function isTaxModeChannel()
     {
         return $this->order->getEbayAccount()->isMagentoOrdersTaxModeChannel();
     }
 
+    /**
+     * @return bool
+     */
     public function isTaxModeMagento()
     {
         return $this->order->getEbayAccount()->isMagentoOrdersTaxModeMagento();
     }
 
-    // ########################################
+    //########################################
 }

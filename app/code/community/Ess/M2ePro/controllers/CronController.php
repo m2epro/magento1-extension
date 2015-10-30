@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
 {
-    //#############################################
+    //########################################
 
     public function preDispatch()
     {
@@ -14,22 +16,21 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
         parent::preDispatch();
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
         $this->closeConnection();
 
-        $cron = Mage::getModel('M2ePro/Cron_Type_Service');
-        $cron->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+        $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Service');
 
         $authKey = $this->getRequest()->getPost('auth_key',false);
-        $authKey && $cron->setRequestAuthKey($authKey);
+        $authKey && $cronRunner->setRequestAuthKey($authKey);
 
         $connectionId = $this->getRequest()->getPost('connection_id',false);
-        $connectionId && $cron->setRequestConnectionId($connectionId);
+        $connectionId && $cronRunner->setRequestConnectionId($connectionId);
 
-        $cron->process();
+        $cronRunner->process();
 
         exit();
     }
@@ -39,14 +40,14 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
         exit('ok');
     }
 
-    // --------------------------------------------
+    // ---------------------------------------
 
     public function resetAction()
     {
-        Mage::getModel('M2ePro/Cron_Type_Service')->resetTasksStartFrom();
+        Mage::getModel('M2ePro/Cron_Runner_Service')->resetTasksStartFrom();
     }
 
-    //#############################################
+    //########################################
 
     private function closeConnection()
     {
@@ -70,5 +71,5 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
         $this->getResponse()->headersSentThrowsException = false;
     }
 
-    //#############################################
+    //########################################
 }

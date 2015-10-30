@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion6
@@ -15,24 +17,30 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion6
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
     private $installer = NULL;
 
-    //####################################
+    //########################################
 
     private $generalDescriptionCorrelation = array();
     private $unusedTemplatesDescriptionIds = array();
 
-    //####################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup
+     */
     public function getInstaller()
     {
         return $this->installer;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Upgrade_MySqlSetup $installer
+     */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
         $this->installer = $installer;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function startSetup()
     {
@@ -44,7 +52,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion6
         $this->installer->endSetup();
     }
 
-    //####################################
+    //########################################
 
     private function prepareDevelopmentEnvironment()
     {
@@ -107,7 +115,7 @@ SQL
         }
     }
 
-    //####################################
+    //########################################
 
     public function backup()
     {
@@ -253,7 +261,7 @@ SQL
         }
     }
 
-    //####################################
+    //########################################
 
     private function checkToSkipStep($nextTable)
     {
@@ -336,14 +344,11 @@ SQL
         }
     }
 
-    //####################################
+    //########################################
 
     private function truncateTables()
     {
         $tables = array(
-            //$this->installer->getTable('m2epro_listing_log'),
-            //$this->installer->getTable('m2epro_listing_other_log'),
-            //$this->installer->getTable('m2epro_synchronization_log'),
             $this->installer->getTable('m2epro_lock_item'),
             $this->installer->getTable('m2epro_locked_object'),
             $this->installer->getTable('m2epro_processing_request'),
@@ -381,7 +386,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function processConfigTable()
     {
@@ -468,7 +473,7 @@ SQL
             $oldRow['id'] = NULL;
 
             // notices & thumbnails
-            //------------------------------
+            // ---------------------------------------
             if ($oldRow['group'] == '/block_notices/settings/' && $oldRow['key'] == 'show') {
                 $newRow = $oldRow;
                 $newRow['group'] = '/view/';
@@ -480,10 +485,10 @@ SQL
                 $newRow['group'] = '/view/';
                 $newRow['key'] = 'show_products_thumbnails';
             }
-            //------------------------------
+            // ---------------------------------------
 
             // default component
-            //------------------------------
+            // ---------------------------------------
             if ($oldRow['group'] == '/component/' && $oldRow['key'] == 'default') {
                 if ($oldRow['value'] == 'ebay') {
 
@@ -509,21 +514,21 @@ SQL
                 $newRow = $oldRow;
                 $newRow['group'] = '/view/common/component/';
             }
-            //------------------------------
+            // ---------------------------------------
 
             // /ebay|amazon/order/settings/marketplace_%id%/ (use_first_street_line_as_company)
-            //------------------------------
+            // ---------------------------------------
             if (stripos($oldRow['group'], 'order/settings/marketplace_') !== false) {
                 $newRow = $oldRow;
             }
-            //------------------------------
+            // ---------------------------------------
 
-            //------------------------------
+            // ---------------------------------------
             if (isset($groupConversion[$oldRow['group']])) {
                 $newRow = $oldRow;
                 $newRow['group'] = $groupConversion[$oldRow['group']];
             }
-            //------------------------------
+            // ---------------------------------------
 
             if (!is_null($newRow)) {
                 $newData[] = $newRow;
@@ -746,7 +751,7 @@ SQL
         );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function createCacheConfigTable()
     {
@@ -776,7 +781,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function processWizardTable()
     {
@@ -804,7 +809,7 @@ COLLATE utf8_general_ci;
 SQL
 );
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $this->installer->getConnection()->insert($newWizardTable,array(
             'nick' => 'migrationToV6',
@@ -815,7 +820,7 @@ SQL
             'priority' => 1
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $step = $this->installer->getConnection()->fetchOne(
             $this->installer->getConnection()
@@ -839,7 +844,7 @@ SQL
             'priority' => 2
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $status = $this->installer->getConnection()->fetchOne(
             $this->installer->getConnection()
@@ -857,7 +862,7 @@ SQL
             'priority' => 2
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $step = $this->installer->getConnection()->fetchOne(
             $this->installer->getConnection()
@@ -881,7 +886,7 @@ SQL
             'priority' => 3
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $step = $this->installer->getConnection()->fetchOne(
             $this->installer->getConnection()
@@ -905,7 +910,7 @@ SQL
             'priority' => 4
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $step = $this->installer->getConnection()->fetchOne(
             $this->installer->getConnection()
@@ -929,7 +934,7 @@ SQL
             'priority' => 5
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $step = $this->installer->getConnection()->fetchOne(
             $this->installer->getConnection()
@@ -953,7 +958,7 @@ SQL
             'priority' => 6
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
 
         $step = $this->installer->getConnection()->fetchOne(
             $this->installer->getConnection()
@@ -977,7 +982,7 @@ SQL
             'priority' => 7
         ));
 
-        //----------------------------------------
+        // ---------------------------------------
     }
 
     private function processAttributeSetTable()
@@ -1076,7 +1081,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function createStopQueueTable()
     {
@@ -1108,7 +1113,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function processEbayAccountTable()
     {
@@ -1247,7 +1252,7 @@ SQL
         !empty($newData) && $this->installer->getConnection()->insertMultiple($newTable, $newData);
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function processAmazonAccountTable()
     {
@@ -1299,7 +1304,7 @@ SQL
         !empty($newRows) && $this->installer->getConnection()->insertMultiple($newTable, $newRows);
     }
 
-    //####################################
+    //########################################
 
     private function processTemplateSynchronizationTable()
     {
@@ -1346,7 +1351,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function processEbayTemplateSynchronizationTable()
     {
@@ -1735,7 +1740,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function processTemplateSellingFormatTable()
     {
@@ -1776,7 +1781,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function processEbayTemplateSellingFormatTable()
     {
@@ -2178,7 +2183,7 @@ SQL
         $this->installer->getConnection()->insert($migrationTable, $migrationTableData);
     }
 
-    //####################################
+    //########################################
 
     private function processEbayTemplateReturnTable()
     {
@@ -2238,7 +2243,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function processEbayTemplatePaymentTable()
     {
@@ -2322,7 +2327,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function processEbayTemplateShippingTable()
     {
@@ -2511,7 +2516,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function processEbayTemplateCategoryTable()
     {
@@ -2695,7 +2700,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function createEbayTemplateDescriptionTable()
     {
@@ -2749,7 +2754,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function processListingTable()
     {
@@ -2819,7 +2824,7 @@ SQL
 );
     }
 
-    //----------------------------------------------
+    // ---------------------------------------
 
     private function processEbayListingAndEbayTemplateDescriptionTables()
     {
@@ -3446,7 +3451,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function createListingProductTable()
     {
@@ -3485,7 +3490,7 @@ SQL
 );
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     private function processEbayListingProductTable()
     {
@@ -3965,7 +3970,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function processListingProductVariationTable()
     {
@@ -4006,7 +4011,7 @@ SQL
 );
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     private function processEbayListingProductVariationTable()
     {
@@ -4058,7 +4063,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function processEbayMarketplaceTable()
     {
@@ -4212,7 +4217,7 @@ SQL
 );
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     private function processEbayConditionForMigration()
     {
@@ -4611,7 +4616,7 @@ SQL
         $this->installer->getConnection()->insert($migrationTable, $migrationTableData);
     }
 
-    //-----------------------------------
+    // ---------------------------------------
 
     private function createEbayTemplatePolicy()
     {
@@ -4692,7 +4697,7 @@ SQL
 );
     }
 
-    //####################################
+    //########################################
 
     private function getCategoryPathById($categoryId, $delimiter = ' -> ')
     {
@@ -4767,7 +4772,7 @@ SQL
         return implode($delimiter, array_reverse($path));
     }
 
-    //####################################
+    //########################################
 
     private function convertProductDetails($oldProductDetails)
     {
@@ -4803,5 +4808,5 @@ SQL
         return json_encode($newProductDetails);
     }
 
-    //####################################
+    //########################################
 }

@@ -1,7 +1,7 @@
 OrderEditShippingAddressHandler = Class.create();
 OrderEditShippingAddressHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(countryElementId, regionContainerElementId, regionElementName)
     {
@@ -10,7 +10,7 @@ OrderEditShippingAddressHandler.prototype = Object.extend(new CommonHandler(), {
         this.regionElementName = regionElementName;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     countryCodeChange: function()
     {
@@ -50,5 +50,5 @@ OrderEditShippingAddressHandler.prototype = Object.extend(new CommonHandler(), {
         regionContainer.innerHTML = html;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

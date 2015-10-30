@@ -1,27 +1,29 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_License
     extends Mage_Adminhtml_Block_Template
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('wizardInstallationLicense');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/wizard/installationCommon/installation/license.phtml');
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -31,11 +33,11 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_License
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     private function prepareButtons()
     {
-        //-------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
                             ->createBlock('adminhtml/widget_button')
                             ->setData(array(
@@ -44,9 +46,9 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_License
                                           'id'      => 'license_popup_confirm_button'
                                       ));
         $this->setChild('license_popup_confirm_button', $buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $buttonBlock = $this->getLayout()
                             ->createBlock('adminhtml/widget_button')
                             ->setData(array(
@@ -55,20 +57,20 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_License
                                            'id'      => 'process_license_button'
                                        ));
         $this->setChild('process_license_button', $buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
     }
 
     private function prepareOptionsForSelection()
     {
         $defaultStoreId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
 
-        //-------------------------------
+        // ---------------------------------------
         $countries = Mage::getModel('Adminhtml/System_Config_Source_Country')->toOptionArray();
         unset($countries[0]);
         $this->setData('available_countries', $countries);
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $userId = Mage::getSingleton('admin/session')->getUser()->getId();
         $userInfo = Mage::getModel('admin/user')->load($userId)->getData();
 
@@ -81,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_License
         $userInfo['postal_code'] = Mage::getStoreConfig($tempPath, $defaultStoreId);
 
         $userInfo['country'] = Mage::getStoreConfig('general/country/default', $defaultStoreId);
-        //-------------------------------
+        // ---------------------------------------
 
         $earlierFormData = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key')
                                                             ->getData('value');
@@ -94,7 +96,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationCommon_Installation_License
         $this->setData('user_info', $userInfo);
     }
 
-    // ########################################
+    //########################################
 
     public function getCountryLabelByCode($code, $type = 'input')
     {
@@ -145,5 +147,5 @@ HTML;
 HTML;
     }
 
-    // ########################################
+    //########################################
 }

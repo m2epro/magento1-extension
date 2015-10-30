@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_account`
@@ -32,7 +32,7 @@ $connection = $installer->getConnection();
        CHANGE COLUMN `component` `component` VARCHAR(12) NOT NULL;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_account');
 
@@ -50,7 +50,7 @@ if ($connection->tableColumnExists($tempTable, 'translation_info') === false) {
         'TEXT DEFAULT NULL AFTER `translation_hash`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_marketplace');
 
@@ -75,7 +75,7 @@ if ($connection->tableColumnExists($tempTable, 'translation_service') === false)
         'TINYINT(2) UNSIGNED NOT NULL DEFAULT 0 AFTER `language_code`');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_product');
 
@@ -108,7 +108,7 @@ if (!isset($tempTableIndexList[strtoupper('translation_status')])) {
     $connection->addKey($tempTable, 'translated_date',     'translated_date');
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_processing_request');
 
@@ -121,7 +121,7 @@ if ($connection->tableColumnExists($tempTable, 'component') !== false) {
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -145,7 +145,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -249,8 +249,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

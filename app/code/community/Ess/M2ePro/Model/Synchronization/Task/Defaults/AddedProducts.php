@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Synchronization_Task_Defaults_AddedProducts
     extends Ess_M2ePro_Model_Synchronization_Task_Defaults_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/added_products/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Auto Add Rules';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
-        return 80;
+        return 40;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
-        return 100;
+        return 50;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -63,7 +77,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_AddedProducts
         $this->setLastProcessedProductId((int)$lastMagentoProduct->getId());
     }
 
-    //####################################
+    //########################################
 
     private function processCategoriesActions(Mage_Catalog_Model_Product $product)
     {
@@ -111,7 +125,7 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_AddedProducts
         }
     }
 
-    //####################################
+    //########################################
 
     private function getLastProductId()
     {
@@ -123,17 +137,18 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_AddedProducts
 
     private function getProducts()
     {
-        /** @var Mage_Core_Model_Mysql4_Collection_Abstract $collection */
+        /** @var Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $collection */
         $collection = Mage::getModel('catalog/product')->getCollection();
 
         $collection->addFieldToFilter('entity_id', array('gt' => (int)$this->getLastProcessedProductId()));
+        $collection->addAttributeToSelect('visibility');
         $collection->setOrder('entity_id','asc');
         $collection->getSelect()->limit(100);
 
         return $collection->getItems();
     }
 
-    // ------------------------------------
+    // ---------------------------------------
 
     private function getLastProcessedProductId()
     {
@@ -145,5 +160,5 @@ final class Ess_M2ePro_Model_Synchronization_Task_Defaults_AddedProducts
         $this->setConfigValue($this->getFullSettingsPath(),'last_magento_product_id',(int)$magentoProductId);
     }
 
-    //####################################
+    //########################################
 }

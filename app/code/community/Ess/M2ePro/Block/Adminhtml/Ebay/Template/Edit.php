@@ -1,40 +1,42 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
-        //------------------------------
+        // ---------------------------------------
         $args = func_get_args();
         if (empty($args[0]) || !is_array($args[0])) {
             $args[0] = array();
         }
         $this->addData($args[0]);
-        //------------------------------
+        // ---------------------------------------
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayTemplateEdit');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_template';
         $this->_mode = 'edit';
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $nick = $this->getTemplateNick();
         $template = Mage::helper('M2ePro/Data_Global')->getValue("ebay_template_{$nick}");
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         if ($template->getId()) {
             $this->_headerText =
                 Mage::helper('M2ePro')->__('Edit "%template_title%" %template_name% Policy',
@@ -45,19 +47,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
             $this->_headerText = Mage::helper('M2ePro')->__('Add %template_name% Policy',
                 $this->getTemplateName());
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ((bool)$this->getRequest()->getParam('back',false)) {
             $url = $this->getUrl('*/adminhtml_ebay_template/index');
             $this->_addButton('back', array(
@@ -66,9 +68,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
                 'class'     => 'back'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ($template->getId() && !(bool)$this->getRequest()->getParam('wizard',false)) {
             $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
                 Mage::helper('M2ePro')->__('Add %template_name% Policy', $this->getTemplateName())
@@ -86,9 +88,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
                 'class'     => 'add M2ePro_duplicate_button'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         if ($template->getId() && !(bool)$this->getRequest()->getParam('wizard',false)) {
             $url = $this->getUrl('*/adminhtml_ebay_template/delete');
             $this->_addButton('delete', array(
@@ -97,7 +99,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
                 'class'     => 'delete M2ePro_delete_button'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
         $saveConfirmation = '';
         if ($template->getId()) {
@@ -108,7 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
             );
         }
 
-        //------------------------------
+        // ---------------------------------------
         if (!(bool)$this->getRequest()->getParam('wizard',false)) {
             $url = $this->getUrl('*/adminhtml_ebay_template/save');
             $this->_addButton('save', array(
@@ -121,9 +123,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
                 'class'     => 'save'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam('edit', array());
         $url = $this->getUrl('*/adminhtml_ebay_template/save', array('back' => $backUrl));
         $this->_addButton('save_and_continue', array(
@@ -136,10 +138,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
             . ')',
             'class'     => 'save'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     public function getTemplateNick()
     {
@@ -186,7 +188,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
         return $title;
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -201,5 +203,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
         return $this->getChildHtml('general') . parent::getFormHtml();
     }
 
-    // ####################################
+    //########################################
 }

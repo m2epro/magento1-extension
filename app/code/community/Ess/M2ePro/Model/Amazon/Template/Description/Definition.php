@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro_Model_Component_Abstract
@@ -12,6 +14,14 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
     const BRAND_MODE_NONE             = 0;
     const BRAND_MODE_CUSTOM_VALUE     = 1;
     const BRAND_MODE_CUSTOM_ATTRIBUTE = 2;
+
+    const ITEM_PACKAGE_QUANTITY_MODE_NONE             = 0;
+    const ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE     = 1;
+    const ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE = 2;
+
+    const NUMBER_OF_ITEMS_MODE_NONE             = 0;
+    const NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE     = 1;
+    const NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE = 2;
 
     const DESCRIPTION_MODE_NONE     = 0;
     const DESCRIPTION_MODE_PRODUCT  = 1;
@@ -71,7 +81,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     private $descriptionDefinitionSourceModels = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -79,7 +89,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         $this->_init('M2ePro/Amazon_Template_Description_Definition');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -89,7 +99,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $temp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Template_Description
@@ -124,7 +134,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         $this->getDescriptionTemplate()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -147,30 +157,45 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $this->descriptionDefinitionSourceModels[$productId];
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getTemplateDescriptionId()
     {
         return (int)$this->getData('template_description_id');
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getTitleMode()
     {
         return (int)$this->getData('title_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isTitleModeProduct()
     {
         return $this->getTitleMode() == self::TITLE_MODE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isTitleModeCustom()
     {
         return $this->getTitleMode() == self::TITLE_MODE_CUSTOM;
     }
 
+    /**
+     * @return array
+     */
     public function getTitleSource()
     {
         return array(
@@ -179,6 +204,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getTitleAttributes()
     {
         $attributes = array();
@@ -188,35 +216,50 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
             $attributes[] = 'name';
         } else {
             $match = array();
-            preg_match_all('/#([a-zA-Z_]+?)#/', $src['template'], $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $src['template'], $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getBrandMode()
     {
         return (int)$this->getData('brand_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isBrandModeNone()
     {
         return $this->getBrandMode() == self::BRAND_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isBrandModeCustomValue()
     {
         return $this->getBrandMode() == self::BRAND_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isBrandModeCustomAttribute()
     {
         return $this->getBrandMode() == self::BRAND_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getBrandSource()
     {
         return array(
@@ -226,6 +269,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getBrandAttributes()
     {
         $attributes = array();
@@ -238,33 +284,183 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
+    public function getItemPackageQuantityMode()
+    {
+        return (int)$this->getData('item_package_quantity_mode');
+    }
+
+    public function getItemPackageQuantityCustomValue()
+    {
+        return $this->getData('item_package_quantity_custom_value');
+    }
+
+    public function getItemPackageQuantityCustomAttribute()
+    {
+        return $this->getData('item_package_quantity_custom_attribute');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isItemPackageQuantityModeNone()
+    {
+        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isItemPackageQuantityModeCustomValue()
+    {
+        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isItemPackageQuantityModeCustomAttribute()
+    {
+        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE;
+    }
+
+    /**
+     * @return array
+     */
+    public function getItemPackageQuantitySource()
+    {
+        return array(
+            'mode'      => $this->getItemPackageQuantityMode(),
+            'value'     => $this->getItemPackageQuantityCustomValue(),
+            'attribute' => $this->getItemPackageQuantityCustomAttribute()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getItemPackageQuantityAttributes()
+    {
+        $attributes = array();
+        $src = $this->getItemPackageQuantitySource();
+
+        if ($src['mode'] == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE) {
+            $attributes[] = $src['attribute'];
+        }
+
+        return $attributes;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getNumberOfItemsMode()
+    {
+        return (int)$this->getData('number_of_items_mode');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNumberOfItemsModeNone()
+    {
+        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNumberOfItemsModeCustomValue()
+    {
+        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNumberOfItemsModeCustomAttribute()
+    {
+        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNumberOfItemsSource()
+    {
+        return array(
+            'mode'      => $this->getNumberOfItemsMode(),
+            'value'     => $this->getData('number_of_items_custom_value'),
+            'attribute' => $this->getData('number_of_items_custom_attribute')
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getNumberOfItemsAttributes()
+    {
+        $attributes = array();
+        $src = $this->getNumberOfItemsSource();
+
+        if ($src['mode'] == self::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE) {
+            $attributes[] = $src['attribute'];
+        }
+
+        return $attributes;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
     public function getDescriptionMode()
     {
         return (int)$this->getData('description_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionModeNone()
     {
         return $this->getDescriptionMode() == self::DESCRIPTION_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionModeProduct()
     {
         return $this->getDescriptionMode() == self::DESCRIPTION_MODE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionModeShort()
     {
         return $this->getDescriptionMode() == self::DESCRIPTION_MODE_SHORT;
     }
 
+    /**
+     * @return bool
+     */
     public function isDescriptionModeCustom()
     {
         return $this->getDescriptionMode() == self::DESCRIPTION_MODE_CUSTOM;
     }
 
+    /**
+     * @return array
+     */
     public function getDescriptionSource()
     {
         return array(
@@ -273,6 +469,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getDescriptionAttributes()
     {
         $attributes = array();
@@ -284,36 +483,51 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
             $attributes[] = 'short_description';
         } else {
             $match = array();
-            preg_match_all('/#([a-zA-Z_]+?)#/', $src['template'], $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $src['template'], $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getTargetAudienceMode()
     {
         return (int)$this->getData('target_audience_mode');
     }
 
+    /**
+     * @return array
+     */
     public function getTargetAudienceTemplate()
     {
         return !is_null($this->getData('target_audience')) ? json_decode($this->getData('target_audience'), true)
                                                            : array();
     }
 
+    /**
+     * @return bool
+     */
     public function isTargetAudienceModeNone()
     {
         return $this->getTargetAudienceMode() == self::TARGET_AUDIENCE_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isTargetAudienceModeCustom()
     {
         return $this->getTargetAudienceMode() == self::TARGET_AUDIENCE_MODE_CUSTOM;
     }
 
+    /**
+     * @return array
+     */
     public function getTargetAudienceSource()
     {
         return array(
@@ -322,6 +536,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getTargetAudienceAttributes()
     {
         $src = $this->getTargetAudienceSource();
@@ -335,35 +552,50 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         if ($src['mode'] == self::TARGET_AUDIENCE_MODE_CUSTOM) {
             $match = array();
             $audience = implode(PHP_EOL,$src['template']);
-            preg_match_all('/#([a-zA-Z_]+?)#/', $audience, $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $audience, $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getBulletPointsMode()
     {
         return (int)$this->getData('bullet_points_mode');
     }
 
+    /**
+     * @return array
+     */
     public function getBulletPointsTemplate()
     {
         return is_null($this->getData('bullet_points')) ? array() : json_decode($this->getData('bullet_points'),true);
     }
 
+    /**
+     * @return bool
+     */
     public function isBulletPointsModeNone()
     {
         return $this->getBulletPointsMode() == self::BULLET_POINTS_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isBulletPointsModeCustom()
     {
         return $this->getBulletPointsMode() == self::BULLET_POINTS_MODE_CUSTOM;
     }
 
+    /**
+     * @return array
+     */
     public function getBulletPointsSource()
     {
         return array(
@@ -372,6 +604,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getBulletPointsAttributes()
     {
         $src = $this->getBulletPointsSource();
@@ -385,35 +620,50 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         if ($src['mode'] == self::BULLET_POINTS_MODE_CUSTOM) {
             $match = array();
             $bullets = implode(PHP_EOL,$src['template']);
-            preg_match_all('/#([a-zA-Z_]+?)#/', $bullets, $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $bullets, $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getSearchTermsMode()
     {
         return (int)$this->getData('search_terms_mode');
     }
 
+    /**
+     * @return array
+     */
     public function getSearchTermsTemplate()
     {
         return is_null($this->getData('search_terms')) ? array() : json_decode($this->getData('search_terms'),true);
     }
 
+    /**
+     * @return bool
+     */
     public function isSearchTermsModeNone()
     {
         return $this->getSearchTermsMode() == self::SEARCH_TERMS_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isSearchTermsModeCustom()
     {
         return $this->getSearchTermsMode() == self::SEARCH_TERMS_MODE_CUSTOM;
     }
 
+    /**
+     * @return array
+     */
     public function getSearchTermsSource()
     {
         return array(
@@ -422,6 +672,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getSearchTermsAttributes()
     {
         $src = $this->getSearchTermsSource();
@@ -435,35 +688,50 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         if ($src['mode'] == self::SEARCH_TERMS_MODE_CUSTOM) {
             $match = array();
             $searchTerms = implode(PHP_EOL,$src['template']);
-            preg_match_all('/#([a-zA-Z_]+?)#/', $searchTerms, $match);
+            preg_match_all('/#([a-zA-Z_0-9]+?)#/', $searchTerms, $match);
             $match && $attributes = $match[1];
         }
 
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getManufacturerMode()
     {
         return (int)$this->getData('manufacturer_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isManufacturerModeNone()
     {
         return $this->getManufacturerMode() == self::MANUFACTURER_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isManufacturerModeCustomValue()
     {
         return $this->getManufacturerMode() == self::MANUFACTURER_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isManufacturerModeCustomAttribute()
     {
         return $this->getManufacturerMode() == self::MANUFACTURER_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getManufacturerSource()
     {
         return array(
@@ -473,6 +741,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getManufacturerAttributes()
     {
         $attributes = array();
@@ -485,28 +756,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getManufacturerPartNumberMode()
     {
         return (int)$this->getData('manufacturer_part_number_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isManufacturerPartNumberModeNone()
     {
         return $this->getManufacturerPartNumberMode() == self::MANUFACTURER_PART_NUMBER_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isManufacturerPartNumberModeCustomValue()
     {
         return $this->getManufacturerPartNumberMode() == self::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isManufacturerPartNumberModeCustomAttribute()
     {
         return $this->getManufacturerPartNumberMode() == self::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getManufacturerPartNumberSource()
     {
         return array(
@@ -516,6 +802,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getManufacturerPartNumberAttributes()
     {
         $attributes = array();
@@ -528,28 +817,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getItemDimensionsVolumeMode()
     {
         return (int)$this->getData('item_dimensions_volume_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsVolumeModeNone()
     {
         return $this->getItemDimensionsVolumeMode() == self::DIMENSION_VOLUME_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsVolumeModeCustomValue()
     {
         return $this->getItemDimensionsVolumeMode() == self::DIMENSION_VOLUME_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsVolumeModeCustomAttribute()
     {
         return $this->getItemDimensionsVolumeMode() == self::DIMENSION_VOLUME_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsVolumeSource()
     {
         return array(
@@ -565,6 +869,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsVolumeAttributes()
     {
         $attributes = array();
@@ -579,25 +886,37 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getItemDimensionsVolumeUnitOfMeasureMode()
     {
         return (int)$this->getData('item_dimensions_volume_unit_of_measure_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsVolumeUnitOfMeasureModeCustomValue()
     {
         return $this->getItemDimensionsVolumeUnitOfMeasureMode() ==
                self::DIMENSION_VOLUME_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsVolumeUnitOfMeasureModeCustomAttribute()
     {
         return $this->getItemDimensionsVolumeUnitOfMeasureMode() ==
                self::DIMENSION_VOLUME_UNIT_OF_MEASURE_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsVolumeUnitOfMeasureSource()
     {
         return array(
@@ -607,6 +926,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsVolumeUnitOfMeasureAttributes()
     {
         $attributes = array();
@@ -619,28 +941,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getItemDimensionsWeightMode()
     {
         return (int)$this->getData('item_dimensions_weight_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsWeightModeNone()
     {
         return $this->getItemDimensionsWeightMode() == self::WEIGHT_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsWeightModeCustomValue()
     {
         return $this->getItemDimensionsWeightMode() == self::WEIGHT_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsWeightModeCustomAttribute()
     {
         return $this->getItemDimensionsWeightMode() == self::WEIGHT_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsWeightSource()
     {
         return array(
@@ -650,6 +987,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsWeightAttributes()
     {
         $attributes = array();
@@ -662,23 +1002,35 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getItemDimensionsWeightUnitOfMeasureMode()
     {
         return (int)$this->getData('item_dimensions_weight_unit_of_measure_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsWeightUnitOfMeasureModeCustomValue()
     {
         return $this->getItemDimensionsWeightUnitOfMeasureMode() == self::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isItemDimensionsWeightUnitOfMeasureModeCustomAttribute()
     {
         return $this->getItemDimensionsWeightUnitOfMeasureMode() == self::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsWeightUnitOfMeasureSource()
     {
         return array(
@@ -688,6 +1040,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getItemDimensionsWeightUnitOfMeasureAttributes()
     {
         $attributes = array();
@@ -700,28 +1055,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getPackageDimensionsVolumeMode()
     {
         return (int)$this->getData('package_dimensions_volume_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageDimensionsVolumeModeNone()
     {
         return $this->getPackageDimensionsVolumeMode() == self::DIMENSION_VOLUME_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageDimensionsVolumeModeCustomValue()
     {
         return $this->getPackageDimensionsVolumeMode() == self::DIMENSION_VOLUME_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageDimensionsVolumeModeCustomAttribute()
     {
         return $this->getPackageDimensionsVolumeMode() == self::DIMENSION_VOLUME_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getPackageDimensionsVolumeSource()
     {
         return array(
@@ -737,6 +1107,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getPackageDimensionsVolumeAttributes()
     {
         $attributes = array();
@@ -751,25 +1124,37 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getPackageDimensionsVolumeUnitOfMeasureMode()
     {
         return (int)$this->getData('package_dimensions_volume_unit_of_measure_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageDimensionsVolumeUnitOfMeasureModeCustomValue()
     {
         return $this->getPackageDimensionsVolumeUnitOfMeasureMode() ==
                self::DIMENSION_VOLUME_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageDimensionsVolumeUnitOfMeasureModeCustomAttribute()
     {
         return $this->getPackageDimensionsVolumeUnitOfMeasureMode() ==
                self::DIMENSION_VOLUME_UNIT_OF_MEASURE_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getPackageDimensionsVolumeUnitOfMeasureSource()
     {
         return array(
@@ -779,6 +1164,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getPackageDimensionsVolumeUnitOfMeasureAttributes()
     {
         $attributes = array();
@@ -791,28 +1179,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getPackageWeightMode()
     {
         return (int)$this->getData('package_weight_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageWeightModeNone()
     {
         return $this->getPackageWeightMode() == self::WEIGHT_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageWeightModeCustomValue()
     {
         return $this->getPackageWeightMode() == self::WEIGHT_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageWeightModeCustomAttribute()
     {
         return $this->getPackageWeightMode() == self::WEIGHT_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getPackageWeightSource()
     {
         return array(
@@ -822,6 +1225,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getPackageWeightAttributes()
     {
         $attributes = array();
@@ -834,23 +1240,35 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getPackageWeightUnitOfMeasureMode()
     {
         return (int)$this->getData('package_weight_unit_of_measure_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageWeightUnitOfMeasureModeCustomValue()
     {
         return $this->getPackageWeightUnitOfMeasureMode() == self::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isPackageWeightUnitOfMeasureModeCustomAttribute()
     {
         return $this->getPackageWeightUnitOfMeasureMode() == self::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getPackageWeightUnitOfMeasureSource()
     {
         return array(
@@ -860,6 +1278,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getPackageWeightUnitOfMeasureAttributes()
     {
         $attributes = array();
@@ -872,28 +1293,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getShippingWeightMode()
     {
         return (int)$this->getData('shipping_weight_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isShippingWeightModeNone()
     {
         return $this->getShippingWeightMode() == self::WEIGHT_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isShippingWeightModeCustomValue()
     {
         return $this->getShippingWeightMode() == self::WEIGHT_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isShippingWeightModeCustomAttribute()
     {
         return $this->getShippingWeightMode() == self::WEIGHT_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getShippingWeightSource()
     {
         return array(
@@ -903,6 +1339,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getShippingWeightAttributes()
     {
         $attributes = array();
@@ -915,23 +1354,35 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getShippingWeightUnitOfMeasureMode()
     {
         return (int)$this->getData('shipping_weight_unit_of_measure_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isShippingWeightUnitOfMeasureModeCustomValue()
     {
         return $this->getShippingWeightUnitOfMeasureMode() == self::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isShippingWeightUnitOfMeasureModeCustomAttribute()
     {
         return $this->getShippingWeightUnitOfMeasureMode() == self::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getShippingWeightUnitOfMeasureSource()
     {
         return array(
@@ -941,6 +1392,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getShippingWeightUnitOfMeasureAttributes()
     {
         $attributes = array();
@@ -953,28 +1407,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getImageMainMode()
     {
         return (int)$this->getData('image_main_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isImageMainModeNone()
     {
         return $this->getImageMainMode() == self::IMAGE_MAIN_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isImageMainModeProduct()
     {
         return $this->getImageMainMode() == self::IMAGE_MAIN_MODE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isImageMainModeAttribute()
     {
         return $this->getImageMainMode() == self::IMAGE_MAIN_MODE_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getImageMainSource()
     {
         return array(
@@ -983,6 +1452,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getImageMainAttributes()
     {
         $attributes = array();
@@ -997,28 +1469,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getImageVariationDifferenceMode()
     {
         return (int)$this->getData('image_variation_difference_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isImageVariationDifferenceModeNone()
     {
         return $this->getImageVariationDifferenceMode() == self::IMAGE_VARIATION_DIFFERENCE_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isImageVariationDifferenceModeProduct()
     {
         return $this->getImageVariationDifferenceMode() == self::IMAGE_VARIATION_DIFFERENCE_MODE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isImageVariationDifferenceModeAttribute()
     {
         return $this->getImageVariationDifferenceMode() == self::IMAGE_VARIATION_DIFFERENCE_MODE_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getImageVariationDifferenceSource()
     {
         return array(
@@ -1027,6 +1514,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getImageVariationDifferenceAttributes()
     {
         $attributes = array();
@@ -1041,28 +1531,43 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getGalleryImagesMode()
     {
         return (int)$this->getData('gallery_images_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isGalleryImagesModeNone()
     {
         return $this->getGalleryImagesMode() == self::GALLERY_IMAGES_MODE_NONE;
     }
 
+    /**
+     * @return bool
+     */
     public function isGalleryImagesModeProduct()
     {
         return $this->getGalleryImagesMode() == self::GALLERY_IMAGES_MODE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isGalleryImagesModeAttribute()
     {
         return $this->getGalleryImagesMode() == self::GALLERY_IMAGES_MODE_ATTRIBUTE;
     }
 
+    /**
+     * @return array
+     */
     public function getGalleryImagesSource()
     {
         return array(
@@ -1072,6 +1577,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         );
     }
 
+    /**
+     * @return array
+     */
     public function getGalleryImagesAttributes()
     {
         $attributes = array();
@@ -1084,13 +1592,19 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return $attributes;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         return $this->getUsedAttributes();
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         return array_unique(array_merge(
@@ -1099,12 +1613,17 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         ));
     }
 
+    /**
+     * @return array
+     */
     public function getUsedDetailsAttributes()
     {
         return array_unique(array_merge(
 
             $this->getTitleAttributes(),
             $this->getBrandAttributes(),
+            $this->getNumberOfItemsAttributes(),
+            $this->getItemPackageQuantityAttributes(),
             $this->getDescriptionAttributes(),
 
             $this->getBulletPointsAttributes(),
@@ -1130,6 +1649,9 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         ));
     }
 
+    /**
+     * @return array
+     */
     public function getUsedImagesAttributes()
     {
         return array_unique(array_merge(
@@ -1139,7 +1661,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         ));
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -1153,5 +1675,5 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

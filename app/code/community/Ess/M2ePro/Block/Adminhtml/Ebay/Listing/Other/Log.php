@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Log extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingOtherLog');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_other_log';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = '';
 
         $otherListingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
@@ -41,15 +43,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Log extends Mage_Adminhtml_B
         } else {
 
             // Set template
-            //------------------------------
+            // ---------------------------------------
             $this->setTemplate('M2ePro/widget/grid/container/only_content.phtml');
-            //------------------------------
+            // ---------------------------------------
 
         }
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
@@ -62,8 +64,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Log extends Mage_Adminhtml_B
             'onclick'   => 'setLocation(\'' .$this->getUrl('*/adminhtml_ebay_log/listingOther').'\')',
             'class'     => 'button_link'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 }

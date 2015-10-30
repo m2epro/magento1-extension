@@ -1,11 +1,11 @@
 CommonBuyTemplateNewProductHandler = Class.create();
 CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     popups: [],
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(attributesHandler, attributeHandler)
     {
@@ -16,7 +16,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
             }
             Selector.patterns['attr'] = /\[\s*((?:[\w\u00c0-\uFFFF-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\](?![^\[]*\])(?![^\(]*\))/;
         }
-        // -------
+        // ---------------------------------------
 
         var self = this;
 
@@ -80,7 +80,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showSpanWithCategoryPath: function(path)
     {
@@ -89,7 +89,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         spanEl.insert(path);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     checkAttributesReady: function()
     {
@@ -99,7 +99,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     rakuten_category_change: function()
     {
@@ -125,7 +125,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getCategories: function(nodeId,callback)
     {
@@ -143,7 +143,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showCategories: function(container)
     {
@@ -178,7 +178,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getCategoryInfo: function(key,value)
     {
@@ -198,7 +198,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirmCategory: function()
     {
@@ -223,12 +223,12 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
 
         this.showSpanWithCategoryPath(categoryPath);
 
-        // -- render Attributes
+        // render Attributes
         $('rakuten_native_id').value = categoryInfo.native_id;
         self.attributesHandler.showAttributes(categoryInfo.native_id);
     },
 
-    // ---------------------------------
+    // ---------------------------------------
 
     changeCategory: function()
     {
@@ -242,7 +242,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         $('rakuten_native_id').value = '';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     removeSpanWithCategoryPath: function()
     {
@@ -250,7 +250,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         span && span.remove();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initPopUp: function(contentId,width,height,title)
     {
@@ -273,7 +273,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         this[contentId].getContent().update($(contentId));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     searchClick: function()
     {
@@ -333,13 +333,13 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         this.searchCategoryButton.parentNode.parentNode.hide();
         this.showSpanWithCategoryPath(categoryPath);
 
-        // -- render Attributes
+        // render Attributes
         $('rakuten_native_id').value = categoryInfo.native_id;
         BuyTemplateNewProductHandlerObj.attributesHandler.showAttributes(categoryInfo.native_id);
         this.resetSearchClick();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     gtin_mode_change: function()
     {
@@ -350,62 +350,47 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
 
     isbn_mode_change: function()
     {
-        this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ISBN_MODE_NONE')
-            ? $('isbn_custom_attribute_tr').hide()
-            : $('isbn_custom_attribute_tr').show();
-    },
+        var self = BuyTemplateNewProductHandlerObj;
 
-    asin_mode_change: function()
-    {
-        this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ASIN_MODE_NONE')
-            ? $('asin_custom_attribute_tr').hide()
-            : $('asin_custom_attribute_tr').show();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ISBN_MODE_CUSTOM_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('isbn_custom_attribute'));
+        } else {
+            $('isbn_custom_attribute').value = '';
+        }
     },
 
     mfg_part_number_mode_change: function()
     {
         var self = BuyTemplateNewProductHandlerObj;
-        var handlers = {};
 
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::MFG_PART_NUMBER_MODE_CUSTOM_VALUE')] = function() {
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::MFG_PART_NUMBER_MODE_CUSTOM_VALUE')) {
             $('mfg_part_number_custom_value_tr').show();
-            $('mfg_part_number_custom_attribute_tr').hide();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::MFG_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE')] = function() {
+            $('mfg_part_number_custom_attribute').value = '';
+        } else {
             $('mfg_part_number_custom_value_tr').hide();
-            $('mfg_part_number_custom_attribute_tr').show();
-        };
-
-        if (this.value != "") {
-            handlers[this.value].call(self);
+            self.updateHiddenValue(this, $('mfg_part_number_custom_attribute'));
         }
     },
 
     product_set_id_mode_change: function()
     {
-        var self = BuyTemplateNewProductHandlerObj;
-        var handlers = {};
+        var self = BuyTemplateNewProductHandlerObj,
+            customValueTr = $('product_set_id_custom_value_tr'),
+            customAttribute = $('product_set_id_custom_attribute');
 
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::PRODUCT_SET_ID_MODE_NONE')] = function() {
-            $('product_set_id_custom_attribute_tr').hide();
-            $('product_set_id_custom_value_tr').hide();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::PRODUCT_SET_ID_MODE_CUSTOM_VALUE')] = function() {
-            $('product_set_id_custom_attribute_tr').hide();
-            $('product_set_id_custom_value_tr').show();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::PRODUCT_SET_ID_MODE_CUSTOM_ATTRIBUTE')] = function() {
-            $('product_set_id_custom_attribute_tr').show();
-            $('product_set_id_custom_value_tr').hide();
-        };
-
-        handlers[this.value].call(self);
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::PRODUCT_SET_ID_MODE_NONE')) {
+            customValueTr.hide();
+            customAttribute.value = '';
+        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::PRODUCT_SET_ID_MODE_CUSTOM_VALUE')) {
+            customValueTr.show();
+            customAttribute.value = '';
+        } else {
+            customValueTr.hide();
+            self.updateHiddenValue(this, customAttribute);
+        }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     title_mode_change: function()
     {
@@ -454,57 +439,40 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
     {
         var self = BuyTemplateNewProductHandlerObj;
 
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::IMAGE_MAIN_MODE_PRODUCT_BASE')) {
-            $('main_image_attribute_tr').hide();
-        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::IMAGE_MAIN_MODE_CUSTOM_ATTRIBUTE')) {
-            $('main_image_attribute_tr').show();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::IMAGE_MAIN_MODE_CUSTOM_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('main_image_attribute'));
+        } else {
+            $('main_image_attribute').value = '';
         }
     },
 
     additional_images_mode_change: function()
     {
         var self = BuyTemplateNewProductHandlerObj;
-        var handlers = {};
 
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ADDITIONAL_IMAGES_MODE_NONE')] = function() {
-            $('additional_images_attribute_tr').hide();
-            $('additional_images_limit_tr').hide();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ADDITIONAL_IMAGES_MODE_PRODUCT')] = function() {
-            $('additional_images_limit_tr').show();
-            $('additional_images_attribute_tr').hide();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ADDITIONAL_IMAGES_MODE_CUSTOM_ATTRIBUTE')] = function() {
-            $('additional_images_limit_tr').hide();
-            $('additional_images_attribute_tr').show();
-        };
-
-        handlers[this.value].call(self);
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ADDITIONAL_IMAGES_MODE_PRODUCT')) {
+            self.updateHiddenValue(this, $('additional_images_limit'));
+            $('additional_images_attribute').value = '';
+        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ADDITIONAL_IMAGES_MODE_CUSTOM_ATTRIBUTE')) {
+            self.updateHiddenValue(this, $('additional_images_attribute'));
+            $('additional_images_limit').value = '';
+        }
     },
 
     keywords_mode_change: function()
     {
         var self = BuyTemplateNewProductHandlerObj;
-        var handlers = {};
 
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::KEYWORDS_MODE_NONE')] = function() {
-            $('keywords_custom_attribute_tr').hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::KEYWORDS_MODE_NONE')) {
             $('keywords_custom_value_tr').hide();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::KEYWORDS_MODE_CUSTOM_ATTRIBUTE')] = function() {
-            $('keywords_custom_attribute_tr').show();
+            $('keywords_custom_attribute').value = '';
+        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::KEYWORDS_MODE_CUSTOM_ATTRIBUTE')) {
             $('keywords_custom_value_tr').hide();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::KEYWORDS_MODE_CUSTOM_VALUE')] = function() {
-            $('keywords_custom_attribute_tr').hide();
+            self.updateHiddenValue(this, $('keywords_custom_attribute'));
+        } else {
             $('keywords_custom_value_tr').show();
-        };
-
-        handlers[this.value].call(self);
+            $('keywords_custom_attribute').value = '';
+        }
     },
 
     features_mode_change: function()
@@ -545,24 +513,17 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
     weight_mode_change:function()
     {
         var self = BuyTemplateNewProductHandlerObj;
-        var handlers = {};
 
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::WEIGHT_MODE_CUSTOM_VALUE')] = function() {
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::WEIGHT_MODE_CUSTOM_VALUE')) {
             $('weight_custom_value_tr').show();
-            $('weight_custom_attribute_tr').hide();
-        };
-
-        handlers[M2ePro.php.constant('Ess_M2ePro_Model_Buy_Template_NewProduct_Core::WEIGHT_MODE_CUSTOM_ATTRIBUTE')] = function() {
+            $('weight_custom_attribute').value = '';
+        } else {
             $('weight_custom_value_tr').hide();
-            $('weight_custom_attribute_tr').show();
-        };
-
-        if (this.value != "") {
-            handlers[this.value].call(self);
+            self.updateHiddenValue(this, $('weight_custom_attribute'));
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showFeature: function()
     {
@@ -629,7 +590,7 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     renderHelpIcon: function(param, notes) {
 
@@ -671,5 +632,5 @@ CommonBuyTemplateNewProductHandler.prototype = Object.extend(new CommonHandler()
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

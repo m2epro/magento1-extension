@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_Widget
@@ -13,7 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
     protected $templateNick = NULL;
     protected $componentMode = NULL;
 
-    // ########################################
+    //########################################
 
     public function getResultBlock($templateNick, $componentMode)
     {
@@ -37,22 +39,22 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return $block;
     }
 
-    // ########################################
+    //########################################
 
     public function getMessages()
     {
         $messages = array();
 
-        //------------------------------
+        // ---------------------------------------
         if (!is_null($message = $this->getAttributesAvailabilityMessage())) {
             $messages[self::TYPE_ATTRIBUTES_AVAILABILITY] = $message;
         }
-        //------------------------------
+        // ---------------------------------------
 
         return $messages;
     }
 
-    // ########################################
+    //########################################
 
     public function getMessagesHtml(array $messages = array())
     {
@@ -69,7 +71,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return $this->toHtml();
     }
 
-    // ########################################
+    //########################################
 
     public function getAttributesAvailabilityMessage()
     {
@@ -100,7 +102,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         );
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Marketplace|null
@@ -116,7 +118,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         );
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Mage_Core_Model_Store|null
@@ -130,7 +132,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return Mage::app()->getStore((int)$this->_data['store_id']);
     }
 
-    // ########################################
+    //########################################
 
     public function setTemplateNick($templateNick)
     {
@@ -147,7 +149,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return $this->templateNick;
     }
 
-    // ########################################
+    //########################################
 
     public function setComponentMode($componentMode)
     {
@@ -164,7 +166,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return $this->componentMode;
     }
 
-    // ########################################
+    //########################################
 
     protected function getTemplateData()
     {
@@ -175,14 +177,14 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return $this->_data['template_data'];
     }
 
-    // ########################################
+    //########################################
 
     protected function getUsedAttributes()
     {
         return isset($this->_data['used_attributes']) ? $this->_data['used_attributes'] : array();
     }
 
-    // ########################################
+    //########################################
 
     protected function getListingProductIds()
     {
@@ -192,7 +194,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return $listingProductIds ? $listingProductIds : array();
     }
 
-    // ########################################
+    //########################################
 
     protected function canDisplayAttributesAvailabilityMessage()
     {
@@ -213,5 +215,5 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         return true;
     }
 
-    // ########################################
+    //########################################
 }

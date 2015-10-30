@@ -1,45 +1,47 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Add_Tabs_Selling
     extends Ess_M2ePro_Block_Adminhtml_Common_Listing_Add_Tabs_Selling
 {
-    // #############################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->component = Ess_M2ePro_Helper_Component_Buy::NICK;
         $this->sessionKey = 'buy_listing_create';
         $this->setId('buyListingAddTabsSelling');
         $this->setTemplate('M2ePro/common/buy/listing/add/tabs/selling.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // #############################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                     'label' => Mage::helper('M2ePro')->__('Insert'),
                     'onclick' => "BuyListingChannelSettingsHandlerObj.appendToText"
                         ."('condition_note_custom_attribute', 'condition_note_value');",
                     'class' => 'condition_note_value_insert_button'
-                ) );
-        $this->setChild('condition_note_value_insert_button',$buttonBlock);
+                ));
+        $this->setChild('condition_note_value_insert_button', $buttonBlock);
 
         return parent::_beforeToHtml();
     }
 
-    // #############################################
+    //########################################
 
     protected function getDefaults()
     {
@@ -82,12 +84,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Add_Tabs_Selling
         );
     }
 
-    // ####################################
+    //########################################
 
     public function isEditMode()
     {
         return !!$this->getRequest()->getParam('id');
     }
 
-    // ####################################
+    //########################################
 }

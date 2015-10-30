@@ -1,6 +1,6 @@
 MigrationNewAmazonHandler = Class.create(WizardAmazonCustomHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     synchronizeMarketplaces: function()
     {
@@ -51,5 +51,5 @@ MigrationNewAmazonHandler = Class.create(WizardAmazonCustomHandler, {
         })
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

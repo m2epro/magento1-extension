@@ -1,8 +1,10 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation extends Mage_Adminhtml_Block_Widget
 {
@@ -13,7 +15,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation exten
 
     private $listingProduct = NULL;
 
-    //##############################################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product
@@ -55,7 +57,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation exten
         return $this->magentoVariationsCombinations;
     }
 
-    //##############################################################
+    //########################################
 
     public function getMagentoVariationsTree()
     {
@@ -72,7 +74,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation exten
         return $this->magentoVariationsTree;
     }
 
-    //--------------------------------------------------------------
+    // ---------------------------------------
 
     private function prepareVariations($currentAttribute,$magentoVariations,$filters = array())
     {
@@ -152,5 +154,5 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Variation exten
         return $return;
     }
 
-    //##############################################################
+    //########################################
 }

@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -17,6 +19,8 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
 
         $this->getLayout()->getBlock('head')
              ->addJs('M2ePro/Common/Amazon/Template/SellingFormatHandler.js');
+
+        $this->_initPopUp();
 
         $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Selling+Format+Policy');
 
@@ -28,7 +32,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -37,7 +41,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
         ));
     }
 
-    //#############################################
+    //########################################
 
     public function newAction()
     {
@@ -65,7 +69,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
              ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function saveAction()
     {
@@ -76,7 +80,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
         $id = $this->getRequest()->getParam('id');
 
         // Base prepare
-        //--------------------
+        // ---------------------------------------
         $data = array();
 
         $keys = array(
@@ -110,7 +114,9 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
             'sale_price_end_date_value',
 
             'sale_price_start_date_custom_attribute',
-            'sale_price_end_date_custom_attribute'
+            'sale_price_end_date_custom_attribute',
+
+            'price_vat_percent'
         );
 
         foreach ($keys as $key) {
@@ -139,10 +145,10 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
         }
 
         $data['title'] = strip_tags($data['title']);
-        //--------------------
+        // ---------------------------------------
 
         // Add or update model
-        //--------------------
+        // ---------------------------------------
         $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Template_SellingFormat')->load($id);
 
         $oldData = $model->getDataSnapshot();
@@ -160,5 +166,5 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SellingFormatController
         )));
     }
 
-    //#############################################
+    //########################################
 }

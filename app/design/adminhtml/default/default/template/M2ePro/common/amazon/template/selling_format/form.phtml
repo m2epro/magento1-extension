@@ -1,26 +1,31 @@
 <div id="block_notice_amazon_template_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selling Format Policy'); ?>">
-    <?php echo Mage::helper('M2ePro')->__('Selling Format Policy contains Price-Related data and Quantity for the Items, which will be Listed on Amazon.<br/><br/>
-    Next to each Price Options Dropdown there is a box for Price Change. Price Change is a value you want the Magento Price to be modified while Listing on Amazon.<br/><br/>
-    <b>Examples:</b><br/>
+    <?php echo Mage::helper('M2ePro')->__('
+        Selling Format Policy contains Price and Quantity related data for the Items, which will be Listed on Amazon.</br></br>
 
-    <ul class="list">
-        <li>If you want the Price on Amazon to be greater by 15% than the Price in Magento, you should set +15% in the Price Change field.<br/>
-        <i>Amazon Price = Magento Price + Magento Price * 0.15</i></li>
-        <li>If you want the Price on Amazon to be less by 10 Currency units than the Price in Magento, you should set -10 in the Price Change field.<br/>
-        <i>Amazon Price = Magento Price - 10</i></li>
-        <li>If you want the Price on Amazon to be multiplied by coefficient 1.2, you should set 1.2 in the Price Change field.<br/>
-        <i>Amazon Price = Magento Price * 1.2.</i>
-        </li>
-    </ul>
+        While Listing on Amazon, the Magento Price can be modified by providing a Price Change Value. There is a Price
+        Change box next to each Price Options Dropdown.</br></br>
 
-    <b>Note:</b> If the Special Price is chosen in the <i class="underline">Price</i> Option, but it is not set in Magento Product Settings or it is set but it has already expired, the Product Price is to be used instead.
-     <br/>If the Special Price is chosen in the <i class="underline">Sale Price</i> Option, its Magento <i>From</i>, <i>To</i> dates will be taken into the consideration.
-    When the Sale Price has expired, the Price is to be used.
-     <br/>If those dates are not specified, the <i class="underline">Sale Price</i> will be set <i>From</i> this moment To the year ahead. <br/><br/>
+        <strong>Examples:</strong><br/>
 
-    <b>Note:</b> Attributes must contain only numeric values.</br></br>
-    More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Selling+Format+Policy')); ?>
+        <ul class="list">
+            <li>If you want the Price on Amazon to be greater by 15% than the Price in Magento, you should set +15% in the Price Change field.</br>
+            <i>Amazon Price = Magento Price + Magento Price * 0.15</i></li>
+            <li>If you want the Price on Amazon to be less by 10 Currency units than the Price in Magento, you should set -10 in the Price Change field.</br>
+            <i>Amazon Price = Magento Price - 10</i></li>
+            <li>If you want the Price on Amazon to be multiplied by coefficient 1.2, you should set 1.2 in the Price Change field.</br>
+            <i>Amazon Price = Magento Price * 1.2</i></li>
+        </ul>
+
+        <strong>Note:</strong> If the Special Price is chosen in the <strong>Price</strong> Option, but it is not set in Magento
+        Product Settings or has already expired, the Product Price will be used instead.</br>
+        If the Special Price is chosen in the <strong>Sale Price</strong> Option, its Magento <strong>From</strong>, <strong>To</strong> dates will be taken into
+        consideration. Once the Sale Price has expired, the Price will be used.</br>
+        If those dates are not specified, the <strong>Sale Price</strong> will be set <strong>From</strong> this moment <strong>To</strong>
+        the year ahead.</br></br>
+
+        <strong>Note:</strong> Attributes must contain only Numeric Values.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/-IIVAQ')); ?>
 </div>
 
 <?php
@@ -57,7 +62,9 @@
         'sale_price_end_date_custom_attribute' => '',
 
         'sale_price_start_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
-        'sale_price_end_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d')
+        'sale_price_end_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
+
+        'price_vat_percent' => 0
     );
 
     $formData = array_merge($default, $formData);
@@ -130,7 +137,8 @@
         'You should select Attribute Sets first and press Confirm Button.' => Mage::helper('M2ePro')->__('You should select Attribute Sets first and press Confirm Button.'),
         'Coefficient is not valid.' => Mage::helper('M2ePro')->__('Coefficient is not valid.'),
 
-        'Wrong value. Only integer numbers.' => Mage::helper('M2ePro')->__('Wrong value. Only integer numbers.')
+        'Wrong value. Only integer numbers.' => Mage::helper('M2ePro')->__('Wrong value. Only integer numbers.'),
+        'Wrong value. Must be no more than 30. Max applicable length is 6 characters, including the decimal (e.g., 12.345).' => Mage::helper('M2ePro')->__('Wrong value. Must be no more than 30. Max applicable length is 6 characters, including the decimal (e.g., 12.345).')
     )); ?>);
 
     M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
@@ -174,6 +182,10 @@
 
         $('sale_price_mode')
             .observe('change', AmazonTemplateSellingFormatHandlerObj.sale_price_mode_change)
+            .simulate('change');
+
+        $('price_increase_vat_percent')
+            .observe('change', AmazonTemplateSellingFormatHandlerObj.price_increase_vat_percent_mode_change)
             .simulate('change');
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
@@ -248,12 +260,12 @@
                     <td class="value" style="width: auto;">
                         <input type="hidden" id="qty_custom_attribute" name="qty_custom_attribute" value="<?php echo $formData['qty_custom_attribute']; ?>"/>
 
-                        <select id="qty_mode" name="qty_mode">
+                        <select id="qty_mode" name="qty_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
                             <option id="qty_mode_product" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Product Quantity'); ?></option>
                             <option id="qty_mode_single" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Single Item'); ?></option>
                             <option id="qty_mode_cv" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
                                 <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('QTY'); ?></option>
                                 <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>" <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && $attribute['code'] == $formData['qty_custom_attribute']): ?>selected="selected"<?php endif; ?>>
@@ -363,11 +375,11 @@
                     <td class="value">
                         <input type="hidden" id="price_custom_attribute" name="price_custom_attribute" value="<?php echo $formData['price_custom_attribute']; ?>"/>
 
-                        <select id="price_mode" name="price_mode" class="select-main required-entry">
+                        <select id="price_mode" name="price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT == $formData['price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL == $formData['price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE; ?>" <?php if ($formData['price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE && $attribute['code'] == $formData['price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
@@ -410,12 +422,12 @@
                     <td class="value">
                         <input type="hidden" id="map_price_custom_attribute" name="map_price_custom_attribute" value="<?php echo $formData['map_price_custom_attribute']; ?>"/>
 
-                        <select id="map_price_mode" name="map_price_mode" class="select-main required-entry">
+                        <select id="map_price_mode" name="map_price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE; ?>" <?php if ($formData['map_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE && $attribute['code'] == $formData['map_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
@@ -440,12 +452,12 @@
                     <td class="value">
                         <input type="hidden" id="sale_price_custom_attribute" name="sale_price_custom_attribute" value="<?php echo $formData['sale_price_custom_attribute']; ?>"/>
 
-                        <select id="sale_price_mode" name="sale_price_mode" class="select-main required-entry">
+                        <select id="sale_price_mode" name="sale_price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE; ?>" <?php if ($formData['sale_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT; ?>" <?php if ($formData['sale_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL; ?>" <?php if ($formData['sale_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE; ?>" <?php if ($formData['sale_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE && $attribute['code'] == $formData['sale_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
@@ -477,10 +489,10 @@
                     <td class="value">
                         <input type="hidden" id="sale_price_start_date_custom_attribute" name="sale_price_start_date_custom_attribute" value="<?php echo $formData['sale_price_start_date_custom_attribute'];?>"/>
 
-                        <select id="sale_price_start_date_mode" name="sale_price_start_date_mode">
+                        <select id="sale_price_start_date_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,date" name="sale_price_start_date_mode">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_VALUE; ?>" <?php if ($formData['sale_price_start_date_mode'] == Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_VALUE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach($attributesByInputTypes['text_date'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_ATTRIBUTE; ?>" <?php if ($formData['sale_price_start_date_mode'] == Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_ATTRIBUTE && $attribute['code'] == $formData['sale_price_start_date_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
@@ -522,10 +534,10 @@
                     <td class="value">
                         <input type="hidden" id="sale_price_end_date_custom_attribute" name="sale_price_end_date_custom_attribute" value="<?php echo $formData['sale_price_end_date_custom_attribute'];?>"/>
 
-                        <select id="sale_price_end_date_mode" name="sale_price_end_date_mode">
+                        <select id="sale_price_end_date_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,date" name="sale_price_end_date_mode">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_VALUE; ?>" <?php if ($formData['sale_price_end_date_mode'] == Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_VALUE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach($attributesByInputTypes['text_date'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_ATTRIBUTE; ?>" <?php if ($formData['sale_price_end_date_mode'] == Ess_M2ePro_Model_Amazon_Template_SellingFormat::DATE_ATTRIBUTE && $attribute['code'] == $formData['sale_price_end_date_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
@@ -557,6 +569,47 @@
                             });
                         //]]>
                         </script>
+                    </td>
+                </tr>
+
+            </table>
+
+            <table cellspacing="0" class="form-list">
+
+                <tr>
+                    <td class="label">
+                        <label for="price_increase_vat_percent"><?php echo Mage::helper('M2ePro')->__('Add VAT Percentage'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="price_increase_vat_percent" name="price_increase_vat_percent" class="select-main required-entry">
+                            <option value="0" <?php if (!$formData['price_vat_percent']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['price_vat_percent'] > 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__('
+                                Choose whether you want to add VAT to the Price when a Product is Listed on Amazon and
+                                provide the appropriate VAT Percent Value.</br></br>
+
+                                <strong>Example:</strong>
+                                For a Product with Magento Price = £10</br>
+                                VAT Rate = 15%</br>
+                                Magento Price: £10</br>
+                                VAT 15%: £10 * 15% = £1.50</br>
+                                Final Price on Amazon (Magento Price + VAT) = £10 + £1.50 = £11.50</br></br>
+
+                                <strong>Note:</strong> No VAT Rate Value will be sent on Amazon. Only the Item\'s Price
+                                on Amazon will be increased.
+                            ') ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="price_vat_percent_tr">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('VAT Rate, %'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="price_vat_percent" name="price_vat_percent" value="<?php echo $formData['price_vat_percent']; ?>" type="text" class="M2ePro-validate-vat-percent input-text" />
                     </td>
                 </tr>
 

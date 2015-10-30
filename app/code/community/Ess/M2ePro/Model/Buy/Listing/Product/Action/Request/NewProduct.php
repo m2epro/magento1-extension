@@ -1,14 +1,19 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_NewProduct
     extends Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_Abstract
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         if (!$this->getConfigurator()->isNewProductAllowed()) {
@@ -22,7 +27,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_NewProduct
 
         $data = array();
 
-        // ---------------------
+        // ---------------------------------------
         $coreSource = $newProductTemplate->getCoreTemplate()->getSource(
             $this->getBuyListingProduct()->getActualMagentoProduct()
         );
@@ -33,7 +38,6 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_NewProduct
             'seller_sku'        => $coreSource->getSellerSku(),
             'gtin'              => $coreSource->getGtin(),
             'isbn'              => $coreSource->getIsbn(),
-            'asin'              => $coreSource->getAsin(),
             'mfg_name'          => $coreSource->getMfgName(),
             'mfg_part_number'   => $coreSource->getMfgPartNumber(),
             'product_set_id'    => $coreSource->getProductSetId(),
@@ -73,9 +77,9 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_NewProduct
             $coreData['upc_exemption'] = '1';
         }
         $data['core'] = $coreData;
-        // ---------------------
+        // ---------------------------------------
 
-        // ---------------------
+        // ---------------------------------------
         $attributesData = array();
 
         $this->searchNotFoundAttributes();
@@ -92,10 +96,10 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Request_NewProduct
         $this->processNotFoundAttributes('Attributes');
 
         $data['attributes'] = $attributesData;
-        // ---------------------
+        // ---------------------------------------
 
         return $data;
     }
 
-    // ########################################
+    //########################################
 }

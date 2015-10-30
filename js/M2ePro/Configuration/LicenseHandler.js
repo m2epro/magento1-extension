@@ -1,11 +1,11 @@
 ConfigurationLicenseHandler = Class.create();
 ConfigurationLicenseHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() {},
 
-    //----------------------------------
+    // ---------------------------------------
 
     changeLicenseKey: function()
     {
@@ -15,14 +15,14 @@ ConfigurationLicenseHandler.prototype = Object.extend(new CommonHandler(), {
         $('confirm_license_key_container').show();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirmLicenseKey: function()
     {
         configEditForm.submit(M2ePro.url.get('adminhtml_configuration_license/confirmKey'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     completeStep: function()
     {
@@ -44,7 +44,7 @@ ConfigurationLicenseHandler.prototype = Object.extend(new CommonHandler(), {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     componentSetTrial: function(button)
     {
@@ -57,5 +57,5 @@ ConfigurationLicenseHandler.prototype = Object.extend(new CommonHandler(), {
         this.postForm(M2ePro.url.get('component_set_trial'), {component:componentName});
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

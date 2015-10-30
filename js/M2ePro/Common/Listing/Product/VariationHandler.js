@@ -1,7 +1,7 @@
 CommonListingProductVariationHandler = Class.create();
 CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(M2ePro,gridHandler)
     {
@@ -23,7 +23,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         return this;
     },
 
-    //###############################################
+    //########################################
 
     showEditPopup: function(popupTitle)
     {
@@ -73,7 +73,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editPopupInit: function(currentVariation)
     {
@@ -133,7 +133,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         }).bind(this));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     resetListingProductVariation: function()
     {
@@ -161,7 +161,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         });
     },
 
-    //###############################################
+    //########################################
 
     showSwitchToIndividualModePopUp: function(title)
     {
@@ -252,7 +252,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         });
     },
 
-    //###############################################
+    //########################################
 
     showManagePopup: function(popupTitle)
     {
@@ -302,7 +302,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         });
     },
 
-    //-----------------------------------------------
+    // ---------------------------------------
 
     managePopupInit: function()
     {
@@ -332,7 +332,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         }).bind(this));
     },
 
-    //-----------------------------------------------
+    // ---------------------------------------
 
     manageAddRow: function()
     {
@@ -395,7 +395,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         }
     },
 
-    //###############################################
+    //########################################
 
     eachAttributeHandler: function(select,i,getNextSelects,filters)
     {
@@ -429,7 +429,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         }).bind(this));
     },
 
-    //-----------------------------------------------
+    // ---------------------------------------
 
     renderAttributeValues: function(container,attribute,filters)
     {
@@ -455,7 +455,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getAttributeValues: function(attribute,attributesTree,filters)
     {
@@ -484,7 +484,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         }
     },
 
-    //###############################################
+    //########################################
 
     editAction: function(variationData)
     {
@@ -526,7 +526,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     manageAction: function(variationData)
     {
@@ -567,7 +567,7 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         });
     },
 
-    //----------------------------------------------
+    // ---------------------------------------
 
     manageGenerateAction: function(unique)
     {
@@ -629,5 +629,5 @@ CommonListingProductVariationHandler.prototype = Object.extend(new CommonHandler
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

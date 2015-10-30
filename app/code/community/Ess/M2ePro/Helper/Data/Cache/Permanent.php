@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Data_Cache_Permanent extends Ess_M2ePro_Helper_Data_Cache_Abstract
 {
-    // ########################################
+    //########################################
 
     public function getValue($key)
     {
@@ -32,7 +34,7 @@ class Ess_M2ePro_Helper_Data_Cache_Permanent extends Ess_M2ePro_Helper_Data_Cach
         Mage::app()->getCache()->save(serialize($value), $cacheKey, $preparedTags, (int)$lifeTime);
     }
 
-    // ########################################
+    //########################################
 
     public function removeValue($key)
     {
@@ -52,5 +54,5 @@ class Ess_M2ePro_Helper_Data_Cache_Permanent extends Ess_M2ePro_Helper_Data_Cach
         $this->removeTagValues('main');
     }
 
-    // ########################################
+    //########################################
 }

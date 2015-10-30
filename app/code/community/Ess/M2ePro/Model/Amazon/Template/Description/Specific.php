@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_Model_Component_Abstract
@@ -25,7 +27,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
      */
     private $descriptionSpecificSourceModels = array();
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -33,7 +35,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
         $this->_init('M2ePro/Amazon_Template_Description_Specific');
     }
 
-    // ########################################
+    //########################################
 
     public function deleteInstance()
     {
@@ -43,7 +45,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
         return $temp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Template_Description
@@ -78,7 +80,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
         $this->getDescriptionTemplate()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
@@ -101,13 +103,19 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
         return $this->descriptionSpecificSourceModels[$productId];
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getTemplateDescriptionId()
     {
         return (int)$this->getData('template_description_id');
     }
 
+    /**
+     * @return string
+     */
     public function getXpath()
     {
         return trim($this->getData('xpath'), '/');
@@ -138,19 +146,28 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
         return $this->getData('type');
     }
 
+    /**
+     * @return array
+     */
     public function getAttributes()
     {
         $value = $this->getData('attributes');
         return is_string($value) ? (array)json_decode($value, true) : array();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         return $this->getUsedAttributes();
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         $attribute = $this->getCustomAttribute();
@@ -162,5 +179,5 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
         return array($attribute);
     }
 
-    // #######################################
+    //########################################
 }

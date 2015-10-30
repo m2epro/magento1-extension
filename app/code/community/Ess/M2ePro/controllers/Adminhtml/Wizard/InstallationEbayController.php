@@ -1,13 +1,15 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
     extends Ess_M2ePro_Controller_Adminhtml_Ebay_WizardController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -24,7 +26,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         return Ess_M2ePro_Helper_View_Ebay::WIZARD_INSTALLATION_NICK;
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -48,7 +50,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $this->_forward($this->getCurrentStep());
     }
 
-    //#############################################
+    //########################################
 
     private function renderSimpleStep()
     {
@@ -60,7 +62,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
                     ->renderLayout();
     }
 
-    //#############################################
+    //########################################
 
     public function wizardTutorialAction()
     {
@@ -82,7 +84,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         return $this->renderSimpleStep();
     }
 
-    //#############################################
+    //########################################
 
     public function listingTutorialAction()
     {
@@ -109,7 +111,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         return $this->_redirect('*/adminhtml_ebay_listing_create',array('step' => 4, 'wizard' => true));
     }
 
-    //#############################################
+    //########################################
 
     public function productTutorialAction()
     {
@@ -166,7 +168,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         );
     }
 
-    //#############################################
+    //########################################
 
     public function categoryStepOneAction()
     {
@@ -213,12 +215,12 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         );
     }
 
-    //#############################################
+    //########################################
 
     public function beforeTokenAction()
     {
         // Get and save session id
-        //-------------------------------
+        // ---------------------------------------
 
         $requiredKeys = array(
             'email',
@@ -295,7 +297,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
             'url' => $response['url']
         )));
 
-        //-------------------------------
+        // ---------------------------------------
     }
 
     public function afterTokenAction()
@@ -337,8 +339,9 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $data = array_merge(
             array(
                 'title' => $response['info']['UserID'],
+                'user_id' => $response['info']['UserID'],
                 'mode' => $accountMode,
-                'ebay_info' => json_encode($response['info']),
+                'info' => json_encode($response['info']),
                 'server_hash' => $response['hash'],
                 'token_session' => $tokenSessionId,
                 'token_expired_date' => $response['token_expired_date']
@@ -354,7 +357,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         return $this->_redirect('*/*/installation');
     }
 
-    //#############################################
+    //########################################
 
     public function setModeAndUpdateAccountAction()
     {
@@ -388,7 +391,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         )));
     }
 
-    //#############################################
+    //########################################
 
     public function getAccountSettingsAction()
     {
@@ -416,5 +419,5 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
     }
 
-    //#############################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ### logs tables improvements
@@ -115,7 +115,7 @@ $connection = $installer->getConnection();
     ### -------------------------------
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_system_log');
 
@@ -141,7 +141,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_log');
 $tempBackupTable = $installer->getTable('m2epro_backup_v636_listing_log');
@@ -217,7 +217,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_listing_other_log');
 $tempBackupTable = $installer->getTable('m2epro_backup_v636_listing_other_log');
@@ -286,7 +286,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_synchronization_log');
 $tempBackupTable = $installer->getTable('m2epro_backup_v636_synchronization_log');
@@ -346,7 +346,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_order_log');
 $tempBackupTable = $installer->getTable('m2epro_backup_v636_order_log');
@@ -395,7 +395,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_shipping_override');
 
@@ -420,7 +420,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_shipping_override');
 
@@ -446,7 +446,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_shipping_override_service');
 
@@ -474,7 +474,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -490,7 +490,7 @@ if (!isset($tempTableIndexList[strtoupper('template_shipping_override_id')])) {
     $connection->addKey($tempTable, 'template_shipping_override_id', 'template_shipping_override_id');
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_synchronization');
 
@@ -510,7 +510,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_description');
 
@@ -535,7 +535,7 @@ if (!$connection->tableColumnExists($tempTable, 'variation_images_attribute')) {
     );
 }
 
-// ########################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -558,7 +558,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_wizard');
 
@@ -578,7 +578,7 @@ SQL
     );
 }
 
-// ----------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQL
 
@@ -633,8 +633,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

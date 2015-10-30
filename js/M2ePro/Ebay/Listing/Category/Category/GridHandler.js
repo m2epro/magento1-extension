@@ -1,6 +1,6 @@
 EbayListingCategoryCategoryGridHandler = Class.create(EbayListingCategoryGridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     editCategories: function()
     {
@@ -19,7 +19,7 @@ EbayListingCategoryCategoryGridHandler = Class.create(EbayListingCategoryGridHan
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     editPrimaryCategories: function()
     {
@@ -37,7 +37,7 @@ EbayListingCategoryCategoryGridHandler = Class.create(EbayListingCategoryGridHan
         )
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     openPopUp: function(title, content)
     {
@@ -78,7 +78,7 @@ EbayListingCategoryCategoryGridHandler = Class.create(EbayListingCategoryGridHan
         }.bind(this));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validate: function()
     {
@@ -100,12 +100,12 @@ EbayListingCategoryCategoryGridHandler = Class.create(EbayListingCategoryGridHan
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     confirm: function()
     {
         return true;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

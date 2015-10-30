@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
@@ -9,7 +11,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
 {
     const LOCK_ITEM_PREFIX = 'synchronization_amazon_orders_receive';
 
-    // ##########################################################
+    //########################################
 
     protected function getNick()
     {
@@ -21,7 +23,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
         return 'Receive';
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -33,7 +35,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
         return 100;
     }
 
-    // ##########################################################
+    //########################################
 
     protected function performActions()
     {
@@ -49,44 +51,44 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
 
             /** @var $account Ess_M2ePro_Model_Account **/
 
-            // ----------------------------------------------------------
+            // ---------------------------------------
             $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
             // M2ePro_TRANSLATIONS
             // The "Receive" Action for Amazon Account: "%account_title%" is started. Please wait...
             $status = 'The "Receive" Action for Amazon Account: "%account_title%" is started. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             if (!$this->isLockedAccount($account)) {
 
-                // ----------------------------------------------------------
+                // ---------------------------------------
                 $this->getActualOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
                     'Process Account '.$account->getTitle()
                 );
-                // ----------------------------------------------------------
+                // ---------------------------------------
 
                 $this->processAccount($account);
 
-                // ----------------------------------------------------------
+                // ---------------------------------------
                 $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
-                // ----------------------------------------------------------
+                // ---------------------------------------
             }
 
-            // ----------------------------------------------------------
+            // ---------------------------------------
             // M2ePro_TRANSLATIONS
             // The "Receive" Action for Amazon Account: "%account_title%" is finished. Please wait...
             $status = 'The "Receive" Action for Amazon Account: "%account_title%" is finished. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneAccount);
             $this->getActualLockItem()->activate();
-            // ----------------------------------------------------------
+            // ---------------------------------------
 
             $iteration++;
         }
     }
 
-    // ##########################################################
+    //########################################
 
     private function getPermittedAccounts()
     {
@@ -95,7 +97,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
         return $accountsCollection->getItems();
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     private function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
@@ -126,34 +128,34 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
         $dispatcherObject->process($connectorObj);
     }
 
-    // ##########################################################
+    //########################################
 
     private function prepareFromDate($lastFromDate)
     {
         // Get last from date
-        //------------------------
+        // ---------------------------------------
         if (is_null($lastFromDate)) {
             $lastFromDate = new DateTime('now', new DateTimeZone('UTC'));
         } else {
             $lastFromDate = new DateTime($lastFromDate, new DateTimeZone('UTC'));
         }
-        //------------------------
+        // ---------------------------------------
 
         // Get min date for synch
-        //------------------------
+        // ---------------------------------------
         $minDate = new DateTime('now',new DateTimeZone('UTC'));
         $minDate->modify('-7 days');
-        //------------------------
+        // ---------------------------------------
 
         // Prepare last date
-        //------------------------
+        // ---------------------------------------
         if ((int)$lastFromDate->format('U') < (int)$minDate->format('U')) {
             $lastFromDate = $minDate;
         }
-        //------------------------
+        // ---------------------------------------
 
         return $lastFromDate->format('Y-m-d H:i:s');
     }
 
-    // ##########################################################
+    //########################################
 }

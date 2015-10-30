@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Sku
     extends Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/sku/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Sku';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 40;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 50;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -70,14 +84,14 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Sku
         }
     }
 
-    //####################################
+    //########################################
 
     private function updateSkus(Ess_M2ePro_Model_Account $account)
     {
         /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
 
         $listingOtherCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
-        $listingOtherCollection->addFieldToFilter('`main_table`.account_id',(int)$account->getId());
+        $listingOtherCollection->addFieldToFilter('main_table.account_id',(int)$account->getId());
         $listingOtherCollection->getSelect()->where('`second_table`.`sku` IS NULL');
         $listingOtherCollection->getSelect()->order('second_table.start_date ASC');
         $listingOtherCollection->getSelect()->limit(200);
@@ -102,7 +116,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Sku
         $this->updateSkusForNotReceivedItems($listingOtherCollection, $receivedData['to_time']);
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
     private function updateSkusForReceivedItems($listingOtherCollection,Ess_M2ePro_Model_Account $account,array $items)
     {
@@ -130,7 +144,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Sku
         }
     }
 
-    //-- eBay item IDs which were removed can lead to the issue and getting SKU process freezes
+    // eBay item IDs which were removed can lead to the issue and getting SKU process freezes
     private function updateSkusForNotReceivedItems($listingOtherCollection, $toTimeReceived)
     {
         foreach ($listingOtherCollection->getItems() as $listingOther) {
@@ -150,7 +164,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Sku
         }
     }
 
-    //####################################
+    //########################################
 
     private function receiveSkusFromEbay(Ess_M2ePro_Model_Account $account, $sinceTime)
     {
@@ -179,5 +193,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Sku
         return $responseData;
     }
 
-    //####################################
+    //########################################
 }

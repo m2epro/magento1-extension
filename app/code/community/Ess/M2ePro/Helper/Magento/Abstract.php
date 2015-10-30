@@ -1,8 +1,10 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2013 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 abstract class Ess_M2ePro_Helper_Magento_Abstract extends Mage_Core_Helper_Abstract
 {
@@ -10,7 +12,7 @@ abstract class Ess_M2ePro_Helper_Magento_Abstract extends Mage_Core_Helper_Abstr
     const RETURN_TYPE_ARRAYS = 2;
     const RETURN_TYPE_OBJECTS = 3;
 
-    // ################################
+    //########################################
 
     protected function _getIdsFromInput($input, $idKey = 'id')
     {
@@ -45,7 +47,7 @@ abstract class Ess_M2ePro_Helper_Magento_Abstract extends Mage_Core_Helper_Abstr
         return (int)$input;
     }
 
-    // -------------------------------------
+    // ---------------------------------------
 
     protected function _convertCollectionToReturnType($collection, $returnType)
     {
@@ -89,5 +91,5 @@ abstract class Ess_M2ePro_Helper_Magento_Abstract extends Mage_Core_Helper_Abstr
         return $result;
     }
 
-    // ################################
+    //########################################
 }

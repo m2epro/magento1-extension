@@ -1,27 +1,29 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
     extends Ess_M2ePro_Block_Adminhtml_Development_Inspection_Abstract
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('developmentInspectionCron');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/development/inspection/cron.phtml');
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
@@ -29,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
 
         $this->cronLastRunTime = 'N/A';
         $this->cronIsNotWorking = false;
-        $this->cronCurrentType = ucfirst(Mage::helper('M2ePro/Module_Cron')->getType());
+        $this->cronCurrentRunner = ucfirst(Mage::helper('M2ePro/Module_Cron')->getRunner());
         $this->cronServiceAuthKey = $moduleConfig->getGroupValue('/cron/service/', 'auth_key');
 
         $baseDir = Mage::helper('M2ePro/Client')->getBaseDirectory();
@@ -53,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     public function isShownRecommendationsMessage()
     {
@@ -61,11 +63,11 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
             return false;
         }
 
-        if (Mage::helper('M2ePro/Module_Cron')->isTypeMagento()) {
+        if (Mage::helper('M2ePro/Module_Cron')->isRunnerMagento()) {
             return true;
         }
 
-        if (Mage::helper('M2ePro/Module_Cron')->isTypeService() && $this->cronIsNotWorking) {
+        if (Mage::helper('M2ePro/Module_Cron')->isRunnerService() && $this->cronIsNotWorking) {
             return true;
         }
 
@@ -78,12 +80,12 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
             return false;
         }
 
-        if (Mage::helper('M2ePro/Module_Cron')->isTypeService() && !$this->cronIsNotWorking) {
+        if (Mage::helper('M2ePro/Module_Cron')->isRunnerService() && !$this->cronIsNotWorking) {
             return true;
         }
 
         return false;
     }
 
-    // ########################################
+    //########################################
 }

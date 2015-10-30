@@ -1,50 +1,52 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Common_Template extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
     protected $nick;
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('commonTemplate');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_template';
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
         $this->_headerText = '';
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Policy'),
             'onclick'   => '',
             'class'     => 'add add-button-drop-down'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function getAddButtonJavascript()
     {
@@ -79,7 +81,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Common_Template extends Ess_M2ePro_Blo
         return $dropDownBlock->toHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -120,5 +122,5 @@ HTML;
 
     }
 
-    // ########################################
+    //########################################
 }

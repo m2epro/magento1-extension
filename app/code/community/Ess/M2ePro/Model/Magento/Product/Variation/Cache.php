@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_Magento_Product_Variation
 {
-    // ##########################################################
+    //########################################
 
     public function getVariationsTypeStandard()
     {
@@ -29,7 +31,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
         return $this->getMethodData(__FUNCTION__);
     }
 
-    // ##########################################################
+    //########################################
 
     protected function getMethodData($methodName, $params = null)
     {
@@ -65,5 +67,5 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
         return $this->getMagentoProduct()->setCacheValue($cacheKey, $data);
     }
 
-    // ##########################################################
+    //########################################
 }

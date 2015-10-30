@@ -23,7 +23,7 @@
         More detailed information about creation of New Amazon Products and Description Policies you can find in an article <a href="%url%" target="_blank">here</a>. <br/><br/>
 
         Below you can select the most convenient for you way to set Description Policy:',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Description+Policy')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/HoMVAQ')
         );?>
     </span>
 
@@ -79,7 +79,11 @@
             $('edit_description_template').show();
         });
 
-        $('description_template_mode_form').on('change', 'input[type=radio]', function(e) {
+        $('description_template_mode_form').observe('change', function(e) {
+            if (e.target.tagName != 'INPUT') {
+                return;
+            }
+
             if (e.target.value != 'same') {
                 $('edit_description_template').hide();
             } else {
@@ -114,8 +118,8 @@
                     products_ids : filteredProductsIds
                 },
                 onSuccess: function (transport) {
-                    $('templateDescription_grid').update(transport.responseText);
-                    $('templateDescription_grid').show();
+                    $('template_description_grid').update(transport.responseText);
+                    $('template_description_grid').show();
 
                     var newLink = $('templateDescription_addNew_link'),
                         newBtn = $('templateDescription_addNew_button'),

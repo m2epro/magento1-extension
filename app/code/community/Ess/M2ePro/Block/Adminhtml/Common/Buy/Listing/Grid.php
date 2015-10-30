@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Grid extends Ess_M2ePro_Block_Adminhtml_Listing_Grid
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('buyListingGrid');
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -28,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Grid extends Ess_M2ePro_Bloc
         $collection = Mage::helper('M2ePro/Component_Buy')->getCollection('Listing');
 
         // Set global filters
-        //--------------------------
+        // ---------------------------------------
         $filterSellingFormatTemplate = $this->getRequest()->getParam('filter_buy_selling_format_template');
         $filterSynchronizationTemplate = $this->getRequest()->getParam('filter_buy_synchronization_template');
 
@@ -43,36 +45,33 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Grid extends Ess_M2ePro_Bloc
                 'second_table.template_synchronization_id', (int)$filterSynchronizationTemplate
             );
         }
-        //--------------------------
+        // ---------------------------------------
 
         // join accounts
-        //--------------------------
+        // ---------------------------------------
         $collection->getSelect()
             ->join(array('a'=>Mage::getResourceModel('M2ePro/Account')->getMainTable()),
                 '(`a`.`id` = `main_table`.`account_id`)',
                 array('account_title'=>'title'));
-        //--------------------------
+        // ---------------------------------------
 
-        //exit($collection->getSelect()->__toString());
-
-        // Set collection to grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
-        //--------------------------------
+        // ---------------------------------------
         $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
-        //--------------------------------
+        // ---------------------------------------
 
         // Set clear log action
-        //--------------------------------
+        // ---------------------------------------
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
             '*/adminhtml_common_listing/index',
             array(
@@ -86,21 +85,21 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Grid extends Ess_M2ePro_Bloc
             'url'      => $this->getUrl('*/adminhtml_listing/clearLog', array('back' => $backUrl)),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         // Set remove listings action
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('delete_listings', array(
             'label'    => Mage::helper('M2ePro')->__('Delete Listing(s)'),
             'url'      => $this->getUrl('*/adminhtml_common_buy_listing/delete', array('back' => $backUrl)),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ####################################
+    //########################################
 
     protected function getColumnActionsItems()
     {
@@ -244,7 +243,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_Grid extends Ess_M2ePro_Bloc
         return $actions;
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnSoldProducts($value, $row, $column, $isExport)
     {
@@ -282,7 +281,7 @@ HTML;
         return $value;
     }
 
-    // ####################################
+    //########################################
 
     protected function callbackFilterTitle($collection, $column)
     {
@@ -295,7 +294,7 @@ HTML;
         $collection->getSelect()->where('main_table.title LIKE ? OR a.title LIKE ?','%'. $value .'%');
     }
 
-    // ####################################
+    //########################################
 
     public function getGridUrl()
     {
@@ -321,5 +320,5 @@ HTML;
         );
     }
 
-    // ####################################
+    //########################################
 }

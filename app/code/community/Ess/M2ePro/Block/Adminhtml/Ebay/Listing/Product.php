@@ -1,42 +1,44 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingProduct');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_product_source';
         $this->_controller .= ucfirst($this->getRequest()->getParam('source'));
-        //------------------------------
+        // ---------------------------------------
 
         // Set header text
-        //------------------------------
+        // ---------------------------------------
 
         $this->_headerText = Mage::helper('M2ePro')->__('Select Products');
-        //------------------------------
+        // ---------------------------------------
 
         // Set buttons actions
-        //------------------------------
+        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
 
         if ((bool)$this->getRequest()->getParam('listing_creation',false)) {
             $url = $this->getUrl('*/*/sourceMode', array('_current' => true));
@@ -55,29 +57,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
             'class'     => 'back',
             'onclick'   => 'setLocation(\''.$url.'\')'
         ));
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('video_tutorial', array(
             'label'     => Mage::helper('M2ePro')->__('Show Video Tutorial'),
             'class'     => 'button_link',
             'onclick'   => 'VideoTutorialHandlerObj.openPopUp();'
         ));
 
-        //------------------------------
+        // ---------------------------------------
         if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
             $this->_addButton('auto_action', array(
                 'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
                 'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
             ));
         }
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('continue', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'class'     => 'scalable next',
             'onclick'   => 'ListingProductAddHandlerObj.continue();'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
     public function getGridHtml()
@@ -104,7 +106,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
                $this->getSettingsPopupHtml();
     }
 
-    //#############################################
+    //########################################
 
     private function getVideoTutorialHtml()
     {
@@ -131,7 +133,7 @@ HTML;
 
     }
 
-    //#############################################
+    //########################################
 
     private function getAutoactionPopupHtml()
     {
@@ -171,13 +173,13 @@ Click Start Configure to create a Rule<br/> or Cancel if you do not want to do i
 HTML;
     }
 
-    //#############################################
+    //########################################
 
     private function getSettingsPopupHtml()
     {
         $helper = Mage::helper('M2ePro');
 
-        // -------------------------------------
+        // ---------------------------------------
         $onclick = <<<JS
 ListingProductAddHandlerObj.settingsPopupYesClick();
 JS;
@@ -186,9 +188,9 @@ JS;
             'onclick' => $onclick
         );
         $yesButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        // -------------------------------------
+        // ---------------------------------------
 
-        // -------------------------------------
+        // ---------------------------------------
         $onclick = <<<JS
 ListingProductAddHandlerObj.settingsPopupNoClick();
 JS;
@@ -197,7 +199,7 @@ JS;
             'onclick' => $onclick
         );
         $noButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        // -------------------------------------
+        // ---------------------------------------
 
         // M2ePro_TRANSLATIONS
         // Choose <b>Yes</b> if you want to override the Default Settings for this M2E Pro Listing and to choose Different Settings for certain Products.
@@ -228,5 +230,5 @@ JS;
 HTML;
     }
 
-    //#############################################
+    //########################################
 }

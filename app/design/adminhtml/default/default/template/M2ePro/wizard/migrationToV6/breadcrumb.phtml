@@ -1,9 +1,7 @@
 <?php
-    $currentStep = Mage::helper('M2ePro/Module_Wizard')->getStep(
-        Ess_M2ePro_Helper_Module::WIZARD_MIGRATION_NICK
-    );
+    $migrationModel = Mage::helper('M2ePro/Module_Wizard')->getWizard('migrationToV6');
+    $currentStep = Mage::helper('M2ePro/Module_Wizard')->getStep($migrationModel->getNick());
 
-    $migrationModel = Mage::getSingleton('M2ePro/Wizard_MigrationToV6');
     $steps = $migrationModel->getSteps();
     $stepTitles = $migrationModel->getStepTitles();
 

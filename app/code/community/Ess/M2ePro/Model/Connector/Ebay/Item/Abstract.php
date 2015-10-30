@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
@@ -19,7 +21,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
      */
     protected $configurator = NULL;
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -47,28 +49,32 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
         return $result;
     }
 
+    /**
+     * @return int
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function getStatus()
     {
         return $this->getLogger()->getStatus();
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function eventBeforeProcess() {}
 
     protected function eventAfterProcess() {}
 
-    // ########################################
+    //########################################
 
     abstract protected function getLogsAction();
 
     abstract protected function getActionType();
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     abstract protected function isNeedSendRequest();
 
-    // ########################################
+    //########################################
 
     protected function validateResponseData($response)
     {
@@ -85,7 +91,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
         return false;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
@@ -144,7 +150,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
         return $this->configurator;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
@@ -183,7 +189,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
         return $response;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
@@ -202,7 +208,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
         return $requestData;
     }
 
-    // ########################################
+    //########################################
 
     private function getOrmActionType()
     {
@@ -220,5 +226,5 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
         throw new Ess_M2ePro_Model_Exception('Wrong Action type');
     }
 
-    // ########################################
+    //########################################
 }

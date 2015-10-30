@@ -1,6 +1,6 @@
 EbayListingProductAddHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     options: {
         show_settings_step: true,
@@ -10,14 +10,14 @@ EbayListingProductAddHandler = Class.create(CommonHandler, {
         get_selected_products: function(callback) {}
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(options)
     {
         this.options = Object.extend(this.options,options);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     continue: function()
     {
@@ -40,7 +40,7 @@ EbayListingProductAddHandler = Class.create(CommonHandler, {
         }).bind(this));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     add: function(products)
     {
@@ -137,7 +137,7 @@ EbayListingProductAddHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showAutoactionPopup: function()
     {
@@ -166,7 +166,7 @@ EbayListingProductAddHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     cancelAutoActionPopup: function()
     {
@@ -174,7 +174,7 @@ EbayListingProductAddHandler = Class.create(CommonHandler, {
         this.continue();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showSettingsPopup: function()
     {
@@ -196,7 +196,7 @@ EbayListingProductAddHandler = Class.create(CommonHandler, {
         $('modal_dialog_message').insert($('settings_popup_content').show());
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     settingsPopupYesClick: function()
     {
@@ -236,5 +236,5 @@ EbayListingProductAddHandler = Class.create(CommonHandler, {
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

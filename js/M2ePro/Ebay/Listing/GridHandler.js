@@ -1,17 +1,17 @@
 EbayListingGridHandler = Class.create(GridHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     backParam: base64_encode('*/adminhtml_ebay_listing/index'),
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareActions: function()
     {
         return false;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addProductsSourceProductsAction: function(id)
     {
@@ -23,7 +23,7 @@ EbayListingGridHandler = Class.create(GridHandler, {
         }));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addProductsSourceCategoriesAction: function(id)
     {
@@ -35,5 +35,5 @@ EbayListingGridHandler = Class.create(GridHandler, {
         }));
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

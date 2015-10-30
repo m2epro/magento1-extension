@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
@@ -77,7 +79,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const ACTION_TRANSLATE_PRODUCT = 28;
     const _ACTION_TRANSLATE_PRODUCT = 'Translation';
 
-    //####################################
+    //########################################
 
     public function _construct()
     {
@@ -85,7 +87,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         $this->_init('M2ePro/Listing_Log');
     }
 
-    //####################################
+    //########################################
 
     public function addListingMessage($listingId,
                                       $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
@@ -133,7 +135,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         $this->createMessage($dataForAdd);
     }
 
-    //####################################
+    //########################################
 
     public function updateListingTitle($listingId , $title)
     {
@@ -161,7 +163,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         return true;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function getActionTitle($type)
     {
@@ -173,7 +175,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         return $this->getActionsTitlesByClass(__CLASS__,'ACTION_');
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
     public function clearMessages($listingId = NULL)
     {
@@ -186,7 +188,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         return 'listings';
     }
 
-    //####################################
+    //########################################
 
     protected function createMessage($dataForAdd)
     {
@@ -274,5 +276,5 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         return $dataForAdd;
     }
 
-    //####################################
+    //########################################
 }

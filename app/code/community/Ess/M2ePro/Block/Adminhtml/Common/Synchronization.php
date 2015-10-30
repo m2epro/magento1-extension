@@ -1,35 +1,37 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Synchronization
     extends Ess_M2ePro_Block_Adminhtml_Common_Component_Tabs_Container
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('synchronization');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_common_synchronization';
-        //------------------------------
+        // ---------------------------------------
 
         // Form id of marketplace_general_form
-        //------------------------------
+        // ---------------------------------------
         $this->tabsContainerId = 'edit_form';
-        //------------------------------
+        // ---------------------------------------
 
         $this->_headerText = '';
 
         $this->setTemplate(NULL);
 
-        //------------------------------
+        // ---------------------------------------
         $params = Mage::helper('M2ePro')->escapeHtml(
             json_encode(Mage::helper('M2ePro/View_Common_Component')->getActiveComponents())
         );
@@ -38,20 +40,20 @@ class Ess_M2ePro_Block_Adminhtml_Common_Synchronization
             'onclick'   => 'SynchronizationHandlerObj.saveSettings(\'runAllEnabledNow\', ' . $params . ');',
             'class'     => 'save'
         ));
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $this->_addButton('save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'SynchronizationHandlerObj.saveSettings(\'\', ' . $params . ')',
             'class'     => 'save'
         ));
-        //------------------------------
+        // ---------------------------------------
     }
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     Event.observe(window, 'load', function() {
@@ -60,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Synchronization
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return $javascriptsMain .
                '<div id="synchronization_progress_bar"></div>' .
@@ -69,7 +71,7 @@ JAVASCRIPT;
                '</div>';
     }
 
-    // ########################################
+    //########################################
 
     protected function getAmazonTabBlock()
     {
@@ -81,7 +83,7 @@ JAVASCRIPT;
         return $this->getChild('amazon_tab');
     }
 
-    // ########################################
+    //########################################
 
     protected function getBuyTabBlock()
     {
@@ -94,7 +96,7 @@ JAVASCRIPT;
         return $this->getChild('buy_tab');
     }
 
-    // ########################################
+    //########################################
 
     protected function _componentsToHtml()
     {
@@ -137,7 +139,7 @@ HTML;
 
     }
 
-    // ########################################
+    //########################################
 
     protected function getTabsContainerBlock()
     {
@@ -148,5 +150,5 @@ HTML;
         return $this->tabsContainerBlock;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Magento_Shipping
@@ -10,8 +12,12 @@ class Ess_M2ePro_Model_Magento_Shipping
 {
     protected $_code = 'm2eproshipping';
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Mage_Shipping_Model_Rate_Request $request
+     * @return bool|Mage_Shipping_Model_Rate_Result
+     */
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
         $shippingData = Mage::helper('M2ePro/Data_Global')->getValue('shipping_data');
@@ -38,6 +44,10 @@ class Ess_M2ePro_Model_Magento_Shipping
         return $result;
     }
 
+    /**
+     * @param Mage_Shipping_Model_Rate_Request $request
+     * @return bool
+     */
     public function checkAvailableShipCountries(Mage_Shipping_Model_Rate_Request $request)
     {
         if (!Mage::helper('M2ePro/Data_Global')->getValue('shipping_data')) {
@@ -67,5 +77,5 @@ class Ess_M2ePro_Model_Magento_Shipping
         return false;
     }
 
-    // ########################################
+    //########################################
 }

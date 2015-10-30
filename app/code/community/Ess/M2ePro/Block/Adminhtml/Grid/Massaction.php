@@ -1,14 +1,16 @@
 <?php
 
-    /*
-    * @copyright  Copyright (c) 2013 by  ESS-UA.
-    */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Block_Adminhtml_Grid_Massaction extends Mage_Adminhtml_Block_Widget_Grid_Massaction_Abstract
 {
     protected $_groups      = array();
 
-    // #######################################
+    //########################################
 
     public function isAvailable()
     {
@@ -49,17 +51,17 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Massaction extends Mage_Adminhtml_Block_Wi
     public function getJavaScript()
     {
         // checking if need to remove massactions, but need to display advanced filters
-        if(!isset($this->getParentBlock()->hideMassactionColumn) || !$this->getParentBlock()->hideMassactionColumn) {
+        if (!isset($this->getParentBlock()->hideMassactionColumn) || !$this->getParentBlock()->hideMassactionColumn) {
             $javascript = parent::getJavaScript();
 
-            return $javascript . <<<JAVASCRIPT
+            return $javascript . <<<HTML
 window['{$this->getJsObjectName()}'] = {$this->getJsObjectName()};
-JAVASCRIPT;
+HTML;
         }
         return '';
     }
 
-    // #######################################
+    //########################################
 
     protected function injectOptGroupsIfNeed($html)
     {
@@ -129,5 +131,5 @@ JAVASCRIPT;
         return $dom->saveHTML();
     }
 
-    // #######################################
+    //########################################
 }

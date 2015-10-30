@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
     extends Ess_M2ePro_Model_Ebay_Synchronization_Templates_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/revise/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Revise';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 5;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 20;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -47,7 +61,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
         $this->executeTotal();
     }
 
-    //####################################
+    //########################################
 
     private function executeQtyChanged()
     {
@@ -60,6 +74,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
 
         foreach ($changedListingsProducts as $listingProduct) {
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowQty()->allowVariations();
@@ -95,6 +110,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
 
         foreach ($changedListingsProducts as $listingProduct) {
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowPrice()->allowVariations();
@@ -119,7 +135,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 
     private function executeTitleChanged()
     {
@@ -148,6 +164,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
                 continue;
             }
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowTitle();
@@ -168,36 +185,6 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
                 $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $configurator
             );
         }
-
-        /** @var Ess_M2ePro_Model_Listing_Product[] $changedListingsProducts */
-        $changedListingsProducts = $this->getChangesHelper()->getInstancesByVariationOption(
-            array('name'), true
-        );
-
-        foreach ($changedListingsProducts as $listingProduct) {
-
-            $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
-            $configurator->setPartialMode();
-            $configurator->allowVariations();
-
-            $isExistInRunner = $this->getRunner()->isExistProduct(
-                $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $configurator
-            );
-
-            if ($isExistInRunner) {
-                continue;
-            }
-
-            if (!$this->getInspector()->isMeetReviseVariationTitleRequirements($listingProduct)) {
-                continue;
-            }
-
-            $this->getRunner()->addProduct(
-                $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $configurator
-            );
-        }
-
-        $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
     private function executeSubTitleChanged()
@@ -227,6 +214,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
                 continue;
             }
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowSubtitle();
@@ -281,6 +269,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
                 continue;
             }
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowDescription();
@@ -321,9 +310,11 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
             );
         }
 
+        $attributesForProductChange = array_unique($attributesForProductChange);
+
         /** @var Ess_M2ePro_Model_Listing_Product[] $changedListingsProducts */
         $changedListingsProducts = $this->getChangesHelper()->getInstancesByListingProduct(
-            array_unique($attributesForProductChange), true
+            $attributesForProductChange, true
         );
 
         foreach ($changedListingsProducts as $listingProduct) {
@@ -333,14 +324,14 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
 
             $imagesAttributes = array_merge(
                 $ebayListingProduct->getEbayDescriptionTemplate()->getImageMainAttributes(),
-                $ebayListingProduct->getEbayDescriptionTemplate()->getGalleryImagesAttributes(),
-                $ebayListingProduct->getEbayDescriptionTemplate()->getVariationImagesAttributes()
+                $ebayListingProduct->getEbayDescriptionTemplate()->getGalleryImagesAttributes()
             );
 
             if (!in_array($listingProduct->getData('changed_attribute'), $imagesAttributes)) {
                 continue;
             }
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $configurator->setPartialMode();
             $configurator->allowImages();
@@ -362,10 +353,48 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
             );
         }
 
+        /** @var Ess_M2ePro_Model_Listing_Product[] $changedListingsProductsByVariationOption */
+        $changedListingsProductsByVariationOption = $this->getChangesHelper()->getInstancesByVariationOption(
+            $attributesForProductChange, true
+        );
+
+        foreach ($changedListingsProductsByVariationOption as $listingProduct) {
+
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
+            $ebayListingProduct = $listingProduct->getChildObject();
+
+            $imagesAttributes = $ebayListingProduct->getEbayDescriptionTemplate()->getVariationImagesAttributes();
+
+            if (!in_array($listingProduct->getData('changed_attribute'), $imagesAttributes)) {
+                continue;
+            }
+
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
+            $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
+            $configurator->setPartialMode();
+            $configurator->allowVariations();
+
+            $isExistInRunner = $this->getRunner()->isExistProduct(
+                $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $configurator
+            );
+
+            if ($isExistInRunner) {
+                continue;
+            }
+
+            if (!$this->getInspector()->isMeetReviseImagesRequirements($listingProduct)) {
+                continue;
+            }
+
+            $this->getRunner()->addProduct(
+                $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $configurator
+            );
+        }
+
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 
     private function executeNeedSynchronize()
     {
@@ -380,9 +409,9 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
         foreach ($listingProductCollection->getItems() as $listingProduct) {
 
             /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
-
             $listingProduct->setData('synch_status',Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_SKIP)->save();
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
             $isExistInRunner = $this->getRunner()->isExistProduct(
@@ -431,6 +460,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
         /* @var $listingProduct Ess_M2ePro_Model_Listing_Product */
         foreach ($collection->getItems() as $listingProduct) {
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
             $isExistInRunner = $this->getRunner()->isExistProduct(
@@ -470,5 +500,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 }

@@ -1,11 +1,14 @@
 <div id="block_notice_common_sellingFormat_templates" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Policies'); ?>">
-    <?php echo Mage::helper('M2ePro')->__('In this Section you can Create, Edit, and Delete Selling Format, Shipping Override
-    or Synchronization Policies.</br></br>
-    <strong>Selling Format Policies</strong> are used to work with Values related to the offer part of the Listings, such as Price,
-    Quantity and similar parameters.</br>
-    <strong>Shipping Override Policies</strong> are used to specify Settings for Shipping Services, Locale and Shipping Cost.</br>
-    In the <strong>Synchronization Policy</strong> you can set the Rules by which the dynamic data Synchronization between Channel
-    and Magento will be performed.
+    <?php echo Mage::helper('M2ePro')->__('
+        In this Section you can Create, Edit and Delete Selling Format, Shipping Override, Description and
+        Synchronization Policies.</br></br>
+        <strong>Selling Format Policies</strong> are used to work with values related to the offer part of the Listings, such as
+        Price, Quantity and similar parameters.</br></br>
+        <strong>Shipping Override Policies</strong> are used to specify Settings for Shipping Services, Locale and Shipping Cost.</br></br>
+        <strong>Description Policies</strong> are used to provide necessary Settings for Creating new ASIN/ISBN in Amazon Catalog
+        or Update the Product Information of the existing Amazon Item.</br></br>
+        In the <strong>Synchronization Policy</strong> you can set the Rules under which the dynamic data Synchronization between
+        Channel and Magento will be performed.
 ');
 
     $components = Mage::helper('M2ePro/View_Common_Component')->getActiveComponents();
@@ -18,9 +21,9 @@
         <?php echo Mage::helper('M2ePro')->__('
             </br></br>More detailed information about ability to work with this page you can find on <a target="_blank" href="%url1%">%amazon%</a> and
             <a target="_blank" href="%url2%">%buy%</a>.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Policies'),
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/7oIVAQ'),
             Mage::helper('M2ePro/Component_Amazon')->getTitle(),
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'Policies'),
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/2IMVAQ'),
             Mage::helper('M2ePro/Component_Buy')->getTitle()
         ); ?>
     <?php endif; ?>

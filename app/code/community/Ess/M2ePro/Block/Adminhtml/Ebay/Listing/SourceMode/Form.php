@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingSourceMode');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/listing/source_mode.phtml');
     }
@@ -37,19 +39,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode_Form extends Mage_Admin
 
     protected function _beforeToHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         $this->setData('source', $this->getRequest()->getParam('source','products'));
-        //------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
         return parent::_toHtml();
     }
 
-    // ########################################
+    //########################################
 }

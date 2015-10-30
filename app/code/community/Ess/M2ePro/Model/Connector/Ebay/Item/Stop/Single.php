@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_Item_Stop_Single
     extends Ess_M2ePro_Model_Connector_Ebay_Item_SingleAbstract
 {
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -27,7 +29,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Stop_Single
         return Ess_M2ePro_Model_Listing_Product::ACTION_STOP;
     }
 
-    // ########################################
+    //########################################
 
     protected function filterManualListingProduct()
     {
@@ -67,7 +69,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Stop_Single
         return $this->buildRequestDataObject($data)->getData();
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function prepareResponseData($response)
     {
@@ -104,7 +106,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Stop_Single
         return $response;
     }
 
-    // ########################################
+    //########################################
 
     protected function checkAndRemoveNeededItems()
     {
@@ -116,5 +118,5 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Stop_Single
         $this->listingProduct->deleteInstance();
     }
 
-    // ########################################
+    //########################################
 }

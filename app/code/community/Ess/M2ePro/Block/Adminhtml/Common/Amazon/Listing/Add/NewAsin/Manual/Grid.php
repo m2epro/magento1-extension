@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Manual_Grid
@@ -10,31 +12,31 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Manual_Grid
     /** @var Ess_M2ePro_Model_Listing */
     private $listing = NULL;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('newAsinManualGrid');
-        //------------------------------
+        // ---------------------------------------
 
         // Set default values
-        //------------------------------
+        // ---------------------------------------
         $this->setDefaultSort('product_id');
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
         // Get collection
-        //----------------------------
+        // ---------------------------------------
         /* @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
         $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
             Mage::getModel('catalog/product')->getResource())
@@ -42,9 +44,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Manual_Grid
             ->setListingProductModeOn()
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('sku');
-        //----------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listingProductsIds = $this->getListing()
                                    ->getSetting('additional_data', 'adding_new_asin_listing_products_ids');
 
@@ -69,11 +71,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Manual_Grid
         $collection->getSelect()->where('elp.search_settings_status != ? OR elp.search_settings_status IS NULL',
             Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_IN_PROGRESS);
         $collection->getSelect()->where('elp.general_id IS NULL');
-        //------------------------------
+        // ---------------------------------------
 
-        //exit($collection->getSelect()->__toString());
-
-        // Set collection to grid
         $this->setCollection($collection);
 
         parent::_prepareCollection();
@@ -157,7 +156,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Manual_Grid
         $this->setMassactionIdField('listing_product_id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
-        //--------------------------------
+        // ---------------------------------------
         $this->getMassactionBlock()->addItem('setDescriptionTemplate', array(
             'label' => Mage::helper('M2ePro')->__('Set Description Policy'),
             'url'   => ''
@@ -167,12 +166,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_NewAsin_Manual_Grid
             'label' => Mage::helper('M2ePro')->__('Reset Description Policy'),
             'url'   => ''
         ));
-        //--------------------------------
+        // ---------------------------------------
 
         return parent::_prepareMassaction();
     }
 
-    // ########################################
+    //########################################
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
@@ -269,7 +268,7 @@ HTML;
 HTML;
     }
 
-    // ########################################
+    //########################################
 
     protected function callbackFilterProductTitle($collection, $column)
     {
@@ -287,7 +286,7 @@ HTML;
         );
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function callbackColumnDescriptionTemplateFilterCallback($collection, $column)
     {
@@ -304,18 +303,18 @@ HTML;
         }
     }
 
-    // ########################################
+    //########################################
 
     public function getRowUrl($row)
     {
         return false;
     }
 
-    // ####################################
+    //########################################
 
     protected function _toHtml()
     {
-        $javascriptsMain = <<<JAVASCRIPT
+        $javascriptsMain = <<<HTML
 <script type="text/javascript">
 
     if (typeof ListingGridHandlerObj != 'undefined') {
@@ -329,12 +328,12 @@ HTML;
     });
 
 </script>
-JAVASCRIPT;
+HTML;
 
         return parent::_toHtml() . $javascriptsMain;
     }
 
-    // ####################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing
@@ -354,5 +353,5 @@ JAVASCRIPT;
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 }

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Logger
@@ -15,31 +17,43 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Logger
 
     protected $status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param int $id
+     */
     public function setActionId($id)
     {
         $this->actionId = (int)$id;
     }
 
+    /**
+     * @return null|int
+     */
     public function getActionId()
     {
         return $this->actionId;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param int $value
+     */
     public function setAction($value)
     {
         $this->action = (int)$value;
     }
 
+    /**
+     * @param int $value
+     */
     public function setInitiator($value)
     {
         $this->initiator = (int)$value;
     }
 
-    // ########################################
+    //########################################
 
     public function setStoreMode($value)
     {
@@ -51,8 +65,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Logger
         return $this->storedMessages;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
@@ -81,7 +98,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Logger
         $this->status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
     }
 
-    // ########################################
+    //########################################
 
     protected function initLogType($messageDataType)
     {
@@ -111,5 +128,5 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Logger
         return $resultType;
     }
 
-    // ########################################
+    //########################################
 }

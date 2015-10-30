@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Amazon_Virtual extends Ess_M2ePro_Model_Connector_Amazon_Abstract
 {
     private $cache = array();
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -22,7 +24,7 @@ class Ess_M2ePro_Model_Connector_Amazon_Virtual extends Ess_M2ePro_Model_Connect
         return $this->cache['command'];
     }
 
-    // ########################################
+    //########################################
 
     protected function getRequestInfo()
     {
@@ -54,7 +56,7 @@ class Ess_M2ePro_Model_Connector_Amazon_Virtual extends Ess_M2ePro_Model_Connect
         return $this->cache['request_data'];
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function validateResponseData($response)
     {
@@ -73,5 +75,5 @@ class Ess_M2ePro_Model_Connector_Amazon_Virtual extends Ess_M2ePro_Model_Connect
         return $response;
     }
 
-    // ########################################
+    //########################################
 }

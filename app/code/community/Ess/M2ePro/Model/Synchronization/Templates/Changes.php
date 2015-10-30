@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Synchronization_Templates_Changes
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
     private $component = NULL;
     private $cache = array();
 
-    //####################################
+    //########################################
 
     public function setComponent($component)
     {
@@ -21,7 +23,7 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
         return $this->component;
     }
 
-    //####################################
+    //########################################
 
     public function init()
     {
@@ -39,8 +41,13 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
         $this->cache = array();
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @param array $attributes
+     * @param bool $withStoreFilter
+     * @return array
+     */
     public function getInstances(array $attributes, $withStoreFilter = false)
     {
         return $this->getListingProducts($attributes,
@@ -48,6 +55,11 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
                                          'getChangedItems');
     }
 
+    /**
+     * @param array $attributes
+     * @param bool $withStoreFilter
+     * @return array
+     */
     public function getInstancesByListingProduct(array $attributes, $withStoreFilter = false)
     {
         return $this->getListingProducts($attributes,
@@ -55,6 +67,11 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
                                          'getChangedItemsByListingProduct');
     }
 
+    /**
+     * @param array $attributes
+     * @param bool $withStoreFilter
+     * @return array
+     */
     public function getInstancesByVariationOption(array $attributes, $withStoreFilter = false)
     {
         return $this->getListingProducts($attributes,
@@ -62,7 +79,7 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
                                          'getChangedItemsByVariationOption');
     }
 
-    //####################################
+    //########################################
 
     private function getListingProducts(array $attributes, $withStoreFilter = false, $fetchFunction)
     {
@@ -123,5 +140,5 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
         return $this->cache['listings_products_by_params'][$cacheKey];
     }
 
-    //####################################
+    //########################################
 }

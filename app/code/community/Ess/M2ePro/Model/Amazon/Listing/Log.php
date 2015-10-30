@@ -1,12 +1,14 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Log extends Ess_M2ePro_Model_Listing_Log
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -14,8 +16,21 @@ class Ess_M2ePro_Model_Amazon_Listing_Log extends Ess_M2ePro_Model_Listing_Log
         $this->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param $listingId
+     * @param $productId
+     * @param $listingProductId
+     * @param int $initiator
+     * @param null $actionId
+     * @param null $action
+     * @param null $description
+     * @param null $type
+     * @param null $priority
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function addProductMessage($listingId,
                                       $productId,
                                       $listingProductId,
@@ -63,5 +78,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Log extends Ess_M2ePro_Model_Listing_Log
         $this->createMessage($dataForAdd);
     }
 
-    // ########################################
+    //########################################
 }

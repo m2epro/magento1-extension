@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /**
@@ -19,7 +21,7 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
     const PRICE_VARIATION_MODE_PARENT   = 1;
     const PRICE_VARIATION_MODE_CHILDREN = 2;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -27,8 +29,12 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         $this->_init('M2ePro/Buy_Template_SellingFormat');
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isLocked()
     {
         if (parent::isLocked()) {
@@ -41,50 +47,80 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
                             ->getSize();
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getListings($asObjects = false, array $filters = array())
     {
         return $this->getRelatedComponentItems('Listing','template_selling_format_id',$asObjects,$filters);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getQtyMode()
     {
         return (int)$this->getData('qty_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isQtyModeProduct()
     {
         return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtyModeSingle()
     {
         return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtyModeNumber()
     {
         return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtyModeAttribute()
     {
         return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtyModeProductFixed()
     {
         return $this->getQtyMode() == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED;
     }
 
+    /**
+     * @return int
+     */
     public function getQtyNumber()
     {
         return (int)$this->getData('qty_custom_value');
     }
 
+    /**
+     * @return array
+     */
     public function getQtySource()
     {
         return array(
@@ -98,6 +134,9 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         );
     }
 
+    /**
+     * @return array
+     */
     public function getQtyAttributes()
     {
         $attributes = array();
@@ -110,67 +149,103 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getQtyPercentage()
     {
         return (int)$this->getData('qty_percentage');
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getQtyModificationMode()
     {
         return (int)$this->getData('qty_modification_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isQtyModificationModeOn()
     {
         return $this->getQtyModificationMode() == self::QTY_MODIFICATION_MODE_ON;
     }
 
+    /**
+     * @return bool
+     */
     public function isQtyModificationModeOff()
     {
         return $this->getQtyModificationMode() == self::QTY_MODIFICATION_MODE_OFF;
     }
 
+    /**
+     * @return int
+     */
     public function getQtyMinPostedValue()
     {
         return (int)$this->getData('qty_min_posted_value');
     }
 
+    /**
+     * @return int
+     */
     public function getQtyMaxPostedValue()
     {
         return (int)$this->getData('qty_max_posted_value');
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getPriceMode()
     {
         return (int)$this->getData('price_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceModeProduct()
     {
         return $this->getPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT;
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceModeSpecial()
     {
         return $this->getPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL;
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceModeAttribute()
     {
         return $this->getPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPriceCoefficient()
     {
         return $this->getData('price_coefficient');
     }
 
+    /**
+     * @return array
+     */
     public function getPriceSource()
     {
         return array(
@@ -180,6 +255,9 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         );
     }
 
+    /**
+     * @return array
+     */
     public function getPriceAttributes()
     {
         $attributes = array();
@@ -192,8 +270,11 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         return $attributes;
     }
 
-    //-------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function usesProductOrSpecialPrice()
     {
         if ($this->isPriceModeProduct() || $this->isPriceModeSpecial()) {
@@ -203,25 +284,47 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         return false;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return int
+     */
     public function getPriceVariationMode()
     {
         return (int)$this->getData('price_variation_mode');
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceVariationModeParent()
     {
         return $this->getPriceVariationMode() == self::PRICE_VARIATION_MODE_PARENT;
     }
 
+    /**
+     * @return bool
+     */
     public function isPriceVariationModeChildren()
     {
         return $this->getPriceVariationMode() == self::PRICE_VARIATION_MODE_CHILDREN;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return float
+     */
+    public function getPriceVatPercent()
+    {
+        return (float)$this->getData('price_vat_percent');
+    }
+
+    //########################################
+
+    /**
+     * @return array
+     */
     public function getTrackingAttributes()
     {
         return array_unique(array_merge(
@@ -230,6 +333,9 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         ));
     }
 
+    /**
+     * @return array
+     */
     public function getUsedAttributes()
     {
         return array_unique(array_merge(
@@ -238,7 +344,7 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         ));
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param bool $asArrays
@@ -275,7 +381,7 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
-    // ########################################
+    //########################################
 
     public function save()
     {
@@ -289,5 +395,5 @@ class Ess_M2ePro_Model_Buy_Template_SellingFormat extends Ess_M2ePro_Model_Compo
         return parent::delete();
     }
 
-    // ########################################
+    //########################################
 }

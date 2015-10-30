@@ -1,30 +1,32 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_Block_Adminhtml_Configuration_Abstract
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('configurationLicenseForm');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/configuration/license.phtml');
 
-        //------------------------------
+        // ---------------------------------------
 
         $this->setPageHelpLink('Global+Settings#GlobalSettings-License');
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareForm()
     {
@@ -59,7 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
 
         // Set data for form
-        //----------------------------
+        // ---------------------------------------
         $this->key = Mage::helper('M2ePro')->escapeHtml($licenseHelper->getKey());
 
         $this->licenseData = array(
@@ -91,9 +93,9 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         }
 
         $this->components = $components;
-        //----------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Refresh'),
             'onclick' => 'setLocation(\''.$this->getUrl('M2ePro/adminhtml_configuration_license/refreshStatus').'\');',
@@ -101,9 +103,9 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('refresh_status',$buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Enter'),
             'onclick' => 'LicenseHandlerObj.changeLicenseKey();',
@@ -111,9 +113,9 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('enter_key',$buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Change'),
             'onclick' => 'LicenseHandlerObj.changeLicenseKey();',
@@ -121,9 +123,9 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('change_key',$buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
             'onclick' => 'LicenseHandlerObj.confirmLicenseKey();',
@@ -131,9 +133,9 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_key',$buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
-        //-------------------------------
+        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Get Trial'),
             'onclick' => 'LicenseHandlerObj.componentSetTrial(this);',
@@ -141,10 +143,10 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('set_trial_key', $buttonBlock);
-        //-------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

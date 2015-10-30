@@ -91,6 +91,31 @@
                     </td>
                 </tr>
 
+                <tr id="adding_add_not_visible_field">
+                    <td class="label" style="width: 200px;">
+                        <label for="adding_add_not_visible"><?php echo Mage::helper('M2ePro')->__('Add not Visible Individually Products') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select name="adding_add_not_visible" id="adding_add_not_visible" style="width: 275px;">
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_NO ?>" <?php if ($formData['adding_add_not_visible'] == Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_NO): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES ?>" <?php if ($formData['adding_add_not_visible'] == Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                        </select>
+                    </td>
+                    <td class="value">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                    <span class="tool-tip-message" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                        <span><?php echo Mage::helper('M2ePro')->__('
+                            Set to <strong>Yes</strong> if you want the Magento Products with
+                            Visibility \'Not visible Individually\' to be added to the Listing
+                            Automatically.</br>
+                            If set to <strong>No</strong>, only Variation (i.e.
+                            Parent) Magento Products will be added to the Listing Automatically,
+                            excluding Child Products.
+                        '); ?></span>
+                    </span>
+                    </td>
+                </tr>
             </table>
 
             <div style="padding-top: 20px;"></div>

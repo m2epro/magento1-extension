@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Controller_Adminhtml_Development_CommandController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -19,7 +21,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Development_CommandController
         return Mage::getSingleton('admin/session')->isLoggedIn();
     }
 
-    //#############################################
+    //########################################
 
     protected function getStyleHtml()
     {
@@ -55,5 +57,5 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Development_CommandController
 HTML;
     }
 
-    //#############################################
+    //########################################
 }

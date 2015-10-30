@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
@@ -10,7 +12,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
     /** @var Ess_M2ePro_Model_Listing $listing */
     private $listing = null;
 
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -19,16 +21,16 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
         return $this;
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $autoMode  = $this->getRequest()->getParam('auto_mode');
         $listing   = $this->getListing();
 
         Mage::helper('M2ePro/Data_Global')->setValue('listing', $listing);
-        //------------------------------
+        // ---------------------------------------
 
         if (empty($autoMode)) {
             $autoMode = $listing->getChildObject()->getAutoMode();
@@ -59,14 +61,14 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    // ########################################
+    //########################################
 
     public function getAutoCategoryFormHtmlAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $listing = $this->getListing();
         Mage::helper('M2ePro/Data_Global')->setValue('listing', $listing);
-        //------------------------------
+        // ---------------------------------------
 
         $this->loadLayout();
 
@@ -76,7 +78,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    // ########################################
+    //########################################
 
     public function saveAction()
     {
@@ -88,21 +90,39 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
             return;
         }
 
-        //------------------------------
+        // ---------------------------------------
         $listing = $this->getListing();
-        //------------------------------
+        // ---------------------------------------
 
         $data = json_decode($post['auto_action_data'], true);
 
         $listingData = array(
             'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
             'auto_global_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'auto_global_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'auto_website_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'auto_website_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE
         );
 
+        if ($listing->isComponentModeAmazon()) {
+            $listingData['auto_global_adding_description_template_id'] = null;
+            $listingData['auto_website_adding_description_template_id'] = null;
+        }
+
+        $groupData = array(
+            'id' => null,
+            'category' => null,
+            'title' => null,
+            'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
+            'adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
+            'deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE,
+            'categories' => array()
+        );
+
         // mode global
-        //------------------------------
+        // ---------------------------------------
         if ($data['auto_mode'] == Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL) {
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL;
             $listingData['auto_global_adding_mode'] = $data['auto_global_adding_mode'];
@@ -110,11 +130,15 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
             if ($listing->isComponentModeAmazon()) {
                 $listingData['auto_global_adding_description_template_id'] = $data['adding_description_template_id'];
             }
+
+            if ($listingData['auto_global_adding_mode'] != Ess_M2ePro_Model_Listing::ADDING_MODE_NONE) {
+                $listingData['auto_global_adding_add_not_visible'] = $data['auto_global_adding_add_not_visible'];
+            }
         }
-        //------------------------------
+        // ---------------------------------------
 
         // mode website
-        //------------------------------
+        // ---------------------------------------
         if ($data['auto_mode'] == Ess_M2ePro_Model_Listing::AUTO_MODE_WEBSITE) {
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_WEBSITE;
             $listingData['auto_website_adding_mode'] = $data['auto_website_adding_mode'];
@@ -123,11 +147,15 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
             if ($listing->isComponentModeAmazon()) {
                 $listingData['auto_website_adding_description_template_id'] = $data['adding_description_template_id'];
             }
+
+            if ($listingData['auto_website_adding_mode'] != Ess_M2ePro_Model_Listing::ADDING_MODE_NONE) {
+                $listingData['auto_website_adding_add_not_visible'] = $data['auto_website_adding_add_not_visible'];
+            }
         }
-        //------------------------------
+        // ---------------------------------------
 
         // mode category
-        //------------------------------
+        // ---------------------------------------
         if ($data['auto_mode'] == Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY) {
             $listingData['auto_mode'] = Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY;
 
@@ -140,7 +168,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
                 unset($data['id']);
             }
 
-            $group->addData($data);
+            $group->addData(array_merge($groupData, $data));
             $group->setData('listing_id', $listing->getId());
             $group->save();
             $group->clearCategories();
@@ -152,23 +180,25 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
                 $category->save();
             }
         }
-        //------------------------------
+        // ---------------------------------------
 
         $listing->addData($listingData)->save();
     }
 
-    // ########################################
+    //########################################
 
     public function resetAction()
     {
-        //------------------------------
+        // ---------------------------------------
         $listing = $this->getListing();
-        //------------------------------
+        // ---------------------------------------
 
         $data = array(
             'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
             'auto_global_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'auto_global_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'auto_website_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'auto_website_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE
         );
 
@@ -184,7 +214,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
         }
     }
 
-    //#############################################
+    //########################################
 
     public function deleteCategoryAction()
     {
@@ -203,12 +233,12 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
 
         $category->deleteInstance();
 
-        if(Mage::getResourceModel('M2ePro/Listing_Auto_Category_Group')->isEmpty($groupId)) {
+        if (Mage::getResourceModel('M2ePro/Listing_Auto_Category_Group')->isEmpty($groupId)) {
             Mage::getModel('M2ePro/Listing_Auto_Category_Group')->loadInstance($groupId)->deleteInstance();
         }
     }
 
-    //#############################################
+    //########################################
 
     public function deleteCategoryGroupAction()
     {
@@ -219,7 +249,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
             ->deleteInstance();
     }
 
-    //#############################################
+    //########################################
 
     public function isCategoryGroupTitleUniqueAction()
     {
@@ -243,7 +273,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
         return $this->getResponse()->setBody(json_encode(array('unique' => !(bool)$collection->getSize())));
     }
 
-    //#############################################
+    //########################################
 
     public function getCategoryGroupGridAction()
     {
@@ -252,7 +282,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
         $this->getResponse()->setBody($grid->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     private function getListing()
     {
@@ -269,5 +299,5 @@ class Ess_M2ePro_Adminhtml_Common_Listing_AutoActionController
         return $this->getRequest()->getParam('component');
     }
 
-    //#############################################
+    //########################################
 }

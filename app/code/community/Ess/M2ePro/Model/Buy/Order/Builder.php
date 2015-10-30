@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
@@ -13,7 +15,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
     // M2ePro_TRANSLATIONS
     // Duplicated Buy orders with ID #%id%.
 
-    // ########################################
+    //########################################
 
     /** @var $order Ess_M2ePro_Model_Account */
     private $account = NULL;
@@ -25,7 +27,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
 
     private $items = array();
 
-    // ########################################
+    //########################################
 
     public function initialize(Ess_M2ePro_Model_Account $account, array $data = array())
     {
@@ -35,40 +37,40 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         $this->initializeOrder();
     }
 
-    // ########################################
+    //########################################
 
     private function initializeData(array $data = array())
     {
         // Init general data
-        // ------------------
+        // ---------------------------------------
         $this->setData('account_id', $this->account->getId());
         $this->setData('marketplace_id', Ess_M2ePro_Helper_Component_Buy::MARKETPLACE_ID);
 
         $this->setData('seller_id', $data['seller_id']);
         $this->setData('buy_order_id', $data['order_id']);
         $this->setData('purchase_create_date', $data['purchase_create_date']);
-        // ------------------
+        // ---------------------------------------
 
         // Init sale data
-        // ------------------
+        // ---------------------------------------
         $this->setData('paid_amount', (float)$data['paid_amount']);
         $this->setData('currency', 'USD');
-        // ------------------
+        // ---------------------------------------
 
         // Init customer/shipping data
-        // ------------------
+        // ---------------------------------------
         $this->setData('buyer_name', $data['buyer_name']);
         $this->setData('buyer_email', $data['buyer_email']);
         $this->setData('billing_address', $data['billing_address']);
         $this->setData('shipping_method', $data['shipping_method']);
         $this->setData('shipping_address', $data['shipping_address']);
         $this->setData('shipping_price', (float)$data['shipping_price']);
-        // ------------------
+        // ---------------------------------------
 
         $this->items = $data['items'];
     }
 
-    // ########################################
+    //########################################
 
     private function initializeOrder()
     {
@@ -83,7 +85,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         $existOrdersNumber = count($existOrders);
 
         // duplicated M2ePro orders. remove m2e order without magento order id or newest order
-        // --------------------
+        // ---------------------------------------
         if ($existOrdersNumber > 1) {
             $isDeleted = false;
 
@@ -106,30 +108,30 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
                 $orderForRemove->deleteInstance();
             }
         }
-        // --------------------
+        // ---------------------------------------
 
         // New order
-        // --------------------
+        // ---------------------------------------
         if ($existOrdersNumber == 0) {
             $this->status = self::STATUS_NEW;
             $this->order = Mage::helper('M2ePro/Component_Buy')->getModel('Order');
             $this->order->setStatusUpdateRequired(true);
             return;
         }
-        // --------------------
+        // ---------------------------------------
 
         // Already exist order
-        // --------------------
+        // ---------------------------------------
         $this->order = reset($existOrders);
         $this->status = self::STATUS_UPDATED;
 
         if (is_null($this->order->getMagentoOrderId())) {
             $this->order->setStatusUpdateRequired(true);
         }
-        // --------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -144,7 +146,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         return $this->order;
     }
 
-    // ########################################
+    //########################################
 
     private function createOrUpdateItems()
     {
@@ -166,7 +168,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return bool
@@ -184,7 +186,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         return $this->status == self::STATUS_UPDATED;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Order
@@ -199,7 +201,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         $this->order->setAccount($this->account);
     }
 
-    // ########################################
+    //########################################
 
     private function processListingsProductsUpdates()
     {
@@ -291,7 +293,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
                     $listingProduct->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
                 }
 
-                foreach($tempLogMessages as $tempLogMessage) {
+                foreach ($tempLogMessages as $tempLogMessage) {
                     $logger->addProductMessage(
                         $listingProduct->getListingId(),
                         $listingProduct->getProductId(),
@@ -389,7 +391,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
                     $otherListing->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
                 }
 
-                foreach($tempLogMessages as $tempLogMessage) {
+                foreach ($tempLogMessages as $tempLogMessage) {
                     $logger->addProductMessage(
                         $otherListing->getId(),
                         Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
@@ -406,5 +408,5 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         }
     }
 
-    // ########################################
+    //########################################
 }

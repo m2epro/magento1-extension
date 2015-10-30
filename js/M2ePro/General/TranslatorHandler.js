@@ -1,6 +1,6 @@
 var TranslatorHandler = Class.create(Translate, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     translate: function($super, text)
     {
@@ -28,5 +28,5 @@ var TranslatorHandler = Class.create(Translate, {
         return newText;
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

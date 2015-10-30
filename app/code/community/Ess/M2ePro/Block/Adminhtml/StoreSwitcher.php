@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Template
@@ -12,7 +14,7 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
     protected $_storeIds;
     protected $_hasDefaultOption = true;
 
-    // ########################################
+    //########################################
 
     public function __construct($params)
     {
@@ -23,7 +25,7 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
         $this->setDefaultStoreName(Mage::helper('M2ePro')->__('Admin (Default Values)'));
     }
 
-    // ########################################
+    //########################################
 
     public function isDisplayDefaultStoreModeUp()
     {
@@ -39,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
         return $this->getData('display_default_store_mode') == self::DISPLAY_DEFAULT_STORE_MODE_DOWN;
     }
 
-    // ########################################
+    //########################################
 
     public function isRequiredOption()
     {
@@ -51,7 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
         return $this->getData('empty_option') === true;
     }
 
-    // ########################################
+    //########################################
 
     public function getDefaultStoreName()
     {
@@ -62,7 +64,7 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
         return parent::getDefaultStoreName();
     }
 
-    // ########################################
+    //########################################
 
     public function getWebsiteCollection()
     {
@@ -89,7 +91,7 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
         return $websites;
     }
 
-    // ########################################
+    //########################################
 
     public function getGroupCollection($website)
     {
@@ -181,5 +183,5 @@ class Ess_M2ePro_Block_Adminhtml_StoreSwitcher extends Mage_Adminhtml_Block_Temp
         return $this->_hasDefaultOption;
     }
 
-    // ########################################
+    //########################################
 }

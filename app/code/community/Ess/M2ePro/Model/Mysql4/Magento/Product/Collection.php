@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Mysql4_Magento_Product_Collection
@@ -9,7 +11,7 @@ class Ess_M2ePro_Model_Mysql4_Magento_Product_Collection
 {
     private $listingProductMode = false;
 
-    // ########################################
+    //########################################
 
     public function setListingProductModeOn()
     {
@@ -20,7 +22,7 @@ class Ess_M2ePro_Model_Mysql4_Magento_Product_Collection
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function getAllIds($limit = null, $offset = null)
     {
@@ -47,7 +49,7 @@ class Ess_M2ePro_Model_Mysql4_Magento_Product_Collection
         return $ids;
     }
 
-    // ########################################
+    //########################################
 
     public function getSelectCountSql()
     {
@@ -57,7 +59,6 @@ class Ess_M2ePro_Model_Mysql4_Magento_Product_Collection
         $countSelect->reset(Zend_Db_Select::ORDER);
         $countSelect->reset(Zend_Db_Select::LIMIT_COUNT);
         $countSelect->reset(Zend_Db_Select::LIMIT_OFFSET);
-        //$countSelect->reset(Zend_Db_Select::COLUMNS);
 
         if ($this->listingProductMode) {
             $countSelect->columns('COUNT(lp.id) as total_count');
@@ -65,8 +66,6 @@ class Ess_M2ePro_Model_Mysql4_Magento_Product_Collection
             $countSelect->columns('COUNT(DISTINCT e.entity_id) as total_count');
             $countSelect->reset(Zend_Db_Select::GROUP);
         }
-
-        //$countSelect->resetJoinLeft();
 
         return $countSelect;
     }
@@ -84,13 +83,13 @@ class Ess_M2ePro_Model_Mysql4_Magento_Product_Collection
             if ($this->listingProductMode) {
                 $query = $countSelect->__toString();
                 $query = <<<SQL
-SELECT COUNT(id) FROM ({$query}) t
+SELECT COUNT(temp_table.id) FROM ({$query}) temp_table
 SQL;
             } else {
                 $countSelect->reset(Zend_Db_Select::GROUP);
                 $query = $countSelect->__toString();
                 $query = <<<SQL
-SELECT COUNT(DISTINCT entity_id) FROM ({$query}) t
+SELECT COUNT(DISTINCT temp_table.entity_id) FROM ({$query}) temp_table
 SQL;
             }
 
@@ -99,11 +98,9 @@ SQL;
         return intval($this->_totalRecords);
     }
 
-    // ########################################
+    //########################################
 
-    /*
-     * Price Sorting Hack
-     */
+    // Price Sorting Hack
     protected function _renderOrders()
     {
         if (!$this->_isOrdersRendered) {
@@ -119,5 +116,5 @@ SQL;
         return $this;
     }
 
-    // ########################################
+    //########################################
 }

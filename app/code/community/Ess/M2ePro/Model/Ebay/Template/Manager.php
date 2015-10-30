@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Template_Manager
@@ -26,13 +28,21 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
     const TEMPLATE_SELLING_FORMAT = 'selling_format';
     const TEMPLATE_SYNCHRONIZATION = 'synchronization';
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Listing|Ess_M2ePro_Model_Ebay_Listing_Product
+     */
     public function getOwnerObject()
     {
         return $this->ownerObject;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Ebay_Listing|Ess_M2ePro_Model_Ebay_Listing_Product $object
+     * @return $this
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function setOwnerObject($object)
     {
         if (!($object instanceof Ess_M2ePro_Model_Ebay_Listing) &&
@@ -43,25 +53,39 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $this;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isListingOwner()
     {
         return $this->getOwnerObject() instanceof Ess_M2ePro_Model_Ebay_Listing;
     }
 
+    /**
+     * @return bool
+     */
     public function isListingProductOwner()
     {
         return $this->getOwnerObject() instanceof Ess_M2ePro_Model_Ebay_Listing_Product;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return null|string
+     */
     public function getTemplate()
     {
         return $this->templateNick;
     }
 
+    /**
+     * @param string $nick
+     * @return $this
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function setTemplate($nick)
     {
         if (!in_array(strtolower($nick),$this->getAllTemplates())) {
@@ -71,8 +95,11 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $this;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     public function getAllTemplates()
     {
         return array(
@@ -85,13 +112,19 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         );
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isFlatTemplate()
     {
         return in_array($this->getTemplate(),$this->getFlatTemplates());
     }
 
+    /**
+     * @return array
+     */
     public function getFlatTemplates()
     {
         return array(
@@ -101,13 +134,19 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         );
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isHorizontalTemplate()
     {
         return in_array($this->getTemplate(),$this->getHorizontalTemplates());
     }
 
+    /**
+     * @return array
+     */
     public function getHorizontalTemplates()
     {
         return array(
@@ -117,13 +156,19 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         );
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isMarketplaceDependentTemplate()
     {
         return in_array($this->getTemplate(), $this->getMarketplaceDependentTemplates());
     }
 
+    /**
+     * @return array
+     */
     public function getMarketplaceDependentTemplates()
     {
         return array(
@@ -133,13 +178,19 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         );
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return bool
+     */
     public function isTrackingAttributesTemplate()
     {
         return in_array($this->getTemplate(),$this->getTrackingAttributesTemplates());
     }
 
+    /**
+     * @return array
+     */
     public function getTrackingAttributesTemplates()
     {
         return array(
@@ -151,25 +202,38 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         );
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getModeColumnName()
     {
         return self::COLUMN_PREFIX.'_'.$this->getTemplate().'_mode';
     }
 
+    /**
+     * @return string
+     */
     public function getCustomIdColumnName()
     {
         return self::COLUMN_PREFIX.'_'.$this->getTemplate().'_custom_id';
     }
 
+    /**
+     * @return string
+     */
     public function getTemplateIdColumnName()
     {
         return self::COLUMN_PREFIX.'_'.$this->getTemplate().'_id';
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @param int $mode
+     * @return null|string
+     */
     public function getIdColumnNameByMode($mode)
     {
         $name = NULL;
@@ -197,7 +261,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $this->getOwnerObject()->getData($idColumnName);
     }
 
-    // #######################################
+    //########################################
 
     public function getModeValue()
     {
@@ -214,7 +278,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $this->getOwnerObject()->getData($this->getTemplateIdColumnName());
     }
 
-    // ########################################
+    //########################################
 
     public function getParentResultObject()
     {
@@ -252,7 +316,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $this->makeResultObject($id);
     }
 
-    // --------------------------------------
+    // ---------------------------------------
 
     private function makeResultObject($id)
     {
@@ -274,24 +338,33 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $object;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     */
     public function isModeParent()
     {
         return $this->getModeValue() == self::MODE_PARENT;
     }
 
+    /**
+     * @return bool
+     */
     public function isModeCustom()
     {
         return $this->getModeValue() == self::MODE_CUSTOM;
     }
 
+    /**
+     * @return bool
+     */
     public function isModeTemplate()
     {
         return $this->getModeValue() == self::MODE_TEMPLATE;
     }
 
-    // ########################################
+    //########################################
 
     public function getResultObject()
     {
@@ -318,8 +391,12 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $this->resultObject;
     }
 
-    // #######################################
+    //########################################
 
+    /**
+     * @return null|string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function getTemplateModelName()
     {
         $name = NULL;
@@ -445,7 +522,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $model;
     }
 
-    // #######################################
+    //########################################
 
     /**
      * @param string $ownerObjectModel
@@ -513,5 +590,5 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         return $resultTemplates;
     }
 
-    // #######################################
+    //########################################
 }

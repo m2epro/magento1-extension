@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Mysql4_Abstract
     extends Mage_Core_Model_Mysql4_Abstract
 {
-    // ########################################
+    //########################################
 
     protected function _beforeSave(Mage_Core_Model_Abstract $object)
     {
@@ -21,7 +23,7 @@ abstract class Ess_M2ePro_Model_Mysql4_Abstract
 
         $result = parent::_beforeSave($object);
 
-        // fix for \Varien_Db_Adapter_Pdo_Mysql::prepareColumnValue
+        // fix for Varien_Db_Adapter_Pdo_Mysql::prepareColumnValue
         // an empty string cannot be saved -> NULL is saved instead
         // for Magento version > 1.6.x.x
         foreach ($object->getData() as $key => $value) {
@@ -33,7 +35,7 @@ abstract class Ess_M2ePro_Model_Mysql4_Abstract
 
     protected function _afterSave(Mage_Core_Model_Abstract $object)
     {
-        // fix for \Varien_Db_Adapter_Pdo_Mysql::prepareColumnValue
+        // fix for Varien_Db_Adapter_Pdo_Mysql::prepareColumnValue
         // an empty string cannot be saved -> NULL is saved instead
         // for Magento version > 1.6.x.x
         foreach ($object->getData() as $key => $value) {
@@ -45,5 +47,5 @@ abstract class Ess_M2ePro_Model_Mysql4_Abstract
         return parent::_afterSave($object);
     }
 
-    // ########################################
+    //########################################
 }

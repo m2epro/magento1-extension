@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 /** @method Ess_M2ePro_Model_Ebay_Listing_Other_Action_Type_Relist_Response getResponseObject */
@@ -9,25 +11,38 @@
 class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Relist_Single
     extends Ess_M2ePro_Model_Connector_Ebay_OtherItem_Abstract
 {
-    // ########################################
+    //########################################
 
+    /**
+     * @return array
+     */
     protected function getCommand()
     {
         return array('item','update','relist');
     }
 
+    /**
+     * @return int
+     */
     protected function getLogsAction()
     {
         return Ess_M2ePro_Model_Listing_Other_Log::ACTION_RELIST_PRODUCT;
     }
 
+    /**
+     * @return int
+     */
     protected function getActionType()
     {
         return Ess_M2ePro_Model_Listing_Product::ACTION_RELIST;
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception
+     */
     protected function filterManualListingOther()
     {
         if (!$this->otherListing->isRelistable()) {
@@ -56,7 +71,7 @@ class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Relist_Single
         return $this->buildRequestDataObject($data)->getData();
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function prepareResponseData($response)
     {
@@ -96,7 +111,17 @@ class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Relist_Single
         return $response;
     }
 
-    // ########################################
+    //########################################
+
+    protected function isResponseValid($response)
+    {
+        if (parent::isResponseValid($response)) {
+            return true;
+        }
+
+        $this->processAsPotentialDuplicate();
+        return false;
+    }
 
     protected function processResponseInfo($responseInfo)
     {
@@ -126,5 +151,5 @@ class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Relist_Single
         $this->getLogger()->logListingOtherMessage($this->otherListing, $message);
     }
 
-    // ########################################
+    //########################################
 }

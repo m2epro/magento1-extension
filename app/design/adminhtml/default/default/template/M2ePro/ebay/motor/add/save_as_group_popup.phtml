@@ -1,0 +1,50 @@
+<style type="text/css">
+    #save_as_group_form .form-list td.label {
+        width: 130px;
+    }
+
+    #save_as_group_form .form-list td.label label {
+        width: 130px;
+    }
+
+    #save_as_group_form textarea {
+        height: 65px;
+    }
+</style>
+
+<div id="save_as_group_popup" style="display: none;">
+
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+
+        <div id="block_notice_ebay_motor_add_save_as_group_popup" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Save as Group'); ?>">
+            <?php echo Mage::helper('M2ePro')->__('
+                This Option allows you to Save the preselected <strong>Grid Filters</strong>
+                or <strong>ePIDs/kTypes</strong> as a Group and reapply them for Further Usage.
+                Thus, you will not need to Search for and Choose the same Compatible Vehicles again.
+            '); ?>
+        </div>
+
+        <form id="save_as_group_form" action="javascript:void(0);">
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title') ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" type="text" name="title" class="input-text required-entry M2ePro-group-title">
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <div style="float: right;">
+            <a href="javascript:void(0);" onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+            &nbsp;&nbsp;
+            <?php echo $this->getChildHtml('save_btn'); ?>
+        </div>
+
+        <div class="clear"></div>
+
+    </div>
+
+</div>

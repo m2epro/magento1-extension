@@ -1,0 +1,37 @@
+<div class="hor-scroll" style="max-height: 200px; overflow: auto;">
+    <div class="grid">
+        <table class="data" style="background-color: white; width: 100%; margin: 10px 10px 10px 0; border: 1px solid #cbd3d4;" cellspacing="0">
+            <thead>
+            <tr class="headings">
+                <th style="font-weight: bold; padding-left: 5px;">
+                    <?php echo $this->getItemTitle()?>
+                </th>
+                <th style="font-weight: bold; padding-left: 5px">
+                    <?php echo Mage::helper('M2ePro')->__('Note')?>
+                </th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->getGroup()->getItems() as $item) { ?>
+                <tr>
+                    <td style="padding: 5px; width: 75px; text-align: center">
+                        <?php echo $item['id']?>
+                    </td>
+                    <td style="padding: 5px">
+                        <?php echo $item['note']?>
+                    </td>
+                    <td style="padding: 5px; width: 18px;">
+                        <img style="cursor; pointer" src="<?php echo $this->getSkinUrl('M2ePro/images/delete.png'); ?>"
+                            onclick="EbayMotorAddGroupGridHandlerObj.removeItemFromGroup(this, <?php echo $item['id']?>, <?php echo $this->getGroupId() ?>)">
+                    </td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="float: right; margin-top: 10px; margin-bottom: 8px;">
+    <?php echo $this->getChildHtml('close_btn'); ?>
+</div>

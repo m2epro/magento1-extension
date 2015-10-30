@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolver
@@ -16,8 +18,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
 
     private $resolvedAttributes = array();
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @param $attribute
+     * @param array $names
+     * @return $this
+     */
     public function addSourceAttribute($attribute, array $names)
     {
         if (in_array($attribute, $this->sourceAttributes)) {
@@ -30,6 +37,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
         return $this;
     }
 
+    /**
+     * @param $attribute
+     * @param array $names
+     * @return $this
+     */
     public function addDestinationAttribute($attribute, array $names)
     {
         if (in_array($attribute, $this->destinationAttributes)) {
@@ -42,8 +54,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
         return $this;
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return $this
+     */
     public function resolve()
     {
         if (array_diff($this->sourceAttributes, array_keys($this->resolvedAttributes))) {
@@ -77,13 +92,19 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getResolvedAttributes()
     {
         return $this->resolvedAttributes;
     }
 
-    // ##########################################################
+    //########################################
 
+    /**
+     * @return $this
+     */
     public function clearSourceAttributes()
     {
         $this->sourceAttributes = array();
@@ -92,6 +113,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function clearDestinationAttributes()
     {
         $this->destinationAttributes = array();
@@ -100,5 +124,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
         return $this;
     }
 
-    // ##########################################################
+    //########################################
 }

@@ -1,26 +1,28 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Block_Adminhtml_Wizard_Congratulation extends Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract
 {
-    // ########################################
+    //########################################
 
     protected function getHeaderTextHtml()
     {
         return 'Congratulations!';
     }
 
-    // ########################################
+    //########################################
 
     protected function isNeedSkipButton()
     {
         return false;
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -31,5 +33,5 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_Congratulation extends Ess_M2eP
                $wizardHelper->createBlock('congratulation_content', $this->getNick())->toHtml();
     }
 
-    // ########################################
+    //########################################
 }

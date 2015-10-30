@@ -1,13 +1,16 @@
 <?php
+
 /*
-* @copyright  Copyright (c) 2014 by  ESS-UA.
-*/
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
+ */
 
 class Ess_M2ePro_Helper_Magento_Store_Website
 {
     private $defaultWebsite = NULL;
 
-    // ########################################
+    //########################################
 
     public function isExists($entity)
     {
@@ -24,7 +27,7 @@ class Ess_M2ePro_Helper_Magento_Store_Website
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function getDefault()
     {
@@ -50,7 +53,7 @@ class Ess_M2ePro_Helper_Magento_Store_Website
         return (int)$this->getDefault()->getId();
     }
 
-    // ########################################
+    //########################################
 
     public function getWebsite($storeId)
     {
@@ -69,7 +72,7 @@ class Ess_M2ePro_Helper_Magento_Store_Website
         return $website ? $website->getName() : '';
     }
 
-    // ########################################
+    //########################################
 
     public function addWebsite($name, $code)
     {
@@ -87,5 +90,5 @@ class Ess_M2ePro_Helper_Magento_Store_Website
        return $website;
     }
 
-    // ########################################
+    //########################################
 }

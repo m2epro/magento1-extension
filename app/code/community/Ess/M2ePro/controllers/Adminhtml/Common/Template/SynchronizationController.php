@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Common_Template_SynchronizationController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
-    //#############################################
+    //########################################
 
     protected function _initAction()
     {
@@ -26,7 +28,7 @@ class Ess_M2ePro_Adminhtml_Common_Template_SynchronizationController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
-    //#############################################
+    //########################################
 
     public function indexAction()
     {
@@ -41,7 +43,7 @@ class Ess_M2ePro_Adminhtml_Common_Template_SynchronizationController
         $this->getResponse()->setBody($block->toHtml());
     }
 
-    //#############################################
+    //########################################
 
     public function editAction()
     {
@@ -67,6 +69,8 @@ class Ess_M2ePro_Adminhtml_Common_Template_SynchronizationController
             return;
         }
 
+        $channel = '';
+
         $deleted = $locked = 0;
         foreach ($ids as $id) {
             $template = Mage::helper('M2ePro/Component')->getUnknownObject('Template_Synchronization', $id);
@@ -76,6 +80,8 @@ class Ess_M2ePro_Adminhtml_Common_Template_SynchronizationController
                 $template->deleteInstance();
                 $deleted++;
             }
+
+            $channel = $template->getComponentMode();
         }
 
         $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
@@ -85,8 +91,10 @@ class Ess_M2ePro_Adminhtml_Common_Template_SynchronizationController
         $tempString .= Mage::helper('M2ePro')->__('Policy must not be in use to be deleted.');
         $locked && $this->_getSession()->addError($tempString);
 
-        $this->_redirect('*/*/index');
+        $this->_redirect('*/adminhtml_common_template/index', array(
+            'channel' => $channel
+        ));
     }
 
-    //#############################################
+    //########################################
 }

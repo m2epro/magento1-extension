@@ -1,35 +1,45 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Mass
 {
     const MAX_PROCESSORS_COUNT_PER_ONE_TIME = 1000;
 
-    // #################################
+    //########################################
 
     /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
     private $listingsProducts = array();
 
     private $forceExecuting = true;
 
-    // #################################
+    //########################################
 
+    /**
+     * @param array $listingsProducts
+     * @return $this
+     */
     public function setListingsProducts(array $listingsProducts)
     {
         $this->listingsProducts = $listingsProducts;
         return $this;
     }
 
+    /**
+     * @param bool $forceExecuting
+     * @return $this
+     */
     public function setForceExecuting($forceExecuting = true)
     {
         $this->forceExecuting = $forceExecuting;
         return $this;
     }
 
-    // #################################
+    //########################################
 
     public function execute()
     {
@@ -66,7 +76,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         );
     }
 
-    // #################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor[]
@@ -94,5 +104,5 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         return $processors;
     }
 
-    // #################################
+    //########################################
 }

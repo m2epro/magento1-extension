@@ -1,30 +1,32 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('edit_form');
         $this->setContainerId('magento_block_ebay_marketplaces');
         $this->setTemplate('M2ePro/ebay/marketplace/form.phtml');
-        //------------------------------
+        // ---------------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function _beforeToHtml()
     {
-        //----------------------------
+        // ---------------------------------------
         /** @var Ess_M2ePro_Model_Marketplace $tempMarketplaces */
         $tempMarketplaces = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace')
             ->setOrder('group_title', 'ASC')
@@ -51,7 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
                 'marketplaces' => array()
             );
 
-            foreach($tempMarketplaces as $tempMarketplace) {
+            foreach ($tempMarketplaces as $tempMarketplace) {
                 if ($groupOrderTitle != $tempMarketplace->getGroupTitle()) {
                     continue;
                 }
@@ -77,20 +79,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
 
         $this->groups = $groups;
         $this->storedStatuses = $storedStatuses;
-        //----------------------------
+        // ---------------------------------------
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(array(
                 'label'   => Mage::helper('M2ePro')->__('Update Now'),
                 'onclick' => 'MarketplaceHandlerObj.runSingleSynchronization(this)',
                 'class' => 'run_single_button'
-            ) );
+            ));
 
         $this->setChild('run_single_button', $buttonBlock);
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 }

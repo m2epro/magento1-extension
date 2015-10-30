@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
@@ -9,7 +11,7 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
     const MAINTENANCE_COOKIE_KEY = 'm2epro_maintenance';
     const MAINTENANCE_COOKIE_DURATION = 3600;
 
-    // ########################################
+    //########################################
 
     public function isEnabled()
     {
@@ -21,7 +23,7 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
         return (bool)Mage::app()->getCookie()->get(self::MAINTENANCE_COOKIE_KEY);
     }
 
-    // ########################################
+    //########################################
 
     public function enable()
     {
@@ -41,7 +43,7 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
         Mage::app()->getCookie()->set(self::MAINTENANCE_COOKIE_KEY, '', 0);
     }
 
-    // ########################################
+    //########################################
 
     public function isExpired()
     {
@@ -69,5 +71,5 @@ class Ess_M2ePro_Helper_Module_Maintenance extends Mage_Core_Helper_Abstract
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/debug/maintenance/', 'restore_date', $restoreDate);
     }
 
-    // ########################################
+    //########################################
 }

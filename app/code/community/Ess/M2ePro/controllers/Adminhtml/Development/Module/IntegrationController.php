@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Development_Module_IntegrationController
     extends Ess_M2ePro_Controller_Adminhtml_Development_CommandController
 {
-    //#############################################
+    //########################################
 
     /**
      * @title "Revise Total"
@@ -117,7 +119,7 @@ HTML;
         $this->_redirect('*/*/reviseTotal');
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Reset eBay 3rd Party"
@@ -243,7 +245,7 @@ HTML;
         return $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Show eBay Nonexistent Templates"
@@ -448,7 +450,7 @@ HTML;
         return $select->query()->fetchAll();
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Show eBay Duplicates [parse logs]"
@@ -584,7 +586,7 @@ HTML;
         $skipped    = array();
         $duplicated = array();
 
-        while($row = $queryStmt->fetch()) {
+        while ($row = $queryStmt->fetch()) {
 
             $key = $row['listing_id'].'##'.$row['product_id'];
 
@@ -653,7 +655,7 @@ HTML;
         echo str_replace('#count#', count($duplicated), $html);
     }
 
-    //#############################################
+    //########################################
 
     /**
      * @title "Add Products into Listing"
@@ -753,7 +755,7 @@ HTML;
         $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
     }
 
-    //#############################################
+    //########################################
 
     private function getEmptyResultsHtml($messageText)
     {
@@ -767,5 +769,5 @@ HTML;
 HTML;
     }
 
-    //#############################################
+    //########################################
 }

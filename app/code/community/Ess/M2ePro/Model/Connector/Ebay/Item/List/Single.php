@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
     extends Ess_M2ePro_Model_Connector_Ebay_Item_SingleAbstract
 {
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array(), Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -29,7 +31,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         $this->listingProduct->save();
     }
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -46,7 +48,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         return Ess_M2ePro_Model_Listing_Product::ACTION_LIST;
     }
 
-    // ########################################
+    //########################################
 
     protected function filterManualListingProduct()
     {
@@ -66,7 +68,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
             return false;
         }
 
-        if(!$this->listingProduct->getChildObject()->isSetCategoryTemplate()) {
+        if (!$this->listingProduct->getChildObject()->isSetCategoryTemplate()) {
 
             $message = array(
                 // M2ePro_TRANSLATIONS
@@ -117,7 +119,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         return $this->buildRequestDataObject($data)->getData();
     }
 
-    //----------------------------------------
+    // ---------------------------------------
 
     protected function prepareResponseData($response)
     {
@@ -143,7 +145,17 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         return $response;
     }
 
-    // ########################################
+    //########################################
+
+    protected function isResponseValid($response)
+    {
+        if (parent::isResponseValid($response)) {
+            return true;
+        }
+
+        $this->processAsPotentialDuplicate();
+        return false;
+    }
 
     protected function processResponseInfo($responseInfo)
     {
@@ -173,5 +185,5 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_play_account`
@@ -16,7 +16,7 @@ $connection = $installer->getConnection();
     ADD INDEX `panel_mode` (`panel_mode`);
 */
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_play_account');
 $tempTableIndexList = $connection->getIndexList($tempTable);
@@ -33,7 +33,7 @@ if (!isset($tempTableIndexList[strtoupper('panel_mode')])) {
     $connection->addKey($tempTable, 'panel_mode', 'panel_mode');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -68,7 +68,7 @@ AND `key` = 'interval';
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 $tempQuery = <<<SQL
@@ -104,7 +104,7 @@ SQL
 
 }
 
-//#############################################
+//########################################
 
 $currentDateTime = date('c');
 
@@ -175,7 +175,7 @@ if (!empty($insertSql)) {
     $connection->query($insertSql);
 }
 
-//#############################################
+//########################################
 
 $currentDateTime = date('c');
 
@@ -246,7 +246,7 @@ if (!empty($insertSql)) {
     $connection->query($insertSql);
 }
 
-//#############################################
+//########################################
 
 $currentDateTime = date('c');
 
@@ -317,8 +317,8 @@ if (!empty($insertSql)) {
     $connection->query($insertSql);
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

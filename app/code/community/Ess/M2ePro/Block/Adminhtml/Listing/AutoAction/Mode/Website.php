@@ -1,28 +1,30 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Adminhtml_Block_Widget_Form
 {
     protected $listing;
 
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('listingAutoActionModeWebsite');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/listing/auto_action/mode/website.phtml');
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareForm()
     {
@@ -39,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
         return parent::_prepareForm();
     }
 
-    // ####################################
+    //########################################
 
     public function hasFormData()
     {
@@ -55,11 +57,12 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
     {
         return array(
             'auto_website_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
+            'auto_website_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
             'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE,
         );
     }
 
-    // ####################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Listing
@@ -75,13 +78,13 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
         return $this->listing;
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
         parent::_beforeToHtml();
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'confirm_button',
             'class'   => 'confirm_button',
@@ -90,9 +93,9 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'continue_button',
             'class'   => 'continue_button next',
@@ -102,11 +105,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('continue_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
     }
 
-    // ####################################
+    //########################################
 
     public function getWebsiteName()
     {
@@ -115,5 +118,5 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
         return Mage::helper('M2ePro/Magento_Store')->getWebsiteName($listing->getStoreId());
     }
 
-    // ####################################
+    //########################################
 }

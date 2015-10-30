@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayAccountEditTabs');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTitle(Mage::helper('M2ePro')->__('Configuration'));
         $this->setDestElementId('edit_form');
@@ -24,8 +26,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Mage_Adminhtml_B
     protected function _beforeToHtml()
     {
         $this->addTab('general', array(
-            'label'   => Mage::helper('M2ePro')->__('Account Details'),
-            'title'   => Mage::helper('M2ePro')->__('Account Details'),
+            'label'   => Mage::helper('M2ePro')->__('General'),
+            'title'   => Mage::helper('M2ePro')->__('General'),
             'content' => $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_general')->toHtml(),
         ));
 
@@ -72,5 +74,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Mage_Adminhtml_B
         return parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 }

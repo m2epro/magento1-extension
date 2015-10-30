@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_ebay_template_shipping`
@@ -18,7 +18,7 @@ $connection = $installer->getConnection();
     DROP COLUMN `adding_duplicate`;
 */
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_shipping');
 
@@ -30,7 +30,7 @@ if ($connection->tableColumnExists($tempTable, 'excluded_locations') === false) 
     );
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing_auto_category');
 
@@ -41,8 +41,8 @@ if ($connection->tableColumnExists($tempTable, 'adding_duplicate') !== false) {
     );
 }
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

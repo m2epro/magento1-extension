@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
     extends Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Grid
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
@@ -16,7 +18,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
         $this->setId('amazonListingOtherGrid');
     }
 
-    // ####################################
+    //########################################
 
     protected function _prepareCollection()
     {
@@ -24,8 +26,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
 
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
         $collection->getSelect()->group(array('account_id','marketplace_id'));
-
-//        exit($collection->getSelect()->__toString());
 
         // Set collection to grid
         $this->setCollection($collection);
@@ -38,7 +38,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
         $this->addColumnAfter('marketplace', array(
             'header'    => Mage::helper('M2ePro')->__('Marketplace'),
             'align'     => 'left',
-            //'width'     => '200px',
             'type'      => 'text',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnMarketplace')
@@ -47,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
         return parent::_prepareColumns();
     }
 
-    // ####################################
+    //########################################
 
     public function callbackColumnMarketplace($value, $row, $column, $isExport)
     {
@@ -108,7 +107,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
         return $value;
     }
 
-    // ####################################
+    //########################################
 
     public function getRowUrl($row)
     {
@@ -122,7 +121,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
         ));
     }
 
-    // ####################################
+    //########################################
 
     protected function prepareCacheData()
     {
@@ -158,5 +157,5 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_Grid
 
     }
 
-    // ####################################
+    //########################################
 }

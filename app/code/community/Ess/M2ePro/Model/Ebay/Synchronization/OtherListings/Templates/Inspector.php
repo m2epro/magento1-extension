@@ -1,13 +1,21 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2015 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
 {
-    //####################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isMeetRelistRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$listingOther->isStopped() || !$listingOther->isRelistable()) {
@@ -26,7 +34,7 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
             return false;
         }
 
-        if(!$ebaySynchronizationTemplate->isRelistMode()) {
+        if (!$ebaySynchronizationTemplate->isRelistMode()) {
             return false;
         }
 
@@ -83,6 +91,12 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return true;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isMeetStopRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$listingOther->isListed() || !$listingOther->isStoppable()) {
@@ -144,8 +158,13 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return false;
     }
 
-    //####################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     protected function isMeetReviseGeneralRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$listingOther->isListed() || !$listingOther->isRevisable()) {
@@ -168,8 +187,13 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return true;
     }
 
-    //------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isMeetReviseQtyRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$this->isMeetReviseGeneralRequirements($listingOther)) {
@@ -200,6 +224,11 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return false;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isMeetRevisePriceRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$this->isMeetReviseGeneralRequirements($listingOther)) {
@@ -232,6 +261,11 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return false;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isMeetReviseTitleRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$this->isMeetReviseGeneralRequirements($listingOther)) {
@@ -248,6 +282,11 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return true;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isMeetReviseSubtitleRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$this->isMeetReviseGeneralRequirements($listingOther)) {
@@ -264,6 +303,11 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return true;
     }
 
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $listingOther
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
     public function isMeetReviseDescriptionRequirements(Ess_M2ePro_Model_Listing_Other $listingOther)
     {
         if (!$this->isMeetReviseGeneralRequirements($listingOther)) {
@@ -280,5 +324,5 @@ class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Inspector
         return true;
     }
 
-    //####################################
+    //########################################
 }

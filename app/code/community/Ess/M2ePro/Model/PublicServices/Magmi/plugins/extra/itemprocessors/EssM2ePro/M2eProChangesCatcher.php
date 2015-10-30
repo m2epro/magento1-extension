@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class M2eProChangesCatcher extends Magmi_ItemProcessor
@@ -18,10 +20,13 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         'inserted'      => 0
     );
 
-    // ########################################
+    //########################################
 
     public function initialize($params) {}
 
+    /**
+     * @return array
+     */
     public function getPluginInfo()
     {
         return array(
@@ -32,7 +37,7 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         );
     }
 
-    // ########################################
+    //########################################
 
     public function processItemAfterId(&$item, $params = null)
     {
@@ -50,6 +55,9 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         return $result;
     }
 
+    /**
+     * @return bool
+     */
     public function endImport()
     {
         $this->filterOnlyAffectedChanges();
@@ -58,7 +66,7 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         return true;
     }
 
-    // ########################################
+    //########################################
 
     private function filterOnlyAffectedChanges()
     {
@@ -143,7 +151,7 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         $this->saveStatistics();
     }
 
-    // ########################################
+    //########################################
 
     protected function resetStatistics()
     {
@@ -164,5 +172,5 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         $this->resetStatistics();
     }
 
-    // ########################################
+    //########################################
 }

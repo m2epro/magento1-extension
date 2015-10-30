@@ -1,37 +1,51 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
     extends Ess_M2ePro_Model_Ebay_Synchronization_Templates_Abstract
 {
-    //####################################
+    //########################################
 
+    /**
+     * @return string
+     */
     protected function getNick()
     {
         return '/relist/';
     }
 
+    /**
+     * @return string
+     */
     protected function getTitle()
     {
         return 'Relist';
     }
 
-    // -----------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     protected function getPercentsStart()
     {
         return 20;
     }
 
+    /**
+     * @return int
+     */
     protected function getPercentsEnd()
     {
         return 35;
     }
 
-    //####################################
+    //########################################
 
     protected function performActions()
     {
@@ -39,7 +53,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
         $this->executeScheduled();
     }
 
-    //####################################
+    //########################################
 
     private function immediatelyChangedProducts()
     {
@@ -54,6 +68,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
 
             $action = $this->getAction($listingProduct);
 
+            /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
             $this->prepareConfigurator($listingProduct, $configurator, $action);
@@ -96,7 +111,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__);
     }
 
-    //####################################
+    //########################################
 
     private function executeScheduled()
     {
@@ -164,6 +179,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
 
                 $action = $this->getAction($listingProduct);
 
+                /** @var $configurator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator */
                 $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
                 $this->prepareConfigurator($listingProduct, $configurator, $action);
@@ -217,7 +233,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
                     array('neq'=>Ess_M2ePro_Model_Listing_Product::STATUS_LISTED));
         $collection->addFieldToFilter('main_table.additional_data',
                     array('like'=>'%"add_to_schedule":true%'));
-        $collection->getSelect()->order('main_table.id', Zend_Db_Select::SQL_ASC);
+        $collection->getSelect()->order('main_table.id ASC');
         $collection->getSelect()->limit(100);
 
         $lastItem = $collection->getLastItem();
@@ -231,7 +247,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
         return $collection->getItems();
     }
 
-    //####################################
+    //########################################
 
     private function getAction(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -266,5 +282,5 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
         $configurator->allowQty()->allowVariations();
     }
 
-    //####################################
+    //########################################
 }

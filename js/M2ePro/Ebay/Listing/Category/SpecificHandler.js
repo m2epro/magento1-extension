@@ -1,7 +1,7 @@
 EbayListingCategorySpecificHandler = Class.create();
 EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function(marketplaceId, categoryMode, categoryValue, uniqId, interfaceMode)
     {
@@ -26,7 +26,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         this.specificsJson = [];
     },
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     setAttributes: function(attributes)
     {
@@ -34,7 +34,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         return this;
     },
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     setDictionarySpecifics: function(specifics)
     {
@@ -54,7 +54,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         return this;
     },
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     getItemSpecifics: function()
     {
@@ -86,7 +86,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         return internalData;
     },
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     prepareAttributes: function()
     {
@@ -98,7 +98,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         this.attributeOptions = cachedOptions;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareBeforeRenderSpecifics: function()
     {
@@ -170,6 +170,10 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
             $(self.uniqId+'item_specifics_value_ebay_recommended_'+counter).selectedIndex = -1;
 
             $(self.uniqId+'item_specifics_value_custom_attribute_' + counter).insert(self.attributeOptions);
+
+            var handlerObj = new AttributeCreator(self.uniqId + 'item_specifics_value_custom_attribute_' + counter);
+            handlerObj.setSelectObj($(self.uniqId+'item_specifics_value_custom_attribute_' + counter));
+            handlerObj.injectAddOption();
 
             var specificValueMode = $(self.uniqId+'item_specifics_value_mode_' + counter);
 
@@ -291,12 +295,12 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         });
     },
 
-    renderAttributesWithEmptyOption: function(name, insertTo, value, notRequiried)
+    renderAttributesWithEmptyOption: function(id, insertTo, value, notRequiried)
     {
         var self  = this;
 
         var className = notRequiried ? '' : ' class="M2ePro-required-when-visible"';
-        var txt = '<select name="' + name + '" id="' + name + '" ' + className + '>\n';
+        var txt = '<select name="' + id + '" id="' + id + '" ' + className + '>\n';
 
         txt += '<option class="empty"></option>\n';
         txt += self.attributeOptions;
@@ -307,10 +311,10 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
             $(insertTo).innerHTML = txt;
         }
 
-        self.checkAttributesSelect(name, value);
+        self.checkAttributesSelect(id, value);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     addDictionarySpecificRow: function(specific)
     {
@@ -366,8 +370,14 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
             $$('.custom-specific-mode-custom-attribute').each(removeNodes);
             $$('.custom-specific-mode-custom-label-attribute').each(removeNodes);
         } else {
-            $(this.uniqId+'item_specifics_value_custom_attribute_' + this.counter).insert(this.attributeOptions);
-            $(this.uniqId+'item_specifics_value_custom_attribute_' + this.counter).show();
+            var selectId = this.uniqId+'item_specifics_value_custom_attribute_' + this.counter;
+            $(selectId).insert(this.attributeOptions);
+
+            var handlerObj = new AttributeCreator(selectId);
+            handlerObj.setSelectObj($(selectId));
+            handlerObj.injectAddOption();
+
+            $(selectId).show();
         }
 
         $(this.uniqId+'item_specifics_value_mode_' + this.counter).hide();
@@ -414,7 +424,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     chooseEbaySelectedSpecifics: function(specific, counter)
     {
@@ -533,7 +543,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         select.up('td').next('td').select('.validation-advice').each(Element.hide);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     validate: function()
     {
@@ -576,7 +586,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     reload: function()
     {
@@ -611,7 +621,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         self.postForm(url, {specific_data: Object.toJSON(specificData)});
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     clearSpecifics: function()
     {
@@ -645,5 +655,5 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
         }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

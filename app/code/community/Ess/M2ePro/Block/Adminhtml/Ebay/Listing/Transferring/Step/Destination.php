@@ -1,30 +1,32 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination extends Mage_Adminhtml_Block_Widget
 {
-    // ####################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('ebayListingTransferringStepDestination');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/ebay/listing/transferring/step/destination.phtml');
     }
 
-    // ####################################
+    //########################################
 
     protected function _beforeToHtml()
     {
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'continue_button_destination',
             'class'   => 'confirm_button',
@@ -32,9 +34,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('continue_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $data = array(
             'id'      => 'confirm_button_destination',
             'class'   => 'confirm_button',
@@ -46,9 +48,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_button', $buttonBlock);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $listing = $this->_getEbayListing();
 
         $sourceMarketplace = $listing->getMarketplace();
@@ -57,9 +59,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         $this->setData('source_account', $listing->getAccount());
         $this->setData('source_marketplace', $sourceMarketplace);
         $this->setData('source_store', $this->_getStore());
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account')->setOrder('title', 'ASC');
         $accounts = array();
         foreach ($collection->getItems() as $account) {
@@ -71,9 +73,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         }
 
         $this->setData('accounts', $accounts);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace')
             ->setOrder('sorder','ASC')
             ->setOrder('title','ASC');
@@ -97,27 +99,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         $this->setData('marketplaces', $marketplaces);
         $this->setData('count_available_translation_marketplaces', $countAvailableTranslationMarketplaces);
         $this->setData('count_not_available_translation_marketplaces', $countNotAvailableTranslationMarketplaces);
-        //------------------------------
+        // ---------------------------------------
 
-        //------------------------------
+        // ---------------------------------------
         $storeSwitcherBlock = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_storeSwitcher')
             ->setData('id', 'transferring_store_id');
 
         $this->setChild('store_switcher', $storeSwitcherBlock);
-        //------------------------------
+        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
 
-    // ####################################
+    //########################################
 
     public function isAllowedStep()
     {
         return (bool)$this->getData('is_allowed');
     }
 
-    // ####################################
+    //########################################
 
     public function isCustomSettings()
     {
@@ -129,14 +131,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
             return false;
         }
 
-        // ---------------------------
+        // ---------------------------------------
         $paymentTemplateColumnName = Mage::getModel('M2ePro/Ebay_Template_Manager')
             ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT)->getModeColumnName();
         $shippingTemplateColumnName = Mage::getModel('M2ePro/Ebay_Template_Manager')
             ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING)->getModeColumnName();
         $returnTemplateColumnName = Mage::getModel('M2ePro/Ebay_Template_Manager')
             ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN)->getModeColumnName();
-        // ---------------------------
+        // ---------------------------------------
 
         $listingProducts = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product')
             ->addFieldToFilter('id', array('in' => $productsIds))
@@ -147,7 +149,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         return (int)$listingProducts->getSize() != count($productsIds);
     }
 
-    // ####################################
+    //########################################
 
     public function isAutoCategories()
     {
@@ -171,7 +173,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         return false;
     }
 
-    // ####################################
+    //########################################
 
     private function _isMarketplaceTranslationAvailable($targetMarketplace, $sourceMarketplace)
     {
@@ -191,21 +193,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         return false;
     }
 
-    // ####################################
+    //########################################
 
     private function _getStore()
     {
         $listing = $this->_getEbayListing();
 
         // Get store filter
-        //----------------------------
+        // ---------------------------------------
         $storeId = $listing['store_id'];
-        //----------------------------
+        // ---------------------------------------
 
         return Mage::app()->getStore((int)$storeId);
     }
 
-    // ####################################
+    //########################################
 
     private function _getEbayListing()
     {
@@ -216,5 +218,5 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         return Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',(int)$listingId)->getChildObject();
     }
 
-    // ####################################
+    //########################################
 }

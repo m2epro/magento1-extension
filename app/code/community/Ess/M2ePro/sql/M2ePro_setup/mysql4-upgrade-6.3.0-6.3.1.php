@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE m2epro_amazon_template_selling_format
@@ -31,7 +31,7 @@ $connection = $installer->getConnection();
         ADD COLUMN server_details_last_update_date DATETIME DEFAULT NULL AFTER `client_details_last_update_date`;
 */
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_template_selling_format');
 
@@ -47,7 +47,7 @@ if ($connection->tableColumnExists($tempTable, 'map_price_custom_attribute') ===
     );
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing');
 
@@ -81,7 +81,7 @@ if ($connection->tableColumnExists($tempTable, 'gallery_images_attribute') === f
     );
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_dictionary_marketplace');
 
@@ -105,7 +105,7 @@ if ($connection->tableColumnExists($tempTable, 'server_categories_version') !== 
     );
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_dictionary_marketplace');
 
@@ -125,7 +125,7 @@ if ($connection->tableColumnExists($tempTable, 'server_details_last_update_date'
     );
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -159,8 +159,8 @@ SET `client_details_last_update_date` = NULL,
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################

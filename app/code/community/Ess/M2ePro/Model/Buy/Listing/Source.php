@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2014 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Buy_Listing_Source
@@ -16,27 +18,41 @@ class Ess_M2ePro_Model_Buy_Listing_Source
      */
     private $listing = null;
 
-    // ########################################
+    //########################################
 
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return $this
+     */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         $this->magentoProduct = $magentoProduct;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Magento_Product
+     */
     public function getMagentoProduct()
     {
         return $this->magentoProduct;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @param Ess_M2ePro_Model_Listing $listing
+     * @return $this
+     */
     public function setListing(Ess_M2ePro_Model_Listing $listing)
     {
         $this->listing = $listing;
         return $this;
     }
 
+    /**
+     * @return Ess_M2ePro_Model_Listing
+     */
     public function getListing()
     {
         return $this->listing;
@@ -50,7 +66,7 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return $this->getListing()->getChildObject();
     }
 
-    // ########################################
+    //########################################
 
     public function getSku()
     {
@@ -78,7 +94,7 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return $result;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function applySkuModification($sku)
     {
@@ -99,7 +115,7 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return $sku;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     public function getSearchGeneralId()
     {
@@ -109,22 +125,14 @@ class Ess_M2ePro_Model_Buy_Listing_Source
             return NULL;
         }
 
-        $result = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
-
-        $generalIdModes = array(
-            Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_ISBN,
-            Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_WORLDWIDE
-        );
-
-        if (in_array($src['mode'], $generalIdModes)) {
-            $result = str_replace('-','',$result);
-        }
-
-        return $result;
+        return $this->getMagentoProduct()->getAttributeValue($src['attribute']);
     }
 
-    // ########################################
+    //########################################
 
+    /**
+     * @return string
+     */
     public function getCondition()
     {
         $result = 1;
@@ -146,6 +154,9 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return trim($result);
     }
 
+    /**
+     * @return string
+     */
     public function getConditionNote()
     {
         $result = '';
@@ -161,7 +172,7 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return trim($result);
     }
 
-    // ########################################
+    //########################################
 
     public function getShippingStandardRate()
     {
@@ -191,8 +202,11 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return $result;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getShippingExpeditedMode()
     {
         $src = $this->getBuyListing()->getShippingExpeditedModeSource();
@@ -229,8 +243,11 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return $result;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getShippingOneDayMode()
     {
         $src = $this->getBuyListing()->getShippingOneDayModeSource();
@@ -267,8 +284,11 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return $result;
     }
 
-    //-----------------------------------------
+    // ---------------------------------------
 
+    /**
+     * @return int
+     */
     public function getShippingTwoDayMode()
     {
         $src = $this->getBuyListing()->getShippingTwoDayModeSource();
@@ -305,5 +325,5 @@ class Ess_M2ePro_Model_Buy_Listing_Source
         return $result;
     }
 
-    // ########################################
+    //########################################
 }

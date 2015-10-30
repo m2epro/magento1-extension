@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_View_Development extends Mage_Core_Helper_Abstract
@@ -20,14 +22,14 @@ class Ess_M2ePro_Helper_View_Development extends Mage_Core_Helper_Abstract
     const TAB_DEBUG       = 'debug';
     const TAB_BUILD       = 'build';
 
-    // ########################################
+    //########################################
 
     public function getTitle()
     {
         return Mage::helper('M2ePro')->__('Control Panel (M2E Pro)');
     }
 
-    // ########################################
+    //########################################
 
     public function getPageUrl(array $params = array())
     {
@@ -39,7 +41,7 @@ class Ess_M2ePro_Helper_View_Development extends Mage_Core_Helper_Abstract
         return 'M2ePro/adminhtml_development/index';
     }
 
-    // ########################################
+    //########################################
 
     public function getPageAboutTabUrl(array $params = array())
     {
@@ -76,5 +78,5 @@ class Ess_M2ePro_Helper_View_Development extends Mage_Core_Helper_Abstract
         return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_BUILD)));
     }
 
-    // ########################################
+    //########################################
 }

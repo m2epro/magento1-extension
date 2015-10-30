@@ -1,7 +1,7 @@
 WizardBuyMarketplaceHandler = Class.create();
 WizardBuyMarketplaceHandler.prototype = Object.extend(new MarketplaceHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     proceedAction: function(step)
     {
@@ -17,7 +17,7 @@ WizardBuyMarketplaceHandler.prototype = Object.extend(new MarketplaceHandler(), 
         }.bind(this), 300);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     runNextMarketplaceNow: function()
     {
@@ -104,10 +104,10 @@ WizardBuyMarketplaceHandler.prototype = Object.extend(new MarketplaceHandler(), 
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     changeStatusInfo: function()
     {}
 
-    //----------------------------------
+    // ---------------------------------------
 });

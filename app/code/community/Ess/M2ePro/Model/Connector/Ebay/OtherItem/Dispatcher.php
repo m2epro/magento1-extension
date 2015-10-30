@@ -1,14 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Dispatcher
 {
     private $logsActionId = NULL;
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $action
@@ -55,12 +57,15 @@ class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Dispatcher
         return $result;
     }
 
+    /**
+     * @return int
+     */
     public function getLogsActionId()
     {
         return (int)$this->logsActionId;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $products
@@ -120,7 +125,7 @@ class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Dispatcher
         return Mage::helper('M2ePro')->getMainStatus($results);
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareProducts($products)
     {
@@ -151,7 +156,7 @@ class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Dispatcher
         return $productsTemp;
     }
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     protected function recognizeInitiatorForLogging(array $params)
     {
@@ -191,5 +196,5 @@ class Ess_M2ePro_Model_Connector_Ebay_OtherItem_Dispatcher
         return $action;
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,20 +1,22 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Mysql4_Listing_Auto_Category_Group
     extends Ess_M2ePro_Model_Mysql4_Component_Parent_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Listing_Auto_Category_Group', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function getCategoriesFromOtherGroups($listingId, $groupId = NULL)
     {
@@ -27,7 +29,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Auto_Category_Group
         }
 
         $groupIds = $groupCollection->getAllIds();
-        if(count($groupIds) == 0) {
+        if (count($groupIds) == 0) {
             return array();
         }
 
@@ -51,7 +53,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Auto_Category_Group
         return $data;
     }
 
-    // ########################################
+    //########################################
 
     public function isEmpty($groupId)
     {
@@ -66,5 +68,5 @@ class Ess_M2ePro_Model_Mysql4_Listing_Auto_Category_Group
         return count($result) === 0;
     }
 
-    // ########################################
+    //########################################
 }

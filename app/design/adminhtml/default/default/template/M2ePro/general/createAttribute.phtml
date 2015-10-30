@@ -1,0 +1,153 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_General_CreateAttribute $this */
+
+    use Ess_M2ePro_Model_Magento_Attribute_Builder as AttributeBuilder;
+?>
+
+<script type="text/javascript">
+
+    M2ePro.translator.add(<?php echo Zend_Json::encode(array(
+        'Invalid attribute code' => Mage::helper('M2ePro')->__('Invalid Attribute Code'),
+        'Attribute with the same code already exists.' => Mage::helper('M2ePro')->__('Attribute with the same code already exists.'),
+        'Attribute has been created.' => Mage::helper('M2ePro')->__('Attribute has been created.'),
+    )); ?>);
+
+    var handler = window['<?php echo $this->handlerId(); ?>'];
+
+    Validation.add('M2ePro-validate-attribute-code', M2ePro.translator.translate('Invalid attribute code'), function(value, el) {
+        return handler.validateAttributeCode(value, el);
+    });
+
+    Validation.add('M2ePro-validate-attribute-code-to-be-unique', M2ePro.translator.translate('Attribute with the same code already exists.'), function(value, el) {
+        return handler.validateAttributeCodeToBeUnique(value, el);
+    });
+
+    $('store_label').observe('keyup', handler.onChangeLabel.bind(handler));
+    $('code').observe('change', handler.onChangeCode.bind(handler));
+
+</script>
+
+<style>
+
+    #general_create_new_attribute_form table tr td.value input,
+    #general_create_new_attribute_form table tr td.value select {
+        width: 300px;
+    }
+
+</style>
+
+<div id="block_notice_general_create_magento_attribute" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Creation of New Magento Attribute'); ?>" style="margin-top: 15px;">
+    <?php echo Mage::helper('M2ePro')->__('
+        This Tool allows you to quickly <strong>Create</strong> a new <strong>Magento Attribute</strong>
+        for the selected Option. In order to Create an Attribute, you have to fill in the Attribute Label,
+        Attribute Code, Catalog Input Type, Scope, Default Value and Attribute Sets fields.</br></br>
+
+        <strong>Note:</strong> Some of the fields may not be available for selection. The availability
+        depends on the Option for which the Attribute is being created.</br>
+        <strong>Note:</strong> This Option does not imply automatic Product Attribute Value set up. After the Attribute
+        becomes available in Magento, you should Manually provide the Value for the Product.
+    '); ?>
+</div>
+
+<form id="general_create_new_attribute_form">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Attribute Label'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input name="store_label" id="store_label" type="text" class="required-entry" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Attribute Code'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input name="code" id="code" type="text" class="M2ePro-required-when-visible M2ePro-validate-attribute-code M2ePro-validate-attribute-code-to-be-unique" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Catalog Input Type'); ?>: </label>
+                    </td>
+                    <td class="value">
+
+                        <select name="input_type" class="required-entry" style="width: 304px;" <?php if ($this->isOneOnlyTypeAllowed()) : echo ' disabled="disabled" '; endif; ?>>
+                            <?php foreach ($this->allowedTypes() as $type) : ?>
+                                <option value="<?php echo $type; ?>" <?php if ($this->isOneOnlyTypeAllowed()) : echo ' selected="selected" '; endif; ?>><?php echo $this->getTitleByType($type); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <?php if ($this->isOneOnlyTypeAllowed()) { ?>
+                            <input type="hidden" name="input_type" value="<?php $allowedTypes = $this->allowedTypes(); echo $allowedTypes[0]; ?>" />
+                        <?php } ?>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Scope'); ?>: </label>
+                    </td>
+                    <td class="value">
+                        <select name="scope" class="required-entry" style="width: 304px;">
+                            <option value="<?php echo AttributeBuilder::SCOPE_STORE; ?>"><?php echo Mage::helper('M2ePro')->__('Store View'); ?></option>
+                            <option value="<?php echo AttributeBuilder::SCOPE_WEBSITE; ?>"><?php echo Mage::helper('M2ePro')->__('Website'); ?></option>
+                            <option value="<?php echo AttributeBuilder::SCOPE_GLOBAL; ?>"><?php echo Mage::helper('M2ePro')->__('Global'); ?></option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Default Value'); ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input name="default_value" type="text" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="padding-top: 20px !important;">
+                        <label><?php echo Mage::helper('M2ePro')->__('Attribute Sets'); ?>: </label>
+                    </td>
+                    <td class="value" style="padding-top: 20px !important;">
+
+                        <select name="attribute_sets[]" class="M2ePro-required-when-visible select" style="width: 304px; <?php if ($this->applyToAll()) : echo ' display: none; '; endif; ?>" multiple>
+                            <?php foreach(Mage::helper('M2ePro/Magento_AttributeSet')->getAll() as $item) : ?>
+                                <option value="<?php echo $item['attribute_set_id']; ?>" selected="selected"><?php echo $item['attribute_set_name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <?php if ($this->applyToAll()) { ?>
+
+                            <span style="font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('Will be added to the all Attribute Sets.'); ?></span>
+
+                        <?php } ?>
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</form>
+
+<div style="float: right; margin-top: 15px; margin-bottom: 15px;">
+    <a href="javascript:void(0)" onclick="Dialog.cancelCallback();">
+        <?php echo Mage::helper('M2ePro')->__('Cancel'); ?>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <button onclick="Dialog.okCallback();"><?php echo Mage::helper('M2ePro')->__('Create') ?></button>
+</div>

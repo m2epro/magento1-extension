@@ -1,12 +1,15 @@
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
-    $ebayUserId = null;
 
-    if (isset($formData['ebay_info']) && $ebayInfo = json_decode($formData['ebay_info'], true)) {
-        !empty($ebayInfo['UserID']) && $ebayUserId = (string)$ebayInfo['UserID'];
+    $ebayUserId = null;
+    if (empty($formData['user_id']) && isset($formData['info']) && $ebayInfo = json_decode($formData['info'], true)) {
+        !empty($ebayInfo['UserID']) && $formData['user_id'] = (string)$ebayInfo['UserID'];
     }
 
     $helper = Mage::helper('M2ePro');
+
+    $temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_title', true);
+    !is_null($temp) && $formData['title'] = $temp;
 
     $temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_mode', true);
     !is_null($temp) && $formData['mode'] = $temp;
@@ -16,6 +19,7 @@
 
     $defaults = array(
         'title' => '',
+        'user_id' => '',
         'mode' => Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION,
         'token_session' => '',
         'token_expired_date' => '',
@@ -26,7 +30,7 @@
     $isEdit = !!$this->getRequest()->getParam('id');
 ?>
 
-<div id="block_notice_ebay_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Account Details'); ?>">
+<div id="block_notice_ebay_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
 <?php if (!$isEdit) { ?>
 
     <?php echo Mage::helper('M2ePro')->__(
@@ -45,7 +49,7 @@
         'This Page shows the Environment for your eBay Account and details of the authorisation for M2E Pro to connect to your eBay Account.<br/><br/>
         If your token has expired or is not activated, click <b>Get Token</b>.</br></br>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_View_Ebay::NICK, 'Account+Details')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LAAJAQ')
     ); ?>
 
 <?php } ?>
@@ -55,6 +59,7 @@
 
     // General for all tabs
     //-----------------------------
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay'); ?>, 'Ess_M2ePro_Helper_Component_Ebay');
     M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Account'); ?>,'Ess_M2ePro_Model_Ebay_Account');
 
     M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_account')) ?>);
@@ -66,9 +71,8 @@
         'deleteAction' => $this->getUrl('M2ePro/adminhtml_ebay_account/delete', array('id' => $this->getRequest()->getParam('id')))
     )); ?>);
 
-    M2ePro.url.set('adminhtml_ebay_account/update_account_title','<?php echo $this->getUrl('*/adminhtml_ebay_account/updateTitle'); ?>');
-
     M2ePro.translator.add(<?php echo json_encode(array(
+        'The specified Title is already used for other Account. Account Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Account. Account Title must be unique.'),
         'Be attentive! By Deleting Account you delete all information on it from M2E Pro Server. This will cause inappropriate work of all Accounts\' copies.' => Mage::helper('M2ePro')->__('Be attentive! By Deleting Account you delete all information on it from M2E Pro Server. This will cause inappropriate work of all Accounts\' copies.'),
         'No Customer entry is found for specified ID.' => Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
         'If Yes is chosen, you must select at least one Attribute for Product Mapping.' => Mage::helper('M2ePro')->__('If Yes is chosen, you must select at least one Attribute for Product Mapping.'),
@@ -115,7 +119,37 @@
 <div class="entry-edit" id="magento_block_ebay_accounts_general_general">
 
     <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php if (!$isEdit) { echo $helper->__('Choose Environment'); } else { echo $helper->__('Environment of eBay Account'); } ?></h4>
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $helper->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-account-title" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Title or Identifier of Ebay Account for your internal use.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_accounts_general_token">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Access Details'); ?></h4>
     </div>
 
     <div class="fieldset">
@@ -129,14 +163,11 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <span id="account_title">
-                            <?php if (!is_null($ebayUserId)): ?>
-                                <a target="_blank" href="<?php echo Mage::helper('M2ePro/Component_Ebay')->getMemberUrl($ebayUserId, $formData['mode']); ?>"><?php echo $this->escapeHtml($formData['title']); ?></a>
+                            <?php if (!empty($formData['user_id'])): ?>
+                                <a target="_blank" href="<?php echo Mage::helper('M2ePro/Component_Ebay')->getMemberUrl($formData['user_id'], $formData['mode']); ?>"><?php echo $this->escapeHtml($formData['user_id']); ?></a>
                             <?php else: ?>
                                 <?php echo $this->escapeHtml($formData['title']); ?>
                             <?php endif; ?>
-                        </span>&nbsp&nbsp
-                        <span>
-                            <?php echo $this->getChildHtml('update_title_button'); ?>
                         </span>
                     </td>
                 </tr>
@@ -164,24 +195,6 @@
                         </span></p>
                     </td>
                 </tr>
-
-            </table>
-
-        </div>
-    </div>
-
-</div>
-
-<div class="entry-edit" id="magento_block_ebay_accounts_general_token">
-
-    <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Token Details'); ?></h4>
-    </div>
-
-    <div class="fieldset">
-        <div class="hor-scroll">
-
-            <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
                     <td class="label">

@@ -2,6 +2,9 @@
     /** @var $this Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_Tabs_Variations_Child_Form */
 
     $matchedAttributes = $this->getMatchedAttributes();
+
+    $virtualProductAttributes = $this->getVirtualProductAttributes();
+    $virtualChannelAttributes = $this->getVirtualChannelAttributes();
 ?>
 
 <div class="entry-edit" id="new_variation_child_form_block" style="display: none;" collapseable="no">
@@ -40,7 +43,9 @@
 
             <tr>
                 <td class="label" style="width: auto; min-width: 148px;">
-                    <label style="width: auto; max-width: 148px;"><?php echo $magentoAttr ?>: <span class="required">*</span></label>
+                    <label style="width: auto; max-width: 148px;">
+                        <span style="<?php echo array_key_exists($magentoAttr, $virtualProductAttributes) ? 'border-bottom: 2px dotted grey;' : ''?>"><?php echo $magentoAttr ?></span>: <span class="required">*</span>
+                    </label>
                 </td>
                 <td class="value">
                     <input type="hidden" value="<?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttr) ?>" name="new_child_product[product][attributes][]" class="new-child-product-attribute">
@@ -109,7 +114,9 @@
 
             <tr class="manage-variations-new-child-channel-options">
                 <td class="label" style="width: auto; min-width: 148px;">
-                    <label style="width: auto; max-width: 148px;"><?php echo $amazonAttr ?>: <span class="required">*</span></label>
+                    <label style="width: auto; max-width: 148px;">
+                        <span style="<?php echo array_key_exists($amazonAttr, $virtualChannelAttributes) ? 'border-bottom: 2px dotted grey;' : ''?>"><?php echo $amazonAttr ?></span>: <span class="required">*</span>
+                    </label>
                 </td>
                 <td class="value">
                     <input type="hidden" value="<?php echo Mage::helper('M2ePro')->escapeHtml($amazonAttr) ?>" name="new_child_product[channel][attributes][]" class="new-child-channel-attribute">

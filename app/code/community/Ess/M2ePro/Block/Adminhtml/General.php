@@ -1,21 +1,23 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_General extends Mage_Adminhtml_Block_Widget
 {
-    // ########################################
+    //########################################
 
     public function __construct()
     {
         parent::__construct();
 
         // Initialization block
-        //------------------------------
+        // ---------------------------------------
         $this->setId('generalHtml');
-        //------------------------------
+        // ---------------------------------------
 
         $this->setTemplate('M2ePro/general.phtml');
     }
@@ -23,18 +25,18 @@ class Ess_M2ePro_Block_Adminhtml_General extends Mage_Adminhtml_Block_Widget
     protected function _beforeToHtml()
     {
         // Set data for form
-        //----------------------------
+        // ---------------------------------------
         $this->block_notices_show = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/view/', 'show_block_notices'
         );
-        //----------------------------
+        // ---------------------------------------
 
         $this->initM2eProInfo();
 
         return parent::_beforeToHtml();
     }
 
-    // ########################################
+    //########################################
 
     protected function initM2eProInfo()
     {
@@ -59,5 +61,5 @@ class Ess_M2ePro_Block_Adminhtml_General extends Mage_Adminhtml_Block_Widget
         );
     }
 
-    // ########################################
+    //########################################
 }

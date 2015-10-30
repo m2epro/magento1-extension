@@ -17,7 +17,7 @@
 <?php
 
     $notificationIndex = 1;
-    $migrationModel = Mage::getSingleton('M2ePro/Wizard_MigrationToV6');
+    $migrationModel = Mage::helper('M2ePro/Module_Wizard')->getWizard('migrationToV6');
     $renameAccountsData = $migrationModel->getMigrationData('accounts_rename', 'ebay');
 
 ?>

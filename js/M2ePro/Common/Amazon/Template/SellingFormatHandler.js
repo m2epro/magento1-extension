@@ -1,7 +1,7 @@
 CommonAmazonTemplateSellingFormatHandler = Class.create();
 CommonAmazonTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
@@ -40,9 +40,24 @@ CommonAmazonTemplateSellingFormatHandler.prototype = Object.extend(new CommonHan
 
             return true;
         });
+
+        Validation.add('M2ePro-validate-vat-percent', M2ePro.translator.translate('Wrong value. Must be no more than 30. Max applicable length is 6 characters, including the decimal (e.g., 12.345).'), function(value) {
+
+            if (value.length > 6) {
+                return false;
+            }
+
+            if (value < 0) {
+                return false;
+            }
+
+            value = Math.ceil(value);
+
+            return value > 0 && value <= 30;
+        });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     duplicate_click: function($headId)
     {
@@ -54,7 +69,7 @@ CommonAmazonTemplateSellingFormatHandler.prototype = Object.extend(new CommonHan
         CommonHandlerObj.duplicate_click($headId, M2ePro.translator.translate('Add Selling Format Policy.'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     qty_mode_change: function()
     {
@@ -105,7 +120,7 @@ CommonAmazonTemplateSellingFormatHandler.prototype = Object.extend(new CommonHan
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     price_mode_change: function()
     {
@@ -129,7 +144,7 @@ CommonAmazonTemplateSellingFormatHandler.prototype = Object.extend(new CommonHan
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     sale_price_mode_change: function()
     {
@@ -179,7 +194,27 @@ CommonAmazonTemplateSellingFormatHandler.prototype = Object.extend(new CommonHan
             AmazonTemplateSellingFormatHandlerObj.updateHiddenValue(this, $('sale_price_end_date_custom_attribute'));
         }
 
+    },
+
+    // ---------------------------------------
+
+    price_increase_vat_percent_mode_change: function()
+    {
+        var vatPercentTr = $('price_vat_percent_tr'),
+            vatPercent = $('price_vat_percent');
+
+        vatPercentTr.hide();
+        vatPercent.removeClassName('M2ePro-validate-vat-percent');
+        vatPercent.removeClassName('required-entry');
+
+        if (+this.value) {
+            vatPercentTr.show();
+            vatPercent.addClassName('M2ePro-validate-vat-percent');
+            vatPercent.addClassName('required-entry');
+        } else {
+            vatPercent.value = '';
+        }
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

@@ -1,7 +1,9 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
@@ -10,14 +12,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs extends Mage_Adminhtml_Block_Wi
     const CHANNEL_ID_AMAZON     = 'amazon';
     const CHANNEL_ID_BUY        = 'buy';
 
-    // ----------------------------------------
+    // ---------------------------------------
 
     const TAB_ID_LISTING            = 'listing';
     const TAB_ID_LISTING_OTHER      = 'listing_other';
     const TAB_ID_ORDER              = 'order';
     const TAB_ID_SYNCHRONIZATION    = 'synchronization';
 
-    // ########################################
+    //########################################
 
     protected $logType;
 
@@ -29,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs extends Mage_Adminhtml_Block_Wi
         $this->logType = $logType;
     }
 
-    // ########################################
+    //########################################
 
     public function __construct()
     {
@@ -39,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs extends Mage_Adminhtml_Block_Wi
         $this->setDestElementId('tabs_container');
     }
 
-    // ########################################
+    //########################################
 
     protected function _prepareLayout()
     {
@@ -61,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs extends Mage_Adminhtml_Block_Wi
         return parent::_prepareLayout();
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareTabListing()
     {
@@ -134,7 +136,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs extends Mage_Adminhtml_Block_Wi
         return $tab;
     }
 
-    // ########################################
+    //########################################
 
     protected function isListingOtherTabShouldBeShown()
     {
@@ -165,7 +167,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs extends Mage_Adminhtml_Block_Wi
         return false;
     }
 
-    // ########################################
+    //########################################
 
     protected function _toHtml()
     {
@@ -190,5 +192,5 @@ JAVASCIRPT;
         return $javascript . parent::_toHtml() . '<div id="tabs_container"></div>';
     }
 
-    // ########################################
+    //########################################
 }

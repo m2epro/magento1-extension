@@ -1,10 +1,10 @@
 CommonAmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(CommonAmazonTemplateDescriptionCategorySpecificRenderer, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     childRowsSpecifics: [],
 
-    // --------------------------------
+    // ---------------------------------------
 
     process: function()
     {
@@ -22,7 +22,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(
         this.tuneStyles();
     },
 
-    //###################################
+    //########################################
 
     prepareDomStructure: function()
     {
@@ -48,7 +48,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(
         });
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     onChildSpecificRendered: function()
     {
@@ -60,7 +60,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(
         }
     },
 
-    // --------------------------------
+    // ---------------------------------------
 
     tuneStyles: function()
     {
@@ -84,7 +84,7 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(
         return countOfRenderedSpecifics > 0;
     },
 
-    //###################################
+    //########################################
 
     isAlreadyRendered: function()
     {
@@ -104,5 +104,5 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockGridRenderer = Class.create(
         return $(this.indexedXPath);
     }
 
-    // --------------------------------
+    // ---------------------------------------
 });

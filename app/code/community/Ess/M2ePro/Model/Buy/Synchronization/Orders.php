@@ -1,13 +1,15 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @author     M2E Pro Developers Team
+ * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Buy_Synchronization_Orders
     extends Ess_M2ePro_Model_Buy_Synchronization_Abstract
 {
-    // ##########################################################
+    //########################################
 
     protected function getType()
     {
@@ -19,7 +21,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders
         return NULL;
     }
 
-    // ----------------------------------------------------------
+    // ---------------------------------------
 
     protected function getPercentsStart()
     {
@@ -31,7 +33,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders
         return 100;
     }
 
-    // ##########################################################
+    //########################################
 
     protected function performActions()
     {
@@ -43,5 +45,5 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders
         return $result;
     }
 
-    // ##########################################################
+    //########################################
 }

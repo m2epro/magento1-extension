@@ -1,6 +1,6 @@
 <?php
 
-//#############################################
+//########################################
 
 /** @var $installer Ess_M2ePro_Model_Upgrade_MySqlSetup */
 $installer = $this;
@@ -8,7 +8,7 @@ $installer->startSetup();
 
 $connection = $installer->getConnection();
 
-//#############################################
+//########################################
 
 /*
     ALTER TABLE `m2epro_amazon_listing`
@@ -124,7 +124,7 @@ $connection = $installer->getConnection();
         SELECT 'removedPlay', 'common', 0, NULL, 0, MAX( `priority` )+1 FROM `m2epro_wizard`;
 */
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing');
 
@@ -156,7 +156,7 @@ if ($connection->tableColumnExists($tempTable, 'gift_message_attribute') === fal
     );
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_template_synchronization');
 
@@ -206,7 +206,7 @@ if ($connection->tableColumnExists($tempTable, 'revise_update_price_max_allowed_
     );
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 
@@ -217,7 +217,7 @@ if ($connection->tableColumnExists($tempTable, 'defected_messages') === false) {
     );
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_account');
 
@@ -237,7 +237,7 @@ if ($connection->tableColumnExists($tempTable, 'orders_mode') !== false) {
     $connection->dropColumn($tempTable, 'orders_mode');
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_ebay_listing');
 
@@ -267,7 +267,7 @@ if ($connection->tableColumnExists($tempTable, 'template_return_policy_id') !== 
     $connection->dropColumn($tempTable, 'template_return_policy_id');
 }
 
-// --------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_amazon_listing_product');
 
@@ -281,7 +281,7 @@ if ($connection->tableColumnExists($tempTable, 'ignore_next_inventory_synch') !=
     $connection->dropColumn($tempTable, 'ignore_next_inventory_synch');
 }
 
-//#############################################
+//########################################
 
 $installer->run(<<<SQL
 
@@ -397,7 +397,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_synchronization_config');
 
@@ -423,7 +423,7 @@ SQL
     );
 }
 
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_ebay_template_category_specific');
 
@@ -447,7 +447,7 @@ SQL
 }
 
 // Amazon Recent categories migration
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_cache_config');
 
@@ -488,8 +488,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//Ebay recent categories migration
-//---------------------------------------------
+// Ebay recent categories migration
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_cache_config');
 
@@ -541,8 +541,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//Exceptions filters table migration
-//#############################################
+// Exceptions filters table migration
+//########################################
 
 $tempTable = $installer->getTable('m2epro_exceptions_filters');
 
@@ -576,8 +576,8 @@ SQL
     );
 }
 
-//Versions history migration
-//---------------------------------------------
+// Versions history migration
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_cache_config');
 
@@ -621,7 +621,7 @@ SQL
 );
 
 // Play removing
-//#############################################
+//########################################
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -654,7 +654,7 @@ $installer->run(<<<SQL
 SQL
 );
 
-//--------------------------------------------
+// ---------------------------------------
 
 $tempTable = $installer->getTable('m2epro_config');
 
@@ -740,7 +740,7 @@ SQL
     }
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $modelsArray = array(
     $installer->getTable('m2epro_account') => 'M2ePro/Account',
@@ -770,7 +770,7 @@ SQL
     }
 }
 
-//---------------------------------------------
+// ---------------------------------------
 
 $installer->run(<<<SQL
 
@@ -822,8 +822,8 @@ $installer->run(<<<SQL
 SQL
 );
 
-//#############################################
+//########################################
 
 $installer->endSetup();
 
-//#############################################
+//########################################
