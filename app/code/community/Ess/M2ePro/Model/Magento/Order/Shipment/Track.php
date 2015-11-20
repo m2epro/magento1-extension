@@ -114,7 +114,6 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
                     unset($this->trackingDetails[$key]);
                 }
             }
-
         }
         // ---------------------------------------
 

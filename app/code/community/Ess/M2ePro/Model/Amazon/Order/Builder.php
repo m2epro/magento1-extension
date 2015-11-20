@@ -12,8 +12,8 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
     const STATUS_NEW          = 1;
     const STATUS_UPDATED      = 2;
 
-    const UPDATE_STATUS = 0;
-    const UPDATE_EMAIL  = 1;
+    const UPDATE_STATUS = 'status';
+    const UPDATE_EMAIL  = 'email';
 
     // M2ePro_TRANSLATIONS
     // Duplicated Amazon orders with ID #%id%.
@@ -64,6 +64,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
         $this->setData('status', $this->helper->getStatus($data['status']));
         $this->setData('is_afn_channel', $data['is_afn_channel']);
+        $this->setData('is_prime', $data['is_prime']);
 
         $this->setData('purchase_update_date', $data['purchase_update_date']);
         $this->setData('purchase_create_date', $data['purchase_create_date']);
@@ -285,10 +286,6 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
     private function hasUpdate($update)
     {
-        if (!$update) {
-            return false;
-        }
-
         return in_array($update, $this->updates);
     }
 
@@ -303,17 +300,26 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             return;
         }
 
+        /** @var $magentoOrderUpdater Ess_M2ePro_Model_Magento_Order_Updater */
+        $magentoOrderUpdater = Mage::getModel('M2ePro/Magento_Order_Updater');
+        $magentoOrderUpdater->setMagentoOrder($this->order->getMagentoOrder());
+
         if ($this->hasUpdate(self::UPDATE_STATUS)) {
             $this->order->setStatusUpdateRequired(true);
+
+            $this->order->getProxy()->setStore($this->order->getStore());
+
+            $shippingData = $this->order->getProxy()->getShippingData();
+            $magentoOrderUpdater->updateShippingDescription(
+                $shippingData['carrier_title'].' - '.$shippingData['shipping_method']
+            );
         }
 
         if (!is_null($this->order->getMagentoOrder()) && $this->hasUpdate(self::UPDATE_EMAIL)) {
-            /** @var $magentoOrderUpdater Ess_M2ePro_Model_Magento_Order_Updater */
-            $magentoOrderUpdater = Mage::getModel('M2ePro/Magento_Order_Updater');
-            $magentoOrderUpdater->setMagentoOrder($this->order->getMagentoOrder());
             $magentoOrderUpdater->updateCustomerEmail($this->order->getChildObject()->getBuyerEmail());
-            $magentoOrderUpdater->finishUpdate();
         }
+
+        $magentoOrderUpdater->finishUpdate();
     }
 
     private function cancelMagentoOrder()

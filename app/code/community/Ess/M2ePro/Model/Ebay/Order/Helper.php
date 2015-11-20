@@ -75,7 +75,6 @@ class Ess_M2ePro_Model_Ebay_Order_Helper
                     ? Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED
                     : Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_PROCESS;
             }
-
         }
 
         return Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_ERROR;

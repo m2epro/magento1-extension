@@ -342,7 +342,6 @@ SQL
             $connection->addKey($tempTable,
                 'auto_website_adding_description_template_id', 'auto_website_adding_description_template_id');
         }
-
     }
 
     //########################################

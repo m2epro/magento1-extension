@@ -7,10 +7,15 @@
 <script type="text/javascript">
 
     M2ePro.translator.add(<?php echo Zend_Json::encode(array(
-        'Invalid attribute code' => Mage::helper('M2ePro')->__('Invalid Attribute Code'),
+        'Invalid attribute code'                       => Mage::helper('M2ePro')->__('Please use only letters (a-z), numbers (0-9) or underscore(_) in this field, first character should be a letter.'),
         'Attribute with the same code already exists.' => Mage::helper('M2ePro')->__('Attribute with the same code already exists.'),
-        'Attribute has been created.' => Mage::helper('M2ePro')->__('Attribute has been created.'),
+        'Attribute has been created.'                  => Mage::helper('M2ePro')->__('Attribute has been created.'),
     )); ?>);
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Magento_Attribute_Builder'); ?>,
+        'Ess_M2ePro_Model_Magento_Attribute_Builder'
+    );
 
     var handler = window['<?php echo $this->handlerId(); ?>'];
 
@@ -31,7 +36,7 @@
 
     #general_create_new_attribute_form table tr td.value input,
     #general_create_new_attribute_form table tr td.value select {
-        width: 300px;
+        width: 299px;
     }
 
 </style>
@@ -40,10 +45,10 @@
     <?php echo Mage::helper('M2ePro')->__('
         This Tool allows you to quickly <strong>Create</strong> a new <strong>Magento Attribute</strong>
         for the selected Option. In order to Create an Attribute, you have to fill in the Attribute Label,
-        Attribute Code, Catalog Input Type, Scope, Default Value and Attribute Sets fields.</br></br>
+        Attribute Code, Catalog Input Type, Scope, Default Value and Attribute Sets fields.<br/><br/>
 
         <strong>Note:</strong> Some of the fields may not be available for selection. The availability
-        depends on the Option for which the Attribute is being created.</br>
+        depends on the Option for which the Attribute is being created.<br/>
         <strong>Note:</strong> This Option does not imply automatic Product Attribute Value set up. After the Attribute
         becomes available in Magento, you should Manually provide the Value for the Product.
     '); ?>
@@ -56,7 +61,7 @@
     <div class="fieldset">
         <div class="hor-scroll">
 
-            <table class="form-list" cellspacing="0" cellpadding="0">
+            <table class="form-list" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
 
                 <tr>
                     <td class="label">
@@ -72,7 +77,7 @@
                         <label><?php echo Mage::helper('M2ePro')->__('Attribute Code'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input name="code" id="code" type="text" class="M2ePro-required-when-visible M2ePro-validate-attribute-code M2ePro-validate-attribute-code-to-be-unique" />
+                        <input name="code" id="code" type="text" class="M2ePro-required-when-visible validate-length maximum-length-30 M2ePro-validate-attribute-code M2ePro-validate-attribute-code-to-be-unique" />
                     </td>
                 </tr>
 
@@ -82,7 +87,7 @@
                     </td>
                     <td class="value">
 
-                        <select name="input_type" class="required-entry" style="width: 304px;" <?php if ($this->isOneOnlyTypeAllowed()) : echo ' disabled="disabled" '; endif; ?>>
+                        <select name="input_type" class="required-entry" style="width: 303px;" <?php if ($this->isOneOnlyTypeAllowed()) : echo ' disabled="disabled" '; endif; ?>>
                             <?php foreach ($this->allowedTypes() as $type) : ?>
                                 <option value="<?php echo $type; ?>" <?php if ($this->isOneOnlyTypeAllowed()) : echo ' selected="selected" '; endif; ?>><?php echo $this->getTitleByType($type); ?></option>
                             <?php endforeach; ?>
@@ -100,7 +105,7 @@
                         <label><?php echo Mage::helper('M2ePro')->__('Scope'); ?>: </label>
                     </td>
                     <td class="value">
-                        <select name="scope" class="required-entry" style="width: 304px;">
+                        <select name="scope" class="required-entry" style="width: 303px;">
                             <option value="<?php echo AttributeBuilder::SCOPE_STORE; ?>"><?php echo Mage::helper('M2ePro')->__('Store View'); ?></option>
                             <option value="<?php echo AttributeBuilder::SCOPE_WEBSITE; ?>"><?php echo Mage::helper('M2ePro')->__('Website'); ?></option>
                             <option value="<?php echo AttributeBuilder::SCOPE_GLOBAL; ?>"><?php echo Mage::helper('M2ePro')->__('Global'); ?></option>

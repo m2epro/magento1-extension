@@ -99,6 +99,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'general_id'                    => 'second_table.general_id',
                 'is_afn_channel'                => 'second_table.is_afn_channel',
                 'is_variation_parent'           => 'second_table.is_variation_parent',
+                'is_repricing'                  => 'second_table.is_repricing',
                 'variation_child_statuses'      => 'second_table.variation_child_statuses',
                 'online_sku'                    => 'second_table.sku',
                 'online_qty'                    => 'second_table.online_qty',
@@ -208,6 +209,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'general_id'                    => 'second_table.general_id',
                 'is_afn_channel'                => 'second_table.is_afn_channel',
                 'is_variation_parent'           => new Zend_Db_Expr('NULL'),
+                'is_repricing'             => 'second_table.is_repricing',
                 'variation_child_statuses'      => new Zend_Db_Expr('NULL'),
                 'online_sku'                    => 'second_table.sku',
                 'online_qty'                    => 'second_table.online_qty',
@@ -253,6 +255,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'general_id',
                 'is_afn_channel',
                 'is_variation_parent',
+                'is_repricing',
                 'variation_child_statuses',
                 'online_sku',
                 'online_qty',
@@ -365,16 +368,22 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             $priceSortField = 'min_online_price';
         }
 
-        $this->addColumn('online_price', array(
+        $priceColumn = array(
             'header' => Mage::helper('M2ePro')->__('Price'),
             'align' => 'right',
-            'width' => '70px',
+            'width' => '110px',
             'type' => 'number',
             'index' => $priceSortField,
             'filter_index' => $priceSortField,
             'frame_callback' => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
-        ));
+        );
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled()) {
+            $priceColumn['filter'] = 'M2ePro/adminhtml_common_amazon_grid_column_filter_price';
+        }
+
+        $this->addColumn('online_price', $priceColumn);
 
         $this->addColumn('status', array(
             'header' => Mage::helper('M2ePro')->__('Status'),
@@ -667,7 +676,7 @@ HTML;
             return Mage::helper('M2ePro')->__('AFN');
         }
 
-        return $value . '<br>' . Mage::helper('M2ePro')->__('AFN');
+        return $value . '<br/>' . Mage::helper('M2ePro')->__('AFN');
     }
 
     public function callbackColumnPrice($value, $row, $column, $isExport)
@@ -679,6 +688,35 @@ HTML;
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
+        $repricingHtml ='';
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
+            (int)$row->getData('is_repricing') === Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES) {
+            if ($row->getData('is_variation_parent')) {
+                $text = Mage::helper('M2ePro')->__(
+                    'Some Child Products are used by Amazon Repricing Tool.
+                     The Price cannot be updated through the M2E Pro.'
+                );
+            } else {
+                $text = Mage::helper('M2ePro')->__(
+                    'This product is used by Amazon Repricing Tool.
+                     The Price cannot be updated through the M2E Pro.'
+                );
+            }
+
+            $repricingHtml = <<<HTML
+<span style="float:right; text-align: left;">
+    <img class="tool-tip-image"
+         style="vertical-align: middle; width: 16px;"
+         src="{$this->getSkinUrl('M2ePro/images/money.png')}">
+    <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
+        <span>{$text}</span>
+    </span>
+</span>
+HTML;
+        }
+
         $onlineMinPrice = $row->getData('min_online_price');
         $onlineMaxPrice = $row->getData('max_online_price');
 
@@ -686,9 +724,9 @@ HTML;
             if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED ||
                 $row->getData('is_variation_parent')
             ) {
-                return Mage::helper('M2ePro')->__('N/A');
+                return Mage::helper('M2ePro')->__('N/A') . $repricingHtml;
             } else {
-                return '<i style="color:gray;">receiving...</i>';
+                return '<i style="color:gray;">receiving...</i>' . $repricingHtml;
             }
         }
 
@@ -702,7 +740,8 @@ HTML;
             $onlineMinPriceStr = Mage::app()->getLocale()->currency($currency)->toCurrency($onlineMinPrice);
             $onlineMaxPriceStr = Mage::app()->getLocale()->currency($currency)->toCurrency($onlineMaxPrice);
 
-            return $onlineMinPriceStr . (($onlineMinPrice != $onlineMaxPrice) ? ' - ' . $onlineMaxPriceStr :  '');
+            return $onlineMinPriceStr . (($onlineMinPrice != $onlineMaxPrice) ? ' - ' . $onlineMaxPriceStr :  '')
+                . $repricingHtml;
         }
 
         $onlinePrice = $row->getData('online_price');
@@ -753,10 +792,11 @@ HTML;
                     $currentTimestamp <= $endDateTimestamp &&
                     $salePrice < (float)$onlinePrice
                 ) {
-                    $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>';
+                    $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>' .
+                                    $repricingHtml;
                     $resultHtml .= '<br/>'.$intervalHtml.'&nbsp;'.$salePriceValue;
                 } else {
-                    $resultHtml .= $priceValue;
+                    $resultHtml .= $priceValue . $repricingHtml;
                     $resultHtml .= '<br/>'.$intervalHtml.
                         '<span style="color:gray;">'.'&nbsp;'.$salePriceValue.'</span>';
                 }
@@ -764,7 +804,7 @@ HTML;
         }
 
         if (empty($resultHtml)) {
-            $resultHtml = $priceValue;
+            $resultHtml = $priceValue . $repricingHtml;
         }
 
         return $resultHtml;
@@ -937,29 +977,40 @@ HTML;
 
         $condition = '';
 
-        if (isset($value['from']) && $value['from'] != '') {
-            $condition = 'min_online_price >= \''.$value['from'].'\'';
-        }
-        if (isset($value['to']) && $value['to'] != '') {
+        if (isset($value['from']) || isset($value['to'])) {
+
             if (isset($value['from']) && $value['from'] != '') {
-                $condition .= ' AND ';
+                $condition = 'min_online_price >= \'' . $value['from'] . '\'';
             }
-            $condition .= 'min_online_price <= \''.$value['to'].'\'';
-        }
+            if (isset($value['to']) && $value['to'] != '') {
+                if (isset($value['from']) && $value['from'] != '') {
+                    $condition .= ' AND ';
+                }
+                $condition .= 'min_online_price <= \'' . $value['to'] . '\'';
+            }
 
-        $condition = '(' . $condition . ') OR (';
+            $condition = '(' . $condition . ') OR (';
 
-        if (isset($value['from']) && $value['from'] != '') {
-            $condition .= 'max_online_price >= \''.$value['from'].'\'';
-        }
-        if (isset($value['to']) && $value['to'] != '') {
             if (isset($value['from']) && $value['from'] != '') {
-                $condition .= ' AND ';
+                $condition .= 'max_online_price >= \'' . $value['from'] . '\'';
             }
-            $condition .= 'max_online_price <= \''.$value['to'].'\'';
+            if (isset($value['to']) && $value['to'] != '') {
+                if (isset($value['from']) && $value['from'] != '') {
+                    $condition .= ' AND ';
+                }
+                $condition .= 'max_online_price <= \'' . $value['to'] . '\'';
+            }
+
+            $condition .= ')';
+
         }
 
-        $condition .= ')';
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() && !empty($value['is_repricing'])) {
+            if (!empty($condition)) {
+                $condition = '(' . $condition . ') OR ';
+            }
+            $condition .= 'is_repricing = ' . Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES;
+        }
 
         $collection->getSelect()->where($condition);
     }

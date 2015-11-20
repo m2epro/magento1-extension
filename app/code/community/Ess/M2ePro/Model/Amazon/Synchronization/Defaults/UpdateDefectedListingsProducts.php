@@ -33,7 +33,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateDefectedListi
 
     protected function getPercentsEnd()
     {
-        return 40;
+        return 30;
     }
 
     // ---------------------------------------

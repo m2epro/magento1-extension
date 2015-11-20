@@ -65,7 +65,6 @@ class Ess_M2ePro_Model_Connector_Ebay_OrderItem_Dispatcher extends Mage_Core_Mod
 
                 return false;
             }
-
         }
 
         return true;

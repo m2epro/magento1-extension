@@ -121,8 +121,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
                 'online_sale_price_end_date'    => 'online_sale_price_end_date',
                 'is_afn_channel'                => 'is_afn_channel',
                 'is_general_id_owner'           => 'is_general_id_owner',
-                'variation_child_statuses'      => 'variation_child_statuses',
                 'is_variation_parent'           => 'is_variation_parent',
+                'is_repricing'                  => 'is_repricing',
+                'variation_child_statuses'      => 'variation_child_statuses',
                 'variation_parent_id'           => 'variation_parent_id',
                 'defected_messages'             => 'defected_messages',
                 'min_online_price'                     => 'IF(
@@ -198,16 +199,22 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
             'filter_condition_callback' => array($this, 'callbackFilterQty')
         ));
 
-        $this->addColumn('online_price', array(
+        $priceColumn = array(
             'header' => Mage::helper('M2ePro')->__('Price'),
             'align' => 'right',
-            'width' => '70px',
+            'width' => '110px',
             'type' => 'number',
             'index' => 'min_online_price',
             'filter_index' => 'min_online_price',
             'frame_callback' => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
-        ));
+        );
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled()) {
+            $priceColumn['filter'] = 'M2ePro/adminhtml_common_amazon_grid_column_filter_price';
+        }
+
+        $this->addColumn('online_price', $priceColumn);
 
         $this->addColumn('status', array(
             'header' => Mage::helper('M2ePro')->__('Status'),
@@ -257,6 +264,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
             'edit_fulfillment'   => Mage::helper('M2ePro')->__('Fulfillment')
         );
 
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled()) {
+            $groups['edit_repricing'] = Mage::helper('M2ePro')->__('Repricing Tool');
+        }
+
         $this->getMassactionBlock()->setGroups($groups);
 
         $this->getMassactionBlock()->addItem('revise', array(
@@ -300,6 +311,26 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ), 'edit_fulfillment');
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled()) {
+            $this->getMassactionBlock()->addItem('addToRepricing', array(
+                'label' => Mage::helper('M2ePro')->__('Add Item(s)'),
+                'url' => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ), 'edit_repricing');
+
+            $this->getMassactionBlock()->addItem('editRepricing', array(
+                'label' => Mage::helper('M2ePro')->__('Edit Item(s)'),
+                'url' => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ), 'edit_repricing');
+
+            $this->getMassactionBlock()->addItem('removeFromRepricing', array(
+                'label' => Mage::helper('M2ePro')->__('Remove Item(s)'),
+                'url' => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ), 'edit_repricing');
+        }
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -570,11 +601,33 @@ HTML;
     {
         $onlinePrice = $row->getData('online_price');
 
+        $repricingHtml ='';
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
+            (int)$row->getData('is_repricing') === Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES) {
+            $text = Mage::helper('M2ePro')->__(
+                'This product is used by Amazon Repricing Tool.
+                 The Price cannot be updated through the M2E Pro.'
+            );
+
+            $repricingHtml = <<<HTML
+<span style="float:right; text-align: left;">
+    <img class="tool-tip-image"
+         style="vertical-align: middle; width: 16px;"
+         src="{$this->getSkinUrl('M2ePro/images/money.png')}">
+    <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
+        <span>{$text}</span>
+    </span>
+</span>
+HTML;
+        }
+
         if (is_null($onlinePrice) || $onlinePrice === '') {
             if ($row->getData('amazon_status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
-                return Mage::helper('M2ePro')->__('N/A');
+                return Mage::helper('M2ePro')->__('N/A') . $repricingHtml;
             } else {
-                return '<i style="color:gray;">receiving...</i>';
+                return '<i style="color:gray;">receiving...</i>' . $repricingHtml;
             }
         }
 
@@ -631,10 +684,11 @@ HTML;
                     $currentTimestamp <= $endDateTimestamp &&
                     $salePrice < (float)$onlinePrice
                 ) {
-                    $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>';
+                    $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>' .
+                                    $repricingHtml;
                     $resultHtml .= '<br/>'.$intervalHtml.'&nbsp;'.$salePriceValue;
                 } else {
-                    $resultHtml .= $priceValue;
+                    $resultHtml .= $priceValue . $repricingHtml;
                     $resultHtml .= '<br/>'.$intervalHtml.
                         '<span style="color:gray;">'.'&nbsp;'.$salePriceValue.'</span>';
                 }
@@ -642,7 +696,7 @@ HTML;
         }
 
         if (empty($resultHtml)) {
-            $resultHtml = $priceValue;
+            $resultHtml = $priceValue . $repricingHtml;
         }
 
         return $resultHtml;
@@ -788,6 +842,13 @@ HTML;
                 $condition .= ' AND ';
             }
             $condition .= 'min_online_price <= \''.$value['to'].'\'';
+        }
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() && !empty($value['is_repricing'])) {
+            if (!empty($condition)) {
+                $condition = '(' . $condition . ') OR ';
+            }
+            $condition .= 'is_repricing = ' . Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES;
         }
 
         $collection->getSelect()->having($condition);

@@ -112,19 +112,26 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View_Grid extends M
             'filter_condition_callback' => array($this, 'callbackFilterQty')
         ));
 
-        $this->addColumn('online_price', array(
+        $priceColumn = array(
             'header' => Mage::helper('M2ePro')->__('Price'),
             'align' => 'right',
-            'width' => '100px',
+            'width' => '110px',
             'type' => 'number',
             'index' => 'online_price',
             'filter_index' => 'online_price',
-            'frame_callback' => array($this, 'callbackColumnPrice')
-        ));
+            'frame_callback' => array($this, 'callbackColumnPrice'),
+            'filter_condition_callback' => array($this, 'callbackFilterPrice')
+        );
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled()) {
+            $priceColumn['filter'] = 'M2ePro/adminhtml_common_amazon_grid_column_filter_price';
+        }
+
+        $this->addColumn('online_price', $priceColumn);
 
         $this->addColumn('status', array(
             'header' => Mage::helper('M2ePro')->__('Status'),
-            'width' => '60px',
+            'width' => '75px',
             'index' => 'status',
             'filter_index' => 'main_table.status',
             'type' => 'options',
@@ -189,7 +196,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View_Grid extends M
     {
         // Set mass-action identifiers
         // ---------------------------------------
-        $this->setMassactionIdField('`main_table`.id');
+        $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
         // ---------------------------------------
 
@@ -336,12 +343,34 @@ HTML;
 
     public function callbackColumnPrice($value, $row, $column, $isExport)
     {
+        $html ='';
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
+            (int)$row->getData('is_repricing') === Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES) {
+            $text = Mage::helper('M2ePro')->__(
+                'This product is used by Amazon Repricing Tool.
+                 The Price cannot be updated through the M2E Pro.'
+            );
+
+            $html = <<<HTML
+<span style="float:right; text-align: left;">
+    <img class="tool-tip-image"
+         style="vertical-align: middle; width: 16px;"
+         src="{$this->getSkinUrl('M2ePro/images/money.png')}">
+    <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
+        <span>{$text}</span>
+    </span>
+</span>
+HTML;
+        }
+
         if (is_null($value) || $value === '') {
-            return Mage::helper('M2ePro')->__('N/A');
+            return Mage::helper('M2ePro')->__('N/A') . $html;
         }
 
         if ((float)$value <= 0) {
-            return '<span style="color: #f00;">0</span>';
+            return '<span style="color: #f00;">0</span>' . $html;
         }
 
         $currency = Mage::helper('M2ePro/Component_Amazon')
@@ -349,7 +378,7 @@ HTML;
                                 ->getChildObject()
                                 ->getDefaultCurrency();
 
-        return Mage::app()->getLocale()->currency($currency)->toCurrency($value);
+        return Mage::app()->getLocale()->currency($currency)->toCurrency($value) . $html;
     }
 
     public function callbackColumnStatus($value, $row, $column, $isExport)
@@ -418,6 +447,37 @@ HTML;
                 $where = '(' . $where . ') OR ';
             }
             $where .= 'is_afn_channel = ' . Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_YES;;
+        }
+
+        $collection->getSelect()->where($where);
+    }
+
+    protected function callbackFilterPrice($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+
+        if (empty($value)) {
+            return;
+        }
+
+        $where = '';
+
+        if (isset($value['from']) && $value['from'] != '') {
+            $where .= 'online_price >= ' . $value['from'];
+        }
+
+        if (isset($value['to']) && $value['to'] != '') {
+            if (isset($value['from']) && $value['from'] != '') {
+                $where .= ' AND ';
+            }
+            $where .= 'online_price <= ' . $value['to'];
+        }
+
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() && !empty($value['is_repricing'])) {
+            if (!empty($where)) {
+                $where = '(' . $where . ') OR ';
+            }
+            $where .= 'is_repricing = ' . Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES;
         }
 
         $collection->getSelect()->where($where);

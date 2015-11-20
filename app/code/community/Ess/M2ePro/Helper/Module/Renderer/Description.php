@@ -24,9 +24,11 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         $design = Mage::getDesign();
 
         $oldArea = $design->getArea();
+        $oldStore = Mage::app()->getStore();
         $oldPackageName = $design->getPackageName();
 
         $design->setArea('adminhtml');
+        Mage::app()->setCurrentStore(Mage::app()->getStore($magentoProduct->getStoreId()));
         $design->setPackageName(Mage::getStoreConfig('design/package/name', Mage::app()->getStore()->getId()));
 
         $text = $this->insertAttributes($text, $magentoProduct);
@@ -40,6 +42,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         $text = $filter->filter($text);
 
         $design->setArea($oldArea);
+        Mage::app()->setCurrentStore($oldStore);
         $design->setPackageName($oldPackageName);
 
         return $text;

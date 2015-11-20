@@ -36,6 +36,7 @@ class Ess_M2ePro_Adminhtml_OrderController
 
             foreach ($regionsCollection as $region) {
                 $regions[] = array(
+                    'id'    => $region->getData('region_id'),
                     'value' => $region->getData('code'),
                     'label' => $region->getData('default_name')
                 );

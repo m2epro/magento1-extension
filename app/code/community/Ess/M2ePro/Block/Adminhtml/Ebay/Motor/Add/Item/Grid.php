@@ -76,6 +76,12 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Grid extends Mage_
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
         ));
 
+        $this->getMassactionBlock()->addItem('resetNote', array(
+            'label'   => Mage::helper('M2ePro')->__('Reset Note'),
+            'url'     => '',
+            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+        ));
+
         $this->getMassactionBlock()->addItem('saveAsGroup', array(
             'label'   => Mage::helper('M2ePro')->__('Save As Group'),
             'url'     => '',
@@ -120,7 +126,7 @@ HTML;
 <br/>
 <br/>
 <div id="note_{$row[$idKey]}" style="color: gray; display: none;">
-    <span style="text-decoration: underline">{$noteWord}</span>: <br>
+    <span style="text-decoration: underline">{$noteWord}</span>: <br/>
     <span class="note-view"></span>
 </div>
 
@@ -253,7 +259,9 @@ JS;
         return Mage::helper('M2ePro')->__(
             'No records found.
              You can add Custom Compatible Vehicles manually or through the %link_start%Import Tool%link_end%.',
-            '<a target="_blank" href="'.$this->getUrl('*/adminhtml_ebay_configuration/index').'">',
+            '<a target="_blank" href="' .
+                $this->getUrl('*/adminhtml_ebay_configuration/index') .
+                '#magento_block_ebay_configuration_general_motors_epids">',
             '</a>'
         );
     }

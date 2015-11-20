@@ -20,7 +20,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 
     public function getTitle()
     {
-        return Mage::helper('M2ePro')->__('Amazon (Beta)');
+        return Mage::helper('M2ePro')->__('Amazon');
     }
 
     public function getChannelTitle()
@@ -133,12 +133,30 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function isASIN($string)
+    {
+        if (strlen($string) != 10) {
+            return false;
+        }
+
+        if (!preg_match('/^B[A-Z0-9]{9}$/', $string)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isRepricingEnabled()
+    {
+        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/amazon/repricing/', 'mode');
+    }
+
     public function getApplicationName()
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/amazon/', 'application_name');
     }
 
-    //########################################
+    // ----------------------------------------
 
     public function getCurrencies()
     {
@@ -171,7 +189,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         );
     }
 
-    //########################################
+    // ----------------------------------------
 
     public function getMarketplacesAvailableForApiCreation()
     {
@@ -185,21 +203,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     {
         $collection = $this->getMarketplacesAvailableForApiCreation();
         return $collection->addFieldToFilter('is_asin_available', 1);
-    }
-
-    //########################################
-
-    public function isASIN($string)
-    {
-        if (strlen($string) != 10) {
-            return false;
-        }
-
-        if (!preg_match('/^B[A-Z0-9]{9}$/', $string)) {
-            return false;
-        }
-
-        return true;
     }
 
     //########################################

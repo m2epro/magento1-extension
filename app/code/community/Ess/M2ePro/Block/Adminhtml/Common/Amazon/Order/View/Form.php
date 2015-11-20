@@ -41,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View_Form extends Ess_M2ePr
         // ---------------------------------------
 
         // ---------------------------------------
-        if (!is_null($magentoOrder) && $magentoOrder->hasShipments()) {
+        if (!is_null($magentoOrder) && $magentoOrder->hasShipments() && !$this->order->getChildObject()->isPrime()) {
             $url = $this->getUrl('*/adminhtml_order/resubmitShippingInfo', array('id' => $this->order->getId()));
             $data = array(
                 'class'   => '',
@@ -60,6 +60,24 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View_Form extends Ess_M2ePr
 
         $this->shippingAddress = $shippingAddress->getData();
         $this->shippingAddress['country_name'] = $shippingAddress->getCountryName();
+        // ---------------------------------------
+
+        // Merchant Fulfillment
+        // ---------------------------------------
+        if (!$this->order->getChildObject()->isCanceled()
+            && !$this->order->getChildObject()->isPending()
+            && !$this->order->getChildObject()->isFulfilledByAmazon()
+            && $this->order->getMarketplace()->getChildObject()->isMerchantFulfillmentAvailable()) {
+            $orderId = $this->order->getId();
+            $data = array(
+                'class'   => '',
+                'label'   => Mage::helper('M2ePro')->__('Use Amazon\'s Shipping Services'),
+                'onclick' => "OrderMerchantFulfillmentHandlerObj.getPopupAction({$orderId});",
+                'style'   => 'margin-top: 3px; margin-left: 6px;'
+            );
+            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+            $this->setChild('use_amazons_shipping_services', $buttonBlock);
+        }
         // ---------------------------------------
 
         $this->setChild('item', $this->getLayout()->createBlock('M2ePro/adminhtml_common_amazon_order_view_item'));

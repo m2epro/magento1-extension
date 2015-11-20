@@ -1060,7 +1060,6 @@ SQL
                     } else {
                         $bref[$key] = $head[$key];
                     }
-
                 }
             } while (count($head_stack));
         }

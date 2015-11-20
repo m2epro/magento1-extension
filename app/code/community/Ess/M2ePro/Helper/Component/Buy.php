@@ -10,9 +10,8 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
 {
     const NICK  = 'buy';
 
-    const DEFAULT_CURRENCY = 'USD';
-
     const MARKETPLACE_ID = 33;
+    const DEFAULT_CURRENCY = 'USD';
 
     //########################################
 
@@ -112,6 +111,17 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function isGeneralId($string)
+    {
+        if (empty($string)) {
+            return false;
+        }
+
+        return preg_match('/^\d{8,9}$/', $string);
+    }
+
+    // ----------------------------------------
+
     public function getCarrierTitle($carrierCode, $title)
     {
         $carriers = $this->getCarriers();
@@ -170,17 +180,6 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
             'LTL_Wilson Trucking',
             'LTL_Yellow Freight'
         );
-    }
-
-    //########################################
-
-    public function isGeneralId($string)
-    {
-        if (empty($string)) {
-            return false;
-        }
-
-        return preg_match('/^\d{8,9}$/', $string);
     }
 
     //########################################

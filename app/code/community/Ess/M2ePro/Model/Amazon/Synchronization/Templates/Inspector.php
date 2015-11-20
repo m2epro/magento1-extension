@@ -704,12 +704,17 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Inspector
      */
     public function isMeetRevisePriceRequirements(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
+        $amazonListingProduct = $listingProduct->getChildObject();
+
         if (!$this->isMeetReviseGeneralRequirements($listingProduct)) {
             return false;
         }
 
-        /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $listingProduct->getChildObject();
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
+            $amazonListingProduct->isRepricing()) {
+            return false;
+        }
 
         $amazonSynchronizationTemplate = $amazonListingProduct->getAmazonSynchronizationTemplate();
 

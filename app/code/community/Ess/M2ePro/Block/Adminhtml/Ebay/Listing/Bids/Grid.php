@@ -8,9 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Bids_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-
     protected $bidsData;
-
     protected $listingProductId;
 
     //########################################

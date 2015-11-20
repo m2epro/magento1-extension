@@ -572,11 +572,9 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
                                ->setData('translation_service', $post['translation_service'])
                                ->save();
             }
-
         }
 
         return $this->getResponse()->setBody(json_encode(array('result' => 'success')));
-
     }
 
     //########################################

@@ -82,9 +82,9 @@ AttributeCreator.prototype = {
                     className: "magento",
                     windowClassName: "popup-window",
                     title: M2ePro.translator.translate('Creation of New Magento Attribute'),
-                    top: 160,
+                    top: 50,
                     maxHeight: 520,
-                    width: 550,
+                    width: 560,
                     zIndex: 100,
                     hideEffect: Element.hide,
                     showEffect: Element.show,
@@ -168,62 +168,88 @@ AttributeCreator.prototype = {
 
     onCancelPopupCallback: function()
     {
+        if (!this.selectObj) {
+            return true;
+        }
+
         this.selectObj.selectedIndex = this.selectIndexBeforeCreation;
+        this.selectObj.simulate('change');
+
         return true;
     },
 
     onClosePopupCallback: function()
      {
-         if (!this.attributeWasCreated) {
-             this.onCancelPopupCallback();
+         if (this.attributeWasCreated || !this.selectObj) {
+             return true;
          }
+
+         this.onCancelPopupCallback();
          return true;
      },
 
     chooseNewlyCreatedAttribute: function(attributeParams, result)
     {
-        var optionsTitles = [];
-        this.selectObj.select('option').each(function(el) {
-            el.removeAttribute('selected');
-            optionsTitles.push(trim(el.innerHTML));
-        });
-        optionsTitles.push(attributeParams['store_label']);
-        optionsTitles.sort();
+        var self = this;
 
-        var neededOptionPosition = optionsTitles.indexOf(attributeParams['store_label']),
-            beforeOptionTitle = optionsTitles[neededOptionPosition - 1];
+        var newOption = new Element('option');
 
         if (this.haveOptgroup()) {
-
-            var optGroupObj = this.selectObj.down('optgroup.M2ePro-custom-attribute-optgroup'),
-                optionValue;
-
-            optionValue = optGroupObj.hasAttribute('new_option_value') ? optGroupObj.getAttribute('new_option_value')
-                                                                       : optGroupObj.down('option').value;
-
-            var option = new Element('option', {
-                attribute_code: attributeParams['code'],
-                class: 'simple_mode_disallowed',
-                value: optionValue
-            });
-
-        } else {
-
-            var option = new Element('option', { value: attributeParams['code']});
+            newOption.addClassName('simple_mode_disallowed');
+            newOption.setAttribute('attribute_code', attributeParams['code']);
         }
 
-        this.selectObj.select('option').each(function(el){
+        newOption.update(attributeParams['store_label']);
+        newOption.setAttribute('value', self.getNewlyCreatedAttributeValue(attributeParams));
+        newOption.setAttribute('selected', 'selected');
+
+        $$('select[id="' + self.selectObj.id + '"] option').each(function(el) {
+            el.removeAttribute('selected');
+        });
+
+        var existedOptionsCollection = self.haveOptgroup() ? $$('select[id="' + self.selectObj.id + '"] optgroup.M2ePro-custom-attribute-optgroup option')
+                                                           : $$('select[id="' + self.selectObj.id + '"] option');
+
+        var titles = [];
+        existedOptionsCollection.each(function(el) {
+            titles.push(trim(el.innerHTML));
+        });
+
+        titles.push(attributeParams['store_label']);
+        titles.sort();
+
+        var neededIndex = titles.indexOf(attributeParams['store_label']),
+            beforeOptionTitle = titles[neededIndex - 1];
+
+        existedOptionsCollection.each(function(el){
+
+            if (typeof beforeOptionTitle == 'undefined') {
+                $(el).insert({before: newOption});
+                throw $break;
+            }
 
             if (trim(el.innerHTML) == beforeOptionTitle) {
-                $(el).insert({after: option});
-                return true;
+                $(el).insert({after: newOption});
+                throw $break;
             }
         });
 
-        option.update(attributeParams['store_label']);
-        option.setAttribute('selected', 'selected');
+        self.selectObj.simulate('change');
+    },
 
-        this.selectObj.simulate('change');
+    getNewlyCreatedAttributeValue: function(attributeParams)
+    {
+        if (!this.haveOptgroup()) {
+            return attributeParams['code'];
+        }
+
+        var optGroupObj = $$('select[id="' + this.selectObj.id + '"] optgroup.M2ePro-custom-attribute-optgroup').first();
+
+        if (optGroupObj.hasAttribute('new_option_value')) {
+            return optGroupObj.getAttribute('new_option_value');
+        }
+
+        return $$('select[id="' + this.selectObj.id + '"] optgroup.M2ePro-custom-attribute-optgroup option').first().value;
     },
 
     // ---------------------------------------
@@ -237,23 +263,26 @@ AttributeCreator.prototype = {
             value: this.addOptionValue
         }).update(M2ePro.translator.translate('Create a New One...'));
 
-        self.haveOptgroup() ? self.selectObj.down('optgroup.M2ePro-custom-attribute-optgroup').appendChild(option)
-                            : self.selectObj.appendChild(option);
+        if (self.haveOptgroup()) {
+            $$('select[id="' + this.selectObj.id + '"] optgroup.M2ePro-custom-attribute-optgroup').first().appendChild(option);
+        } else {
+            self.selectObj.appendChild(option);
+        }
+
+        $(self.selectObj).observe('focus', function(event) {
+            this.value != self.addOptionValue && self.setSelectIndexBeforeCreation(this.selectedIndex);
+        });
 
         $(self.selectObj).observe('change', function(event) {
 
             this.value == self.addOptionValue
                 ? self.showPopup()
-                : self.setSelectIndexBeforeCreation(self.selectObj.selectedIndex);
+                : self.setSelectIndexBeforeCreation(this.selectedIndex);
         });
     },
 
     validateAttributeCode: function(value, el)
     {
-        if (!$(el).up('tr').visible()) {
-            return true;
-        }
-
         if (!value.match(/^[a-z][a-z_0-9]{1,254}$/)) {
             return false;
         }
@@ -296,10 +325,6 @@ AttributeCreator.prototype = {
     onChangeLabel: function(event)
     {
         var self = this;
-
-        if (event.target.value.length < 3) {
-            return;
-        }
 
         if ($('code').hasClassName('changed-by-user')) {
             return;
@@ -346,12 +371,14 @@ AttributeCreator.prototype = {
 
     haveOptgroup: function()
     {
-        return Boolean(this.selectObj.down('optgroup.M2ePro-custom-attribute-optgroup'));
+        var obj = $$('select[id="' + this.selectObj.id + '"] optgroup.M2ePro-custom-attribute-optgroup').first();
+        return typeof obj != 'undefined';
     },
 
     alreadyHaveAddedOption: function()
     {
-        return Boolean(this.selectObj.down('option[value="' + this.addOptionValue + '"]'));
+        var obj = $$('select[id="' + this.selectObj.id + '"] option[value="' + this.addOptionValue + '"]').first();
+        return typeof obj != 'undefined';
     }
 
     // ---------------------------------------

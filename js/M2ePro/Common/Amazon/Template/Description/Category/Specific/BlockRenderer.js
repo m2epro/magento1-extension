@@ -112,7 +112,12 @@ CommonAmazonTemplateDescriptionCategorySpecificBlockRenderer = Class.create(Comm
         // ---------------------------------------
 
         this.specificHandler.markSpecificAsRendered(this.indexedXPath);
-        this.specificHandler.markSpecificAsSelected(this.indexedXPath, {mode: this.MODE_NONE});
+
+        var selectedObj = {};
+        selectedObj['mode'] = this.MODE_NONE;
+        selectedObj['is_required'] = this.dictionaryHelper.isSpecificRequired(this.specific) ? 1 : 0;
+
+        this.specificHandler.markSpecificAsSelected(this.indexedXPath, selectedObj);
 
         this.renderButtons();
 

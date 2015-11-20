@@ -1,25 +1,25 @@
 <div id="block_notice_buy_template_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selling Format Policy'); ?>">
     <?php echo Mage::helper('M2ePro')->__('
-    Selling Format Policy contains Price and Quantity related data for the Items, which will be Listed on Rakuten.com.</br></br>
+    Selling Format Policy contains Price and Quantity related data for the Items, which will be Listed on Rakuten.com.<br/><br/>
 
     While Listing on Rakuten.com, the Magento Price can be modified by providing a Price Change Value. There is a Price
-    Change box next to each Price Options Dropdown.</br></br>
+    Change box next to each Price Options Dropdown.<br/><br/>
 
-    <strong>Examples:</strong></br>
+    <strong>Examples:</strong><br/>
 
     <ul class="list">
-        <li>If you want the Price on Rakuten.com to be greater by 15% than the Price in Magento, you should set +15% in the Price Change field.</br>
+        <li>If you want the Price on Rakuten.com to be greater by 15% than the Price in Magento, you should set +15% in the Price Change field.<br/>
         <i>Rakuten.com Price = Magento Price + Magento Price * 0.15</i></li>
-        <li>If you want the Price on Rakuten.com to be less by 10 Currency units than the Price in Magento, you should set -10 in the Price Change field.</br>
+        <li>If you want the Price on Rakuten.com to be less by 10 Currency units than the Price in Magento, you should set -10 in the Price Change field.<br/>
         <i>Rakuten.com Price = Magento Price - 10</i></li>
-        <li>If you want the Price on Rakuten.com to be multiplied by coefficient 1.2, you should set 1.2 in the Price Change field.</br>
+        <li>If you want the Price on Rakuten.com to be multiplied by coefficient 1.2, you should set 1.2 in the Price Change field.<br/>
         <i>Rakuten.com Price = Magento Price * 1.2</i></li>
     </ul>
 
     <strong>Note:</strong> If the Special Price is chosen in the <strong>Price</strong> Option, but it is not set in
-    Magento Product Settings or it is set but it has already expired, the Product Price is used instead.</br></br>
+    Magento Product Settings or it is set but it has already expired, the Product Price is used instead.<br/><br/>
 
-    <strong>Note:</strong> Attributes must contain only Numeric Values.</br></br>
+    <strong>Note:</strong> Attributes must contain only Numeric Values.<br/><br/>
 
     More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
     Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/6IMVAQ')); ?>
@@ -375,14 +375,14 @@ $isEdit = !!$this->getRequest()->getParam('id');
                         <p class="note">
                             <?php echo Mage::helper('M2ePro')->__('
                                 Choose whether you want to add VAT to the Price when a Product is Listed on
-                                Rakuten.com and provide the appropriate VAT Percent Value.</br></br>
+                                Rakuten.com and provide the appropriate VAT Percent Value.<br/><br/>
 
-                                <strong>Example:</strong></br>
-                                For a Product with Magento Price = £10</br>
-                                VAT Rate = 15%</br>
-                                Magento Price: £10</br>
-                                VAT 15%: £10 * 15% = £1.50</br>
-                                Final Price on Rakuten.com (Magento Price + VAT) = £10 + £1.50 = £11.50</br></br>
+                                <strong>Example:</strong><br/>
+                                For a Product with Magento Price = £10<br/>
+                                VAT Rate = 15%<br/>
+                                Magento Price: £10<br/>
+                                VAT 15%: £10 * 15% = £1.50<br/>
+                                Final Price on Rakuten.com (Magento Price + VAT) = £10 + £1.50 = £11.50<br/><br/>
 
                                 <strong>Note:</strong> No VAT Rate Value will be sent on Rakuten.com. Only the
                                 Item\'s Price on Rakuten.com will be increased.

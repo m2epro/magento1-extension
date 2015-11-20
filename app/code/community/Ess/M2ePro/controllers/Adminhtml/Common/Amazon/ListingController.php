@@ -48,6 +48,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_ListingController
             ->addJs('M2ePro/Common/Amazon/Listing/Template/ShippingOverrideHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/VariationProductManageHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/FulfillmentHandler.js')
+            ->addJs('M2ePro/Common/Amazon/Listing/RepricingHandler.js')
             ->addJs('M2ePro/Common/Amazon/Listing/AfnQtyHandler.js')
 
             ->addJs('M2ePro/TemplateHandler.js')

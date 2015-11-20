@@ -248,6 +248,7 @@ $variations = $this->getVariations();
         float: left;
         text-align: center;
         width: 400px;
+        min-height: 100px;
     }
 
     .image_container img:first-child {
@@ -435,12 +436,12 @@ $variations = $this->getVariations();
 
 <div class="preview_header block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('eBay Item Preview'); ?>">
     <?php echo Mage::helper('M2ePro')->__('
-        This Page is a <strong>stylized Template</strong> of the prospective eBay Page.</br></br>
+        This Page is a <strong>stylized Template</strong> of the prospective eBay Page.<br/><br/>
         The Template displays <strong>eBay Item information</strong> which will be sent on eBay during the List/ Relist/ Revise
         Actions. The information presented on this Page is <strong>not available on eBay</strong> yet. The Template just gives
-        you a chance to <strong>Preview</strong> how the Product will be Shown on eBay.</br></br>
+        you a chance to <strong>Preview</strong> how the Product will be Shown on eBay.<br/><br/>
         You can have a preliminary <strong>Overview</strong> of the Product Title, eBay Category, Item Condition, Quantity,
-        Price, all of the available Product Variations and more other.</br></br>
+        Price, all of the available Product Variations and more other.<br/><br/>
         There are tabs under which the main Item Specifics, Description, Shipping, Payment and Return data can be found.
         The available information <strong>does not contain all of the details</strong>, only the Key Points.
     '); ?>
@@ -617,7 +618,7 @@ $variations = $this->getVariations();
                     <button class='buy_it_now' type='button'>
                         <?php echo Mage::helper('M2ePro')->__('Buy it now'); ?>
                     </button>
-                    <br>
+                    <br/>
                     <button class='add_to_cart' type='button'>
                         <?php echo Mage::helper('M2ePro')->__('Add to cart'); ?>
                     </button>

@@ -246,7 +246,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
 
             $this->cacheData[$key]['sold_qty'] += $item->getData('online_qty_sold');
         }
-
     }
 
     //########################################

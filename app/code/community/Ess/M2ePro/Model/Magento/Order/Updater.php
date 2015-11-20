@@ -92,6 +92,12 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         $this->needSave = true;
     }
 
+    public function updateShippingDescription($shippingDescription)
+    {
+        $this->magentoOrder->setData('shipping_description', $shippingDescription);
+        $this->needSave = true;
+    }
+
     //########################################
 
     /**

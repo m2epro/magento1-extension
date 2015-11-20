@@ -9,7 +9,6 @@
 class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_Tabs_Settings
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-
     const MESSAGE_TYPE_ERROR = 'error';
     const MESSAGE_TYPE_WARNING = 'warning';
 
@@ -205,7 +204,6 @@ HTML;
                     );
                 }
             }
-
         }
     }
 

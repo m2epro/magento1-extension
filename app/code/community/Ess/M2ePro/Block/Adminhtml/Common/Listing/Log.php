@@ -134,7 +134,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Log extends Mage_Adminhtml_Block
                     $this->escapeHtml($listing->getTitle())
                 );
             }
-
         }
         // ---------------------------------------
 

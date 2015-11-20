@@ -66,7 +66,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Mage_Adminhtml_B
                         ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_feedback')->toHtml(),
                 ));
             }
-
         }
 
         $this->setActiveTab($this->getRequest()->getParam('tab', 'general'));

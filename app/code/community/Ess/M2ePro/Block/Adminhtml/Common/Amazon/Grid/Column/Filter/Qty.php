@@ -17,7 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Grid_Column_Filter_Qty
 
         return parent::getHtml() .
             '<div class="range"><div class="range-line"><span class="label">' .
-                Mage::helper('M2ePro')->__('AFN') . ' : </span>' .
+                Mage::helper('M2ePro')->__('AFN') . ': </span>' .
                 '<input style="margin-left:6px;float:none;width:auto !important;" type="checkbox" value="1" name="' .
                 $this->_getHtmlName() . '[afn]" ' . $afnChecked . '></div></div>';
     }

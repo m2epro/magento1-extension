@@ -13,7 +13,7 @@
             <li>Accept the Amazon MWS License Agreement.</li>
             <li>Copy generated "Merchant ID" / "MWS Auth Token" and paste it in the corresponding fields of the current Page.</li>
         </ul>
-        Continue working with 3rd Party Listings and Orders Settings Tabs.</br></br>
+        Continue working with 3rd Party Listings and Orders Settings Tabs.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/qoIVAQ')
     ); ?>
@@ -71,6 +71,18 @@
         <?php if ($isEdit) { ?>
             AmazonAccountHandlerObj.showGetAccessData(<?php echo $formData['marketplace_id']; ?>);
         <?php } ?>
+
+        var urlHash = location.hash.substr(1);
+        if (urlHash != '') {
+            setTimeout(function() {
+                amazonAccountEditTabsJsTabs.tabs.each(function(tab){
+                    if (tab.name == urlHash) {
+                        amazonAccountEditTabsJsTabs.showTabContent(tab);
+                    }
+                });
+                location.hash = '';
+            }, 100);
+        }
     });
     //-----------------------------
 

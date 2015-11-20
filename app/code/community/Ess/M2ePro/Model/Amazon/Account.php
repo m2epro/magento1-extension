@@ -854,6 +854,33 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         return $setting == self::MAGENTO_ORDERS_FBA_STOCK_MODE_YES;
     }
 
+    // ---------------------------------------
+
+    public function isRepricingLinked()
+    {
+        return !is_null($this->getData('repricing'));
+    }
+
+    public function getRepricing()
+    {
+        return $this->getSettings('repricing');
+    }
+
+    public function getRepricingEmail()
+    {
+        return $this->getSetting('repricing', 'email');
+    }
+
+    public function getRepricingToken()
+    {
+        return $this->getSetting('repricing', 'token');
+    }
+
+    public function getRepricingInfo()
+    {
+        return $this->getSetting('repricing', 'info');
+    }
+
     //########################################
 
     public function save()

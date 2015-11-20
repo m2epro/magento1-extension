@@ -374,7 +374,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
                     $eventObservers[$area][$eventName][] = $observerName;
                 }
-
             }
         }
 

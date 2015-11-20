@@ -9,7 +9,7 @@
     Additional Settings - Handling Time and Restock Date.<br/><br/>
 
     In addition to, in this Section you can select Selling Format Policy that contains Settings connected with forming
-    of Price, Quantity etc. and Synchronization Policy that describes Rules of Automatic Synchronization of Magento Product and Amazon Item.</br></br>
+    of Price, Quantity etc. and Synchronization Policy that describes Rules of Automatic Synchronization of Magento Product and Amazon Item.<br/><br/>
     More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.', $url
     ); ?>
 </div>
@@ -562,7 +562,7 @@ $generalAttributesByInputTypes = array(
                     <td class="value" style="width: auto;">
                         <input type="hidden" id="gift_wrap_attribute" name="gift_wrap_attribute" value="<?php echo $this->getData('gift_wrap_attribute'); ?>" />
 
-                        <select id="gift_wrap_mode" name="gift_wrap_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="boolean" apply_to_all_attribute_sets="0">
+                        <select id="gift_wrap_mode" name="gift_wrap_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="boolean">
                             <option value="<?echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_NO; ?>" <?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_NO == $this->getData('gift_wrap_mode') ? 'selected="selected"' : ''?> >No</option>
                             <option value="<?echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_YES; ?>" <?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_WRAP_MODE_YES == $this->getData('gift_wrap_mode') ? 'selected="selected"' : ''?> >Yes</option>
 
@@ -587,7 +587,7 @@ $generalAttributesByInputTypes = array(
                     <td class="value" style="width: auto;">
                         <input type="hidden" id="gift_message_attribute" name="gift_message_attribute" value="<?php echo $this->getData('gift_message_attribute'); ?>" />
 
-                        <select id="gift_message_mode" name="gift_message_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="boolean" apply_to_all_attribute_sets="0">
+                        <select id="gift_message_mode" name="gift_message_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="boolean">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_NO; ?>" <?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_NO == $this->getData('gift_message_mode') ? 'selected="selected"' : ''?> >No</option>
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_YES; ?>" <?php echo Ess_M2ePro_Model_Amazon_Listing::GIFT_MESSAGE_MODE_YES == $this->getData('gift_message_mode') ? 'selected="selected"' : ''?> >Yes</option>
 

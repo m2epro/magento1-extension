@@ -161,6 +161,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View extends Mage_Adminht
         $path = 'adminhtml_common_listing/duplicateProducts';
         $urls[$path] = $this->getUrl('*/' . $path);
 
+        $urls = array_merge($urls, Mage::helper('M2ePro')->getControllerActions(
+            'adminhtml_common_amazon_listing_repricing',
+            array(
+                'id' => $listingData['id'],
+                'account_id' => $listingData['account_id']
+            )
+        ));
+
         $urls = json_encode($urls);
         // ---------------------------------------
 
@@ -575,6 +583,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View extends Mage_Adminht
         ListingGridHandlerObj.templateShippingOverrideHandler.setOptions(M2ePro);
         ListingGridHandlerObj.variationProductManageHandler.setOptions(M2ePro);
         ListingGridHandlerObj.fulfillmentHandler.setOptions(M2ePro);
+        ListingGridHandlerObj.repricingHandler.setOptions(M2ePro);
 
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');

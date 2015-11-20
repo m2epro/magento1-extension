@@ -12,12 +12,12 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     const STATUS_NEW          = 1;
     const STATUS_UPDATED      = 2;
 
-    const UPDATE_COMPLETED_CHECKOUT = 1;
-    const UPDATE_COMPLETED_PAYMENT  = 2;
-    const UPDATE_COMPLETED_SHIPPING = 3;
-    const UPDATE_BUYER_MESSAGE      = 4;
-    const UPDATE_PAYMENT_DATA       = 5;
-    const UPDATE_EMAIL              = 6;
+    const UPDATE_COMPLETED_CHECKOUT = 'completed_checkout';
+    const UPDATE_COMPLETED_PAYMENT  = 'completed_payment';
+    const UPDATE_COMPLETED_SHIPPING = 'completed_shipping';
+    const UPDATE_BUYER_MESSAGE      = 'buyer_message';
+    const UPDATE_PAYMENT_DATA       = 'payment_data';
+    const UPDATE_EMAIL              = 'email';
 
     //########################################
 
@@ -622,10 +622,6 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
     private function hasUpdate($update)
     {
-        if (!$update) {
-            return false;
-        }
-
         return in_array($update, $this->updates);
     }
 

@@ -74,7 +74,7 @@ EbayMotorAddGroupGridHandler = Class.create(GridHandler, {
             },
             onSuccess: function(transport) {
 
-                self.addPopUp = Dialog.info(null, {
+                self.goupContentPopup = Dialog.info(null, {
                     draggable: true,
                     resizable: true,
                     closable: true,
@@ -92,7 +92,7 @@ EbayMotorAddGroupGridHandler = Class.create(GridHandler, {
                     }
                 });
 
-                self.addPopUp.options.destroyOnClose = true;
+                self.goupContentPopup.options.destroyOnClose = true;
 
                 $('modal_dialog_message').update(transport.responseText);
 
@@ -112,11 +112,16 @@ EbayMotorAddGroupGridHandler = Class.create(GridHandler, {
             postmethod: 'post',
             parameters: {
                 items_ids: itemId,
-                entity_id: groupId
+                group_id: groupId
             },
             onSuccess: function(transport) {
 
                 if (transport.responseText == '0') {
+                    if ($(el).up('tbody').select('tr').length == 1) {
+                        Windows.getFocusedWindow().close();
+                        return;
+                    }
+
                     $(el).up('tr').remove();
                 }
             }
@@ -131,11 +136,16 @@ EbayMotorAddGroupGridHandler = Class.create(GridHandler, {
             postmethod: 'post',
             parameters: {
                 filters_ids: filterId,
-                entity_id: groupId
+                group_id: groupId
             },
             onSuccess: function(transport) {
 
                 if (transport.responseText == '0') {
+                    if ($(el).up('tbody').select('tr').length == 1) {
+                        Windows.getFocusedWindow().close();
+                        return;
+                    }
+
                     $(el).up('tr').remove();
                 }
             }

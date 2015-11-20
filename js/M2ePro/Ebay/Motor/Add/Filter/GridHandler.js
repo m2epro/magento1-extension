@@ -16,6 +16,7 @@ EbayMotorAddFilterGridHandler = Class.create(GridHandler, {
         this.actions = {
             selectAction: this.selectFilters.bind(this),
             setNoteAction: this.setNote.bind(this),
+            resetNoteAction: this.resetNote.bind(this),
             saveAsGroupAction: this.saveAsGroup.bind(this),
             removeFilterAction: this.removeFilter.bind(this)
         };
@@ -96,6 +97,27 @@ EbayMotorAddFilterGridHandler = Class.create(GridHandler, {
             Windows.getFocusedWindow().content.style.height = '';
             Windows.getFocusedWindow().content.style.maxHeight = '630px';
         }, 50);
+    },
+
+    resetNote: function()
+    {
+        var self = this;
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/setNoteToFilters'), {
+            postmethod: 'post',
+            parameters: {
+                filters_ids: self.getGridMassActionObj().checkedString,
+                note: ''
+            },
+            onSuccess: function(transport) {
+
+                if (transport.responseText == '0') {
+                    self.unselectAllAndReload();
+                }
+
+                self.notePopup.close();
+            }
+        });
     },
 
     //----------------------------------

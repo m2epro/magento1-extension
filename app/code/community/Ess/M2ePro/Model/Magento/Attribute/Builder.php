@@ -110,6 +110,10 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
             return false;
         }
 
+        if (strlen($this->code) > self::CODE_MAX_LENGTH) {
+            return false;
+        }
+
         if (empty($this->primaryLabel)) {
             return false;
         }
@@ -129,6 +133,7 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
     {
         $attributeCode = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $primaryLabel);
         $attributeCode = preg_replace('/[^0-9a-z]/i','_', $attributeCode);
+        $attributeCode = preg_replace('/_+/', '_', $attributeCode);
 
         $abc = 'abcdefghijklmnopqrstuvwxyz';
         if (preg_match('/^\d{1}/', $attributeCode, $matches)) {
@@ -136,24 +141,7 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
             $attributeCode = $abc[$index].'_'.$attributeCode;
         }
 
-        if (strlen($attributeCode) > self::CODE_MAX_LENGTH) {
-
-            $originalAttributeHash = sha1($attributeCode);
-            $attributeCode  = substr($attributeCode, 0, self::CODE_MAX_LENGTH - 5);
-            $attributeCode .= '_' . substr($originalAttributeHash, 0, 4);
-        }
-
-        $attributeCode = strtolower($attributeCode);
-
-        // -- system reserved values
-        $systemValues = array('sku', 'store', 'type', 'visibility', 'attribute_set', 'price', 'name', 'description',
-                              'weight', 'status', 'qty', 'image', 'small_image', 'thumbnail', 'media_gallery',
-                              'options');
-
-        in_array($attributeCode, $systemValues) && $attributeCode = 'esc_' . $attributeCode;
-        // ---------------------------------------
-
-        return $attributeCode;
+        return strtolower($attributeCode);
     }
 
     //########################################

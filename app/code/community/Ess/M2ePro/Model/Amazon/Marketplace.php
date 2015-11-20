@@ -67,6 +67,14 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
         return (bool)$this->getData('is_asin_available');
     }
 
+    /**
+     * @return bool
+     */
+    public function isMerchantFulfillmentAvailable()
+    {
+        return (bool)$this->getData('is_merchant_fulfillment_available');
+    }
+
     //########################################
 
     /**

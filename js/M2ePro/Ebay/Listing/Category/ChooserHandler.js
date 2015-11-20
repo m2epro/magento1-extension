@@ -531,7 +531,7 @@ EbayListingCategoryChooserHandler.prototype = Object.extend(new CommonHandler(),
         trElem.appendChild(new Element('td', {style: 'padding-left: 55px;'}))
               .appendChild(new Element('a', {
                   href:    'javascript:void(0);',
-                  onclick: handlerObj.id + '.showPopup();'
+                  onclick: handlerObj.id + '.showPopup({\'allowed_attribute_types\':\'text,select\'});'
               }))
               .update(M2ePro.translator.translate('Select'));
 

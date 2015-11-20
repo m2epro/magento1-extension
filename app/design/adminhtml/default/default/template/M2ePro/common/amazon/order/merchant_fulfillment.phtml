@@ -1,0 +1,25 @@
+<?php
+/**
+ * @var $this Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_merchantFulfillment
+ */
+?>
+
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_common_amazon_order_merchantFulfillment')) ?>);
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_common_amazon_order')) ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Amazon\'s Shipping Services' => Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'),
+        'Please select an option.' => Mage::helper('M2ePro')->__('Please select an option.'),
+        'This is a required fields.' => Mage::helper('M2ePro')->__('This is a required fields.'),
+        'Please enter a number greater than 0 in this fields.' => Mage::helper('M2ePro')->__('Please enter a number greater than 0 in this fields.'),
+        'Are you sure you want to create Shipment now?' => Mage::helper('M2ePro')->__('Are you sure you want to create Shipment now?'),
+        'Please enter a valid date.' => Mage::helper('M2ePro')->__('Please enter a valid date.'),
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        OrderMerchantFulfillmentHandlerObj = new OrderMerchantFulfillmentHandler();
+    });
+
+</script>

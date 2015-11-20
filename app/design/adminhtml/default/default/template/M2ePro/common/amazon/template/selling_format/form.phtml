@@ -1,29 +1,29 @@
 <div id="block_notice_amazon_template_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selling Format Policy'); ?>">
     <?php echo Mage::helper('M2ePro')->__('
-        Selling Format Policy contains Price and Quantity related data for the Items, which will be Listed on Amazon.</br></br>
+        Selling Format Policy contains Price and Quantity related data for the Items, which will be Listed on Amazon.<br/><br/>
 
         While Listing on Amazon, the Magento Price can be modified by providing a Price Change Value. There is a Price
-        Change box next to each Price Options Dropdown.</br></br>
+        Change box next to each Price Options Dropdown.<br/><br/>
 
         <strong>Examples:</strong><br/>
 
         <ul class="list">
-            <li>If you want the Price on Amazon to be greater by 15% than the Price in Magento, you should set +15% in the Price Change field.</br>
+            <li>If you want the Price on Amazon to be greater by 15% than the Price in Magento, you should set +15% in the Price Change field.<br/>
             <i>Amazon Price = Magento Price + Magento Price * 0.15</i></li>
-            <li>If you want the Price on Amazon to be less by 10 Currency units than the Price in Magento, you should set -10 in the Price Change field.</br>
+            <li>If you want the Price on Amazon to be less by 10 Currency units than the Price in Magento, you should set -10 in the Price Change field.<br/>
             <i>Amazon Price = Magento Price - 10</i></li>
-            <li>If you want the Price on Amazon to be multiplied by coefficient 1.2, you should set 1.2 in the Price Change field.</br>
+            <li>If you want the Price on Amazon to be multiplied by coefficient 1.2, you should set 1.2 in the Price Change field.<br/>
             <i>Amazon Price = Magento Price * 1.2</i></li>
         </ul>
 
         <strong>Note:</strong> If the Special Price is chosen in the <strong>Price</strong> Option, but it is not set in Magento
-        Product Settings or has already expired, the Product Price will be used instead.</br>
+        Product Settings or has already expired, the Product Price will be used instead.<br/>
         If the Special Price is chosen in the <strong>Sale Price</strong> Option, its Magento <strong>From</strong>, <strong>To</strong> dates will be taken into
-        consideration. Once the Sale Price has expired, the Price will be used.</br>
+        consideration. Once the Sale Price has expired, the Price will be used.<br/>
         If those dates are not specified, the <strong>Sale Price</strong> will be set <strong>From</strong> this moment <strong>To</strong>
-        the year ahead.</br></br>
+        the year ahead.<br/><br/>
 
-        <strong>Note:</strong> Attributes must contain only Numeric Values.</br></br>
+        <strong>Note:</strong> Attributes must contain only Numeric Values.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/-IIVAQ')); ?>
 </div>
@@ -588,14 +588,14 @@
                         <p class="note">
                             <?php echo Mage::helper('M2ePro')->__('
                                 Choose whether you want to add VAT to the Price when a Product is Listed on Amazon and
-                                provide the appropriate VAT Percent Value.</br></br>
+                                provide the appropriate VAT Percent Value.<br/><br/>
 
                                 <strong>Example:</strong>
-                                For a Product with Magento Price = £10</br>
-                                VAT Rate = 15%</br>
-                                Magento Price: £10</br>
-                                VAT 15%: £10 * 15% = £1.50</br>
-                                Final Price on Amazon (Magento Price + VAT) = £10 + £1.50 = £11.50</br></br>
+                                For a Product with Magento Price = £10<br/>
+                                VAT Rate = 15%<br/>
+                                Magento Price: £10<br/>
+                                VAT 15%: £10 * 15% = £1.50<br/>
+                                Final Price on Amazon (Magento Price + VAT) = £10 + £1.50 = £11.50<br/><br/>
 
                                 <strong>Note:</strong> No VAT Rate Value will be sent on Amazon. Only the Item\'s Price
                                 on Amazon will be increased.

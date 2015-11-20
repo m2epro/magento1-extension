@@ -100,6 +100,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Filter_Grid extends Mage_Adminht
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
         ));
 
+        $this->getMassactionBlock()->addItem('resetNote', array(
+            'label'   => Mage::helper('M2ePro')->__('Reset Note'),
+            'url'     => '',
+            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+        ));
+
         $this->getMassactionBlock()->addItem('saveAsGroup', array(
             'label'   => Mage::helper('M2ePro')->__('Save As Group'),
             'url'     => '',
@@ -234,7 +240,7 @@ HTML;
     </span>
     <span class="value">{$value}</span>
 </span>
-<br>
+<br/>
 HTML;
         }
 

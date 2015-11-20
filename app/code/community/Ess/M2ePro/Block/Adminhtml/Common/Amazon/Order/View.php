@@ -51,7 +51,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_View extends Mage_Adminhtml
         ));
         // ---------------------------------------
 
-        if ($this->order->getChildObject()->canUpdateShippingStatus()) {
+        if ($this->order->getChildObject()->canUpdateShippingStatus() && !$this->order->getChildObject()->isPrime()) {
             // ---------------------------------------
             $url = $this->getUrl('*/*/updateShippingStatus', array('id' => $this->order->getId()));
             $this->_addButton('update_shipping_status', array(

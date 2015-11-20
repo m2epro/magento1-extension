@@ -443,6 +443,79 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
+    // Repricing Integration
+    // ---------------------------------------
+
+    linkOrRegisterRepricing: function()
+    {
+        return setLocation(M2ePro.url.get('adminhtml_common_amazon_account_repricing/linkOrRegister'));
+    },
+
+    unlinkRepricing: function()
+    {
+        var self = this;
+
+        self.unlinkPopup = Dialog.info(null, {
+            draggable: true,
+            resizable: true,
+            closable: true,
+            className: "magento",
+            windowClassName: "popup-window",
+            title: M2ePro.translator.translate('Unlink Repricing Tool'),
+            width: 400,
+            height: 220,
+            zIndex: 100,
+            hideEffect: Element.hide,
+            showEffect: Element.show
+        });
+        self.unlinkPopup .options.destroyOnClose = false;
+
+        $('modal_dialog_message').update($('repricing_unlink_popup').innerHTML);
+
+        setTimeout(function() {
+            Windows.getFocusedWindow().content.style.height = '';
+            Windows.getFocusedWindow().content.style.maxHeight = '630px';
+        }, 50);
+    },
+
+    openUnlinkPage: function()
+    {
+        return setLocation(M2ePro.url.get('adminhtml_common_amazon_account_repricing/openUnlinkPage'));
+    },
+
+    openManagement: function()
+    {
+        window.open(M2ePro.url.get('adminhtml_common_amazon_account_repricing/openManagement'));
+    },
+
+    synchRepricing: function()
+    {
+        var self = this;
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_common_amazon_account_repricing/synchronize'), {
+            method: 'post',
+            onSuccess: function (transport) {
+
+                if (!transport.responseText.isJSON()) {
+                    alert(transport.responseText);
+                    return;
+                }
+
+                var response = transport.responseText.evalJSON();
+
+                if (response.messages) {
+                    MagentoMessageObj.clearAll();
+                    response.messages.each(function(msg) {
+                        MagentoMessageObj['add' + msg.type[0].toUpperCase() + msg.type.slice(1)](msg.text);
+                    });
+                }
+
+                $('repricing_total_products').innerHTML = response['repricing_total_products'];
+                $('m2epro_repricing_total_products').innerHTML = response['m2epro_repricing_total_products'];
+            }
+        });
+    },
+
     // ---------------------------------------
 
     saveAndClose: function()

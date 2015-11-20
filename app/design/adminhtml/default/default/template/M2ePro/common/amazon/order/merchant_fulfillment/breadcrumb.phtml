@@ -1,0 +1,76 @@
+<?php
+    /**
+     * @var $this Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_MerchantFulfillment_Breadcrumb
+     */
+?>
+
+<style type="text/css">
+    #breadcrumb_container {
+        margin-bottom: 10px;
+    }
+    .breadcrumb {
+        padding: 12px 0;
+        color: #aaa;
+        width: 33.1%;
+        font-size: 14px;
+        text-align: center;
+        background: #e7efef;
+    }
+    .space {
+        width: 0.3%;
+        height: 40px;
+        background: white;
+    }
+    .selected {
+        color: white;
+        background: #6f8992;
+        font-weight: bold;
+    }
+</style>
+
+<div id="breadcrumb_container">
+
+    <div class="left" style="width: 100%;">
+
+        <div id="step_1" class="left breadcrumb <?php if ($this->getStep() == 1): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step 1'); ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Configure Options'); ?>
+            </span>
+
+        </div>
+
+        <div class="left space"></div>
+
+        <div id="step_2" class="left breadcrumb <?php if ($this->getStep() == 2): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step 2'); ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Choose Service'); ?>
+            </span>
+
+        </div>
+
+        <div class="left space"></div>
+
+        <div id="step_3" class="left breadcrumb <?php if ($this->getStep() == 3): ?>selected<?php endif; ?>">
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Step 3'); ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Congratulations'); ?>
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>

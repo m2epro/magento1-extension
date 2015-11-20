@@ -680,12 +680,12 @@ HTML;
             $bidsText = Mage::helper('M2ePro')->__('Bid(s)');
 
             if ($listingProduct->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED) {
-                $resultHtml .= '<br><br><span style="font-size: 10px; color: gray;">' .
+                $resultHtml .= '<br/><br/><span style="font-size: 10px; color: gray;">' .
                     $onlineBids. ' ' . $bidsText . '</span>';
             } else {
                 $resultHtml .= <<<HTML
-<br>
-<br>
+<br/>
+<br/>
 <a class="m2ePro-ebay-auction-bids-link"
     href="javascript:void(0)"
     title="{$bidsTitle}"
@@ -1330,7 +1330,7 @@ HTML;
     };
 
     var script = new Element('script', {type: 'text/javascript',
-                                        src: 'http://widget.terapeak.com/tools/terapeak-loader.js'});
+                                        src: 'https://widget.terapeak.com/tools/terapeak-loader.js'});
 
     $$('head').first().appendChild(script);
 

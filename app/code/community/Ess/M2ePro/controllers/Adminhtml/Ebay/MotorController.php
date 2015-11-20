@@ -255,22 +255,26 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
     public function removeItemFromGroupAction()
     {
         $itemsIds = $this->getRequest()->getParam('items_ids');
-        $entityId = $this->getRequest()->getParam('entity_id');
+        $groupId = $this->getRequest()->getParam('group_id');
 
         if (!is_array($itemsIds)) {
             $itemsIds = explode(',', $itemsIds);
         }
 
         /** @var Ess_M2ePro_Model_Ebay_Motor_Group $model */
-        $model = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($entityId);
+        $model = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
         $items = $model->getItems();
 
         foreach ($itemsIds as $itemId) {
             unset($items[$itemId]);
         }
 
-        $model->setItemsData(Mage::helper('M2ePro/Component_Ebay_Motors')->buildItemsAttributeValue($items));
-        $model->save();
+        if (count($items) > 0) {
+            $model->setItemsData(Mage::helper('M2ePro/Component_Ebay_Motors')->buildItemsAttributeValue($items));
+            $model->save();
+        } else {
+            $model->deleteInstance();
+        }
 
         $this->getResponse()->setBody(0);
     }
@@ -334,7 +338,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
     public function removeFilterFromGroupAction()
     {
         $filtersIds = $this->getRequest()->getParam('filters_ids');
-        $entityId = $this->getRequest()->getParam('entity_id');
+        $groupId = $this->getRequest()->getParam('group_id');
 
         if (!is_array($filtersIds)) {
             $filtersIds = explode(',', $filtersIds);
@@ -348,8 +352,15 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
 
         $connWrite->delete($filterGroupRelation, array(
             'filter_id in (?)' => $filtersIds,
-            'group_id = ?' => $entityId,
+            'group_id = ?' => $groupId,
         ));
+
+        /** @var Ess_M2ePro_Model_Ebay_Motor_Group $model */
+        $model = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
+
+        if (count($model->getFiltersIds()) == 0) {
+            $model->deleteInstance();
+        }
 
         $this->getResponse()->setBody(0);
     }

@@ -17,6 +17,10 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     const DICTIONARY_MODE_CUSTOM_ATTRIBUTE  = 'custom_attribute';
     const DICTIONARY_MODE_NONE              = 'none';
 
+    const TYPE_INT      = 'int';
+    const TYPE_FLOAT    = 'float';
+    const TYPE_DATETIME = 'date_time';
+
     /**
      * @var Ess_M2ePro_Model_Template_Description
      */
@@ -126,6 +130,11 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
         return $this->getData('mode');
     }
 
+    public function getIsRequired()
+    {
+        return $this->getData('is_required');
+    }
+
     public function getRecommendedValue()
     {
         return $this->getData('recommended_value');
@@ -153,6 +162,52 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     {
         $value = $this->getData('attributes');
         return is_string($value) ? (array)json_decode($value, true) : array();
+    }
+
+    //########################################
+
+    public function isRequired()
+    {
+        return (bool)$this->getIsRequired();
+    }
+
+    //----------------------------------------
+
+    public function isModeNone()
+    {
+        return $this->getMode() == self::DICTIONARY_MODE_NONE;
+    }
+
+    public function isModeCustomValue()
+    {
+        return $this->getMode() == self::DICTIONARY_MODE_CUSTOM_VALUE;
+    }
+
+    public function isModeCustomAttribute()
+    {
+        return $this->getMode() == self::DICTIONARY_MODE_CUSTOM_ATTRIBUTE;
+    }
+
+    public function isModeRecommended()
+    {
+        return $this->getMode() == self::DICTIONARY_MODE_RECOMMENDED_VALUE;
+    }
+
+    //----------------------------------------
+
+    public function isTypeInt()
+    {
+        return $this->getType() == self::TYPE_INT;
+    }
+
+    public function isTypeFloat()
+    {
+        return $this->getType() == self::TYPE_FLOAT;
+    }
+
+    public function isTypeDateTime()
+    {
+        return $this->getType() == self::TYPE_DATETIME;
     }
 
     //########################################

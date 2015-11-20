@@ -14,6 +14,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     const IS_AFN_CHANNEL_NO  = 0;
     const IS_AFN_CHANNEL_YES = 1;
 
+    const IS_REPRICING_NO  = 0;
+    const IS_REPRICING_YES = 1;
+
     const IS_ISBN_GENERAL_ID_NO  = 0;
     const IS_ISBN_GENERAL_ID_YES = 1;
 
@@ -489,6 +492,16 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function getGeneralIdSearchInfo()
     {
         return $this->getSettings('general_id_search_info');
+    }
+
+    //########################################
+
+    /**
+     * @return bool
+     */
+    public function isRepricing()
+    {
+        return (int)$this->getData('is_repricing') == self::IS_REPRICING_YES;
     }
 
     //########################################

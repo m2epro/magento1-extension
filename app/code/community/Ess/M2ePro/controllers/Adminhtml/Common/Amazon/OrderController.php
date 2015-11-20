@@ -17,8 +17,10 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_OrderController
              ->_title(Mage::helper('M2ePro')->__('Amazon Orders'));
 
         $this->getLayout()->getBlock('head')
+             ->addJs('M2ePro/Plugin/ActionColumn.js')
              ->addJs('M2ePro/Order/Debug.js')
              ->addJs('M2ePro/Order/Handler.js')
+             ->addJs('M2ePro/Common/Amazon/Order/MerchantFulfillmentHandler.js')
              ->addJs('M2ePro/Order/Edit/ItemHandler.js')
              ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js');
 
@@ -68,7 +70,8 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_OrderController
         $this->setComponentPageHelpLink('Manage+Order+Details', Ess_M2ePro_Helper_Component_Amazon::NICK);
 
         $this->_initPopUp();
-        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_amazon_order_view'))
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_amazon_order_merchantFulfillment'))
+            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_amazon_order_view'))
             ->renderLayout();
     }
 
@@ -238,15 +241,33 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_OrderController
                 ->addFieldToFilter('id', array('in' => $ids))
                 ->getItems();
 
+        $canUpdateShippingStatuses = array();
+        $wasPrimeOrder = false;
         foreach ($orders as $order) {
-            if ($order->getChildObject()->canUpdateShippingStatus()) {
-                $order->getChildObject()->updateShippingStatus();
+            if ($order->getChildObject()->isPrime()) {
+                $wasPrimeOrder = true;
+            } else {
+                $canUpdateShippingStatuses[] = $order->getChildObject()->updateShippingStatus();
             }
         }
 
-        $this->_getSession()->addSuccess(
-            Mage::helper('M2ePro')->__('Updating Amazon Order(s) Status to Shipped in Progress...')
-        );
+        if (!in_array(false, $canUpdateShippingStatuses, true) && !$wasPrimeOrder) {
+            $this->_getSession()->addSuccess(
+                Mage::helper('M2ePro')->__('Updating Amazon Order(s) Status to Shipped in Progress...')
+            );
+        }
+        if (in_array(true, $canUpdateShippingStatuses, true) && $wasPrimeOrder)
+        {
+            $this->_getSession()->addWarning(
+                Mage::helper('M2ePro')->__('Some Amazon Order(s) can not be updated for Shipped Status.')
+            );
+        }
+        if (!in_array(true, $canUpdateShippingStatuses, true))
+        {
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__('Amazon Order(s) can not be updated for Shipped Status.')
+            );
+        }
 
         $this->_redirectUrl($this->_getRefererUrl());
     }

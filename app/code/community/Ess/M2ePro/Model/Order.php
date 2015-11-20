@@ -115,6 +115,11 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         return (int)$this->getData('reservation_state');
     }
 
+    public function getAdditionalData()
+    {
+        return $this->getSettings('additional_data');
+    }
+
     //########################################
 
     /**
@@ -370,6 +375,27 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         }
 
         return !is_null($this->magentoOrder->getId()) ? $this->magentoOrder : NULL;
+    }
+
+    //########################################
+
+    public function addCreatedMagentoShipment(Mage_Sales_Model_Order_Shipment $magentoShipment)
+    {
+        $additionalData = $this->getAdditionalData();
+        $additionalData['created_shipments_ids'][] = $magentoShipment->getId();
+        $this->setSettings('additional_data', $additionalData)->save();
+
+        return $this;
+    }
+
+    public function isMagentoShipmentCreatedByOrder(Mage_Sales_Model_Order_Shipment $magentoShipment)
+    {
+        $additionalData = $this->getAdditionalData();
+        if (empty($additionalData['created_shipments_ids']) || !is_array($additionalData['created_shipments_ids'])) {
+            return false;
+        }
+
+        return in_array($magentoShipment->getId(), $additionalData['created_shipments_ids']);
     }
 
     //########################################
@@ -664,6 +690,8 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             $this->addSuccessLog('Shipment #%shipment_id% was created.', array(
                 '!shipment_id' => $shipment->getIncrementId()
             ));
+
+            $this->addCreatedMagentoShipment($shipment);
         }
 
         return $shipment;

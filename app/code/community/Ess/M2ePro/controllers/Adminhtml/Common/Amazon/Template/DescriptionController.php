@@ -271,6 +271,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
             $specificInstance = Mage::getModel('M2ePro/Amazon_Template_Description_Specific');
 
             $type       = isset($specificData['type']) ? $specificData['type'] : '';
+            $isRequired = isset($specificData['is_required']) ? $specificData['is_required'] : 0;
             $attributes = isset($specificData['attributes']) ? json_encode($specificData['attributes']) : '[]';
 
             $recommendedValue = $specificData['mode'] == $specificInstance::DICTIONARY_MODE_RECOMMENDED_VALUE
@@ -286,6 +287,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
                 'template_description_id' => $id,
                 'xpath'                   => $xpath,
                 'mode'                    => $specificData['mode'],
+                'is_required'             => $isRequired,
                 'recommended_value'       => $recommendedValue,
                 'custom_value'            => $customValue,
                 'custom_attribute'        => $customAttribute,

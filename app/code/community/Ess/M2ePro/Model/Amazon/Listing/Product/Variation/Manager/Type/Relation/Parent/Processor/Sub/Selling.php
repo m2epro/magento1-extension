@@ -18,6 +18,7 @@ class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         $qty = null;
         $price = null;
         $afn = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_NO;
+        $repricing = Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_NO;
 
         foreach ($this->getProcessor()->getTypeModel()->getChildListingsProducts() as $listingProduct) {
             if ($listingProduct->isNotListed()) {
@@ -26,6 +27,13 @@ class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
             $amazonListingProduct = $listingProduct->getChildObject();
+
+            if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
+                $repricing === Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_NO &&
+                $amazonListingProduct->isRepricing()) {
+
+                $repricing = Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES;
+            }
 
             if ($amazonListingProduct->isAfnChannel()) {
                 $afn = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_YES;
@@ -60,7 +68,8 @@ class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         $this->getProcessor()->getListingProduct()->addData(array(
             'online_qty'        => $qty,
             'online_price'      => $price,
-            'is_afn_channel'    => $afn
+            'is_afn_channel'    => $afn,
+            'is_repricing'      => $repricing
         ));
     }
 

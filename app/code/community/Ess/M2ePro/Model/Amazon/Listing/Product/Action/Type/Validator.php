@@ -283,6 +283,20 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
             return true;
         }
 
+        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
+            $this->getAmazonListingProduct()->isRepricing()) {
+
+            $this->getConfigurator()->disallowPrice();
+
+            $this->addMessage(
+                'This product is used by Amazon Repricing Tool.
+                 The Price cannot be updated through the M2E Pro.',
+                Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING
+            );
+
+            return true;
+        }
+
         $price = $this->getPrice();
         if ($price <= 0) {
 

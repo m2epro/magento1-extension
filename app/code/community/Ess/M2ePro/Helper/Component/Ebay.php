@@ -17,7 +17,6 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     const MARKETPLACE_DE = 8;
 
     const LISTING_DURATION_GTC = 100;
-
     const MAX_LENGTH_FOR_OPTION_VALUE = 50;
 
     //########################################
@@ -99,32 +98,6 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
         return $this->getModel($modelName)->getCollection();
     }
 
-    public function getListingProductByEbayItem($ebayItem, $accountId)
-    {
-        // Get listing product
-        // ---------------------------------------
-        $readConnection = Mage::getResourceModel('core/config')->getReadConnection();
-
-        $ebayItem  = $readConnection->quoteInto('?', $ebayItem);
-        $accountId = $readConnection->quoteInto('?', $accountId);
-
-        /** @var $collection Ess_M2ePro_Model_Mysql4_Listing_Product_Collection */
-        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $collection->getSelect()->join(
-            array('mei' => Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable()),
-            "(second_table.ebay_item_id = mei.id AND mei.item_id = {$ebayItem}
-                                                 AND mei.account_id = {$accountId})",
-            array()
-        );
-        // ---------------------------------------
-
-        if ($collection->getSize() == 0) {
-            return NULL;
-        }
-
-        return $collection->getFirstItem();
-    }
-
     //########################################
 
     public function getItemUrl($ebayItemId,
@@ -155,55 +128,6 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getCurrencies()
-    {
-        return array(
-            'AUD' => 'Australian Dollar',
-            'GBP' => 'British Pound',
-            'CAD' => 'Canadian Dollar',
-            'CNY' => 'Chinese Renminbi',
-            'EUR' => 'Euro',
-            'HKD' => 'Hong Kong Dollar',
-            'INR' => 'Indian Rupees',
-            'MYR' => 'Malaysian Ringgit',
-            'PHP' => 'Philippines Peso',
-            'PLN' => 'Polish Zloty',
-            'SGD' => 'Singapore Dollar',
-            'SEK' => 'Sweden Krona',
-            'CHF' => 'Swiss Franc',
-            'TWD' => 'Taiwanese Dollar',
-            'USD' => 'US Dollar',
-        );
-    }
-
-    public function getCarrierTitle($carrierCode, $title = null)
-    {
-        $carriers = $this->getCarriers();
-        $carrierCode = strtolower($carrierCode);
-
-        if (isset($carriers[$carrierCode])) {
-            return $carriers[$carrierCode];
-        }
-
-        if ($title == '' || filter_var($title, FILTER_VALIDATE_URL) !== false) {
-            return 'Other';
-        }
-
-        return $title;
-    }
-
-    public function getCarriers()
-    {
-        return array(
-            'dhl'   => 'DHL',
-            'fedex' => 'FedEx',
-            'ups'   => 'UPS',
-            'usps'  => 'USPS'
-        );
-    }
-
-    //########################################
-
     public function isShowTaxCategory()
     {
         return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
@@ -226,7 +150,87 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
         );
     }
 
-    //########################################
+    public function getImagesHash(array $images)
+    {
+        return sha1(json_encode($images));
+    }
+
+    public function getListingProductByEbayItem($ebayItem, $accountId)
+    {
+        // Get listing product
+        // ---------------------------------------
+        $readConnection = Mage::getResourceModel('core/config')->getReadConnection();
+
+        $ebayItem  = $readConnection->quoteInto('?', $ebayItem);
+        $accountId = $readConnection->quoteInto('?', $accountId);
+
+        /** @var $collection Ess_M2ePro_Model_Mysql4_Listing_Product_Collection */
+        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+        $collection->getSelect()->join(
+            array('mei' => Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable()),
+            "(second_table.ebay_item_id = mei.id AND mei.item_id = {$ebayItem}
+                                                 AND mei.account_id = {$accountId})",
+            array()
+        );
+        // ---------------------------------------
+
+        if ($collection->getSize() == 0) {
+            return NULL;
+        }
+
+        return $collection->getFirstItem();
+    }
+
+    // ---------------------------------------
+
+    public function getCurrencies()
+    {
+        return array(
+            'AUD' => 'Australian Dollar',
+            'GBP' => 'British Pound',
+            'CAD' => 'Canadian Dollar',
+            'CNY' => 'Chinese Renminbi',
+            'EUR' => 'Euro',
+            'HKD' => 'Hong Kong Dollar',
+            'INR' => 'Indian Rupees',
+            'MYR' => 'Malaysian Ringgit',
+            'PHP' => 'Philippines Peso',
+            'PLN' => 'Polish Zloty',
+            'SGD' => 'Singapore Dollar',
+            'SEK' => 'Sweden Krona',
+            'CHF' => 'Swiss Franc',
+            'TWD' => 'Taiwanese Dollar',
+            'USD' => 'US Dollar',
+        );
+    }
+
+    public function getCarriers()
+    {
+        return array(
+            'dhl'   => 'DHL',
+            'fedex' => 'FedEx',
+            'ups'   => 'UPS',
+            'usps'  => 'USPS'
+        );
+    }
+
+    public function getCarrierTitle($carrierCode, $title = null)
+    {
+        $carriers = $this->getCarriers();
+        $carrierCode = strtolower($carrierCode);
+
+        if (isset($carriers[$carrierCode])) {
+            return $carriers[$carrierCode];
+        }
+
+        if ($title == '' || filter_var($title, FILTER_VALIDATE_URL) !== false) {
+            return 'Other';
+        }
+
+        return $title;
+    }
+
+    // ---------------------------------------
 
     public function reduceOptionsForVariations(array $options)
     {
@@ -262,13 +266,6 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
         }
 
         return $options;
-    }
-
-    // ---------------------------------------
-
-    public function getImagesHash(array $images)
-    {
-        return sha1(json_encode($images));
     }
 
     //########################################

@@ -175,7 +175,6 @@ SQL
             $connection->addKey($dictionaryCategoryTableName, $newIndex, $newIndex);
         }
     }
-
 }
 
 // ---------------------------------------

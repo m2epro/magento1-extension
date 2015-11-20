@@ -308,7 +308,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
                     $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
                     $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
                 } else {
-                    $html .= $optionHtml . '<br>';
+                    $html .= $optionHtml . '<br/>';
                 }
             }
             if (!$uniqueProductsIds) {
@@ -427,7 +427,6 @@ HTML;
 <span style="{$style}"><b>{$attrName}</b>:&nbsp;{$optionName}</span><br/>
 HTML;
             }
-
         }
 
         if (!empty($generalId)) {

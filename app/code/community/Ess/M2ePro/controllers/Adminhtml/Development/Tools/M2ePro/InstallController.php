@@ -160,7 +160,6 @@ HTML;
                 );
                 continue;
             }
-
         }
 
         if (count($problems) <= 0) {

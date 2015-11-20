@@ -46,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
     {
         // Set massaction identifiers
         // ---------------------------------------
-        $this->setMassactionIdField('`main_table`.id');
+        $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
         // ---------------------------------------
 

@@ -314,7 +314,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                     } else {
                         $bref[$key] = $head[$key];
                     }
-
                 }
             } while (count($head_stack));
         }

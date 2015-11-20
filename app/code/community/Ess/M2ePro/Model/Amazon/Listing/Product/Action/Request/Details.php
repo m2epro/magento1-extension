@@ -275,12 +275,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request_Details
 
         foreach ($this->getDescriptionTemplate()->getSpecifics(true) as $specific) {
 
-            $path = $specific->getSource(
-                $this->getAmazonListingProduct()->getActualMagentoProduct()
-            )->getPath();
+            $source = $specific->getSource($this->getAmazonListingProduct()->getActualMagentoProduct());
+
+            if (!$specific->isRequired() && !$specific->isModeNone() && !$source->getValue()) {
+                continue;
+            }
 
             $data = Mage::helper('M2ePro')->arrayReplaceRecursive(
-                $data, json_decode($path, true)
+                $data, json_decode($source->getPath(), true)
             );
         }
 

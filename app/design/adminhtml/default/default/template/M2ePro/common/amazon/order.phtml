@@ -16,6 +16,12 @@
         'adminhtml_order/getDebugInformation' => $this->getUrl('M2ePro/adminhtml_order/getDebugInformation/', array('id' => $this->getRequest()->getParam('id')))
     )); ?>);
 
+    <?php if ($this->getRequest()->getParam('show_merchant_fulfillment')): ?>
+    Event.observe(window, 'load', function() {
+        OrderMerchantFulfillmentHandlerObj.getPopupAction(<?php echo $this->order->getId(); ?>);
+    });
+    <?php endif; ?>
+
 </script>
 
 <!-- ########################################################################################### -->
@@ -26,6 +32,9 @@
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend">
                 <?php echo Mage::helper('M2ePro')->__('Amazon Order');?> # <?php echo $this->order->getData('amazon_order_id'); ?>
+                <?php if ($this->order->getChildObject()->isPrime()): ?>
+                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/prime.png'); ?>" />
+                <?php endif; ?>
             </h4>
             <div style="float: right;">
                 <?php $url = Mage::helper('M2ePro/Component_Amazon')->getOrderUrl($this->order->getChildObject()->getAmazonOrderId(), $this->order->getMarketplaceId()); ?>
@@ -332,6 +341,44 @@
                                 <td></td>
                                 <td class="value">
                                     <?php echo $this->getChildHtml('resubmit_shipping_info') ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+
+                        <?php if (!$this->order->getChildObject()->isMerchantFulfillmentApplied()):?>
+                            <?php if ($this->getChildHtml('use_amazons_shipping_services')):?>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <?php echo $this->getChildHtml('use_amazons_shipping_services'); ?>
+                                        <p class="note">
+                                            <span><?php echo Mage::helper('M2ePro')->__('
+                                                This Option allows you to specify Settings for
+                                                <strong>Amazon\'s Shipping Service Tool</strong> to get the List of available
+                                                Shipping Services offered by Amazon. In this case, Amazon guarantees
+                                                <strong>fast</strong> and <strong>high quality</strong> delivery.
+                                            '); ?></span>
+                                        </p>
+                                    </td>
+                                <tr>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td class="label"><?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services');?>:</td>
+                                <td class="value">
+                                    <strong>
+                                        <a href="javascript://" id="fulfillment_manage_title" onclick="OrderMerchantFulfillmentHandlerObj.getPopupAction(<?php echo $this->order->getId(); ?>);">
+                                            <?php echo Mage::helper('M2ePro')->__('Show Details');?>
+                                        </a>
+                                    </strong>
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__('
+                                            This Option allows you to specify Settings for
+                                            <strong>Amazon\'s Shipping Service Tool</strong> to get the List of available
+                                            Shipping Services offered by Amazon. In this case, Amazon guarantees
+                                            <strong>fast</strong> and <strong>high quality</strong> delivery.
+                                        '); ?></span>
+                                    </p>
                                 </td>
                             </tr>
                         <?php endif; ?>

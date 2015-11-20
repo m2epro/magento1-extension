@@ -82,6 +82,23 @@ class Ess_M2ePro_Model_Observer_Dispatcher
         $this->process('Shipment_Track', $eventObserver);
     }
 
+    //########################################
+
+    public function orderView(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Order_View', $eventObserver);
+    }
+
+    public function shipmentViewBefore(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Shipment_View_Before', $eventObserver);
+    }
+
+    public function shipmentViewAfter(Varien_Event_Observer $eventObserver)
+    {
+        $this->process('Shipment_View_After', $eventObserver);
+    }
+
     public function salesOrderCreditmemoRefund(Varien_Event_Observer $eventObserver)
     {
         $this->process('CreditMemo', $eventObserver);

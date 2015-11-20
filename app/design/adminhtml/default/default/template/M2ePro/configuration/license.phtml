@@ -19,7 +19,6 @@
     $betaText = '';
 
     if (isset($this->components[Ess_M2ePro_Helper_Component_Amazon::NICK])) {
-        $betaComponents[] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
         $components[] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
     }
 
@@ -78,7 +77,7 @@
     To get the License Key click the <span style="text-decoration: underline;">Manage License</span> link and follow the instructions.<br/>
     When you receive your License Key, press the Enter Button, enter your License Key in appeared text field and press Confirm.
     <br/><br/>
-    <b>Note:</b> If you have not received the License Key, please contact us %email%.</br></br>
+    <b>Note:</b> If you have not received the License Key, please contact us %email%.<br/><br/>
     More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
     $componentsString, $ebayText, $betaText, $email, Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-License'));
     echo $tempString;
@@ -334,13 +333,6 @@
                             <div id="block_notice_license_ebay" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                                 <?php echo Mage::helper('M2ePro')->__('<b>Note:</b> The eBay component, its upgrades and support are free according to eBay / Magento Partner Agreement. And they will stay free
                                                                        until the partner agreement is active.'); ?>
-                            </div>
-                        <?php } ?>
-
-                        <?php if ($componentName == Ess_M2ePro_Helper_Component_Amazon::NICK) { ?>
-                            <div id="block_notice_license_amazon" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
-                                <?php echo Mage::helper('M2ePro')->__('<b>Note:</b> The current Beta version of the Amazon module is provided free of charge.
-                                However, please be advised that upon the live version of the Product release some monthly subscription fee will be introduced.'); ?>
                             </div>
                         <?php } ?>
 

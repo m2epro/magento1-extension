@@ -241,7 +241,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
                 $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
                 $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
             } else {
-                $html .= $optionHtml . '<br>';
+                $html .= $optionHtml . '<br/>';
             }
         }
         if (!$uniqueProductsIds) {

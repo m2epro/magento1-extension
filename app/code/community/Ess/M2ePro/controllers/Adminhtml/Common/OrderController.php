@@ -17,7 +17,9 @@ class Ess_M2ePro_Adminhtml_Common_OrderController
              ->_title(Mage::helper('M2ePro')->__('Orders'));
 
         $this->getLayout()->getBlock('head')
+             ->addJs('M2ePro/Plugin/ActionColumn.js')
              ->addJs('M2ePro/Order/Handler.js')
+             ->addJs('M2ePro/Common/Amazon/Order/MerchantFulfillmentHandler.js')
              ->addJs('M2ePro/Order/Edit/ItemHandler.js');
 
         $this->_initPopUp();

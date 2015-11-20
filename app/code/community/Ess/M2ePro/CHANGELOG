@@ -1,3 +1,17 @@
+* 6.3.9 (r9929) (15/11/2015)
+
+* Added: [Amazon] Ability to use Amazon's Shipping Services feature (Buy Shipping API)
+* Improvement: Many improvements for creation Magento Attributes 'on-the-fly'
+* Improvement: [eBay] Many improvements of Parts Compatibility Management Tool
+* Improvement: [eBay] Shipping Services Titles will be differ if they have the same labels on eBay
+* Improvement: [Amazon] The error will not occur for not required Specifics if their source is an Attribute
+* Fix: Backward compatibility with Magento Security Patch (SUPEE-6788) / Protection non-default admin URL
+* Fix: Values of Magento Attribute with type drop-down or multi-select was retrieved from Default Store View
+* Fix: [eBay] The warnings in Chrome Browser because of unsecure connections to the Terapeak service
+* Fix: [eBay] Many fixes of the issues of Parts Compatibility Management Tool
+* Fix: [eBay] Fatal error: "Call to a member function getRegionId() on a non-object" for Click and Collect Orders
+* Fix: [eBay] Static Blocks were rendered according to the "Admin Store" view instead of selected in Listing settings
+
 * 6.3.8 (r9727) (29/10/2015)
 
 * Added: Ability to create Magento Attributes 'on-the-fly' with drop-down and multi-selection types

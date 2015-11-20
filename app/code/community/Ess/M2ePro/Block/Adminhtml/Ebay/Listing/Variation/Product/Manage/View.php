@@ -59,5 +59,4 @@ HTML;
         $additionalJavascript .
         $closeBtn->toHtml();
     }
-
 }

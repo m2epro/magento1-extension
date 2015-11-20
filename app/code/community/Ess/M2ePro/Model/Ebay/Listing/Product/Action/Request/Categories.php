@@ -221,6 +221,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Categories
 
             /** @var Ess_M2ePro_Model_Ebay_Motor_Filter $filter */
             $filter = Mage::getModel('M2ePro/Ebay_Motor_Filter')->load($filterId);
+
+            if ($filter->getType() != $type) {
+                continue;
+            }
+
             $conditions = $filter->getConditions();
 
             $select = Mage::getResourceModel('core/config')->getReadConnection()
@@ -301,6 +306,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Categories
 
             /** @var Ess_M2ePro_Model_Ebay_Motor_Group $group */
             $group = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
+
+            if ($group->getType() != $type) {
+                continue;
+            }
 
             if (!$group->getId()) {
                 $result[] = array(

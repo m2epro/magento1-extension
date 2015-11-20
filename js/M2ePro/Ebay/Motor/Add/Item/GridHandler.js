@@ -21,6 +21,7 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
         this.actions = {
             selectAction: this.selectItems.bind(this),
             setNoteAction: this.setNote.bind(this),
+            resetNoteAction: this.resetNote.bind(this),
             saveAsGroupAction: this.saveAsGroup.bind(this)
         };
     },
@@ -49,7 +50,7 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
 
             var noteEl = $('note_' + note.key);
 
-            if (noteEl) {
+            if (noteEl && note.value != '') {
                 noteEl.show();
                 noteEl.down('.note-view').innerHTML = note.value;
             }
@@ -64,6 +65,10 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
         $('save_filter_btn').addClassName('disabled');
 
         $(self.gridId).down('.filter').select('select', 'input').each(function(el){
+            if (el.name == 'massaction') {
+                return;
+            }
+
             if (el.value != '') {
                 $('save_filter_btn').removeClassName('disabled');
                 throw $break;
@@ -153,6 +158,26 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
             Windows.getFocusedWindow().content.style.height = '';
             Windows.getFocusedWindow().content.style.maxHeight = '630px';
         }, 50);
+    },
+
+    resetNote: function()
+    {
+        var self = this;
+
+        self.getGridObj().massaction.getCheckedValues().split(',').each(function(id) {
+
+            self.savedNotes[id] = '';
+
+            var noteEl = $('note_' + id);
+
+            if (noteEl) {
+                noteEl.hide();
+                noteEl.down('.note-view').innerHTML = '';
+            }
+        });
+
+        $(self.getGridObj().massaction.select).value = '';
+        self.unselectAll();
     },
 
     //----------------------------------
@@ -255,6 +280,11 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
         var conditionsEl = popUpContent.down('.filter_conditions');
         var conditionsData = {};
         $(self.gridId).down('.filter').select('select', 'input').each(function(el){
+
+            if (el.name == 'massaction') {
+                return;
+            }
+
             if (el.value != '') {
                 var li = new Element('li'),
                     valueText = '',

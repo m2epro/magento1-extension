@@ -217,11 +217,38 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getShippingData()
     {
-        return array(
+        $shippingData = array(
             'shipping_method' => $this->order->getShippingService(),
             'shipping_price'  => $this->getBaseShippingPrice(),
             'carrier_title'   => Mage::helper('M2ePro')->__('Amazon Shipping')
         );
+
+        if ($this->order->isPrime()) {
+            $shippingData['shipping_method'] .= ' | Is Prime';
+        }
+
+        if ($this->order->isMerchantFulfillmentApplied()) {
+            $merchantFulfillmentInfo = $this->order->getMerchantFulfillmentData();
+
+            $shippingData['shipping_method'] .= ' | Amazon\'s Shipping Services';
+
+            if (!empty($merchantFulfillmentInfo['shipping_service']['carrier_name'])) {
+                $carrier = $merchantFulfillmentInfo['shipping_service']['carrier_name'];
+                $shippingData['shipping_method'] .= ' | Carrier: '.$carrier;
+            }
+
+            if (!empty($merchantFulfillmentInfo['shipping_service']['name'])) {
+                $service = $merchantFulfillmentInfo['shipping_service']['name'];
+                $shippingData['shipping_method'] .= ' | Service: '.$service;
+            }
+
+            if (!empty($merchantFulfillmentInfo['shipping_service']['date']['estimated_delivery']['latest'])) {
+                $deliveryDate = $merchantFulfillmentInfo['shipping_service']['date']['estimated_delivery']['latest'];
+                $shippingData['shipping_method'] .= ' | Delivery Date: '.$deliveryDate;
+            }
+        }
+
+        return $shippingData;
     }
 
     /**

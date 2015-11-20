@@ -119,11 +119,10 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             return parent::getAddressData();
         }
 
-        if ($this->order->isUseGlobalShippingProgram()) {
-            $rawAddressData = $this->order->getGlobalShippingWarehouseAddress()->getRawData();
-        } else {
-            $rawAddressData = $this->order->getShippingAddress()->getRawData();
-        }
+        $addressModel = $this->order->isUseGlobalShippingProgram() ? $this->order->getGlobalShippingWarehouseAddress()
+                                                                   : $this->order->getShippingAddress();
+
+        $rawAddressData = $addressModel->getRawData();
 
         $addressData = array();
 
@@ -138,7 +137,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         $addressData['email']      = $rawAddressData['email'];
         $addressData['country_id'] = $rawAddressData['country_id'];
         $addressData['region']     = $rawAddressData['region'];
-        $addressData['region_id']  = $this->order->getGlobalShippingWarehouseAddress()->getRegionId();
+        $addressData['region_id']  = $addressModel->getRegionId();
         $addressData['city']       = $rawAddressData['city'];
         $addressData['postcode']   = $rawAddressData['postcode'];
         $addressData['telephone']  = $rawAddressData['telephone'];

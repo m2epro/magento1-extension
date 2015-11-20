@@ -230,7 +230,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
     {
         // Set mass-action identifiers
         // ---------------------------------------
-        $this->setMassactionIdField('`main_table`.id');
+        $this->setMassactionIdField('main_table.id');
         $this->getMassactionBlock()->setFormFieldName('ids');
         // ---------------------------------------
 

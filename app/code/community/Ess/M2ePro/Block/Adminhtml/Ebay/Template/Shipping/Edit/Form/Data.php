@@ -239,6 +239,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             'origin_country' => $this->getMarketplace()->getChildObject()->getOriginCountry(),
         );
 
+        $data['services'] = $this->modifyNonUniqueShippingServicesTitles($data['services']);
+
         $policyLocalization = $this->getData('policy_localization');
 
         if (!empty($policyLocalization)) {
@@ -329,6 +331,36 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         }
 
         return $sortedInfo;
+    }
+
+    //########################################
+
+    private function modifyNonUniqueShippingServicesTitles($services)
+    {
+        foreach ($services as &$category) {
+
+            $nonUniqueTitles = array();
+            foreach ($category['methods'] as $key => $method) {
+                $nonUniqueTitles[$method['title']][] = $key;
+            }
+
+            foreach ($nonUniqueTitles as $methodsKeys) {
+                if (count($methodsKeys) > 1) {
+
+                    foreach ($methodsKeys as $key) {
+                        $ebayId = $category['methods'][$key]['ebay_id'];
+                        $title = $category['methods'][$key]['title'];
+
+                        $uniqPart = preg_replace('/\w*'.str_replace(' ', '', $title).'/i', '', $ebayId);
+                        $uniqPart = preg_replace('/([A-Z]+[a-z]*)/', '${1} ', $uniqPart);
+
+                        $category['methods'][$key]['title'] = trim($title) . ' ' . $uniqPart;
+                    }
+                }
+            }
+        }
+
+        return $services;
     }
 
     //########################################

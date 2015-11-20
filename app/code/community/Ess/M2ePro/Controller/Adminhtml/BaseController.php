@@ -47,6 +47,24 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
     {
         parent::preDispatch();
 
+        /**
+         * Custom implementation of APPSEC-1034 (SUPEE-6788) [see additional information below].
+         * M2E Pro prevents redirect to Magento Admin Panel login page.
+         *
+         * This PHP class is the base PHP class of all M2E Pro controllers.
+         * Thus, it protects any action of any controller of M2E Pro extension.
+         *
+         * The code below is the logical extension of the method \Ess_M2ePro_Controller_Router::addModule.
+         */
+        // -----------------------------------------------------------------
+        if (!$this->getRequest()->isDispatched() &&
+            !Mage::getSingleton('admin/session')->isLoggedIn() &&
+            $this->getRequest()->getActionName() == 'login') {
+
+            return $this->_redirect('M2ePro/index/index/');
+        }
+        // -----------------------------------------------------------------
+
         // client was logged out
         if ($this->getRequest()->isXmlHttpRequest() &&
             !Mage::getSingleton('admin/session')->isLoggedIn()) {

@@ -189,10 +189,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml
         ));
 
         $this->addColumn('action', array(
-            'header'  => Mage::helper('M2ePro')->__('Action'),
-            'width'   => '80px',
-            'type'    => 'action',
-            'getter'  => 'getId',
+            'header'   => Mage::helper('M2ePro')->__('Action'),
+            'width'    => '80px',
+            'type'     => 'action',
+            'getter'   => 'getId',
+            'renderer' => 'M2ePro/adminhtml_grid_column_renderer_action',
             'actions' => array(
                 array(
                     'caption' => Mage::helper('M2ePro')->__('View'),
@@ -211,8 +212,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml
                 ),
                 array(
                     'caption' => Mage::helper('M2ePro')->__('Mark As Shipped'),
-                    'url'     => array('base' => '*/adminhtml_common_amazon_order/updateShippingStatus'),
-                    'field'   => 'id'
+                    'field'   => 'id',
+                    'onclick_action' => 'OrderMerchantFulfillmentHandlerObj.markAsShippedAction'
+                ),
+                array(
+                    'caption' => Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'),
+                    'field'   => 'id',
+                    'onclick_action' => 'OrderMerchantFulfillmentHandlerObj.getPopupAction'
                 )
             ),
             'filter'    => false,
@@ -268,8 +274,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_Grid extends Mage_Adminhtml
         $orderId = Mage::helper('M2ePro')->escapeHtml($row->getData('amazon_order_id'));
         $url = Mage::helper('M2ePro/Component_Amazon')->getOrderUrl($orderId, $row->getData('marketplace_id'));
 
+        $primeImageHtml = '';
+        if ($row['is_prime']) {
+            $primeImageHtml = '<div><img src="' . $this->getSkinUrl('M2ePro/images/prime.png') . '" /></div>';
+        }
+
         return <<<HTML
-<a href="{$url}" target="_blank">{$orderId}</a>
+<a href="{$url}" target="_blank">{$orderId}</a> {$primeImageHtml}
 HTML;
     }
 
@@ -567,6 +578,12 @@ HTML;
         ));
 
         return $this->getUrl('*/adminhtml_common_amazon_order/view', array('id' => $row->getId(), 'back' => $back));
+    }
+
+    protected function _toHtml()
+    {
+        return $this->getLayout()->createBlock('M2ePro/adminhtml_common_amazon_order_merchantFulfillment')->toHtml()
+            . parent::_toHtml();
     }
 
     //########################################

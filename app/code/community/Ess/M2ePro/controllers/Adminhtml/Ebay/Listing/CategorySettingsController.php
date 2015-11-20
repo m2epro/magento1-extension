@@ -542,7 +542,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
                     array($categoryId)
                 );
             }
-
         }
 
         foreach ($ids as $id) {

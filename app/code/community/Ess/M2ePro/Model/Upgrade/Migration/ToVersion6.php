@@ -591,7 +591,6 @@ SQL
                                        'value' => $keyData['default']);
                 }
             }
-
         }
 
         !empty($newData) && $this->installer->getConnection()->insertMultiple($newTable, $newData);

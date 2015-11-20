@@ -1065,6 +1065,8 @@ class Ess_M2ePro_Model_Magento_Product
             if ($attribute->getSource() instanceof Mage_Eav_Model_Entity_Attribute_Source_Interface &&
                 $attribute->getSource()->getAllOptions()) {
 
+                $attribute->setStoreId($this->getStoreId());
+
                 $value = $attribute->getSource()->getOptionText($value);
                 $value = is_array($value) ? implode(',', $value) : (string)$value;
             }

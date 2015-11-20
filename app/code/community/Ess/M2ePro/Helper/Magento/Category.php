@@ -194,7 +194,6 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
                 $resultCategories[] = $categoryId;
                 break;
             }
-
         }
 
         return array_values(array_unique($resultCategories));

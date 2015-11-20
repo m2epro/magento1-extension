@@ -108,6 +108,14 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             ->setData($address);
     }
 
+    /**
+     * @return array
+     */
+    public function getMerchantFulfillmentData()
+    {
+        return $this->getSettings('merchant_fulfillment_data');
+    }
+
     //########################################
 
     public function getShipDateFrom()
@@ -249,6 +257,46 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     public function isFulfilledByAmazon()
     {
         return (bool)$this->getData('is_afn_channel');
+    }
+
+    //########################################
+
+    public function isEligibleForMerchantFulfillment()
+    {
+        if ($this->isFulfilledByAmazon()) {
+            return false;
+        }
+
+        if ($this->isPending() || $this->isCanceled()) {
+            return false;
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_Marketplace $amazonMarketplace */
+        $amazonMarketplace = $this->getAmazonAccount()->getMarketplace()->getChildObject();
+        if (!$amazonMarketplace->isMerchantFulfillmentAvailable()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMerchantFulfillmentApplied()
+    {
+        $info = $this->getMerchantFulfillmentData();
+        return !empty($info);
+    }
+
+    //########################################
+
+    /**
+     * @return bool
+     */
+    public function isPrime()
+    {
+        return (bool)$this->getData('is_prime');
     }
 
     //########################################
