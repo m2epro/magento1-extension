@@ -58,7 +58,7 @@ class Ess_M2ePro_Model_Order_Shipment_Handler
         $track = $shipment->getTracksCollection()->getLastItem();
         $trackingDetails = array();
 
-        $number = trim($track->getData('number'));
+        $number = trim($track->getNumber());
 
         if (!empty($number)) {
             $carrierCode = trim($track->getData('carrier_code'));
