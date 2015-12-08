@@ -241,7 +241,7 @@
                 <select name="shipping_override_rule[cost_value][%i%]" class="required-entry shipping-override-cost-custom-attribute" disabled="disabled" style="width: 155px; display: none;">
                     <option value="" class="empty"></option>
                     <?php foreach ($this->getAttributes() as $attribute) { ?>
-                        <option value="<?php echo $attribute['code'] ?>"><?php echo $attribute['label']; ?></option>
+                        <option value="<?php echo $attribute['code'] ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                     <?php } ?>
                 </select>
             </td>

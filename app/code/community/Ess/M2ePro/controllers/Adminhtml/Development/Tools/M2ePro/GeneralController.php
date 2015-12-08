@@ -413,11 +413,11 @@ HTML;
      * @confirm "Are you sure?"
      * @new_line
      */
-    public function removeConfigDuplicatesAction()
+    public function removeConfigsDuplicatesAction()
     {
         /** @var $installerInstance Ess_M2ePro_Model_Upgrade_MySqlSetup */
         $installerInstance = new Ess_M2ePro_Model_Upgrade_MySqlSetup('M2ePro_setup');
-        $installerInstance->removeConfigDuplicates();
+        $installerInstance->removeConfigsDuplicates();
 
         Mage::helper('M2ePro/Module')->clearCache();
 

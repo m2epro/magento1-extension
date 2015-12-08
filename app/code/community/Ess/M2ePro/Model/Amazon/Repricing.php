@@ -8,13 +8,16 @@
 
 class Ess_M2ePro_Model_Amazon_Repricing
 {
-    const COMMAND_ACCOUNT_LINK      = 1;
-    const COMMAND_ACCOUNT_UNLINK    = 2;
-    const COMMAND_SYNCHRONIZE  = 3;
-    const COMMAND_GOTO_SERVICE      = 4;
-    const COMMAND_OFFERS_ADD        = 5;
-    const COMMAND_OFFERS_EDIT       = 6;
-    const COMMAND_OFFERS_REMOVE     = 7;
+    const COMMAND_ACCOUNT_LINK      = 'account/link';
+    const COMMAND_ACCOUNT_UNLINK    = 'account/unlink';
+    const COMMAND_SYNCHRONIZE       = 'synchronize';
+    const COMMAND_GOTO_SERVICE      = 'goto_service';
+    const COMMAND_OFFERS_ADD        = 'offers/add';
+    const COMMAND_OFFERS_DETAILS    = 'offers/details';
+    const COMMAND_OFFERS_EDIT       = 'offers/edit';
+    const COMMAND_OFFERS_REMOVE     = 'offers/remove';
+    const COMMAND_DATA_SET_REQUEST  = 'data/setRequest';
+    const COMMAND_DATA_GET_RESPONSE = 'data/getResponse';
 
     const TIMEOUT = 300;
 
@@ -79,10 +82,12 @@ class Ess_M2ePro_Model_Amazon_Repricing
         // ---------------------------------------
 
         $requestToken = $this->sendData(self::COMMAND_ACCOUNT_LINK, array(
-            'back_url' => array(
-                'url' => $backUrl,
-                'params' => array(
-                    'id' => $this->account->getId()
+            'request' => array(
+                'back_url' => array(
+                    'url' => $backUrl,
+                    'params' => array(
+                        'id' => $this->account->getId()
+                    )
                 )
             ),
             'data' => array(
@@ -95,7 +100,7 @@ class Ess_M2ePro_Model_Amazon_Repricing
         ));
 
         return $this->getBaseUrl() .
-            $this->getCommandName(self::COMMAND_ACCOUNT_LINK) .
+            self::COMMAND_ACCOUNT_LINK .
             '?' . http_build_query(array('request_token' => $requestToken));
     }
 
@@ -103,25 +108,30 @@ class Ess_M2ePro_Model_Amazon_Repricing
     {
         $backUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_common_amazon_account_repricing/unlink');
 
-        $collection = $this->prepareLisgingProductCollection();
+        $collection = $this->prepareListingProductCollection();
 
         $collection->getSelect()->where("`l`.`account_id` = ?", $this->account->getId());
+        $collection->getSelect()->where('second_table.is_repricing = ?',
+            Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES);
 
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(array(
-            'sku' => 'second_table.sku'
+            'name'  => 'cpev.value',
+            'asin'  => 'second_table.general_id',
+            'sku'   => 'second_table.sku',
+            'price' => 'second_table.online_price'
         ));
 
         $requestToken = $this->sendData(self::COMMAND_ACCOUNT_UNLINK, array(
             'request' => array(
                 'auth' => array(
                     'account_token' => $this->getAmazonAccount()->getRepricingToken()
-                )
-            ),
-            'back_url' => array(
-                'url' => $backUrl,
-                'params' => array(
-                    'id' => $this->account->getId()
+                ),
+                'back_url' => array(
+                    'url' => $backUrl,
+                    'params' => array(
+                        'id' => $this->account->getId()
+                    )
                 )
             ),
             'data' => array(
@@ -130,7 +140,7 @@ class Ess_M2ePro_Model_Amazon_Repricing
         ));
 
         return $this->getBaseUrl() .
-            $this->getCommandName(self::COMMAND_ACCOUNT_UNLINK) .
+            self::COMMAND_ACCOUNT_UNLINK .
             '?' . http_build_query(array('request_token' => $requestToken));
     }
 
@@ -138,7 +148,7 @@ class Ess_M2ePro_Model_Amazon_Repricing
 
     public function getManagementUrl()
     {
-        return $this->getBaseUrl() . $this->getCommandName(self::COMMAND_GOTO_SERVICE) . '?' . http_build_query(array(
+        return $this->getBaseUrl() . self::COMMAND_GOTO_SERVICE . '?' . http_build_query(array(
             'account_token' => $this->getAmazonAccount()->getRepricingToken()
         ));
     }
@@ -149,7 +159,7 @@ class Ess_M2ePro_Model_Amazon_Repricing
     {
         $backUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_common_amazon_listing_repricing/addProducts');
 
-        $collection = $this->prepareLisgingProductCollection();
+        $collection = $this->prepareListingProductCollection();
 
         $collection->getSelect()->where('main_table.id IN (?)', $productsIds);
         $collection->getSelect()->where('second_table.is_repricing = ?',
@@ -161,7 +171,7 @@ class Ess_M2ePro_Model_Amazon_Repricing
                 'name'  => 'cpev.value',
                 'asin'  => 'second_table.general_id',
                 'sku'   => 'second_table.sku',
-                'price' => 'second_table.online_price',
+                'price' => 'second_table.online_price'
             )
         );
 
@@ -175,13 +185,13 @@ class Ess_M2ePro_Model_Amazon_Repricing
             'request' => array(
                 'auth' => array(
                     'account_token' => $this->getAmazonAccount()->getRepricingToken()
-                )
-            ),
-            'back_url' => array(
-                'url' => $backUrl,
-                'params' => array(
-                    'id' => $listingId,
-                    'account_id' => $this->account->getId()
+                ),
+                'back_url' => array(
+                    'url' => $backUrl,
+                    'params' => array(
+                        'id' => $listingId,
+                        'account_id' => $this->account->getId()
+                    )
                 )
             ),
             'data' => array(
@@ -190,15 +200,15 @@ class Ess_M2ePro_Model_Amazon_Repricing
         ));
 
         return $this->getBaseUrl() .
-            $this->getCommandName(self::COMMAND_OFFERS_ADD).
+            self::COMMAND_OFFERS_ADD .
             '?' . http_build_query(array('request_token' => $requestToken));
     }
 
-    public function getEditProductsUrl($listingId, $productsIds)
+    public function getShowDetailsUrl($listingId, $productsIds)
     {
-        $backUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_common_amazon_listing_repricing/editProducts');
+        $backUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_common_amazon_listing_repricing/showDetails');
 
-        $collection = $this->prepareLisgingProductCollection();
+        $collection = $this->prepareListingProductCollection();
 
         $collection->getSelect()->where('main_table.id IN (?)', $productsIds);
         $collection->getSelect()->where('second_table.is_repricing = ?',
@@ -207,7 +217,59 @@ class Ess_M2ePro_Model_Amazon_Repricing
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(
             array(
+                'name'  => 'cpev.value',
+                'asin'  => 'second_table.general_id',
                 'sku'   => 'second_table.sku',
+                'price' => 'second_table.online_price'
+            )
+        );
+
+        $productsData = $collection->getData();
+
+        if (empty($productsData)) {
+            return false;
+        }
+
+        $requestToken = $this->sendData(self::COMMAND_OFFERS_DETAILS, array(
+            'request' => array(
+                'auth' => array(
+                    'account_token' => $this->getAmazonAccount()->getRepricingToken()
+                ),
+                'back_url' => array(
+                    'url' => $backUrl,
+                    'params' => array(
+                        'id' => $listingId,
+                        'account_id' => $this->account->getId()
+                    )
+                )
+            ),
+            'data' => array(
+                'offers' => $productsData
+            )
+        ));
+
+        return $this->getBaseUrl() .
+            self::COMMAND_OFFERS_DETAILS .
+            '?' . http_build_query(array('request_token' => $requestToken));
+    }
+
+    public function getEditProductsUrl($listingId, $productsIds)
+    {
+        $backUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_common_amazon_listing_repricing/editProducts');
+
+        $collection = $this->prepareListingProductCollection();
+
+        $collection->getSelect()->where('main_table.id IN (?)', $productsIds);
+        $collection->getSelect()->where('second_table.is_repricing = ?',
+            Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES);
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(
+            array(
+                'name'  => 'cpev.value',
+                'asin'  => 'second_table.general_id',
+                'sku'   => 'second_table.sku',
+                'price' => 'second_table.online_price'
             )
         );
 
@@ -221,12 +283,13 @@ class Ess_M2ePro_Model_Amazon_Repricing
             'request' => array(
                 'auth' => array(
                     'account_token' => $this->getAmazonAccount()->getRepricingToken()
-                )
-            ),
-            'back_url' => array(
-                'url' => $backUrl,
-                'params' => array(
-                    'id' => $listingId
+                ),
+                'back_url' => array(
+                    'url' => $backUrl,
+                    'params' => array(
+                        'id' => $listingId,
+                        'account_id' => $this->account->getId()
+                    )
                 )
             ),
             'data' => array(
@@ -235,7 +298,7 @@ class Ess_M2ePro_Model_Amazon_Repricing
         ));
 
         return $this->getBaseUrl() .
-            $this->getCommandName(self::COMMAND_OFFERS_EDIT).
+            self::COMMAND_OFFERS_EDIT .
             '?' . http_build_query(array('request_token' => $requestToken));
     }
 
@@ -243,7 +306,7 @@ class Ess_M2ePro_Model_Amazon_Repricing
     {
         $backUrl = Mage::helper('adminhtml')->getUrl('*/adminhtml_common_amazon_listing_repricing/removeProducts');
 
-        $collection = $this->prepareLisgingProductCollection();
+        $collection = $this->prepareListingProductCollection();
 
         $collection->getSelect()->where('main_table.id IN (?)', $productsIds);
         $collection->getSelect()->where('second_table.is_repricing = ?',
@@ -252,7 +315,10 @@ class Ess_M2ePro_Model_Amazon_Repricing
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(
             array(
+                'name'  => 'cpev.value',
+                'asin'  => 'second_table.general_id',
                 'sku'   => 'second_table.sku',
+                'price' => 'second_table.online_price'
             )
         );
 
@@ -266,13 +332,13 @@ class Ess_M2ePro_Model_Amazon_Repricing
             'request' => array(
                 'auth' => array(
                     'account_token' => $this->getAmazonAccount()->getRepricingToken()
-                )
-            ),
-            'back_url' => array(
-                'url' => $backUrl,
-                'params' => array(
-                    'id' => $listingId,
-                    'account_id' => $this->account->getId()
+                ),
+                'back_url' => array(
+                    'url' => $backUrl,
+                    'params' => array(
+                        'id' => $listingId,
+                        'account_id' => $this->account->getId()
+                    )
                 )
             ),
             'data' => array(
@@ -281,67 +347,11 @@ class Ess_M2ePro_Model_Amazon_Repricing
         ));
 
         return $this->getBaseUrl() .
-            $this->getCommandName(self::COMMAND_OFFERS_REMOVE).
+            self::COMMAND_OFFERS_REMOVE .
             '?' . http_build_query(array('request_token' => $requestToken));
     }
 
     //########################################
-
-    public function unlink()
-    {
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $tableAmazonListingProduct = Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_listing_product');
-        $tableAmazonListingOther = Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_listing_other');
-
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Collection $collection */
-        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
-
-        $collection->getSelect()
-            ->join(array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
-                '(`l`.`id` = `main_table`.`listing_id`)', array());
-
-        $collection->getSelect()->where(
-            "`second_table`.`is_repricing` = ?",
-            Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES
-        );
-        $collection->getSelect()->where("`l`.`account_id` = ?", $this->account->getId());
-
-        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $collection->getSelect()->columns(array(
-            'id' => 'main_table.id'
-        ));
-
-        $productsIds = $collection->getColumnValues('id');
-
-        if (!empty($productsIds)) {
-            $connWrite->update($tableAmazonListingProduct, array(
-                    'is_repricing' => Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_NO
-                ), '`listing_product_id` IN ('.implode(',', $collection->getColumnValues('id')).')'
-            );
-        }
-
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other_Collection $collection */
-        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
-
-        $collection->getSelect()->where("`main_table`.`account_id` = ?", $this->account->getId());
-        $collection->getSelect()->where(
-            "`second_table`.`is_repricing` = ?",
-            Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES
-        );
-
-        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $collection->getSelect()->columns(array(
-            'id' => 'main_table.id'
-        ));
-
-        if (!empty($productsIds)) {
-            $connWrite->update($tableAmazonListingOther, array(
-                    'is_repricing' => Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_NO
-                ), '`listing_other_id` IN ('.implode(',', $collection->getColumnValues('id')).')'
-            );
-        }
-    }
 
     public function synchronize()
     {
@@ -364,10 +374,14 @@ class Ess_M2ePro_Model_Amazon_Repricing
         $response = json_decode($result['response'], true);
 
         if ($response['status'] == '0') {
-            return Mage::helper('M2ePro')->__($response['messages']);
+            return $response['messages'];
         }
 
         if (empty($response['offers'])) {
+
+            $this->account->setSetting('repricing', array('info', 'total_products'), 0);
+            $this->account->save();
+
             return array(
                 array(
                     'type' => 'notice',
@@ -382,6 +396,8 @@ class Ess_M2ePro_Model_Amazon_Repricing
         foreach ($response['offers'] as $offer) {
             $skus[] = $offer['sku'];
         }
+
+        $this->resetProductRepricingStatus();
 
         $this->setProductRepricingStatusBySku(
             $skus,
@@ -401,45 +417,37 @@ class Ess_M2ePro_Model_Amazon_Repricing
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/amazon/repricing/', 'base_url');
     }
 
-    private function getCommandName($command)
+    // ---------------------------------------
+
+    public function getResponseData($responseToken)
     {
-        switch($command) {
-            case self::COMMAND_ACCOUNT_LINK:
-                return 'account/link';
+        $result = $this->sendRequest(
+            $this->getBaseUrl() . self::COMMAND_DATA_GET_RESPONSE,
+            array(
+                'response_token' => $responseToken
+            )
+        );
 
-            case self::COMMAND_ACCOUNT_UNLINK:
-                return 'account/unlink';
-
-            case self::COMMAND_SYNCHRONIZE:
-                return 'synchronize';
-
-            case self::COMMAND_GOTO_SERVICE:
-                return 'goto_service';
-
-            case self::COMMAND_OFFERS_ADD:
-                return 'offers/add';
-
-            case self::COMMAND_OFFERS_EDIT:
-                return 'offers/edit';
-
-            case self::COMMAND_OFFERS_REMOVE:
-                return 'offers/remove';
-        }
-
-        return false;
+        return json_decode($result['response'], true);
     }
 
     // ---------------------------------------
 
     private function sendData($command, $data)
     {
+        if (!empty($data['data'])) {
+            $data['data'] = json_encode($data['data']);
+        }
+
         $result = $this->sendRequest(
-            $this->getBaseUrl() . $this->getCommandName($command),
+            $this->getBaseUrl() . $command,
             $data
         );
 
-        if (!empty($result['response']['request_token'])) {
-            return $result['response']['request_token'];
+        $response = json_decode($result['response'], true);
+
+        if (!empty($response['request_token'])) {
+            return $response['request_token'];
         }
 
         return false;
@@ -494,9 +502,11 @@ class Ess_M2ePro_Model_Amazon_Repricing
 
     public function getRepricingListingProductsData()
     {
-        $collection = $this->prepareLisgingProductCollection();
+        $collection = $this->prepareListingProductCollection();
 
         $collection->getSelect()->where("`l`.`account_id` = ?", $this->account->getId());
+        $collection->getSelect()->where('second_table.is_repricing = ?',
+            Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES);
 
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(array(
@@ -505,6 +515,8 @@ class Ess_M2ePro_Model_Amazon_Repricing
 
         return $collection->getData();
     }
+
+    //----------------------------------------
 
     public function setProductRepricingStatusBySku($skus, $status)
     {
@@ -523,12 +535,70 @@ class Ess_M2ePro_Model_Amazon_Repricing
         );
     }
 
+    public function resetProductRepricingStatus()
+    {
+        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
+
+        $tableAmazonListingProduct = Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_listing_product');
+        $tableAmazonListingOther = Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_listing_other');
+
+        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
+
+        $collection->getSelect()
+            ->join(array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
+                '(`l`.`id` = `main_table`.`listing_id`)', array());
+
+        $collection->getSelect()->where(
+            "`second_table`.`is_repricing` = ?",
+            Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES
+        );
+        $collection->getSelect()->where("`l`.`account_id` = ?", $this->account->getId());
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(array(
+            'id' => 'main_table.id'
+        ));
+
+        $productsIds = $collection->getColumnValues('id');
+
+        if (!empty($productsIds)) {
+            $connWrite->update($tableAmazonListingProduct, array(
+                    'is_repricing' => Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_NO
+                ), '`listing_product_id` IN ('.implode(',', $productsIds).')'
+            );
+        }
+
+        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
+
+        $collection->getSelect()->where("`main_table`.`account_id` = ?", $this->account->getId());
+        $collection->getSelect()->where(
+            "`second_table`.`is_repricing` = ?",
+            Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES
+        );
+
+        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $collection->getSelect()->columns(array(
+            'id' => 'main_table.id'
+        ));
+
+        $productsIds = $collection->getColumnValues('id');
+
+        if (!empty($productsIds)) {
+            $connWrite->update($tableAmazonListingOther, array(
+                    'is_repricing' => Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_NO
+                ), '`listing_other_id` IN ('.implode(',', $productsIds).')'
+            );
+        }
+    }
+
     //----------------------------------------
 
     /**
      * @return Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Collection
      */
-    private function prepareLisgingProductCollection()
+    private function prepareListingProductCollection()
     {
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->getSelect()

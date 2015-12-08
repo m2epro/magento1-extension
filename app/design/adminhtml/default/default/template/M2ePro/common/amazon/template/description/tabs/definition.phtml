@@ -491,7 +491,7 @@ $allAttributesByInputTypes = array(
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php if ($formData['definition']['item_package_quantity_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['definition']['item_package_quantity_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
                                     <option attribute_code="<?php echo $formData['definition']['item_package_quantity_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
-                                        <?php echo $magentoAttributeHelper->getAttributeLabel($formData['definition']['item_package_quantity_custom_attribute']); ?>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['definition']['item_package_quantity_custom_attribute'])); ?>
                                     </option>
                                 <?php endif; ?>
                                 <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
@@ -532,7 +532,7 @@ $allAttributesByInputTypes = array(
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php if ($formData['definition']['number_of_items_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['definition']['number_of_items_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
                                     <option attribute_code="<?php echo $formData['definition']['number_of_items_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
-                                        <?php echo $magentoAttributeHelper->getAttributeLabel($formData['definition']['number_of_items_custom_attribute']); ?>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['definition']['number_of_items_custom_attribute'])); ?>
                                     </option>
                                 <?php endif; ?>
                                 <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>

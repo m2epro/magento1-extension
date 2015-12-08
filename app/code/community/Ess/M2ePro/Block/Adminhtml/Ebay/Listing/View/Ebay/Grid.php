@@ -1307,6 +1307,8 @@ HTML;
             return '';
         }
 
+        $protocolMode = Mage::getStoreConfig('web/secure/use_in_adminhtml') == '1' ? 'https' : 'http';
+
         return <<<HTML
 <style>
     div.tp-research { display: inline-block; }
@@ -1330,7 +1332,7 @@ HTML;
     };
 
     var script = new Element('script', {type: 'text/javascript',
-                                        src: 'https://widget.terapeak.com/tools/terapeak-loader.js'});
+                                        src: '$protocolMode://widget.terapeak.com/tools/terapeak-loader.js'});
 
     $$('head').first().appendChild(script);
 

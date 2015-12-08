@@ -32,7 +32,12 @@ CommonAmazonRepricingHandler = Class.create(ActionHandler, {
         return setLocation(M2ePro.url.get('adminhtml_common_amazon_listing_repricing/openAddProducts') + '?products_ids=' + productsIds);
     },
 
-    editRepricing: function () {
+    showDetails: function(productsIds)
+    {
+        return setLocation(M2ePro.url.get('adminhtml_common_amazon_listing_repricing/openShowDetails') + '?products_ids=' + productsIds);
+    },
+
+    editRepricing: function(productsIds) {
         return setLocation(M2ePro.url.get('adminhtml_common_amazon_listing_repricing/openEditProducts') + '?products_ids=' + productsIds);
     },
 

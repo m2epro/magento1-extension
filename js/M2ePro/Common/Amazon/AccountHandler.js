@@ -453,29 +453,11 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
     unlinkRepricing: function()
     {
-        var self = this;
+        if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
+            return;
+        }
 
-        self.unlinkPopup = Dialog.info(null, {
-            draggable: true,
-            resizable: true,
-            closable: true,
-            className: "magento",
-            windowClassName: "popup-window",
-            title: M2ePro.translator.translate('Unlink Repricing Tool'),
-            width: 400,
-            height: 220,
-            zIndex: 100,
-            hideEffect: Element.hide,
-            showEffect: Element.show
-        });
-        self.unlinkPopup .options.destroyOnClose = false;
-
-        $('modal_dialog_message').update($('repricing_unlink_popup').innerHTML);
-
-        setTimeout(function() {
-            Windows.getFocusedWindow().content.style.height = '';
-            Windows.getFocusedWindow().content.style.maxHeight = '630px';
-        }, 50);
+        AmazonAccountHandlerObj.openUnlinkPage();
     },
 
     openUnlinkPage: function()
@@ -508,6 +490,8 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
                     response.messages.each(function(msg) {
                         MagentoMessageObj['add' + msg.type[0].toUpperCase() + msg.type.slice(1)](msg.text);
                     });
+
+                    return;
                 }
 
                 $('repricing_total_products').innerHTML = response['repricing_total_products'];

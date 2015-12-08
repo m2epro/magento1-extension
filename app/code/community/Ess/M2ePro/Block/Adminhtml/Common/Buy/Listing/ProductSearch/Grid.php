@@ -178,6 +178,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Listing_ProductSearch_Grid extends M
     {
         if (empty($value)) {
             $value = Mage::helper('M2ePro')->__('N/A');
+        } else {
+            $value = Mage::app()->getLocale()->currency('USD')->toCurrency($value);
         }
 
         return '<div id="price_'.$row->getId().'" style="margin-right: 5px;">'.$value.'</div>';

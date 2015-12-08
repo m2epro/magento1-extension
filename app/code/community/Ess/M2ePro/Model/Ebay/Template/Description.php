@@ -511,7 +511,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
         $productDetails = $this->getProductDetails();
 
         if (!is_array($productDetails) || !isset($productDetails[$type]) ||
-            !isset($productDetails[$type]['attribute'])) {
+            $this->isProductDetailsModeNone($type) || !isset($productDetails[$type]['attribute'])) {
             return NULL;
         }
 

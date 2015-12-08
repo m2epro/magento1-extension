@@ -291,7 +291,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
     private function processMagentoOrderUpdates()
     {
-        if (!$this->hasUpdates()) {
+        if (!$this->hasUpdates() || is_null($this->order->getMagentoOrder())) {
             return;
         }
 
@@ -315,7 +315,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             );
         }
 
-        if (!is_null($this->order->getMagentoOrder()) && $this->hasUpdate(self::UPDATE_EMAIL)) {
+        if ($this->hasUpdate(self::UPDATE_EMAIL)) {
             $magentoOrderUpdater->updateCustomerEmail($this->order->getChildObject()->getBuyerEmail());
         }
 

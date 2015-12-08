@@ -102,7 +102,9 @@ JS;
             return '';
         }
 
-        $attributeLabel = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($attributeCode);
+        $attributeLabel = Mage::helper('M2ePro')
+            ->escapeHtml(Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($attributeCode));
+
         $html = "<option %s selected=\"selected\">{$attributeLabel}</option>";
 
         return is_null($value) ? sprintf($html, "value='{$attributeCode}'")

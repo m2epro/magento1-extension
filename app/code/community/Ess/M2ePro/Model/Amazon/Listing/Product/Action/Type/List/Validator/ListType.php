@@ -333,11 +333,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListTyp
             }
 
 // M2ePro_TRANSLATIONS
-// %worldwide_id_type% %worldwide_id% provided in Listing Search Settings is not found on Amazon. Please set the correct value and try again.
+// %worldwide_id_type% %worldwide_id% provided in Listing Search Settings is not found on Amazon. Please set Description Policy to create New ASIN/ISBN.
             $this->addMessage(
                 Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
                     '%worldwide_id_type% %worldwide_id% provided in Search Settings
-                     is not found on Amazon. Please set the correct value and try again.',
+                     is not found on Amazon. Please set Description Policy to create New ASIN/ISBN.',
                     array('!worldwide_id_type' => $worldwideIdType, '!worldwide_id' => $worldwideId)
                 )
             );

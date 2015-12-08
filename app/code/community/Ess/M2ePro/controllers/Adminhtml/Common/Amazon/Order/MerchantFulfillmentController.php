@@ -389,12 +389,9 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Order_MerchantFulfillmentController
             return $this->getResponse()->setBody('You should create shipment first');
         }
 
-        $statusRefundRejected = Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_REFUND_REJECTED;
-        $statusRefundApplied = Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_REFUND_APPLIED;
-
-        if ($orderFulfillmentData['status'] != $statusRefundRejected
-            || $orderFulfillmentData['status'] != $statusRefundApplied) {
-            return $this->getResponse()->setBody('Shipment refund status should be Rejected or Applied');
+        if ($orderFulfillmentData['status']
+            == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_PURCHASED) {
+            return $this->getResponse()->setBody('Shipment status should not be Purchased');
         }
 
         $order->addData(array(

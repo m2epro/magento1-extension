@@ -213,7 +213,7 @@ $isEdit = !!$this->getRequest()->getParam('id');
                             <option id="qty_mode_cv" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
-                                <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('QTY'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>>QTY</option>
                                 <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>" <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && $attribute['code'] == $formData['qty_custom_attribute']): ?>selected="selected"<?php endif; ?>>
                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>

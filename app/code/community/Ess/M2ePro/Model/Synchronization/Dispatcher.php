@@ -261,10 +261,12 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
 
         $this->getLog()->setOperationHistoryId($this->getOperationHistory()->getObject()->getId());
 
-        $this->checkAndPrepareProductChange();
-
         if (in_array(Ess_M2ePro_Model_Synchronization_Task::ORDERS, $this->getAllowedTasksTypes())) {
             Mage::dispatchEvent('m2epro_synchronization_before_start', array());
+        }
+
+        if (in_array(Ess_M2ePro_Model_Synchronization_Task::TEMPLATES, $this->getAllowedTasksTypes())) {
+            $this->clearOutdatedProductChanges();
         }
     }
 
@@ -274,10 +276,9 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
             Mage::dispatchEvent('m2epro_synchronization_after_end', array());
         }
 
-        Mage::getModel('M2ePro/ProductChange')->clearLastProcessed(
-            $this->getOperationHistory()->getObject()->getData('start_date'),
-            (int)$this->getConfigValue('/settings/product_change/', 'max_count_per_one_time')
-        );
+        if (in_array(Ess_M2ePro_Model_Synchronization_Task::TEMPLATES, $this->getAllowedTasksTypes())) {
+            $this->clearProcessedProductChanges();
+        }
 
         $this->getOperationHistory()->stop();
         $this->getLockItem()->remove();
@@ -322,23 +323,47 @@ final class Ess_M2ePro_Model_Synchronization_Dispatcher
 
     // ---------------------------------------
 
-    protected function checkAndPrepareProductChange()
+    protected function clearOutdatedProductChanges()
     {
-        Mage::getModel('M2ePro/ProductChange')->clearOutdated(
-            $this->getConfigValue('/settings/product_change/', 'max_lifetime')
+        /** @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+        /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
+        $connWrite = $resource->getConnection('core_write');
+
+        $tempDate = new DateTime('now', new DateTimeZone('UTC'));
+        $tempDate->modify('-'.$this->getConfigValue('/settings/product_change/', 'max_lifetime').' seconds');
+        $tempDate = Mage::helper('M2ePro')->getDate($tempDate->format('U'));
+
+        $connWrite->delete(
+            $resource->getTableName('m2epro_product_change'),
+            array(
+                'update_date <= (?)' => $tempDate
+            )
         );
-        Mage::getModel('M2ePro/ProductChange')->clearExcessive(
-            (int)$this->getConfigValue('/settings/product_change/', 'max_count')
+    }
+
+    protected function clearProcessedProductChanges()
+    {
+        /** @var Ess_M2ePro_Model_Mysql4_ProductChange_Collection $productChangeCollection */
+        $productChangeCollection = Mage::getResourceModel('M2ePro/ProductChange_Collection');
+        $productChangeCollection->setPageSize(
+            (int)$this->getConfigValue('/settings/product_change/', 'max_count_per_one_time')
         );
+        $productChangeCollection->setOrder('id', Varien_Data_Collection_Db::SORT_ORDER_ASC);
 
-        $startDate = $this->getOperationHistory()->getObject()->getData('start_date');
-        $maxCountPerOneTime = (int)$this->getConfigValue('/settings/product_change/', 'max_count_per_one_time');
+        /** @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+        /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
+        $connWrite = $resource->getConnection('core_write');
 
-        $functionCode = "Mage::getModel('M2ePro/ProductChange')
-                                ->clearLastProcessed('{$startDate}',{$maxCountPerOneTime});";
-
-        $shutdownFunction = create_function('', $functionCode);
-        register_shutdown_function($shutdownFunction);
+        $connWrite->delete(
+            $resource->getTableName('m2epro_product_change'),
+            array(
+                'id IN (?)' => $productChangeCollection->getColumnValues('id'),
+                '(update_date <= \''.$this->getOperationHistory()->getObject()->getData('start_date').'\' OR
+                  initiators NOT LIKE \'%'.Ess_M2ePro_Model_ProductChange::INITIATOR_OBSERVER.'%\')'
+            )
+        );
     }
 
     //########################################

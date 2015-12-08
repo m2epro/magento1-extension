@@ -50,7 +50,9 @@
         ') ?>
     </div>
     <div style="text-align: right; margin: 10px 0;">
-        <button style="margin-left: 10px;" onclick="setLocation('<?php echo $this->getUrl('M2ePro/adminhtml_common_amazon_order/view', array('id' => $this->getOrder()->getId(), 'show_merchant_fulfillment' => 1)) ?>')">Amazon's Shipping Services</button>
+        <button style="margin-left: 10px;" onclick="setLocation('<?php echo $this->getUrl('M2ePro/adminhtml_common_amazon_order/view', array('id' => $this->getOrder()->getId(), 'show_merchant_fulfillment' => 1)) ?>')">
+            <?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>
+        </button>
     </div>
 </div>
 
@@ -70,8 +72,12 @@
     </div>
     <div style="margin: 10px 0;">
         <a href="javascript:void(0)" onclick="orderMerchantFulfillmentMagentoHandlerObj.discardNotificationPopup()"><?php echo Mage::helper('M2ePro')->__('Don\'t show anymore'); ?></a>
-        <button style="float: right;" onclick="setLocation('<?php echo $this->getUrl('M2ePro/adminhtml_common_amazon_order/view', array('id' => $this->getOrder()->getId(), 'show_merchant_fulfillment' => 1)) ?>')">Amazon's Shipping Services</button>
-        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()" style="float: right;margin-right: 15px;">Cancel</a>
+        <button style="float: right;" onclick="setLocation('<?php echo $this->getUrl('M2ePro/adminhtml_common_amazon_order/view', array('id' => $this->getOrder()->getId(), 'show_merchant_fulfillment' => 1)) ?>')">
+            <?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>
+        </button>
+        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()" style="float: right;margin-right: 15px;">
+            <?php echo Mage::helper('M2ePro')->__('Cancel'); ?>
+        </a>
     </div>
 </div>
 

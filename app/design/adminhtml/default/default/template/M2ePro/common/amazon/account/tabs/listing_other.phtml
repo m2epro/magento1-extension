@@ -194,7 +194,7 @@
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
                                 <?php foreach ($this->attributes as $attribute) { ?>
                                     <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
-                                        <?php echo Mage::helper('M2ePro')->__($attribute['label']) ?>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php } ?>
                             </optgroup>
@@ -225,7 +225,7 @@
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php foreach ($this->attributes as $attribute) { ?>
                                     <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_GENERAL_ID_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
-                                        <?php echo Mage::helper('M2ePro')->__($attribute['label']) ?>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php } ?>
                             </optgroup>
@@ -257,7 +257,7 @@
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                     <?php foreach ($this->attributes as $attribute) { ?>
                                         <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
-                                            <?php echo Mage::helper('M2ePro')->__($attribute['label']) ?>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                         </option>
                                     <?php } ?>
                             </optgroup>

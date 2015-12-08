@@ -163,7 +163,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
             ) {
                 $lastQtySynchDate = $existingAdditionalData['last_synchronization_dates']['qty'];
 
-                if (strtotime($lastQtySynchDate) > strtotime($this->params['request_date'])) {
+                if ($this->isProductInfoOutdated($lastQtySynchDate)) {
                     unset($newData['online_qty'], $newData['status']);
                     unset($existingData['online_qty'], $existingData['status']);
                 }
@@ -174,7 +174,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
             ) {
                 $lastPriceSynchDate = $existingAdditionalData['last_synchronization_dates']['price'];
 
-                if (strtotime($lastPriceSynchDate) > strtotime($this->params['request_date'])) {
+                if ($this->isProductInfoOutdated($lastPriceSynchDate)) {
                     unset($newData['online_price']);
                     unset($existingData['online_price']);
                 }
@@ -334,4 +334,16 @@ class Ess_M2ePro_Model_Buy_Synchronization_Defaults_UpdateListingsProducts_Respo
     }
 
     //########################################
+
+    private function isProductInfoOutdated($lastDate)
+    {
+        $lastDate = new DateTime($lastDate, new DateTimeZone('UTC'));
+        $requestDate = new DateTime($this->params['request_date'], new DateTimeZone('UTC'));
+
+        $lastDate->modify('+1 day');
+
+        return $lastDate > $requestDate;
+    }
+
+    // ########################################
 }

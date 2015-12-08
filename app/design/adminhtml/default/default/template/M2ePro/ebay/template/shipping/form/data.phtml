@@ -1116,11 +1116,11 @@
                                 </optgroup>
                                 <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
                                     <?php if (isset($missingAttributes['package_size_attribute'])): ?>
-                                        <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_ATTRIBUTE; ?>" attribute_code="<?php echo $formData['package_size_attribute'] ?>" selected="selected"><?php echo $missingAttributes['package_size_attribute']; ?></option>
+                                        <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_ATTRIBUTE; ?>" attribute_code="<?php echo $formData['package_size_attribute'] ?>" selected="selected"><?php echo Mage::helper('M2ePro')->escapeHtml($missingAttributes['package_size_attribute']); ?></option>
                                     <?php endif; ?>
                                     <?php foreach ($attributesByInputTypes['text_select'] as $attribute): ?>
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($formData['package_size_attribute'] == $attribute['code'] && $formData['package_size_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_ATTRIBUTE): ?>selected="selected"<?php endif; ?> >
-                                            <?php echo $attribute['label']; ?>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </optgroup>
@@ -1160,11 +1160,11 @@
                                         <option value="" class="empty-option"></option>
                                         <?php $attributeCode = 'dimension_width_attribute'; ?>
                                         <?php if (isset($missingAttributes[$attributeCode])): ?>
-                                            <option value="<?php echo $formData[$attributeCode] ?>" selected="selected"><?php echo $missingAttributes[$attributeCode]; ?></option>
+                                            <option value="<?php echo $formData[$attributeCode] ?>" selected="selected"><?php echo Mage::helper('M2ePro')->escapeHtml($missingAttributes[$attributeCode]); ?></option>
                                         <?php endif; ?>
                                         <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
                                             <option value="<?php echo $attribute['code'] ?>" <?php if ($formData[$attributeCode] == $attribute['code']): ?>selected="selected"<?php endif; ?> >
-                                                <?php echo $attribute['label']; ?>
+                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -1175,11 +1175,11 @@
                                         <option value="" class="empty-option"></option>
                                         <?php $attributeCode = 'dimension_length_attribute'; ?>
                                         <?php if (isset($missingAttributes[$attributeCode])): ?>
-                                            <option value="<?php echo $formData[$attributeCode] ?>" selected="selected"><?php echo $missingAttributes[$attributeCode]; ?></option>
+                                            <option value="<?php echo $formData[$attributeCode] ?>" selected="selected"><?php echo Mage::helper('M2ePro')->escapeHtml($missingAttributes[$attributeCode]); ?></option>
                                         <?php endif; ?>
                                         <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
                                             <option value="<?php echo $attribute['code'] ?>" <?php if ($formData[$attributeCode] == $attribute['code']): ?>selected="selected"<?php endif; ?> >
-                                                <?php echo $attribute['label']; ?>
+                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -1190,11 +1190,11 @@
                                         <option value="" class="empty-option"></option>
                                         <?php $attributeCode = 'dimension_depth_attribute'; ?>
                                         <?php if (isset($missingAttributes[$attributeCode])): ?>
-                                            <option value="<?php echo $formData[$attributeCode] ?>" selected="selected"><?php echo $missingAttributes[$attributeCode]; ?></option>
+                                            <option value="<?php echo $formData[$attributeCode] ?>" selected="selected"><?php echo Mage::helper('M2ePro')->escapeHtml($missingAttributes[$attributeCode]); ?></option>
                                         <?php endif; ?>
                                         <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
                                             <option value="<?php echo $attribute['code'] ?>" <?php if ($formData[$attributeCode] == $attribute['code']): ?>selected="selected"<?php endif; ?> >
-                                                <?php echo $attribute['label']; ?>
+                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -1244,11 +1244,11 @@
                                 </option>
                                     <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
                                     <?php if (isset($missingAttributes['weight_attribute'])): ?>
-                                        <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::WEIGHT_CUSTOM_ATTRIBUTE; ?>" attribute_code="<?php echo $formData['weight_attribute'] ?>" selected="selected"><?php echo $missingAttributes['weight_attribute']; ?></option>
+                                        <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::WEIGHT_CUSTOM_ATTRIBUTE; ?>" attribute_code="<?php echo $formData['weight_attribute'] ?>" selected="selected"><?php echo Mage::helper('M2ePro')->escapeHtml($missingAttributes['weight_attribute']); ?></option>
                                     <?php endif; ?>
                                     <?php foreach ($attributesByInputTypes['text_weight'] as $attribute): ?>
                                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::WEIGHT_CUSTOM_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($formData['weight_attribute'] == $attribute['code'] && $formData['weight_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::WEIGHT_CUSTOM_ATTRIBUTE): ?>selected="selected"<?php endif; ?> >
-                                            <?php echo $attribute['label']; ?>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                         </option>
                                     <?php endforeach; ?>
                                     </optgroup>

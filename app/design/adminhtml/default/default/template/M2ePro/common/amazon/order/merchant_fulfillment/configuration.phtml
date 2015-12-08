@@ -198,11 +198,11 @@
                             </td>
                             <td class="value">
                                 <input id="fulfillment_general_declared_value" name="declared_value" value="<?php echo $formData['declared_value']; ?>" type="text" class="input-text validate-greater-than-zero" />
-                                <p class="note note-no-tool-tip">
-                                    <span style="color: grey;">[<?php echo $this->getData('order_currency'); ?>]</span>
-                                </p>
                                 <p class="note">
                                     <span><?php echo Mage::helper('M2ePro')->__('Based on this Value, the Carrier will determine for how much to insure the Shipment. By default, this Value is calculated as a subtotal of all of the purchased Items.'); ?></span>
+                                </p>
+                                <p class="note note-no-tool-tip">
+                                    <span style="color: grey;">[<?php echo $this->getData('order_currency'); ?>]</span>
                                 </p>
                             </td>
                         </tr>

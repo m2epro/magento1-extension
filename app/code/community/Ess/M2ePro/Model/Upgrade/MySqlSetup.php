@@ -144,10 +144,6 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         if (function_exists('opcache_get_status')) {
             opcache_reset();
         }
-
-        if (defined('COMPILER_INCLUDE_PATH')) {
-            Mage::getModel('compiler/process')->run();
-        }
     }
 
     protected function afterModuleDbModification()
@@ -184,7 +180,7 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
 
     //########################################
 
-    public function applyUpdates()
+    protected function _installResourceDb($newVersion)
     {
         // double running protection
         usleep(1000000); // 1 sec
@@ -198,7 +194,11 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         try {
 
             $this->beforeModuleDbModification();
-            parent::applyUpdates();
+            $this->beforeInstall($newVersion);
+
+            parent::_installResourceDb($newVersion);
+
+            $this->afterInstall($newVersion);
             $this->afterModuleDbModification();
 
         } catch (Exception $e) {
@@ -210,20 +210,34 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         $this->unlock();
     }
 
-    // ---------------------------------------
-
-    protected function _installResourceDb($newVersion)
-    {
-        $this->beforeInstall($newVersion);
-        parent::_installResourceDb($newVersion);
-        $this->afterInstall($newVersion);
-    }
-
     protected function _upgradeResourceDb($oldVersion, $newVersion)
     {
-        $this->beforeUpgrade($oldVersion, $newVersion);
-        parent::_upgradeResourceDb($oldVersion, $newVersion);
-        $this->afterUpgrade($oldVersion, $newVersion);
+        // double running protection
+        usleep(1000000); // 1 sec
+
+        if ($this->isLocked()) {
+            return;
+        }
+
+        $this->lock();
+
+        try {
+
+            $this->beforeModuleDbModification();
+            $this->beforeUpgrade($oldVersion, $newVersion);
+
+            parent::_upgradeResourceDb($oldVersion, $newVersion);
+
+            $this->afterUpgrade($oldVersion, $newVersion);
+            $this->afterModuleDbModification();
+
+        } catch (Exception $e) {
+
+            $this->unlock();
+            throw $e;
+        }
+
+        $this->unlock();
     }
 
     // ---------------------------------------
@@ -269,7 +283,7 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         );
     }
 
-    protected function removeConfigsDuplicates()
+    public function removeConfigsDuplicates()
     {
         foreach ($this->getTablesObject()->getAllHistoryConfigEntities() as $tableName => $tableFullName) {
 

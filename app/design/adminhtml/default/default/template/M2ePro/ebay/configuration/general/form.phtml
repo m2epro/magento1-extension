@@ -267,7 +267,7 @@
                                         <select id="motors_epids_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_attribute">
                                             <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
                                             <?php foreach ($this->attributes_for_motors as $attribute): ?>
-                                                <option value="<?php echo $attribute['attribute_code']; ?>"<?php if ($attribute['attribute_code'] == $this->motors_epids_attribute): ?> selected="selected"<?php endif; ?>><?php echo $attribute['frontend_label']; ?></option>
+                                                <option value="<?php echo $attribute['attribute_code']; ?>"<?php if ($attribute['attribute_code'] == $this->motors_epids_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['frontend_label']); ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </td>
@@ -355,7 +355,7 @@
                                         <select id="motors_ktypes_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_ktypes_attribute">
                                             <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
                                             <?php foreach ($this->attributes_for_motors as $attribute): ?>
-                                                <option value="<?php echo $attribute['attribute_code']; ?>"<?php if ($attribute['attribute_code'] == $this->motors_ktypes_attribute): ?> selected="selected"<?php endif; ?>><?php echo $attribute['frontend_label']; ?></option>
+                                                <option value="<?php echo $attribute['attribute_code']; ?>"<?php if ($attribute['attribute_code'] == $this->motors_ktypes_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['frontend_label']); ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </td>

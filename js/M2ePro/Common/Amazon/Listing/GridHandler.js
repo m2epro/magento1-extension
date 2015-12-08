@@ -64,6 +64,10 @@ CommonAmazonListingGridHandler = Class.create(CommonListingGridHandler, {
                 id = id || this.getSelectedProductsString();
                 this.repricingHandler.addToRepricing(id);
             }).bind(this),
+            showDetailsAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                this.repricingHandler.showDetails(id);
+            }).bind(this),
             editRepricingAction: (function(id) {
                 id = id || this.getSelectedProductsString();
                 this.repricingHandler.editRepricing(id);

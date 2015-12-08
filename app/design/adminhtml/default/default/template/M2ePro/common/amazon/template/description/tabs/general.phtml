@@ -363,7 +363,7 @@
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
                                 <?php if ($formData['general']['worldwide_id_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['general']['worldwide_id_custom_attribute'], $generalAttributesByInputTypes['text'])) : ?>
                                     <option attribute_code="<?php echo $formData['general']['worldwide_id_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
-                                        <?php echo $magentoAttributeHelper->getAttributeLabel($formData['general']['worldwide_id_custom_attribute']); ?>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['general']['worldwide_id_custom_attribute'])); ?>
                                     </option>
                                 <?php endif; ?>
                                 <?php foreach($generalAttributesByInputTypes['text'] as $attribute) : ?>

@@ -1,3 +1,15 @@
+* 6.4.0 (r10097) (08/12/2015)
+
+* Improvement: [Amazon] Many improvements of Amazon's Shipping Services feature (Buy Shipping API)
+* Fix: Blank page if Magento Configs cache was disabled and Compilation was enabled
+* Fix: Major boost of some Extension observers (core blocks render before and after events)
+* Fix: Some data Changes could be lost if more than 500 Magento Products updated at one time
+* Fix: Sales Channels could not be enabled in System -> Configuration if all of them were switched off
+* Fix: Magento Attributes Labels were translated to the selected Locale language (wrong labels)
+* Fix: [eBay] The warnings in Chrome Browser because of unsecure connections to the Terapeak service
+* Fix: [Amazon] Error: "Call to a member function setData() on a non-object" during synchronization in some cases
+* Fix: [Rakuten.com] Unexpected Product Status changing in some cases (Rakuten.com API issue)
+
 * 6.3.9 (r9929) (15/11/2015)
 
 * Added: [Amazon] Ability to use Amazon's Shipping Services feature (Buy Shipping API)

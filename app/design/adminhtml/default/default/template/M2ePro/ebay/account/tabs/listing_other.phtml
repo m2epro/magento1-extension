@@ -139,7 +139,7 @@
                                     <option attribute_code="<?php echo $attribute['code']; ?>"
                                             value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE; ?>"
                                         <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE && $tempAttributeValue == $attribute['code']) : echo 'selected="selected"'; endif; ?>>
-                                        <?php echo Mage::helper('M2ePro')->__($attribute['label']) ?>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </optgroup>
@@ -175,7 +175,7 @@
                                     <option attribute_code="<?php echo $attribute['code']; ?>"
                                             value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE; ?>"
                                         <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE && $tempAttributeValue == $attribute['code']) : echo 'selected="selected"'; endif; ?>>
-                                        <?php echo Mage::helper('M2ePro')->__($attribute['label']) ?>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </optgroup>

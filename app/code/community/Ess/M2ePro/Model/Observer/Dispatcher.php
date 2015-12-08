@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Observer_Dispatcher
 
     public function systemConfigurationSaveAction(Varien_Event_Observer $eventObserver)
     {
-        $this->process('Magento_Configuration', $eventObserver);
+        $this->process('Magento_Configuration', $eventObserver, true);
     }
 
     //########################################
@@ -86,16 +86,33 @@ class Ess_M2ePro_Model_Observer_Dispatcher
 
     public function orderView(Varien_Event_Observer $eventObserver)
     {
+        // event dispatched for ALL rendered magento blocks, so we need to skip unnecessary blocks ASAP
+        if (!($eventObserver->getEvent()->getBlock() instanceof Mage_Adminhtml_Block_Sales_Order_View)) {
+            return;
+        }
+
         $this->process('Order_View', $eventObserver);
     }
 
     public function shipmentViewBefore(Varien_Event_Observer $eventObserver)
     {
+        // event dispatched for ALL rendered magento blocks, so we need to skip unnecessary blocks ASAP
+        if (!($eventObserver->getEvent()->getBlock() instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_Create) &&
+            !($eventObserver->getEvent()->getBlock() instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_View)
+        ) {
+            return;
+        }
+
         $this->process('Shipment_View_Before', $eventObserver);
     }
 
     public function shipmentViewAfter(Varien_Event_Observer $eventObserver)
     {
+        // event dispatched for ALL rendered magento blocks, so we need to skip unnecessary blocks ASAP
+        if (!($eventObserver->getEvent()->getBlock() instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_Create)) {
+            return;
+        }
+
         $this->process('Shipment_View_After', $eventObserver);
     }
 
@@ -140,10 +157,11 @@ class Ess_M2ePro_Model_Observer_Dispatcher
 
     //########################################
 
-    private function process($observerModel, Varien_Event_Observer $eventObserver)
+    private function process($observerModel, Varien_Event_Observer $eventObserver, $forceRun = false)
     {
-        if (!Mage::helper('M2ePro/Module')->isReadyToWork() ||
-            !Mage::helper('M2ePro/Component')->getActiveComponents()) {
+        if (!$forceRun &&
+            (!Mage::helper('M2ePro/Module')->isReadyToWork() ||
+             !Mage::helper('M2ePro/Component')->getActiveComponents())) {
 
             return;
         }

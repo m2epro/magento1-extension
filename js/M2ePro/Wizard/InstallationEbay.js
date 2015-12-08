@@ -24,7 +24,7 @@ WizardInstallationEbay = Class.create(CommonHandler, {
             closable: true,
             className: "magento",
             windowClassName: "popup-window",
-            title: M2ePro.translator.translate('Register Your Free M2E Pro Extension'),
+            title: M2ePro.translator.translate('Register Your M2E Pro Extension'),
             width: 640,
             height: 315,
             zIndex: 100,

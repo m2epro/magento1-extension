@@ -37,7 +37,7 @@
         It will <strong>review</strong> your Competitors\' pricing and <strong>change</strong> your Product prices accordingly.<br/><br/>
 
         To start working with the Tool you should Add the information about your M2E Pro Amazon Account to the Repricing Service and Link it
-        by clicking on the Button <strong>Link or Register Now</strong>. Futher, you will need to complete the Wizard which allows
+        by clicking on the Button <strong>Link Now</strong>. Futher, you will need to complete the Wizard which allows
         Setting Up all necessary data.<br/><br/>
 
         After your Account is successfully Linked, you will be able to review the information about the Products which are automatically
@@ -61,34 +61,31 @@
         <div class="hor-scroll">
 
             <table class="form-list" cellspacing="0" cellpadding="0">
-
+                <?php if (!$this->isRepricingLinked) { ?>
                 <tr>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Account'); ?>:</label>
-                    </td>
                     <td class="value" style="width: auto;">
-                        <?php if (!$this->isRepricingLinked) { ?>
-                            <?php echo Mage::helper('M2ePro')->__('Not Set'); ?>&nbsp;
-                            <button type="button" onclick="AmazonAccountHandlerObj.linkOrRegisterRepricing()"><?php echo Mage::helper('M2ePro')->__('Link of Register Now'); ?></button>
-                        <?php } else { ?>
-                            <?php echo $this->repricingData['email']; ?>&nbsp;
-                            [ <a href="javascript:void(0)" onclick="AmazonAccountHandlerObj.unlinkRepricing()"><?php echo Mage::helper('M2ePro')->__('unlink'); ?></a> ]
-                            <br/>
-                            <a href="javascript:void(0)" onclick="AmazonAccountHandlerObj.openManagement()"><?php echo Mage::helper('M2ePro')->__('Go to Manager Tool'); ?></a>
-
-                            <div id="repricing_unlink_popup" style="display: none">
-                                <div style="margin: 10px 0;">
-                                    <p><?php echo Mage::helper('M2ePro')->__('Are you sure?'); ?></p>
-                                </div>
-                                <div style="text-align: right; margin: 10px 0;">
-                                    <button type="button" onclick="AmazonAccountHandlerObj.openUnlinkPage()"><?php echo Mage::helper('M2ePro')->__('Yes'); ?></button>
-                                    &nbsp;&nbsp;
-                                    <button type="button" onclick="Windows.getFocusedWindow().close()"><?php echo Mage::helper('M2ePro')->__('No'); ?></button>
-                                </div>
-                            </div>
-                        <?php } ?>
+                        <?php echo Mage::helper('M2ePro')->__('First, you have to link this Amazon Account with Amazon Repricing Tool'); ?>&nbsp;
+                        <button type="button" onclick="AmazonAccountHandlerObj.linkOrRegisterRepricing()"><?php echo Mage::helper('M2ePro')->__('Link Now'); ?></button>
                     </td>
                 </tr>
+                <?php } else { ?>
+                <tr>
+                    <td class="label" colspan="2" style="width: 100%;">
+                        <?php echo Mage::helper('M2ePro')->__('This Amazon Account is successfully linked with Amazon Repricing Tool'); ?>&nbsp;
+                        <button type="button" onclick="AmazonAccountHandlerObj.unlinkRepricing()"><?php echo Mage::helper('M2ePro')->__('Unlink'); ?></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Customer'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <?php echo $this->repricingData['email']; ?>&nbsp;
+                        <br/>
+                        <a href="javascript:void(0)" onclick="AmazonAccountHandlerObj.openManagement()"><?php echo Mage::helper('M2ePro')->__('Go to Amazon Repricing Tool'); ?></a>
+                    </td>
+                </tr>
+                <?php } ?>
 
             </table>
 
@@ -111,7 +108,7 @@
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Total Products'); ?>:</label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Repricing Products'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
                         <span id="repricing_total_products"><?php echo $this->repricingData['info']['total_products']?></span>
@@ -137,7 +134,7 @@
                     <td class="label">
                     </td>
                     <td class="value" style="width: auto;">
-                        <button type="button" onclick="AmazonAccountHandlerObj.synchRepricing()"><?php echo Mage::helper('M2ePro')->__('Synchronize'); ?></button>
+                        <button type="button" onclick="AmazonAccountHandlerObj.synchRepricing()"><?php echo Mage::helper('M2ePro')->__('Synchronize Now'); ?></button>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('
                                 This Option allows you to <strong>Synchronize</strong> M2E Pro and Repricer Inventory. For example, if you manually

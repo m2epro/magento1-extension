@@ -39,11 +39,11 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Account_RepricingController
     public function linkAction()
     {
         $accountId = $this->getRequest()->getParam('id');
-        $token = $this->getRequest()->getParam('token');
+        $token = $this->getRequest()->getParam('account_token');
         $email = $this->getRequest()->getParam('email');
 
         $status = $this->getRequest()->getParam('status');
-        $messages = $this->getRequest()->getParam('messages');
+        $messages = $this->getRequest()->getParam('messages', array());
 
         $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
@@ -99,7 +99,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Account_RepricingController
         $accountId = $this->getRequest()->getParam('id');
 
         $status = $this->getRequest()->getParam('status');
-        $messages = $this->getRequest()->getParam('messages');
+        $messages = $this->getRequest()->getParam('messages', array());
 
         /** @var $model Ess_M2ePro_Model_Account */
         $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
@@ -117,7 +117,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Account_RepricingController
 
             /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
             $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
-            $repricing->unlink();
+            $repricing->resetProductRepricingStatus();
         }
 
         return $this->_redirectUrl($this->getUrl('*/adminhtml_common_amazon_account/edit', array(

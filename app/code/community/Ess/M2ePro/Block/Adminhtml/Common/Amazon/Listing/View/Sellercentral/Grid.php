@@ -330,6 +330,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
                 'url' => '',
                 'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
             ), 'edit_repricing');
+
+            $this->getMassactionBlock()->addItem('showDetails', array(
+                'label' => Mage::helper('M2ePro')->__('Show Details'),
+                'url' => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            ), 'edit_repricing');
         }
         // ---------------------------------------
 

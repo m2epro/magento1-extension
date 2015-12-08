@@ -411,7 +411,7 @@ OrderMerchantFulfillmentHandler.prototype = Object.extend(new CommonHandler(), {
     {
         setTimeout(function() {
             Windows.getFocusedWindow().content.style.height = '';
-            Windows.getFocusedWindow().content.style.maxHeight = '650px';
+            Windows.getFocusedWindow().content.style.maxHeight = '700px';
 
             if ($('fulfillment_form_container')) {
                 var containerHeight = parseInt($('fulfillment_form_container').getStyle('height'));

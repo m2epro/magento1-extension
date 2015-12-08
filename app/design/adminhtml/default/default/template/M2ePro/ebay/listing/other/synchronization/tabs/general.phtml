@@ -134,9 +134,9 @@
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT ?>" <?php if ($sourceData['qty'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product QTY'); ?></option>
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>" new_option_value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_ATTRIBUTE; ?>">
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT_FIXED == $sourceData['qty']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('QTY'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT_FIXED == $sourceData['qty']): echo ' selected="selected"'; endif; ?>>QTY</option>
                                 <?php foreach ($this->attributes as $attribute): ?>
-                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['qty'] == $attribute['code'] && $sourceData['qty'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__($attribute['label']) ?></option>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['qty'] == $attribute['code'] && $sourceData['qty'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach; ?>
                             </optgroup>
                         </select>
@@ -171,7 +171,7 @@
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
                                 <?php foreach ($this->attributes as $attribute): ?>
-                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::PRICE_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['price'] == $attribute['code'] && $sourceData['price'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::PRICE_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__($attribute['label']) ?></option>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::PRICE_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['price'] == $attribute['code'] && $sourceData['price'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::PRICE_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach; ?>
                             </optgroup>
                         </select>
@@ -207,7 +207,7 @@
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
                                 <?php foreach ($this->attributes as $attribute): ?>
-                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::TITLE_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['title'] == $attribute['code'] && $sourceData['title'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::TITLE_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__($attribute['label']) ?></option>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::TITLE_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['title'] == $attribute['code'] && $sourceData['title'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::TITLE_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach; ?>
                             </optgroup>
                         </select>
@@ -241,7 +241,7 @@
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
                                 <?php foreach ($this->attributes as $attribute): ?>
-                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::SUB_TITLE_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['sub_title'] == $attribute['code'] && $sourceData['sub_title'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::SUB_TITLE_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__($attribute['label']) ?></option>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::SUB_TITLE_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['sub_title'] == $attribute['code'] && $sourceData['sub_title'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::SUB_TITLE_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach; ?>
                             </optgroup>
                         </select>
@@ -273,7 +273,7 @@
 
                             <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
                                 <?php foreach ($this->attributes as $attribute): ?>
-                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::DESCRIPTION_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['description'] == $attribute['code'] && $sourceData['description'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::DESCRIPTION_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__($attribute['label']) ?></option>
+                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Source::DESCRIPTION_SOURCE_ATTRIBUTE; ?>" attribute_code="<?php echo $attribute['code'] ?>" <?php if ($attributes['description'] == $attribute['code'] && $sourceData['description'] == Ess_M2ePro_Model_Ebay_Listing_Other_Source::DESCRIPTION_SOURCE_ATTRIBUTE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach; ?>
                             </optgroup>
                         </select>

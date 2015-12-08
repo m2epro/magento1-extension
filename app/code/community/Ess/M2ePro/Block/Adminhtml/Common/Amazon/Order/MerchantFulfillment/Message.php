@@ -17,7 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Order_MerchantFulfillment_Message
 
         // Initialization block
         // ---------------------------------------
-        $this->setId('amazonOrderMerchantFulfillmentBreadcrumb');
+        $this->setId('amazonOrderMerchantFulfillmentMessage');
         // ---------------------------------------
         $this->setTemplate('M2ePro/common/amazon/order/merchant_fulfillment/message.phtml');
     }

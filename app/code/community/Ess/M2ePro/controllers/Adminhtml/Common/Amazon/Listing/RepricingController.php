@@ -62,14 +62,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
     public function addProductsAction()
     {
         $accountId = $this->getRequest()->getParam('account_id');
-        $offers = $this->getRequest()->getParam('offers');
-
-        $status = $this->getRequest()->getParam('status');
-        $messages = $this->getRequest()->getParam('messages');
-
-        if (!is_array($offers)) {
-            $offers = explode(',', $offers);
-        }
+        $responseToken = $this->getRequest()->getParam('response_token');
 
         $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
@@ -78,23 +71,27 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
             return $this->indexAction();
         }
 
-        $this->parseRepricingMessages($messages);
+        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
+        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
 
-        if ($status == '0') {
+        $response = $repricing->getResponseData($responseToken);
+
+        if (!empty($response['messages'])) {
+            $this->parseRepricingMessages($response['messages']);
+        }
+
+        if ($response['status'] == '0') {
             return $this->indexAction();
         }
 
-        if (empty($offers)) {
+        if (empty($response['offers'])) {
             return $this->indexAction();
         }
 
         $skus = array();
-        foreach ($offers as $offer) {
+        foreach ($response['offers'] as $offer) {
             $skus[] = $offer['sku'];
         }
-
-        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
 
         $repricing->setProductRepricingStatusBySku(
             $skus,
@@ -109,7 +106,71 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
 
     //########################################
 
-    public function openEditProducts()
+    public function openShowDetailsAction()
+    {
+        $listingId = $this->getRequest()->getParam('id');
+        $accountId = $this->getRequest()->getParam('account_id');
+        $productsIds = $this->getRequest()->getParam('products_ids');
+
+        if (!is_array($productsIds)) {
+            $productsIds = explode(',', $productsIds);
+        }
+
+        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+
+        if ($accountId && !$model->getId()) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
+            return $this->indexAction();
+        }
+
+        if (empty($productsIds)) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Products not selected.'));
+            return $this->indexAction();
+        }
+
+        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
+        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
+
+        $url = $repricing->getShowDetailsUrl($listingId, $productsIds);
+
+        if ($url === false) {
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')
+                    ->__('The selected Amazon Products cannot be Managed by Amazon Repricing Tool.')
+            );
+            return $this->indexAction();
+        }
+
+        return $this->_redirectUrl($url);
+    }
+
+    public function showDetailsAction()
+    {
+        $accountId = $this->getRequest()->getParam('account_id');
+        $responseToken = $this->getRequest()->getParam('response_token');
+
+        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+
+        if ($accountId && !$model->getId()) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
+            return $this->indexAction();
+        }
+
+        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
+        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
+
+        $response = $repricing->getResponseData($responseToken);
+
+        if (!empty($response['messages'])) {
+            $this->parseRepricingMessages($response['messages']);
+        }
+
+        return $this->indexAction();
+    }
+
+    //########################################
+
+    public function openEditProductsAction()
     {
         $listingId = $this->getRequest()->getParam('id');
         $accountId = $this->getRequest()->getParam('account_id');
@@ -148,9 +209,24 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
 
     public function editProductsAction()
     {
-        $messages = $this->getRequest()->getParam('messages');
+        $accountId = $this->getRequest()->getParam('account_id');
+        $responseToken = $this->getRequest()->getParam('response_token');
 
-        $this->parseRepricingMessages($messages);
+        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+
+        if ($accountId && !$model->getId()) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
+            return $this->indexAction();
+        }
+
+        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
+        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
+
+        $response = $repricing->getResponseData($responseToken);
+
+        if (!empty($response['messages'])) {
+            $this->parseRepricingMessages($response['messages']);
+        }
 
         return $this->indexAction();
     }
@@ -197,14 +273,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
     public function removeProductsAction()
     {
         $accountId = $this->getRequest()->getParam('account_id');
-        $offers = $this->getRequest()->getParam('offers');
-
-        $status = $this->getRequest()->getParam('status');
-        $messages = $this->getRequest()->getParam('messages');
-
-        if (!is_array($offers)) {
-            $offers = explode(',', $offers);
-        }
+        $responseToken = $this->getRequest()->getParam('response_token');
 
         $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
@@ -213,23 +282,28 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
             return $this->indexAction();
         }
 
-        $this->parseRepricingMessages($messages);
+        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
+        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
 
-        if ($status == '0') {
+        $response = $repricing->getResponseData($responseToken);
+
+        if (!empty($response['messages'])) {
+            $this->parseRepricingMessages($response['messages']);
+        }
+
+        if ($response['status'] == '0') {
             return $this->indexAction();
         }
 
-        if (empty($offers)) {
+        if (empty($response['offers'])) {
             return $this->indexAction();
         }
 
         $skus = array();
-        foreach ($offers as $offer) {
+        foreach ($response['offers'] as $offer) {
             $skus[] = $offer['sku'];
         }
 
-        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
         $repricing->setProductRepricingStatusBySku(
             $skus,
             Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_NO
