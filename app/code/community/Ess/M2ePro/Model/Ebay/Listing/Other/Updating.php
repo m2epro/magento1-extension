@@ -246,32 +246,43 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
-        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns(array());
-
-        $listingTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
-        $ebayItemTable = Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable();
-
-        $collection->getSelect()->join(array('l' => $listingTable), 'main_table.listing_id = l.id', array());
-        $collection->getSelect()->where('l.account_id = ?', (int)$this->getAccount()->getId());
-
-        $collection->getSelect()->join(
-            array('eit' => $ebayItemTable),
-            'main_table.product_id = eit.product_id AND eit.account_id = '.(int)$this->getAccount()->getId(),
-            array('item_id')
-        );
-
-        /** @var $stmtTemp Zend_Db_Statement_Pdo */
-        $stmtTemp = $connRead->query($collection->getSelect()->__toString());
-
         $receivedItemsByItemId = array();
+        $receivedItemsIds      = array();
+
         foreach ($receivedItems as $receivedItem) {
+            $receivedItemsIds[] = (string)$receivedItem['id'];
             $receivedItemsByItemId[(string)$receivedItem['id']] = $receivedItem;
         }
 
-        while ($existItemId = $stmtTemp->fetchColumn()) {
-            unset($receivedItemsByItemId[$existItemId]);
+        foreach (array_chunk($receivedItemsIds,500,true) as $partReceivedItemsIds) {
+
+            if (count($partReceivedItemsIds) <= 0) {
+                continue;
+            }
+
+            /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+            $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+            $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+
+            $collection->getSelect()->join(
+                array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
+                'main_table.listing_id = l.id', array()
+            );
+            $collection->getSelect()->where('l.account_id = ?', (int)$this->getAccount()->getId());
+
+            $collection->getSelect()->join(
+                array('eit' => Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable()),
+                'main_table.product_id = eit.product_id AND eit.account_id = '.(int)$this->getAccount()->getId(),
+                array('item_id')
+            );
+            $collection->getSelect()->where('eit.item_id IN (?)', $partReceivedItemsIds);
+
+            /** @var $stmtTemp Zend_Db_Statement_Pdo */
+            $queryStmt = $connRead->query($collection->getSelect()->__toString());
+
+            while (($itemId = $queryStmt->fetchColumn()) !== false) {
+                unset($receivedItemsByItemId[$itemId]);
+            }
         }
 
         return array_values($receivedItemsByItemId);

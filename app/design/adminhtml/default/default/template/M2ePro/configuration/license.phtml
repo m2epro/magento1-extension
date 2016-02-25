@@ -1,85 +1,15 @@
 <div id="block_notice_configuration_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('License'); ?>">
     <?php
-    $urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
-    $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
+    $activeComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+    $componentForUrl = count($activeComponents) == 1 ? array_shift($activeComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
 
-    $email = '<a href="mailto:support@m2epro.com">support@m2epro.com</a>';
-
-    $components = array();
-    $betaComponents = array();
-
-    $ebayText = '';
-    if (isset($this->components[Ess_M2ePro_Helper_Component_Ebay::NICK])) {
-        $ebayText = Mage::helper('M2ePro')->__(
-            'The <span style="text-decoration: underline;">eBay Component</span>, its upgrades and support are free according to eBay / Magento Partner Agreement. And they will stay free until the partner agreement is active.<br/>'
-        );
-        $components[] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
-    }
-
-    $betaText = '';
-
-    if (isset($this->components[Ess_M2ePro_Helper_Component_Amazon::NICK])) {
-        $components[] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
-    }
-
-    if (isset($this->components[Ess_M2ePro_Helper_Component_Buy::NICK])) {
-        $betaComponents[] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-        $components[] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-    }
-
-    $componentsString = '';
-    $componentsCount = count($this->components);
-    for ($componentCount = 0; $componentCount < $componentsCount; $componentCount++) {
-        $componentsString .= '<span style="text-decoration: underline;">' . $components[$componentCount] . '</span>';
-
-        if ($componentCount == $componentsCount - 2) {
-            $componentsString .= ' ' . Mage::helper('M2ePro')->__('and') . ' ';
-        } elseif ($componentCount < $componentsCount - 2) {
-            $componentsString .= ', ';
-        }
-    }
-
-    if (!empty($componentsString)) {
-        $componentString = ' ' . Mage::helper('M2ePro')->__('Component');
-        if ($componentsCount > 1) $componentString = ' ' . Mage::helper('M2ePro')->__('Components');
-
-        $componentsString .= $componentString;
-    }
-
-    $betaComponentsString = '';
-    $betaComponentsCount = count($betaComponents);
-    for ($componentCount = 0; $componentCount < $betaComponentsCount; $componentCount++) {
-        $betaComponentsString .= '<span style="text-decoration: underline;">' . $betaComponents[$componentCount] . '</span>';
-
-        if ($componentCount == $betaComponentsCount - 2) {
-            $betaComponentsString .= ' ' . Mage::helper('M2ePro')->__('and') . ' ';
-        } elseif ($componentCount < $betaComponentsCount - 2) {
-            $betaComponentsString .= ', ';
-        }
-    }
-
-    if (!empty($betaComponentsString)) {
-        $componentString = ' ' . Mage::helper('M2ePro')->__('Component');
-        if ($betaComponentsCount > 1) $componentString = ' ' . Mage::helper('M2ePro')->__('Components');
-
-        $betaText = Mage::helper('M2ePro')->__(
-            'Current %component_name% %version_title% are in <span style="text-decoration: underline;">Beta</span> State and are provided free of charge. However, please be advised that upon the live version of the Product release some monthly subscription fee will be introduced.<br/>',
-            $betaComponentsString, $componentString
-        );
-    }
-
-    $tempString = Mage::helper('M2ePro')->__('<br/><b>Note:</b> M2E Pro v.6.x.x consists of %component_name%.<br/>
-    %ebay_text%
-    %beta_text%
-    <br/>
-    <hr style="color:#D6D6D6"/><br/>
-    M2E Pro Extension requires activation for its work.<br/><br/>
+    $tempString = Mage::helper('M2ePro')->__('M2E Pro Extension requires activation for its work.<br/><br/>
     To get the License Key click the <span style="text-decoration: underline;">Manage License</span> link and follow the instructions.<br/>
     When you receive your License Key, press the Enter Button, enter your License Key in appeared text field and press Confirm.
     <br/><br/>
-    <b>Note:</b> If you have not received the License Key, please contact us %email%.<br/><br/>
+    <b>Note:</b> If you have not received the License Key, please contact us <a href="mailto:support@m2epro.com">support@m2epro.com</a>.<br/><br/>
     More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-    $componentsString, $ebayText, $betaText, $email, Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-License'));
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-License'));
     echo $tempString;
     ?>
 </div>
@@ -94,12 +24,8 @@
         'formSubmit' => $this->getUrl('M2ePro/adminhtml_configuration_license/confirmKey')
     )); ?>);
 
-    M2ePro.url.add(<?php echo json_encode(array(
-        'component_set_trial' => $this->getUrl('M2ePro/adminhtml_configuration_license/componentSetTrial')
-    ))?>);
-
     M2ePro.translator.add(<?php echo json_encode(array(
-        'You must get valid Trial or Live License Key.' => Mage::helper('M2ePro')->__('You must get valid Trial or Live License Key.')
+        'You must get valid License Key.' => Mage::helper('M2ePro')->__('You must get valid License Key.')
     )); ?>);
 
     Event.observe(window, 'load', function() {
@@ -298,115 +224,6 @@
             </div>
 
         </div>
-
-    <?php } ?>
-
-    <?php if ($this->key != '' && $this->licenseData['domain'] != '' && $this->licenseData['ip'] != '' && $this->licenseData['directory'] != '') { ?>
-
-        <?php foreach ($this->components as $componentName => $componentData) { ?>
-
-            <div class="entry-edit" id="magento_block_configuration_license_component_<?php echo strtolower($componentName); ?>" collapseable="no">
-
-                <div class="entry-edit-head">
-                    <?php
-                        $componentTitle = '';
-                        switch ($componentName) {
-                            case Ess_M2ePro_Helper_Component_Ebay::NICK:
-                                $componentTitle = Mage::helper('M2ePro/Component_Ebay')->getTitle();
-                                break;
-                            case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                                $componentTitle = Mage::helper('M2ePro/Component_Amazon')->getTitle();
-                                break;
-                            case Ess_M2ePro_Helper_Component_Buy::NICK:
-                                $componentTitle = Mage::helper('M2ePro/Component_Buy')->getTitle();
-                                break;
-                        }
-                    ?>
-
-                    <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $componentTitle.' '.Mage::helper('M2ePro')->__('Access'); ?></h4>
-                </div>
-
-                <div class="fieldset">
-                    <div class="hor-scroll">
-
-                        <?php if ($componentName == Ess_M2ePro_Helper_Component_Ebay::NICK) { ?>
-                            <div id="block_notice_license_ebay" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
-                                <?php echo Mage::helper('M2ePro')->__('<b>Note:</b> The eBay component, its upgrades and support are free according to eBay / Magento Partner Agreement. And they will stay free
-                                                                       until the partner agreement is active.'); ?>
-                            </div>
-                        <?php } ?>
-
-                        <?php if ($componentName == Ess_M2ePro_Helper_Component_Buy::NICK) { ?>
-                            <div id="block_notice_license_buy" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
-                                <?php echo Mage::helper('M2ePro')->__('<b>Note:</b> The current Beta version of the Rakuten.com module is provided free of charge.
-                                However, please be advised that upon the live version of the Product release some monthly subscription fee will introduced.'); ?>
-                            </div>
-                        <?php } ?>
-
-                        <table class="form-list" cellspacing="0" cellpadding="0">
-
-                            <colgroup class="label"></colgroup>
-                            <colgroup class="value"></colgroup>
-
-                            <tbody>
-
-                                <tr>
-                                    <td class="label">
-                                        <label><?php echo Mage::helper('M2ePro')->__('Current Status'); ?>: </label>
-                                    </td>
-                                    <td class="value">
-
-                                        <strong>
-                                            <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_NONE) echo Mage::helper('M2ePro')->__('Not Activated License'); ?>
-                                            <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_TRIAL) echo Mage::helper('M2ePro')->__('Trial License'); ?>
-                                            <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_FREE) echo Mage::helper('M2ePro')->__('Free License'); ?>
-                                            <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_LIVE) echo Mage::helper('M2ePro')->__('Live License'); ?>
-                                        </strong>
-
-                                        <?php if ($componentData['status'] != Ess_M2ePro_Helper_Module_License::STATUS_ACTIVE) { ?>
-                                                    <span style="color:red;">(<?php
-                                                        if ($componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_SUSPENDED) echo Mage::helper('M2ePro')->__('Suspended');
-                                                        if ($componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_CLOSED) echo Mage::helper('M2ePro')->__('Closed');
-                                                        if ($componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_CANCELED) echo Mage::helper('M2ePro')->__('Canceled');
-                                                    ?>)</span>
-                                        <?php } ?>
-
-                                    </td>
-
-                                    <?php if ($componentData['mode'] == Ess_M2ePro_Helper_Module_License::MODE_NONE &&
-                                              $componentData['status'] == Ess_M2ePro_Helper_Module_License::STATUS_ACTIVE) {?>
-                                        <td id="component_<?php echo $componentName?>">
-                                            <?php echo $this->getChildHtml('set_trial_key'); ?>
-                                        </td>
-                                    <?php } ?>
-
-                                </tr>
-
-                                <?php if ($componentData['mode'] != Ess_M2ePro_Helper_Module_License::MODE_NONE) { ?>
-
-                                    <tr>
-                                        <td class="label">
-                                            <label><?php echo Mage::helper('M2ePro')->__('Expiration Date'); ?>: </label>
-                                        </td>
-                                        <td class="value">
-
-                                            <?php echo $componentData['expiration_date']; ?>
-
-                                        </td>
-                                    </tr>
-
-                                <?php } ?>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-                </div>
-
-            </div>
-
-        <?php } ?>
 
     <?php } ?>
 

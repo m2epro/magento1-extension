@@ -150,6 +150,22 @@ class Ess_M2ePro_Model_Buy_Listing_Other extends Ess_M2ePro_Model_Component_Chil
 
     public function beforeUnmapProduct()
     {
+        $existedRelation = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(array('bi' => Mage::getResourceModel('M2ePro/Buy_Item')->getMainTable()),
+                array('blp.listing_product_id'))
+            ->join(array('blp' => Mage::getResourceModel('M2ePro/Buy_Listing_Product')->getMainTable()),
+                '(`blp`.`sku` = `bi`.`sku`)', array())
+            ->where('`bi`.`sku` = ?', $this->getSku())
+            ->where('`bi`.`account_id` = ?', $this->getParentObject()->getAccountId())
+            ->where('`bi`.`marketplace_id` = ?', $this->getParentObject()->getMarketplaceId())
+            ->query()
+            ->fetchColumn();
+
+        if ($existedRelation) {
+            return;
+        }
+
         Mage::getSingleton('core/resource')->getConnection('core_write')
             ->delete(Mage::getResourceModel('M2ePro/Buy_Item')->getMainTable(),
             array(

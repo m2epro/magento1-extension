@@ -95,7 +95,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Verify
 
     protected function getRequestData()
     {
-        $this->getRequestObject()->clearVariations();
+        $this->getRequestObject()->resetVariations();
         $data = $this->getRequestObject()->getData();
 
         $data['verify_call'] = true;

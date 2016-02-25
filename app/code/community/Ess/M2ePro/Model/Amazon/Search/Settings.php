@@ -188,7 +188,9 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
             return;
         }
 
-        if ($this->step == self::STEP_GENERAL_ID && $generalId !== $params['query']) {
+        if ($this->step == self::STEP_GENERAL_ID && $generalId !== $params['query'] &&
+            (!Mage::helper('M2ePro')->isISBN($generalId) || !Mage::helper('M2ePro')->isISBN($params['query']))) {
+
             $this->setNotFoundSearchStatus();
             return;
         }

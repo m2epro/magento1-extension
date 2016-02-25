@@ -94,9 +94,10 @@ class Ess_M2ePro_Model_Upgrade_Tables
             'synchronization_config'
         );
 
-        $currentTables = array_map(function($tableName) {
-            return str_replace('m2epro_', '', $tableName);
-        }, Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables());
+        $currentTables = array();
+        foreach (Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables() as $tableName) {
+            $currentTables[] = str_replace('m2epro_', '', $tableName);
+        }
         $allTables = array_values(array_unique(array_merge($oldTables, $currentTables)));
 
         usort($allTables, function ($a,$b) {

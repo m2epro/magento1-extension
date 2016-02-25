@@ -83,16 +83,6 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
             )
         );
 
-        $components = array();
-        foreach (Mage::helper('M2ePro/Component')->getAllowedComponents() as $component) {
-            $components[$component] = array(
-                'mode' => $licenseHelper->getMode($component),
-                'status' => $licenseHelper->getStatus($component),
-                'expiration_date' => $licenseHelper->getTextExpirationDate($component)
-            );
-        }
-
-        $this->components = $components;
         // ---------------------------------------
 
         // ---------------------------------------
@@ -133,16 +123,6 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('confirm_key',$buttonBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Get Trial'),
-            'onclick' => 'LicenseHandlerObj.componentSetTrial(this);',
-            'class'   => 'set_trial_key'
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('set_trial_key', $buttonBlock);
         // ---------------------------------------
 
         return parent::_beforeToHtml();

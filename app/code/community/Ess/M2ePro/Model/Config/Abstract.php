@@ -8,16 +8,19 @@
 
 class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
 {
-    const SORT_NONE = 0;
-    const SORT_KEY_ASC = 1;
-    const SORT_KEY_DESC = 2;
-    const SORT_VALUE_ASC = 3;
+    const SORT_NONE       = 0;
+    const SORT_KEY_ASC    = 1;
+    const SORT_KEY_DESC   = 2;
+    const SORT_VALUE_ASC  = 3;
     const SORT_VALUE_DESC = 4;
+
+    const GLOBAL_GROUP = '__global__';
+
+    const CACHE_LIFETIME = 3600; // 1 hour
 
     //########################################
 
     private $_ormConfig = '';
-    private $_cacheData = array();
 
     //########################################
 
@@ -39,238 +42,246 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
 
     public function getGlobalValue($key)
     {
-        return $this->getValue(NULL, $key);
+        return $this->getValue(self::GLOBAL_GROUP, $this->prepareKey($key));
     }
 
     public function setGlobalValue($key, $value)
     {
-        return $this->setValue(NULL, $key, $value);
+        return $this->setValue(self::GLOBAL_GROUP, $this->prepareKey($key), $value);
     }
 
     public function deleteGlobalValue($key)
     {
-        return $this->deleteValue(NULL, $key);
+        return $this->deleteValue(self::GLOBAL_GROUP, $this->prepareKey($key));
     }
 
     // ---------------------------------------
 
     public function getAllGlobalValues($sort = self::SORT_NONE)
     {
-        return $this->getAllValues(NULL,$sort);
+        return $this->getAllValues(self::GLOBAL_GROUP, $sort);
     }
 
     public function deleteAllGlobalValues()
     {
-        return $this->deleteAllValues(NULL);
+        return $this->deleteAllValues(self::GLOBAL_GROUP);
     }
 
     //########################################
 
     public function getGroupValue($group, $key)
     {
-        $group = $this->prepareGroup($group);
-        return $this->getValue($group, $key);
+        return $this->getValue($this->prepareGroup($group), $this->prepareKey($key));
     }
 
     public function setGroupValue($group, $key, $value)
     {
-        $group = $this->prepareGroup($group);
-        return $this->setValue($group, $key, $value);
+        return $this->setValue($this->prepareGroup($group), $this->prepareKey($key), $value);
     }
 
     public function deleteGroupValue($group, $key)
     {
-        $group = $this->prepareGroup($group);
-        return $this->deleteValue($group, $key);
+        return $this->deleteValue($this->prepareGroup($group), $this->prepareKey($key));
     }
 
     // ---------------------------------------
 
     public function getAllGroupValues($group, $sort = self::SORT_NONE)
     {
-        $group = $this->prepareGroup($group);
-        return $this->getAllValues($group,$sort);
+        return $this->getAllValues($this->prepareGroup($group),$sort);
     }
 
     public function deleteAllGroupValues($group)
     {
-        $group = $this->prepareGroup($group);
-        return $this->deleteAllValues($group);
+        return $this->deleteAllValues($this->prepareGroup($group));
     }
 
     // ---------------------------------------
 
     public function clear()
     {
-        $tableName = $this->getResource()->getMainTable();
-        Mage::getSingleton('core/resource')->getConnection('core_write')->delete($tableName);
+        Mage::getSingleton('core/resource')->getConnection('core_write')->delete(
+            $this->getResource()->getMainTable()
+        );
 
-        $this->_cacheData = array();
-        $this->updatePermanentCacheData();
+        $this->removeCacheData();
     }
 
     //########################################
 
     private function getValue($group, $key)
     {
-        $this->loadCacheData();
-
-        if (!is_null($group) && empty($group)) {
+        if (empty($group) || empty($key)) {
             return NULL;
         }
 
-        if (empty($key)) {
-            return NULL;
+        $cacheData = $this->getCacheData();
+
+        if (!empty($cacheData)) {
+            return isset($cacheData[$group][$key]) ? $cacheData[$group][$key] : NULL;
         }
 
-        return $this->getCacheValue($group, $key);
+        $dbData = $this->getCollection()->toArray();
+
+        $cacheData = array();
+        foreach ($dbData['items'] as $item) {
+
+            $item['group'] = $this->prepareGroup($item['group']);
+            $item['key']   = $this->prepareKey($item['key']);
+
+            if (!isset($cacheData[$item['group']])) {
+                $cacheData[$item['group']] = array();
+            }
+
+            $cacheData[$item['group']][$item['key']] = $item['value'];
+        }
+
+        $this->setCacheData($cacheData);
+
+        return isset($cacheData[$group][$key]) ? $cacheData[$group][$key] : NULL;
     }
 
     private function setValue($group, $key, $value)
     {
-        $this->loadCacheData();
-
-        if (!is_null($group) && empty($group)) {
+        if (empty($key) || empty($group)) {
             return false;
         }
 
-        if (empty($key)) {
-            return false;
-        }
+        $collection = $this->getCollection();
 
-        $temp = $this->getCollection();
-
-        if (is_null($group)) {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
+        if ($group == self::GLOBAL_GROUP) {
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         }
 
-        $temp->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
-        $temp = $temp->toArray();
+        $collection->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
+        $dbData = $collection->toArray();
 
-        if (count($temp['items']) > 0) {
+        if (count($dbData['items']) > 0) {
 
-            $existItem = $temp['items'][0];
+            $existItem = reset($dbData['items']);
 
             Mage::getModel($this->_ormConfig)
                          ->load($existItem['id'])
-                         ->addData(array('value'=>$value))
+                         ->addData(array('value' => $value))
                          ->save();
         } else {
 
             Mage::getModel($this->_ormConfig)
-                         ->setData(array('group'=>$group,'key'=>$key,'value'=>$value))
+                         ->setData(array('group' => $group,'key' => $key,'value' => $value))
                          ->save();
         }
 
-        return $this->setCacheValue($group,$key,$value);
+        $this->removeCacheData();
+
+        return true;
     }
 
     private function deleteValue($group, $key)
     {
-        $this->loadCacheData();
-
-        if (!is_null($group) && empty($group)) {
+        if (empty($key) || empty($group)) {
             return false;
         }
 
-        if (empty($key)) {
-            return false;
-        }
+        $collection = $this->getCollection();
 
-        $temp = $this->getCollection();
-
-        if (is_null($group)) {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
+        if ($group == self::GLOBAL_GROUP) {
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         }
 
-        $temp->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
-        $temp = $temp->toArray();
+        $collection->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
+        $dbData = $collection->toArray();
 
-        if (count($temp['items']) <= 0) {
+        if (empty($dbData['items'])) {
             return false;
         }
 
-        $existItem = $temp['items'][0];
+        $existItem = reset($dbData['items']);
         Mage::getModel($this->_ormConfig)->setId($existItem['id'])->delete();
 
-        return $this->deleteCacheValue($existItem['group'], $existItem['key']);
+        $this->removeCacheData();
+
+        return true;
     }
 
     // ---------------------------------------
 
     private function getAllValues($group = NULL, $sort = self::SORT_NONE)
     {
-        $this->loadCacheData();
-
-        if (!is_null($group) && empty($group)) {
+        if (empty($group)) {
             return array();
         }
 
         $result = array();
 
-        $temp = $this->getCollection();
+        $collection = $this->getCollection();
 
-        if (is_null($group)) {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
+        if ($group == self::GLOBAL_GROUP) {
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         }
 
-        $temp = $temp->toArray();
+        $dbData = $collection->toArray();
 
-        foreach ($temp['items'] as $item) {
+        foreach ($dbData['items'] as $item) {
             $result[$item['key']] = $item['value'];
         }
 
-        $this->sortResult($result,$sort);
+        $this->sortResult($result, $sort);
 
         return $result;
     }
 
     private function deleteAllValues($group = NULL)
     {
-        $this->loadCacheData();
-
-        if (!is_null($group) && empty($group)) {
+        if (empty($group)) {
             return false;
         }
 
-        $temp = $this->getCollection();
+        $collection = $this->getCollection();
 
-        if (is_null($group)) {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
+        if ($group == self::GLOBAL_GROUP) {
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
         } else {
-            $temp->addFieldToFilter(new Zend_Db_Expr('`group`'), array("like"=>$group.'%'));
+            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('like' => $group.'%'));
         }
 
-        $temp = $temp->toArray();
+        $dbData = $collection->toArray();
 
-        foreach ($temp['items'] as $item) {
+        foreach ($dbData['items'] as $item) {
             Mage::getModel($this->_ormConfig)->setId($item['id'])->delete();
-            $this->deleteCacheValue($item['group'], $item['key']);
         }
+
+        $this->removeCacheData();
 
         return true;
     }
 
     //########################################
 
-    private function prepareGroup($group = NULL)
+    private function prepareGroup($group)
     {
-        if (is_null($group)) {
-            return NULL;
+        if (is_null($group) || $group == self::GLOBAL_GROUP) {
+            return self::GLOBAL_GROUP;
         }
 
         if (empty($group)) {
             return false;
         }
 
-        return '/'.trim($group,'/').'/';
+        return '/'.strtolower(trim($group,'/')).'/';
     }
+
+    private function prepareKey($key)
+    {
+        return strtolower($key);
+    }
+
+    //########################################
 
     private function sortResult(&$array, $sort)
     {
@@ -294,109 +305,24 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         }
     }
 
-    // ---------------------------------------
+    //########################################
 
-    private function getCacheValue($group = NULL, $key)
-    {
-        empty($group) && $group = 'global';
-
-        if (empty($key)) {
-            return NULL;
-        }
-
-        $group = strtolower($group);
-        $key = strtolower($key);
-
-        if (isset($this->_cacheData[$group][$key])) {
-            return $this->_cacheData[$group][$key];
-        }
-
-        return NULL;
-    }
-
-    private function setCacheValue($group = NULL, $key, $value)
-    {
-        empty($group) && $group = 'global';
-
-        if (empty($key)) {
-            return false;
-        }
-
-        $group = strtolower($group);
-        $key = strtolower($key);
-
-        if (!isset($this->_cacheData[$group])) {
-            $this->_cacheData[$group] = array();
-        }
-
-        $this->_cacheData[$group][$key] = $value;
-        $this->updatePermanentCacheData();
-
-        return true;
-    }
-
-    private function deleteCacheValue($group = NULL, $key)
-    {
-        empty($group) && $group = 'global';
-
-        if (empty($key)) {
-            return false;
-        }
-
-        $group = strtolower($group);
-        $key = strtolower($key);
-
-        unset($this->_cacheData[$group][$key]);
-        $this->updatePermanentCacheData();
-
-        return true;
-    }
-
-    // ---------------------------------------
-
-    private function loadCacheData()
-    {
-        if (!empty($this->_cacheData)) {
-            return;
-        }
-
-        $key = $this->_ormConfig.'_data';
-        $this->_cacheData = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($key);
-
-        if ($this->_cacheData === false || Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
-            $this->_cacheData = $this->buildCacheData();
-            $this->updatePermanentCacheData();
-        }
-    }
-
-    private function buildCacheData()
-    {
-        $tempData = $this->getCollection()->toArray();
-
-        $newCache = array();
-        foreach ($tempData['items'] as $item) {
-
-            if (empty($item['group'])) {
-                $item['group'] = 'global';
-            }
-
-            $item['group'] = strtolower($item['group']);
-            $item['key'] = strtolower($item['key']);
-
-            if (!isset($newCache[$item['group']])) {
-                $newCache[$item['group']] = array();
-            }
-
-            $newCache[$item['group']][$item['key']] = $item['value'];
-        }
-
-        return $newCache;
-    }
-
-    private function updatePermanentCacheData()
+    private function getCacheData()
     {
         $key = $this->_ormConfig.'_data';
-        Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($key,$this->_cacheData,array(),60*60);
+        return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($key);
+    }
+
+    private function setCacheData(array $data)
+    {
+        $key = $this->_ormConfig.'_data';
+        Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($key, $data, array(), self::CACHE_LIFETIME);
+    }
+
+    private function removeCacheData()
+    {
+        $key = $this->_ormConfig.'_data';
+        Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue($key);
     }
 
     //########################################

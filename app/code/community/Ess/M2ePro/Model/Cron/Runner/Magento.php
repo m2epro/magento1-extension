@@ -73,15 +73,16 @@ final class Ess_M2ePro_Model_Cron_Runner_Magento extends Ess_M2ePro_Model_Cron_R
 
     protected function beforeStart()
     {
+        /*
+         * Magento can execute M2ePro cron multiple times in same php process.
+         * It can cause problems with items that were cached in first execution.
+         */
+        // ---------------------------------------
         Mage::helper('M2ePro/Data_Global')->setValue('cron_running',true);
+        // ---------------------------------------
+
         parent::beforeStart();
         $this->distributeLoadIfNeed();
-    }
-
-    protected function afterEnd()
-    {
-        parent::afterEnd();
-        Mage::helper('M2ePro/Data_Global')->unsetValue('cron_running');
     }
 
     //########################################

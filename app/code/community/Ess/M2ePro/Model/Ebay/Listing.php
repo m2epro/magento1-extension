@@ -532,7 +532,15 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
             ->addFieldToFilter('item_id', $listingOtherProduct->getChildObject()->getItemId());
 
         $ebayItem = $collection->getFirstItem();
+        if (!$ebayItem->getId()) {
 
+            $ebayItem->setData(array(
+                'account_id'     => $listingOtherProduct->getAccount()->getId(),
+                'marketplace_id' => $listingOtherProduct->getMarketplace()->getId(),
+                'item_id'        => $listingOtherProduct->getChildObject()->getItemId(),
+                'product_id'     => $listingOtherProduct->getProductId(),
+            ));
+        }
         $ebayItem->setData('store_id',$this->getParentObject()->getStoreId())
                  ->save();
 

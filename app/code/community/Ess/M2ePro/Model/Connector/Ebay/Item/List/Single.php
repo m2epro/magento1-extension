@@ -111,7 +111,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
 
     protected function getRequestData()
     {
-        $this->getRequestObject()->clearVariations();
+        $this->getRequestObject()->resetVariations();
 
         $data = $this->getRequestObject()->getData();
         $this->logRequestMessages();

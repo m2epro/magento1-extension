@@ -130,6 +130,11 @@ class Ess_M2ePro_Model_Synchronization_Templates_Changes
                                   ->getItems();
 
         foreach ($listingProductsIds as $key => $lpId) {
+
+            if (!isset($listingProducts[$lpId])) {
+                continue;
+            }
+
             $listingProducts[$lpId]->addData($changedListingsProducts[$key]);
             $listingProducts[$lpId]->getMagentoProduct()->enableCache();
 

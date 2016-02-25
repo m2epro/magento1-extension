@@ -1,3 +1,16 @@
+* 6.4.1 (r10332) (18/02/2016)
+
+* Improvement: Configuration license page changes related to new subscription system
+* Improvement: The compatibility of Magmi Plugin with the latest version of Magmi Module
+* Fix: Various problems related to outdated settings
+* Fix: Memory leak during saving Simple with required Custom Options Product in Magento
+* Fix: "Call to a member function addData() on a non-object" at synchronization process
+* Fix: Some troubles during the Upgrade process for installations with MySQL tables prefixes
+* Fix: Prevention of executing by Magento Cron multiple times per one PHP process
+* Fix: [eBay] Catalog Identifiers were not sent to channel during "List" action for Bundle and Simple with custom options Magento products
+* Fix: [eBay] N/A instead of eBay Item ID for Products in M2E Pro Listings
+* Fix: [Amazon] Amazon Products cannot be found even if ISBN is correct in some cases
+
 * 6.4.0 (r10097) (08/12/2015)
 
 * Improvement: [Amazon] Many improvements of Amazon's Shipping Services feature (Buy Shipping API)

@@ -32,7 +32,7 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         return array(
             "name"    => "Ess M2ePro Product Changes Inspector",
             "author"  => "ESS",
-            "version" => "1.0.4",
+            "version" => "1.0.7",
             "url"     => "http://docs.m2epro.com/display/BestPractice/Plugin+for+Magmi+Import+Tool"
         );
     }
@@ -41,18 +41,11 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
 
     public function processItemAfterId(&$item, $params = null)
     {
-        $result = parent::processItemAfterId($item, $params);
-
         $this->changes[$params['product_id']] = array(
-            'product_id'    => $params['product_id'],
-            'action'        => self::CHANGE_UPDATE_ACTION,
-            'attribute'     => self::CHANGE_UPDATE_ATTRIBUTE_CODE,
-            'initiators'    => self::CHANGE_INITIATOR_DEVELOPER,
-            'update_date'   => $date = date('Y-m-d H:i:s'),
-            'create_date'   => $date
+            'product_id' => $params['product_id']
         );
 
-        return $result;
+        return true;
     }
 
     /**
@@ -119,12 +112,16 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
                 continue;
             }
 
-            $stmt = $this->select("SELECT *
-                           FROM `{$tableName}`
-                           WHERE `product_id` IN (?)", implode(',', array_keys($productChangesPart)));
+            $stmt = $this->select(
+                "SELECT `product_id`
+                 FROM `{$tableName}`
+                 WHERE `attribute` = '" .self::CHANGE_UPDATE_ATTRIBUTE_CODE. "'
+                 AND `product_id` IN (" .implode(',', array_keys($productChangesPart)). ")
+                 GROUP BY `product_id`"
+             );
 
             while ($row = $stmt->fetch()) {
-                $existedChanges[] = $row['product_id'].'##'.$row['attribute'];
+                $existedChanges[] = $row['product_id'];
             }
         }
 
@@ -134,18 +131,18 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
 
         foreach ($this->changes as $productId => $change) {
 
-            if (in_array($change['product_id'].'##'.$change['attribute'], $existedChanges)) {
+            if (in_array($change['product_id'], $existedChanges)) {
                 $this->statistics['existed']++;
                 continue;
             }
 
             $this->statistics['inserted']++;
             $this->insert($insertSql, array($change['product_id'],
-                                            $change['action'],
-                                            $change['attribute'],
-                                            $change['initiators'],
-                                            $change['update_date'],
-                                            $change['create_date']));
+                                            self::CHANGE_UPDATE_ACTION,
+                                            self::CHANGE_UPDATE_ATTRIBUTE_CODE,
+                                            self::CHANGE_INITIATOR_DEVELOPER,
+                                            date('Y-m-d H:i:s'),
+                                            date('Y-m-d H:i:s')));
         }
 
         $this->saveStatistics();

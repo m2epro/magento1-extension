@@ -127,7 +127,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
 
             /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
 
-            $this->getRequestObject($listingProduct)->clearVariations();
+            $this->getRequestObject($listingProduct)->resetVariations();
 
             $tempData = $this->getRequestObject($listingProduct)->getData();
             $this->logRequestMessages($listingProduct);

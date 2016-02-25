@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
     /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolver $resolver */
     private $resolver = null;
 
-    private $matchedAttributes = array();
+    private $matchedAttributes = null;
 
     private $canUseDictionary = true;
 
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         $this->magentoProduct = $product;
         $this->sourceAttributes = array();
 
-        $this->matchedAttributes = array();
+        $this->matchedAttributes = null;
 
         return $this;
     }
@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
         $this->sourceAttributes = $attributes;
         $this->magentoProduct   = null;
 
-        $this->matchedAttributes = array();
+        $this->matchedAttributes = null;
 
         return $this;
     }
@@ -61,7 +61,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
     public function setDestinationAttributes(array $attributes)
     {
         $this->destinationAttributes = $attributes;
-        $this->matchedAttributes     = array();
+        $this->matchedAttributes     = null;
 
         return $this;
     }
@@ -111,7 +111,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
      */
     public function getMatchedAttributes()
     {
-        if (empty($this->matchedAttributes)) {
+        if (is_null($this->matchedAttributes)) {
             $this->match();
         }
 

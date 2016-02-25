@@ -139,6 +139,22 @@ class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_C
 
     public function beforeUnmapProduct()
     {
+        $existedRelation = Mage::getSingleton('core/resource')->getConnection('core_read')
+            ->select()
+            ->from(array('ai' => Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable()),
+                array('alp.listing_product_id'))
+            ->join(array('alp' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable()),
+                '(`alp`.`sku` = `ai`.`sku`)', array())
+            ->where('`ai`.`sku` = ?', $this->getSku())
+            ->where('`ai`.`account_id` = ?', $this->getParentObject()->getAccountId())
+            ->where('`ai`.`marketplace_id` = ?', $this->getParentObject()->getMarketplaceId())
+            ->query()
+            ->fetchColumn();
+
+        if ($existedRelation) {
+            return;
+        }
+
         Mage::getSingleton('core/resource')->getConnection('core_write')
             ->delete(Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable(),
                     array(
