@@ -95,6 +95,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         $data = $this->replaceHttpsToHttpOfImagesUrls($data);
         $data = $this->resolveVariationAndItemSpecificsConflict($data);
         $data = $this->removeVariationsInstances($data);
+        $data = $this->resolveVariationMpnIssue($data);
 
         return $data;
     }
@@ -180,6 +181,39 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
             foreach ($data['variation'] as &$variation) {
                 unset($variation['_instance_']);
             }
+        }
+
+        return $data;
+    }
+
+    /**
+     * In M2e Pro version <= 6.4.1 value MPN - 'Does Not Apply' was sent for variations always
+     * (even if Brand was Unbranded). Due to eBay specific we can not stop sending it. So, for "old" items we need
+     * set 'Does Not Apply', if real MPN is empty. New items has 'without_mpn_variation_issue' in additional data
+     * (set by list response), it means that item was listed after fixing this issue.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function resolveVariationMpnIssue(array $data)
+    {
+        if (!$this->getIsVariationItem()) {
+            return $data;
+        }
+
+        $additionalData = $this->getListingProduct()->getAdditionalData();
+        if (!empty($additionalData['without_mpn_variation_issue'])) {
+            $data['without_mpn_variation_issue'] = true;
+            return $data;
+        }
+
+        foreach ($data['variation'] as &$variationData) {
+            if (!empty($variationData['details']['mpn'])) {
+                continue;
+            }
+
+            $variationData['details']['mpn'] = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::
+                                                                                        PRODUCT_DETAILS_DOES_NOT_APPLY;
         }
 
         return $data;

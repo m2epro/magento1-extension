@@ -157,5 +157,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
         return $data;
     }
 
+    protected function resolveVariationMpnIssue(array $data)
+    {
+        if (!$this->getIsVariationItem()) {
+            return $data;
+        }
+
+        $data['without_mpn_variation_issue'] = true;
+
+        return $data;
+    }
+
     //########################################
 }

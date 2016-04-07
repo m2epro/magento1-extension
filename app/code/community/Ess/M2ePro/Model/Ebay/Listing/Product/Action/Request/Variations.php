@@ -418,23 +418,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
     private function getVariationDetails(Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
         $data = array();
+
         /** @var Ess_M2ePro_Model_Ebay_Template_Description $ebayDescriptionTemplate */
         $ebayDescriptionTemplate = $this->getEbayListingProduct()->getEbayDescriptionTemplate();
-
-        $this->searchNotFoundAttributes();
-
-        $tempValue = NULL;
-
-        if ($ebayDescriptionTemplate->isProductDetailsModeDoesNotApply('brand')) {
-            $tempValue = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::PRODUCT_DETAILS_UNBRANDED;
-        } elseif ($ebayDescriptionTemplate->isProductDetailsModeAttribute('brand') &&
-                  $this->processNotFoundAttributes(strtoupper('brand'))) {
-            $tempValue = $this->getEbayListingProduct()->getDescriptionTemplateSource()->getProductDetail('brand');
-        }
-
-        if ($tempValue) {
-            $data['brand'] = $tempValue;
-        }
 
         $options = NULL;
         $additionalData = $variation->getAdditionalData();
@@ -446,14 +432,31 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
                 continue;
             }
 
-            if (!$this->getMagentoProduct()->isConfigurableType() &&
-                !$this->getMagentoProduct()->isGroupedType()) {
+            if ($tempType == 'mpn') {
+
+                if ($ebayDescriptionTemplate->isProductDetailsModeNone('brand')) {
+                    continue;
+                }
+
+                if ($ebayDescriptionTemplate->isProductDetailsModeDoesNotApply('brand')) {
+                    $data[$tempType] = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::
+                    PRODUCT_DETAILS_DOES_NOT_APPLY;
+                    continue;
+                }
+            }
+
+            if ($ebayDescriptionTemplate->isProductDetailsModeNone($tempType)) {
                 continue;
             }
 
             if ($ebayDescriptionTemplate->isProductDetailsModeDoesNotApply($tempType)) {
                 $data[$tempType] = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::
                                                                             PRODUCT_DETAILS_DOES_NOT_APPLY;
+                continue;
+            }
+
+            if (!$this->getMagentoProduct()->isConfigurableType() &&
+                !$this->getMagentoProduct()->isGroupedType()) {
                 continue;
             }
 

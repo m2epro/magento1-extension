@@ -144,11 +144,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
      */
     public function getProductDetailsData()
     {
+        if ($this->getIsVariationItem()) {
+            return array();
+        }
+
         $data = array();
 
         foreach (array('isbn','epid','upc','ean','brand','mpn') as $tempType) {
 
-            if ($this->getIsVariationItem() && $tempType != 'brand') {
+            if ($this->getEbayDescriptionTemplate()->isProductDetailsModeNone($tempType)) {
                 continue;
             }
 
@@ -161,17 +165,14 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
             $this->searchNotFoundAttributes();
             $tempValue = $this->getDescriptionSource()->getProductDetail($tempType);
 
-            if (!$this->processNotFoundAttributes(strtoupper($tempType))) {
-                continue;
-            }
-
-            if (!$tempValue) {
+            if (!$this->processNotFoundAttributes(strtoupper($tempType)) || !$tempValue) {
                 continue;
             }
 
             $data[$tempType] = $tempValue;
         }
 
+        $data = $this->deleteMPNifBrandIsNotSelected($data);
         $data = $this->deleteNotAllowedIdentifier($data);
 
         if (empty($data)) {
@@ -247,6 +248,23 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
     }
 
     //########################################
+
+    private function deleteMPNifBrandIsNotSelected(array $data)
+    {
+        if (empty($data)) {
+            return $data;
+        }
+
+        if (empty($data['brand'])) {
+            unset($data['mpn']);
+        } else if ($data['brand'] == self::PRODUCT_DETAILS_UNBRANDED) {
+            $data['mpn'] = self::PRODUCT_DETAILS_DOES_NOT_APPLY;
+        } else if (empty($data['mpn'])) {
+            $data['mpn'] = self::PRODUCT_DETAILS_DOES_NOT_APPLY;
+        }
+
+        return $data;
+    }
 
     private function deleteNotAllowedIdentifier(array $data)
     {
