@@ -188,6 +188,8 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Dispatcher
 
             $connector->process();
 
+            $this->logsActionId = $connector->getLogsActionId();
+
             return $connector->getStatus();
 
         } catch (Exception $exception) {

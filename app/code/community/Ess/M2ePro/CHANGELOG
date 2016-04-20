@@ -1,3 +1,8 @@
+* 6.4.3 (r10536) (20/04/2016)
+
+* Improvement: [eBay] If category of listed Item starts to require UPC/EAN/ISBN identifier, M2E will send full Details to prevent an error
+* Fix: [eBay] Some Variational Items may receive errors each time when they are revised/relisted (additional solution to prevent such issue)
+
 * 6.4.2 (r10475) (07/04/2016)
 
 * Fix: [eBay] "Does Not Apply" was sent as MPN value for Variation Products even if None is selected in Description Policy (only for new listed Items)

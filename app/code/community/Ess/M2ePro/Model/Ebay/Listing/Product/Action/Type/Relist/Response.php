@@ -38,6 +38,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
 
         $data = $this->removeConditionNecessary($data);
 
+        $data = $this->appendIsVariationMpnFilledValue($data);
+
         if (isset($data['additional_data'])) {
             $data['additional_data'] = json_encode($data['additional_data']);
         }
@@ -104,6 +106,25 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
         }
 
         return $data;
+    }
+
+    //########################################
+
+    public function tryToReListItemWithFullDataAction()
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
+        $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
+        $configurator->setFullMode();
+        $this->getListingProduct()->setActionConfigurator($configurator);
+
+        $dispatcher = Mage::getModel('M2ePro/Connector_Ebay_Item_Dispatcher');
+        $dispatcher->process(
+            Ess_M2ePro_Model_Listing_Product::ACTION_RELIST,
+            array($this->getListingProduct()),
+            array(
+                'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH,
+            )
+        );
     }
 
     //########################################

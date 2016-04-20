@@ -66,6 +66,14 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
                 $needSave = true;
             }
 
+            $additionalData = $variation->getAdditionalData();
+            if (!empty($additionalData['ebay_mpn_value'])) {
+                unset($additionalData['ebay_mpn_value']);
+                $variation->setSettings('additional_data', $additionalData);
+
+                $needSave = true;
+            }
+
             $needSave && $variation->save();
         }
     }

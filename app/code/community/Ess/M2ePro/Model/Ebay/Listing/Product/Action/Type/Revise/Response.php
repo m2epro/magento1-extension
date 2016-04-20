@@ -35,6 +35,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         $data = $this->appendStartDateEndDateValues($data, $response);
         $data = $this->appendGalleryImagesValues($data, $response, $responseParams);
 
+        $data = $this->appendIsVariationMpnFilledValue($data);
+
         if (isset($data['additional_data'])) {
             $data['additional_data'] = json_encode($data['additional_data']);
         }
@@ -206,6 +208,25 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         }
 
         return $data;
+    }
+
+    //########################################
+
+    public function tryToReviseItemWithFullDataAction()
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
+        $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
+        $configurator->setFullMode();
+        $this->getListingProduct()->setActionConfigurator($configurator);
+
+        $dispatcher = Mage::getModel('M2ePro/Connector_Ebay_Item_Dispatcher');
+        $dispatcher->process(
+            Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
+            array($this->getListingProduct()),
+            array(
+                'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH,
+            )
+        );
     }
 
     //########################################

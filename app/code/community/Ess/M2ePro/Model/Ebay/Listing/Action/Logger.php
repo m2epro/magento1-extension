@@ -98,6 +98,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Action_Logger
         $this->status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
     }
 
+    public function setStatusForce($status)
+    {
+        $this->status = $status;
+    }
+
     //########################################
 
     protected function initLogType($messageDataType)

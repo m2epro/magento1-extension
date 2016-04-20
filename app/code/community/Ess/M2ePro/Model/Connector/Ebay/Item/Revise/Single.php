@@ -75,6 +75,30 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Revise_Single
 
     // ---------------------------------------
 
+    public function process()
+    {
+        $result = parent::process();
+
+        if ($this->params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH &&
+            ($this->listingProduct->getActionConfigurator()->isPartialMode() ||
+                $this->listingProduct->getActionConfigurator()->isEmptyMode()) &&
+            $this->isNewRequiredSpecificNeeded($this->messages)) {
+
+            $this->processReviseActionWithAllDataAction();
+        }
+
+        $additionalData = $this->listingProduct->getAdditionalData();
+
+        if ($this->isVariationErrorAppeared($this->messages) &&
+            $this->getRequestDataObject()->hasVariations() &&
+            !isset($additionalData['is_variation_mpn_filled'])
+        ) {
+            $this->tryToResolveVariationMpnErrors();
+        }
+
+        return $result;
+    }
+
     protected function prepareResponseData($response)
     {
         if ($this->resultType == parent::MESSAGE_TYPE_ERROR) {
@@ -113,6 +137,26 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Revise_Single
         );
 
         return $response;
+    }
+
+    //########################################
+
+    private function processReviseActionWithAllDataAction()
+    {
+        $message = array(
+            self::MESSAGE_TEXT_KEY => Mage::helper('M2ePro')->__(
+                'It has been detected that the Category you are using is going to require the Product Identifiers
+                to be specified (UPC, EAN, ISBN, etc.). Full Revise will be automatically performed
+                to send the value(s) of the required Identifier(s) based on the settings
+                provided in the eBay Catalog Identifiers section of the Description Policy.'),
+            self::MESSAGE_TYPE_KEY => self::MESSAGE_TYPE_WARNING,
+        );
+
+        $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
+
+        $this->unlockListingProduct();
+
+        $this->getResponseObject()->tryToReviseItemWithFullDataAction();
     }
 
     //########################################

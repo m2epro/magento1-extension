@@ -212,8 +212,12 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
                 continue;
             }
 
-            $variationData['details']['mpn'] = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::
-                                                                                        PRODUCT_DETAILS_DOES_NOT_APPLY;
+            if (!isset($additionalData['is_variation_mpn_filled']) ||
+                $additionalData['is_variation_mpn_filled'] === true
+            ) {
+                $variationData['details']['mpn'] = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::
+                PRODUCT_DETAILS_DOES_NOT_APPLY;
+            }
         }
 
         return $data;

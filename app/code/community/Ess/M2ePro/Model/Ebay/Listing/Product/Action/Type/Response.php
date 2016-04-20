@@ -243,28 +243,42 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
             return;
         }
 
+        $requestVariations = $this->getRequestData()->getVariations();
+
         foreach ($this->getListingProduct()->getVariations(true) as $variation) {
+
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Variation $ebayVariation */
+            $ebayVariation = $variation->getChildObject();
 
             if ($this->getRequestData()->hasVariations()) {
 
-                /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+                if (!isset($requestVariations[$variation->getId()])) {
+                    continue;
+                }
 
-                if ($variation->getChildObject()->isDelete()) {
+                $requestVariation = $requestVariations[$variation->getId()];
+
+                if ($requestVariation['delete']) {
                     $variation->deleteInstance();
                     continue;
                 }
 
-                /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
-
                 $data = array(
-                    'online_sku' => $variation->getChildObject()->getSku(),
-                    'online_price' => $variation->getChildObject()->getPrice(),
-                    'add' => 0,
-                    'delete' => 0
+                    'online_sku'   => $requestVariation['sku'],
+                    'online_price' => $requestVariation['price'],
+                    'add'          => 0,
+                    'delete'       => 0,
                 );
 
-                $data['online_qty_sold'] = $saveQtySold ? (int)$variation->getChildObject()->getOnlineQtySold() : 0;
-                $data['online_qty'] = $variation->getChildObject()->getQty() + $data['online_qty_sold'];
+                $data['online_qty_sold'] = $saveQtySold ? (int)$ebayVariation->getOnlineQtySold() : 0;
+                $data['online_qty'] = $requestVariation['qty'] + $data['online_qty_sold'];
+
+                if (!empty($requestVariation['details']['mpn'])) {
+                    $variationAdditionalData = $variation->getAdditionalData();
+                    $variationAdditionalData['ebay_mpn_value'] = $requestVariation['details']['mpn'];
+
+                    $data['additional_data'] = json_encode($variationAdditionalData);
+                }
 
                 $variation->addData($data)->save();
             }
@@ -463,6 +477,36 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
                 $data['additional_data']['ebay_product_variation_images_hash'] =
                     Mage::helper('M2ePro/Component_Ebay')->getImagesHash($imagesData);
             }
+        }
+
+        return $data;
+    }
+
+    protected function appendIsVariationMpnFilledValue($data)
+    {
+        if (!$this->getRequestData()->hasVariations()) {
+            return $data;
+        }
+
+        if (!isset($data['additional_data'])) {
+            $data['additional_data'] = $this->getListingProduct()->getAdditionalData();
+        }
+
+        $isVariationMpnFilled = false;
+
+        foreach ($this->getRequestData()->getVariations() as $variation) {
+            if (empty($variation['details']['mpn'])) {
+                continue;
+            }
+
+            $isVariationMpnFilled = true;
+            break;
+        }
+
+        $data['additional_data']['is_variation_mpn_filled'] = $isVariationMpnFilled;
+
+        if (!$isVariationMpnFilled) {
+            $data['additional_data']['without_mpn_variation_issue'] = true;
         }
 
         return $data;

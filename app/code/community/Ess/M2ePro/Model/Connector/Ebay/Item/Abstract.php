@@ -58,6 +58,11 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_Abstract
         return $this->getLogger()->getStatus();
     }
 
+    public function getLogsActionId()
+    {
+        return $this->params['logs_action_id'];
+    }
+
     // ---------------------------------------
 
     protected function eventBeforeProcess() {}
