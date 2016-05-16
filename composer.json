@@ -1,0 +1,9 @@
+{
+    "name": "ess/m2e-pro",
+    "type": "magento-module",
+    "description": "eBay/Amazon/Rakuten/PLAY.COM Magento Integration - Order Importing and Stock Level Synchronization",
+    "homepage": "http://www.magentocommerce.com/magento-connect/ebay-magento-integration-order-importing-and-stock-level-synchronization.html",
+    "require": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}
