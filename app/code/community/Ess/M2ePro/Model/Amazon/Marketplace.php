@@ -62,9 +62,9 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
     /**
      * @return bool
      */
-    public function isAsinAvailable()
+    public function isNewAsinAvailable()
     {
-        return (bool)$this->getData('is_asin_available');
+        return (bool)$this->getData('is_new_asin_available');
     }
 
     /**
@@ -73,22 +73,6 @@ class Ess_M2ePro_Model_Amazon_Marketplace extends Ess_M2ePro_Model_Component_Chi
     public function isMerchantFulfillmentAvailable()
     {
         return (bool)$this->getData('is_merchant_fulfillment_available');
-    }
-
-    //########################################
-
-    /**
-     * @return bool
-     */
-    public function isNewAsinAvailable()
-    {
-        $newAsinNotImplementedMarketplaces = array(
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_CA,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_JP,
-            Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_CN,
-        );
-
-        return !in_array((int)$this->getId(),$newAsinNotImplementedMarketplaces);
     }
 
     //########################################

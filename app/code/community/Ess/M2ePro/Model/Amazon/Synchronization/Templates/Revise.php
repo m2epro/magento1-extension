@@ -304,6 +304,16 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Revise
         $listingProductCollection->addFieldToFilter('synch_status',Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_NEED);
         $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
 
+        $tag = 'in_action';
+        $modelName = Mage::getModel('M2ePro/Listing_Product')->getResourceName();
+
+        $listingProductCollection->getSelect()->joinLeft(
+            array('lo' => Mage::getResourceModel('M2ePro/LockedObject')->getMainTable()),
+            "lo.object_id = main_table.id AND lo.tag='{$tag}' AND lo.model_name = '{$modelName}'",
+            array()
+        );
+        $listingProductCollection->addFieldToFilter('lo.id', array('null' => true));
+
         $listingProductCollection->getSelect()->limit(100);
 
         /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */

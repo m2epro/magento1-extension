@@ -243,7 +243,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
     //########################################
 
     public function obtainRecord($email = NULL, $firstName = NULL, $lastName = NULL,
-                                 $country = NULL, $city = NULL, $postalCode = NULL)
+                                 $country = NULL, $city = NULL, $postalCode = NULL, $phone = NULL)
     {
         $requestParams = array(
             'domain' => Mage::helper('M2ePro/Client')->getDomain(),
@@ -253,6 +253,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
         !is_null($email) && $requestParams['email'] = $email;
         !is_null($firstName) && $requestParams['first_name'] = $firstName;
         !is_null($lastName) && $requestParams['last_name'] = $lastName;
+        !is_null($phone) && $requestParams['phone'] = $phone;
         !is_null($country) && $requestParams['country'] = $country;
         !is_null($city) && $requestParams['city'] = $city;
         !is_null($postalCode) && $requestParams['postal_code'] = $postalCode;

@@ -58,6 +58,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Shipping
                 $data['cross_border_trade'] = self::CROSS_BORDER_TRADE_NONE;
             }
 
+            $data['excluded_locations'] = array();
             foreach ($this->getShippingTemplate()->getExcludedLocations() as $location) {
                 $data['excluded_locations'][] = $location['code'];
             }

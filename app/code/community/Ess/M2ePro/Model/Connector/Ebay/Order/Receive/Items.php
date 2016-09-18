@@ -6,51 +6,37 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Requester
-    extends Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsRequester
+class Ess_M2ePro_Model_Connector_Ebay_Order_Receive_Items
+    extends Ess_M2ePro_Model_Connector_Ebay_Abstract
 {
     const TIMEOUT_ERRORS_COUNT_TO_RISE = 3;
     const TIMEOUT_RISE_ON_ERROR        = 30;
     const TIMEOUT_RISE_MAX_VALUE       = 1500;
 
-    //########################################
+    // ########################################
 
-    /**
-     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function setProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
+    protected function getCommand()
     {
-        parent::setProcessingLocks($processingRequest);
+        return array('sales', 'get', 'list');
+    }
 
-        /** @var $lockItem Ess_M2ePro_Model_LockItem */
-        $lockItem = Mage::getModel('M2ePro/LockItem');
-
-        $tempNick = Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive::LOCK_ITEM_PREFIX
-            .'_'.$this->account->getId();
-
-        $lockItem->setNick($tempNick);
-        $lockItem->setMaxInactiveTime(Ess_M2ePro_Model_Processing_Request::MAX_LIFE_TIME_INTERVAL);
-        $lockItem->create();
-
-        $this->account->addObjectLock(NULL, $processingRequest->getHash());
-        $this->account->addObjectLock('synchronization', $processingRequest->getHash());
-        $this->account->addObjectLock('synchronization_amazon', $processingRequest->getHash());
-        $this->account->addObjectLock(
-            Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive::LOCK_ITEM_PREFIX, $processingRequest->getHash()
+    protected function getRequestData()
+    {
+        return array(
+            'last_update' => $this->params['last_update'],
         );
     }
 
-    //########################################
+    // ########################################
 
     public function process()
     {
         $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
-        $cacheConfigGroup = '/amazon/synchronization/orders/receive/timeout';
+        $cacheConfigGroup = '/ebay/synchronization/orders/receive/timeout';
 
         try {
 
-            parent::process();
+            $result = parent::process();
 
         } catch (Ess_M2ePro_Model_Exception_Connection $exception) {
 
@@ -75,14 +61,16 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Requester
         }
 
         $cacheConfig->setGroupValue($cacheConfigGroup, 'fails', 0);
+
+        return $result;
     }
 
-    //########################################
+    // ########################################
 
     protected function getRequestTimeout()
     {
         $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
-        $cacheConfigGroup = '/amazon/synchronization/orders/receive/timeout';
+        $cacheConfigGroup = '/ebay/synchronization/orders/receive/timeout';
 
         $rise = (int)$cacheConfig->getGroupValue($cacheConfigGroup, 'rise');
         $rise > self::TIMEOUT_RISE_MAX_VALUE && $rise = self::TIMEOUT_RISE_MAX_VALUE;
@@ -90,5 +78,17 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Requester
         return 300 + $rise;
     }
 
-    //########################################
+    // ########################################
+
+    protected function validateResponseData($response)
+    {
+        return true;
+    }
+
+    protected function prepareResponseData($response)
+    {
+        return $response;
+    }
+
+    // ########################################
 }

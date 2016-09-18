@@ -87,6 +87,16 @@
                 </tr>
 
                 <tr>
+                    <td class="label" style="width: 150px">
+                        <?php echo Mage::helper('M2ePro')->__('Phone') ?>:
+                    </td>
+                    <td id="phone" class="value" style="width: 200px">
+                        <input type="hidden" name="form_phone" class="required-entry" value="<?php echo $this->getUserInfoValue('phone') ; ?>">
+                        <span><?php echo $this->getUserInfoValue('phone', 'span'); ?></span>
+                    </td>
+                </tr>
+
+                <tr>
                     <td colspan="2">&nbsp;</td>
                 </tr>
 
@@ -156,7 +166,7 @@
 <!-- ### LICENSE EDIT POPUP ### -->
 
 <div id="license_popup_content" style="display: none;">
-    <div style="padding: 10px; height: 250px">
+    <div style="padding: 10px; height: 300px">
         <div class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Please verify the information is valid before we register you with M2E Pro.'); ?>" subtitle="" collapseable="no" hideblock="no" always_show="yes"></div>
 
         <form id="popup_license_form">
@@ -189,6 +199,15 @@
                             </td>
                             <td class="value">
                                 <input type="text" name="lastname" class="input-text required-entry" value="" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('Phone') ?>: <span class="required">*</span>
+                            </td>
+                            <td class="value">
+                                <input type="text" name="phone" class="input-text required-entry" value="" />
                             </td>
                         </tr>
 

@@ -39,6 +39,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
         $data = $this->removeConditionNecessary($data);
 
         $data = $this->appendIsVariationMpnFilledValue($data);
+        $data = $this->appendVariationsThatCanNotBeDeleted($data, $response);
 
         if (isset($data['additional_data'])) {
             $data['additional_data'] = json_encode($data['additional_data']);

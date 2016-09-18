@@ -220,7 +220,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Title
 
             $connWrite->update(
                 $aloTable,
-                array('title' => ''),
+                array('title' => Ess_M2ePro_Model_Amazon_Listing_Other::EMPTY_TITLE_PLACEHOLDER),
                 array('general_id = ?' => (string)$generalId)
             );
         }
