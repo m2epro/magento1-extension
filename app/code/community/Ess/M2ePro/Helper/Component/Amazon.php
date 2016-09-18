@@ -202,7 +202,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     public function getMarketplacesAvailableForAsinCreation()
     {
         $collection = $this->getMarketplacesAvailableForApiCreation();
-        return $collection->addFieldToFilter('is_asin_available', 1);
+        return $collection->addFieldToFilter('is_new_asin_available', 1);
     }
 
     //########################################

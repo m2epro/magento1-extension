@@ -563,7 +563,7 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                                     ->addFieldToFilter('product_id', $productId)
                                     ->getItems();
 
-        $deletedVariationsIds = array();
+        $processedVariationsIds = array();
 
         /** @var $variationOption Ess_M2ePro_Model_Listing_Product_Variation_Option */
         foreach ($variationOptions as $variationOption) {
@@ -571,9 +571,55 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
             $listingProduct = $variationOption->getListingProduct();
 
-            if (!in_array($variationOption->getListingProductVariationId(),$deletedVariationsIds)) {
-                $variationOption->getListingProductVariation()->deleteInstance();
-                $deletedVariationsIds[] = $variationOption->getListingProductVariationId();
+            if (!in_array($variationOption->getListingProductVariationId(),$processedVariationsIds)) {
+
+                $processedVariationsIds[] = $variationOption->getListingProductVariationId();
+
+                if ($variationOption->isComponentModeEbay()) {
+
+                    $variation = $variationOption->getListingProductVariation();
+
+                    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Variation $ebayVariation */
+                    $ebayVariation = $variation->getChildObject();
+
+                    if (!$ebayVariation->isNotListed()) {
+                        $additionalData = $listingProduct->getAdditionalData();
+                        $variationsThatCanNotBeDeleted = isset($additionalData['variations_that_can_not_be_deleted'])
+                            ? $additionalData['variations_that_can_not_be_deleted'] : array();
+
+                        $specifics = array();
+
+                        foreach ($variation->getOptions(true) as $option) {
+                            $specifics[$option->getAttribute()] = $option->getOption();
+                        }
+
+                        $variationsThatCanNotBeDeleted[] = array(
+                            'qty'       => 0,
+                            'price'     => $ebayVariation->getPrice(),
+                            'sku'       => $ebayVariation->getOnlineSku(),
+                            'add'       => 0,
+                            'delete'    => 1,
+                            'specifics' => $specifics,
+                            'has_sales' => $ebayVariation->hasSales(),
+                        );
+
+                        $additionalData['variations_that_can_not_be_deleted'] = $variationsThatCanNotBeDeleted;
+
+                        $listingProduct->setSettings('additional_data', $additionalData)->save();
+                    }
+
+                    $variation->deleteInstance();
+                } else {
+                    $listingProduct->deleteObjectLocks();
+
+                    if ($listingProduct->isStoppable()) {
+                        Mage::getModel('M2ePro/StopQueue')->add($listingProduct);
+                        $listingProduct->setStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED)->save();
+                    }
+
+                    $listingsProductsForRemove[$listingProduct->getId()] = $listingProduct;
+                }
+
             }
 
             $listingId = $listingProduct->getListingId();
@@ -601,6 +647,20 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         }
 
         foreach ($listingsProductsForRemove as $listingProduct) {
+            if ($listingProduct->isComponentModeAmazon()) {
+                /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
+                $amazonListingProduct = $listingProduct->getChildObject();
+                $variationManager = $amazonListingProduct->getVariationManager();
+
+                if ($variationManager->isRelationChildType()) {
+                    /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonParentListingProduct */
+                    $amazonParentListingProduct = $variationManager->getTypeModel()->getAmazonParentListingProduct();
+                    $listingProduct->deleteInstance();
+                    $amazonParentListingProduct->getVariationManager()->getTypeModel()->getProcessor()->process();
+                    continue;
+                }
+            }
+
             $listingProduct->deleteInstance();
         }
         // ---------------------------------------

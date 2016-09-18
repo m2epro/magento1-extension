@@ -75,6 +75,25 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
                 continue;
             }
 
+            if ($listingProduct->isHidden()) {
+
+                $message = array(
+                    // M2ePro_TRANSLATIONS
+                    // The List action cannot be executed for this Item as it has a Listed (Hidden) status. You have to stop Item manually first to run the List action for it.
+                    parent::MESSAGE_TEXT_KEY => 'The List action cannot be executed for this Item as it has
+                                                a Listed (Hidden) status. You have to stop Item manually first
+                                                to run the List action for it.',
+                    parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
+                );
+
+                $this->getLogger()->logListingProductMessage(
+                    $listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                );
+
+                $this->removeAndUnlockListingProduct($listingProduct);
+                continue;
+            }
+
             if (!$listingProduct->getChildObject()->isSetCategoryTemplate()) {
 
                 $message = array(

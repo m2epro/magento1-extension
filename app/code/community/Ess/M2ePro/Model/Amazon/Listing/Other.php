@@ -11,6 +11,8 @@
  */
 class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
 {
+    const EMPTY_TITLE_PLACEHOLDER = '--';
+
     //########################################
 
     public function _construct()

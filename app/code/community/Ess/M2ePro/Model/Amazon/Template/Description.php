@@ -158,6 +158,12 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
 
     // ---------------------------------------
 
+    public function setDefinitionTemplate(Ess_M2ePro_Model_Amazon_Template_Description_Definition $template)
+    {
+        $this->descriptionDefinitionModel = $template;
+        return $this;
+    }
+
     /**
      * @return Ess_M2ePro_Model_Amazon_Template_Description_Definition
      */

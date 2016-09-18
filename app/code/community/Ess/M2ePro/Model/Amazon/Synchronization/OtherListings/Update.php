@@ -106,9 +106,18 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update
                     'Process Account '.$account->getTitle()
                 );
 
+                $params = array();
+                if (!$this->isFullItemsDataAlreadyReceived($account)) {
+                    $params['full_items_data'] = true;
+
+                    $additionalData = (array)json_decode($account->getAdditionalData(), true);
+                    $additionalData['is_amazon_other_listings_full_items_data_already_received'] = true;
+                    $account->setSettings('additional_data', $additionalData)->save();
+                }
+
                 $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
                 $connectorObj = $dispatcherObject->getConnector('otherListings', 'update' ,'requester',
-                    array(), $account, 'Ess_M2ePro_Model_Amazon_Synchronization');
+                    $params, $account, 'Ess_M2ePro_Model_Amazon_Synchronization');
 
                 $dispatcherObject->process($connectorObj);
 
@@ -136,6 +145,12 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update
         $lockItem->setNick(self::LOCK_ITEM_PREFIX.'_'.$account->getId());
         $lockItem->setMaxInactiveTime(Ess_M2ePro_Model_Processing_Request::MAX_LIFE_TIME_INTERVAL);
         return $lockItem->isExist();
+    }
+
+    private function isFullItemsDataAlreadyReceived(Ess_M2ePro_Model_Account $account)
+    {
+        $additionalData = (array)json_decode($account->getAdditionalData(), true);
+        return !empty($additionalData['is_amazon_other_listings_full_items_data_already_received']);
     }
 
     //########################################

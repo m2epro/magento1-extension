@@ -458,7 +458,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
 
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
-        $value = '<span>'.Mage::helper('M2ePro')->escapeHtml($value).'</span>';
+        if (is_null($value)) {
+            $value = '<i style="color:gray;">receiving...</i>';
+        } else {
+            $value = '<span>' .Mage::helper('M2ePro')->escapeHtml($value). '</span>';
+        }
 
         if (!is_null($row->getData('listing_id'))) {
             $urlParams = array();

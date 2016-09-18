@@ -280,8 +280,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View_Grid extends M
     {
         if (is_null($value)) {
             $value = '<i style="color:gray;">receiving...</i>';
-        } elseif ($value == '') {
-            $value = '<i style="color:gray;">none</i>';
         } else {
             $value = '<span>' . Mage::helper('M2ePro')->escapeHtml($value) . '</span>';
         }

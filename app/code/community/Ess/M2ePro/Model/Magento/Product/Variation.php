@@ -426,7 +426,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation
         foreach ($optionsScope[$optionScopeIndex] as $option) {
 
             if (!isset($set[$option['attribute']]) ||
-                !in_array($option['option'],$set[$option['attribute']])) {
+                !in_array($option['option'],$set[$option['attribute']],true)) {
                 continue;
             }
 
@@ -451,7 +451,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation
 
         $sortedOptions = array();
         foreach ($optionCollection as $option) {
-            if (!in_array($option->getValue(), $options) ||
+            if (!in_array($option->getValue(), $options, true) ||
                 in_array($option->getValue(), $sortedOptions, true)) {
                 continue;
             }
@@ -919,7 +919,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation
                         $attributeValues[$valueId] = array();
                     }
 
-                    if (!in_array($attributeValue->getValue(), $attributeValues[$valueId])) {
+                    if (!in_array($attributeValue->getValue(), $attributeValues[$valueId], true)) {
                         $attributeValues[$valueId][$storeId] = $attributeValue->getValue();
                     }
                 }

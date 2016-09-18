@@ -37,6 +37,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
 
         $data['variation_image'] = $this->getImagesData();
 
+        if ($variationsThatCanNotBeDeleted = $this->getVariationsThatCanNotBeDeleted()) {
+            $data['variations_that_can_not_be_deleted'] = $variationsThatCanNotBeDeleted;
+        }
+
         return $data;
     }
 
@@ -141,6 +145,17 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
 
         if (isset($additionalData['variations_sets'])) {
             return $additionalData['variations_sets'];
+        }
+
+        return false;
+    }
+
+    public function getVariationsThatCanNotBeDeleted()
+    {
+        $additionalData = $this->getListingProduct()->getAdditionalData();
+
+        if (isset($additionalData['variations_that_can_not_be_deleted'])) {
+            return $additionalData['variations_that_can_not_be_deleted'];
         }
 
         return false;

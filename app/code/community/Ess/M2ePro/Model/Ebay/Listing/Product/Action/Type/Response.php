@@ -512,5 +512,19 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
         return $data;
     }
 
+    protected function appendVariationsThatCanNotBeDeleted(array $data, array $response)
+    {
+        if (!$this->getRequestData()->isVariationItem()) {
+            return $data;
+        }
+
+        $variations = isset($response['variations_that_can_not_be_deleted'])
+            ? $response['variations_that_can_not_be_deleted'] : array();
+
+        $data['additional_data']['variations_that_can_not_be_deleted'] = $variations;
+
+        return $data;
+    }
+
     //########################################
 }

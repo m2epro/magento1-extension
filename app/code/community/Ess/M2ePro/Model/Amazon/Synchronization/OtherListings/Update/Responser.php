@@ -144,7 +144,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update_Responser
 
             $newData = array(
                 'general_id' => (string)$receivedItem['identifiers']['general_id'],
-                'title' => !empty($receivedItem['title']) ? (string)$receivedItem['title'] : NULL,
+                'title' => (string)$receivedItem['title'],
                 'online_price' => (float)$receivedItem['price'],
                 'online_qty' => (int)$receivedItem['qty'],
                 'is_afn_channel' => (bool)$receivedItem['channel']['is_afn'],
@@ -172,8 +172,10 @@ class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update_Responser
                 'status' => (int)$existingItem['status']
             );
 
-            if (is_null($newData['title']) && !is_null($existingData['title'])) {
-                $newData['title'] = $existingData['title'];
+            if (is_null($receivedItem['title']) ||
+                $receivedItem['title'] == Ess_M2ePro_Model_Amazon_Listing_Other::EMPTY_TITLE_PLACEHOLDER) {
+
+                unset($newData['title'], $existingData['title']);
             }
 
             if ($newData == $existingData) {
@@ -300,7 +302,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update_Responser
                 'general_id' => (string)$receivedItem['identifiers']['general_id'],
 
                 'sku' => (string)$receivedItem['identifiers']['sku'],
-                'title' => !empty($receivedItem['title']) ? (string)$receivedItem['title'] : NULL,
+                'title' => $receivedItem['title'],
 
                 'online_price' => (float)$receivedItem['price'],
                 'online_qty' => (int)$receivedItem['qty'],
@@ -308,6 +310,12 @@ class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update_Responser
                 'is_afn_channel' => (bool)$receivedItem['channel']['is_afn'],
                 'is_isbn_general_id' => (bool)$receivedItem['identifiers']['is_isbn']
             );
+
+            if (isset($this->params['full_items_data']) && $this->params['full_items_data'] &&
+                $newData['title'] == Ess_M2ePro_Model_Amazon_Listing_Other::EMPTY_TITLE_PLACEHOLDER) {
+
+                $newData['title'] = NULL;
+            }
 
             if ((bool)$newData['is_afn_channel']) {
                 $newData['online_qty'] = NULL;

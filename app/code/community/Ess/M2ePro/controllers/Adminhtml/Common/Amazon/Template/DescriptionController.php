@@ -250,6 +250,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
 
         /** @var Ess_M2ePro_Model_Amazon_Template_Description $amazonDescriptionTemplate */
         $amazonDescriptionTemplate = $descriptionTemplate->getChildObject();
+        $amazonDescriptionTemplate->setDefinitionTemplate($descriptionDefinition);
 
         // Saving specifics info
         // ---------------------------------------

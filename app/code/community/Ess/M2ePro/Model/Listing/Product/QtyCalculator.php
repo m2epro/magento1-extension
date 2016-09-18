@@ -251,7 +251,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
     {
         $percents = $this->getSource('qty_percentage');
 
-        if ($value <= 0 || $percents < 0 || $percents > 100) {
+        if ($value <= 0 || $percents < 0 || $percents == 100) {
             return $value;
         }
 

@@ -39,6 +39,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
     public function resetVariations()
     {
         $variations = $this->getListingProduct()->getVariations(true);
+        if (empty($variations)) {
+            return;
+        }
+
+        $additionalData = $this->getListingProduct()->getAdditionalData();
+        $additionalData['variations_that_can_not_be_deleted'] = [];
+        $this->getListingProduct()->setSettings('additional_data', $additionalData)->save();
 
         foreach ($variations as $variation) {
 

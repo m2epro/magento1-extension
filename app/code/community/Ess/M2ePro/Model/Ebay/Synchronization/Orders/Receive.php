@@ -121,9 +121,9 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         $fromTime = $this->prepareFromTime($account);
 
         $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('sales', 'get', 'list',
+        $connectorObj = $dispatcherObj->getConnector('order', 'receive', 'items',
                                                             array('last_update' => $fromTime),
-                                                            NULL, NULL, $account);
+                                                            NULL, $account);
 
         $response = $dispatcherObj->process($connectorObj);
         $this->processResponseMessages($connectorObj);

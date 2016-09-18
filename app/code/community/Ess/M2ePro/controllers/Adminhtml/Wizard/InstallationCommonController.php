@@ -54,6 +54,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationCommonController
             'email',
             'firstname',
             'lastname',
+            'phone',
             'country',
             'city',
             'postal_code',
@@ -86,7 +87,8 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationCommonController
         $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
             $licenseData['email'],
             $licenseData['firstname'], $licenseData['lastname'],
-            $licenseData['country'], $licenseData['city'], $licenseData['postal_code']
+            $licenseData['country'], $licenseData['city'],
+            $licenseData['postal_code'], $licenseData['phone']
         );
 
         return $this->getResponse()->setBody(json_encode(array('result' => $licenseResult)));

@@ -269,17 +269,10 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Relist
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
 
-        if ($ebayListingProduct->getEbaySynchronizationTemplate()->isRelistSendData()) {
-            return;
+        if (!$ebayListingProduct->getEbaySynchronizationTemplate()->isRelistSendData()) {
+            $configurator->setPartialMode();
+            $configurator->allowQty()->allowPrice()->allowVariations();
         }
-
-        if (!$listingProduct->isHidden() && $action == Ess_M2ePro_Model_Listing_Product::ACTION_RELIST) {
-            $configurator->setEmptyMode();
-            return;
-        }
-
-        $configurator->setPartialMode();
-        $configurator->allowQty()->allowVariations();
     }
 
     //########################################

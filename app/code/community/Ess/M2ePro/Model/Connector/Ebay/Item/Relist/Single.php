@@ -96,8 +96,7 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Relist_Single
         $result = parent::process();
 
         if ($this->params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH &&
-            ($this->listingProduct->getActionConfigurator()->isPartialMode() ||
-                $this->listingProduct->getActionConfigurator()->isEmptyMode()) &&
+            $this->listingProduct->getActionConfigurator()->isPartialMode() &&
             $this->isNewRequiredSpecificNeeded($this->messages)) {
 
             $this->processRelistActionWithAllDataAction();
