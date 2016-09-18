@@ -46,7 +46,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
             windowClassName: "popup-window",
             title: M2ePro.translator.translate('Register Your M2E Pro Extension'),
             width: 640,
-            height: 350,
+            height: 315,
             zIndex: 100,
             hideEffect: Element.hide,
             showEffect: Element.show

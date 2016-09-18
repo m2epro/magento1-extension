@@ -32,12 +32,7 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Inventory_Get_ItemsRequester
 
     protected function getRequestData()
     {
-        $requestData = array();
-        if (isset($this->params['full_items_data'])) {
-            $requestData['full_items_data'] = $this->params['full_items_data'];
-        }
-
-        return $requestData;
+        return array();
     }
 
     //########################################

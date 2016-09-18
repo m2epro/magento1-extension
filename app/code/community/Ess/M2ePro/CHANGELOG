@@ -1,22 +1,3 @@
-* 6.4.4 (r10771) (18/09/2016)
-
-* Added: Ability to install module via composer (composer.json file added)
-* Added: Ability to install module via modman (modman file added)
-* Added: [Amazon] Ability to create new ASIN/ISBN in Canada Marketplace using Description Policy
-* Improvement: [eBay] Variation Options label can be renamed now without further errors from eBay Trading API
-* Improvement: [eBay] Preventing the eBay Trading API errors if Magento Child Product will be unassigned from Parent
-* Improvement: [eBay] Preventing the eBay Trading API errors if Magento Child Product will be totally removed
-* Improvement: [eBay] Price will be sent to the eBay each time during Relist action (together with QTY and Variations Data)
-* Fix: Quantity could be calculated incorrectly in some special cases (high limited range of cases)
-* Fix: [eBay] Items duplicates because User could List Items with "Listed (Hidden)" status manually
-* Fix: [eBay] Orders Synchronization could not work correctly sometimes if there are a lot of changes on eBay side
-* Fix: [eBay] Wrong QTY could be set for Item after Relist action for items with "Listed (Hidden)" status
-* Fix: [eBay] Excluded locations were not removed from eBay when they were removed from Shipping Policy before
-* Fix: [eBay] Error "The Product was Listed as a Simple Product as it has limitation for Multi-Variation Items" during list item even if requirements are met
-* Fix: [Amazon] Full revise by Description Policy did not work, if change was performed on Definition tab
-* Fix: [Amazon] Synchronization was broken due to error "Call to a member function getOptions() on a non-object"
-* Fix: [Amazon/Rakuten.com] Product was not revised if their Policy settings were changed and it was in "Revise in progress" state
-
 * 6.4.3 (r10536) (20/04/2016)
 
 * Improvement: [eBay] If category of listed Item starts to require UPC/EAN/ISBN identifier, M2E will send full Details to prevent an error
