@@ -1,0 +1,11 @@
+{
+    "name": "m2epro/multichannels-module",
+    "description": "M2E Pro is a Magento trusted (TM), award-winning extension, which allows merchants of all sizes to fully integrate Magento based system(s) into eBay/Amazon/Rakuten.com platforms.",
+    "type": "magento-module",
+    "version": "6.4.3",
+    "keywords": ["ebay", "amazon", "rakuten", "magento"],
+    "homepage": "http://www.m2epro.com/",
+    "require": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}
