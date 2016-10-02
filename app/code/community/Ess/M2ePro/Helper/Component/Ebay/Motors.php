@@ -37,6 +37,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
             Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU,
             Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_UK,
             Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_DE,
+            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_IT,
         );
     }
 

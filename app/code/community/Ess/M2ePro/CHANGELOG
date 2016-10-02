@@ -1,3 +1,10 @@
+* 6.4.5 (r10812) (02/10/2016)
+
+* Added: Compatibility with PHP version < 7.0.11 (6.x.x - 7.0.11 added) [only as beta mode]
+* Added: [eBay] Add ability to use Parts Compatibility Feature for Italy Marketplace (kTypes)
+* Fix: [eBay] Unable to list new Items if PHP version less then 5.4 (short array syntax issue)
+* Fix: [eBay] 3rd Party Synchronization fails (it could be the reason of all synchronization gets stuck)
+
 * 6.4.4 (r10771) (18/09/2016)
 
 * Added: Ability to install module via composer (composer.json file added)

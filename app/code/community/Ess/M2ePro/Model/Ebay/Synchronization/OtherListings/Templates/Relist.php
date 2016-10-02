@@ -72,7 +72,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_OtherListings_Templates_Relist
             $ebayListingOther = $listingOther->getChildObject();
 
             if (!$ebayListingOther->getSynchronizationModel()->isRelistSendData()) {
-                $configurator->setEmptyMode();
+                $configurator->setPartialMode();
+                $configurator->allowQty()->allowPrice();
             }
 
             $isExistInRunner = $this->getRunner()->isExistProduct(

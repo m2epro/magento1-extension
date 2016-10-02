@@ -21,6 +21,11 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Development_CommandController
         return Mage::getSingleton('admin/session')->isLoggedIn();
     }
 
+    protected function _validateSecretKey()
+    {
+        return true;
+    }
+
     //########################################
 
     protected function getStyleHtml()

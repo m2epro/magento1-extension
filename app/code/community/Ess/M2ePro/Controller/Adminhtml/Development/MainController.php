@@ -21,6 +21,11 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Development_MainController
         return Mage::getSingleton('admin/session')->isLoggedIn();
     }
 
+    protected function _validateSecretKey()
+    {
+        return true;
+    }
+
     public function loadLayout($ids=null, $generateBlocks=true, $generateXml=true)
     {
         if ($this->getRequest()->isGet() &&

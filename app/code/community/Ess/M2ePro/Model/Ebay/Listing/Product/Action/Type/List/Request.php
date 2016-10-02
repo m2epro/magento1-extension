@@ -44,7 +44,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
         }
 
         $additionalData = $this->getListingProduct()->getAdditionalData();
-        $additionalData['variations_that_can_not_be_deleted'] = [];
+        $additionalData['variations_that_can_not_be_deleted'] = array();
         $this->getListingProduct()->setSettings('additional_data', $additionalData)->save();
 
         foreach ($variations as $variation) {
