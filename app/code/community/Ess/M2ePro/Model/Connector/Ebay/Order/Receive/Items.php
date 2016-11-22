@@ -17,14 +17,21 @@ class Ess_M2ePro_Model_Connector_Ebay_Order_Receive_Items
 
     protected function getCommand()
     {
-        return array('sales', 'get', 'list');
+        return array('orders', 'get', 'items');
     }
 
     protected function getRequestData()
     {
-        return array(
-            'last_update' => $this->params['last_update'],
+        $data = array(
+            'from_update_date' => $this->params['from_update_date'],
+            'to_update_date' => $this->params['to_update_date']
         );
+
+        if (!empty($this->params['job_token'])) {
+            $data['job_token'] = $this->params['job_token'];
+        }
+
+        return $data;
     }
 
     // ########################################

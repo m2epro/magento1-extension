@@ -33,7 +33,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Order_Update_Abstract
 
     protected function getCommand()
     {
-        return array('sales', 'update', 'status');
+        return array('orders', 'update', 'status');
     }
 
     //########################################

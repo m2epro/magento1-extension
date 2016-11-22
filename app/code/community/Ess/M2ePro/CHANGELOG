@@ -1,3 +1,13 @@
+* 6.4.6 (r10944) (22/11/2016)
+
+* Improvement: Orders could not be dowloaded if there were a lot of Orders updates in one second on channel
+* Improvement: There was Orders downloading delay if many List/Relist/Revise/Stop actions are processed at that time
+* Improvement: [eBay] Now you cannot List the Variational Product if their Attributes/Options have space at start or end
+* Improvement: [Amazon] There was Orders statuses updating delay if many List/Relist/Revise/Stop actions are processed at that time
+* Fix: Magento order was not created by "Out of Stock" reason if this Product Quantity was reserved earlier
+* Fix: Missed records in Listings Log during Magento Orders creation for products with negative QTY
+* Fix: [eBay] "Undefined index: reference_id" error during Magento Order creation
+
 * 6.4.5 (r10812) (02/10/2016)
 
 * Added: Compatibility with PHP version < 7.0.11 (6.x.x - 7.0.11 added) [only as beta mode]

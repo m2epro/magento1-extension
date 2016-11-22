@@ -15,34 +15,6 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Requester
 
     //########################################
 
-    /**
-     * @param Ess_M2ePro_Model_Processing_Request $processingRequest
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function setProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
-    {
-        parent::setProcessingLocks($processingRequest);
-
-        /** @var $lockItem Ess_M2ePro_Model_LockItem */
-        $lockItem = Mage::getModel('M2ePro/LockItem');
-
-        $tempNick = Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive::LOCK_ITEM_PREFIX
-            .'_'.$this->account->getId();
-
-        $lockItem->setNick($tempNick);
-        $lockItem->setMaxInactiveTime(Ess_M2ePro_Model_Processing_Request::MAX_LIFE_TIME_INTERVAL);
-        $lockItem->create();
-
-        $this->account->addObjectLock(NULL, $processingRequest->getHash());
-        $this->account->addObjectLock('synchronization', $processingRequest->getHash());
-        $this->account->addObjectLock('synchronization_amazon', $processingRequest->getHash());
-        $this->account->addObjectLock(
-            Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive::LOCK_ITEM_PREFIX, $processingRequest->getHash()
-        );
-    }
-
-    //########################################
-
     public function process()
     {
         $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();

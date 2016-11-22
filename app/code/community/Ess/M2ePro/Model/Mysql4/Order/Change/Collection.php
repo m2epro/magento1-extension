@@ -49,4 +49,19 @@ class Ess_M2ePro_Model_Mysql4_Order_Change_Collection
     }
 
     //########################################
+
+    public function addLockedObjectFilter($tag)
+    {
+        $mysqlTag = $this->getConnection()->quote($tag);
+        $this->getSelect()->joinLeft(
+            array('lo' => Mage::getResourceModel('M2ePro/LockedObject')->getMainTable()),
+            '(`lo`.`object_id` = `main_table`.`order_id` AND `lo`.`tag` = '.$mysqlTag.')',
+            array()
+        );
+        $this->getSelect()->where(
+            '`lo`.`object_id` IS NULL'
+        );
+    }
+
+    //########################################
 }

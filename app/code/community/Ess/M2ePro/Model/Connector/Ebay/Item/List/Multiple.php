@@ -133,6 +133,44 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
                 $this->removeAndUnlockListingProduct($listingProduct);
                 continue;
             }
+
+            $failedAttributes = $this->getRequestObject($listingProduct)->getVariationAttributesWithSpacesAroundName();
+            if ($failedAttributes) {
+                $message = array(
+                    parent::MESSAGE_TEXT_KEY => Mage::helper('M2ePro')->__(
+                        'The Item cannot be updated properly on eBay because its Variational Attribute %attributes%
+                        title contains a space at the start or in the end of the value which will
+                        cause the further errors. Please, adjust the Attribute title to solve this issue.',
+                        implode(', ', array_unique($failedAttributes))
+                    ),
+                    parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
+                );
+
+                $this->getLogger()->logListingProductMessage(
+                    $listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                );
+
+                $this->removeAndUnlockListingProduct($listingProduct);
+                continue;
+            }
+
+            if ($this->getRequestObject($listingProduct)->getVariationOptionsWithSpacesAroundName()) {
+                $message = array(
+                    parent::MESSAGE_TEXT_KEY => Mage::helper('M2ePro')->__(
+                        'The Item cannot be updated properly on eBay because its Option label(s) contain(s) a space
+                        at the start or in the end of the value which will cause the further errors.
+                        Please, adjust the Option label(s) to solve this issue.'
+                    ),
+                    parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
+                );
+
+                $this->getLogger()->logListingProductMessage(
+                    $listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                );
+
+                $this->removeAndUnlockListingProduct($listingProduct);
+                continue;
+            }
         }
     }
 

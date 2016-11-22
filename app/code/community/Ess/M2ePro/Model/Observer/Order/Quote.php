@@ -44,10 +44,6 @@ class Ess_M2ePro_Model_Observer_Order_Quote extends Ess_M2ePro_Model_Observer_Ab
             return;
         }
 
-        if ((int)$this->getStockItem()->getQty() <= 0) {
-            return;
-        }
-
         Mage::getModel('M2ePro/ProductChange')->addUpdateAction(
             $this->getProduct()->getId(),
             Ess_M2ePro_Model_ProductChange::INITIATOR_OBSERVER

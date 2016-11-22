@@ -951,7 +951,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         );
 
         $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('sales', 'get', 'itemTransactions',
+        $connectorObj = $dispatcherObj->getVirtualConnector('orders', 'get', 'itemTransactions',
                                                             $params, 'buyer_info',
                                                             NULL, $this->getParentObject()->getAccount(), NULL);
 

@@ -63,7 +63,7 @@ class Ess_M2ePro_Model_Magento_Product_StockItem
         $stockItem = $this->getStockItem();
         $stockItem->addQty($qty);
 
-        if ($stockItem->getCanBackInStock() && $stockItem->getQty() > $stockItem->getMinQty()) {
+        if ($stockItem->getQty() > $stockItem->getMinQty()) {
             $stockItem->setIsInStock(true);
         }
 

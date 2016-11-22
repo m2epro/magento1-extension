@@ -160,7 +160,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         }
 
         $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('sales', 'get', 'orders',
+        $connectorObj = $dispatcherObj->getVirtualConnector('orders', 'get', 'orders',
                                                             array('orders_ids' => $ordersIds),
                                                             NULL, NULL, $account, NULL);
 

@@ -24,8 +24,7 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsRequester
     protected function getResponserParams()
     {
         return array(
-            'account_id' => $this->account->getId(),
-            'marketplace_id' => $this->account->getChildObject()->getMarketplaceId()
+            'accounts_access_tokens' => $this->getAccountsAccessTokens()
         );
     }
 
@@ -33,10 +32,29 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsRequester
 
     protected function getRequestData()
     {
-        return array(
-            'updated_since_time' => $this->params['from_date'],
-            'status_filter' => !empty($this->params['status']) ? $this->params['status'] : NULL
+        $data = array(
+            'accounts' => $this->getAccountsAccessTokens(),
+            'from_update_date' => $this->params['from_update_date'],
+            'to_update_date' => $this->params['to_update_date']
         );
+
+        if (!empty($this->params['job_token'])) {
+            $data['job_token'] = $this->params['job_token'];
+        }
+
+        return $data;
+    }
+
+    //########################################
+
+    private function getAccountsAccessTokens()
+    {
+        $accountsAccessTokens = array();
+        foreach ($this->params['accounts'] as $account) {
+            $accountsAccessTokens[] = $account->getChildObject()->getServerHash();
+        }
+
+        return $accountsAccessTokens;
     }
 
     //########################################

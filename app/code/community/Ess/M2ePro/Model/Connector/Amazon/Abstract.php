@@ -9,7 +9,7 @@
 abstract class Ess_M2ePro_Model_Connector_Amazon_Abstract extends Ess_M2ePro_Model_Connector_Command
 {
     const COMPONENT = 'Amazon';
-    const COMPONENT_VERSION = 7;
+    const COMPONENT_VERSION = 8;
 
     /**
      * @var Ess_M2ePro_Model_Account|null

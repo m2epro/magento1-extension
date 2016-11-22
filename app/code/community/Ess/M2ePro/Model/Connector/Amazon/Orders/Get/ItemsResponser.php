@@ -9,11 +9,14 @@
 abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsResponser
     extends Ess_M2ePro_Model_Connector_Amazon_Responser
 {
+    /** @var Ess_M2ePro_Model_Account[] */
+    private $accounts = array();
+
     //########################################
 
     protected function validateResponseData($response)
     {
-        if (!isset($response['items'])) {
+        if (!isset($response['items']) || !isset($response['to_update_date'])) {
             return false;
         }
 
@@ -22,83 +25,103 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsResponser
 
     protected function prepareResponseData($response)
     {
-        /* @var $marketplace Ess_M2ePro_Model_Marketplace */
-        $marketplace = $this->getObjectByParam('Account','account_id')->getChildObject()->getMarketplace();
-
         $preparedOrders = array();
+        $accounts = $this->getAccountsByAccessTokens();
 
-        foreach ($response['items'] as $orderData) {
+        foreach ($response['items'] as $accountAccessToken => $ordersData) {
 
-            $order = array();
-
-            $order['amazon_order_id'] = trim($orderData['id']);
-            $order['status'] = trim($orderData['status']);
-
-            $order['marketplace_id'] = $marketplace->getId();
-            $order['is_afn_channel'] = (int)$orderData['channel']['is_afn'];
-            $order['is_prime'] = (int)$orderData['is_prime'];
-
-            $order['purchase_create_date'] = $orderData['purchase_date'];
-            $order['purchase_update_date'] = $orderData['update_date'];
-
-            $order['buyer_name'] = trim($orderData['buyer']['name']);
-            $order['buyer_email'] = trim($orderData['buyer']['email']);
-
-            $order['qty_shipped'] = (int)$orderData['qty']['shipped'];
-            $order['qty_unshipped'] = (int)$orderData['qty']['unshipped'];
-
-            $shipping = $orderData['shipping'];
-
-            $order['shipping_service'] = trim($shipping['level']);
-            $order['shipping_price'] = isset($orderData['price']['shipping'])
-                ? (float)$orderData['price']['shipping'] : 0;
-
-            $order['shipping_address'] = $this->parseShippingAddress($shipping, $marketplace);
-
-            $order['shipping_dates'] = array(
-                'ship' => array(
-                    'from' => $shipping['ship_date']['from'],
-                    'to'   => $shipping['ship_date']['to'],
-                ),
-                'delivery' => array(
-                    'from' => $shipping['delivery_date']['from'],
-                    'to'   => $shipping['delivery_date']['to'],
-                ),
-            );
-
-            $order['currency'] = isset($orderData['currency']) ? trim($orderData['currency']) : '';
-            $order['paid_amount'] = isset($orderData['amount_paid']) ? (float)$orderData['amount_paid'] : 0;
-            $order['tax_details'] = isset($orderData['price']['taxes']) ? $orderData['price']['taxes'] : array();
-
-            $order['discount_details'] = isset($orderData['price']['discounts'])
-                ? $orderData['price']['discounts'] : array();
-
-            $order['items'] = array();
-
-            foreach ($orderData['items'] as $item) {
-                $order['items'][] = array(
-                    'amazon_order_item_id' => trim($item['id']),
-                    'sku'                  => trim($item['identifiers']['sku']),
-                    'general_id'           => trim($item['identifiers']['general_id']),
-                    'is_isbn_general_id'   => (int)$item['identifiers']['is_isbn'],
-                    'title'                => trim($item['title']),
-                    'price'                => (float)$item['prices']['product']['value'],
-                    'gift_price'           => (float)$item['prices']['gift']['value'],
-                    'gift_type'            => trim($item['gift_type']),
-                    'gift_message'         => trim($item['gift_message']),
-                    'currency'             => trim($item['prices']['product']['currency']),
-                    'tax_details'          => $item['taxes'],
-                    'discount_details'     => $item['discounts'],
-                    'qty_purchased'        => (int)$item['qty']['ordered'],
-                    'qty_shipped'          => (int)$item['qty']['shipped']
-                );
+            if (empty($accounts[$accountAccessToken])) {
+                continue;
             }
 
-            $preparedOrders[] = $order;
+            $preparedOrders[$accountAccessToken] = array();
+
+            /* @var $marketplace Ess_M2ePro_Model_Marketplace */
+            $marketplace = $accounts[$accountAccessToken]->getChildObject()->getMarketplace();
+
+            foreach ($ordersData as $orderData) {
+                $order = array();
+
+                $order['amazon_order_id'] = trim($orderData['id']);
+                $order['status'] = trim($orderData['status']);
+
+                $order['marketplace_id'] = $marketplace->getId();
+                $order['is_afn_channel'] = (int)$orderData['channel']['is_afn'];
+                $order['is_prime'] = (int)$orderData['is_prime'];
+
+                $order['purchase_create_date'] = $orderData['purchase_date'];
+                $order['purchase_update_date'] = $orderData['update_date'];
+
+                $order['buyer_name'] = trim($orderData['buyer']['name']);
+                $order['buyer_email'] = trim($orderData['buyer']['email']);
+
+                $order['qty_shipped'] = (int)$orderData['qty']['shipped'];
+                $order['qty_unshipped'] = (int)$orderData['qty']['unshipped'];
+
+                $shipping = $orderData['shipping'];
+
+                $order['shipping_service'] = trim($shipping['level']);
+                $order['shipping_price'] = isset($orderData['price']['shipping'])
+                    ? (float)$orderData['price']['shipping'] : 0;
+
+                $order['shipping_address'] = $this->parseShippingAddress($shipping, $marketplace);
+
+                $order['shipping_dates'] = array(
+                    'ship' => array(
+                        'from' => $shipping['ship_date']['from'],
+                        'to'   => $shipping['ship_date']['to'],
+                    ),
+                    'delivery' => array(
+                        'from' => $shipping['delivery_date']['from'],
+                        'to'   => $shipping['delivery_date']['to'],
+                    ),
+                );
+
+                $order['currency'] = isset($orderData['currency']) ? trim($orderData['currency']) : '';
+                $order['paid_amount'] = isset($orderData['amount_paid']) ? (float)$orderData['amount_paid'] : 0;
+                $order['tax_details'] = isset($orderData['price']['taxes']) ? $orderData['price']['taxes'] : array();
+
+                $order['discount_details'] = isset($orderData['price']['discounts'])
+                    ? $orderData['price']['discounts'] : array();
+
+                $order['items'] = array();
+
+                foreach ($orderData['items'] as $item) {
+                    $order['items'][] = array(
+                        'amazon_order_item_id' => trim($item['id']),
+                        'sku'                  => trim($item['identifiers']['sku']),
+                        'general_id'           => trim($item['identifiers']['general_id']),
+                        'is_isbn_general_id'   => (int)$item['identifiers']['is_isbn'],
+                        'title'                => trim($item['title']),
+                        'price'                => (float)$item['prices']['product']['value'],
+                        'gift_price'           => (float)$item['prices']['gift']['value'],
+                        'gift_type'            => trim($item['gift_type']),
+                        'gift_message'         => trim($item['gift_message']),
+                        'currency'             => trim($item['prices']['product']['currency']),
+                        'tax_details'          => $item['taxes'],
+                        'discount_details'     => $item['discounts'],
+                        'qty_purchased'        => (int)$item['qty']['ordered'],
+                        'qty_shipped'          => (int)$item['qty']['shipped']
+                    );
+                }
+
+                $preparedOrders[$accountAccessToken][] = $order;
+            }
         }
 
-        return $preparedOrders;
+        $preparedResponseData = array(
+            'orders' => $preparedOrders,
+            'to_update_date' => $response['to_update_date']
+        );
+
+        if (!empty($response['job_token'])) {
+            $preparedResponseData['job_token']= $response['job_token'];
+        }
+
+        return $preparedResponseData;
     }
+
+    // ---------------------------------------
 
     private function parseShippingAddress(array $shippingData, Ess_M2ePro_Model_Marketplace $marketplace)
     {
@@ -132,6 +155,31 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsResponser
         }
 
         return $parsedAddress;
+    }
+
+    //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Account[]
+     */
+    protected function getAccountsByAccessTokens()
+    {
+        if (!empty($accounts)) {
+            return $accounts;
+        }
+
+        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
+        $accountsCollection->addFieldToFilter(
+            'second_table.server_hash', array('in', $this->params['accounts_access_tokens'])
+        );
+
+        $accounts = array();
+        foreach ($accountsCollection->getItems() as $item) {
+            $accounts[$item->getChildObject()->getServerHash()] = $item;
+        }
+
+        return $this->accounts = $accounts;
     }
 
     //########################################
