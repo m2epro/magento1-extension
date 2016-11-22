@@ -1,3 +1,7 @@
+* 6.4.6.1 (r10945) (22/11/2016)
+
+* Fix: critical bug during 6.4.5 - 6.4.6 upgrade
+
 * 6.4.6 (r10944) (22/11/2016)
 
 * Improvement: Orders could not be dowloaded if there were a lot of Orders updates in one second on channel

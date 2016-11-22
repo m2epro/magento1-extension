@@ -10,13 +10,13 @@ $connection = $installer->getConnection();
 
 //########################################
 
-$amazonAccountTableName = $installer->getTable('amazon_account');
+$amazonAccountTableName = $installer->getTablesObject()->getFullName('amazon_account');
 $result = $connection->query(<<<SQL
     SELECT aa.merchant_id,
            MIN(aa.orders_last_synchronization) as orders_last_synchronization
     FROM {$amazonAccountTableName} as aa
     WHERE aa.orders_last_synchronization IS NOT NULL
-    GROUP BY aa.merchat_id
+    GROUP BY aa.merchant_id
 SQL
 )->fetchAll(PDO::FETCH_ASSOC);
 
