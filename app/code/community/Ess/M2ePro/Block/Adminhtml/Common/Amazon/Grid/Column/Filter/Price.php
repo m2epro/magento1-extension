@@ -17,7 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Grid_Column_Filter_Price
 
         return parent::getHtml() .
             '<div class="range"><div class="range-line" style="width: auto;"><span class="label" style="width: auto;">'.
-                Mage::helper('M2ePro')->__('Repricing ON') . ': </span>' .
+                Mage::helper('M2ePro')->__('Repricing') . ': </span>' .
                 '<input style="margin-left:6px;float:none;width:auto !important;" type="checkbox" value="1" name="'.
                 $this->_getHtmlName() . '[is_repricing]" ' . $afnChecked . '></div></div>';
     }

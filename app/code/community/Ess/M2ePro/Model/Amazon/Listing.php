@@ -990,6 +990,7 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
             'sku'                => $amazonListingOther->getSku(),
             'online_price'       => $amazonListingOther->getOnlinePrice(),
             'online_qty'         => $amazonListingOther->getOnlineQty(),
+            'is_repricing'       => (int)$amazonListingOther->isRepricing(),
             'is_afn_channel'     => (int)$amazonListingOther->isAfnChannel(),
             'is_isbn_general_id' => (int)$amazonListingOther->isIsbnGeneralId(),
             'status'             => $listingOtherProduct->getStatus(),
@@ -997,6 +998,17 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
         );
 
         $listingProduct->addData($dataForUpdate)->save();
+
+        if ($amazonListingOther->isRepricing()) {
+            $listingProductRepricing = Mage::getModel('M2ePro/Amazon_Listing_Product_Repricing');
+            $listingProductRepricing->setData(array(
+                'listing_product_id' => $listingProduct->getId(),
+                'is_online_disabled' => $amazonListingOther->isRepricingDisabled(),
+                'update_date'        => Mage::helper('M2ePro')->getCurrentGmtDate(),
+                'create_date'        => Mage::helper('M2ePro')->getCurrentGmtDate(),
+            ));
+            $listingProductRepricing->save();
+        }
 
         return $listingProduct;
     }

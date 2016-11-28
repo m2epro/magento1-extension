@@ -1,3 +1,14 @@
+* 6.4.7 (r10970) (28/11/2016)
+
+* Added: [Amazon] Ability to use Repricing Service without the need to contact support of M2E Pro
+* Added: [Amazon] Max, Min, Regular Prices of Repricing Service Products can be synchronized with Magento Attribute
+* Added: [Amazon] Ability to disable Products automatically on Repricing Service depending on Magento Attribute Value
+* Improvement: [Amazon] Prices will be updated every hour instead of one time a day for Products which are processed by Repricing Service
+* Improvement: [Amazon] When Products which are processed by Repricing Service are added to the Listing, they will be marked immediately
+* Fix: [Amazon] Adding a lot of Products to the Repricing Service from Listing Grid did not work correctly
+* Fix: [Amazon] Sometimes, Products could be marked by Repricing Service Label even if they are not used by it
+* Fix: [Amazon] When Product is being disabled on Repricing Service then M2E Pro will revise their own Price immediately
+
 * 6.4.6.1 (r10945) (22/11/2016)
 
 * Fix: critical bug during 6.4.5 - 6.4.6 upgrade

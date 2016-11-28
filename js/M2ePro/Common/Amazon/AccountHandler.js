@@ -99,6 +99,54 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
             return isAttributeSelected;
         });
+
+        Validation.add('M2ePro-account-repricing-price-value', M2ePro.translator.translate('Invalid input data. Decimal value required. Example 12.05'), function(value, el) {
+
+            if (!el.up('tr').visible()) {
+                return true;
+            }
+
+            if (!value.match(/^\d+[.]?\d*?$/g)) {
+                return false;
+            }
+
+            if (value <= 0) {
+                return false;
+            }
+
+            return true;
+        });
+
+        Validation.add('M2ePro-account-repricing-price-percent', M2ePro.translator.translate('Please enter correct value.'), function(value, el) {
+
+            if (!el.up('tr').visible()) {
+                return true;
+            }
+
+            if (!value.match(/^\d+$/g)) {
+                return false;
+            }
+
+            if (value <= 0 || value > 100) {
+                return false;
+            }
+
+            return true;
+
+        });
+
+        Validation.add('M2ePro-validate-price-coefficient', M2ePro.translator.translate('Coefficient is not valid.'), function(value) {
+
+            if (value == '') {
+                return true;
+            }
+
+            if (value == '0' || value == '0%') {
+                return false;
+            }
+
+            return value.match(/^[+-]?\d+[.]?\d*[%]?$/g);
+        });
     },
 
     // ---------------------------------------
@@ -470,34 +518,140 @@ CommonAmazonAccountHandler.prototype = Object.extend(new CommonHandler(), {
         window.open(M2ePro.url.get('adminhtml_common_amazon_account_repricing/openManagement'));
     },
 
-    synchRepricing: function()
+    regular_price_mode_change: function()
     {
-        var self = this;
+        var self = AmazonAccountHandlerObj,
+            regularPriceAttr = $('regular_price_attribute'),
+            regularPriceCoeficient = $('regular_price_coefficient_td'),
+            variationRegularPrice = $('regular_price_variation_mode_tr');
 
-        new Ajax.Request(M2ePro.url.get('adminhtml_common_amazon_account_repricing/synchronize'), {
-            method: 'post',
-            onSuccess: function (transport) {
+        regularPriceAttr.value = '';
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, regularPriceAttr);
+        }
 
-                if (!transport.responseText.isJSON()) {
-                    alert(transport.responseText);
-                    return;
+        regularPriceCoeficient.hide();
+        variationRegularPrice.hide();
+
+        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL') &&
+            this.value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::REGULAR_PRICE_MODE_PRODUCT_POLICY')) {
+
+            regularPriceCoeficient.show();
+            variationRegularPrice.show();
+        }
+
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL')) {
+            $$('.repricing-min-price-mode-regular-depended').each(function (element) {
+                if (element.selected) {
+                    element.up().selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL');
+                    element.simulate('change');
                 }
 
-                var response = transport.responseText.evalJSON();
+                element.hide();
+            });
 
-                if (response.messages) {
-                    MagentoMessageObj.clearAll();
-                    response.messages.each(function(msg) {
-                        MagentoMessageObj['add' + msg.type[0].toUpperCase() + msg.type.slice(1)](msg.text);
-                    });
-
-                    return;
+            $$('.repricing-max-price-mode-regular-depended').each(function (element) {
+                if (element.selected) {
+                    element.up().selectedIndex = M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL');
+                    element.simulate('change');
                 }
 
-                $('repricing_total_products').innerHTML = response['repricing_total_products'];
-                $('m2epro_repricing_total_products').innerHTML = response['m2epro_repricing_total_products'];
-            }
-        });
+                element.hide();
+            });
+        } else {
+            $$('.repricing-min-price-mode-regular-depended').each(function (element) {
+                element.show();
+            });
+
+            $$('.repricing-max-price-mode-regular-depended').each(function (element) {
+                element.show();
+            });
+        }
+    },
+
+    min_price_mode_change: function()
+    {
+        var self = AmazonAccountHandlerObj,
+            minPriceValueTr = $('min_price_value_tr'),
+            minPricePercentTr = $('min_price_percent_tr'),
+            minPriceWarning = $('min_price_warning_tr'),
+            minPriceAttr = $('min_price_attribute'),
+            minPriceCoeficient = $('min_price_coefficient_td'),
+            variationMinPrice = $('min_price_variation_mode_tr');
+
+        minPriceWarning.hide();
+        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL')) {
+            minPriceWarning.show();
+        }
+
+        minPriceCoeficient.hide();
+        variationMinPrice.hide();
+
+        minPriceAttr.value = '';
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, minPriceAttr);
+
+            minPriceCoeficient.show();
+            variationMinPrice.show();
+        }
+
+        minPriceValueTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE')) {
+            minPriceValueTr.show();
+        }
+
+        minPricePercentTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT')) {
+            minPricePercentTr.show();
+        }
+    },
+
+    max_price_mode_change: function()
+    {
+        var self = AmazonAccountHandlerObj,
+            maxPriceValueTr = $('max_price_value_tr'),
+            maxPricePercentTr = $('max_price_percent_tr'),
+            maxPriceWarning = $('max_price_warning_tr'),
+            maxPriceAttr = $('max_price_attribute'),
+            maxPriceCoeficient = $('max_price_coefficient_td'),
+            variationMaxPrice = $('max_price_variation_mode_tr');
+
+        maxPriceWarning.hide();
+        if (this.value != M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL')) {
+            maxPriceWarning.show();
+        }
+
+        maxPriceCoeficient.hide();
+        variationMaxPrice.hide();
+
+        maxPriceAttr.value = '';
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, maxPriceAttr);
+
+            maxPriceCoeficient.show();
+            variationMaxPrice.show();
+        }
+
+        maxPriceValueTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE')) {
+            maxPriceValueTr.show();
+        }
+
+        maxPricePercentTr.hide();
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT')) {
+            maxPricePercentTr.show();
+        }
+    },
+
+    disable_mode_change: function()
+    {
+        var self = AmazonAccountHandlerObj,
+            disableModeAttr = $('disable_mode_attribute');
+
+        disableModeAttr.value = '';
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_ATTRIBUTE')) {
+            self.updateHiddenValue(this, disableModeAttr);
+        }
     },
 
     // ---------------------------------------

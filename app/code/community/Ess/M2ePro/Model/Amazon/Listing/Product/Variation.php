@@ -257,6 +257,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
         $calculator->setSource($src)->setProduct($this->getListingProduct());
         $calculator->setModifyByCoefficient(true)
                    ->setIsIncreaseByVatPercent(true);
+        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());
     }
@@ -268,6 +269,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
         /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
         $calculator->setSource($src)->setProduct($this->getListingProduct());
+        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());
     }
@@ -282,6 +284,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
         $calculator->setIsSalePrice(true)
                    ->setModifyByCoefficient(true)
                    ->setIsIncreaseByVatPercent(true);
+        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());
     }

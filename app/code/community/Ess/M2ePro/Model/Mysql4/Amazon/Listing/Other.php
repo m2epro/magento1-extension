@@ -20,4 +20,51 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other
     }
 
     //########################################
+
+    public function getAllRepricingSkus(Ess_M2ePro_Model_Account $account, $repricingDisabled = null)
+    {
+        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other_Collection $listingOtherCollection */
+        $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
+        $listingOtherCollection->addFieldToFilter('is_repricing', 1);
+        $listingOtherCollection->addFieldToFilter('account_id', $account->getId());
+
+        if (!is_null($repricingDisabled)) {
+            $listingOtherCollection->addFieldToFilter('is_repricing_disabled', $repricingDisabled);
+        }
+
+        $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+        $listingOtherCollection->getSelect()->columns(
+            array('sku'  => 'second_table.sku')
+        );
+
+        return $listingOtherCollection->getColumnValues('sku');
+    }
+
+    public function getProductsDataBySkus(array $skus = array(),
+                                          array $filters = array(),
+                                          array $columns = array())
+    {
+        /** @var Ess_M2ePro_Model_Mysql4_Listing_Other_Collection $listingOtherCollection */
+        $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
+
+        if (!empty($skus)) {
+            $skus = array_map(function($el){ return (string)$el; }, $skus);
+            $listingOtherCollection->addFieldToFilter('sku', array('in' => array_unique($skus)));
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $columnName => $columnValue) {
+                $listingOtherCollection->addFieldToFilter($columnName, $columnValue);
+            }
+        }
+
+        if (!empty($columns)) {
+            $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+            $listingOtherCollection->getSelect()->columns($columns);
+        }
+
+        return $listingOtherCollection->getData();
+    }
+
+    //########################################
 }

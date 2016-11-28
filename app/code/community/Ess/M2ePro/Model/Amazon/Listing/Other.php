@@ -113,6 +113,24 @@ class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_C
             Ess_M2ePro_Model_Amazon_Listing_Product::IS_ISBN_GENERAL_ID_YES;
     }
 
+    // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isRepricing()
+    {
+        return (bool)$this->getData('is_repricing');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRepricingDisabled()
+    {
+        return (bool)$this->getData('is_repricing_disabled');
+    }
+
     //########################################
 
     /**

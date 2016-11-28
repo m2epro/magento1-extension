@@ -39,6 +39,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
      */
     protected $variationManager = NULL;
 
+    /**
+     * @var Ess_M2ePro_Model_Amazon_Listing_Product_Repricing
+     */
+    protected $repricingModel = NULL;
+
     //########################################
 
     public function _construct()
@@ -88,6 +93,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
                 /** @var $child Ess_M2ePro_Model_Listing_Product */
                 $child->deleteInstance();
             }
+        }
+
+        if ($this->isRepricingUsed()) {
+            $this->getRepricing()->deleteInstance();
         }
 
         $this->variationManager = NULL;
@@ -364,6 +373,44 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     //########################################
 
     /**
+     * @return Ess_M2ePro_Model_Amazon_Listing_Product_Repricing
+     */
+    public function getRepricing()
+    {
+        if (is_null($this->repricingModel)) {
+            $this->repricingModel = Mage::getModel('M2ePro/Amazon_Listing_Product_Repricing')->load($this->getId());
+        }
+
+        return $this->repricingModel;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRepricingUsed()
+    {
+        return $this->isRepricing() && $this->getRepricing()->getId();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRepricingEnabled()
+    {
+        return $this->isRepricingUsed() && !$this->getRepricing()->isOnlineDisabled();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRepricingDisabled()
+    {
+        return $this->isRepricingUsed() && $this->getRepricing()->isOnlineDisabled();
+    }
+
+    //########################################
+
+    /**
      * @return int
      */
     public function getTemplateDescriptionId()
@@ -435,6 +482,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     /**
      * @return bool
      */
+    public function isRepricing()
+    {
+        return (int)$this->getData('is_repricing') == self::IS_REPRICING_YES;
+    }
+
+    /**
+     * @return bool
+     */
     public function isAfnChannel()
     {
         return (int)$this->getData('is_afn_channel') == self::IS_AFN_CHANNEL_YES;
@@ -492,16 +547,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function getGeneralIdSearchInfo()
     {
         return $this->getSettings('general_id_search_info');
-    }
-
-    //########################################
-
-    /**
-     * @return bool
-     */
-    public function isRepricing()
-    {
-        return (int)$this->getData('is_repricing') == self::IS_REPRICING_YES;
     }
 
     //########################################
@@ -772,6 +817,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
         $descriptionTemplate = $this->getDescriptionTemplate();
         if (!is_null($descriptionTemplate)) {
             $attributes = array_merge($attributes, $descriptionTemplate->getTrackingAttributes());
+        }
+
+        if ($this->isRepricingUsed()) {
+            $attributes = array_merge($attributes, $this->getAmazonAccount()->getRepricing()->getTrackingAttributes());
         }
 
         return array_unique($attributes);

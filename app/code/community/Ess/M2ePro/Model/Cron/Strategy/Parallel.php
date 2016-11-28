@@ -121,6 +121,10 @@ class Ess_M2EPro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Stra
     private function getAllowedFastTasks()
     {
         return array_intersect($this->getAllowedTasks(), array(
+            Ess_M2ePro_Model_Cron_Task_RepricingInspectProducts::NICK,
+            Ess_M2ePro_Model_Cron_Task_RepricingUpdateSettings::NICK,
+            Ess_M2ePro_Model_Cron_Task_RepricingSynchronizationGeneral::NICK,
+            Ess_M2ePro_Model_Cron_Task_RepricingSynchronizationActualPrice::NICK,
             Ess_M2ePro_Model_Cron_Task_LogsClearing::NICK,
             Ess_M2ePro_Model_Cron_Task_Servicing::NICK,
             Ess_M2ePro_Model_Cron_Task_Synchronization::NICK,

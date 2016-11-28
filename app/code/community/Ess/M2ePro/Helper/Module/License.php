@@ -318,4 +318,41 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
     }
 
     //########################################
+
+    public function getUserInfo()
+    {
+        $defaultStoreId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
+
+        $userId = Mage::getSingleton('admin/session')->getUser()->getId();
+        $userInfo = Mage::getModel('admin/user')->load($userId)->getData();
+
+        $tempPath = defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY')
+            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY : 'shipping/origin/city';
+        $userInfo['city'] = Mage::getStoreConfig($tempPath, $defaultStoreId);
+
+        $tempPath = defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE')
+            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE : 'shipping/origin/postcode';
+        $userInfo['postal_code'] = Mage::getStoreConfig($tempPath, $defaultStoreId);
+
+        $userInfo['country'] = Mage::getStoreConfig('general/country/default', $defaultStoreId);
+
+        $requiredKeys = array(
+            'email',
+            'firstname',
+            'lastname',
+            'country',
+            'city',
+            'postal_code',
+        );
+
+        foreach ($userInfo as $key => $value) {
+            if (!in_array($key, $requiredKeys)) {
+                unset($userInfo[$key]);
+            }
+        }
+
+        return $userInfo;
+    }
+
+    //########################################
 }

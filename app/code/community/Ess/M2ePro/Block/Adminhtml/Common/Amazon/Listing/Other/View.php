@@ -99,6 +99,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
         $unmappingProductsUrl = $this->getUrl('*/adminhtml_listing_other_mapping/unmapping');
 
         $getAFNQtyBySku = $this->getUrl('*/adminhtml_common_amazon_listing/getAFNQtyBySku');
+        $getUpdatedRepricingPriceBySkus = $this->getUrl(
+            '*/adminhtml_common_amazon_listing_repricing/getUpdatedPriceBySkus'
+        );
 
         $someProductsWereNotMappedMessage = 'No matches were found. Please change the Mapping Attributes in <strong>';
         $someProductsWereNotMappedMessage .= 'Configuration > Account > 3rd Party Listings</strong> ';
@@ -203,6 +206,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View extends Mage_A
     M2eProAmazon.url.unmappingProducts = '{$unmappingProductsUrl}';
 
     M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
+    M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
     M2eProAmazon.text.create_listing = '{$createListing}';
     M2eProAmazon.text.popup_title = '{$popupTitle}';

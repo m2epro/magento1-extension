@@ -9,9 +9,6 @@
 abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsResponser
     extends Ess_M2ePro_Model_Connector_Amazon_Responser
 {
-    /** @var Ess_M2ePro_Model_Account[] */
-    private $accounts = array();
-
     //########################################
 
     protected function validateResponseData($response)
@@ -164,10 +161,6 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsResponser
      */
     protected function getAccountsByAccessTokens()
     {
-        if (!empty($accounts)) {
-            return $accounts;
-        }
-
         /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         $accountsCollection->addFieldToFilter(
@@ -179,7 +172,7 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsResponser
             $accounts[$item->getChildObject()->getServerHash()] = $item;
         }
 
-        return $this->accounts = $accounts;
+        return $accounts;
     }
 
     //########################################

@@ -22,18 +22,35 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Account_RepricingController
     {
         $accountId = $this->getRequest()->getParam('id');
 
-        /** @var $model Ess_M2ePro_Model_Account */
-        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+        /** @var $account Ess_M2ePro_Model_Account */
+        $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
-        if ($accountId && !$model->getId()) {
+        if ($accountId && !$account->getId()) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
             return $this->indexAction();
         }
 
-        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
+        $backUrl = Mage::helper('adminhtml')->getUrl(
+            '*/adminhtml_common_amazon_account_repricing/link',
+            array('id' => $account->getId())
+        );
 
-        $this->_redirectUrl($repricing->getLinkUrl());
+        /** @var $repricingAction Ess_M2ePro_Model_Amazon_Repricing_Action_Account */
+        $repricingAction = Mage::getModel('M2ePro/Amazon_Repricing_Action_Account', $account);
+        $serverRequestToken = $repricingAction->sendLinkActionData($backUrl);
+
+        if ($serverRequestToken === false) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__(
+                'M2E Pro cannot to connect to the Amazon Repricing Service. Please try again later.'
+            ));
+            return $this->indexAction();
+        }
+
+        $this->_redirectUrl(
+            Mage::helper('M2ePro/Component_Amazon_Repricing')->prepareActionUrl(
+                Ess_M2ePro_Helper_Component_Amazon_Repricing::COMMAND_ACCOUNT_LINK, $serverRequestToken
+            )
+        );
     }
 
     public function linkAction()
@@ -45,33 +62,35 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Account_RepricingController
         $status = $this->getRequest()->getParam('status');
         $messages = $this->getRequest()->getParam('messages', array());
 
-        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+        $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
-        if ($accountId && !$model->getId()) {
+        if ($accountId && !$account->getId()) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
             return $this->indexAction();
         }
 
-        $this->parseRepricingMessages($messages);
+        $this->addRepricingMessages($messages);
 
         if ($status == '1') {
-            $model->setData('repricing', json_encode(array(
-                'email' => $email,
-                'token' => $token,
-                'info' => array(
-                    'total_products' => 0
-                )
-            )));
-            $model->save();
 
-            /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-            $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
-            $repricing->synchronize();
+            $accountRepricingModel = Mage::getModel('M2ePro/Amazon_Account_Repricing');
+
+            $accountRepricingModel->setData(array(
+                'account_id' => $accountId,
+                'email' => $email,
+                'token' => $token
+            ));
+
+            $accountRepricingModel->save();
+
+            /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General */
+            $repricing = Mage::getModel('M2ePro/Amazon_Repricing_Synchronization_General', $account);
+            $repricing->run();
         }
 
         return $this->_redirectUrl($this->getUrl('*/adminhtml_common_amazon_account/edit', array(
             'id' => $accountId
-        )). '#repricing');
+        )).'#repricing');
     }
 
     //----------------------------------------
@@ -80,49 +99,61 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Account_RepricingController
     {
         $accountId = $this->getRequest()->getParam('id');
 
-        /** @var $model Ess_M2ePro_Model_Account */
-        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+        /** @var $account Ess_M2ePro_Model_Account */
+        $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
-        if ($accountId && !$model->getId()) {
+        if (!$account->getId()) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
             return $this->indexAction();
         }
 
-        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
+        $backUrl = Mage::helper('adminhtml')->getUrl(
+            '*/adminhtml_common_amazon_account_repricing/unlink',
+            array('id' => $account->getId())
+        );
 
-        $this->_redirectUrl($repricing->getUnLinkUrl());
+        /** @var $repricingAction Ess_M2ePro_Model_Amazon_Repricing_Action_Account */
+        $repricingAction = Mage::getModel('M2ePro/Amazon_Repricing_Action_Account', $account);
+        $serverRequestToken = $repricingAction->sendUnlinkActionData($backUrl);
+
+        if ($serverRequestToken === false) {
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__(
+                'M2E Pro cannot to connect to the Amazon Repricing Service. Please try again later.'
+            ));
+            return $this->indexAction();
+        }
+
+        $this->_redirectUrl(
+            Mage::helper('M2ePro/Component_Amazon_Repricing')->prepareActionUrl(
+                Ess_M2ePro_Helper_Component_Amazon_Repricing::COMMAND_ACCOUNT_UNLINK, $serverRequestToken
+            )
+        );
     }
 
     public function unlinkAction()
     {
         $accountId = $this->getRequest()->getParam('id');
 
-        $status = $this->getRequest()->getParam('status');
+        $status   = $this->getRequest()->getParam('status');
         $messages = $this->getRequest()->getParam('messages', array());
 
-        /** @var $model Ess_M2ePro_Model_Account */
-        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+        /** @var $account Ess_M2ePro_Model_Account */
+        $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', $accountId);
 
-        if ($accountId && !$model->getId()) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
-            return $this->indexAction();
-        }
-
-        $this->parseRepricingMessages($messages);
+        $this->addRepricingMessages($messages);
 
         if ($status == '1') {
-            $model->setData('repricing', NULL);
-            $model->save();
 
-            /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-            $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
-            $repricing->resetProductRepricingStatus();
+            /** @var $repricingSynchronization Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General */
+            $repricingSynchronization = Mage::getModel('M2ePro/Amazon_Repricing_Synchronization_General', $account);
+            $repricingSynchronization->reset();
+
+            $account->getChildObject()->getRepricing()->deleteInstance();
         }
 
-        return $this->_redirectUrl($this->getUrl('*/adminhtml_common_amazon_account/edit', array(
-            'id' => $accountId
-        )). '#repricing');
+        return $this->_redirectUrl(
+            $this->getUrl('*/adminhtml_common_amazon_account/edit', array('id' => $accountId)).'#repricing'
+        );
     }
 
     //########################################
@@ -131,53 +162,20 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Account_RepricingController
     {
         $accountId = $this->getRequest()->getParam('id');
 
-        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
+        /** @var Ess_M2ePro_Model_Account $account */
+        $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
-        if ($accountId && !$model->getId()) {
+        if (!$account->getId()) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
             return $this->indexAction();
         }
 
-        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
-
-        $this->_redirectUrl($repricing->getManagementUrl());
+        $this->_redirectUrl(Mage::helper('M2ePro/Component_Amazon_Repricing')->getManagementUrl($account));
     }
 
     //########################################
 
-    public function synchronizeAction()
-    {
-        $accountId = $this->getRequest()->getParam('id');
-
-        $model = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
-
-        if ($accountId && !$model->getId()) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Account does not exist.'));
-            return $this->indexAction();
-        }
-
-        /** @var $repricing Ess_M2ePro_Model_Amazon_Repricing */
-        $repricing = Mage::getModel('M2ePro/Amazon_Repricing', $model);
-        $result = $repricing->synchronize();
-
-        if ($result !== true) {
-            return $this->getResponse()->setBody(json_encode(array(
-                'messages' => $result
-            )));
-        }
-
-        $repricingInfo = $model->getChildObject()->getRepricingInfo();
-
-        $this->getResponse()->setBody(json_encode(array(
-            'repricing_total_products' => $repricingInfo['total_products'],
-            'm2epro_repricing_total_products' => count($repricing->getRepricingListingProductsData()),
-        )));
-    }
-
-    //########################################
-
-    private function parseRepricingMessages($messages)
+    private function addRepricingMessages($messages)
     {
         foreach ($messages as $message) {
 

@@ -95,6 +95,15 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
             )
         );
 
+        $collection->getSelect()->joinLeft(
+            array('malpr' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getMainTable()),
+            '(`second_table`.`listing_product_id` = `malpr`.`listing_product_id`)',
+            array(
+                'is_repricing' => 'listing_product_id',
+                'is_repricing_disabled' => 'is_online_disabled',
+            )
+        );
+
         // Set collection to grid
         $this->setCollection($collection);
 
@@ -175,7 +184,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
             'filter_condition_callback' => array($this, 'callbackFilterQty')
         ));
 
-        $this->addColumn('online_price', array(
+        $priceColumn = array(
             'header' => Mage::helper('M2ePro')->__('Price'),
             'align' => 'right',
             'width' => '70px',
@@ -184,7 +193,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
             'filter_index' => 'online_price',
             'frame_callback' => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
-        ));
+        );
+
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
+            $priceColumn['filter'] = 'M2ePro/adminhtml_common_amazon_grid_column_filter_price';
+        }
+
+        $this->addColumn('online_price', $priceColumn);
 
         $this->addColumn('status', array(
             'header' => Mage::helper('M2ePro')->__('Status'),
@@ -543,8 +558,42 @@ HTML;
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
+        $repricingHtml ='';
+
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
+            (bool)(int)$row->getData('is_repricing')) {
+
+            $image = 'money';
+            $text = Mage::helper('M2ePro')->__(
+                'This Product is used by Amazon Repricing Tool, so its Price cannot be managed via M2E Pro. <br>
+                 <strong>Please note</strong> that the Price value(s) shown in the grid might
+                 be different from the actual one from Amazon. It is caused by the delay
+                 in the values updating made via the Repricing Service'
+            );
+
+            if ((int)$row->getData('is_repricing_disabled') == 1) {
+                $image = 'money_disabled';
+                $text = Mage::helper('M2ePro')->__(
+                    'This product is disabled on Amazon Repricing Tool.
+                     The Price is updated through the M2E Pro.'
+                );
+            }
+
+            $repricingHtml = <<<HTML
+<span style="float:right; text-align: left;">&nbsp;
+    <img class="tool-tip-image"
+         style="vertical-align: middle; width: 16px;"
+         src="{$this->getSkinUrl('M2ePro/images/'.$image.'.png')}">
+    <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
+        <span>{$text}</span>
+    </span>
+</span>
+HTML;
+        }
+
         if (is_null($value) || $value === '') {
-            return Mage::helper('M2ePro')->__('N/A');
+            return Mage::helper('M2ePro')->__('N/A') . $repricingHtml;
         }
 
         $marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
@@ -600,10 +649,11 @@ HTML;
                     $currentTimestamp <= $endDateTimestamp &&
                     $salePrice < (float)$value
                 ) {
-                    $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>';
+                    $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>' .
+                                    $repricingHtml;
                     $resultHtml .= '<br/>'.$intervalHtml.'&nbsp;'.$salePriceValue;
                 } else {
-                    $resultHtml .= $priceValue;
+                    $resultHtml .= $priceValue . $repricingHtml;
                     $resultHtml .= '<br/>'.$intervalHtml.
                         '<span style="color:gray;">'.'&nbsp;'.$salePriceValue.'</span>';
                 }
@@ -611,7 +661,7 @@ HTML;
         }
 
         if (empty($resultHtml)) {
-            $resultHtml = $priceValue;
+            $resultHtml = $priceValue . $repricingHtml;
         }
 
         return $resultHtml;
@@ -801,22 +851,58 @@ HTML;
             return;
         }
 
-        $from = $value['from'];
-        $to   = $value['to'];
+        $condition = '';
 
-        $collection->getSelect()->where(
-            '(online_price >= \''.$from.'\' AND online_price <= \''.$to.'\' AND
+        if (isset($value['from']) || isset($value['to'])) {
+
+            if (isset($value['from']) && $value['from'] != '') {
+                $condition = 'online_price >= \''.$value['from'].'\'';
+            }
+            if (isset($value['to']) && $value['to'] != '') {
+                if (isset($value['from']) && $value['from'] != '') {
+                    $condition .= ' AND ';
+                }
+                $condition .= 'online_price <= \''.$value['to'].'\'';
+            }
+
+            $condition = '(' . $condition . ' AND
             (
+                (online_sale_price_start_date IS NULL AND
+                online_sale_price_end_date IS NULL) OR
                 online_sale_price IS NULL OR
-                online_sale_price_start_date > NOW() OR
-                online_sale_price_end_date < NOW()
-            )) OR (online_sale_price >= \''.$from.'\' AND online_sale_price <= \''.$to.'\' AND
+                online_sale_price_start_date > CURRENT_DATE() OR
+                online_sale_price_end_date < CURRENT_DATE()
+            )) OR (';
+
+            if (isset($value['from']) && $value['from'] != '') {
+                $condition .= 'online_sale_price >= \''.$value['from'].'\'';
+            }
+            if (isset($value['to']) && $value['to'] != '') {
+                if (isset($value['from']) && $value['from'] != '') {
+                    $condition .= ' AND ';
+                }
+                $condition .= 'online_sale_price <= \''.$value['to'].'\'';
+            }
+
+            $condition .= ' AND
             (
+                online_sale_price_start_date IS NOT NULL AND
+                online_sale_price_end_date IS NOT NULL AND
                 online_sale_price IS NOT NULL AND
-                online_sale_price_start_date < NOW() AND
-                online_sale_price_end_date > NOW()
-            ))'
-        );
+                online_sale_price_start_date < CURRENT_DATE() AND
+                online_sale_price_end_date > CURRENT_DATE()
+            ))';
+
+        }
+
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() && !empty($value['is_repricing'])) {
+            if (!empty($condition)) {
+                $condition = '(' . $condition . ') OR ';
+            }
+            $condition .= '`malpr`.`listing_product_id` IS NOT NULL';
+        }
+
+        $collection->getSelect()->where($condition);
     }
 
     //########################################

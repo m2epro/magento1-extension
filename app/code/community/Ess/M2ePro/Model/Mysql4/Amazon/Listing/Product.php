@@ -52,4 +52,37 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product
     }
 
     //########################################
+
+    public function getProductsDataBySkus(array $skus = array(),
+                                          array $filters = array(),
+                                          array $columns = array())
+    {
+        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
+        $listingProductCollection->getSelect()->joinLeft(
+            array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
+            'l.id = main_table.listing_id',
+            array()
+        );
+
+        if (!empty($skus)) {
+            $skus = array_map(function($el){ return (string)$el; }, $skus);
+            $listingProductCollection->addFieldToFilter('sku', array('in' => array_unique($skus)));
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $columnName => $columnValue) {
+                $listingProductCollection->addFieldToFilter($columnName, $columnValue);
+            }
+        }
+
+        if (!empty($columns)) {
+            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+            $listingProductCollection->getSelect()->columns($columns);
+        }
+
+        return $listingProductCollection->getData();
+    }
+
+    //########################################
 }

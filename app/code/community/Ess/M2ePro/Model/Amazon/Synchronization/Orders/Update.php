@@ -126,11 +126,19 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Update
     {
         $relatedChanges = array();
 
-        foreach ($accounts as $account) {
-            $relatedChanges = array_merge($relatedChanges, $this->getRelatedChanges($account));
+        foreach ($accounts as $index => $account) {
+
+            $tempChanges = $this->getRelatedChanges($account);
+
+            if (empty($tempChanges)) {
+                unset($accounts[$index]);
+                continue;
+            }
+
+            $relatedChanges = array_merge($relatedChanges, $tempChanges);
         }
 
-        if (empty($relatedChanges)) {
+        if (empty($relatedChanges) || empty($accounts)) {
             return;
         }
 

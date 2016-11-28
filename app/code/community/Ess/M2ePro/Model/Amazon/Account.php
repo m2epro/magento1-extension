@@ -97,6 +97,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     private $marketplaceModel = NULL;
 
+    /**
+     * @var Ess_M2ePro_Model_Amazon_Account_Repricing
+     */
+    private $repricingModel = NULL;
+
     //########################################
 
     public function _construct()
@@ -116,6 +121,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         $items = $this->getAmazonItems(true);
         foreach ($items as $item) {
             $item->deleteInstance();
+        }
+
+        if ($this->isRepricing()) {
+            $this->getRepricing()->deleteInstance();
+            $this->repricingModel = NULL;
         }
 
         $this->marketplaceModel = NULL;
@@ -154,6 +164,43 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
          $this->marketplaceModel = $instance;
+    }
+
+    //########################################
+
+    /**
+     * @return bool
+     */
+    public function isRepricing()
+    {
+        $cacheKey = 'amazon_account_'.$this->getId().'_is_repricing';
+        $cacheData = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
+
+        if ($cacheData !== false) {
+            return (bool)$cacheData;
+        }
+
+        $repricingCollection = Mage::getResourceModel('M2ePro/Amazon_Account_Repricing_Collection');
+        $repricingCollection->addFieldToFilter('account_id', $this->getId());
+        $isRepricing = (int)(bool)$repricingCollection->getSize();
+
+        Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey, $isRepricing, array('account'), 60*60*24);
+
+        return (bool)$isRepricing;
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Amazon_Account_Repricing
+     */
+    public function getRepricing()
+    {
+        if (is_null($this->repricingModel)) {
+            $this->repricingModel = Mage::helper('M2ePro')->getCachedObject(
+                'Amazon_Account_Repricing', $this->getId(), NULL, array('account')
+            );
+        }
+
+        return $this->repricingModel;
     }
 
     //########################################
@@ -852,33 +899,6 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
         $setting = $this->getSetting('magento_orders_settings', array('fba', 'stock_mode'));
 
         return $setting == self::MAGENTO_ORDERS_FBA_STOCK_MODE_YES;
-    }
-
-    // ---------------------------------------
-
-    public function isRepricingLinked()
-    {
-        return !is_null($this->getData('repricing'));
-    }
-
-    public function getRepricing()
-    {
-        return $this->getSettings('repricing');
-    }
-
-    public function getRepricingEmail()
-    {
-        return $this->getSetting('repricing', 'email');
-    }
-
-    public function getRepricingToken()
-    {
-        return $this->getSetting('repricing', 'token');
-    }
-
-    public function getRepricingInfo()
-    {
-        return $this->getSetting('repricing', 'info');
     }
 
     //########################################

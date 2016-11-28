@@ -711,8 +711,8 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Templates_Inspector
             return false;
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
-            $amazonListingProduct->isRepricing()) {
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
+            $amazonListingProduct->isRepricingEnabled()) {
             return false;
         }
 

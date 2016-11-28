@@ -105,6 +105,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_ebay_template_synchronization',
 
             'm2epro_amazon_account',
+            'm2epro_amazon_account_repricing',
             'm2epro_amazon_dictionary_category',
             'm2epro_amazon_dictionary_category_product_data',
             'm2epro_amazon_dictionary_marketplace',
@@ -114,6 +115,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_amazon_listing_auto_category_group',
             'm2epro_amazon_listing_other',
             'm2epro_amazon_listing_product',
+            'm2epro_amazon_listing_product_repricing',
             'm2epro_amazon_listing_product_variation',
             'm2epro_amazon_listing_product_variation_option',
             'm2epro_amazon_marketplace',

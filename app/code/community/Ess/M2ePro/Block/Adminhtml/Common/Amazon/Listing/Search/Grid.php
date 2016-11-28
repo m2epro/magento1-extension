@@ -40,6 +40,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                    ->join(array('l'=>Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
                                 '(`l`.`id` = `main_table`.`listing_id`)',
                                 array('listing_title'=>'title','store_id','marketplace_id'))
+                    ->joinLeft(array('malpr'=>Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')
+                                                    ->getMainTable()
+                                ),
+                                '(`malpr`.`listing_product_id` = `main_table`.`id`)',
+                                array('is_repricing_disabled' => 'is_online_disabled'))
                    ->join(array('al'=>Mage::getResourceModel('M2ePro/Amazon_Listing')->getMainTable()),
                                 '(`al`.`listing_id` = `l`.`id`)',
                                 array('template_selling_format_id'));
@@ -130,7 +135,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                       `second_table`.`online_price`
                     ),
                     `t`.`variation_max_price`
-                )'
+                )',
+                'additional_data' => 'main_table.additional_data',
+                'is_repricing_disabled' => 'malpr.is_online_disabled'
             )
         );
         $listingProductCollection->getSelect()->joinLeft(
@@ -169,7 +176,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             'second_table.listing_product_id=t.variation_parent_id',
             array(
                 'variation_min_price' => 'variation_min_price',
-                'variation_max_price' => 'variation_max_price',
+                'variation_max_price' => 'variation_max_price'
             )
         );
 
@@ -209,7 +216,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'general_id'                    => 'second_table.general_id',
                 'is_afn_channel'                => 'second_table.is_afn_channel',
                 'is_variation_parent'           => new Zend_Db_Expr('NULL'),
-                'is_repricing'             => 'second_table.is_repricing',
+                'is_repricing'                  => 'second_table.is_repricing',
                 'variation_child_statuses'      => new Zend_Db_Expr('NULL'),
                 'online_sku'                    => 'second_table.sku',
                 'online_qty'                    => 'second_table.online_qty',
@@ -219,8 +226,10 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'online_sale_price_end_date'    => new Zend_Db_Expr('NULL'),
                 'min_online_price'              => 'second_table.online_price',
                 'max_online_price'              => 'second_table.online_price',
+                'additional_data'               => new Zend_Db_Expr('NULL'),
+                'is_repricing_disabled'         => 'second_table.is_repricing_disabled',
                 'variation_min_price'           => new Zend_Db_Expr('NULL'),
-                'variation_max_price'           => new Zend_Db_Expr('NULL')
+                'variation_max_price'           => new Zend_Db_Expr('NULL'),
             )
         );
         // ---------------------------------------
@@ -243,6 +252,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'is_in_stock',
                 'product_name',
                 'listing_title',
+                'additional_data',
                 'store_id',
                 'account_id',
                 'marketplace_id',
@@ -266,7 +276,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
                 'min_online_price',
                 'max_online_price',
                 'variation_min_price',
-                'variation_max_price'
+                'variation_max_price',
+                'additional_data',
+                'is_repricing_disabled'
             )
         );
 
@@ -379,7 +391,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Search_Grid extends Mage_
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
         );
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled()) {
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled()) {
             $priceColumn['filter'] = 'M2ePro/adminhtml_common_amazon_grid_column_filter_price';
         }
 
@@ -692,33 +704,100 @@ HTML;
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        $repricingHtml ='';
+        $repricingHtml = '';
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
-            (int)$row->getData('is_repricing') === Ess_M2ePro_Model_Amazon_Listing_Product::IS_REPRICING_YES) {
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() && $row->getData('is_repricing')) {
+
             if ($row->getData('is_variation_parent')) {
-                $text = Mage::helper('M2ePro')->__(
-                    'Some Child Products are used by Amazon Repricing Tool.
-                     The Price cannot be updated through the M2E Pro.'
-                );
-            } else {
-                $text = Mage::helper('M2ePro')->__(
-                    'This product is used by Amazon Repricing Tool.
-                     The Price cannot be updated through the M2E Pro.'
-                );
-            }
 
-            $repricingHtml = <<<HTML
-<span style="float:right; text-align: left;">
+                $additionalData = (array)json_decode($row->getData('additional_data'), true);
+
+                $enabledCount = isset($additionalData['repricing_enabled_count'])
+                    ? $additionalData['repricing_enabled_count'] : null;
+
+                $disabledCount = isset($additionalData['repricing_disabled_count'])
+                    ? $additionalData['repricing_disabled_count'] : null;
+
+                if ($enabledCount && $disabledCount) {
+                    $image = 'money_mixed';
+                    $text = Mage::helper('M2ePro')->__(
+                        'This Parent has either Enabled and Disabled for dynamic repricing Child Products. <br>
+                        <strong>Please note</strong> that the Price value(s) shown in the grid might be
+                        different from the actual one from Amazon. It is caused by the delay in the values
+                        updating made via the Repricing Service.'
+                    );
+                } elseif ($enabledCount) {
+                    $image = 'money';
+                    $text = Mage::helper('M2ePro')->__(
+                        'All Child Products of this Parent are Enabled for dynamic repricing. <br>
+                        <strong>Please note</strong> that the Price value(s) shown in the grid might be different
+                        from the actual one from Amazon. It is caused by the delay in the values updating
+                        made via the Repricing Service.'
+                    );
+                } elseif ($disabledCount) {
+                    $image = 'money_disabled';
+                    $text = Mage::helper('M2ePro')->__(
+                        'All Child Products of this Parent are Disabled for Repricing.'
+                    );
+                } else {
+                    $image = 'money';
+                    $text = Mage::helper('M2ePro')->__(
+                        'Some Child Products of this Parent are managed by the Repricing Service. <br>
+                        <strong>Please note</strong> that the Price value(s) shown in the grid might be
+                        different from the actual one from Amazon. It is caused by the delay in the
+                        values updating made via the Repricing Service.'
+                    );
+                }
+
+                $repricingHtml = <<<HTML
+<br/><span style="float:right; text-align: left;">
     <img class="tool-tip-image"
          style="vertical-align: middle; width: 16px;"
-         src="{$this->getSkinUrl('M2ePro/images/money.png')}">
+         src="{$this->getSkinUrl('M2ePro/images/'.$image.'.png')}">
     <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
         <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
         <span>{$text}</span>
     </span>
 </span>
 HTML;
+            } elseif (!$row->getData('is_variation_parent')) {
+                $image = 'money';
+                $text = Mage::helper('M2ePro')->__(
+                    'This Product is used by Amazon Repricing Tool, so its Price cannot be managed via M2E Pro.<br>
+                    <strong>Please note</strong> that the Price value shown in the grid might be different
+                    from the actual one from Amazon. It is caused by the delay in the values
+                    updating made via the Repricing Service.'
+                );
+
+                if ((int)$row->getData('is_repricing_disabled') == 1) {
+                    $image = 'money_disabled';
+
+                    if ($this->getId() == 'amazonListingSearchOtherGrid') {
+                        $text = Mage::helper('M2ePro')->__(
+                            'This product is disabled on Amazon Repricing Tool. <br>
+                            You can map it to Magento Product and Move into M2E Pro Listing to make the
+                            Price being updated via M2E Pro.'
+                        );
+                    } else {
+                        $text = Mage::helper('M2ePro')->__(
+                            'This product is disabled on Amazon Repricing Tool.
+                            The Price is updated through the M2E Pro.'
+                        );
+                    }
+                }
+
+                $repricingHtml = <<<HTML
+<span style="float:right; text-align: left;">&nbsp;
+    <img class="tool-tip-image"
+         style="vertical-align: middle; width: 16px;"
+         src="{$this->getSkinUrl('M2ePro/images/'.$image.'.png')}">
+    <span class="tool-tip-message tool-tip-message tip-left" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/i_icon.png')}">
+        <span>{$text}</span>
+    </span>
+</span>
+HTML;
+            }
         }
 
         $onlineMinPrice = $row->getData('min_online_price');
@@ -736,7 +815,7 @@ HTML;
 
         $marketplaceId = $row->getData('marketplace_id');
         $currency = Mage::helper('M2ePro/Component_Amazon')
-            ->getCachedObject('Marketplace',$marketplaceId)
+            ->getCachedObject('Marketplace', $marketplaceId)
             ->getChildObject()
             ->getDefaultCurrency();
 
@@ -758,7 +837,7 @@ HTML;
         $resultHtml = '';
 
         $salePrice = $row->getData('online_sale_price');
-        if (!$row->getData('is_variation_parent') && (float)$salePrice > 0) {
+        if (!$row->getData('is_variation_parent') && (float)$salePrice > 0 && !$row->getData('is_repricing')) {
             $currentTimestamp = strtotime(Mage::helper('M2ePro')->getCurrentGmtDate(false,'Y-m-d 00:00:00'));
 
             $startDateTimestamp = strtotime($row->getData('online_sale_price_start_date'));
@@ -1009,7 +1088,7 @@ HTML;
 
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() && !empty($value['is_repricing'])) {
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() && !empty($value['is_repricing'])) {
             if (!empty($condition)) {
                 $condition = '(' . $condition . ') OR ';
             }

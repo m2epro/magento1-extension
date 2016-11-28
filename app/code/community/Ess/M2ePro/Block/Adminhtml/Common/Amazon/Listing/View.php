@@ -302,6 +302,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View extends Mage_Adminht
         $switchToMFN = $this->getUrl('*/adminhtml_common_amazon_listing/switchToMFN');
 
         $getAFNQtyBySku = $this->getUrl('*/adminhtml_common_amazon_listing/getAFNQtyBySku');
+        $getUpdatedRepricingPriceBySkus = $this->getUrl(
+            '*/adminhtml_common_amazon_listing_repricing/getUpdatedPriceBySkus'
+        );
 
         $variationProductManage = $this->getUrl(
             '*/adminhtml_common_amazon_listing_variation_product_manage/index');
@@ -449,6 +452,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View extends Mage_Adminht
     M2ePro.url.switchToMFN = '{$switchToMFN}';
 
     M2ePro.url.getAFNQtyBySku = '{$getAFNQtyBySku}';
+    M2ePro.url.getUpdatedRepricingPriceBySkus = '{$getUpdatedRepricingPriceBySkus}';
 
     M2ePro.url.variationProductManage = '{$variationProductManage}';
     M2ePro.url.variationProductSetGeneralIdOwner = '{$variationProductSetGeneralIdOwner}';

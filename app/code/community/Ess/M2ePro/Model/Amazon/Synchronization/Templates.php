@@ -89,6 +89,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Templates
     {
         $result = true;
 
+        $result = !$this->processTask('Templates_Repricing') ? false : $result;
         $result = !$this->processTask('Templates_List') ? false : $result;
         $result = !$this->processTask('Templates_Revise') ? false : $result;
         $result = !$this->processTask('Templates_Relist') ? false : $result;

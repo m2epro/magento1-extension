@@ -46,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Account_Edit_Tabs extends Mage_Ad
                               ->createBlock('M2ePro/adminhtml_common_amazon_account_edit_tabs_order')->toHtml(),
         ));
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
             Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()) {
 
             $this->addTab('repricing', array(

@@ -117,6 +117,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Moving
 
         $listingProduct->addData($dataForUpdate)->save();
 
+        if ($amazonOtherListing->isRepricing()) {
+            $listingProductRepricing = Mage::getModel('M2ePro/Amazon_Listing_Product_Repricing');
+            $listingProductRepricing->setData(array(
+                'listing_product_id' => $listingProduct->getId(),
+                'is_online_disabled' => $amazonOtherListing->isRepricingDisabled(),
+                'update_date'        => Mage::helper('M2ePro')->getCurrentGmtDate(),
+                'create_date'        => Mage::helper('M2ePro')->getCurrentGmtDate(),
+            ));
+            $listingProductRepricing->save();
+        }
+
         // Set listing store id to Amazon Item
         // ---------------------------------------
         $itemsCollection = Mage::getModel('M2ePro/Amazon_Item')->getCollection();

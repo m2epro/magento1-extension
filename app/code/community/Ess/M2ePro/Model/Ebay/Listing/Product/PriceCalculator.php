@@ -21,6 +21,20 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator
 
     //########################################
 
+    protected function isPriceVariationModeParent()
+    {
+        return $this->getPriceVariationMode()
+                            == Ess_M2ePro_Model_Ebay_Template_SellingFormat::PRICE_VARIATION_MODE_PARENT;
+    }
+
+    protected function isPriceVariationModeChildren()
+    {
+        return $this->getPriceVariationMode()
+                            == Ess_M2ePro_Model_Ebay_Template_SellingFormat::PRICE_VARIATION_MODE_CHILDREN;
+    }
+
+    //########################################
+
     /**
      * @param bool $value
      * @return Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator

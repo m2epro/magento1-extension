@@ -24,6 +24,11 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
     private $modifyByCoefficient = false;
 
     /**
+     * @var null|int
+     */
+    private $priceVariationMode = NULL;
+
+    /**
      * @var null|float
      */
     private $productValueCache = NULL;
@@ -99,6 +104,36 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
     {
         return $this->modifyByCoefficient;
     }
+
+    // ---------------------------------------
+
+    /**
+     * @param $mode
+     * @return Ess_M2ePro_Model_Listing_Product_PriceCalculator
+     */
+    public function setPriceVariationMode($mode)
+    {
+        $this->priceVariationMode = $mode;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    protected function getPriceVariationMode()
+    {
+        return $this->priceVariationMode;
+    }
+
+    /**
+     * @return bool
+     */
+    abstract protected function isPriceVariationModeParent();
+
+    /**
+     * @return bool
+     */
+    abstract protected function isPriceVariationModeChildren();
 
     //########################################
 
@@ -307,7 +342,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
     protected function getConfigurableVariationValue(
         Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
-        if ($this->getComponentSellingFormatTemplate()->isPriceVariationModeChildren()) {
+        if ($this->isPriceVariationModeChildren()) {
             $options = $variation->getOptions(true);
             return $this->getOptionBaseValue(reset($options));
         }
@@ -326,7 +361,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
     protected function getBundleVariationValue(
         Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
-        if ($this->getComponentSellingFormatTemplate()->isPriceVariationModeChildren()) {
+        if ($this->isPriceVariationModeChildren()) {
 
             $value = 0;
 

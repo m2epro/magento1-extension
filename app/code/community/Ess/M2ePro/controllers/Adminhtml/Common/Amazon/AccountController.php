@@ -398,6 +398,24 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
                                              $post['other_listings_move_synch']);
         $model->getChildObject()->save();
 
+        // Repricing
+        // ---------------------------------------
+        if (!empty($post['repricing'])) {
+
+            /** @var Ess_M2ePro_Model_Amazon_Account_Repricing $repricingModel */
+            $repricingModel = $model->getChildObject()->getRepricing();
+
+            $repricingOldData = $repricingModel->getData();
+
+            $repricingModel->addData($post['repricing']);
+            $repricingModel->save();
+
+            $repricingNewData = $repricingModel->getData();
+
+            $repricingModel->setProcessRequired($repricingNewData, $repricingOldData);
+        }
+        // ---------------------------------------
+
         try {
 
             // Add or update server

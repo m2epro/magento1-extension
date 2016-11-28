@@ -481,6 +481,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
         $calculator->setSource($src)->setProduct($this->getListingProduct());
         $calculator->setIsIncreaseByVatPercent($increaseByVatPercent);
         $calculator->setModifyByCoefficient($modifyByCoefficient);
+        $calculator->setPriceVariationMode($this->getEbaySellingFormatTemplate()->getPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());
     }

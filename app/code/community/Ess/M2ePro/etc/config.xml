@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.4.6.1</version>
+            <version>6.4.7</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -803,6 +803,13 @@
                     </Ebay_Motor_Group>
 
                     <!-- AMAZON -->
+
+                    <Amazon_Account_Repricing>
+                        <table>m2epro_amazon_account_repricing</table>
+                    </Amazon_Account_Repricing>
+                    <Amazon_Listing_Product_Repricing>
+                        <table>m2epro_amazon_listing_product_repricing</table>
+                    </Amazon_Listing_Product_Repricing>
 
                     <Amazon_Item>
                         <table>m2epro_amazon_item</table>

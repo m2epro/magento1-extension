@@ -10,8 +10,8 @@ $installer->startSetup();
 
 // GENERAL SCRIPT
 
-$tempMagentoConnectUrl = 'http://www.magentocommerce.com/magento-connect/customer-experience/alternative-sales-models/';
-$tempMagentoConnectUrl .= 'ebay-magento-integration-order-importing-and-stock-level-synchronization-9193.html';
+$tempMagentoConnectUrl = 'https://www.magentocommerce.com/magento-connect/';
+$tempMagentoConnectUrl .= 'ebay-amazon-rakuten-magento-integration-order-import-and-stock-level-synchronization.html';
 
 $servicingInterval = rand(43200, 86400);
 
@@ -765,6 +765,36 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`creat
   ('/cron/task/logs_clearing/', 'last_access', NULL, 'date of last access', '2013-05-08 00:00:00',
    '2013-05-08 00:00:00'),
   ('/cron/task/logs_clearing/', 'last_run', NULL, 'date of last run', '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
+  ('/cron/task/repricing_update_settings/', 'interval', '3600', 'in seconds',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_update_settings/', 'last_access', NULL, 'date of last access', '2013-05-08 00:00:00',
+   '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_update_settings/', 'last_run', NULL, 'date of last run',
+   '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
+  ('/cron/task/repricing_synchronization_actual_price/', 'mode', '1', '0 - disable, \r\n1 - enable',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_synchronization_actual_price/', 'interval', '3600', 'in seconds',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_synchronization_actual_price/', 'last_access', NULL, 'date of last access',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_synchronization_actual_price/', 'last_run', NULL, 'date of last run',
+   '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
+  ('/cron/task/repricing_synchronization_general/', 'mode', '1', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00',
+   '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_synchronization_general/', 'interval', '86400', 'in seconds',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_synchronization_general/', 'last_access', NULL, 'date of last access', '2013-05-08 00:00:00',
+   '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_synchronization_general/', 'last_run', NULL, 'date of last run',
+   '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
+  ('/cron/task/repricing_inspect_products/', 'mode', '1', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00',
+   '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_inspect_products/', 'interval', '3600', 'in seconds',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_inspect_products/', 'last_access', NULL, 'date of last access', '2013-05-08 00:00:00',
+   '2013-05-08 00:00:00'),
+  ('/cron/task/repricing_inspect_products/', 'last_run', NULL, 'date of last run',
+   '2014-01-01 00:00:00', '2014-01-01 00:00:00'),
   ('/cron/task/synchronization/', 'mode', '1', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00',
    '2013-05-08 00:00:00'),
   ('/cron/task/synchronization/', 'interval', '300', 'in seconds', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
@@ -2183,8 +2213,40 @@ CREATE TABLE `m2epro_amazon_account` (
   `other_listings_move_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `other_listings_move_settings` VARCHAR(255) DEFAULT NULL,
   `magento_orders_settings` TEXT NOT NULL,
-  `repricing` TEXT DEFAULT NULL,
   `info` TEXT DEFAULT NULL,
+  PRIMARY KEY (`account_id`)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `m2epro_amazon_account_repricing`;
+CREATE TABLE `m2epro_amazon_account_repricing` (
+  `account_id` INT(11) UNSIGNED NOT NULL,
+  `email` VARCHAR(255) DEFAULT NULL,
+  `token` VARCHAR(255) DEFAULT NULL,
+  `total_products` INT(11) UNSIGNED NOT NULL DEFAULT 0,
+  `regular_price_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `regular_price_attribute` VARCHAR(255) NOT NULL,
+  `regular_price_coefficient` VARCHAR(255) NOT NULL,
+  `regular_price_variation_mode` TINYINT(2) UNSIGNED NOT NULL,
+  `min_price_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `min_price_value` DECIMAL(14, 2) UNSIGNED DEFAULT NULL,
+  `min_price_percent` INT(11) UNSIGNED DEFAULT NULL,
+  `min_price_attribute` VARCHAR(255) NOT NULL,
+  `min_price_coefficient` VARCHAR(255) NOT NULL,
+  `min_price_variation_mode` TINYINT(2) UNSIGNED NOT NULL,
+  `max_price_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `max_price_value` DECIMAL(14, 2) UNSIGNED DEFAULT NULL,
+  `max_price_percent` INT(11) UNSIGNED DEFAULT NULL,
+  `max_price_attribute` VARCHAR(255) NOT NULL,
+  `max_price_coefficient` VARCHAR(255) NOT NULL,
+  `max_price_variation_mode` TINYINT(2) UNSIGNED NOT NULL,
+  `disable_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `disable_mode_attribute` VARCHAR(255) NOT NULL,
+  `last_checked_listing_product_update_date` DATETIME DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`account_id`)
 )
 ENGINE = INNODB
@@ -2389,11 +2451,13 @@ CREATE TABLE `m2epro_amazon_listing_other` (
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_isbn_general_id` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_repricing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_repricing_disabled` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`listing_other_id`),
   INDEX `general_id` (`general_id`),
   INDEX `is_afn_channel` (`is_afn_channel`),
   INDEX `is_isbn_general_id` (`is_isbn_general_id`),
   INDEX `is_repricing` (`is_repricing`),
+  INDEX `is_repricing_disabled` (`is_repricing_disabled`),
   INDEX `online_price` (`online_price`),
   INDEX `online_qty` (`online_qty`),
   INDEX `sku` (`sku`),
@@ -2425,14 +2489,15 @@ CREATE TABLE `m2epro_amazon_listing_product` (
   `online_sale_price_start_date` DATETIME DEFAULT NULL,
   `online_sale_price_end_date` DATETIME DEFAULT NULL,
   `online_qty` INT(11) UNSIGNED DEFAULT NULL,
+  `is_repricing` TINYINT(2) UNSIGNED DEFAULT NULL,
   `is_afn_channel` TINYINT(2) UNSIGNED DEFAULT NULL,
   `is_isbn_general_id` TINYINT(2) UNSIGNED DEFAULT NULL,
   `is_general_id_owner` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
-  `is_repricing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `defected_messages` TEXT DEFAULT NULL,
   PRIMARY KEY (`listing_product_id`),
   INDEX `general_id` (`general_id`),
   INDEX `search_settings_status` (`search_settings_status`),
+  INDEX `is_repricing` (`is_repricing`),
   INDEX `is_afn_channel` (`is_afn_channel`),
   INDEX `is_isbn_general_id` (`is_isbn_general_id`),
   INDEX `is_variation_product_matched` (`is_variation_product_matched`),
@@ -2446,9 +2511,27 @@ CREATE TABLE `m2epro_amazon_listing_product` (
   INDEX `variation_parent_need_processor` (`variation_parent_need_processor`),
   INDEX `variation_parent_id` (`variation_parent_id`),
   INDEX `is_general_id_owner` (`is_general_id_owner`),
-  INDEX `is_repricing` (`is_repricing`),
   INDEX `template_shipping_override_id` (`template_shipping_override_id`),
   INDEX `template_description_id` (`template_description_id`)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `m2epro_amazon_listing_product_repricing`;
+CREATE TABLE `m2epro_amazon_listing_product_repricing` (
+  `listing_product_id` INT(11) UNSIGNED NOT NULL,
+  `is_online_disabled` TINYINT(2) UNSIGNED NOT NULL,
+  `online_regular_price` DECIMAL(12, 4) UNSIGNED DEFAULT NULL,
+  `online_min_price` DECIMAL(12, 4) UNSIGNED DEFAULT NULL,
+  `online_max_price` DECIMAL(12, 4) UNSIGNED DEFAULT NULL,
+  `is_process_required` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `last_synchronization_date` DATETIME DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `create_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`listing_product_id`),
+  INDEX `is_online_disabled` (`is_online_disabled`),
+  INDEX `is_process_required` (`is_process_required`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -2813,7 +2896,7 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`creat
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', '0 - disable, \r\n1 - enable',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
    ('/amazon/repricing/', 'mode', '0', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-   ('/amazon/repricing/', 'base_url', 'http://repricer.m2epro.com/', 'Repricing Tool base url',
+   ('/amazon/repricing/', 'base_url', 'https://repricer.m2epro.com/connector/m2epro/', 'Repricing Tool base url',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
 INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
@@ -2832,12 +2915,6 @@ INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`upd
   ('/amazon/defaults/update_defected_listings_products/', 'mode', '1', '0 - disable, \r\n1 - enable',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/defaults/update_defected_listings_products/', 'last_time', NULL, 'Last check time',
-   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-  ('/amazon/defaults/update_repricing/', 'interval', '86400', 'in seconds',
-   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-  ('/amazon/defaults/update_repricing/', 'mode', '1', '0 - disable, \r\n1 - enable',
-   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-  ('/amazon/defaults/update_repricing/', 'last_time', NULL, 'Last check time',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/defaults/run_parent_processors/', 'interval', '300', 'in seconds',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
@@ -2876,6 +2953,8 @@ INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`upd
   ('/amazon/other_listings/title/', 'mode', '1', '0 - disable, \r\n1 - enable',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/templates/', 'mode', '1', '0 - disable, \r\n1 - enable',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+   ('/amazon/templates/repricing/', 'mode', '1', '0 - disable, \r\n1 - enable',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/templates/list/', 'mode', '1', '0 - disable, \r\n1 - enable',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),

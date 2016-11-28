@@ -146,11 +146,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         return true;
     }
 
-    public function isRepricingEnabled()
-    {
-        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/amazon/repricing/', 'mode');
-    }
-
     public function getApplicationName()
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/amazon/', 'application_name');

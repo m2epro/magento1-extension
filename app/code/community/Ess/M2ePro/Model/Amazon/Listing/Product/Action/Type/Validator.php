@@ -283,8 +283,9 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
             return true;
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isRepricingEnabled() &&
-            $this->getAmazonListingProduct()->isRepricing()) {
+        if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
+            $this->getAmazonListingProduct()->isRepricingEnabled()
+        ) {
 
             $this->getConfigurator()->disallowPrice();
 
