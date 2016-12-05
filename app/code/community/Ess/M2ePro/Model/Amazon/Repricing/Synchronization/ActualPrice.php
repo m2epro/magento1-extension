@@ -158,7 +158,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
                 $connWrite->update(
                     $resource->getTableName('m2epro_amazon_listing_other'),
                     array(
-                        'online_price' => $offerProductPrice['product_price'],
+                        'online_price' => $offerProductPrice,
                     ),
                     array('listing_other_id = ?' => $listingOtherId)
                 );

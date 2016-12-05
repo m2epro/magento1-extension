@@ -2895,7 +2895,7 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`creat
   ('/component/amazon/', 'allowed', '1', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', '0 - disable, \r\n1 - enable',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-   ('/amazon/repricing/', 'mode', '0', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+   ('/amazon/repricing/', 'mode', '1', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
    ('/amazon/repricing/', 'base_url', 'https://repricer.m2epro.com/connector/m2epro/', 'Repricing Tool base url',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 

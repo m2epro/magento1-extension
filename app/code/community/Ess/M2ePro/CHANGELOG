@@ -1,3 +1,8 @@
+* 6.4.7.1 (r11020) (05/12/2016)
+
+* Fix: [Amazon] Ability to use Repricing Service without the need to contact support of M2E Pro
+* Fix: [Amazon] "Warning: Illegal string offset 'product_price' in /app/code/community/Ess/M2ePro/Model/Amazon/Repricing/Synchronization/ActualPrice.php
+
 * 6.4.7 (r10970) (28/11/2016)
 
 * Added: [Amazon] Ability to use Repricing Service without the need to contact support of M2E Pro
