@@ -1,4 +1,4 @@
-# eBay / Amazon / Rakuten Magento 1.x.x Integration
+# eBay / Amazon / Rakuten Integration for Magento v1.x.x
  
  M2E Pro is a Magento trusted (TM), award-winning extension, which allows merchants of all sizes to fully integrate Magento based system(s) into eBay/Amazon/Rakuten.com platforms.
 
