@@ -50,6 +50,7 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
             ->setData('postcode', $this->getData('postcode'))
             ->setData('telephone', $this->getData('telephone'))
             ->setData('street', $this->getData('street'))
+            ->setData('company', $this->getData('company'))
             ->setCustomerId($this->customer->getId())
             ->setIsDefaultBilling(true)
             ->setIsDefaultShipping(true);
