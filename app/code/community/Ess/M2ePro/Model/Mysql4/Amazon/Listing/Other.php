@@ -29,7 +29,7 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other
         $listingOtherCollection->addFieldToFilter('account_id', $account->getId());
 
         if (!is_null($repricingDisabled)) {
-            $listingOtherCollection->addFieldToFilter('is_repricing_disabled', $repricingDisabled);
+            $listingOtherCollection->addFieldToFilter('is_repricing_disabled', (int)$repricingDisabled);
         }
 
         $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);

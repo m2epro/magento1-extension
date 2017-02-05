@@ -212,6 +212,7 @@ class Ess_M2ePro_Model_Order_Reserve
                 $productsAffectedCount++;
 
                 $transaction->addObject($magentoStockItem->getStockItem());
+                $item->getProduct()->setStockItem($magentoStockItem->getStockItem());
             }
 
             $item->setReservedProducts($products);

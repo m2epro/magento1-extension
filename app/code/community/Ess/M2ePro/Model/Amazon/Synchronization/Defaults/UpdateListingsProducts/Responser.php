@@ -204,6 +204,10 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
                 }
             }
 
+            if ($existingItem['is_repricing'] && !$existingItem['is_online_disabled']) {
+                unset($newData['online_price'], $existingData['online_price']);
+            }
+
             if ($newData == $existingData) {
                 continue;
             }
@@ -430,6 +434,14 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
         $tempColumns = array('second_table.sku');
 
         if ($withData) {
+            $collection->getSelect()->joinLeft(
+                array(
+                    'repricing' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getMainTable()
+                ),
+                'second_table.listing_product_id = repricing.listing_product_id',
+                array('is_online_disabled')
+            );
+
             $tempColumns = array(
                 'main_table.listing_id',
                 'main_table.product_id','main_table.status',
@@ -439,6 +451,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Defaults_UpdateListingsProducts_Re
                 'second_table.is_afn_channel', 'second_table.is_isbn_general_id',
                 'second_table.listing_product_id',
                 'second_table.is_variation_product', 'second_table.variation_parent_id',
+                'second_table.is_repricing', 'repricing.is_online_disabled',
             );
         }
 

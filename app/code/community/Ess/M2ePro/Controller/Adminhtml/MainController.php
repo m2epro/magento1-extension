@@ -11,9 +11,9 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
 {
     //########################################
 
-    public function preDispatch()
+    protected function __preDispatch()
     {
-        parent::preDispatch();
+        parent::__preDispatch();
 
         if ($this->getRequest()->isGet() &&
             !$this->getRequest()->isPost() &&

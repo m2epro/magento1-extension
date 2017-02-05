@@ -14,6 +14,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     const MARKETPLACE_MOTORS = 9;
     const MARKETPLACE_AU = 4;
     const MARKETPLACE_UK = 3;
+    const MARKETPLACE_FR = 7;
     const MARKETPLACE_DE = 8;
     const MARKETPLACE_IT = 10;
 

@@ -25,6 +25,22 @@ class Ess_M2ePro_Adminhtml_Development_InspectionController
     {
         $resourcesConfig = Mage::getConfig()->getNode('global/resources');
         $resourcesConfig = json_decode(json_encode((array)$resourcesConfig), true);
+
+        $secureKeys = array('host', 'username', 'password');
+        foreach ($resourcesConfig as &$configItem) {
+            if (!isset($configItem['connection']) || !is_array($configItem['connection'])) {
+                continue;
+            }
+
+            foreach ($secureKeys as $key) {
+                if (!isset($configItem['connection'][$key])) {
+                    continue;
+                }
+
+                $configItem['connection'][$key] = str_repeat('*', strlen($configItem['connection'][$key]));
+            }
+        }
+
         echo '<pre>'.print_r($resourcesConfig, true).'</pre>';
     }
 

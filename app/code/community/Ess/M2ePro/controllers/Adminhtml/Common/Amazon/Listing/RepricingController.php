@@ -73,6 +73,10 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
         $accountId     = $this->getRequest()->getParam('account_id');
         $responseToken = $this->getRequest()->getParam('response_token');
 
+        if (empty($responseToken)) {
+            return $this->indexAction();
+        }
+
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
@@ -166,6 +170,10 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
         $accountId     = $this->getRequest()->getParam('account_id');
         $responseToken = $this->getRequest()->getParam('response_token');
 
+        if (empty($responseToken)) {
+            return $this->indexAction();
+        }
+
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
@@ -237,6 +245,10 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
     {
         $accountId     = $this->getRequest()->getParam('account_id');
         $responseToken = $this->getRequest()->getParam('response_token');
+
+        if (empty($responseToken)) {
+            return $this->indexAction();
+        }
 
         $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
@@ -325,6 +337,10 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Listing_RepricingController
     {
         $accountId     = $this->getRequest()->getParam('account_id');
         $responseToken = $this->getRequest()->getParam('response_token');
+
+        if (empty($responseToken)) {
+            return $this->indexAction();
+        }
 
         $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 

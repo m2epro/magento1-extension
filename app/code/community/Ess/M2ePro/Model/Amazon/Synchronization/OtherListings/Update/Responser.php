@@ -178,13 +178,18 @@ class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update_Responser
                 unset($newData['title'], $existingData['title']);
             }
 
+            if ($existingItem['is_repricing'] && !$existingItem['is_repricing_disabled']) {
+                unset($newData['online_price'], $existingData['online_price']);
+            }
+
             if ($newData == $existingData) {
                 continue;
             }
 
             $tempLogMessages = array();
 
-            if ($newData['online_price'] != $existingData['online_price']) {
+            if (isset($newData['online_price'], $existingData['online_price']) &&
+                $newData['online_price'] != $existingData['online_price']) {
                 // M2ePro_TRANSLATIONS
                 // Item Price was successfully changed from %from% to %to%.
                 $tempLogMessages[] = Mage::helper('M2ePro')->__(
@@ -513,7 +518,8 @@ class Ess_M2ePro_Model_Amazon_Synchronization_OtherListings_Update_Responser
                                  'second_table.sku','second_table.general_id','second_table.title',
                                  'second_table.online_price','second_table.online_qty',
                                  'second_table.is_afn_channel', 'second_table.is_isbn_general_id',
-                                 'second_table.listing_other_id');
+                                 'second_table.listing_other_id',
+                                 'second_table.is_repricing', 'second_table.is_repricing_disabled');
         }
 
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns($tempColumns);

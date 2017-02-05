@@ -225,7 +225,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         $requiredColumns = array('epid','product_type','make','model','year');
         foreach ($requiredColumns as $columnName) {
 
-            if (empty($csvRow[$columnName])) {
+            if (!isset($csvRow[$columnName])) {
                 return false;
             }
         }

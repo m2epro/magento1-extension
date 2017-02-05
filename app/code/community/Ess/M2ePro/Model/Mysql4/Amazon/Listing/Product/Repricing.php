@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Repricing
                 'alpr.listing_product_id = main_table.id'
             );
 
-            $listingProductCollection->addFieldToFilter('alpr.is_online_disabled', $repricingDisabled);
+            $listingProductCollection->addFieldToFilter('alpr.is_online_disabled', (int)$repricingDisabled);
         }
 
         $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);

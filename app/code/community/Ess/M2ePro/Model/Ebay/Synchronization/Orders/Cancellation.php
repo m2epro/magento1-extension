@@ -211,7 +211,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
         /** @var $order Ess_M2ePro_Model_Order */
         $order = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order')
             ->addFieldToFilter('account_id', $account->getId())
-            ->addFieldToFilter('ebay_order_id', $orderData['ebay_order_id'])
+            ->addFieldToFilter('ebay_order_id', $orderData['identifiers']['ebay_order_id'])
             ->getFirstItem();
 
         if (!$order->getId()) {
@@ -251,7 +251,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
 
             $order->setData('shipping_details', json_encode($shippingDetails));
             $order->setData('shipping_status', $shippingStatus);
-            $order->setData('tax_details', json_encode($orderData['tax_details']));
+            $order->setData('tax_details', json_encode($orderData['selling']['tax_details']));
         }
 
         $order->save();
@@ -373,7 +373,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Cancellation
 
     private function getCheckoutStatus($orderData)
     {
-        return Mage::getSingleton('M2ePro/Ebay_Order_Helper')->getCheckoutStatus($orderData['checkout_status']);
+        return Mage::getSingleton('M2ePro/Ebay_Order_Helper')->getCheckoutStatus($orderData['statuses']['checkout']);
     }
 
     private function getPaymentStatus($orderData)

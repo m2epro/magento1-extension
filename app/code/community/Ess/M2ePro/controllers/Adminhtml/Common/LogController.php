@@ -32,8 +32,10 @@ class Ess_M2ePro_Adminhtml_Common_LogController
         return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/logs');
     }
 
-    public function preDispatch()
+    protected function __preDispatch()
     {
+        parent::__preDispatch();
+
         $channel = $this->getRequest()->getParam('channel', false);
 
         if (!$channel) {
@@ -42,8 +44,6 @@ class Ess_M2ePro_Adminhtml_Common_LogController
             Mage::helper('M2ePro/View_Common_Component')->isBuyDefault()    &&
             $this->getRequest()->setParam('channel', Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::CHANNEL_ID_BUY);
         }
-
-        return parent::preDispatch();
     }
 
     //########################################

@@ -644,7 +644,12 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             if ($strict) {
                 $validatePattern = '^' . $validatePattern . '$';
             }
-            return (bool)preg_match('~' . $validatePattern . '~iu', $value);
+            try {
+                $result = (bool)preg_match('~' . $validatePattern . '~iu', $value);
+            } catch (Exception $e) {
+                return false;
+            }
+            return $result;
         }
     }
 

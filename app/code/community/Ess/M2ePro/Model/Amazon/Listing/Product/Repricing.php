@@ -283,7 +283,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
             return $isDisabled;
         }
 
-        if ($this->getMagentoProduct()->isSimpleType() || $this->getMagentoProduct()->isGroupedType()) {
+        if ($this->getMagentoProduct()->isSimpleType() || $this->getMagentoProduct()->isBundleType()) {
             return $isDisabled;
         }
 

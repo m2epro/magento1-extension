@@ -1,3 +1,23 @@
+* 6.4.8 (r11156) (06/02/2017)
+
+* Added: [eBay] Ability to use Parts Compatibility Feature for France Marketplace (kTypes)
+* Improvement: More stable extension Install / Upgrade process
+* Improvement: Prevention of executing synchronization in parallel when Service Cron is working
+* Fix: Wrong message "Domain is invalid for this license" in some cases
+* Fix: Magento Order was not created due to "Out of Stock" reason if Product Quantity was reserved earlier
+* Fix: Unicode string may be cut in a wrong place (on the border of two bytes of one Unicode character)
+* Fix: Warning "Compilation failed: regular expression is too large at offset" when you are using Advanced Filter of the Grid
+* Fix: "Unknown Product type." exception, during synchronization, if Variation Magento Product was removed directly from database
+* Fix: [eBay] Automatic Cancellation did not work for the Orders, which were not paid
+* Fix: [eBay] Custom Import from CSV file of Parts Compatibilities (ePIDs/kTypes) did not work in some cases
+* Fix: [Amazon] "Disable Repricing" option did not work correctly for Variational Products
+* Fix: [Amazon] "Duplicate entry for key 'PRIMARY'" error during Synchronization process
+* Fix: [Amazon] If some Products are managed by Repricing Tool, their prices can have wrong values in the grids
+* Fix: [Amazon] If some Products are added to the Repricing Tool but they are in the disabled state, their prices can have wrong values in the grids
+* Fix: [Amazon] If Magento Product becomes Variational, some associated Listing Products may be broken as a result
+* Fix: [Amazon] Incorrect behavior during adding virtual attributes to active variation products
+* Fix: [Amazon] Error message "General ID "%id%" is invalid" can be shown during List/Relist/... actions, even if the value is a valid ISBN10
+
 * 6.4.7.1 (r11020) (05/12/2016)
 
 * Fix: [Amazon] Ability to use Repricing Service without the need to contact support of M2E Pro

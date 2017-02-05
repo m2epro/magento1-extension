@@ -14,8 +14,8 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
     public function run($skus = NULL)
     {
         $existedSkus = array_unique(array_merge(
-            Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getAllSkus($this->getAccount()),
-            Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getAllRepricingSkus($this->getAccount())
+            Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getAllSkus($this->getAccount(), true),
+            Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getAllRepricingSkus($this->getAccount(), true)
         ));
 
         if (is_null($skus)) {

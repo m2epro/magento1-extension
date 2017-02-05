@@ -20,6 +20,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
             $filters = array(
                 'skus_list' => $skus,
             );
+            $skus = array_map('strtolower', $skus);
         }
 
         $response = $this->sendRequest($filters);
@@ -41,16 +42,19 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
             Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getAllSkus($this->getAccount()),
             Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getAllRepricingSkus($this->getAccount())
         ));
+        $existedSkus = array_map('strtolower', $existedSkus);
 
         if (!is_null($skus)) {
             $existedSkus = array_intersect($skus, $existedSkus);
         }
 
-        $existedSkus = array_map('strtolower', $existedSkus);
-
         $skuIndexedResultOffersData = array();
         foreach ($response['offers'] as $offerData) {
-            $skuIndexedResultOffersData[strtolower($offerData['sku'])] = $offerData;
+            $offerSku = strtolower($offerData['sku']);
+            if (!is_null($skus) && !in_array($offerSku, $skus, true)) {
+                continue;
+            }
+            $skuIndexedResultOffersData[$offerSku] = $offerData;
         }
 
         $this->processNewOffers($skuIndexedResultOffersData, $existedSkus);
@@ -79,14 +83,15 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
     private function processNewOffers(array $resultOffersData, array $existedSkus)
     {
-        $newOffersSkus = array_diff(array_keys($resultOffersData), $existedSkus);
-        if (empty($newOffersSkus)) {
-            return;
+        $newOffersData = array();
+        foreach ($resultOffersData as $offerSku => $offerData) {
+            if (!in_array((string)$offerSku, $existedSkus, true)) {
+                $newOffersData[(string)$offerSku] = $offerData;
+            }
         }
 
-        $newOffersData = array();
-        foreach ($newOffersSkus as $newOfferSku) {
-            $newOffersData[$newOfferSku] = $resultOffersData[$newOfferSku];
+        if (empty($newOffersData)) {
+            return;
         }
 
         $this->addListingsProductsRepricing($newOffersData);
@@ -95,7 +100,13 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
     private function processRemovedOffers(array $resultOffersData, array $existedSkus)
     {
-        $removedOffersSkus = array_diff($existedSkus, array_keys($resultOffersData));
+        $removedOffersSkus = array();
+        foreach ($existedSkus as $existedSku) {
+            if (!array_key_exists((string)$existedSku, $resultOffersData)) {
+                $removedOffersSkus[] = (string)$existedSku;
+            }
+        }
+
         if (empty($removedOffersSkus)) {
             return;
         }
@@ -106,14 +117,15 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
     private function processUpdatedOffers(array $resultOffersData, array $existedSkus)
     {
-        $updatedOffersSkus = array_intersect($existedSkus, array_keys($resultOffersData));
-        if (empty($updatedOffersSkus)) {
-            return;
+        $updatedOffersData = array();
+        foreach ($resultOffersData as $offerSku => $offerData) {
+            if (in_array((string)$offerSku, $existedSkus, true)) {
+                $updatedOffersData[(string)$offerSku] = $offerData;
+            }
         }
 
-        $updatedOffersData = array();
-        foreach ($updatedOffersSkus as $updatedOfferSku) {
-            $updatedOffersData[$updatedOfferSku] = $resultOffersData[$updatedOfferSku];
+        if (empty($updatedOffersData)) {
+            return;
         }
 
         $this->updateListingsProductsRepricing($updatedOffersData);
@@ -338,7 +350,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
             $offerData = $updatedOffersData[strtolower($listingProductData['sku'])];
 
-            if (!is_null($offerData['product_price']) &&
+            if (!is_null($offerData['product_price']) && !$offerData['is_calculation_disabled'] &&
                 $listingProductData['online_price'] != $offerData['product_price']
             ) {
                 $connWrite->update(
@@ -456,7 +468,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
             $offerData = $updatedOffersData[strtolower($listingOtherData['sku'])];
 
-            if (!is_null($offerData['product_price']) &&
+            if (!is_null($offerData['product_price']) && !$offerData['is_calculation_disabled'] &&
                 $offerData['product_price'] != $listingOtherData['online_price']
             ) {
                 $connWrite->update(

@@ -11,6 +11,13 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Development_CommandController
 {
     //########################################
 
+    /**
+     * Allows fill response by echo(), etc.
+     */
+    protected function __postDispatch() {}
+
+    //########################################
+
     public function indexAction()
     {
         $this->_redirect(Mage::helper('M2ePro/View_Development')->getPageRoute());
