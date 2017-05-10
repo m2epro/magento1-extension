@@ -150,9 +150,17 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
             return array();
         }
 
+        $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
+
         $orders = array();
 
         foreach ($response['items'] as $ebayOrderData) {
+
+            $orderCreateDate = new DateTime($ebayOrderData['purchase_create_date'], new DateTimeZone('UTC'));
+            if ($orderCreateDate < $accountCreateDate) {
+                continue;
+            }
+
             /** @var $ebayOrder Ess_M2ePro_Model_Ebay_Order_Builder */
             $ebayOrder = Mage::getModel('M2ePro/Ebay_Order_Builder');
             $ebayOrder->initialize($account, $ebayOrderData);
@@ -203,6 +211,10 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         foreach ($ebayOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
 
+            if ($this->isOrderChangedInParallelProcess($order)) {
+                continue;
+            }
+
             if ($order->canCreateMagentoOrder()) {
                 try {
                     $order->createMagentoOrder();
@@ -238,6 +250,24 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
                 $this->getActualLockItem()->activate();
             }
         }
+    }
+
+    /**
+     * This is going to protect from Magento Orders duplicates.
+     * (Is assuming that there may be a parallel process that has already created Magento Order)
+     *
+     * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
+     */
+    private function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
+    {
+        /** @var Ess_M2ePro_Model_Order $dbOrder */
+        $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
+
+        if ($dbOrder->getMagentoOrderId() != $order->getMagentoOrderId()) {
+            return true;
+        }
+
+        return false;
     }
 
     //########################################

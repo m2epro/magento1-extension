@@ -107,6 +107,23 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
 
     //########################################
 
+    public function afterSaveNewEntity()
+    {
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
+        $variationManager = $this->getVariationManager();
+        $magentoProduct = $this->getMagentoProduct();
+
+        if ($magentoProduct->isProductWithVariations() && !$variationManager->isVariationProduct()) {
+
+            $this->getParentObject()->setData('is_variation_product', 1);
+            $variationManager->setRelationParentType();
+            $variationManager->getTypeModel()->resetProductAttributes(false);
+            $variationManager->getTypeModel()->getProcessor()->process();
+        }
+    }
+
+    //########################################
+
     /**
      * @return Ess_M2ePro_Model_Account
      */

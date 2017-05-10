@@ -490,15 +490,14 @@ class Ess_M2ePro_Model_Magento_Product
             return false;
         }
 
-        $hasOptions = false;
         foreach ($this->getProduct()->getOptions() as $option) {
-            if ((int)$option->getData('is_require')) {
-                $hasOptions = true;
-                break;
+            if ((int)$option->getData('is_require') &&
+                in_array($option->getData('type'), array('drop_down', 'radio', 'multiple', 'checkbox'))) {
+                return true;
             }
         }
 
-        return $hasOptions;
+        return false;
     }
 
     /**

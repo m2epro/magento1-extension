@@ -28,8 +28,6 @@ class Ess_M2ePro_Model_Observer_Order extends Ess_M2ePro_Model_Observer_Abstract
 
         $order->setData('magento_order_id', $magentoOrder->getId());
         $order->save();
-
-        $order->afterCreateMagentoOrder();
     }
 
     //########################################

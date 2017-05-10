@@ -557,6 +557,8 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
                 $this->save();
             }
 
+            $this->afterCreateMagentoOrder();
+
             unset($magentoQuoteBuilder);
             unset($magentoOrderBuilder);
             // ---------------------------------------

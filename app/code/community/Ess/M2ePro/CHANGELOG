@@ -1,3 +1,18 @@
+* 6.4.9 (r11403) (09/05/2017)
+
+* Added: [eBay] Ability to use Parts Compatibility Feature for Spain (kTypes)
+* Improvement: Some sort of new protection to prevent Magento Orders to be duplicated
+* Improvement: Ignore Channel Orders that were created earlier than M2E Pro Account was created
+* Improvement: [eBay] M2E Pro Images Gallery uses CSS instead of JS (eBay active content deprecation announcement)
+* Fix: A simple with Custom Options product is considered to be a Variational by mistake (in some cases)
+* Fix: Undefined constant TYPE_DB_UPGRADE during an upgrade process (only if Magento versions less than 1.5.x)
+* Fix: Magento Order for Configurable Products was not created (the limited set of cases)
+* Fix: [eBay] Order Variation Options were not mapped automatically for Grouped Products in some cases
+* Fix: [eBay] Incorrect Status of Listing Product displayed in Listing Grid, if Out Of Stock Control enabled (Sold instead of Stopped) in some cases
+* Fix: [eBay] Not paid Orders could be automatically canceled earlier than allowed period was ended
+* Fix: [Amazon] Error when new Variational Product was added to the Listing because it was not considered as Parent-Child Amazon Product
+* Fix: [Amazon] Some QTY amount was not returned back for AFN Orders if Magento Product QTY was lower or equal to zero
+
 * 6.4.8 (r11156) (06/02/2017)
 
 * Added: [eBay] Ability to use Parts Compatibility Feature for France Marketplace (kTypes)

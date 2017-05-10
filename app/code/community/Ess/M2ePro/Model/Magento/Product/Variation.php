@@ -571,6 +571,10 @@ class Ess_M2ePro_Model_Magento_Product_Variation
                 continue;
             }
 
+            if (!in_array($option->getType(), $this->getCustomOptionsAllowedTypes())) {
+                continue;
+            }
+
             $customOption = array(
                 'option_id' => $option->getData('option_id'),
                 'values'    => array(),

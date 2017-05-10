@@ -354,7 +354,7 @@ HTML;
 
                     $tempOption = Mage::getModel('M2ePro/Listing_Product_Variation_Option')->load($option->getId());
                     if (!is_null($tempOption->getId())) {
-                        $option->deleteInstance() && $deletedOptions++;
+                        $option->getResource()->deleteInstance() && $deletedOptions++;
                     }
                     continue;
                 }
@@ -362,14 +362,14 @@ HTML;
                 try {
                     $listingProduct = $variation->getListingProduct();
                 } catch (Ess_M2ePro_Model_Exception_Logic $e) {
-                    $variation->deleteInstance() && $deletedVariations++;
+                    $variation->getResource()->deleteInstance() && $deletedVariations++;
                     continue;
                 }
 
                 try {
                     $listing = $listingProduct->getListing();
                 } catch (Ess_M2ePro_Model_Exception_Logic $e) {
-                    $listingProduct->deleteInstance() && $deletedProducts++;
+                    $listingProduct->getResource()->deleteInstance() && $deletedProducts++;
                     continue;
                 }
             }

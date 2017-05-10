@@ -116,9 +116,16 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
 
     private function processAmazonOrders($response, Ess_M2ePro_Model_Account $account)
     {
+        $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
+
         $orders = array();
 
         foreach ($response as $orderData) {
+
+            $orderCreateDate = new DateTime($orderData['purchase_create_date'], new DateTimeZone('UTC'));
+            if ($orderCreateDate < $accountCreateDate) {
+                continue;
+            }
 
             /** @var $orderBuilder Ess_M2ePro_Model_Amazon_Order_Builder */
             $orderBuilder = Mage::getModel('M2ePro/Amazon_Order_Builder');
@@ -140,6 +147,11 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
     {
         foreach ($amazonOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
+
+            if ($this->isOrderChangedInParallelProcess($order)) {
+                continue;
+            }
+
             $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
             if ($order->canCreateMagentoOrder()) {
@@ -164,6 +176,24 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
                 $order->updateMagentoOrderStatus();
             }
         }
+    }
+
+    /**
+     * This is going to protect from Magento Orders duplicates.
+     * (Is assuming that there may be a parallel process that has already created Magento Order)
+     *
+     * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
+     */
+    private function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
+    {
+        /** @var Ess_M2ePro_Model_Order $dbOrder */
+        $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
+
+        if ($dbOrder->getMagentoOrderId() != $order->getMagentoOrderId()) {
+            return true;
+        }
+
+        return false;
     }
 
     //########################################

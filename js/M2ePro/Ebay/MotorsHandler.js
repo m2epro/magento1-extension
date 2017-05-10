@@ -634,7 +634,7 @@ EbayMotorsHandler.prototype = Object.extend(new CommonHandler(), {
             postmethod: 'post',
             parameters: {
                 listing_id: self.listingId,
-                listing_products_ids: self.addPopUp.listingProductsIds,
+                'listing_products_ids[]': self.addPopUp.listingProductsIds,
                 motors_type: self.motorsType,
                 overwrite: override,
                 items: Object.toQueryString(items),

@@ -123,7 +123,13 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
      */
     protected function _getModifySqlFiles($actionType, $fromVersion, $toVersion, $arrFiles)
     {
-        if ($actionType != self::TYPE_DB_UPGRADE) {
+        // Magento ver. 1.5.1.0 doest not have the TYPE_DB_UPGRADE constant
+        $actionTypeUpgrade = 'upgrade';
+        if (defined('self::TYPE_DB_UPGRADE')) {
+            $actionTypeUpgrade = self::TYPE_DB_UPGRADE;
+        }
+
+        if ($actionType != $actionTypeUpgrade) {
             return parent::_getModifySqlFiles($actionType, $fromVersion, $toVersion, $arrFiles);
         }
 

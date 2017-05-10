@@ -17,6 +17,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     const MARKETPLACE_FR = 7;
     const MARKETPLACE_DE = 8;
     const MARKETPLACE_IT = 10;
+    const MARKETPLACE_ES = 13;
 
     const LISTING_DURATION_GTC = 100;
     const MAX_LENGTH_FOR_OPTION_VALUE = 50;
@@ -258,6 +259,15 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     public function reduceOptionsForOrders(array $options)
     {
         foreach ($options as &$singleOption) {
+            if ($singleOption instanceof Mage_Catalog_Model_Product) {
+                $reducedName = Mage::helper('M2ePro')->reduceWordsInString(
+                    $singleOption->getName(), self::MAX_LENGTH_FOR_OPTION_VALUE
+                );
+                $singleOption->setData('name', $reducedName);
+
+                continue;
+            }
+
             foreach ($singleOption['values'] as &$singleOptionValue) {
                 foreach ($singleOptionValue['labels'] as &$singleOptionLabel) {
                     $singleOptionLabel = Mage::helper('M2ePro')->reduceWordsInString(

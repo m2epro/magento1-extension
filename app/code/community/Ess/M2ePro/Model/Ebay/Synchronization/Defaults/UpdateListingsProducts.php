@@ -381,6 +381,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
 
         if (($change['listingStatus'] == self::EBAY_STATUS_COMPLETED ||
              $change['listingStatus'] == self::EBAY_STATUS_ENDED) &&
+             $listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN &&
              $qty == $qtySold) {
 
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;

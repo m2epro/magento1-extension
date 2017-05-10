@@ -75,8 +75,8 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Order
         ));
 
         $collection->addFieldToFilter('purchase_create_date', array(
-            'from' => $startDate->format('Y-m-d 00:00:00'),
-            'to'   => $endDate->format('Y-m-d 23:59:59')
+            'from' => $startDate->format('Y-m-d H:i:s'),
+            'to'   => $endDate->format('Y-m-d H:i:s')
         ));
 
         $collection->setOrder('id', Varien_Data_Collection::SORT_ORDER_ASC);
