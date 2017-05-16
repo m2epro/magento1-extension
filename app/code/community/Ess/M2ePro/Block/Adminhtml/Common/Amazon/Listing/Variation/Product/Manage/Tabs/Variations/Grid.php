@@ -319,7 +319,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
                     '</strong></span>:&nbsp;<span class="value">' . Mage::helper('M2ePro')->escapeHtml($option) .
                     '</span></span>';
 
-                if ($uniqueProductsIds && $option !== '--') {
+                if ($uniqueProductsIds && $option !== '--' && !in_array($attribute, $virtualProductAttributes)) {
                     $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
                     $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
                 } else {

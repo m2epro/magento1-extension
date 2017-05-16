@@ -298,15 +298,15 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
     {
         $this->getActualOperationHistory()->addTimePoint(__METHOD__,'Update images');
 
+        $ebayTemplateDescriptionItems = Mage::getModel('M2ePro/Ebay_Template_Description')->getCollection()->getItems();
         $attributesForProductChange = array();
 
         /** @var Ess_M2ePro_Model_Ebay_Template_Description $template */
-        foreach (Mage::getModel('M2ePro/Ebay_Template_Description')->getCollection()->getItems() as $template) {
+        foreach ($ebayTemplateDescriptionItems as $template) {
             $attributesForProductChange = array_merge(
                 $attributesForProductChange,
                 $template->getImageMainAttributes(),
-                $template->getGalleryImagesAttributes(),
-                $template->getVariationImagesAttributes()
+                $template->getGalleryImagesAttributes()
             );
         }
 
@@ -353,9 +353,16 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Templates_Revise
             );
         }
 
-        /** @var Ess_M2ePro_Model_Listing_Product[] $changedListingsProductsByVariationOption */
+        /** @var Ess_M2ePro_Model_Ebay_Template_Description $template */
+        foreach ($ebayTemplateDescriptionItems as $template) {
+            $attributesForProductChange = array_merge(
+                $attributesForProductChange,
+                $template->getVariationImagesAttributes()
+            );
+        }
+
         $changedListingsProductsByVariationOption = $this->getChangesHelper()->getInstancesByVariationOption(
-            $attributesForProductChange, true
+            array_unique($attributesForProductChange), true
         );
 
         foreach ($changedListingsProductsByVariationOption as $listingProduct) {

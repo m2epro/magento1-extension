@@ -187,8 +187,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_CreateController
 
             if ($this->isCreationModeListingOnly()) {
                 // closing window for 3rd party products moving in new listing creation
-                echo "<script>window.close();</script>";
-                return;
+                return $this->getResponse()->setBody("<script>window.close();</script>");
             }
 
             return $this->_redirect(

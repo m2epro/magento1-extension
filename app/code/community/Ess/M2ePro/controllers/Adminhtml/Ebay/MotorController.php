@@ -522,6 +522,22 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
         $tableName = $helper->getDictionaryTable($motorsType);
         $idKey = $helper->getIdentifierKey($motorsType);
 
+        if ($motorsType == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE) {
+            if (strlen($insertData['ktype']) > 10) {
+                return $this->getResponse()->setBody(json_encode(array(
+                    'result'  => false,
+                    'message' => Mage::helper('M2ePro')->__('kType identifier is to long.')
+                )));
+            }
+
+            if (!is_numeric($insertData['ktype'])) {
+                return $this->getResponse()->setBody(json_encode(array(
+                    'result'  => false,
+                    'message' => Mage::helper('M2ePro')->__('kType identifier should contain only digits.')
+                )));
+            }
+        }
+
         $existedItem = Mage::getSingleton('core/resource')->getConnection('core/read')
             ->select()
             ->from($tableName)

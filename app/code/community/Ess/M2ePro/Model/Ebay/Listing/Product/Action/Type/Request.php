@@ -115,6 +115,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         }
 
         $data = $this->doReplaceVariationSpecifics($data, $additionalData['variations_specifics_replacements']);
+        $data['variations_specifics_replacements'] = $additionalData['variations_specifics_replacements'];
+
         return $data;
     }
 

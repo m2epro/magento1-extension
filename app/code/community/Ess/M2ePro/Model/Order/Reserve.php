@@ -165,6 +165,7 @@ class Ess_M2ePro_Model_Order_Reserve
                 $item->setData('qty_reserved', $qty);
             } else {
                 $qty = $item->getQtyReserved();
+                $item->setData('qty_reserved', 0);
             }
 
             $products = $this->getItemProductsByAction($item, $action);

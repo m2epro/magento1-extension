@@ -131,6 +131,16 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
                 continue;
             }
 
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
+            $ebayListingProduct = $listingProduct->getChildObject();
+
+            $isVariationOnChannel = !empty($change['variations']);
+            $isVariationInMagento = $ebayListingProduct->isVariationsReady();
+
+            if ($isVariationOnChannel != $isVariationInMagento) {
+                continue;
+            }
+
             $this->processListingProduct($listingProduct,$change);
 
             if (empty($change['variations'])) {

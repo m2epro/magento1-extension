@@ -437,6 +437,11 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $this->setData('product_id', null);
         $this->setAssociatedProducts(array());
         $this->setAssociatedOptions(array());
+
+        if ($this->getOrder()->getReserve()->isPlaced()) {
+            $this->getOrder()->getReserve()->cancel();
+        }
+
         $this->save();
     }
 

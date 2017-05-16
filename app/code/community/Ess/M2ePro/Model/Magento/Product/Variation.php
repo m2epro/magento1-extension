@@ -1056,13 +1056,13 @@ class Ess_M2ePro_Model_Magento_Product_Variation
 
             $values = array();
             foreach ($storeOption['values'] as $valueStoreTitles) {
-                $valueStoreTitles = array_unique($valueStoreTitles);
-                $valueStoreTitles = array_values($valueStoreTitles);
-
                 $keyValue = $valueStoreTitles[Mage_Core_Model_App::ADMIN_STORE_ID];
                 if (isset($valueStoreTitles[$this->getMagentoProduct()->getStoreId()])) {
                     $keyValue = $valueStoreTitles[$this->getMagentoProduct()->getStoreId()];
                 }
+
+                $valueStoreTitles = array_unique($valueStoreTitles);
+                $valueStoreTitles = array_values($valueStoreTitles);
 
                 $values[$keyValue] = $valueStoreTitles;
             }

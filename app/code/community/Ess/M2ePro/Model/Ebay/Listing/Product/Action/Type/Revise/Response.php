@@ -45,6 +45,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         $this->getListingProduct()->addData($data)->save();
 
         $this->updateVariationsValues(true);
+        $this->updateEbayItem();
     }
 
     public function processAlreadyStopped(array $response, array $responseParams = array())
@@ -209,6 +210,61 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         }
 
         return $data;
+    }
+
+    // ---------------------------------------
+
+    private function updateEbayItem()
+    {
+        $data = array(
+            'account_id'     => $this->getAccount()->getId(),
+            'marketplace_id' => $this->getMarketplace()->getId(),
+            'product_id'     => (int)$this->getListingProduct()->getProductId(),
+            'store_id'       => (int)$this->getListing()->getStoreId()
+        );
+
+        if ($this->getRequestData()->isVariationItem() && $this->getRequestData()->getVariations()) {
+
+            $variations = array();
+            $requestData = $this->getRequestData()->getData();
+
+            foreach ($this->getRequestData()->getVariations() as $variation) {
+
+                $channelOptions = $variation['specifics'];
+                $productOptions = $variation['specifics'];
+
+                if (empty($requestData['variations_specifics_replacements'])) {
+
+                    $variations[] = array(
+                        'product_options' => $productOptions,
+                        'channel_options' => $channelOptions,
+                    );
+                    continue;
+                }
+
+                foreach ($requestData['variations_specifics_replacements'] as $productValue => $channelValue) {
+
+                    if (!isset($productOptions[$channelValue])) {
+                        continue;
+                    }
+
+                    $productOptions[$productValue] = $productOptions[$channelValue];
+                    unset($productOptions[$channelValue]);
+                }
+
+                $variations[] = array(
+                    'product_options' => $productOptions,
+                    'channel_options' => $channelOptions,
+                );
+            }
+
+            $data['variations'] = json_encode($variations);
+        }
+
+        $object = $this->getEbayListingProduct()->getEbayItem();
+        $object->addData($data)->save();
+
+        return $object;
     }
 
     //########################################

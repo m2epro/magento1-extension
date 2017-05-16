@@ -77,6 +77,8 @@ abstract class Ess_M2ePro_Model_Connector_Protocol
 
             Mage::helper('M2ePro/Server')->switchEndpoint();
 
+            Mage::helper('M2ePro/Module_Logger')->process($curlResult, 'Invalid Response Format', false);
+
             $errorMsg = 'The Action was not completed because connection with M2E Pro Server was not set.
             There are several possible reasons:  temporary connection problem – please wait and try again later;
             block of outgoing connection by firewall – please, ensure that connection to s1.m2epro.com and

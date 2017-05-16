@@ -1,3 +1,19 @@
+* 6.4.10 (r11425) (16/05/2017)
+
+* Improvement: [Amazon] Condition Note can be filled only if Condition is different than "New"
+* Fix: Magento Order was not created if Buyer Email Address was not received from channel and Buyer Name contains special symbols
+* Fix: Magento Order was created with invalid Tax Rate if the same Buyer bought Items from other marketplaces at one time
+* Fix: "Call to a member function setStockItem() on null" for Orders which had the QTY reserved and then the Product was unmapped manually
+* Fix: Log record about sending tracking number to channel was written twice mistakenly in some cases
+* Fix: [eBay] Adding custom kTypes did not work in some cases
+* Fix: [eBay] Address line1 and line2 are being merged in Magento Order even it is not needed
+* Fix: [eBay] Unnecessary log records, about Online Price changes, can happen, if Listed Product becomes not variational in Magento
+* Fix: [eBay] Order Variation Options were not mapped automatically if some Options were added after List the Item action on Channel
+* Fix: [eBay] Automatic revise did not work, if Base Image was changed in Magento in some cases
+* Fix: [eBay] Category Specifics edit page was crashed in some cases (the limited set of cases)
+* Fix: [Amazon] Unable to revise AFN Variation Child Products by running Revise action for Parent Product
+* Fix: [Amazon] Invalid variations matching for Bundle Product in some cases (the limited set of cases)
+
 * 6.4.9 (r11403) (09/05/2017)
 
 * Added: [eBay] Ability to use Parts Compatibility Feature for Spain (kTypes)

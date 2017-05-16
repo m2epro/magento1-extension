@@ -67,7 +67,13 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_Revise_MultipleRequester
         $resultListingProducts = array();
 
         foreach ($listingProducts as $childListingProduct) {
-            if (!$childListingProduct->isListed() || !$childListingProduct->isRevisable()) {
+
+            if (!$childListingProduct->getChildObject()->isAfnChannel() &&
+                (!$childListingProduct->isListed() || $childListingProduct->isBlocked())) {
+                continue;
+            }
+
+            if (!$childListingProduct->isRevisable()) {
                 continue;
             }
 

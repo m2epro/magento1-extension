@@ -380,9 +380,10 @@ class Ess_M2ePro_Adminhtml_OrderController
             );
         }
 
+        $orderItem->getOrder()->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
+
         $orderItem->unassignProduct();
 
-        $orderItem->getOrder()->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
         $orderItem->getOrder()->addSuccessLog(
             'Item "%title%" was successfully Unmapped.',
             array(

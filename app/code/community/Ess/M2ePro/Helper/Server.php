@@ -100,14 +100,21 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
         $response = curl_exec($curlObject);
 
-        $curlInfo    = curl_getinfo($curlObject);
-        $errorNumber = curl_errno($curlObject);
+        $curlInfo     = curl_getinfo($curlObject);
+        $errorNumber  = curl_errno($curlObject);
+        $errorMessage = curl_error($curlObject);
 
         curl_close($curlObject);
 
         if ($response === false) {
 
             $switchingResult = $this->switchEndpoint();
+
+            Mage::helper('M2ePro/Module_Logger')->process(array(
+                'curl_error_number' => $errorNumber,
+                'curl_error_message' => $errorMessage,
+                'curl_info' => $curlInfo
+            ), 'Curl Empty Response', false);
 
             if ($errorNumber !== CURLE_OPERATION_TIMEOUTED && !$secondAttempt && $switchingResult) {
                 return $this->sendRequest($postData,$headers,$timeout,true);

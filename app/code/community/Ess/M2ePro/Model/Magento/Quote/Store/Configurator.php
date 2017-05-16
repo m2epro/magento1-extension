@@ -21,6 +21,11 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
 
     public function init(Mage_Sales_Model_Quote $quote, Ess_M2ePro_Model_Order_Proxy $proxyOrder)
     {
+        // we need clear singleton stored instances, because magento caches tax rates in private properties
+        Mage::unregister('_singleton/tax/calculation');
+        Mage::unregister('_resource_singleton/tax/calculation');
+        Mage::unregister('_singleton/sales/quote_address_total_collector');
+
         $this->quote      = $quote;
         $this->proxyOrder = $proxyOrder;
         $this->taxConfig  = Mage::getSingleton('tax/config');

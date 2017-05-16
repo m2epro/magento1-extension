@@ -127,14 +127,21 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
             conditionCustomAttribute = $('condition_custom_attribute');
 
         $('magento_block_amazon_listing_add_images').hide();
+        $('condition_note_mode_tr').show();
+        $('condition_note_value_tr').show();
 
         conditionValue.value = '';
         conditionCustomAttribute.value = '';
 
         if (this.value == self.CONDITION_MODE_DEFAULT) {
             self.updateHiddenValue(this, conditionValue);
-            $('condition_note_mode_tr').show();
-            condition_note_mode.simulate('change');
+
+            if (attributeCode == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Listing::CONDITION_NEW')) {
+                $('condition_note_mode_tr').hide();
+                $('condition_note_value_tr').hide();
+            } else {
+                self.condition_note_mode_change();
+            }
 
             if (self.getAvailableConstantsForImages().indexOf(attributeCode) == -1) {
                 $('image_main_attribute').value = '';
@@ -146,7 +153,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         } else {
             self.updateHiddenValue(this, conditionCustomAttribute);
             $('condition_note_mode_tr').show();
-            condition_note_mode.simulate('change');
+            self.condition_note_mode_change();
 
             $('magento_block_amazon_listing_add_images').show();
         }
@@ -220,7 +227,7 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
     {
         var self = AmazonListingChannelSettingsHandlerObj;
 
-        if (this.value == self.CONDITION_NOTE_MODE_CUSTOM_VALUE) {
+        if ($('condition_note_mode').value == self.CONDITION_NOTE_MODE_CUSTOM_VALUE) {
             $('condition_note_value_tr').show();
         } else {
             $('condition_note_value_tr').hide();

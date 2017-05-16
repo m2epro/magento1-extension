@@ -146,6 +146,7 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         // Adding reference id into street array
         // ---------------------------------------
         $referenceId = '';
+        $addressData['street'] = !empty($rawAddressData['street']) ? $rawAddressData['street'] : array();
 
         if ($this->order->isUseGlobalShippingProgram()) {
             $details = $this->order->getGlobalShippingDetails();
@@ -158,17 +159,16 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             isset($details['reference_id']) && $referenceId = 'Ref #'.$details['reference_id'];
         }
 
-        $streetParts = !empty($rawAddressData['street']) ? $rawAddressData['street'] : array();
+        if (!empty($referenceId)) {
 
-        $addressData['street'] = array();
-        if (count($streetParts) >= 2) {
-            $addressData['street'] = array(
-                $referenceId,
-                implode(' ', $streetParts),
-            );
-        } else {
-            array_unshift($streetParts, $referenceId);
-            $addressData['street'] = $streetParts;
+            if (count($addressData['street']) >= 2) {
+                $addressData['street'] = array(
+                    $referenceId,
+                    implode(' ', $addressData['street']),
+                );
+            } else {
+                array_unshift($addressData['street'], $referenceId);
+            }
         }
         // ---------------------------------------
 
