@@ -944,6 +944,7 @@ class Ess_M2ePro_Model_Magento_Product
         }
 
         $selectionsCollection = $productInstance->getSelectionsCollection($optionCollection->getAllIds(), $product);
+        $selectionsCollection->setEntity(Mage::getResourceSingleton('catalog/product'));
         $_items = $selectionsCollection->getItems();
 
         $bundleOptionsQtyArray = array();
