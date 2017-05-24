@@ -362,7 +362,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $url = Mage::helper('M2ePro/Component_Ebay')->getItemUrl($row->getData('item_id'),
                                                                  $row->getData('account_mode'),
                                                                  $row->getData('marketplace_id'));
-        $value = '<a href="' . $url . '" target="_blank">' . $value . '</a>';
+        $value = "<a href='$url' target='_blank'>$value</a><br><img src='http://i.ebayimg.com/images/i/$value-0-1/s-l60.jpg'>";
 
         return $value;
     }
