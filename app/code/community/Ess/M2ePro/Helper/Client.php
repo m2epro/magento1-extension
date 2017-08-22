@@ -294,7 +294,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
         $minSize = 32;
         $currentMemoryLimit = $this->getMemoryLimit();
 
-        if ($maxSize < $minSize || (int)$currentMemoryLimit >= $maxSize) {
+        if ($maxSize < $minSize || (int)$currentMemoryLimit >= $maxSize || (int)$currentMemoryLimit < 0) {
             return false;
         }
 
