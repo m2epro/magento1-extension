@@ -6,8 +6,10 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2EPro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strategy_Abstract
+class Ess_M2ePro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strategy_Abstract
 {
+    const LOCK_ITEM_NICK = 'cron_strategy_serial';
+
     /**
      * @var Ess_M2ePro_Model_LockItem
      */
@@ -22,17 +24,6 @@ class Ess_M2EPro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
 
     //########################################
 
-    public function process()
-    {
-        if ($this->getLockItem()->isExist()) {
-            return true;
-        }
-
-        return parent::process();
-    }
-
-    // ---------------------------------------
-
     /**
      * @param $taskNick
      * @return Ess_M2ePro_Model_Cron_Task_Abstract
@@ -44,6 +35,36 @@ class Ess_M2EPro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
     }
 
     protected function processTasks()
+    {
+        $result = true;
+
+        /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
+        $transactionalManager = Mage::getModel('M2ePro/Lock_Transactional_Manager', array(
+            'nick' => self::INITIALIZATION_TRANSACTIONAL_LOCK_NICK
+        ));
+
+        $transactionalManager->lock();
+
+        if ($this->getLockItem()->isExist() || $this->isParallelStrategyInProgress()) {
+            $transactionalManager->unlock();
+            return $result;
+        }
+
+        $this->getLockItem()->create();
+        $this->getLockItem()->makeShutdownFunction();
+
+        $transactionalManager->unlock();
+
+        $result = $this->processAllTasks();
+
+        $this->getLockItem()->remove();
+
+        return $result;
+    }
+
+    // ---------------------------------------
+
+    private function processAllTasks()
     {
         $result = true;
 
@@ -79,23 +100,6 @@ class Ess_M2EPro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
 
     //########################################
 
-    protected function beforeStart()
-    {
-        $this->getLockItem()->create();
-        $this->getLockItem()->makeShutdownFunction();
-
-        parent::beforeStart();
-    }
-
-    protected function afterEnd()
-    {
-        parent::afterEnd();
-
-        $this->getLockItem()->remove();
-    }
-
-    //########################################
-
     /**
      * @return Ess_M2ePro_Model_LockItem
      */
@@ -106,9 +110,26 @@ class Ess_M2EPro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
         }
 
         $this->lockItem = Mage::getModel('M2ePro/LockItem');
-        $this->lockItem->setNick('cron_strategy_serial');
+        $this->lockItem->setNick(self::LOCK_ITEM_NICK);
 
         return $this->lockItem;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isParallelStrategyInProgress()
+    {
+        for ($i = 1; $i <= Ess_M2ePro_Model_Cron_Strategy_Parallel::MAX_PARALLEL_EXECUTED_CRONS_COUNT; $i++) {
+            $lockItem = Mage::getModel('M2ePro/LockItem');
+            $lockItem->setNick(Ess_M2ePro_Model_Cron_Strategy_Parallel::GENERAL_LOCK_ITEM_PREFIX.$i);
+
+            if ($lockItem->isExist()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //########################################

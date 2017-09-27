@@ -35,6 +35,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_registry',
 
             'm2epro_lock_item',
+            'm2epro_lock_transactional',
             'm2epro_locked_object',
             'm2epro_product_change',
             'm2epro_operation_history',

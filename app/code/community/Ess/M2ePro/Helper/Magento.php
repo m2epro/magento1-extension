@@ -448,4 +448,18 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
     }
 
     //########################################
+
+    public function shouldBeSecure($store = NULL, $area = Mage_Core_Model_App_Area::AREA_FRONTEND)
+    {
+        if (($area == Mage_Core_Model_App_Area::AREA_FRONTEND && !Mage::app()->getStore($store)->isFrontUrlSecure()) ||
+            ($area == Mage_Core_Model_App_Area::AREA_ADMIN    && !Mage::app()->getStore($store)->isAdminUrlSecure()) ||
+            !Mage::getStoreConfigFlag(Mage_Core_Model_Store::XML_PATH_SECURE_BASE_URL, $store))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    //########################################
 }

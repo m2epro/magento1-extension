@@ -187,6 +187,13 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
 
     //########################################
 
+    public function getWasteRecyclingFee()
+    {
+        return 0.0;
+    }
+
+    //########################################
+
     public function getGiftMessage()
     {
         return null;

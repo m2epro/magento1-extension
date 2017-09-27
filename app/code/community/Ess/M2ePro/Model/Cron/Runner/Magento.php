@@ -46,8 +46,6 @@ final class Ess_M2ePro_Model_Cron_Runner_Magento extends Ess_M2ePro_Model_Cron_R
 
     protected function initialize()
     {
-        usleep(rand(0,2000000));
-
         parent::initialize();
 
         $helper = Mage::helper('M2ePro/Module_Cron');

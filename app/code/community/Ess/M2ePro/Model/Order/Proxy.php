@@ -361,4 +361,17 @@ COMMENT;
     }
 
     //########################################
+
+    public function getWasteRecyclingFee()
+    {
+        $resultFee = 0.0;
+
+        foreach ($this->getItems() as $item) {
+            $resultFee += $item->getWasteRecyclingFee();
+        }
+
+        return $resultFee;
+    }
+
+    //########################################
 }

@@ -29,6 +29,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Builder extends Mage_Core_Model_Abstract
         $this->setData('qty_purchased', (int)$data['selling']['qty_purchased']);
         $this->setData('tax_details', json_encode($data['selling']['tax_details']));
         $this->setData('final_fee', (float)$data['selling']['final_fee']);
+        $this->setData('waste_recycling_fee', (float)$data['selling']['waste_recycling_fee']);
         // ---------------------------------------
 
         // ---------------------------------------

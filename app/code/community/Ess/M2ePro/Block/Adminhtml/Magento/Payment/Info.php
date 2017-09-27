@@ -111,6 +111,11 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         return !$this->getIsSecureMode() ? (float)$this->getAdditionalData('channel_final_fee') : 0;
     }
 
+    public function getCashOnDeliveryCost()
+    {
+        return !$this->getIsSecureMode() ? (float)$this->getAdditionalData('cash_on_delivery_cost') : 0;
+    }
+
     public function getChannelTitle()
     {
         $component = $this->getAdditionalData('component_mode');

@@ -320,13 +320,21 @@ HTML;
 
     public function callbackColumnRowTotal($value, $row, $column, $isExport)
     {
+        /** @var Ess_M2ePro_Model_Order_Item $row */
+        /** @var Ess_M2ePro_Model_Amazon_Order_Item $aOrderItem */
+        $aOrderItem = $row->getChildObject();
+
         $currency = $row->getData('currency');
         if (empty($currency)) {
             $currency = $this->order->getMarketplace()->getChildObject()->getDefaultCurrency();
         }
 
-        $price = (float)$row->getData('price') + (float)$row->getData('gift_price');
-        return Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $price * $row->getData('qty_purchased'));
+        $price = $aOrderItem->getPrice() + $aOrderItem->getGiftPrice() + $aOrderItem->getTaxAmount();
+        $price = $price - $aOrderItem->getDiscountAmount();
+
+        return Mage::getSingleton('M2ePro/Currency')->formatPrice(
+            $currency, $price * $aOrderItem->getQtyPurchased()
+        );
     }
 
     public function getRowUrl($row)

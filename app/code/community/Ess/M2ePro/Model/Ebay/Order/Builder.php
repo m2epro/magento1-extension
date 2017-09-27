@@ -399,6 +399,12 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->order->save();
 
         $this->order->setAccount($this->account);
+
+        if ($this->getData('order_status') == Ess_M2ePro_Model_Ebay_Order::ORDER_STATUS_CANCELLED &&
+            $this->order->getReserve()->isPlaced()
+        ) {
+            $this->order->getReserve()->cancel();
+        }
     }
 
     private function prepareShippingAddress()

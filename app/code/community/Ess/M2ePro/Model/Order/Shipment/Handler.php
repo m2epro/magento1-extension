@@ -63,10 +63,6 @@ class Ess_M2ePro_Model_Order_Shipment_Handler
         if (!empty($number)) {
             $carrierCode = trim($track->getData('carrier_code'));
 
-            if (strtolower($carrierCode) == 'dhlint') {
-                $carrierCode = 'dhl';
-            }
-
             $trackingDetails = array(
                 'carrier_title'   => trim($track->getData('title')),
                 'carrier_code'    => $carrierCode,

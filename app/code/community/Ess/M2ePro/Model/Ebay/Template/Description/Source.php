@@ -378,7 +378,12 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         $imageLink = str_replace('%20', ' ', $imageLink);
 
         $baseMediaUrl = Mage::app()->getStore($this->getMagentoProduct()->getStoreId())
-                                   ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).'catalog/product';
+                                   ->getBaseUrl(
+                                       Mage_Core_Model_Store::URL_TYPE_MEDIA,
+                                       Mage::helper('M2ePro/Magento')->shouldBeSecure(
+                                           $this->getMagentoProduct()->getStoreId()
+                                       )
+                                   ).'catalog/product';
 
         $imageLink = preg_replace('/^http(s)?:\/\//i', '', $imageLink);
         $baseMediaUrl = preg_replace('/^http(s)?:\/\//i', '', $baseMediaUrl);
@@ -395,7 +400,12 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
     private function pathToImageLink($path)
     {
         $baseMediaUrl = Mage::app()->getStore($this->getMagentoProduct()->getStoreId())
-                                   ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).'catalog/product';
+                                   ->getBaseUrl(
+                                       Mage_Core_Model_Store::URL_TYPE_MEDIA,
+                                       Mage::helper('M2ePro/Magento')->shouldBeSecure(
+                                           $this->getMagentoProduct()->getStoreId()
+                                       )
+                                   ).'catalog/product';
 
         $baseMediaPath = Mage::getSingleton('catalog/product_media_config')->getBaseMediaPath();
 

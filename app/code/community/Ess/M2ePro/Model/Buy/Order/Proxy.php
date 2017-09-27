@@ -123,12 +123,13 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     public function getPaymentData()
     {
         $paymentData = array(
-            'method'            => Mage::getSingleton('M2ePro/Magento_Payment')->getCode(),
-            'component_mode'    => Ess_M2ePro_Helper_Component_Buy::NICK,
-            'payment_method'    => '',
-            'channel_order_id'  => $this->order->getBuyOrderId(),
-            'channel_final_fee' => 0,
-            'transactions'      => array()
+            'method'                => Mage::getSingleton('M2ePro/Magento_Payment')->getCode(),
+            'component_mode'        => Ess_M2ePro_Helper_Component_Buy::NICK,
+            'payment_method'        => '',
+            'channel_order_id'      => $this->order->getBuyOrderId(),
+            'channel_final_fee'     => 0,
+            'cash_on_delivery_cost' => 0,
+            'transactions'          => array()
         );
 
         return $paymentData;

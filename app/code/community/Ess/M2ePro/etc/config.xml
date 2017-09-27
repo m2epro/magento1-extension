@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.4.10</version>
+            <version>6.4.11</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -528,6 +528,9 @@
                     <LockItem>
                         <table>m2epro_lock_item</table>
                     </LockItem>
+                    <Lock_Transactional>
+                        <table>m2epro_lock_transactional</table>
+                    </Lock_Transactional>
                     <LockedObject>
                         <table>m2epro_locked_object</table>
                     </LockedObject>
@@ -885,6 +888,17 @@
                 <class>Ess_M2ePro_Helper</class>
             </M2ePro>
         </helpers>
+        <sales>
+            <quote>
+                <totals>
+                    <waste_recycling_fee>
+                        <class>Ess_M2ePro_Model_Magento_Quote_Total_WasteRecyclingFee</class>
+                        <after>weee</after>
+                        <before>shipping,tax,discount</before>
+                    </waste_recycling_fee>
+                </totals>
+            </quote>
+        </sales>
     </global>
     <crontab>
         <jobs>

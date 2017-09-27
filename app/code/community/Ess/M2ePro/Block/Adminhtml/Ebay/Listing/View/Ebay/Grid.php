@@ -12,8 +12,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
     /** @var $sellingFormatTemplate Ess_M2ePro_Model_Ebay_Template_SellingFormat */
     private $sellingFormatTemplate = NULL;
 
-    private $isTerapeakWidgetEnabled = false;
-
     //########################################
 
     public function __construct()
@@ -29,10 +27,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
 
         $this->sellingFormatTemplate = $listing->getChildObject()->getSellingFormatTemplate();
         $this->showAdvancedFilterProductsOption = false;
-
-        $this->isTerapeakWidgetEnabled = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/ebay/terapeak/', 'mode'
-        );
     }
 
     //########################################
@@ -381,10 +375,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
 
         $valueHtml = '<span class="product-title-value">' . $title . '</span>';
 
-        if (!empty($onlineTitle) && $this->isTerapeakWidgetEnabled) {
-            $valueHtml .= $this->getTerapeakButtonHtml($row);
-        }
-
         if (is_null($sku = $row->getData('sku'))) {
             $sku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))->getSku();
         }
@@ -475,39 +465,6 @@ HTML;
         return <<<HTML
 [<a href="javascript:void(0);"
     onclick="EbayListingEbayGridHandlerObj.getEstimatedFees({$listingProductId});">{$label}</a>]
-HTML;
-
-    }
-
-    private function getTerapeakButtonHtml($row)
-    {
-        $buttonTitle = Mage::helper('M2ePro')->__('optimize');
-        $buttonHtml = <<<HTML
-<div class="tp-research" style="">
-    &nbsp;[<a class="tp-button" target="_blank">{$buttonTitle}</a>]
-</div>
-HTML;
-        /* @var $listing Ess_M2ePro_Model_Listing */
-        $listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-
-        $productId = (int)$row->getData('entity_id');
-        $storeId   = $listing ? (int)$listing['store_id'] : 0;
-
-        /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
-        $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-        $magentoProduct->setProductId($productId);
-        $magentoProduct->setStoreId($storeId);
-
-        $imageLink = $magentoProduct->getImageLink();
-
-        if (empty($imageLink)) {
-            return $buttonHtml;
-        }
-
-        return $buttonHtml . <<<HTML
-<div style="display: none;">
-    <img class="product-image-value" src="{$imageLink}" />
-</div>
 HTML;
 
     }

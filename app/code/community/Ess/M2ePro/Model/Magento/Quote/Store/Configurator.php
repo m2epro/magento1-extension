@@ -44,6 +44,7 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
             Mage_Tax_Model_Config::CONFIG_XML_PATH_SHIPPING_TAX_CLASS,
             Mage_Tax_Model_Config::CONFIG_XML_PATH_BASED_ON,
             Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID,
+            Mage_Weee_Helper_Data::XML_PATH_FPT_ENABLED,
             $this->getOriginCountryIdXmlPath(),
             $this->getOriginRegionIdXmlPath(),
             $this->getOriginPostcodeXmlPath()
@@ -78,6 +79,15 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
             $this->setStoreConfig(
                 Mage_Tax_Model_Config::CONFIG_XML_PATH_SHIPPING_INCLUDES_TAX, $isShippingPriceIncludesTax
             );
+        }
+        // ---------------------------------------
+
+        // Fixed Product Tax settings
+        // ---------------------------------------
+        if ($this->proxyOrder->isTaxModeChannel() ||
+            ($this->proxyOrder->isTaxModeMixed() && $this->proxyOrder->hasTax())
+        ) {
+            $this->setStoreConfig(Mage_Weee_Helper_Data::XML_PATH_FPT_ENABLED, false);
         }
         // ---------------------------------------
 

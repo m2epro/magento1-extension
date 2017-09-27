@@ -1,3 +1,17 @@
+* 6.4.11 (r11702) (27/09/2017)
+
+* Added: Import company name to magento customer during order creation
+* Added: [eBay] Ability to receive Waste Recycling Fee from Channel and transfer it to Magento Order
+* Added: [eBay] Ability to receiving Cash On Delivery Cost and display it in Order page
+* Added: [Amazon] Ability to create Magento order even if it has zero price
+* Improvement: Return Products Image URLs based on a store configuration (http / https)
+* Improvement: The locking is now based on exclusive MySQL locks (protection of cron to be run in parallel)
+* Improvement: [Amazon] Readable error message, about impossible Order Refund, if Credit Memo created without Items (Amazon restriction)
+* Fix: [eBay] Watermarks are not being added to the images into custom description
+* Fix: [Amazon] Carrier Name of Tracking Number, sent as "DHL (Deprecated)" to Channel in some cases
+* Fix: [Amazon] Grand Total value displayed incorrectly in M2E Pro Order page, when VAT on Europe marketplaces presented
+* Removed: [eBay] Integration to the the Terapeak service
+
 * 6.4.10 (r11425) (16/05/2017)
 
 * Improvement: [Amazon] Condition Note can be filled only if Condition is different than "New"

@@ -207,13 +207,14 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         $paymentMethodTitle == 'None' && $paymentMethodTitle = Mage::helper('M2ePro')->__('Not Selected Yet');
 
         $paymentData = array(
-            'method'            => Mage::getSingleton('M2ePro/Magento_Payment')->getCode(),
-            'component_mode'    => Ess_M2ePro_Helper_Component_Ebay::NICK,
-            'payment_method'    => $paymentMethodTitle,
-            'channel_order_id'  => $this->order->getEbayOrderId(),
-            'channel_final_fee' => $this->convertPrice($this->order->getFinalFee()),
-            'transactions'      => $this->getPaymentTransactions(),
-            'tax_id'            => $this->order->getBuyerTaxId(),
+            'method'                => Mage::getSingleton('M2ePro/Magento_Payment')->getCode(),
+            'component_mode'        => Ess_M2ePro_Helper_Component_Ebay::NICK,
+            'payment_method'        => $paymentMethodTitle,
+            'channel_order_id'      => $this->order->getEbayOrderId(),
+            'channel_final_fee'     => $this->convertPrice($this->order->getFinalFee()),
+            'cash_on_delivery_cost' => $this->convertPrice($this->order->getCashOnDeliveryCost()),
+            'transactions'          => $this->getPaymentTransactions(),
+            'tax_id'                => $this->order->getBuyerTaxId(),
         );
 
         return $paymentData;

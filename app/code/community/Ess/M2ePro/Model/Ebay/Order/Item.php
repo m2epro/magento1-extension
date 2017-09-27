@@ -127,6 +127,14 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
     }
 
     /**
+     * @return float
+     */
+    public function getWasteRecyclingFee()
+    {
+        return (float)$this->getData('waste_recycling_fee');
+    }
+
+    /**
      * @return int
      */
     public function getQtyPurchased()

@@ -316,6 +316,18 @@ ENGINE = MYISAM
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS `m2epro_lock_transactional`;
+CREATE TABLE `m2epro_lock_transactional` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nick` VARCHAR(255) NOT NULL,
+  `create_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `nick` (`nick`)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS `m2epro_locked_object`;
 CREATE TABLE `m2epro_locked_object` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -859,7 +871,6 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`creat
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/view/ebay/multi_currency_marketplace_19/', 'notification_shown', '0', NULL,
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-  ('/view/ebay/terapeak/', 'mode', '1', NULL, '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/debug/exceptions/', 'send_to_server', '1', '0 - disable,\r\n1 - enable', '2013-05-08 00:00:00',
    '2013-05-08 00:00:00'),
   ('/debug/exceptions/', 'filters_mode', '0', '0 - disable,\r\n1 - enable', '2013-05-08 00:00:00',
@@ -1563,6 +1574,7 @@ CREATE TABLE `m2epro_ebay_order_item` (
   `qty_purchased` INT(11) UNSIGNED NOT NULL,
   `tax_details` TEXT DEFAULT NULL,
   `final_fee` DECIMAL(12, 4) NOT NULL DEFAULT 0.0000,
+  `waste_recycling_fee` DECIMAL(12, 4) NOT NULL DEFAULT 0.0000,
   `variation_details` TEXT DEFAULT NULL,
   `tracking_details` TEXT DEFAULT NULL,
   `unpaid_item_process_state` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,

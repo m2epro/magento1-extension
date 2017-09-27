@@ -44,6 +44,13 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item
 
     //########################################
 
+    public function getWasteRecyclingFee()
+    {
+        return $this->item->getWasteRecyclingFee();
+    }
+
+    //########################################
+
     /**
      * @return array
      */

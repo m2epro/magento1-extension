@@ -6,12 +6,21 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2EPro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Strategy_Abstract
+class Ess_M2ePro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Strategy_Abstract
 {
+    const GENERAL_LOCK_ITEM_PREFIX = 'cron_strategy_parallel_';
+
+    const MAX_PARALLEL_EXECUTED_CRONS_COUNT = 10;
+
     /**
      * @var Ess_M2ePro_Model_LockItem
      */
-    private $fastTasksLockItem = null;
+    private $generalLockItem = NULL;
+
+    /**
+     * @var Ess_M2ePro_Model_LockItem
+     */
+    private $fastTasksLockItem = NULL;
 
     //########################################
 
@@ -26,19 +35,39 @@ class Ess_M2EPro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Stra
     {
         $result = true;
 
-        if (!$this->getFastTasksLockItem()->isExist()) {
+        /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
+        $transactionalManager = Mage::getModel('M2ePro/Lock_Transactional_Manager', array(
+            'nick' => self::INITIALIZATION_TRANSACTIONAL_LOCK_NICK
+        ));
 
-            $this->getFastTasksLockItem()->create();
+        $transactionalManager->lock();
+
+        if ($this->isSerialStrategyInProgress()) {
+            $transactionalManager->unlock();
+            return $result;
+        }
+
+        $this->getGeneralLockItem()->create();
+        $this->getGeneralLockItem()->makeShutdownFunction();
+
+        if (!$this->getFastTasksLockItem()->isExist()) {
+            $this->getFastTasksLockItem()->create($this->getGeneralLockItem()->getRealId());
             $this->getFastTasksLockItem()->makeShutdownFunction();
-            sleep(2);
+
+            $transactionalManager->unlock();
 
             $result = !$this->processFastTasks() ? false : $result;
 
             $this->getFastTasksLockItem()->remove();
-            sleep(2);
         }
 
-        return !$this->processSlowTasks() ? false : $result;
+        $transactionalManager->unlock();
+
+        $result = !$this->processSlowTasks() ? false : $result;
+
+        $this->getGeneralLockItem()->remove();
+
+        return $result;
     }
 
     // ---------------------------------------
@@ -51,7 +80,10 @@ class Ess_M2EPro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Stra
 
             try {
 
-                $tempResult = $this->getTaskObject($taskNick)->process();
+                $taskObject = $this->getTaskObject($taskNick);
+                $taskObject->setParentLockItem($this->getFastTasksLockItem());
+
+                $tempResult = $taskObject->process();
 
                 if (!is_null($tempResult) && !$tempResult) {
                     $result = false;
@@ -85,10 +117,20 @@ class Ess_M2EPro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Stra
 
         for ($i = 0; $i < count($this->getAllowedSlowTasks()); $i++) {
 
+            /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
+            $transactionalManager = Mage::getModel('M2ePro/Lock_Transactional_Manager', array(
+                'nick' => self::GENERAL_LOCK_ITEM_PREFIX.'slow_task_switch'
+            ));
+
+            $transactionalManager->lock();
+
             $taskNick = $this->getNextSlowTask();
             $helper->setLastExecutedSlowTask($taskNick);
 
+            $transactionalManager->unlock();
+
             $taskObject = $this->getTaskObject($taskNick);
+            $taskObject->setParentLockItem($this->getGeneralLockItem());
 
             if (!$taskObject->isPossibleToRun()) {
                 continue;
@@ -155,6 +197,28 @@ class Ess_M2EPro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Stra
 
     /**
      * @return Ess_M2ePro_Model_LockItem
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    private function getGeneralLockItem()
+    {
+        if (!is_null($this->generalLockItem)) {
+            return $this->generalLockItem;
+        }
+
+        for ($index = 1; $index <= self::MAX_PARALLEL_EXECUTED_CRONS_COUNT; $index++) {
+            $lockItem = Mage::getModel('M2ePro/LockItem');
+            $lockItem->setNick(self::GENERAL_LOCK_ITEM_PREFIX.$index);
+
+            if (!$lockItem->isExist()) {
+                return $this->generalLockItem = $lockItem;
+            }
+        }
+
+        throw new Ess_M2ePro_Model_Exception('Too many parallel lock items.');
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_LockItem
      */
     private function getFastTasksLockItem()
     {
@@ -166,6 +230,17 @@ class Ess_M2EPro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Stra
         $this->fastTasksLockItem->setNick('cron_strategy_parallel_fast_tasks');
 
         return $this->fastTasksLockItem;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isSerialStrategyInProgress()
+    {
+        $serialLockItem = Mage::getModel('M2ePro/LockItem');
+        $serialLockItem->setNick(Ess_M2ePro_Model_Cron_Strategy_Serial::LOCK_ITEM_NICK);
+
+        return $serialLockItem->isExist();
     }
 
     //########################################

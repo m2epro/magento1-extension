@@ -35,6 +35,15 @@
             <td><strong><?php echo !is_null($this->getOrder()) ? $this->getOrder()->formatPrice($this->getChannelFinalFee()) : $this->getChannelFinalFee(); ?></strong></td>
         </tr>
     <?php } ?>
+    <?php if ($this->getCashOnDeliveryCost() > 0) { ?>
+        <tr>
+            <?php
+            $message = Mage::helper('M2ePro')->__('Cash On Delivery Cost');
+            ?>
+            <td style="width: 200px;"><?php echo Mage::helper('M2ePro')->__($message) ?>:</td>
+            <td><strong><?php echo !is_null($this->getOrder()) ? $this->getOrder()->formatPrice($this->getCashOnDeliveryCost()) : $this->getCashOnDeliveryCost(); ?></strong></td>
+        </tr>
+    <?php } ?>
     <?php if ($this->getTaxId() != ''): ?>
         <tr>
             <?php $message = Mage::helper('M2ePro')->__('Buyer Tax ID'); ?>

@@ -254,6 +254,22 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
 
     // ---------------------------------------
 
+    public function getWasteRecyclingFee()
+    {
+        $resultFee = 0.0;
+
+        foreach ($this->getParentObject()->getItemsCollection() as $item) {
+            /** @var Ess_M2ePro_Model_Ebay_Order_Item $ebayItem */
+            $ebayItem = $item->getChildObject();
+
+            $resultFee += $ebayItem->getWasteRecyclingFee();
+        }
+
+        return $resultFee;
+    }
+
+    // ---------------------------------------
+
     /**
      * @return array
      * @throws Ess_M2ePro_Model_Exception_Logic
@@ -288,6 +304,16 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     {
         $shippingDetails = $this->getShippingDetails();
         return isset($shippingDetails['date']) ? $shippingDetails['date'] : '';
+    }
+
+    /**
+     * @return float
+     */
+    public function getCashOnDeliveryCost()
+    {
+        $shippingDetails = $this->getShippingDetails();
+        return isset($shippingDetails['cash_on_delivery_cost'])
+            ? (float)$shippingDetails['cash_on_delivery_cost'] : 0.0;
     }
 
     /**
@@ -536,6 +562,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
             $this->grandTotalPrice = $this->getSubtotalPrice();
             $this->grandTotalPrice += round((float)$this->getShippingPrice(), 2);
             $this->grandTotalPrice += round((float)$this->getTaxAmount(), 2);
+            $this->grandTotalPrice += round((float)$this->getWasteRecyclingFee(), 2);
         }
 
         return $this->grandTotalPrice;

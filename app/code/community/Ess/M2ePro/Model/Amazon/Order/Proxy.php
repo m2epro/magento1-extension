@@ -8,8 +8,11 @@
 
 class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 {
-    /** @var $order Ess_M2ePro_Model_Amazon_Order */
+    /** @var Ess_M2ePro_Model_Amazon_Order */
     protected $order = NULL;
+
+    /** @var Ess_M2ePro_Model_Amazon_Order_Item_Proxy[] */
+    protected $removedProxyItems = array();
 
     //########################################
 
@@ -20,14 +23,18 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     protected function mergeItems(array $items)
     {
-        foreach ($items as $key => $item) {
-            if ($item->getPrice() <= 0) {
-                unset($items[$key]);
-            }
+        // Magento order can be created even it has zero price. Tested on Magento v. 1.7.0.2 and greater.
+        // Doest not requires 'Zero Subtotal Checkout enabled'
+        $minVersion = Mage::helper('M2ePro/Magento')->isCommunityEdition() ? '1.7.0.2' : '1.12';
+        if (version_compare(Mage::helper('M2ePro/Magento')->getVersion(), $minVersion, '>=')) {
+            return parent::mergeItems($items);
         }
 
-        if (count($items) == 0) {
-            throw new Ess_M2ePro_Model_Exception('Every Item in Order has zero Price.');
+        foreach ($items as $key => $item) {
+            if ($item->getPrice() <= 0) {
+                $this->removedProxyItems[] = $item;
+                unset($items[$key]);
+            }
         }
 
         return parent::mergeItems($items);
@@ -199,12 +206,13 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     public function getPaymentData()
     {
         $paymentData = array(
-            'method'            => Mage::getSingleton('M2ePro/Magento_Payment')->getCode(),
-            'component_mode'    => Ess_M2ePro_Helper_Component_Amazon::NICK,
-            'payment_method'    => '',
-            'channel_order_id'  => $this->order->getAmazonOrderId(),
-            'channel_final_fee' => 0,
-            'transactions'      => array()
+            'method'                => Mage::getSingleton('M2ePro/Magento_Payment')->getCode(),
+            'component_mode'        => Ess_M2ePro_Helper_Component_Amazon::NICK,
+            'payment_method'        => '',
+            'channel_order_id'      => $this->order->getAmazonOrderId(),
+            'channel_final_fee'     => 0,
+            'cash_on_delivery_cost' => 0,
+            'transactions'          => array()
         );
 
         return $paymentData;
@@ -335,6 +343,29 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             }
 
             $comments[] = $comment;
+        }
+        // ---------------------------------------
+
+        // Removed Order Items
+        // ---------------------------------------
+        if (!empty($this->removedProxyItems)) {
+
+            $comment = '<u>'.
+                Mage::helper('M2ePro')->__(
+                    'The following SKUs have zero price and can not be included in Magento order line items'
+                ).
+                ':</u><br/>';
+
+            $zeroItems = array();
+            foreach ($this->removedProxyItems as $item) {
+
+                $productSku = $item->getMagentoProduct()->getSku();
+                $qtyPurchased = $item->getQty();
+
+                $zeroItems[] = "<b>{$productSku}</b>: {$qtyPurchased} QTY";
+            }
+
+            $comments[] = $comment . implode('<br/>,', $zeroItems);
         }
         // ---------------------------------------
 

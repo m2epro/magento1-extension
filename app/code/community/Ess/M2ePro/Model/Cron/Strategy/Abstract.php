@@ -8,6 +8,8 @@
 
 abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
 {
+    const INITIALIZATION_TRANSACTIONAL_LOCK_NICK = 'cron_strategy_initialization';
+
     private $initiator = null;
 
     private $allowedTasks = NULL;

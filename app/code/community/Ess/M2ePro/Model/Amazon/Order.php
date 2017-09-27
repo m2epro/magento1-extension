@@ -380,6 +380,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             $this->grandTotalPrice = $this->getSubtotalPrice();
             $this->grandTotalPrice += $this->getProductPriceTaxAmount();
             $this->grandTotalPrice += $this->getShippingPrice();
+            $this->grandTotalPrice += $this->getShippingPriceTaxAmount();
             $this->grandTotalPrice += $this->getGiftPriceTaxAmount();
             $this->grandTotalPrice -= $this->getPromotionDiscountAmount();
             $this->grandTotalPrice -= $this->getShippingDiscountAmount();
@@ -753,6 +754,17 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         if ($this->isShipped() || $this->isPartiallyShipped() || count($items) != $totalItemsCount ||
             $this->isLockedObject('update_shipping_status') || $changeCollection->getSize() > 0
         ) {
+            if (empty($items)) {
+                $this->getParentObject()->addErrorLog(
+                    'Amazon Order was not refunded. Reason: %msg%',
+                    array('msg' => 'Refund request was not submitted.
+                                    To be processed through Amazon API, the refund must be applied to certain products
+                                    in an order. Please indicate the number of each line item, that need to be refunded,
+                                    in Credit Memo form.')
+                );
+                return false;
+            }
+
             $action = Ess_M2ePro_Model_Order_Change::ACTION_REFUND;
         }
 

@@ -148,8 +148,8 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
         $startFrom = !empty($startFrom) ? strtotime($startFrom) : $currentTimeStamp;
 
         return $this->isModeEnabled() &&
-               $startFrom <= $currentTimeStamp &&
-               $this->isIntervalExceeded() &&
+               (($startFrom <= $currentTimeStamp && $this->isIntervalExceeded()) ||
+                 $this->getInitiator() == Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER) &&
                !$this->getLockItem()->isExist();
     }
 
@@ -175,7 +175,11 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
     protected function beforeStart()
     {
-        $parentId = $this->getParentLockItem() ? $this->getParentLockItem()->getId() : null;
+        if ($this->getLockItem()->isExist()) {
+            throw new Ess_M2ePro_Model_Exception('Lock item "'.$this->getLockItem()->getNick().'" already exists.');
+        }
+
+        $parentId = $this->getParentLockItem() ? $this->getParentLockItem()->getRealId() : null;
         $this->getLockItem()->create($parentId);
         $this->getLockItem()->makeShutdownFunction();
 

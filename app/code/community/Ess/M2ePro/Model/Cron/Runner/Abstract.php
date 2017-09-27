@@ -27,16 +27,27 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     public function process()
     {
+        /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
+        $transactionalManager = Mage::getModel('M2ePro/Lock_Transactional_Manager', array(
+            'nick' => 'cron_runner'
+        ));
+
+        $transactionalManager->lock();
+
         $this->initialize();
         $this->updateLastAccess();
 
         if (!$this->isPossibleToRun()) {
             $this->deInitialize();
+            $transactionalManager->unlock();
+
             return true;
         }
 
         $this->updateLastRun();
         $this->beforeStart();
+
+        $transactionalManager->unlock();
 
         try {
 

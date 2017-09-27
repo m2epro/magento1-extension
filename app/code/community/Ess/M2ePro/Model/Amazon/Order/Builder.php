@@ -238,6 +238,10 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
         $this->order->save();
         $this->order->setAccount($this->account);
+
+        if ($this->order->getChildObject()->isCanceled() && $this->order->getReserve()->isPlaced()) {
+            $this->order->getReserve()->cancel();
+        }
     }
 
     //########################################

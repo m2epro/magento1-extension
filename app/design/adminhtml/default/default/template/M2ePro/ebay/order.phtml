@@ -305,7 +305,7 @@
                             <td class="value"><strong><?php echo Mage::helper('M2ePro')->escapeHtml($this->order->getChildObject()->getPaymentMethod()); ?></strong></td>
                         </tr>
                         <tr>
-                            <td class="label"><?php echo Mage::helper('M2ePro')->__('eBay Account'); ?>:</td>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('eBay User ID'); ?>:</td>
                             <td class="value"><strong><?php echo Mage::helper('M2ePro')->escapeHtml($this->order->getChildObject()->getBuyerUserId()); ?></strong></td>
                         </tr>
                         <tr>
@@ -320,6 +320,17 @@
                                 </strong>
                             </td>
                         </tr>
+
+                        <?php if ($this->order->getChildObject()->getCashOnDeliveryCost() > 0): ?>
+                            <tr>
+                                <td class="label"><?php echo Mage::helper('M2ePro')->__('Cash On Delivery Cost');?>:</td>
+                                <td class="value">
+                                    <strong>
+                                        <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getCurrency(), round($this->order->getChildObject()->getCashOnDeliveryCost(), 2)); ?>
+                                    </strong>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
 
                     </tbody>
                 </table>
@@ -619,6 +630,13 @@
                     <td class="label"><?php echo Mage::helper('M2ePro')->__('Tax') ?></td>
                     <td><span class="price"><?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getChildObject()->getCurrency(), $this->getTaxAmount());?></span></td>
                 </tr>
+
+                <?php if ($this->order->getChildObject()->getWasteRecyclingFee()): ?>
+                <tr>
+                    <td class="label"><?php echo Mage::helper('M2ePro')->__('Waste Recycling Fee') ?></td>
+                    <td><span class="price"><?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getChildObject()->getCurrency(), $this->order->getChildObject()->getWasteRecyclingFee());?></span></td>
+                </tr>
+                <?php endif; ?>
 
             </tbody>
 

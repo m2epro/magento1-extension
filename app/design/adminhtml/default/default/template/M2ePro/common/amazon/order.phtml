@@ -455,7 +455,7 @@
 
                 <tr>
                     <td class="label"><?php echo Mage::helper('M2ePro')->__('Tax'); ?></td>
-                    <td><span class="price"><?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $this->order->getChildObject()->getProductPriceTaxAmount()); ?></span></td>
+                    <td><span class="price"><?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $this->order->getChildObject()->getProductPriceTaxAmount() + $this->order->getChildObject()->getShippingPriceTaxAmount()); ?></span></td>
                 </tr>
 
             </tbody>

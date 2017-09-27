@@ -86,6 +86,13 @@ class Ess_M2ePro_Model_Magento_Quote
         $this->quote->getStore()->setData('current_currency', $this->quote->getStore()->getBaseCurrency());
         $this->quote->save();
 
+        $this->quote->setIsM2eProQuote(true);
+        $this->quote->setNeedProcessChannelTaxes(
+            $this->proxyOrder->isTaxModeChannel() ||
+            ($this->proxyOrder->isTaxModeMixed() &&
+                ($this->proxyOrder->hasTax() || $this->proxyOrder->getWasteRecyclingFee()))
+        );
+
         Mage::getSingleton('checkout/session')->replaceQuote($this->quote);
     }
 
@@ -231,6 +238,9 @@ class Ess_M2ePro_Model_Magento_Quote
                 }
 
                 $quoteItem->setAdditionalData($quoteItemBuilder->getAdditionalData($quoteItem));
+
+                $quoteItem->setWasteRecyclingFee($item->getWasteRecyclingFee() / $item->getQty());
+                $quoteItem->save();
             }
         }
     }
@@ -247,7 +257,7 @@ class Ess_M2ePro_Model_Magento_Quote
 
             $address->unsetData('cached_items_all');
             $address->unsetData('cached_items_nominal');
-            $address->unsetData('cached_items_nonominal');
+            $address->unsetData('cached_items_nonnominal');
         }
     }
 
