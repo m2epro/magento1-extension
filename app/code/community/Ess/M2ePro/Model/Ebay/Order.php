@@ -344,6 +344,20 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         return $trackingDetails;
     }
 
+    public function isShippingTrackingNumberExists($number)
+    {
+        /** @var Ess_M2ePro_Model_Order_Item[] $items */
+        $items = $this->getParentObject()->getItemsCollection()->getItems();
+
+        foreach ($items as $item) {
+            if ($item->getChildObject()->isTrackingNumberExists($number)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @return array
      */
@@ -932,6 +946,11 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         }
 
         if (!$this->isShippingMethodNotSelected() && !$this->isShippingInProcess() && empty($trackingDetails)) {
+            return false;
+        }
+
+        if (isset($trackingDetails['tracking_number']) &&
+            $this->isShippingTrackingNumberExists($trackingDetails['tracking_number'])) {
             return false;
         }
 

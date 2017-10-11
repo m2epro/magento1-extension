@@ -206,7 +206,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         $step = $this->getRequest()->getParam('step');
 
         if (is_null($step)) {
-            exit(json_encode(array(
+            return $this->getResponse()->setBody(json_encode(array(
                 'type' => 'error',
                 'message' => Mage::helper('M2ePro')->__('Step is invalid')
             )));
@@ -214,7 +214,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
         $this->setStep($step);
 
-        $this->getResponse()->setBody(json_encode(array(
+        return $this->getResponse()->setBody(json_encode(array(
             'type' => 'success'
         )));
     }
@@ -224,7 +224,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         $status = $this->getRequest()->getParam('status');
 
         if (is_null($status)) {
-            exit(json_encode(array(
+            return $this->getResponse()->setBody(json_encode(array(
                 'type' => 'error',
                 'message' => Mage::helper('M2ePro')->__('Status is invalid')
             )));
@@ -232,7 +232,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
         $this->setStatus($status);
 
-        $this->getResponse()->setBody(json_encode(array(
+        return $this->getResponse()->setBody(json_encode(array(
             'type' => 'success'
         )));
     }

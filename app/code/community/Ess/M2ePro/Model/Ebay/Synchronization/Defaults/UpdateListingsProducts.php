@@ -188,7 +188,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         foreach ($changeVariations as $changeVariation) {
             foreach ($variationsSnapshot as $variationSnapshot) {
 
-                if (!$this->isVariationEqualWithChange($changeVariation,$variationSnapshot)) {
+                if (!$this->isVariationEqualWithChange($listingProduct,$changeVariation,$variationSnapshot)) {
                     continue;
                 }
 
@@ -467,20 +467,35 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_UpdateListingsProduct
         return $snapshot;
     }
 
-    private function isVariationEqualWithChange(array $changeVariation, array $variationSnapshot)
+    private function isVariationEqualWithChange(Ess_M2ePro_Model_Listing_Product $listingProduct,
+                                                array $changeVariation, array $variationSnapshot)
     {
         if (count($variationSnapshot['options']) != count($changeVariation['specifics'])) {
             return false;
         }
 
+        $specificsReplacements = $listingProduct->getSetting(
+            'additional_data', 'variations_specifics_replacements', array()
+        );
+
         foreach ($variationSnapshot['options'] as $variationSnapshotOption) {
+
+            /** @var Ess_M2ePro_Model_Listing_Product_Variation_Option $variationSnapshotOption */
+
+            $variationSnapshotOptionName  = $variationSnapshotOption->getData('attribute');
+            $variationSnapshotOptionValue = $variationSnapshotOption->getData('option');
+
+            if (array_key_exists($variationSnapshotOptionName, $specificsReplacements)) {
+                $variationSnapshotOptionName = $specificsReplacements[$variationSnapshotOptionName];
+            }
 
             $haveOption = false;
 
             foreach ($changeVariation['specifics'] as $changeVariationOption=>$changeVariationValue) {
 
-                if ($variationSnapshotOption->getData('attribute') == $changeVariationOption &&
-                    $variationSnapshotOption->getData('option') == $changeVariationValue) {
+                if ($variationSnapshotOptionName == $changeVariationOption &&
+                    $variationSnapshotOptionValue == $changeVariationValue)
+                {
                     $haveOption = true;
                     break;
                 }

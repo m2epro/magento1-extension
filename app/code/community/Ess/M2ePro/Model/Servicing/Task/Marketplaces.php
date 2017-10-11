@@ -8,6 +8,8 @@
 
 class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Servicing_Task
 {
+    private $needToCleanCache = false;
+
     //########################################
 
     /**
@@ -37,6 +39,10 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
         if (isset($data['amazon_last_update_dates']) && is_array($data['amazon_last_update_dates'])) {
             $this->processAmazonLastUpdateDates($data['amazon_last_update_dates']);
         }
+
+        if ($this->needToCleanCache) {
+            Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('marketplace');
+        }
     }
 
     //########################################
@@ -59,14 +65,27 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
 
             $serverLastUpdateDate = $lastUpdateDates[$marketplace->getNativeId()];
 
-            $expr = "IF(client_details_last_update_date is NULL, '{$serverLastUpdateDate}',
-                                                                 client_details_last_update_date)";
+            $select = $writeConn->select()
+                ->from($dictionaryTable, array(
+                    'client_details_last_update_date'
+                ))
+                ->where('marketplace_id = ?', $marketplace->getId());
+
+            $clientLastUpdateDate = $writeConn->fetchOne($select);
+
+            if (is_null($clientLastUpdateDate)) {
+                $clientLastUpdateDate = $serverLastUpdateDate;
+            }
+
+            if ($clientLastUpdateDate < $serverLastUpdateDate) {
+                $this->needToCleanCache = true;
+            }
 
             $writeConn->update(
                 $dictionaryTable,
                 array(
                     'server_details_last_update_date' => $serverLastUpdateDate,
-                    'client_details_last_update_date' => new Zend_Db_Expr($expr)
+                    'client_details_last_update_date' => $clientLastUpdateDate
                 ),
                 array('marketplace_id = ?' => $marketplace->getId())
             );
@@ -90,14 +109,27 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
 
             $serverLastUpdateDate = $lastUpdateDates[$marketplace->getNativeId()];
 
-            $expr = "IF(client_details_last_update_date is NULL, '{$serverLastUpdateDate}',
-                                                                 client_details_last_update_date)";
+            $select = $writeConn->select()
+                ->from($dictionaryTable, array(
+                    'client_details_last_update_date'
+                ))
+                ->where('marketplace_id = ?', $marketplace->getId());
+
+            $clientLastUpdateDate = $writeConn->fetchOne($select);
+
+            if (is_null($clientLastUpdateDate)) {
+                $clientLastUpdateDate = $serverLastUpdateDate;
+            }
+
+            if ($clientLastUpdateDate < $serverLastUpdateDate) {
+                $this->needToCleanCache = true;
+            }
 
             $writeConn->update(
                 $dictionaryTable,
                 array(
                     'server_details_last_update_date' => $serverLastUpdateDate,
-                    'client_details_last_update_date' => new Zend_Db_Expr($expr)
+                    'client_details_last_update_date' => $clientLastUpdateDate
                 ),
                 array('marketplace_id = ?' => $marketplace->getId())
             );

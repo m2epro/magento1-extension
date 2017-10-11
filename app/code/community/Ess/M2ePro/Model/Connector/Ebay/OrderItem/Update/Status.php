@@ -104,6 +104,19 @@ class Ess_M2ePro_Model_Connector_Ebay_OrderItem_Update_Status
         }
 
         if (!empty($this->params['tracking_number']) && !empty($this->params['carrier_code'])) {
+
+            if (!$this->orderItem->getChildObject()->isTrackingNumberExists($this->params['tracking_number'])) {
+                /** @var Ess_M2ePro_Model_Ebay_Order_Item $ebayOrderItem */
+                $ebayOrderItem = $this->orderItem->getChildObject();
+
+                $trackingDetails = $ebayOrderItem->getTrackingDetails();
+                $trackingDetails[] = array(
+                    'title'  => $this->params['carrier_code'],
+                    'number' => $this->params['tracking_number'],
+                );
+                $this->orderItem->setSettings('tracking_details', $trackingDetails)->save();
+            }
+
             $message = 'Tracking number "%num%" for "%code%" has been sent to eBay '.
                        '(Item: %item_id%, Transaction: %trn_id%).';
             $this->orderItem->getOrder()->addSuccessLog($message, array(

@@ -1082,7 +1082,7 @@ class Ess_M2ePro_Model_Magento_Product
 
         // PRICE
         }  else if ($attribute->getFrontendInput() == 'price') {
-            $value = (string)round($value, 2);
+            $value = (string)number_format($value, 2, '.', '');
 
         // MEDIA IMAGE
         }  else if ($attribute->getFrontendInput() == 'media_image') {
@@ -1164,16 +1164,7 @@ class Ess_M2ePro_Model_Magento_Product
             return NULL;
         }
 
-        $thumbnailTempPath = 'catalog/product/' . ltrim($thumbnailTempPath, '/');
-        $thumbnailTempPath  = Mage::app()->getStore($this->getStoreId())
-                ->getBaseUrl(
-                    Mage_Core_Model_Store::URL_TYPE_MEDIA,
-                    Mage::helper('M2ePro/Magento')->shouldBeSecure(
-                        $this->getStoreId(), Mage_Core_Model_App_Area::AREA_ADMIN
-                    )
-                ) . $thumbnailTempPath;
-
-        $imagePathOriginal = $this->prepareImageUrl($thumbnailTempPath);
+        $imagePathOriginal = Mage::getBaseDir('media').DS.'catalog/product'.$thumbnailTempPath;
 
         if (!is_file($imagePathOriginal)) {
             return NULL;

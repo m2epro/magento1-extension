@@ -64,7 +64,6 @@ class Ess_M2ePro_Model_Magento_Quote_Total_WasteRecyclingFee extends Mage_Tax_Mo
         $address->setAppliedTaxes(array());
 
         $this->_store = $address->getQuote()->getStore();
-        $this->_helper->setStore($this->_store);
 
         foreach ($items as $item) {
             if (!$item->getWasteRecyclingFee() || $item->getParentItemId()) {

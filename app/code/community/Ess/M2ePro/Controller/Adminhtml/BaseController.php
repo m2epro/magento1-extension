@@ -68,7 +68,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
             $this->setFlag('', self::FLAG_NO_PRE_DISPATCH, true);
 
             if ($this->getRequest()->isXmlHttpRequest()) {
-                exit(json_encode(array(
+                return $this->getResponse()->setBody(json_encode(array(
                     'ajaxExpired'  => 1,
                     'ajaxRedirect' => Mage::getBaseUrl()
                 )));
@@ -106,7 +106,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
 
             if ($this->getRequest()->getControllerName() ==
                 Mage::helper('M2ePro/Module_Support')->getPageControllerName()) {
-                exit($exception->getMessage());
+                return $this->getResponse()->setBody($exception->getMessage());
             } else {
 
                 if (Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
@@ -132,7 +132,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
 
                         $this->_redirect(Mage::helper('M2ePro/Module_Support')->getPageRoute(), $params);
                     } else {
-                        exit($exception->getMessage());
+                        return $this->getResponse()->setBody($exception->getMessage());
                     }
                 }
             }

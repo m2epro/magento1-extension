@@ -159,11 +159,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
     private function linkSimpleOrIndividualProduct()
     {
         $this->getListingProduct()->addData(array(
-            'general_id'         => $this->getGeneralId(),
-            'is_isbn_general_id' => Mage::helper('M2ePro')->isISBN($this->getGeneralId()),
-            'general_id_owner'   => Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO,
-            'sku'                => $this->getSku(),
-            'status'             => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
+            'general_id'          => $this->getGeneralId(),
+            'is_isbn_general_id'  => Mage::helper('M2ePro')->isISBN($this->getGeneralId()),
+            'is_general_id_owner' => Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO,
+            'sku'                 => $this->getSku(),
+            'status'              => Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
         ));
         $this->getListingProduct()->save();
 
@@ -222,9 +222,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
 
         // improve check is sku existence
         if (empty($listingProductSku) && !empty($descriptionTemplate) && $descriptionTemplate->isNewAsinAccepted()) {
-            $dataForUpdate['general_id_owner'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES;
+            $dataForUpdate['is_general_id_owner'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES;
         } else {
-            $dataForUpdate['general_id_owner'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO;
+            $dataForUpdate['is_general_id_owner'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO;
         }
 
         $this->getListingProduct()->addData($dataForUpdate);

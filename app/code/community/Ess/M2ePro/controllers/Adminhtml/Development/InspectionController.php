@@ -18,7 +18,7 @@ class Ess_M2ePro_Adminhtml_Development_InspectionController
 
     public function cacheSettingsAction()
     {
-        echo '<pre>'.print_r(Mage::app()->getCache(), true);
+        return $this->getResponse()->setBody('<pre>'.print_r(Mage::app()->getCache(), true).'</pre>');
     }
 
     public function resourcesSettingsAction()
@@ -41,7 +41,7 @@ class Ess_M2ePro_Adminhtml_Development_InspectionController
             }
         }
 
-        echo '<pre>'.print_r($resourcesConfig, true).'</pre>';
+        return $this->getResponse()->setBody('<pre>'.print_r($resourcesConfig, true).'</pre>');
     }
 
     //########################################

@@ -1,3 +1,17 @@
+* 6.4.12 (r11757) (11/10/2017)
+
+* Added: Compatibility with Magento Marketplace (marketplace.magento.com)
+* Added: [Amazon] Support of Australia and Mexico marketplaces
+* Improvement: Better formatting of displaying values from Magento Price Attributes
+* Fix: Image thumbnails were not displayed in Product grids
+* Fix: "Call to undefined method Mage_Weee_Helper_Data::setStore()" error during Magento Order creation process, on Magento version lower than 1.9.*
+* Fix: Tracking numbers that were added to Magento using ShipStation extension (or similar tools) were not processed in some cases
+* Fix: "vsprintf(): Too few arguments in ..." warning happened in some cases
+* Fix: [eBay] Custom Import from CSV file of Parts Compatibilities (ePIDs/kTypes) did not work in some cases
+* Fix: [eBay] An update of payment status for already paid orders caused an error in some cases
+* Fix: [eBay] Price and Quantity changes of individual variations, that performed directly on eBay, were lost in some cases
+* Fix: [Amazon] Some Products marked as 'creator of ASIN/ISBN' after List Action mistakenly
+
 * 6.4.11 (r11702) (27/09/2017)
 
 * Added: Import company name to magento customer during order creation

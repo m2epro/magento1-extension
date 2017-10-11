@@ -133,6 +133,10 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         $csvData = array();
         $headers = array_shift($tempCsvData);
         foreach ($tempCsvData as $csvRow) {
+            if (!is_array($csvRow) || count($csvRow) != count($headers)) {
+                continue;
+            }
+
             $csvData[] = array_combine($headers, $csvRow);
         }
 

@@ -32,17 +32,17 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
 
         $cronRunner->process();
 
-        exit();
+        return $this->getResponse();
     }
 
     public function testAction()
     {
         $installationKey = Mage::helper('M2ePro/Module')->getInstallationKey();
         if (empty($installationKey)) {
-            exit('ok');
+            return $this->getResponse()->setBody('ok');
         }
 
-        exit($installationKey);
+        return $this->getResponse()->setBody($installationKey);
     }
 
     // ---------------------------------------
@@ -60,7 +60,8 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
         ob_start();
 
         ignore_user_abort(true);
-        echo 'processing...';
+        $this->getResponse()->setBody('processing...');
+        $this->getResponse()->outputBody();
 
         header('Connection: Close');
         header('Content-Length: '.ob_get_length());

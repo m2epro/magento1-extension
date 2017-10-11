@@ -23,12 +23,6 @@ class Ess_M2ePro_Model_Observer_Shipment_Track extends Ess_M2ePro_Model_Observer
             $track = $this->getEvent()->getTrack();
 
             $shipment = $track->getShipment();
-
-            if ($shipment->getData('is_already_processed_by_m2epro')) {
-                return;
-            }
-            $shipment->setData('is_already_processed_by_m2epro', true);
-
             $magentoOrderId = $shipment->getOrderId();
 
             try {

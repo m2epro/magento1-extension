@@ -49,6 +49,8 @@ class Ess_M2ePro_Adminhtml_Development_Tools_AdditionalController
 
         $isLogFileExists = is_file($logDir . $fileName);
 
+        $resultHtml = '';
+
         if ($seconds) {
 
             $isLogFileExists && unlink($logDir . $fileName);
@@ -59,7 +61,7 @@ class Ess_M2ePro_Adminhtml_Development_Tools_AdditionalController
                 ((++$i % 10) == 0) && Mage::log("{$i} seconds passed",null,$fileName,1);
             }
 
-            echo "<div>{$seconds} seconds passed successfully!</div><br/>";
+            $resultHtml .= "<div>{$seconds} seconds passed successfully!</div><br/>";
         }
 
         if ($isLogFileExists) {
@@ -68,18 +70,20 @@ class Ess_M2ePro_Adminhtml_Development_Tools_AdditionalController
 
             if (count($contentsRows) >= 2) {
                 $lastRecord = trim($contentsRows[count($contentsRows)-2], "\r\n");
-                echo "<button onclick=\"alert('{$lastRecord}')\">show prev. log</button>";
+                $resultHtml .= "<button onclick=\"alert('{$lastRecord}')\">show prev. log</button>";
             }
         }
 
         $url = Mage::helper('adminhtml')->getUrl('*/*/*');
 
-        return print <<<HTML
+        $resultHtml .= <<<HTML
 <form action="{$url}" method="get">
     <input type="text" name="seconds" class="input-text" value="180" style="text-align: right; width: 100px" />
     <button type="submit">Test</button>
 </form>
 HTML;
+
+        return $this->getResponse()->setBody($resultHtml);
     }
 
     /**
@@ -119,7 +123,7 @@ HTML;
      */
     public function clearCookiesAction()
     {
-        foreach ($_COOKIE as $name => $value) {
+        foreach (Mage::app()->getRequest()->getCookie() as $name => $value) {
             setcookie($name, '', 0, '/');
         }
         $this->_getSession()->addSuccess('Cookies was successfully cleared.');

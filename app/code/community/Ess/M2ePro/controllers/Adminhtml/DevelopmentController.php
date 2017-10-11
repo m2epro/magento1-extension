@@ -48,23 +48,13 @@ class Ess_M2ePro_Adminhtml_DevelopmentController
      */
     public function runMigrationForce630Action()
     {
-        var_dump('start ...');
+        /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion630 $migrationInstance */
+        $migrationInstance = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion630');
+        $migrationInstance->setInstaller(new Ess_M2ePro_Model_Upgrade_MySqlSetup('M2ePro_setup'));
+        $migrationInstance->setForceAllSteps(true);
+        $migrationInstance->migrate();
 
-        try {
-
-            /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion630 $migrationInstance */
-            $migrationInstance = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion630');
-            $migrationInstance->setInstaller(new Ess_M2ePro_Model_Upgrade_MySqlSetup('M2ePro_setup'));
-            $migrationInstance->setForceAllSteps(true);
-            $migrationInstance->migrate();
-
-        } catch (Exception $e) {
-
-            var_dump($e);
-            die;
-        }
-
-        var_dump('success.');
+        return $this->getResponse()->setBody('success');
     }
 
     /**
@@ -73,8 +63,6 @@ class Ess_M2ePro_Adminhtml_DevelopmentController
      */
     public function runFixEbayDescriptionTemplates630Action()
     {
-        var_dump('start ...');
-
         /** @var $resource Mage_Core_Model_Resource */
         $resource = Mage::getSingleton('core/resource');
 
@@ -130,7 +118,7 @@ FROM {$backupTable};
 SQL
         );
 
-        var_dump('success.');
+        return $this->getResponse()->setBody('success');
     }
 
     //########################################

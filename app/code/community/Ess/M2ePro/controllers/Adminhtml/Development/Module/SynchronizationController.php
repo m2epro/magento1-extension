@@ -142,7 +142,9 @@ class Ess_M2ePro_Adminhtml_Development_Module_SynchronizationController
 
         $dispatcher->process();
 
-        echo '<pre>'.$dispatcher->getOperationHistory()->getFullProfilerInfo().'</pre>';
+        return $this->getResponse()->setBody(
+            '<pre>'.$dispatcher->getOperationHistory()->getFullProfilerInfo().'</pre>'
+        );
     }
 
     //########################################

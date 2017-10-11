@@ -21,8 +21,7 @@ class Ess_M2ePro_Adminhtml_Development_Tools_M2ePro_InstallController
         $history = Mage::getModel('M2ePro/Registry')->load('/installation/versions_history/', 'key')
                                                     ->getValueFromJson();
         if (count($history) <= 0) {
-            echo $this->getEmptyResultsHtml('Installation History is not available.');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('Installation History is not available.'));
         }
 
         $history = array_reverse($history);
@@ -69,7 +68,7 @@ HTML;
         }
 
         $html .= '</table>';
-        print str_replace('%count%', count($history), $html);
+        return $this->getResponse()->setBody(str_replace('%count%', count($history), $html));
     }
 
     //########################################
@@ -114,10 +113,10 @@ HTML;
 
         $urlPhpInfo = Mage::helper('adminhtml')->getUrl('*/*/*', array('upgrade' => 'yes'));
 
-        echo '<form method="GET" action="'.$urlPhpInfo.'">
+        return $this->getResponse()->setBody('<form method="GET" action="'.$urlPhpInfo.'">
                 From version: <input type="text" name="version" value="3.2.0" />
                 <input type="submit" title="Upgrade Now!" onclick="return confirm(\'Are you sure?\');" />
-              </form>';
+              </form>');
     }
 
     //########################################
@@ -133,8 +132,9 @@ HTML;
         $responseData = $dispatcherObject->process($connectorObj);
 
         if (count($responseData) <= 0) {
-            echo $this->getEmptyResultsHtml('No files info for this M2E Pro version on server.');
-            return;
+            return $this->getResponse()->setBody(
+                $this->getEmptyResultsHtml('No files info for this M2E Pro version on server.')
+            );
         }
 
         $problems = array();
@@ -163,8 +163,7 @@ HTML;
         }
 
         if (count($problems) <= 0) {
-            echo '<h2 style="margin: 20px 0 0 10px">All files are valid.</span></h2>';
-            return;
+            return $this->getResponse()->setBody('<h2 style="margin: 20px 0 0 10px">All files are valid.</span></h2>');
         }
 
         $html = $this->getStyleHtml();
@@ -203,7 +202,7 @@ HTML;
         }
 
         $html .= '</table>';
-        print str_replace('%count%',count($problems),$html);
+        return $this->getResponse()->setBody(str_replace('%count%',count($problems),$html));
     }
 
     /**
@@ -221,13 +220,13 @@ HTML;
         $responseData = $dispatcherObject->process($connectorObj);
 
         if (!isset($responseData['diff'])) {
-            echo $this->getEmptyResultsHtml('No Tables info for this M2E Pro version on Server.');
-            return;
+            return $this->getResponse()->setBody(
+                $this->getEmptyResultsHtml('No Tables info for this M2E Pro version on Server.')
+            );
         }
 
         if (count($responseData['diff']) <= 0) {
-            echo $this->getEmptyResultsHtml('All Tables are valid.');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('All Tables are valid.'));
         }
 
         $html = $this->getStyleHtml();
@@ -309,7 +308,7 @@ HTML;
         }
 
         $html .= '</table>';
-        print str_replace('%count%',count($responseData['diff']),$html);
+        return $this->getResponse()->setBody(str_replace('%count%',count($responseData['diff']),$html));
     }
 
     /**
@@ -323,8 +322,9 @@ HTML;
         $responseData = $dispatcherObject->process($connectorObj);
 
         if (!isset($responseData['configs_info'])) {
-            echo $this->getEmptyResultsHtml('No configs info for this M2E Pro version on server.');
-            return;
+            return $this->getResponse()->setBody(
+                $this->getEmptyResultsHtml('No configs info for this M2E Pro version on server.')
+            );
         }
 
         $originalData = $responseData['configs_info'];
@@ -365,8 +365,7 @@ HTML;
         }
 
         if (count($differenses) <= 0) {
-            echo $this->getEmptyResultsHtml('All Configs are valid.');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('All Configs are valid.'));
         }
 
         $html = $this->getStyleHtml();
@@ -445,7 +444,7 @@ HTML;
         }
 
         $html .= '</table>';
-        print str_replace('%count%',count($differenses),$html);
+        return $this->getResponse()->setBody(str_replace('%count%',count($differenses),$html));
     }
 
     // ---------------------------------------
@@ -510,7 +509,7 @@ HTML;
             $html .= '<h1>&nbsp;&nbsp;No file on server</h1>';
         }
 
-        echo $html;
+        return $this->getResponse()->setBody($html);
     }
 
     /**
@@ -523,8 +522,7 @@ HTML;
         $unWritableDirectories = Mage::helper('M2ePro/Module')->getUnWritableDirectories();
 
         if (count ($unWritableDirectories) <= 0) {
-            echo $this->getEmptyResultsHtml('No UnWritable Directories');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('No UnWritable Directories'));
         }
 
         $html = $this->getStyleHtml();
@@ -550,7 +548,7 @@ HTML;
         }
 
         $html .= '</table>';
-        print str_replace('%count%',count($unWritableDirectories),$html);
+        return $this->getResponse()->setBody(str_replace('%count%',count($unWritableDirectories),$html));
     }
 
     //########################################

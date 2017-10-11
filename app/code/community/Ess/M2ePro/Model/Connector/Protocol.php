@@ -267,29 +267,6 @@ abstract class Ess_M2ePro_Model_Connector_Protocol
 
     //########################################
 
-    protected function printDebugData()
-    {
-        if (!Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
-            return;
-        }
-
-        if (count($this->request) > 0) {
-            echo '<h1>Request:</h1>',
-            '<pre>';
-            var_dump($this->request);
-            echo '</pre>';
-        }
-
-        if (count($this->response) > 0) {
-            echo '<h1>Response:</h1>',
-            '<pre>';
-            var_dump($this->response);
-            echo '</pre>';
-        }
-    }
-
-    //########################################
-
     /**
      * @param array $message
      * @return bool

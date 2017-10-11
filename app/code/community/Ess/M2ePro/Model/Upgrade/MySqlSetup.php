@@ -408,7 +408,7 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
         $this->afterFileExecution();
 
         if ($this->isLockFileExists() && !$this->isLockOwner()) {
-            exit();
+            throw new Exception('Lock file of another setup process exists.');
         }
 
         return $this;

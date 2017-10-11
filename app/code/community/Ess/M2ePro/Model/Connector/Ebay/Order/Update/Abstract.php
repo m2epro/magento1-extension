@@ -69,7 +69,7 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Order_Update_Abstract
     protected function isNeedSendRequest()
     {
         if ($this->order->getMarketplace()->getCode() == 'India'
-            && stripos($this->order->getChildObject()->getPaymentMethod(), 'paisa')
+            && stripos($this->order->getChildObject()->getPaymentMethod(), 'paisa') !== false
         ) {
             $this->order->addErrorLog('eBay Order Status was not updated. Reason: %msg%', array(
                 'msg' => 'Status of India Site Orders cannot be updated if the Buyer uses PaisaPay payment method.'

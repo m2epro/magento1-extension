@@ -148,20 +148,24 @@ MarketplaceHandler.prototype = Object.extend(new CommonHandler(), {
         this.marketplacesForUpdate = new Array();
 
         for (var i =0; i < storedStatuses.length; i++) {
+            for (var j = 0; j < currentStatuses.length; j++) {
 
-            if ((storedStatuses[i].marketplace_id == currentStatuses[i].marketplace_id)
-                && (storedStatuses[i].status != currentStatuses[i].status)) {
+                if ((storedStatuses[i].marketplace_id == currentStatuses[j].marketplace_id)
+                    && (storedStatuses[i].status != currentStatuses[j].status)) {
 
-                this.storedStatuses[i].status = currentStatuses[i].status;
-                changedStatuses.push({
-                    marketplace_id: currentStatuses[i].marketplace_id,
-                    status: currentStatuses[i].status
-                });
+                    this.storedStatuses[i].status = currentStatuses[j].status;
+                    changedStatuses.push({
+                        marketplace_id: currentStatuses[j].marketplace_id,
+                        status: currentStatuses[j].status
+                    });
 
-                this.changeStatusInfo(currentStatuses[i].marketplace_id, currentStatuses[i].status);
+                    this.changeStatusInfo(currentStatuses[j].marketplace_id, currentStatuses[j].status);
 
-                if (currentStatuses[i].status) {
-                    this.marketplacesForUpdate[this.marketplacesForUpdate.length] = currentStatuses[i].marketplace_id;
+                    if (currentStatuses[j].status) {
+                        this.marketplacesForUpdate[this.marketplacesForUpdate.length] = currentStatuses[j].marketplace_id;
+                    }
+
+                    break;
                 }
             }
         }

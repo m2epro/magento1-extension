@@ -68,7 +68,7 @@ HTML;
             $html.= "</script>";
         }
 
-        echo $html;
+        return $this->getResponse()->setBody($html);
     }
 
     /**
@@ -278,8 +278,7 @@ HTML;
         }
 
         if (count($nonexistentTemplates) <= 0) {
-            echo $this->getEmptyResultsHtml('There are no any nonexistent templates.');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('There are no any nonexistent templates.'));
         }
 
         $tableContent = <<<HTML
@@ -347,7 +346,7 @@ HTML;
 </html>
 HTML;
 
-        echo str_replace('#count#', count($alreadyRendered), $html);
+        return $this->getResponse()->setBody(str_replace('#count#', count($alreadyRendered), $html));
     }
 
     private function getNonexistentTemplatesByDifficultLogic($templateCode)
@@ -503,8 +502,9 @@ HTML;
         }
 
         if (count($duplicatesInfo) <= 0) {
-            echo $this->getEmptyResultsHtml('According to you logs there are no duplicates.');
-            return;
+            return $this->getResponse()->setBody(
+                $this->getEmptyResultsHtml('According to you logs there are no duplicates.')
+            );
         }
 
         $tableContent = <<<HTML
@@ -545,7 +545,7 @@ HTML;
     </body>
 </html>
 HTML;
-        echo str_replace('#count#', count($duplicatesInfo), $html);
+        return $this->getResponse()->setBody(str_replace('#count#', count($duplicatesInfo), $html));
     }
 
     /**
@@ -613,8 +613,7 @@ HTML;
         }
 
         if (count($duplicated) <= 0) {
-            echo $this->getEmptyResultsHtml('There are no duplicates.');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('There are no duplicates.'));
         }
 
         $tableContent = <<<HTML
@@ -652,7 +651,7 @@ HTML;
     </body>
 </html>
 HTML;
-        echo str_replace('#count#', count($duplicated), $html);
+        return $this->getResponse()->setBody(str_replace('#count#', count($duplicated), $html));
     }
 
     //########################################
@@ -686,7 +685,7 @@ HTML;
             $currentOptGroup = $listing->getComponentMode();
         }
 
-        echo <<<HTML
+        return $this->getResponse()->setBody(<<<HTML
 <form method="post" enctype="multipart/form-data" action="{$actionUrl}">
 
     <input name="form_key" value="{$formKey}" type="hidden" />
@@ -708,7 +707,8 @@ HTML;
 
     <input type="submit" title="Run Now" onclick="return confirm('Are you sure?');" />
 </form>
-HTML;
+HTML
+        );
     }
 
     /**

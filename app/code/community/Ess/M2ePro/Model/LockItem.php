@@ -125,11 +125,6 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
             $parentLockModel->getId() && $parentLockModel->activate();
         }
 
-        if ($lockModel->getData('kill_now')) {
-            $this->remove();
-            exit('kill now.');
-        }
-
         $lockModel->setData('data',$lockModel->getData('data'))->save();
 
         return true;

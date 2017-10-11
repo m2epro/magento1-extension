@@ -71,6 +71,22 @@ class Ess_M2ePro_Model_Connector_Ebay_Order_Update_Shipping
         }
 
         if ($this->action == Ess_M2ePro_Model_Connector_Ebay_Order_Dispatcher::ACTION_SHIP_TRACK) {
+
+            if (!$this->order->getChildObject()->isShippingTrackingNumberExists($this->trackingNumber)) {
+                /** @var Ess_M2ePro_Model_Order_Item $orderItem */
+                $orderItem = $this->order->getItemsCollection()->getFirstItem();
+
+                /** @var Ess_M2ePro_Model_Ebay_Order_Item $ebayOrderItem */
+                $ebayOrderItem = $orderItem->getChildObject();
+
+                $trackingDetails = $ebayOrderItem->getTrackingDetails();
+                $trackingDetails[] = array(
+                    'title'  => $this->carrierCode,
+                    'number' => $this->trackingNumber,
+                );
+                $orderItem->setSettings('tracking_details', $trackingDetails)->save();
+            }
+
             $this->order->addSuccessLog(
                 'Tracking number "%num%" for "%code%" has been sent to eBay.', array(
                     '!num'  => $this->trackingNumber,

@@ -121,24 +121,12 @@ SQL
     {
         self::DEVELOPMENT && $this->prepareDevelopmentEnvironment();
 
-        if (self::DEVELOPMENT) {
-            $startTime = microtime(true);
-        }
-
         !$this->checkToSkipStep('m2epro'.self::PREFIX_TABLE_BACKUP.'_translation_text') &&
             $this->backupOldVersionTables();
-
-        if (self::DEVELOPMENT) {
-            echo 'Total Backup Time: '.(string)round(microtime(true) - $startTime,2).'s.';
-        }
     }
 
     public function migrate()
     {
-        if (self::DEVELOPMENT) {
-            $startTime = microtime(true);
-        }
-
         $this->truncateTables();
         !$this->checkToSkipStep('m2epro_config') &&
             $this->createMigrationTable();
@@ -255,10 +243,6 @@ SQL
         $this->processCommonScheduleForMigration();
         $this->processProductDetailsForMigration();
         $this->processEbayUnusedDescriptionTemplatesForMigration();
-
-        if (self::DEVELOPMENT) {
-            echo 'Total Migration Time: '.(string)round(microtime(true) - $startTime,2).'s.';
-        }
     }
 
     //########################################
@@ -1877,7 +1861,7 @@ SQL
                     continue;
                 }
 
-                if (strpos($coefficient, '%')) {
+                if (strpos($coefficient, '%') !== false) {
                     $value = str_replace('%', '', $coefficient);
 
                     if ((int)$value > 100) {

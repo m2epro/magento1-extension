@@ -19,12 +19,6 @@ class Ess_M2ePro_Model_Observer_Shipment extends Ess_M2ePro_Model_Observer_Abstr
 
         /** @var $shipment Mage_Sales_Model_Order_Shipment */
         $shipment = $this->getEvent()->getShipment();
-
-        if ($shipment->getData('is_already_processed_by_m2epro')) {
-            return;
-        }
-        $shipment->setData('is_already_processed_by_m2epro', true);
-
         $magentoOrderId = $shipment->getOrderId();
 
         try {

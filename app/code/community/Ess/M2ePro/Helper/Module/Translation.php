@@ -34,8 +34,8 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
 
         $this->translatedText = parent::__($this->text);
 
-        $this->replacePlaceholdersByValue();
-        $this->replacePlaceholdersByArgs();
+        !empty($this->values) && $this->replacePlaceholdersByValue();
+        !empty($this->args)   && $this->replacePlaceholdersByArgs();
 
         $unprocessedArgs = array_diff($this->args, $this->processedArgs);
         if (!$unprocessedArgs) {
@@ -101,11 +101,11 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
 
         foreach ($unprocessedPlaceholders as $placeholder) {
 
-            $value = array_shift($unprocessedArgs);
-
-            if (is_null($value)) {
+            if (empty($unprocessedArgs)) {
                 break;
             }
+
+            $value = (string)array_shift($unprocessedArgs);
 
             $this->translatedText = str_replace($placeholder, $value, $this->translatedText);
 

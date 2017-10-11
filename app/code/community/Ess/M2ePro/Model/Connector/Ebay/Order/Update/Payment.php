@@ -30,6 +30,12 @@ class Ess_M2ePro_Model_Connector_Ebay_Order_Update_Payment
 
         $this->order->addSuccessLog('Payment Status for eBay Order was updated to Paid.');
 
+        if (isset($response['is_already_paid']) && $response['is_already_paid']) {
+
+            $this->order->setData('payment_status', Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED)->save();
+            $this->order->updateMagentoOrderStatus();
+        }
+
         Mage::getResourceModel('M2ePro/Order_Change')
             ->deleteByOrderAction($this->order->getId(), Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_PAYMENT);
 

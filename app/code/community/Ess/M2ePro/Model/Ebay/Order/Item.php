@@ -239,6 +239,22 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         return is_array($trackingDetails) ? $trackingDetails : array();
     }
 
+    public function isTrackingNumberExists($number)
+    {
+        $trackingDetails = $this->getTrackingDetails();
+        if (empty($trackingDetails)) {
+            return false;
+        }
+
+        foreach ($trackingDetails as $trackingDetail) {
+            if ($trackingDetail['number'] == $number) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // ---------------------------------------
 
     /**

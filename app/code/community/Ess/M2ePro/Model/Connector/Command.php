@@ -48,22 +48,4 @@ abstract class Ess_M2ePro_Model_Connector_Command extends Ess_M2ePro_Model_Conne
     abstract protected function prepareResponseData($response);
 
     //########################################
-
-    public function printDebugData()
-    {
-        if (!Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
-            return;
-        }
-
-        parent::printDebugData();
-
-        if (count($this->parsedResponseData) > 0) {
-            echo '<h1>Parsed Response:</h1>',
-                 '<pre>';
-            var_dump($this->parsedResponseData);
-            echo '</pre>';
-        }
-    }
-
-    //########################################
 }

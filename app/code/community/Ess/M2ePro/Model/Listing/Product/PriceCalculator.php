@@ -751,7 +751,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
             return $value;
         }
 
-        if (strpos($coefficient, '%')) {
+        if (strpos($coefficient, '%') !== false) {
 
             $coefficient = str_replace('%', '', $coefficient);
 

@@ -42,22 +42,15 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611
 
     public function migrate()
     {
-        try {
+        $this->prepareWizardsTable();
 
-            $this->prepareWizardsTable();
+        $this->processProcessing();
+        $this->processLogs();
+        $this->processConfigData();
 
-            $this->processProcessing();
-            $this->processLogs();
-            $this->processConfigData();
-
-            $this->prepareOrdersTables();
-            $this->prepareOrdersConfigTable();
-            $this->processOrdersData();
-
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            die;
-        }
+        $this->prepareOrdersTables();
+        $this->prepareOrdersConfigTable();
+        $this->processOrdersData();
     }
 
     //########################################

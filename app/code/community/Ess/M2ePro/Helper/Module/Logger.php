@@ -61,9 +61,9 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
 
     private function getCurrentUserActionInfo()
     {
-        $server = isset($_SERVER) ? print_r($_SERVER, true) : '';
-        $get = isset($_GET) ? print_r($_GET, true) : '';
-        $post = isset($_POST) ? print_r($_POST, true) : '';
+        $server = print_r(Mage::app()->getRequest()->getServer(), true);
+        $get = print_r(Mage::app()->getRequest()->getQuery(), true);
+        $post = print_r(Mage::app()->getRequest()->getPost(), true);
 
         $actionInfo = <<<ACTION
 -------------------------------- ACTION INFO -------------------------------------

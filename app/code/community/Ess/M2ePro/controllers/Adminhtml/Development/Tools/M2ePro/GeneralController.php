@@ -66,8 +66,7 @@ class Ess_M2ePro_Adminhtml_Development_Tools_M2ePro_GeneralController
         $brokenTables = Mage::helper('M2ePro/Module_Database_Repair')->getBrokenTablesInfo();
 
         if ($brokenTables['total_count'] <= 0) {
-            echo $this->getEmptyResultsHtml('No Broken Tables');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('No Broken Tables'));
         }
 
         $currentUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
@@ -174,7 +173,7 @@ HTML;
 </html>
 HTML;
 
-        echo $html;
+        return $this->getResponse()->setBody($html);
     }
 
     /**
@@ -192,7 +191,10 @@ HTML;
         $tableName = array_pop($tableNames);
 
         $info = Mage::helper('M2ePro/Module_Database_Repair')->getBrokenRecordsInfo($tableName);
-        return '<pre>' . print_r($info);
+
+        return $this->getResponse()->setBody('<pre>' .
+             "<span>Broken Records '{$tableName}'<span><br>" .
+             print_r($info, true));
     }
 
     // ---------------------------------------
@@ -244,8 +246,7 @@ HTML;
         $removedStoreIds = array_diff($usedStoresIds, $existsStoreIds);
 
         if (count($removedStoreIds) <= 0) {
-            echo $this->getEmptyResultsHtml('No Removed Magento Stores');
-            return;
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('No Removed Magento Stores'));
         }
 
         $html = $this->getStyleHtml();
@@ -269,7 +270,7 @@ HTML;
 </form>
 HTML;
 
-        print str_replace('%count%', count($removedStoreIds), $html);
+        return $this->getResponse()->setBody(str_replace('%count%', count($removedStoreIds), $html));
     }
 
     /**
@@ -454,16 +455,20 @@ HTML;
 
         $response = curl_exec($curlObject);
 
-        echo '<h1>Response</h1><pre>';
-        print_r($response);
-        echo '</pre><h1>Report</h1><pre>';
-        print_r(curl_getinfo($curlObject));
-        echo '</pre>';
+        $resultHtml = '';
 
-        echo '<h2 style="color:red;">Errors</h2>';
-        echo curl_errno($curlObject) . ' ' . curl_error($curlObject) . '<br/><br/>';
+        $resultHtml .= '<h1>Response</h1><pre>';
+        $resultHtml .= print_r($response, true);
+        $resultHtml .= '</pre><h1>Report</h1><pre>';
+        $resultHtml .= print_r(curl_getinfo($curlObject), true);
+        $resultHtml .= '</pre>';
+
+        $resultHtml .= '<h2 style="color:red;">Errors</h2>';
+        $resultHtml .= curl_errno($curlObject) . ' ' . curl_error($curlObject) . '<br/><br/>';
 
         curl_close($curlObject);
+
+        return $this->getResponse()->setBody($resultHtml);
     }
 
     //########################################

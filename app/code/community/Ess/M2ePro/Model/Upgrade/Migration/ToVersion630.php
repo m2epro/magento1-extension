@@ -44,24 +44,13 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630
 
     public function migrate()
     {
-        try {
-
-            $this->processGeneral();
-            $this->processMarketplace();
-            $this->processDescriptionTemplate();
-            $this->processListingProduct();
-            $this->processAutoActions();
-            $this->processProcessing();
-            $this->processListing();
-
-        } catch (Exception $e) {
-
-            echo '<pre>' . $e->getMessage() . '<br/>';
-            echo '<pre>' . $e->getFile() . '::' . $e->getLine() . '<br/>';
-            echo '<pre>' . $e->getTraceAsString() . '<br/>';
-
-            die;
-        }
+        $this->processGeneral();
+        $this->processMarketplace();
+        $this->processDescriptionTemplate();
+        $this->processListingProduct();
+        $this->processAutoActions();
+        $this->processProcessing();
+        $this->processListing();
     }
 
     //########################################

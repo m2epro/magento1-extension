@@ -56,7 +56,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Response
 
         $isGeneralIdOwner = $this->getIsGeneralIdOwner();
         if (!is_null($isGeneralIdOwner)) {
-            $data['general_id_owner'] = $isGeneralIdOwner;
+            $data['is_general_id_owner'] = $isGeneralIdOwner;
         }
 
         if (!empty($generalId)) {
