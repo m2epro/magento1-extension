@@ -20,9 +20,11 @@
         $('sign_into_ebay_button').observe('click',function() {
             InstallationEbayWizardObj.createLicenseAndGetToken('<?php echo Ess_M2ePro_Model_Connector_Ebay_Abstract::MODE_PRODUCTION; ?>');
         });
-        $('sign_into_ebay_sandbox').observe('click',function() {
+
+        var ebaySandboxSignIn = function() {
             InstallationEbayWizardObj.createLicenseAndGetToken('<?php echo Ess_M2ePro_Model_Connector_Ebay_Abstract::MODE_SANDBOX; ?>');
-        });
+        };
+        $('sign_into_ebay_sandbox').observe('click',ebaySandboxSignIn);
 
         $('license_popup_cancel_link').observe('click', function() {
             InstallationEbayWizardObj.closePopupAction();
@@ -34,6 +36,51 @@
 
         <?php if ($this->getData('isLicenseStepFinished')) : ?>
             $('edit_license').hide();
+            $('block_private_policy_agreement').hide();
+        <?php else: ?>
+            (function() {
+                var disable = function (element) {
+                    if (element.tagName === 'A') {
+                        element.stopObserving('click', ebaySandboxSignIn);
+                        element.style.color = 'gray';
+                        return;
+                    } else {
+                        element.addClassName('disabled');
+                        element.disabled = true;
+                    }
+                },
+                    enable = function(element) {
+                        if (element.tagName === 'A') {
+                            element.observe('click', ebaySandboxSignIn);
+                            element.style.color = '';
+                            return;
+                        } else {
+                            element.removeClassName('disabled');
+                            element.disabled = false;
+                        }
+                    },
+                    elements = [
+                        $('sign_into_ebay_button'),
+                        $('register_on_ebay_button'),
+                        $('sign_into_ebay_sandbox')
+                    ];
+
+                elements.each(function (el) {
+                    disable(el);
+                });
+
+                $('private_policy_agreement').observe('click', function () {
+
+                    var checkbox = this;
+                    elements.each(function (el) {
+                        if (checkbox.checked === true) {
+                            enable(el);
+                        } else {
+                            disable(el);
+                        }
+                    });
+                });
+            })();
         <?php endif; ?>
 
         InstallationEbayWizardObj.checkFormFilling();
@@ -147,6 +194,12 @@
     </div>
 
     <div class="clear"></div>
+
+    <div id="block_private_policy_agreement" style="font-size: 13px">
+        <br>
+        <input type="checkbox" name="private_policy_agreement" id="private_policy_agreement">
+        <span style="padding-left: 5px;">I agree to Terms and <a href="https://m2epro.com/privacy-policy" target="_blank">Privacy Policy</a></span>
+    </div>
 
     <div style="margin-top: 40px">
         <h4>

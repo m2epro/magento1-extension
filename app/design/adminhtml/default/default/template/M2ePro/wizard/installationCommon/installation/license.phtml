@@ -20,9 +20,18 @@
             InstallationCommonWizardObj.openPopupAction();
         });
 
-        $('process_license_button') && $('process_license_button').observe('click', function() {
+        if ($('process_license_button')) {
+            $('block_private_policy_agreement').show();
+            $('process_license_button').observe('click', function() {
             InstallationCommonWizardObj.proceedLicenseStep();
         });
+
+            $('process_license_button').addClassName('disabled');
+            $('process_license_button').disabled = true;
+        } else {
+
+            $('block_private_policy_agreement').hide();
+        }
 
         $('license_popup_cancel_link').observe('click', function() {
             InstallationCommonWizardObj.closePopupAction();
@@ -34,6 +43,18 @@
 
         <?php if ($this->getData('isLicenseStepFinished') || $wizardHelper->getStep($this->getNick()) != 'license') : ?>
             $('edit_license').hide();
+        <?php else: ?>
+            $('private_policy_agreement').observe('click', function () {
+
+                var button = $('process_license_button');
+                if (this.checked === true) {
+                    button.removeClassName('disabled');
+                    button.disabled = false;
+                } else {
+                    button.addClassName('disabled');
+                    button.disabled = true;
+                }
+            });
         <?php endif; ?>
     };
 
@@ -152,6 +173,12 @@
 
     <div class="step_container_completed" style="margin-top: -20px;">
         <span class="step_completed" style="display:none;"><?php echo Mage::helper('M2ePro')->__('Completed'); ?></span>
+    </div>
+
+    <div id="block_private_policy_agreement" style="font-size: 13px;">
+        <br>
+        <input type="checkbox" name="private_policy_agreement" id="private_policy_agreement">
+        <span style="padding-left: 5px;">I agree to Terms and <a href="https://m2epro.com/privacy-policy" target="_blank">Privacy Policy</a></span>
     </div>
 
     <div class="step_container_buttons" style="margin-top: 10px;">

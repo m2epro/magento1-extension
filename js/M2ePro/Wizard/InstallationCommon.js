@@ -133,6 +133,7 @@ WizardInstallationCommon = Class.create(CommonHandler, {
                     return CommonHandlerObj.scroll_page_to_top();
                 }
 
+                $('block_private_policy_agreement').hide();
                 $('edit_license').hide();
                 self.doStep('license');
             }
