@@ -92,21 +92,21 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
         Mage::helper('M2ePro/Data_Global')->setValue('set_fatal_error_handler', true);
 
-        $functionCode = '$error = error_get_last();
+        $shutdownFunction = function () {
+            $error = error_get_last();
 
-                         if (is_null($error)) {
-                             return;
-                         }
+            if (is_null($error)) {
+                return;
+            }
 
-                         $fatalErrors = array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
+            $fatalErrors = array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
 
-                         if (in_array((int)$error[\'type\'], $fatalErrors)) {
-                             $trace = @debug_backtrace(false);
-                             $traceInfo = Mage::helper(\'M2ePro/Module_Exception\')->getFatalStackTraceInfo($trace);
-                             Mage::helper(\'M2ePro/Module_Exception\')->processFatal($error,$traceInfo);
-                         }';
-
-        $shutdownFunction = create_function('', $functionCode);
+            if (in_array((int)$error['type'], $fatalErrors)) {
+                $trace     = @debug_backtrace(false);
+                $traceInfo = Mage::helper('M2ePro/Module_Exception')->getFatalStackTraceInfo($trace);
+                Mage::helper('M2ePro/Module_Exception')->processFatal($error, $traceInfo);
+            }
+        };
         register_shutdown_function($shutdownFunction);
     }
 

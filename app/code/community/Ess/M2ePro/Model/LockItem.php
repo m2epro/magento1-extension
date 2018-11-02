@@ -215,11 +215,11 @@ class Ess_M2ePro_Model_LockItem extends Ess_M2ePro_Model_Abstract
             return false;
         }
 
-        $functionCode = "\$object = Mage::getModel('M2ePro/LockItem');
-                         \$object->setNick('".$this->nick."');
-                         \$object->remove();";
-
-        $shutdownDeleteFunction = create_function('', $functionCode);
+        $shutdownDeleteFunction = function () {
+            $object = Mage::getModel('M2ePro/LockItem');
+            $object->setNick($this->nick);
+            $object->remove();
+        };
         register_shutdown_function($shutdownDeleteFunction);
 
         return true;

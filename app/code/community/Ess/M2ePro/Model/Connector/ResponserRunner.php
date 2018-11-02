@@ -155,12 +155,12 @@ class Ess_M2ePro_Model_Connector_ResponserRunner
 
         $table = Mage::getResourceModel('M2ePro/LockedObject')->getMainTable();
 
-        $functionCode = "Mage::getSingleton('core/resource')->getConnection('core_write')
-                            ->delete('".$table."',array('`related_hash` = ?'=>'".$hash."'));
-                         Mage::getSingleton('core/resource')->getConnection('core_write')
-                            ->delete('".$table."',array('`id` = ?'=>".$processingRequestId."));";
-
-        $shutdownDeleteFunction = create_function('', $functionCode);
+        $shutdownDeleteFunction = function () use ($table, $hash, $processingRequestId) {
+            Mage::getSingleton('core/resource')->getConnection('core_write')
+                ->delete($table, array('`related_hash` = ?' => $hash));
+            Mage::getSingleton('core/resource')->getConnection('core_write')
+                ->delete($table, array('`id` = ?' => ".$processingRequestId."));
+        };
         register_shutdown_function($shutdownDeleteFunction);
     }
 

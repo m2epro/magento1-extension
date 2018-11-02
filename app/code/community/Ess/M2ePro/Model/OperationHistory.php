@@ -132,38 +132,37 @@ class Ess_M2ePro_Model_OperationHistory extends Ess_M2ePro_Model_Abstract
             return false;
         }
 
-        $functionCode =
-            '$object = Mage::getModel(\'M2ePro/OperationHistory\');
-             $object->setObject('.$this->object->getId().');
+        $shutdownDeleteFunction = function () {
+            $object = Mage::getModel('M2ePro/OperationHistory');
+            $object->setObject($this->object->getId());
 
-             if (!$object->stop()) {
+            if (!$object->stop()) {
                 return;
-             }
+            }
 
-             $collection = $object->getCollection()
-                     ->addFieldToFilter(\'parent_id\', '.$this->object->getId().');
+            $collection = $object->getCollection()
+                ->addFieldToFilter('parent_id', $this->object->getId());
 
-             if ($collection->getSize()) {
+            if ($collection->getSize()) {
                 return;
-             }
+            }
 
-             $error = error_get_last();
+            $error = error_get_last();
 
-             if (is_null($error)) {
-                 return;
-             }
+            if (is_null($error)) {
+                return;
+            }
 
-             if (in_array((int)$error[\'type\'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
-                 $stackTrace = @debug_backtrace(false);
-                 $object->setContentData(\'fatal_error\',array(
-                    \'message\' => $error[\'message\'],
-                    \'file\' => $error[\'file\'],
-                    \'line\' => $error[\'line\'],
-                    \'trace\' => Mage::helper(\'M2ePro/Module_Exception\')->getFatalStackTraceInfo($stackTrace)
-                 ));
-             }';
-
-        $shutdownDeleteFunction = create_function('', $functionCode);
+            if (in_array((int)$error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
+                $stackTrace = @debug_backtrace(false);
+                $object->setContentData('fatal_error', array(
+                    'message' => $error['message'],
+                    'file'    => $error['file'],
+                    'line'    => $error['line'],
+                    'trace'   => Mage::helper('M2ePro/Module_Exception')->getFatalStackTraceInfo($stackTrace)
+                ));
+            }
+        };
         register_shutdown_function($shutdownDeleteFunction);
 
         return true;

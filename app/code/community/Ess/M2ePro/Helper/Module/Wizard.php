@@ -232,19 +232,17 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
             $connRead->select()->from($tableName,'*')
         );
 
-        $sortFunction = <<<FUNCTION
-if (\$a['type'] != \$b['type']) {
-    return \$a['type'] == Ess_M2ePro_Helper_Module_Wizard::TYPE_BLOCKER ? - 1 : 1;
-}
+        $sortFunction = function ($a, $b) {
+            if ($a['type'] != $b['type']) {
+                return $a['type'] == Ess_M2ePro_Helper_Module_Wizard::TYPE_BLOCKER ? -1 : 1;
+            }
 
-if (\$a['priority'] == \$b['priority']) {
-    return 0;
-}
+            if ($a['priority'] == $b['priority']) {
+                return 0;
+            }
 
-return \$a['priority'] > \$b['priority'] ? 1 : -1;
-FUNCTION;
-
-        $sortFunction = create_function('$a,$b',$sortFunction);
+            return $a['priority'] > $b['priority'] ? 1 : -1;
+        };
 
         usort($this->cache, $sortFunction);
 
