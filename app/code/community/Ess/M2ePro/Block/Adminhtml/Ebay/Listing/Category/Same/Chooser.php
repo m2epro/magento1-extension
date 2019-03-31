@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -122,12 +122,12 @@ JS;
             '_current' => true
         ));
 
-        $path = 'adminhtml_ebay_listing/review';
+        $path = 'adminhtml_ebay_listing_categorySettings/review';
         $urls[$path] = $this->getUrl('*/' . $path, array(
             '_current' => true
         ));
 
-        $urls = json_encode($urls);
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
         // ---------------------------------------
 

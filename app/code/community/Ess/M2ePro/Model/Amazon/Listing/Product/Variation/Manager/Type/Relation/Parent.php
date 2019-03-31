@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -129,7 +129,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             'additional_data', 'variation_product_attributes', $this->getRealMagentoAttributes()
         );
 
-        $this->setVirtualProductAttributes(array(), false);
         $this->setVirtualChannelAttributes(array(), false);
 
         $this->restoreAllRemovedProductOptions(false);
@@ -317,7 +316,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         );
 
         if (empty($matchedAttributes)) {
-            return NULL;
+            return array();
         }
 
         ksort($matchedAttributes);
@@ -475,7 +474,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         );
 
         if (empty($attributesSets)) {
-            return null;
+            return array();
         }
 
         foreach ($this->getVirtualChannelAttributes() as $virtualAttribute => $virtualValue) {
@@ -527,7 +526,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         );
 
         if (empty($channelVariations)) {
-            return null;
+            return array();
         }
 
         $virtualChannelAttributes = $this->getVirtualChannelAttributes();
@@ -818,11 +817,23 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             'is_variation_parent'     => 0,
             'variation_parent_id'     => $this->getListingProduct()->getId(),
             'template_description_id' => $this->getAmazonListingProduct()->getTemplateDescriptionId(),
+            'template_shipping_id'    => $this->getAmazonListingProduct()->getTemplateShippingId(),
+            'template_product_tax_code_id' => $this->getAmazonListingProduct()->getTemplateProductTaxCodeId(),
         );
 
         /** @var Ess_M2ePro_Model_Listing_Product $childListingProduct */
         $childListingProduct = Mage::helper('M2ePro/Component_Amazon')->getModel('Listing_Product')->setData($data);
         $childListingProduct->save();
+
+        $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
+        $instruction->setData(array(
+            'listing_product_id' => $childListingProduct->getId(),
+            'component'          => Ess_M2ePro_Helper_Component_Amazon::NICK,
+            'type'               => Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_ADDED,
+            'initiator'          => Ess_M2ePro_Model_Listing::INSTRUCTION_INITIATOR_ADDING_PRODUCT,
+            'priority'           => 70,
+        ));
+        $instruction->save();
 
         if ($this->isCacheEnabled()) {
             $this->childListingsProducts[$childListingProduct->getId()] = $childListingProduct;
@@ -899,8 +910,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $childVariationManager */
             $childVariationManager = $childListingProduct->getChildObject()->getVariationManager();
 
-            $childVariationManager->getTypeModel()->unsetChannelVariation();
-            $childVariationManager->setIndividualType();
+            if ($this->getMagentoProduct()->isProductWithVariations()) {
+                $childVariationManager->getTypeModel()->unsetChannelVariation();
+                $childVariationManager->setIndividualType();
+            } else {
+                $childVariationManager->setSimpleType();
+            }
 
             $childListingProduct->save();
         }

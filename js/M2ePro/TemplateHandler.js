@@ -15,7 +15,7 @@ TemplateHandler = Class.create(CommonHandler, {
         parameters += '&store_id=' + encodeURIComponent(storeId);
         parameters += '&marketplace_id=' + encodeURIComponent(marketplaceId);
         parameters += '&check_attributes_availability=' + encodeURIComponent(checkAttributesAvailability);
-        parameters += data;
+        parameters += '&'+data;
 
         new Ajax.Request(M2ePro.url.templateCheckMessages, {
             method: 'post',

@@ -1,3 +1,7 @@
+<script type="text/javascript">
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode'); ?>, 'Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode');
+</script>
+
 <div class="content-header">
     <table cellspacing="0">
         <tr>
@@ -23,7 +27,7 @@
 
         <div style="margin:15px 0 0 10px">
 
-            <input id="same" name="mode" type="radio" value="same">&nbsp;&nbsp;
+            <input id="same" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode::MODE_SAME; ?>">&nbsp;&nbsp;
             <label style="font-weight: bold" for="same"><?php echo Mage::helper('M2ePro')->__('All Products same Category'); ?></label>
 
             <div style="margin-left: 22px">
@@ -39,7 +43,7 @@
 
             <?php if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) { ?>
 
-                <input id="category" name="mode" type="radio" value="category">&nbsp;&nbsp;
+                <input id="category" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode::MODE_CATEGORY; ?>">&nbsp;&nbsp;
                 <label style="font-weight: bold" for="category"><?php echo Mage::helper('M2ePro')->__('Based on Magento Categories'); ?></label>
 
                 <div style="margin: 10px 22px">
@@ -48,7 +52,7 @@
 
             <?php } ?>
 
-            <input id="product" name="mode" type="radio" value="product">&nbsp;&nbsp;
+            <input id="product" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode::MODE_PRODUCT; ?>">&nbsp;&nbsp;
             <label style="font-weight: bold" for="product"><?php echo Mage::helper('M2ePro')->__('Get suggested Categories'); ?></label>
 
             <div style="margin: 10px 22px">
@@ -57,7 +61,7 @@
 
             <?php if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) { ?>
 
-                <input id="manually" name="mode" type="radio" value="manually">&nbsp;&nbsp;
+                <input id="manually" name="mode" type="radio" value="<?php echo Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode::MODE_MANUALLY; ?>">&nbsp;&nbsp;
                 <label style="font-weight: bold" for="manually"><?php echo Mage::helper('M2ePro')->__('Set Manually for each Product'); ?></label>
 
                 <div style="margin: 10px 22px">
@@ -96,7 +100,7 @@
                 var modeSameRememberCheckbox = $('mode_same_remember_checkbox');
                 modeSameRememberCheckbox.checked = false;
                 modeSameRememberCheckbox.disabled = true;
-                this.value == 'same' && (modeSameRememberCheckbox.disabled = false);
+                this.value == M2ePro.php.constant('Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode::MODE_SAME') && (modeSameRememberCheckbox.disabled = false);
             })
         });
 

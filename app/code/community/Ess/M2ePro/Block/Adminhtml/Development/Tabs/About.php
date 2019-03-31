@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -39,14 +39,6 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_About extends Mage_Adminhtml_B
         $this->setChild('location', $this->getLayout()->createBlock(
             'M2ePro/adminhtml_development_info_location'
         ));
-
-        foreach ($this->components as $component => $title) {
-            $this->setChild('license_component_' . $component, $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_development_info_license_component',
-                '',
-                array('component' => $component)
-            ));
-        }
         // ---------------------------------------
 
         // Right Column

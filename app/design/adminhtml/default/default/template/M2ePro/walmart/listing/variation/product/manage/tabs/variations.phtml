@@ -1,0 +1,11 @@
+<div id="walmartVariationsProductManageVariationsGrid" style="height: 510px;">
+    <?php
+    $url = $this->getUrl('*/adminhtml_walmart_listing_variation_product_manage/viewVariationsGrid',
+        array(
+            'product_id' => $this->getListingProductId(),
+            'filter' => $this->getRequest()->getParam('filter')
+        )
+    );
+    ?>
+    <input type="hidden" id="walmartVariationsProductManageVariationsGridIframeUrl" value="<?php echo $url ?>">
+</div>

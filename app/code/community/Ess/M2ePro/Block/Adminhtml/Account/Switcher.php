@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,7 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
         return Mage::helper('M2ePro')->__($this->getComponentLabel('%component% Account'));
     }
 
-    public function getItems()
+    protected function loadItems()
     {
         $collection = Mage::getModel('M2ePro/Account')->getCollection()
                                                       ->setOrder('component_mode', 'ASC')
@@ -31,8 +31,14 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
             $collection->addFieldToFilter('component_mode', $this->getData('component_mode'));
         }
 
+        if (!$collection->getSize()) {
+            $this->items = array();
+            return;
+        }
+
         if ($collection->getSize() < 2) {
-            return array();
+            $this->hasDefaultOption = false;
+            $this->setIsDisabled(true);
         }
 
         $items = array();
@@ -55,7 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
             );
         }
 
-        return $items;
+        $this->items = $items;
     }
 
     //########################################

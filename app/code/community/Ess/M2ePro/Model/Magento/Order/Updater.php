@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -38,6 +38,9 @@ class Ess_M2ePro_Model_Magento_Order_Updater
 
     //########################################
 
+    /**
+     * @return Mage_Customer_Model_Customer
+     */
     private function getMagentoCustomer()
     {
         if ($this->magentoOrder->getCustomerIsGuest()) {

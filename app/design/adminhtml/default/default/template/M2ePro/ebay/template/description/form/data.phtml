@@ -40,11 +40,12 @@
 
     $showBlockedAdvancedMode = false;
     if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-        $showBlockedAdvancedMode = $formData['gallery_images_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::GALLERY_IMAGES_MODE_PRODUCT ||
-            (!!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)) ||
-             $defaultProductDetails != $formData['product_details'] ||
-             !!count(array_diff($variationConfigurableImages, $formData['variation_configurable_images']))) ||
-             !empty($formData['enhancement'][0]);
+        $showBlockedAdvancedMode = $formData['image_main_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_PRODUCT ||
+                                   $formData['gallery_images_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::GALLERY_IMAGES_MODE_NONE ||
+                                   !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)) ||
+                                   $defaultProductDetails != $formData['product_details'] ||
+                                   !!count(array_diff($variationConfigurableImages, $formData['variation_configurable_images'])) ||
+                                   !empty($formData['enhancement'][0]);
     }
 
     $showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
@@ -636,9 +637,9 @@
                         <label><?php echo Mage::helper('M2ePro')->__('Title Value'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input id="title_template" name="description[title_template]" value="<?php echo Mage::helper('M2ePro')->__($formData['title_template']); ?>" type="text" class="input-text input-text-title M2ePro-required-when-visible" />
+                        <input id="title_template" name="description[title_template]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['title_template']); ?>" type="text" class="input-text input-text-title M2ePro-required-when-visible" />
                     <span id="select_attributes_for_title_span" class="select-wrapper">
-                        <select id="select_attributes_for_title" class="M2ePro-custom-attribute-can-be-created" style="width: 150px;" apply_to_all_attribute_sets="0">
+                        <select id="select_attributes_for_title" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select,multiselect,boolean,price,date" style="width: 150px;" apply_to_all_attribute_sets="0">
                             <?php foreach($this->attributes as $attribute) : ?>
                                 <option value="<?php echo $attribute['code']; ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                             <?php endforeach; ?>
@@ -682,9 +683,9 @@
                         <label><?php echo Mage::helper('M2ePro')->__('Subtitle Value'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input id="subtitle_template" name="description[subtitle_template]" value="<?php echo Mage::helper('M2ePro')->__($formData['subtitle_template']); ?>" type="text" class="input-text input-text-title M2ePro-required-when-visible" />
+                        <input id="subtitle_template" name="description[subtitle_template]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['subtitle_template']); ?>" type="text" class="input-text input-text-title M2ePro-required-when-visible" />
                         <span id="select_attributes_for_subtitle_span" class="select-wrapper">
-                            <select id="select_attributes_for_subtitle" class="M2ePro-custom-attribute-can-be-created" style="width: 150px;" apply_to_all_attribute_sets="0">
+                            <select id="select_attributes_for_subtitle" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select,multiselect,boolean,price,date" style="width: 150px;" apply_to_all_attribute_sets="0">
                                 <?php foreach($this->attributes as $attribute) : ?>
                                     <option value="<?php echo $attribute['code']; ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                                 <?php endforeach; ?>
@@ -1036,18 +1037,6 @@
                                     </td>
                                     <td class="value">
                                         <textarea id="gallery_hint_text" style="width: 195px; height: 30px;"><?php echo Mage::helper('M2ePro')->__('Click on the image below to get zoomed view of the Item'); ?></textarea>
-                                    </td>
-                                </tr>
-
-                                <tr class="products-images-custom-settings">
-                                    <td class="label">
-                                        <label for="image_linked_mode"><?php echo Mage::helper('M2ePro')->__('Open original size image<br/> in a new  window');?></label>
-                                    </td>
-                                    <td class="value">
-                                        <select id="image_linked_mode" style="width: 200px;">
-                                            <option value="0"><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                            <option value="1"><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                                        </select>
                                     </td>
                                 </tr>
 

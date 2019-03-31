@@ -26,7 +26,7 @@ EbayListingTransferringBreadcrumbHandler.prototype = {
     showSteps: function(steps)
     {
         var selectorSeparator = '.left .space';
-        ['destination', 'policy', 'translation', 'categories'].forEach(function(el) {
+        ['destination', 'policy', 'translation'].forEach(function(el) {
             var breadcrumb = $('step_' + el);
             if (breadcrumb) {
                 if (steps.indexOf(el) != -1) {

@@ -1,0 +1,84 @@
+<?php /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Magento_Shipment $this */ ?>
+
+<?php if ($this->getAmazonOrder()->isPrime() || $this->canShowNotificationPopup()): ?>
+
+<script type="text/javascript">
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Amazon\'s Shipping Services' => Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'),
+        'Are you sure?' => Mage::helper('M2ePro')->__('Are you sure?')
+    )); ?>);
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'adminhtml_amazon_order_merchantFulfillment/discardMagentoNotificationPopup' => $this->getUrl('M2ePro/adminhtml_amazon_order_merchantFulfillment/discardMagentoNotificationPopup/')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        orderMerchantFulfillmentMagentoHandlerObj = new OrderMerchantFulfillmentMagentoHandler;
+
+        <?php if ($this->getAmazonOrder()->isPrime()): ?>
+
+        orderMerchantFulfillmentMagentoHandlerObj.openMagentoShipmentPrimePopup(
+            $('m2epro_magento_shipment_amazon_merchant_fulfillment_prime_popup_content').innerHTML
+        );
+
+        <?php else: ?>
+
+        orderMerchantFulfillmentMagentoHandlerObj.openMagentoShipmentNotificationPopup(
+            $('m2epro_magento_shipment_amazon_merchant_fulfillment_notification_popup_content').innerHTML
+        );
+
+        <?php endif; ?>
+
+    });
+</script>
+
+<?php endif; ?>
+
+<?php if ($this->getAmazonOrder()->isPrime()): ?>
+
+<div id="m2epro_magento_shipment_amazon_merchant_fulfillment_prime_popup_content" style="display: none;">
+    <div style="min-height: 30px; padding-top: 10px;">
+        <?php echo Mage::helper('M2ePro')->__('
+            Amazon Shipping Services allows you to deliver your purchases fast and with ensured quality.
+            It gives the <strong>list of Shipping Services</strong> offered by Amazon to guarantee the
+            reliable delivery.<br/>
+            In case you are an <strong>Amazon Prime member</strong>, you are obliged to ship your purchased
+            Items as fast as possible. Thus, it is <strong>required</strong> to use Amazon Shipping Services
+            for Amazon Prime Orders to guarantee delivery quality. Other Shipping Services are not available
+            for such orders.
+        ') ?>
+    </div>
+    <div style="text-align: right; margin: 10px 0;">
+        <button style="margin-left: 10px;" onclick="setLocation('<?php echo $this->getUrl('M2ePro/adminhtml_amazon_order/view', array('id' => $this->getOrder()->getId(), 'show_merchant_fulfillment' => 1)) ?>')">
+            <?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>
+        </button>
+    </div>
+</div>
+
+<?php elseif ($this->canShowNotificationPopup()): ?>
+
+<div id="m2epro_magento_shipment_amazon_merchant_fulfillment_notification_popup_content" style="display: none;">
+    <div style="min-height: 30px; padding-top: 10px;">
+        <?php echo Mage::helper('M2ePro')->__('
+            Amazon Shipping Services allows you to deliver your purchases fast and with ensured quality.
+            It gives the <strong>list of Shipping Services</strong> offered by Amazon to guarantee the
+            reliable delivery.<br/>
+            This Tool allows working with Amazon\' s Shipping Services which offer a variety of shipping
+            benefits, including several shipping options if you need to expedite your delivery.<br/>
+            You can <strong>specify the Conditions</strong> of the delivery to get the list of available
+            Shipping Services offered by Amazon. In this case, Amazon guarantees fast and high quality delivery.
+        ') ?>
+    </div>
+    <div style="margin: 10px 0;">
+        <a href="javascript:void(0)" onclick="orderMerchantFulfillmentMagentoHandlerObj.discardNotificationPopup()"><?php echo Mage::helper('M2ePro')->__('Don\'t show anymore'); ?></a>
+        <button style="float: right;" onclick="setLocation('<?php echo $this->getUrl('M2ePro/adminhtml_amazon_order/view', array('id' => $this->getOrder()->getId(), 'show_merchant_fulfillment' => 1)) ?>')">
+            <?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>
+        </button>
+        <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close()" style="float: right;margin-right: 15px;">
+            <?php echo Mage::helper('M2ePro')->__('Cancel'); ?>
+        </a>
+    </div>
+</div>
+
+<?php endif; ?>

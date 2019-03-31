@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -15,6 +15,10 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     const MARKETPLACE_US = 29;
     const MARKETPLACE_JP = 27;
     const MARKETPLACE_CN = 32;
+
+    const MAX_ALLOWED_FEED_REQUESTS_PER_HOUR = 30;
+
+    const SKU_MAX_LENGTH = 40;
 
     //########################################
 
@@ -153,14 +157,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 
     // ----------------------------------------
 
-    public function getCurrencies()
-    {
-        return array (
-            'GBP' => 'British Pound',
-            'EUR' => 'Euro',
-            'USD' => 'US Dollar',
-        );
-    }
+    // ---------------------------------------
 
     public function getCarriers()
     {
@@ -169,19 +166,19 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
             'ups'   => 'UPS',
             'fedex' => 'FedEx',
             'dhl'   => 'DHL',
-            'Fastway',
-            'GLS',
-            'GO!',
-            'Hermes Logistik Gruppe',
-            'Royal Mail',
-            'Parcelforce',
-            'City Link',
-            'TNT',
-            'Target',
-            'SagawaExpress',
-            'NipponExpress',
-            'YamatoTransport'
         );
+    }
+
+    public function getCarrierTitle($carrierCode, $title)
+    {
+        $carriers = $this->getCarriers();
+        $carrierCode = strtolower($carrierCode);
+
+        if (isset($carriers[$carrierCode])) {
+            return $carriers[$carrierCode];
+        }
+
+        return $title;
     }
 
     // ----------------------------------------

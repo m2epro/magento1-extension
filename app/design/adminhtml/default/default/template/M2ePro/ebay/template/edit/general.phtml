@@ -6,7 +6,6 @@
             '*/adminhtml_ebay_template/getTemplateHtml',
             array(
                 'account_id' => NULL,
-                'attribute_sets' => implode(',', $attributeSets),
                 'id' => $this->getTemplateId(),
                 'nick' => $this->getTemplateNick(),
                 'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE,
@@ -81,6 +80,9 @@
                     </td>
                     <td class="value">
                         <input type="text" name="title" id="title" class="input-text required-entry validate-title-uniqueness" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Short meaningful Policy Title for your internal use.'); ?></span>
+                        </p>
                     </td>
                 </tr>
 

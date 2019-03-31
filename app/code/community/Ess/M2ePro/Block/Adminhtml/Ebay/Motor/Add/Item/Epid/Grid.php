@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -11,16 +11,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Epid_Grid
 {
     //########################################
 
-    public function getMotorsType()
-    {
-        return Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID;
-    }
-
-    //########################################
-
     protected function _prepareCollection()
     {
-        $collection = new Ess_M2ePro_Model_Mysql4_Ebay_Motor_Epids_Collection('epid');
+        $scope = Mage::helper('M2ePro/Component_Ebay_Motors')->getEpidsScopeByType($this->getMotorsType());
+        $collection = new Ess_M2ePro_Model_Mysql4_Ebay_Motor_Epids_Collection('epid', $scope);
 
         $this->setCollection($collection);
 

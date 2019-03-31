@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -72,74 +72,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
      */
     public function setStatus($status)
     {
-        if ($status == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
-            $this->status = Ess_M2ePro_Helper_Data::STATUS_ERROR;
-            return;
-        }
-
-        if ($this->status == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
-            return;
-        }
-
-        if ($status == Ess_M2ePro_Helper_Data::STATUS_WARNING) {
-            $this->status = Ess_M2ePro_Helper_Data::STATUS_WARNING;
-            return;
-        }
-
-        if ($this->status == Ess_M2ePro_Helper_Data::STATUS_WARNING) {
-            return;
-        }
-
-        $this->status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
+        $this->status = $status;
     }
 
     //########################################
-
-    /**
-     * @param array $message
-     * @return array
-     */
-    public function getConvertedMessageData(array $message)
-    {
-        $result = array(
-            'text' => $message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TEXT_KEY]
-        );
-
-        switch ($message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_KEY]) {
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_ERROR:
-                    $result['type'] = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
-                break;
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_WARNING:
-                    $result['type'] = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
-                break;
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_SUCCESS:
-                    $result['type'] = Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS;
-                break;
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_NOTICE:
-                    $result['type'] = Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE;
-                break;
-            default:
-                    $result['type'] = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
-                break;
-        }
-
-        switch ($message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_KEY]) {
-
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_WARNING:
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_SUCCESS:
-                    $result['priority'] = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM;
-                break;
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_NOTICE:
-                    $result['priority'] = Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW;
-                break;
-            case Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TYPE_ERROR:
-            default:
-                    $result['priority'] = Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH;
-                break;
-        }
-
-        return $result;
-    }
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product $listingProduct
@@ -148,20 +84,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
      * @param int $priority
      */
     public function logListingProductMessage(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                             $message,
-                                             $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                                             Ess_M2ePro_Model_Connector_Connection_Response_Message $message,
                                              $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM)
     {
-        $this->setStatusByMessageType($type);
-
         $this->getListingLog()->addProductMessage($listingProduct->getListingId() ,
                                                   $listingProduct->getProductId() ,
                                                   $listingProduct->getId() ,
                                                   $this->initiator ,
                                                   $this->actionId ,
                                                   $this->action ,
-                                                  $message,
-                                                  $type,
+                                                  $message->getText(),
+                                                  $this->initLogType($message),
                                                   $priority);
     }
 
@@ -183,25 +116,33 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
         return $this->listingLog;
     }
 
-    private function setStatusByMessageType($messageType)
+    //########################################
+
+    private function initLogType(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
     {
-        switch ($messageType) {
-            case Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR:
-                    $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_ERROR);
-                break;
-            case Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING:
-                    $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_WARNING);
-                break;
-            case Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS:
-                    $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_SUCCESS);
-                break;
-            case Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE:
-                    $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_SUCCESS);
-                break;
-            default:
-                    $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_ERROR);
-                break;
+        if ($message->isError()) {
+            $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_ERROR);
+            return Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
         }
+
+        if ($message->isWarning()) {
+            $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_WARNING);
+            return Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
+        }
+
+        if ($message->isSuccess()) {
+            $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_SUCCESS);
+            return Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS;
+        }
+
+        if ($message->isNotice()) {
+            $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_SUCCESS);
+            return Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE;
+        }
+
+        $this->setStatus(Ess_M2ePro_Helper_Data::STATUS_ERROR);
+
+        return Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
     }
 
     //########################################

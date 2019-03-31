@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -52,7 +52,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         // ---------------------------------------
 
         $channel = $this->getRequest()->getParam('channel');
-        if (!empty($channel) && $channel != Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::CHANNEL_ID_ALL) {
+        if (!empty($channel)) {
             $collection->getSelect()->where('component_mode = ?', $channel);
         } else {
             $components = $this->viewComponentHelper->getActiveComponents();
@@ -60,15 +60,15 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
                 ->where('component_mode IN(\'' . implode('\',\'', $components) . '\') OR component_mode IS NULL');
         }
 
-        if (isset($components) && in_array(Ess_M2ePro_Helper_Component_Ebay::NICK, $components)
-            && Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
+        // some actions must be excluded
+        // ---------------------------------------
+        $allTitles = Mage::helper('M2ePro/Module_Log')->getActionsTitlesByClass('Synchronization_Log');
+        if (count($this->getActionTitles()) != count($allTitles)) {
 
-            $excludeTasks = array(
-                Ess_M2ePro_Model_Synchronization_Log::TASK_FEEDBACKS,
-                Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS
-            );
-            $collection->getSelect()->where('task NOT IN ('.implode(',', $excludeTasks).')');
+            $excludeTasks = array_diff($allTitles, $this->getActionTitles());
+            $collection->getSelect()->where('task NOT IN ('.implode(',', array_keys($excludeTasks)).')');
         }
+        // ---------------------------------------
 
         // we need sort by id also, because create_date may be same for some adjacents entries
         // ---------------------------------------
@@ -152,10 +152,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
     {
         return false;
     }
-
-    //########################################
-
-    abstract protected function getActionTitles();
 
     //########################################
 }

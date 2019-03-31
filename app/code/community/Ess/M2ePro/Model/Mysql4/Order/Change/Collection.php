@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -50,11 +50,11 @@ class Ess_M2ePro_Model_Mysql4_Order_Change_Collection
 
     //########################################
 
-    public function addLockedObjectFilter($tag)
+    public function addProcessingLockFilter($tag)
     {
         $mysqlTag = $this->getConnection()->quote($tag);
         $this->getSelect()->joinLeft(
-            array('lo' => Mage::getResourceModel('M2ePro/LockedObject')->getMainTable()),
+            array('lo' => Mage::getResourceModel('M2ePro/Processing_Lock')->getMainTable()),
             '(`lo`.`object_id` = `main_table`.`order_id` AND `lo`.`tag` = '.$mysqlTag.')',
             array()
         );

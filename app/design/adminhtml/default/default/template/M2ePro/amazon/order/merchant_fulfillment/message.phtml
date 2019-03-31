@@ -1,0 +1,51 @@
+<?php
+/**
+ * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Message
+ */
+
+?>
+
+<style>
+    .control {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+    .message {
+        margin: 10px 0;
+    }
+</style>
+
+<div class="message">
+    <?php if($this->getData('message') == 'marketplaceError'):?>
+        <?php echo Mage::helper('M2ePro')->__('
+            This Order was Created on Amazon Marketplace where Amazon\'s Shipping Services are not available.
+            Currently, you can <strong>use this Tool</strong> for Orders purchased on <strong>Amazon UK</strong>,
+            <strong>US</strong> and <strong>DE</strong>.
+        '); ?>
+    <?php endif; ?>
+
+    <?php if($this->getData('message') == 'fbaError'):?>
+        <?php echo Mage::helper('M2ePro')->__('
+            Amazon\'s Shipping Services can not be applied to FBA Orders. The delivery of purchased <strong>FBA Items</strong>
+            is managed by <strong>Amazon Fulfillment Center</strong>.
+        '); ?>
+    <?php endif; ?>
+
+    <?php if($this->getData('message') == 'statusError'):?>
+        <?php echo Mage::helper('M2ePro')->__('
+            Amazon\'s Shipping Service can not be used for the Orders with Status Pending and Canceled. It can be
+            applied only to <strong>Amazon Orders</strong> with <strong>Unshipped Status</strong>.
+        '); ?>
+    <?php endif; ?>
+
+    <?php if($this->getData('message') == 'markAsShipped'):?>
+        <?php echo Mage::helper('M2ePro')->__('You cannot mark this Order as Shipped because this is the Amazon Prime Order. You should use <a href="#" onclick="OrderMerchantFulfillmentHandlerObj.useMerchantFulfillmentAction()">Amazon\'s Shipping Services</a> feature instead.'); ?>
+    <?php endif; ?>
+</div>
+
+<div class="control">
+    <button type="button" onclick="OrderMerchantFulfillmentHandlerObj.closePopUp();">
+        <?php echo Mage::helper('M2ePro')->__('Close'); ?>
+    </button>
+</div>

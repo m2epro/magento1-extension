@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -104,7 +104,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service extends Ess_M2ePro_Model_C
      */
     public function getLocations()
     {
-        return json_decode($this->getData('locations'),true);
+        return Mage::helper('M2ePro')->jsonDecode($this->getData('locations'));
     }
 
     /**
@@ -243,28 +243,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service extends Ess_M2ePro_Model_C
         }
 
         return $attributes;
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getTrackingAttributes()
-    {
-        return array();
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsedAttributes()
-    {
-        return array_unique(array_merge(
-            $this->getCostAttributes(),
-            $this->getCostAdditionalAttributes(),
-            $this->getCostSurchargeAttributes()
-        ));
     }
 
     //########################################

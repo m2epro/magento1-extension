@@ -30,36 +30,16 @@ EbayListingMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, 
         }
 
         var self = this;
-        new Ajax.Request(M2ePro.url.get('adminhtml_general/synchCheckState'), {
-            method: 'get',
-            asynchronous: true,
-            onSuccess: function(transport) {
 
-                if (transport.responseText == self.stateExecuting) {
+        self.start(title, M2ePro.translator.translate('Preparing to start. Please wait ...'));
 
-                    self.start(
-                        M2ePro.translator.translate('Another Synchronization Is Already Running.'),
-                        M2ePro.translator.translate('Getting information. Please wait ...')
-                    );
-
-                    setTimeout(function() {
-                        self.startGetExecutingInfo('self.runTask(\'' + title + '\',\'' + url + '\',"' + callBackWhenEnd + '");');
-                    },2000);
-
-                } else {
-
-                    self.start(title, M2ePro.translator.translate('Preparing to start. Please wait ...'));
-
-                    new Ajax.Request(url, {
-                        method: 'get', asynchronous: true
-                    });
-
-                    setTimeout(function() {
-                        self.startGetExecutingInfo(callBackWhenEnd);
-                    },2000);
-                }
-            }
+        new Ajax.Request(url, {
+            method: 'get', asynchronous: true
         });
+
+        setTimeout(function() {
+            self.startGetExecutingInfo(callBackWhenEnd);
+        },2000);
     },
 
     startGetExecutingInfo: function(callBackWhenEnd)
@@ -67,7 +47,7 @@ EbayListingMarketplaceSynchProgressHandler = Class.create(SynchProgressHandler, 
         callBackWhenEnd = callBackWhenEnd || '';
 
         var self = this;
-        new Ajax.Request(M2ePro.url.get('adminhtml_general/synchGetExecutingInfo'), {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_marketplace/synchGetExecutingInfo'), {
             method:'get',
             asynchronous: true,
             onSuccess: function(transport) {

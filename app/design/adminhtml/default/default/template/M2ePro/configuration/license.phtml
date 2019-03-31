@@ -1,15 +1,23 @@
-<div id="block_notice_configuration_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('License'); ?>">
+<div id="block_notice_configuration_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Billing Info'); ?>">
     <?php
-    $activeComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
-    $componentForUrl = count($activeComponents) == 1 ? array_shift($activeComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
+    $urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+    $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
 
-    $tempString = Mage::helper('M2ePro')->__('M2E Pro Extension requires activation for its work.<br/><br/>
-    To get the License Key click the <span style="text-decoration: underline;">Manage License</span> link and follow the instructions.<br/>
-    When you receive your License Key, press the Enter Button, enter your License Key in appeared text field and press Confirm.
-    <br/><br/>
-    <b>Note:</b> If you have not received the License Key, please contact us <a href="mailto:support@m2epro.com">support@m2epro.com</a>.<br/><br/>
-    More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-License'));
+    $countries = Mage::getModel('adminhtml/system_config_source_country')->toOptionArray();
+    unset($countries[0]);
+
+    $email = '<a href="mailto:support@m2epro.com">support@m2epro.com</a>';
+
+    $tempString = Mage::helper('M2ePro')->__('
+    To use M2E Pro Extension, the Clients Portal Account and Extension Key are required.<br/><br/>
+    Clients Portal Account is created automatically based on the email address provided during the initial configuration of your M2E Pro Instance. After you log into Account, you will be able to manage your Subscription and Billing information.<br/><br/>
+
+    Extension Key is a unique identifier of M2E Pro instance which is generated automatically and strictly associated with the current IP and Domain of your Magento.<br/><br/>
+
+    The same Extension Key cannot be used for different domains, sub-domains or IPs. If your Magento Server changes its location, the new Extension Key must be obtained on the <a href="%url%" target="_blank" >Clients Portal</a> and provided to M2E Pro ‘Billing Info’ section. Save Config to apply the changes. <br><br>
+
+    <strong>Note:</strong> if you need some assistance to activate your M2E Pro Instance, contact our Support Team.',
+    Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl());
     echo $tempString;
     ?>
 </div>
@@ -25,10 +33,17 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'You must get valid License Key.' => Mage::helper('M2ePro')->__('You must get valid License Key.')
+        'You must get valid Trial or Live Extension Key.' => Mage::helper('M2ePro')->__('You must get valid Trial or Live Extension Key.'),
+        'Extension Key' => Mage::helper('M2ePro')->__('Extension Key'),
     )); ?>);
 
     Event.observe(window, 'load', function() {
+
+        if (<?php echo (int)($this->key == '')?>) {
+            var clientsLicenseData = $('magento_block_configuration_license_data');
+            if (clientsLicenseData) clientsLicenseData.hide();
+        }
+
         LicenseHandlerObj = new ConfigurationLicenseHandler();
         ControlPanelHandlerObj = new DevelopmentControlPanelHandler();
 
@@ -42,18 +57,22 @@
     .columns .form-list td.value {
         width: 280px;
     }
+
+    #wrapper_new_license_popup, #wrapper_change_license_popup {
+        margin-bottom: 1em;
+    }
 </style>
 
 <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
 
     <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
 
-    <?php if ($this->key != '' && ($this->licenseData['domain'] == '' || $this->licenseData['ip'] == '' || $this->licenseData['directory'] == '')) : ?>
+    <?php if ($this->key != '' && ($this->licenseData['domain'] == '' || $this->licenseData['ip'] == '')) : ?>
         <ul style="margin-top: 5px;" class="messages">
             <li class="error-msg">
                 <ul>
                     <li>
-                        <?php echo Mage::helper('M2ePro')->__('You are trying to use the unknown License Key.'); ?>
+                        <?php echo Mage::helper('M2ePro')->__('Unknown Extension Key. Please check the entered value.'); ?>
                     </li>
                 </ul>
             </li>
@@ -63,7 +82,7 @@
     <div class="entry-edit" id="magento_block_configuration_license_data" collapseable="no">
 
         <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('License Data'); ?></h4>
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Clients Portal'); ?></h4>
         </div>
 
         <div class="fieldset">
@@ -76,29 +95,6 @@
 
                     <tbody>
 
-                        <tr>
-                            <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('License Key'); ?>: </label>
-                            </td>
-                            <td id="license_text_key_container" class="value">
-                                <?php echo $this->key; ?>
-                                <?php if ($this->key == '') { echo $this->getChildHtml('enter_key'); } ?>
-                                &nbsp;&nbsp;
-                            </td>
-                            <td id="license_input_key_container" class="value" style="display: none;">
-                                <input id="key" name="key" value="<?php echo $this->escapeHtml($this->key); ?>" type="text" class="input-text required-entry" />
-                                &nbsp;&nbsp;
-                            </td>
-                            <td id="change_license_key_container" class="value" <?php if($this->key == '') { ?>style="display: none;"<?php } ?>>
-                                <?php echo $this->getChildHtml('change_key'); ?>
-                                &nbsp;
-                                <?php echo $this->getChildHtml('refresh_status'); ?>
-                            </td>
-                            <td id="confirm_license_key_container" class="value" style="display: none;">
-                                <?php echo $this->getChildHtml('confirm_key'); ?>
-                            </td>
-                        </tr>
-
                         <?php if ($this->licenseData['info']['email'] != '') { ?>
                         <tr>
                             <td class="label">
@@ -108,8 +104,8 @@
                                 <span><?php echo $this->licenseData['info']['email']; ?></span>
                                 <p class="note">
                                     <span>
-                                        <?php echo Mage::helper('M2ePro')->__('This e-mail address associated to your License. <br/>
-                                        Also you can use this e-mail to enter a <a href="%url%">clients portal</a>',
+                                        <?php echo Mage::helper('M2ePro')->__('Your email address entered during the Extension configuration.<br/>
+                                        Use it to log into your Account on the <a href="%url%" target="_blank">Clients Portal</a>. M2E Pro notifications are sent to this email address. ',
                                         Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl()); ?>
                                     </span>
                                 </p>
@@ -117,12 +113,14 @@
                         </tr>
                         <?php } ?>
 
+                        <?php if ($this->key != '') { ?>
                         <tr>
                             <td class="label"></td>
                             <td class="value">
-                                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl();?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Manage License'); ?></a>
+                                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl();?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Log in to Clients Portal'); ?></a>
                             </td>
                         </tr>
+                        <?php } ?>
 
                     </tbody>
 
@@ -133,12 +131,12 @@
 
     </div>
 
-    <?php if ($this->licenseData['domain'] != '' || $this->licenseData['ip'] != '' || $this->licenseData['directory'] != '') { ?>
-
-        <div class="entry-edit" id="magento_block_configuration_license_valid" collapseable="no">
+    <div class="entry-edit" id="magento_block_configuration_license_valid" collapseable="no">
 
             <div class="entry-edit-head">
-                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('License Validation'); ?></h4>
+                <h4 class="icon-head head-edit-form fieldset-legend">
+                    <?php echo Mage::helper('M2ePro')->__('Extension Key'); ?>
+                </h4>
             </div>
 
             <div class="fieldset">
@@ -151,11 +149,26 @@
 
                         <tbody>
 
+                            <tr>
+                                <td class="label">
+                                    <label><?php echo Mage::helper('M2ePro')->__('Key'); ?>: </label>
+                                </td>
+                                <td id="license_text_key_container" class="value">
+                                    <?php echo $this->key; ?>
+                                </td>
+
+                                <?php if ($this->key && $this->licenseData['domain'] && $this->licenseData['ip'] && !$this->status): ?>
+                                    <td class="value">
+                                        <span style="color: red;">(<?php echo Mage::helper('M2ePro')->__('Suspended') ?>)</span>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+
                             <?php if ($this->licenseData['domain'] != '') { ?>
 
                                 <tr>
                                     <td class="label">
-                                        <label><?php echo Mage::helper('M2ePro')->__('Domain'); ?>: </label>
+                                        <label><?php echo Mage::helper('M2ePro')->__('Valid Domain'); ?>: </label>
                                     </td>
                                     <td class="value">
 
@@ -176,7 +189,7 @@
 
                                 <tr>
                                     <td class="label">
-                                        <label><?php echo Mage::helper('M2ePro')->__('IP'); ?>: </label>
+                                        <label><?php echo Mage::helper('M2ePro')->__('Valid IP(s)'); ?>: </label>
                                     </td>
                                     <td class="value">
 
@@ -194,27 +207,13 @@
 
                             <?php } ?>
 
-                            <?php if ($this->licenseData['directory'] != '') { ?>
-
-                                <tr>
-                                    <td class="label">
-                                        <label><?php echo Mage::helper('M2ePro')->__('Directory'); ?>: </label>
-                                    </td>
-                                    <td class="value">
-
-                                        <span <?php echo $this->licenseData['valid']['directory'] ? '' : 'style="color: red;"'?>>
-                                            <?php echo $this->licenseData['directory']; ?>
-                                        </span>
-
-                                        <?php if (!$this->licenseData['valid']['directory'] &&
-                                            !is_null($this->licenseData['connection']['directory'])): ?>
-                                            <span> (<?php echo Mage::helper('M2ePro')->__('Your Directory') . ': ' . Mage::helper('M2ePro')->escapeHtml($this->licenseData['connection']['directory']);?>)</span>
-                                        <?php endif;?>
-
-                                    </td>
-                                </tr>
-
-                            <?php } ?>
+                            <tr>
+                                <td class="value"></td>
+                                <td class="value">
+                                    <?php echo $this->getChildHtml('change_license'); ?>
+                                    <?php echo $this->getChildHtml('refresh_status'); ?>
+                                </td>
+                            </tr>
 
                         </tbody>
 
@@ -225,6 +224,37 @@
 
         </div>
 
-    <?php } ?>
-
 </form>
+
+<script type="M2ePro/template" id="change_license_popup">
+    <div id="wrapper_change_license_popup">
+        <div id="block_notice_change_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Extension Key'); ?>" style="margin-top: 10px;">
+            <?php echo Mage::helper('M2ePro')->__(
+                'Enter the new Key value obtained on the <a href="%url%" target="_blank">Clients Portal</a> and Refresh the data. Your current IP, Domain will be automatically associated with the new Extension Key. <br><br>
+                <strong>Note:</strong> Extension Key is strictly connected with IP and Domain. New Extension Key is required if the location (IP/Domain) of your Magento Server is changed.',
+                Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl()
+            ); ?>
+        </div>
+        <form  id="popup_change_license_form">
+            <div class="fieldset">
+                <div class="hor-scroll">
+                    <table class="form-list" cellspacing="0" cellpadding="0" style="width: 100%; margin: auto;">
+                        <tr>
+                            <td class="value"><?php echo Mage::helper('M2ePro')->__('New Key'); ?>:<span class="required">*</span></td>
+                            <td class="value">
+                                <input type="text" class="input-text required-entry" id="new_license_key" value="<?php echo $this->key;?>"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div style="float: right; margin: 0 0 1em;">
+        <a href="#" onclick="changeLicensePopup.close();">Close</a>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <?php echo $this->getChildHtml('confirm_key');?>
+    </div>
+</script>

@@ -2,12 +2,14 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 {
+    const USER_ID_ATTRIBUTE_CODE = 'ebay_user_id';
+
     /** @var $order Ess_M2ePro_Model_Ebay_Order */
     protected $order = NULL;
 
@@ -60,14 +62,6 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    public function getBuyerEmail()
-    {
-        $addressData = $this->order->getShippingAddress()->getRawData();
-        return $addressData['email'];
-    }
-
-    //########################################
-
     /**
      * @return false|Mage_Customer_Model_Customer
      * @throws Ess_M2ePro_Model_Exception
@@ -86,23 +80,39 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         }
 
         if ($this->order->getEbayAccount()->isMagentoOrdersCustomerNew()) {
+            /** @var $customerBuilder Ess_M2ePro_Model_Magento_Customer */
+            $customerBuilder = Mage::getModel('M2ePro/Magento_Customer');
+
+            $userIdAttribute = Mage::getModel('eav/entity_attribute')->loadByCode(
+                Mage::getModel('customer/customer')->getEntityTypeId(), self::USER_ID_ATTRIBUTE_CODE
+            );
+
+            if (!$userIdAttribute->getId()) {
+                $customerBuilder->buildAttribute(self::USER_ID_ATTRIBUTE_CODE, 'eBay User ID');
+            }
+
             $customerInfo = $this->getAddressData();
 
             $customer->setWebsiteId($this->order->getEbayAccount()->getMagentoOrdersCustomerNewWebsiteId());
             $customer->loadByEmail($customerInfo['email']);
 
             if (!is_null($customer->getId())) {
+                $customer->setData(self::USER_ID_ATTRIBUTE_CODE, $this->order->getBuyerUserId());
+                $customer->save();
+
                 return $customer;
             }
 
             $customerInfo['website_id'] = $this->order->getEbayAccount()->getMagentoOrdersCustomerNewWebsiteId();
             $customerInfo['group_id'] = $this->order->getEbayAccount()->getMagentoOrdersCustomerNewGroupId();
 
-            /** @var $customerBuilder Ess_M2ePro_Model_Magento_Customer */
-            $customerBuilder = Mage::getModel('M2ePro/Magento_Customer')->setData($customerInfo);
+            $customerBuilder->setData($customerInfo);
             $customerBuilder->buildCustomer();
 
             $customer = $customerBuilder->getCustomer();
+
+            $customer->setData(self::USER_ID_ATTRIBUTE_CODE, $this->order->getBuyerUserId());
+            $customer->save();
         }
 
         return $customer;
@@ -115,7 +125,10 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getAddressData()
     {
-        if (!$this->order->isUseGlobalShippingProgram() && !$this->order->isUseClickAndCollect()) {
+        if (!$this->order->isUseGlobalShippingProgram() &&
+            !$this->order->isUseClickAndCollect() &&
+            !$this->order->isUseInStorePickup()
+        ) {
             return parent::getAddressData();
         }
 
@@ -127,12 +140,14 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         $addressData = array();
 
         $recipientNameParts = $this->getNameParts($rawAddressData['recipient_name']);
-        $addressData['firstname'] = $recipientNameParts['firstname'];
-        $addressData['lastname']  = $recipientNameParts['lastname'];
+        $addressData['firstname']   = $recipientNameParts['firstname'];
+        $addressData['lastname']    = $recipientNameParts['lastname'];
+        $addressData['middlename']  = $recipientNameParts['middlename'];
 
         $customerNameParts = $this->getNameParts($rawAddressData['buyer_name']);
-        $addressData['customer_firstname'] = $customerNameParts['firstname'];
-        $addressData['customer_lastname']  = $customerNameParts['lastname'];
+        $addressData['customer_firstname']   = $customerNameParts['firstname'];
+        $addressData['customer_lastname']    = $customerNameParts['lastname'];
+        $addressData['customer_middlename']  = $customerNameParts['middlename'];
 
         $addressData['email']      = $rawAddressData['email'];
         $addressData['country_id'] = $rawAddressData['country_id'];
@@ -151,11 +166,16 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
         if ($this->order->isUseGlobalShippingProgram()) {
             $details = $this->order->getGlobalShippingDetails();
             isset($details['warehouse_address']['reference_id']) &&
-            $referenceId = 'Ref #'.$details['warehouse_address']['reference_id'];
+                  $referenceId = 'Ref #'.$details['warehouse_address']['reference_id'];
         }
 
         if ($this->order->isUseClickAndCollect()) {
             $details = $this->order->getClickAndCollectDetails();
+            isset($details['reference_id']) && $referenceId = 'Ref #'.$details['reference_id'];
+        }
+
+        if ($this->order->isUseInStorePickup()) {
+            $details = $this->order->getInStorePickupDetails();
             isset($details['reference_id']) && $referenceId = 'Ref #'.$details['reference_id'];
         }
 
@@ -248,11 +268,44 @@ class Ess_M2ePro_Model_Ebay_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getShippingData()
     {
-        return array(
-            'shipping_method' => $this->order->getShippingService(),
+        $shippingData = array(
             'shipping_price'  => $this->getBaseShippingPrice(),
-            'carrier_title'   => Mage::helper('M2ePro')->__('eBay Shipping')
+            'carrier_title'   => Mage::helper('M2ePro')->__('eBay Shipping'),
+            'shipping_method' => $this->order->getShippingService(),
         );
+
+        if ($this->order->isUseGlobalShippingProgram()) {
+            $globalShippingDetails = $this->order->getGlobalShippingDetails();
+            $globalShippingDetails = $globalShippingDetails['service_details'];
+
+            if (!empty($globalShippingDetails['service_details']['service'])) {
+                $shippingData['shipping_method'] = $globalShippingDetails['service_details']['service'];
+            }
+        }
+
+        if ($this->order->isUseClickAndCollect() || $this->order->isUseInStorePickup()) {
+            if ($this->order->isUseClickAndCollect()) {
+                $shippingData['shipping_method'] = 'Click And Collect | '.$shippingData['shipping_method'];
+                $details = $this->order->getClickAndCollectDetails();
+            } else {
+                $shippingData['shipping_method'] = 'In Store Pickup | '.$shippingData['shipping_method'];
+                $details = $this->order->getInStorePickupDetails();
+            }
+
+            if (!empty($details['location_id'])) {
+                $shippingData['shipping_method'] .= ' | Store ID: '.$details['location_id'];
+            }
+
+            if (!empty($details['reference_id'])) {
+                $shippingData['shipping_method'] .= ' | Reference ID: '.$details['reference_id'];
+            }
+
+            if (!empty($details['delivery_date'])) {
+                $shippingData['shipping_method'] .= ' | Delivery Date: '.$details['delivery_date'];
+            }
+        }
+
+        return $shippingData;
     }
 
     /**

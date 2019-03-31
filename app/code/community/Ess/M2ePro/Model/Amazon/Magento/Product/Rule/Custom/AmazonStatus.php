@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonStatus
         $variationChildStatuses = $product->getData('variation_child_statuses');
 
         if ($product->getData('is_variation_parent') && !empty($variationChildStatuses)) {
-            $status = json_decode($variationChildStatuses, true);
+            $status = Mage::helper('M2ePro')->jsonDecode($variationChildStatuses);
         }
 
         return $status;

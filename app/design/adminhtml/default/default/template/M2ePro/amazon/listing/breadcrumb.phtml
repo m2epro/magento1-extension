@@ -1,0 +1,64 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Breadcrumb */
+?>
+
+<style type="text/css">
+    div.breadcrumb {
+        padding: 12px 0;
+        color: #AAAAAA;
+        width: 33.1%;
+        font-size: 14px;
+        text-align: center;
+        background: #e7efef;
+    }
+    div.selected {
+        color: white;
+        background: #6f8992;
+        font-weight: bold;
+    }
+</style>
+
+<div style="margin-bottom: 10px">
+
+    <div class="clear"></div>
+
+    <div id="step_1" class="left breadcrumb <?php if ($this->getStep() == 1) echo 'selected' ?>">
+
+        <span class="<?php if ($this->getStep() == 1) echo 'selected' ?>">
+            <?php echo Mage::helper('M2ePro')->__('Step 1') ?>:
+        </span>
+        <span>
+            <?php echo Mage::helper('M2ePro')->__('General Settings') ?>
+        </span>
+
+    </div>
+
+    <div class="left" style="width: 3px; height: 1px; background: white"></div>
+
+    <div id="step_2" class="left breadcrumb <?php if ($this->getStep() == 2) echo 'selected' ?>">
+
+        <span class="<?php if ($this->getStep() == 2) echo 'selected' ?>">
+            <?php echo Mage::helper('M2ePro')->__('Step 2') ?>:
+        </span>
+        <span>
+            <?php echo Mage::helper('M2ePro')->__('Selling Settings') ?>
+        </span>
+
+    </div>
+
+    <div class="left" style="width: 3px; height: 1px"></div>
+
+    <div id="step_3" class="left breadcrumb <?php if ($this->getStep() == 3) echo 'selected' ?>">
+
+        <span class="<?php if ($this->getStep() == 3) echo 'selected' ?>">
+            <?php echo Mage::helper('M2ePro')->__('Step 3') ?>:
+        </span>
+        <span>
+            <?php echo Mage::helper('M2ePro')->__('Search Settings') ?>
+        </span>
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>

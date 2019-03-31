@@ -212,12 +212,15 @@
         </td>
     </tr>
 
-    <tr id="<?php echo $uniqueId; ?>specific_%i%_row" class="specific-row not-custom" style="height: 25px;">
+    <tr id="<?php echo $uniqueId; ?>specific_%i%_row" row_id="%i%" class="specific-row not-custom" style="height: 25px;">
         <td style="vertical-align:top;">
             <span id="<?php echo $uniqueId; ?>attribute_title_%i%">%attribute_title%%required%</span>
-            <input id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_value_%i%" name="custom_item_specifics_label_custom_value_%i%" type="text" style="display: none; width: 97%;" class="input-text M2ePro-required-when-visible custom-item-specific" />
-            <input id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_label_attribute_%i%" name="custom_item_specifics_label_custom_label_attribute_%i%" type="text" style="display: none; width: 97%;" class="input-text M2ePro-required-when-visible custom-item-specific" />
+            <input id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_value_%i%" name="custom_item_specifics_label_custom_value_%i%" type="text" style="display: none; width: 97%;" class="input-text M2ePro-required-when-visible M2ePro-validate-custom-specific-label-<?php echo $uniqueId; ?> custom-item-specific" />
+            <input id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_label_attribute_%i%" name="custom_item_specifics_label_custom_label_attribute_%i%" type="text" style="display: none; width: 97%;" class="input-text M2ePro-required-when-visible M2ePro-validate-custom-specific-label-<?php echo $uniqueId; ?> custom-item-specific" />
             <span id="<?php echo $uniqueId; ?>custom_item_specifics_label_custom_attribute_%i%" style="display:none;"><strong>From Attribute label</strong></span>
+            <div style="display: none;" class="validation-advice <?php echo $uniqueId; ?>advice-custom_specifics_label" id="advice-<?php echo $uniqueId; ?>custom_specifics_label_%i%">
+                <?php echo Mage::helper('M2ePro')->__('Item Specifics cannot have the same Labels.'); ?>
+            </div>
         </td>
         <td style="vertical-align:top;">
             <select id="<?php echo $uniqueId; ?>item_specifics_value_mode_%i%" name="item_specifics_value_mode_%i%" style="width: 100%; margin-bottom: 2px;" onchange="EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj.dictionarySpecificModeChange(this);">

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -77,18 +77,20 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
             return false;
         }
 
-        $lockedCollection = Mage::getModel('M2ePro/LockedObject')->getCollection();
-        $lockedCollection->addFieldToFilter('model_name', 'M2ePro/Listing_Product');
-        $lockedListingProductsIds = $lockedCollection->getColumnValues('object_id');
+        $processingLockCollection = Mage::getModel('M2ePro/Processing_Lock')->getCollection();
+        $processingLockCollection->addFieldToFilter('model_name', 'M2ePro/Listing_Product');
+        $lockedListingProductsIds = $processingLockCollection->getColumnValues('object_id');
 
         $mysqlIds = implode(',', array_map('intval', $lockedListingProductsIds));
-        $statusNotListed = Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED;
+        $notListed = Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED;
 
-        $collection->getSelect()->where(
-            "(`is_variation_parent` = 0 AND `status` = {$statusNotListed} AND `id` IN ({$mysqlIds})) OR
-             (`is_variation_parent` = 1 AND `general_id` IS NULL AND `id` IN ({$mysqlIds})) OR
-             (`is_variation_parent` = 1 AND `general_id` IS NOT NULL)"
-        );
+        $whereConditions = array('(`is_variation_parent` = 1 AND `general_id` IS NOT NULL)');
+        if (!empty($mysqlIds)) {
+            $whereConditions[] = "(`is_variation_parent` = 0 AND `status` = {$notListed} AND `id` IN ({$mysqlIds}))";
+            $whereConditions[] = "(`is_variation_parent` = 1 AND `general_id` IS NULL AND `id` IN ({$mysqlIds}))";
+        }
+
+        $collection->getSelect()->where(implode(' OR ', $whereConditions));
 
         return (bool)$collection->getSize();
     }
@@ -199,7 +201,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
 
         if (!$asObjects) {
             foreach ($specifics as &$specific) {
-                $specific['attributes'] = (array)json_decode($specific['attributes'], true);
+                $specific['attributes'] = (array)Mage::helper('M2ePro')->jsonDecode($specific['attributes']);
             }
         }
 
@@ -319,103 +321,6 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
     public function getRegisteredParameter()
     {
         return $this->getData('registered_parameter');
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getTrackingAttributes()
-    {
-        $attributes = $this->getDefinitionTemplate()->getTrackingAttributes();
-
-        $specifics = $this->getSpecifics(true);
-        foreach ($specifics as $specific) {
-            $attributes = array_merge($attributes,$specific->getTrackingAttributes());
-        }
-
-        return array_unique($attributes);
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsedAttributes()
-    {
-        $attributes = $this->getDefinitionTemplate()->getUsedAttributes();
-
-        $specifics = $this->getSpecifics(true);
-        foreach ($specifics as $specific) {
-            $attributes = array_merge($attributes,$specific->getUsedAttributes());
-        }
-
-        return array_unique(array_merge(
-            $attributes,
-            $this->getWorldwideIdAttributes()
-        ));
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return array
-     */
-    public function getDataSnapshot()
-    {
-        $data = parent::getDataSnapshot();
-
-        $data['specifics'] = $this->getSpecifics();
-        $data['definition'] = $this->getDefinitionTemplate() ? $this->getDefinitionTemplate()->getData() : array();
-
-        foreach ($data['specifics'] as &$specificsData) {
-            foreach ($specificsData as &$value) {
-                !is_null($value) && !is_array($value) && $value = (string)$value;
-            }
-        }
-        unset($value);
-
-        foreach ($data['definition'] as &$value) {
-            !is_null($value) && !is_array($value) && $value = (string)$value;
-        }
-
-        return $data;
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asArrays
-     * @param string|array $columns
-     * @param bool $onlyPhysicalUnits
-     * @return array
-     */
-    public function getAffectedListingsProducts($asArrays = true, $columns = '*', $onlyPhysicalUnits = false)
-    {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('template_description_id', $this->getId());
-
-        if ($onlyPhysicalUnits) {
-            $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
-        }
-
-        if (is_array($columns) && !empty($columns)) {
-            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-            $listingProductCollection->getSelect()->columns($columns);
-        }
-
-        return $asArrays ? (array)$listingProductCollection->getData() : (array)$listingProductCollection->getItems();
-    }
-
-    public function setSynchStatusNeed($newData, $oldData)
-    {
-        $listingsProducts = $this->getAffectedListingsProducts(true, array('id'), true);
-        if (empty($listingsProducts)) {
-            return;
-        }
-
-        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     //########################################

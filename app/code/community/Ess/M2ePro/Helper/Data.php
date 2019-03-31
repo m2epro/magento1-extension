@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -52,6 +52,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      * @param mixed $value
      * @param null|string $field
      * @return Ess_M2ePro_Model_Abstract
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getObject($modelName, $value, $field = NULL)
     {
@@ -64,6 +65,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      * @param null|string $field
      * @param array $tags
      * @return Ess_M2ePro_Model_Abstract
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
     {
@@ -186,13 +188,13 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                     $allowed = implode('|', $allowedTags);
 
                     $pattern = '/<([\/\s\r\n]*)(' . $allowed . ')'.
-                        '((\s+\w+="[\w\s\%\?=&#\/\.;:_\-\(\)]*")*[\/\s\r\n]*)>/si';
+                        '((\s+\w+="[\w\s\%\?=&#\/\.,;:_\-\(\)]*")*[\/\s\r\n]*)>/si';
                     $result = preg_replace($pattern, '##$1$2$3##', $data);
 
                     $result = htmlspecialchars($result, $flags);
 
                     $pattern = '/##([\/\s\r\n]*)(' . $allowed . ')'.
-                        '((\s+\w+="[\w\s\%\?=&#\/\.;:_\-\(\)]*")*[\/\s\r\n]*)##/si';
+                        '((\s+\w+="[\w\s\%\?=&#\/\.,;:_\-\(\)]*")*[\/\s\r\n]*)##/si';
                     $result = preg_replace($pattern, '<$1$2$3>', $result);
                 } else {
                     $result = htmlspecialchars($data, $flags);
@@ -202,6 +204,141 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
         return $result;
+    }
+
+    //########################################
+
+    /**
+     * @param $string
+     * @param null $prefix
+     * @param string $hashFunction (md5, sh1)
+     *
+     * @return string
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    public function hashString($string, $hashFunction, $prefix = NULL)
+    {
+        if (!is_callable($hashFunction)) {
+             throw new Ess_M2ePro_Model_Exception_Logic('Hash function can not be called');
+        }
+
+        $hash = call_user_func($hashFunction, $string);
+        return !empty($prefix) ? $prefix.$hash : $hash;
+    }
+
+    //########################################
+
+    /**
+     * It prevents situations when json_encode() returns FALSE due to some broken bytes sequence.
+     * Normally normalizeToUtfEncoding() fixes that
+     *
+     * @param $data
+     * @param bool $throwError
+     * @return null|string
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function jsonEncode($data, $throwError = true)
+    {
+        if ($data === false) {
+            return 'false';
+        }
+
+        $encoded = @json_encode($data);
+        if ($encoded !== false) {
+            return $encoded;
+        }
+
+        $encoded = @json_encode($this->normalizeToUtfEncoding($data));
+        if ($encoded !== false) {
+            return $encoded;
+        }
+
+        $previousValue = Zend_Json::$useBuiltinEncoderDecoder;
+        Zend_Json::$useBuiltinEncoderDecoder = true;
+        $encoded = Zend_Json::encode($data);
+        Zend_Json::$useBuiltinEncoderDecoder = $previousValue;
+
+        if ($encoded !== false) {
+            return $encoded;
+        }
+
+        Mage::helper('M2ePro/Module_Logger')->process(
+            array('source' => serialize($data)),
+            'json_encode() failed completely', false
+        );
+
+        if (!$throwError) {
+            return NULL;
+        }
+
+        throw new Ess_M2ePro_Model_Exception_Logic('Unable to encode to JSON.',
+                                                   array(
+                                                       'source' => serialize($data)
+                                                   ));
+    }
+
+    /**
+     * It prevents situations when json_decode() returns NULL due to unknown issue.
+     * Despite the fact that given JSON is having correct format
+     *
+     * @param $data
+     * @param bool $throwError
+     * @return null|array
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function jsonDecode($data, $throwError = false)
+    {
+        if (is_null($data) || $data === '' || strtolower($data) === 'null') {
+            return NULL;
+        }
+
+        $decoded = @json_decode($data, true);
+        if (!is_null($decoded)) {
+            return $decoded;
+        }
+
+        try {
+
+            $previousValue = Zend_Json::$useBuiltinEncoderDecoder;
+            Zend_Json::$useBuiltinEncoderDecoder = true;
+            $decoded = Zend_Json::decode($data);
+            Zend_Json::$useBuiltinEncoderDecoder = $previousValue;
+
+        } catch (\Exception $e) {
+            $decoded = NULL;
+        }
+
+        if (!is_null($decoded)) {
+            return $decoded;
+        }
+
+        Mage::helper('M2ePro/Module_Logger')->process(
+            array('source' => serialize($data)),
+            'json_decode() failed completely', false
+        );
+
+        if (!$throwError) {
+            return NULL;
+        }
+
+        throw new Ess_M2ePro_Model_Exception_Logic('Unable to decode JSON.',
+            array(
+                'source' => $data
+            )
+        );
+    }
+
+    private function normalizeToUtfEncoding($data)
+    {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = $this->normalizeToUtfEncoding($value);
+            }
+        } else if (is_string($data)) {
+            return utf8_encode($data);
+        }
+
+        return $data;
     }
 
     //########################################
@@ -327,6 +464,30 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $base;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function toLowerCaseRecursive(array $data = array())
+    {
+        if (count($data) == 0) {
+            return $data;
+        }
+
+        $lowerCasedData = array();
+
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $value = $this->toLowerCaseRecursive($value);
+            } else {
+                $value = trim(strtolower($value));
+            }
+            $lowerCasedData[trim(strtolower($key))] = $value;
+        }
+
+        return $lowerCasedData;
     }
 
     //########################################
@@ -536,6 +697,11 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function isGTIN($gtin)
+    {
+        return $this->isWorldWideId($gtin, 'GTIN');
+    }
+
     public function isUPC($upc)
     {
         return $this->isWorldWideId($upc,'UPC');
@@ -556,6 +722,11 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             ),
             'EAN' => array(
                 '13' => 'Ean13'
+            ),
+            'GTIN' => array(
+                '12' => 'Gtin12',
+                '13' => 'Gtin13',
+                '14' => 'Gtin14'
             )
         );
 

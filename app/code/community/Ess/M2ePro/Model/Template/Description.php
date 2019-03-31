@@ -2,10 +2,13 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Amazon_Template_Description|Ess_M2ePro_Model_Ebay_Template_Description|Ess_M2ePro_Model_Walmart_Template_Description getChildObject()
+ */
 class Ess_M2ePro_Model_Template_Description extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
     //########################################
@@ -47,18 +50,6 @@ class Ess_M2ePro_Model_Template_Description extends Ess_M2ePro_Model_Component_P
     public function getUpdateDate()
     {
         return $this->getData('update_date');
-    }
-
-    //########################################
-
-    public function getTrackingAttributes()
-    {
-        return $this->getChildObject()->getTrackingAttributes();
-    }
-
-    public function getUsedAttributes()
-    {
-        return $this->getChildObject()->getUsedAttributes();
     }
 
     //########################################

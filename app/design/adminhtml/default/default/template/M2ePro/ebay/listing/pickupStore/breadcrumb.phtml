@@ -1,0 +1,51 @@
+<style type="text/css">
+    .breadcrumb {
+        padding: 12px 0;
+        color: #aaa;
+        width: 49.8%;
+        font-size: 14px;
+        text-align: center;
+        background: #e7efef;
+    }
+    .selected {
+        color: white;
+        background: #6f8992;
+        font-weight: bold;
+    }
+</style>
+
+<div style="margin: 10px 0;">
+
+    <?php echo $this->getChildHtml('help'); ?>
+
+    <div class="left" style="width: 100%;">
+
+        <div id="step_1" class="left breadcrumb <?php if ($this->getStep() == 1): ?>selected<?php endif; ?>">
+
+            <span class="<?php if ($this->getStep() == 1): ?>selected<?php endif; ?>">
+                <?php echo Mage::helper('M2ePro')->__('Step 1') ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Select Products') ?>
+            </span>
+
+        </div>
+
+        <div class="left" style="width: 0.4%; height: 40px; background: white"></div>
+
+        <div id="step_2" class="left breadcrumb <?php if ($this->getStep() == 2): ?>selected<?php endif; ?>">
+
+            <span class="<?php if ($this->getStep() == 2): ?>selected<?php endif; ?>">
+                <?php echo Mage::helper('M2ePro')->__('Step 2') ?>:
+            </span>
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Select Stores') ?>
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="clear"></div>
+
+</div>

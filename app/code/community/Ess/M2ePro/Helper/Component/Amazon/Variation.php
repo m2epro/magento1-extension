@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -28,8 +28,8 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
     public function filterProductsByGeneralId($productsIds)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $table = Mage::getSingleton('core/resource')
-            ->getTableName('m2epro_amazon_listing_product');
+        $table = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_amazon_listing_product');
 
         $select = $connRead->select();
         $select->from(array('alp' => $table), array('listing_product_id'))
@@ -44,8 +44,8 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
     public function filterProductsByGeneralIdOwner($productsIds)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $table = Mage::getSingleton('core/resource')
-            ->getTableName('m2epro_amazon_listing_product');
+        $table = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_amazon_listing_product');
 
         $select = $connRead->select();
         $select->from(array('alp' => $table), array('listing_product_id'))
@@ -60,8 +60,8 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
     public function filterProductsByStatus($productsIds)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $table = Mage::getSingleton('core/resource')
-            ->getTableName('m2epro_listing_product');
+        $table = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_listing_product');
 
         $select = $connRead->select();
         $select->from(array('lp' => $table), array('id'))
@@ -76,7 +76,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
     public function filterLockedProducts($productsIds)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $table = Mage::getSingleton('core/resource')->getTableName('m2epro_locked_object');
+        $table = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_processing_lock');
 
         $select = $connRead->select();
         $select->from(array('lo' => $table), array('object_id'))
@@ -99,9 +99,18 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
     public function filterProductsByMagentoProductType($listingProductsIds)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableListingProduct = Mage::getSingleton('core/resource')->getTableName('m2epro_listing_product');
-        $tableProductEntity = Mage::getSingleton('core/resource')->getTableName('catalog_product_entity');
-        $tableProductOption = Mage::getSingleton('core/resource')->getTableName('catalog_product_option');
+        $tableListingProduct = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_listing_product');
+        $tableProductEntity = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('catalog_product_entity');
+        $tableProductOption = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('catalog_product_option');
+        $tableProductEntityInt = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('catalog_product_entity_int');
+
+        $linksPurchasedSeparatelyAttribute = Mage::getSingleton('eav/config')->getAttribute(
+            Mage_Catalog_Model_Product::ENTITY, 'links_purchased_separately'
+        );
 
         $productsIdsChunks = array_chunk($listingProductsIds, 1000);
         $listingProductsIds = array();
@@ -113,19 +122,32 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
                 ->where('id IN (?)', $productsIdsChunk);
 
             $listingProductToProductIds = Mage::getResourceModel('core/config')->getReadConnection()
-                                                                               ->fetchPairs($select);
+                ->fetchPairs($select);
 
             $select = $connRead->select();
             $select->from(array('cpe' => $tableProductEntity), array('entity_id', 'type_id'))
-                ->where('entity_id IN (?)', $listingProductToProductIds);
+                ->where('cpe.entity_id IN (?)', $listingProductToProductIds);
 
             $select->joinLeft(
                 array('cpo' => $tableProductOption),
                 'cpe.entity_id=cpo.product_id',
-                array('option_id')
+                array(
+                    'option_id'         => 'option_id',
+                    'option_is_require' => 'is_require',
+                    'option_type'       => 'type'
+                )
             );
 
-            $select->group('entity_id');
+            $linkAttributeId = $linksPurchasedSeparatelyAttribute->getAttributeId();
+            $select->joinLeft(
+                array('cpei' => $tableProductEntityInt),
+                'cpe.entity_id=cpei.entity_id AND cpei.attribute_id = '.$linkAttributeId,
+                array(
+                    'is_links_purchased_separately' => 'value',
+                )
+            );
+
+            $select->group('cpe.entity_id');
 
             $productsData = Mage::getResourceModel('core/config')->getReadConnection()->fetchAll($select);
 
@@ -136,8 +158,15 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
 
+                if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_DOWNLOADABLE &&
+                    $product['is_links_purchased_separately']) {
+                    unset($productToListingProductIds[$product['entity_id']]);
+                }
+
                 if ($product['type_id'] == Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE &&
-                    !empty($product['option_id'])) {
+                    !empty($product['option_id']) && $product['option_is_require'] == 1 &&
+                    in_array($product['option_type'], array('drop_down', 'radio', 'multiple', 'checkbox')))
+                {
                     unset($productToListingProductIds[$product['entity_id']]);
                 }
             }
@@ -167,10 +196,10 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         $productsIds = array();
 
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableAmazonListingProduct = Mage::getSingleton('core/resource')
-            ->getTableName('m2epro_amazon_listing_product');
-        $tableAmazonTemplateDescription = Mage::getSingleton('core/resource')
-            ->getTableName('m2epro_amazon_template_description');
+        $tableAmazonListingProduct = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_amazon_listing_product');
+        $tableAmazonTemplateDescription = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_amazon_template_description');
 
         foreach ($productsIdsChunks as $productsIdsChunk) {
 

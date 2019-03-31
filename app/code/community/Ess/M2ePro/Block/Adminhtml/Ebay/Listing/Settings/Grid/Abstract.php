@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -65,7 +65,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
             'width'     => '100px',
             'type'      => 'number',
             'index'     => 'entity_id',
-            'frame_callback' => array($this, 'callbackColumnProductId'),
+            'frame_callback' => array($this, 'callbackColumnListingProductId'),
         ));
 
         $modeParent   = Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT;
@@ -86,21 +86,21 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
                     'label' => Mage::helper('M2ePro')->__('Payment'),
                     'value' => array(
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeParent,
                                 'template' => $templatePayment
                             )),
                             'label' => Mage::helper('M2ePro')->__('Use from Listing Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeCustom,
                                 'template' => $templatePayment
                             )),
                             'label' => Mage::helper('M2ePro')->__('Custom Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeTemplate,
                                 'template' => $templatePayment
                             )),
@@ -113,21 +113,21 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
                     'label' => Mage::helper('M2ePro')->__('Shipping'),
                     'value' => array(
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeParent,
                                 'template' => $templateShipping
                             )),
                             'label' => Mage::helper('M2ePro')->__('Use from Listing Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeCustom,
                                 'template' => $templateShipping
                             )),
                             'label' => Mage::helper('M2ePro')->__('Custom Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeTemplate,
                                 'template' => $templateShipping
                             )),
@@ -140,21 +140,21 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
                     'label' => Mage::helper('M2ePro')->__('Return'),
                     'value' => array(
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeParent,
                                 'template' => $templateReturn
                             )),
                             'label' => Mage::helper('M2ePro')->__('Use from Listing Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeCustom,
                                 'template' => $templateReturn
                             )),
                             'label' => Mage::helper('M2ePro')->__('Custom Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeTemplate,
                                 'template' => $templateReturn
                             )),
@@ -178,24 +178,24 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
             'option_groups' => array(
 
                 array(
-                    'label' => Mage::helper('M2ePro')->__('Price, Quantity and Format'),
+                    'label' => Mage::helper('M2ePro')->__('Selling'),
                     'value' => array(
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeParent,
                                 'template' => $templateSelling
                             )),
                             'label' => Mage::helper('M2ePro')->__('Use from Listing Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeCustom,
                                 'template' => $templateSelling
                             )),
                             'label' => Mage::helper('M2ePro')->__('Custom Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeTemplate,
                                 'template' => $templateSelling
                             )),
@@ -208,21 +208,21 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
                     'label' => Mage::helper('M2ePro')->__('Description'),
                     'value' => array(
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeParent,
                                 'template' => $templateDescription
                             )),
                             'label' => Mage::helper('M2ePro')->__('Use from Listing Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeCustom,
                                 'template' => $templateDescription
                             )),
                             'label' => Mage::helper('M2ePro')->__('Custom Settings')
                         ),
                         array(
-                            'value' => json_encode(array(
+                            'value' => Mage::helper('M2ePro')->jsonEncode(array(
                                 'mode'     => $modeTemplate,
                                 'template' => $templateDescription
                             )),
@@ -244,17 +244,17 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
                 'type'  => 'options',
                 'sortable'  => false,
                 'options' => array(
-                    json_encode(array(
+                    Mage::helper('M2ePro')->jsonEncode(array(
                         'mode'     => $modeParent,
                         'template' => $templateSynch
                     )) => Mage::helper('M2ePro')->__('Use from Listing Settings'),
 
-                    json_encode(array(
+                    Mage::helper('M2ePro')->jsonEncode(array(
                         'mode'     => $modeCustom,
                         'template' => $templateSynch
                     )) => Mage::helper('M2ePro')->__('Custom Settings'),
 
-                    json_encode(array(
+                    Mage::helper('M2ePro')->jsonEncode(array(
                         'mode'     => $modeTemplate,
                         'template' => $templateSynch
                     )) => Mage::helper('M2ePro')->__('Policies'),
@@ -451,7 +451,7 @@ HTML;
 
         $html = <<<HTML
 <div style="padding: 4px; color: #666666">
-    <span style="text-decoration: underline; font-weight: bold">{$helper->__('Price, Quantity and Format')}</span><br/>
+    <span style="text-decoration: underline; font-weight: bold">{$helper->__('Selling')}</span><br/>
     <span>{$sellingSettings}</span><br/>
 
     <span style="text-decoration: underline; font-weight: bold">{$helper->__('Description')}</span><br/>
@@ -573,7 +573,7 @@ HTML;
             return;
         }
 
-        $filter = json_decode($filter, true);
+        $filter = Mage::helper('M2ePro')->jsonDecode($filter);
 
         $field = 'template_'.$filter['template'].'_mode';
         $value = $filter['mode'];
@@ -595,9 +595,9 @@ HTML;
         $key = 'adminhtml_ebay_template/saveListingProduct';
         $urls[$key] = $this->getUrl("*/{$key}");
 
-        $urls = json_encode($urls);
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
-        $translations = json_encode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(array(
             'Edit Payment and Shipping Settings' => Mage::helper('M2ePro')->__('Edit Payment and Shipping Settings'),
             'Edit Selling Settings' => Mage::helper('M2ePro')->__('Edit Selling Settings'),
             'Edit Synchronization Settings' => Mage::helper('M2ePro')->__('Edit Synchronization Settings'),
@@ -611,7 +611,6 @@ HTML;
     M2ePro.translator.add({$translations});
 
     EbayListingSettingsGridHandlerObj.afterInitPage();
-    EbayListingSettingsGridHandlerObj.getGridMassActionObj().setGridIds('{$this->getGridIdsJson()}');
 </script>
 HTML;
 
@@ -628,24 +627,6 @@ HTML;
         }
 
         return parent::_toHtml() . $additionalJs . $commonJs;
-    }
-
-    //########################################
-
-    private function getGridIdsJson()
-    {
-        $select = clone $this->getCollection()->getSelect();
-        $select->reset(Zend_Db_Select::ORDER);
-        $select->reset(Zend_Db_Select::LIMIT_COUNT);
-        $select->reset(Zend_Db_Select::LIMIT_OFFSET);
-        $select->reset(Zend_Db_Select::COLUMNS);
-        $select->resetJoinLeft();
-
-        $select->columns('elp.listing_product_id');
-
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        return implode(',',$connRead->fetchCol($select));
     }
 
     //########################################

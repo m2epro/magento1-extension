@@ -22,7 +22,8 @@
     VideoTutorialHandlerObj.closeCallback = function() { return true; };
 
     M2ePro.url.add(<?php echo json_encode(array(
-        'adminhtml_ebay_account/edit' => $this->getUrl('M2ePro/adminhtml_ebay_account/edit/')
+        'adminhtml_ebay_account/edit' => $this->getUrl('M2ePro/adminhtml_ebay_account/edit/'),
+        'adminhtml_ebay_marketplace/synchGetExecutingInfo' => $this->getUrl('M2ePro/adminhtml_ebay_marketplace/synchGetExecutingInfo/'),
     )); ?>);
 
 </script>

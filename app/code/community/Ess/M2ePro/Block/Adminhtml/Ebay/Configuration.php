@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,7 +21,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration extends Ess_M2ePro_Block_Adm
 
         // Set header text
         // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__('Configuration');
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Configuration', $componentName);
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__('Configuration');
+        }
         // ---------------------------------------
 
         // Set buttons actions

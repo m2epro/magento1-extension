@@ -2,12 +2,12 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
-    extends Ess_M2ePro_Controller_Adminhtml_Common_WizardController
+    extends Ess_M2ePro_Controller_Adminhtml_Amazon_WizardController
 {
     //########################################
 
@@ -30,15 +30,6 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
 
     //########################################
 
-    public function indexAction()
-    {
-        $this->getWizardHelper()->setStatus(
-            'amazonShippingOverridePolicy', Ess_M2ePro_Helper_Module_Wizard::STATUS_SKIPPED
-        );
-
-        return parent::indexAction();
-    }
-
     public function welcomeAction()
     {
         $this->setStatus(Ess_M2ePro_Helper_Module_Wizard::STATUS_ACTIVE);
@@ -52,7 +43,7 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
             return $this->_redirect('*/*/congratulation');
         }
 
-        if (!$this->getCurrentStep()) {
+        if (!$this->getCurrentStep() || !in_array($this->getCurrentStep(), $this->getSteps())) {
             $this->setStep($this->getFirstStep());
         }
 
@@ -63,7 +54,7 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
 
     public function congratulationAction()
     {
-        return $this->_redirect('*/adminhtml_common_listing/index/');
+        return $this->_redirect('*/adminhtml_amazon_listing/index/');
     }
 
     //########################################
@@ -80,7 +71,9 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
         $dispatcher = Mage::getModel('M2ePro/Synchronization_Dispatcher');
 
         $dispatcher->setAllowedComponents(array(Ess_M2ePro_Helper_Component_Amazon::NICK));
-        $dispatcher->setAllowedTasksTypes(array(Ess_M2ePro_Model_Synchronization_Task::MARKETPLACES));
+        $dispatcher->setAllowedTasksTypes(array(
+            Ess_M2ePro_Model_Synchronization_Task_Component_Abstract::MARKETPLACES
+        ));
 
         $dispatcher->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
         $dispatcher->setParams(array('marketplace_id' => $marketplaceId));

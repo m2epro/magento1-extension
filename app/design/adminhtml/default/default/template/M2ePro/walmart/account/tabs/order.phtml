@@ -1,0 +1,572 @@
+<div id="block_notice_walmart_accounts_orders" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Orders'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'Specify how M2E Pro should process your Walmart sales.
+        Enable an automatic Magento Order creation to reduce Magento stock once an Item is purchased on the Walmart website.<br/>
+        You can select which tax settings should be applied to an Order, activate an automatic invoice and shipment creation, etc.<br/><br/>
+
+        The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
+    ); ?>
+</div>
+
+<?php
+    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
+    $formData['magento_orders_settings'] = !empty($formData['magento_orders_settings']) ? json_decode($formData['magento_orders_settings'], true) : array();
+
+    $defaults = array(
+        'magento_orders_settings' => array(
+            'listing' => array(
+                'mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES,
+                'store_mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT,
+                'store_id' => NULL
+            ),
+            'listing_other' => array(
+                'mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES,
+                'product_mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT,
+                'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
+                'store_id' => NULL,
+            ),
+            'number' => array(
+                'source' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,
+                'prefix' => array(
+                    'mode'   => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO,
+                    'prefix' => '',
+                )
+            ),
+            'tax' => array(
+                'mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MIXED
+            ),
+            'customer' => array(
+                'mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
+                'id' => NULL,
+                'website_id' => NULL,
+                'group_id' => NULL,
+//                'subscription_mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO,
+                'notifications' => array(
+//                    'customer_created' => false,
+                    'invoice_created' => false,
+                    'order_created' => false
+                ),
+            ),
+            'status_mapping' => array(
+                'mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
+                'processing' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING,
+                'shipped' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED,
+            ),
+            'invoice_mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_INVOICE_MODE_YES,
+            'shipment_mode' => Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES
+        )
+    );
+
+    $isEdit = !!$this->getRequest()->getParam('id');
+
+    $isEdit && $defaults['magento_orders_settings']['refund_and_cancellation']['refund_mode'] = 0;
+
+    $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($defaults, $formData);
+
+?>
+
+<script type="text/javascript">
+
+    // Data for current tab
+    //-----------------------------
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'No Customer entry is found for specified ID.' => Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
+        'Prefix length should not be greater than 5 characters.' => Mage::helper('M2ePro')->__('Prefix length should not be greater than 5 characters.')
+    )); ?>);
+
+    M2ePro.formData.magento_orders_listings_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['mode']); ?>';
+    M2ePro.formData.magento_orders_listings_store_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['store_mode']); ?>';
+    M2ePro.formData.magento_orders_listings_store_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['store_id']); ?>';
+
+    M2ePro.formData.magento_orders_listings_other_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['mode']); ?>';
+    M2ePro.formData.magento_orders_listings_other_store_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['store_id']); ?>';
+    M2ePro.formData.magento_orders_listings_other_product_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['product_mode']); ?>';
+
+    M2ePro.formData.magento_orders_customer_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['mode']); ?>';
+    M2ePro.formData.magento_orders_customer_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['id']); ?>';
+    M2ePro.formData.magento_orders_customer_new_website_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['website_id']); ?>';
+    M2ePro.formData.magento_orders_customer_new_group_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['group_id']); ?>';
+<!--    M2ePro.formData.magento_orders_customer_new_newsletter_mode = '--><?php //echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['subscription_mode']); ?><!--';-->
+
+    Event.observe(window, 'load', function() {
+
+        setTimeout(function() {
+            $('magento_orders_listings_mode').observe('change', WalmartAccountHandlerObj.magentoOrdersListingsModeChange);
+            $('magento_orders_listings_store_mode').observe('change', WalmartAccountHandlerObj.magentoOrdersListingsStoreModeChange);
+
+            $('magento_orders_listings_other_mode').observe('change', WalmartAccountHandlerObj.magentoOrdersListingsOtherModeChange);
+            $('magento_orders_listings_other_product_mode').observe('change', WalmartAccountHandlerObj.magentoOrdersListingsOtherProductModeChange);
+
+            $('magento_orders_number_source').observe('change', WalmartAccountHandlerObj.magentoOrdersNumberSourceChange);
+            $('magento_orders_number_prefix_mode').observe('change', WalmartAccountHandlerObj.magentoOrdersNumberPrefixModeChange);
+            $('magento_orders_number_prefix_prefix').observe('keyup', WalmartAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
+            WalmartAccountHandlerObj.renderOrderNumberExample();
+
+            $('magento_orders_customer_mode').observe('change', WalmartAccountHandlerObj.magentoOrdersCustomerModeChange);
+            $('magento_orders_status_mapping_mode').observe('change', WalmartAccountHandlerObj.magentoOrdersStatusMappingModeChange);
+        }, 350);
+    });
+    //-----------------------------
+
+</script>
+
+<div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_listings">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Product Is Listed By M2E Pro'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_listings_mode"><?php echo Mage::helper('M2ePro')->__('Create Order in Magento'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="magento_orders_listings_mode" name="magento_orders_settings[listing][mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enable to automatically create Magento Order if the Channel Order was placed for the Item listed via M2E Pro.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_listings_store_mode_container" <?php if($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="magento_orders_listings_store_mode"><?php echo Mage::helper('M2ePro')->__('Store View Source'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="magento_orders_listings_store_mode" name="magento_orders_settings[listing][store_mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT; ?>" <?php if ($formData['magento_orders_settings']['listing']['store_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Use Store View from Listing'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM; ?>" <?php if ($formData['magento_orders_settings']['listing']['store_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Choose Store View Manually'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify whether Magento Store View should be determined automatically based on M2E Pro Listing settings or selected manually.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_listings_store_id_container" <?php if($formData['magento_orders_settings']['listing']['store_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Store View'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <?php echo $this->getChildHtml('magento_orders_listings_store_id'); ?>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Select Magento Store View that will be associated with Magento Order.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_listings_other">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Product Is Listed By Any Other Software'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_listings_other_mode"><?php echo Mage::helper('M2ePro')->__('Create Order in Magento'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="magento_orders_listings_other_mode" name="magento_orders_settings[listing_other][mode]" class="required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enable to automatically create Magento Order if the Channel Order was placed for the Item listed without M2E Pro.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_listings_other_store_id_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Store View'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <?php echo $this->getChildHtml('magento_orders_listings_other_store_id'); ?>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Select Magento Store View that will be associated with Magento Order.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_listings_other_product_mode_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="magento_orders_listings_other_product_mode"><?php echo Mage::helper('M2ePro')->__('Product Not Found'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="magento_orders_listings_other_product_mode" name="magento_orders_settings[listing_other][product_mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Do Not Create Order'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT) echo ' selected="selected"';?>><?php echo Mage::helper('M2ePro')->__('Create Product and Order'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify which action should be performed if the purchased Item does not have the corresponding Product in Magento.'); ?></span><br/>
+                            <span id="magento_orders_listings_other_product_mode_note" <?php if ($formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE) echo 'style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('<b>Note:</b> Only Simple Magento Products can be created based on these settings. If a Variational Item was purchased, M2E Pro will automatically create different Simple Products for each Variation.') ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <?php $canShowBlock = $formData['magento_orders_settings']['listing_other']['product_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT; ?>
+                <tr id="magento_orders_listings_other_product_tax_class_id_container" <?php if (!$canShowBlock): ?>style="display: none;"<?php endif; ?>>
+                    <td class="label">
+                        <label for="magento_orders_listings_other_product_tax_class_id"><?php echo Mage::helper('M2ePro')->__('Product Tax Class') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="magento_orders_listings_other_product_tax_class_id" name="magento_orders_settings[listing_other][product_tax_class_id]" class="M2ePro-required-when-visible">
+                            <?php foreach ($this->productTaxClasses as $taxClass): ?>
+                                <option value="<?php echo (int)$taxClass['value'] ?>" <?php if ($formData['magento_orders_settings']['listing_other']['product_tax_class_id'] == $taxClass['value']): ?>selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($taxClass['label']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__('Select the Tax Class which will be used for Products created by M2E Pro.'); ?>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_number" <?php if(($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Magento Order Number'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <div id="block_notice_walmart_accounts_orders_number" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Magento Order Number'); ?>">
+                <?php echo Mage::helper('M2ePro')->__('Set your preferences for Magento Order number generation.'); ?>
+            </div>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_number_source"><?php echo Mage::helper('M2ePro')->__('Source'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_number_source" name="magento_orders_settings[number][source]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO; ?>" <?php if ($formData['magento_orders_settings']['number']['source'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Magento'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_CHANNEL; ?>" <?php if ($formData['magento_orders_settings']['number']['source'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_CHANNEL) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Walmart'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Select whether Magento Order number should be generated based on your Magento settings or Walmart Order number.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_number_prefix_mode"><?php echo Mage::helper('M2ePro')->__('Use Prefix'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_number_prefix_mode" name="magento_orders_settings[number][prefix][mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enable to add a certain prefix to Magento Order number.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_number_prefix_container" <?php if($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="magento_orders_customer_id"><?php echo Mage::helper('M2ePro')->__('Prefix'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="magento_orders_number_prefix_prefix" maxlength="5" name="magento_orders_settings[number][prefix][prefix]" value="<?php echo $this->escapeHtml($formData['magento_orders_settings']['number']['prefix']['prefix']); ?>" type="text" class="M2ePro-required-when-visible M2ePro-account-order-number-prefix input-text" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enter the prefix for Magento Order number.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="sample_magento_order_id" value="<?php echo Mage::helper('M2ePro/Magento')->getNextMagentoOrderId(); ?>" />
+                        <input type="hidden" id="sample_walmart_order_id" value="141-4423723-6495633" />
+
+                        <p class="note note-no-tool-tip">
+                            <?php echo Mage::helper('M2ePro')->__('e.g.'); ?> <strong><span id="order_number_example_container"></span></strong>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<?php $canShowBlock = (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES || $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES)); ?>
+<div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_customer" <?php if(($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Customer Settings'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_customer_mode"><?php echo Mage::helper('M2ePro')->__('Customer'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_customer_mode" name="magento_orders_settings[customer][mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST; ?>" <?php if ($formData['magento_orders_settings']['customer']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Guest Account'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED; ?>" <?php if ($formData['magento_orders_settings']['customer']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Predefined Customer'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_NEW; ?>" <?php if ($formData['magento_orders_settings']['customer']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_NEW) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Create New'); ?></option>
+                        </select>
+                        <p class="note note-no-tool-tip">
+                            <span><?php echo Mage::helper('M2ePro')->__('Customer for which Magento Orders will be created.'); ?></span>
+                        </p>
+                    </td>
+                    <td class="value" style="display: none">
+                        <p class="note"">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Define Magento Customer for which Magento Order will be created:<br><br>
+
+                                    <strong>Guest Account</strong> - the system does not require a Customer Account to be created. The default Guest Account will be defined as a Customer.<br>
+                                    <strong>Note:</strong> Allow Guest Checkout Option must be enabled in your Magento: <i>System > Configuration > Sales > Checkout</i>.<br><br>
+                                    
+                                    <strong>Predefined Customer</strong> - the system will use a single Magento Customer for all Walmart Orders related to this Account. The related Customer ID must be provided.<br>
+                                    <strong>Note:</strong> Magento Customer IDs can be found under the <i>Customers > Manage Customers</i>.<br><br>
+                                    
+                                    <strong>Create New</strong> - a new Customer will be created in Magento based on the Buyer information in Walmart Order.<br>
+                                    <strong>Note:</strong> Buyer email will be used as a unique Customer Identifier. If this email already exists in Magento, the related Magento Customer will be associated with Walmart Order. 
+                                    A new Customer will not be created.'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_customer_id_container" <?php if($formData['magento_orders_settings']['customer']['mode'] != Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="magento_orders_customer_id"><?php echo Mage::helper('M2ePro')->__('Customer ID'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="magento_orders_customer_id" name="magento_orders_settings[customer][id]" value="<?php echo $this->escapeHtml($formData['magento_orders_settings']['customer']['id']); ?>" type="text" class="M2ePro-required-when-visible validate-digits M2ePro-account-customer-id input-text" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enter Magento Customer ID.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_customer_new_website_id_container" <?php if($formData['magento_orders_settings']['customer']['mode'] != Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_NEW) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="magento_orders_customer_new_website_id"><?php echo Mage::helper('M2ePro')->__('Associate to Website'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_customer_new_website_id" name="magento_orders_settings[customer][website_id]" class="M2ePro-required-when-visible">
+                            <option value="" <?php if ($formData['magento_orders_settings']['customer']['website_id'] == '') echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('-- Please Select --'); ?></option>
+                            <?php foreach($this->websites as $website) { ?>
+                                <option value="<?php echo $website['website_id']; ?>" <?php if ($formData['magento_orders_settings']['customer']['website_id'] == $website['website_id']) echo ' selected="selected"'; ?>><?php echo $website['name']; ?></option>
+                            <?php } ?>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Select Magento Website where a new Customer should be created.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_customer_new_group_id_container" <?php if($formData['magento_orders_settings']['customer']['mode'] != Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_NEW) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="magento_orders_customer_new_group_id"><?php echo Mage::helper('M2ePro')->__('Customer Group'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_customer_new_group_id" name="magento_orders_settings[customer][group_id]" class="M2ePro-required-when-visible">
+                            <option value="" <?php if ($formData['magento_orders_settings']['customer']['group_id'] == '') echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('-- Please Select --'); ?></option>
+                            <?php foreach($this->groups as $group) { ?>
+                                <option value="<?php echo $group['customer_group_id']; ?>" <?php if ($formData['magento_orders_settings']['customer']['group_id'] == $group['customer_group_id']) echo ' selected="selected"'; ?>><?php echo $group['customer_group_code']; ?></option>
+                            <?php } ?>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Select Magento Customer Group where a new Customer should be created.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_customer_new_notifications_container" <?php if($formData['magento_orders_settings']['customer']['mode'] != Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_MODE_NEW) echo 'style="display: none;"'; ?>>
+                    <td class="label">
+                        <label for="magento_orders_customer_new_notifications"><?php echo Mage::helper('M2ePro')->__('Send Emails When The Following Is Created'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_customer_new_notifications" name="magento_orders_settings[customer][notifications][]" multiple="multiple">
+<!--                            <option value="customer_created" --><?php //if ($formData['magento_orders_settings']['customer']['notifications']['customer_created']) echo ' selected="selected"'; ?><!-->--><?php //echo Mage::helper('M2ePro')->__('Customer Account'); ?><!--</option>-->
+                            <option value="order_created" <?php if ($formData['magento_orders_settings']['customer']['notifications']['order_created']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Magento Order'); ?></option>
+                            <option value="invoice_created" <?php if ($formData['magento_orders_settings']['customer']['notifications']['invoice_created']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Invoice'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'Select certain conditions when the emails should be sent to Customer. Hold Ctrl to select multiple options.<br>
+                                <strong>Note:</strong> the related email type must be enabled in your Magento: <i>System > Configuration > Sales Emails</i>.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_tax" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Tax Settings'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+            <div id="block_notice_walmart_accounts_magento_orders_tax" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Order Tax Settings'); ?>">
+                <?php echo Mage::helper('M2ePro')->__('Select the Tax settings that should be applied to Magento Order:<br><br>
+                    <ul class="list">
+                        <li><b>Walmart</b> - the Tax settings configured in your Walmart Seller Center will be used.</li>
+                        <li><b>Magento</b> - the Tax settings configured in your Magento will be used.</li>
+                        <li><b>Walmart & Magento</b> - Walmart Tax settings will be applied if specified. Otherwise, Magento Tax settings will be used.</li>
+                        <li><b>None</b> - no Taxes will be applied.</li>
+                    </ul>'
+                ); ?>
+            </div>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_tax_mode"><?php echo Mage::helper('M2ePro')->__('Tax Source'); ?>:</label>
+                    </td>
+
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_tax_mode" name="magento_orders_settings[tax][mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_NONE; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_NONE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_CHANNEL; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_CHANNEL) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Walmart'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MAGENTO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Magento'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MIXED; ?>"<?php if ($formData['magento_orders_settings']['tax']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_TAX_MODE_MIXED) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Walmart & Magento'); ?></option>
+                        </select>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<?php $statusList = $this->getMagentoOrderStatusList(); ?>
+
+<div class="entry-edit" id="magento_block_walmart_accounts_magento_orders_status_mapping" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Status Mapping'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <div id="block_notice_walmart_accounts_orders_status" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Order Status Mapping'); ?>">
+                <?php echo Mage::helper('M2ePro')->__(
+                    'Set the correspondence between Walmart and Magento Order statuses.<br>
+                    M2E Pro supports an automatic generation of Invoices and Shipments. Enable the options next to the related Order statuses.<br/>'
+                ); ?>
+            </div>
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="magento_orders_status_mapping_mode"><?php echo Mage::helper('M2ePro')->__('Status Mapping'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_status_mapping_mode" name="magento_orders_settings[status_mapping][mode]" class="M2ePro-required-when-visible">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT; ?>" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT) echo "selected='selected'"; ?>><?php echo Mage::helper('M2ePro')->__('Default Order Statuses'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM; ?>" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM) echo "selected='selected'"; ?>><?php echo Mage::helper('M2ePro')->__('Custom Order Statuses'); ?></option>
+                        </select>
+                    </td>
+                </tr>
+
+                <?php $isDisabledStatusStyle = ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT) ? "disabled='disabled'" : ''; ?>
+                <?php
+                    if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT) {
+                        $formData['magento_orders_settings']['status_mapping']['processing'] = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING;
+                        $formData['magento_orders_settings']['status_mapping']['shipped'] = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED;
+
+                        $formData['magento_orders_settings']['invoice_mode'] = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_INVOICE_MODE_YES;
+                        $formData['magento_orders_settings']['shipment_mode'] = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES;
+                    }
+                ?>
+
+                <tr id="magento_orders_status_mapping_processing_container">
+                    <td class="label">
+                        <label for="magento_orders_status_mapping_processing"><?php echo Mage::helper('M2ePro')->__('Order Status is Unshipped / Partially Shipped'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_status_mapping_processing" name="magento_orders_settings[status_mapping][processing]" class="M2ePro-required-when-visible" <?php echo $isDisabledStatusStyle; ?>>
+                            <?php foreach ($statusList as $statusKey => $statusValue) { ?>
+                                <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['status_mapping']['processing'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td class="value">
+                        <input id="magento_orders_invoice_mode" name="magento_orders_settings[invoice_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['invoice_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_INVOICE_MODE_YES) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
+                        <label for="magento_orders_invoice_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Invoice Creation'); ?></label>
+                    </td>
+                </tr>
+
+                <tr id="magento_orders_status_mapping_shipped_container" <?php echo $isDisabledStatusStyle; ?>>
+                    <td class="label">
+                        <label for="magento_orders_status_mapping_shipped"><?php echo Mage::helper('M2ePro')->__('Order Status is Shipped'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="magento_orders_status_mapping_shipped" name="magento_orders_settings[status_mapping][shipped]" class="M2ePro-required-when-visible" <?php echo $isDisabledStatusStyle; ?>>
+                            <?php foreach ($statusList as $statusKey => $statusValue) { ?>
+                                <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['status_mapping']['shipped'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td class="value">
+                        <input id="magento_orders_shipment_mode" name="magento_orders_settings[shipment_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['shipment_mode'] == Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
+                        <label for="magento_orders_shipment_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Shipment Creation');?></label>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

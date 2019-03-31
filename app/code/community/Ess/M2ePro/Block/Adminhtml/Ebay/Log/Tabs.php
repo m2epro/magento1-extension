@@ -2,11 +2,11 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
+class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
     const TAB_ID_LISTING            = 'listing';
     const TAB_ID_LISTING_OTHER      = 'listing_other';
@@ -48,8 +48,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Mage_Adminhtml_Block_Widg
     protected function prepareTabListing()
     {
         $tab = array(
-            'label' => Mage::helper('M2ePro')->__('Listings'),
-            'title' => Mage::helper('M2ePro')->__('Listings')
+            'label' => Mage::helper('M2ePro')->__('M2E Pro Listings'),
+            'title' => Mage::helper('M2ePro')->__('M2E Pro Listings')
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_LISTING) {

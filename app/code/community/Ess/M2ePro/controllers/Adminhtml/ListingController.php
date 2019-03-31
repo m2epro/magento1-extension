@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -10,6 +10,21 @@ class Ess_M2ePro_Adminhtml_ListingController
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
     //########################################
+
+    public function saveTitleAction()
+    {
+        $listingId = $this->getRequest()->getParam('id');
+        $title = $this->getRequest()->getParam('title');
+
+        if (is_null($listingId)) {
+            return;
+        }
+
+        $model = Mage::getModel('M2ePro/Listing')->loadInstance((int)$listingId);
+        $model->setTitle($title)->save();
+
+        Mage::getModel('M2ePro/Listing_Log')->getResource()->updateListingTitle($listingId, $title);
+    }
 
     public function clearLogAction()
     {
@@ -31,13 +46,23 @@ class Ess_M2ePro_Adminhtml_ListingController
 
     public function getErrorsSummaryAction()
     {
+        $actionIds = $this->getRequest()->getParam('action_ids');
+
+        if (empty($actionIds)) {
+            return $this->getResponse()->setBody('action_ids can not be empty');
+        }
+
         $blockParams = array(
             'action_ids' => $this->getRequest()->getParam('action_ids'),
             'table_name' => Mage::getResourceModel('M2ePro/Listing_Log')->getMainTable(),
             'type_log'   => 'listing'
         );
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_log_errorsSummary','',$blockParams);
-        return $this->getResponse()->setBody($block->toHtml());
+
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
+            'result' => 'success',
+            'html' => $block->toHtml()
+        )));
     }
 
     //########################################

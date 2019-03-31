@@ -25,7 +25,7 @@ DevelopmentDatabaseGridHandler = Class.create(GridHandler, {
     isMergeModeEnabled: function()
     {
         var cookieValue = getCookie(this.mergeModeCookieKey);
-        return cookieValue != null && cookieValue != '0';
+        return cookieValue != null && cookieValue != '' && cookieValue != '0';
     },
 
     setMergeMode: function(value)

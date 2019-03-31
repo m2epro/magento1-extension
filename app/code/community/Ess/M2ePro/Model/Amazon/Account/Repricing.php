@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -488,69 +488,6 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
         }
 
         return $attributes;
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getTrackingAttributes()
-    {
-        return $this->getUsedAttributes();
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsedAttributes()
-    {
-        return array_unique(array_merge(
-            $this->getRegularPriceAttributes(),
-            $this->getMinPriceAttributes(),
-            $this->getMaxPriceAttributes(),
-            $this->getDisableAttributes()
-        ));
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asArrays
-     * @param string|array $columns
-     * @param bool $onlyPhysicalUnits
-     * @return array
-     */
-    public function getAffectedListingsProducts($asArrays = true, $columns = '*')
-    {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Collection $listingCollection */
-        $listingCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing');
-        $listingCollection->addFieldToFilter('account_id', $this->getAccountId());
-        $listingCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $listingCollection->getSelect()->columns('id');
-
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
-        $listingProductCollection->addFieldToFilter('is_repricing', 1);
-        $listingProductCollection->addFieldToFilter('listing_id', array('in' => $listingCollection->getSelect()));
-
-        if (is_array($columns) && !empty($columns)) {
-            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-            $listingProductCollection->getSelect()->columns($columns);
-        }
-
-        return $asArrays ? (array)$listingProductCollection->getData() : (array)$listingProductCollection->getItems();
-    }
-
-    public function setProcessRequired($newData, $oldData)
-    {
-        $listingsProducts = $this->getAffectedListingsProducts(true, array('id'));
-        if (empty($listingsProducts)) {
-            return;
-        }
-
-        $this->getResource()->setProcessRequired($newData, $oldData, $listingsProducts);
     }
 
     //########################################

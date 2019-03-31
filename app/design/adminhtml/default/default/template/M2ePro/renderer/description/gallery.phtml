@@ -111,8 +111,7 @@
         #m2e-gallery-list-<?php echo $this->getGalleryId(); ?> img {
             <?php if ($data['width'] != '') : echo "width: {$data['width']}px;"; endif; ?>
             <?php if ($data['height'] != '') : echo "height: {$data['height']}px;"; endif; ?>
-            <?php if ($this->isLinkMode()) : echo 'cursor: pointer; border: none;'; endif; ?>
-            <?php if ($data['margin'] != '') : echo "margin-bottom: {$data['margin']}px; margin-right: {$data['margin']}px;"; endif; ?>
+            <?php if ($data['margin'] != '') : echo "margin: {$data['margin']}px;"; endif; ?>
         }
 
     </style>
@@ -121,15 +120,7 @@
 
         <?php foreach ($this->getGalleryImages() as $imageIndex => $imageUrl) : ?>
 
-            <?php if ($this->isLinkMode()): ?>
-                <a href="<?php echo $imageUrl; ?>" target="_blank"<?php if ($data['watermark'] != 0): echo ' m2e_watermark="1"'; endif; ?>>
-            <?php endif; ?>
-
             <img src="<?php echo $imageUrl; ?>" class="m2e-gallery-list" <?php if ($data['watermark'] != 0): echo ' m2e_watermark="1"'; endif; ?> />
-
-            <?php if ($this->isLinkMode()): ?>
-                </a>
-            <?php endif; ?>
 
             <?php if ($this->isLayoutColumnMode()): ?>
                 <br/>

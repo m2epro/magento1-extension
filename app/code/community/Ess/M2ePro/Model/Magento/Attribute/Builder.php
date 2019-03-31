@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -179,9 +179,15 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
 
     private function prepareDefault(&$data)
     {
-        if ($this->isDateType() || $this->isBooleanType() || $this->isTextAreaType() || $this->isTextType()) {
+        if ($this->isDateType() || $this->isTextAreaType() || $this->isTextType()) {
 
             $data['default_value'] = (string)$this->params['default_value'];
+            return;
+        }
+
+        if ($this->isBooleanType()) {
+
+            $data['default_value'] = (int)(strtolower($this->params['default_value']) == 'yes');
             return;
         }
 

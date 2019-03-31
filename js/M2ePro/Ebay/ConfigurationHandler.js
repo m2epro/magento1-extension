@@ -7,18 +7,14 @@ EbayConfigurationHandler.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    isMultiCurrencyPresented: function()
-    {
-        return Boolean(M2ePro.formData.multiCurrencyCount);
-    },
-
-    // ---------------------------------------
-
     viewModeChange: function()
     {
         var hidingBlocks = $$('#magento_block_ebay_configuration_general_notification',
                               '#magento_block_ebay_configuration_general_selling',
+                              '#magento_block_ebay_configuration_general_images',
                               '#magento_block_ebay_configuration_general_motors_epids',
+                              '#magento_block_ebay_configuration_general_motors_epids_uk',
+                              '#magento_block_ebay_configuration_general_motors_epids_de',
                               '#magento_block_ebay_configuration_general_motors_ktypes');
 
         hidingBlocks.invoke('hide');
@@ -30,11 +26,10 @@ EbayConfigurationHandler.prototype = Object.extend(new CommonHandler(), {
     // Manage Compatibility Dictionary
     // ---------------------------------------
 
-    manageMotorsRecords: function(motorsType)
+    manageMotorsRecords: function(motorsType, title)
     {
-        var self = EbayConfigurationGeneralHandlerObj,
-            title = motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID') ? 'Manage Custom Compatibility [ePIDs]'
-                                                                                                                                    : 'Manage Custom Compatibility [kTypes]';
+        var self = EbayConfigurationGeneralHandlerObj;
+
         // ---------------------------------------
         $('motors_type').value = motorsType;
         var helpBlock = $$('#block_notice_ebay_configuration_general_motors_manage span.title').first();
@@ -42,18 +37,18 @@ EbayConfigurationHandler.prototype = Object.extend(new CommonHandler(), {
         // ---------------------------------------
 
         // ---------------------------------------
-        var spanStatEpids  = $('database-statistic-popup-epids'),
-            spanStatKtypes = $('database-statistic-popup-ktypes');
+        $$('.database-statistic-popup').each(function (el) {
+            el.hide();
+        });
 
-        if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID')) {
-
-            spanStatEpids.show();
-            spanStatKtypes.hide();
-
+        if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR')) {
+            $('database-statistic-popup-epids-motor').show();
+        } else if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK')) {
+            $('database-statistic-popup-epids-uk').show();
+        } else if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE')) {
+            $('database-statistic-popup-epids-de').show();
         } else {
-
-            spanStatEpids.hide();
-            spanStatKtypes.show();
+            $('database-statistic-popup-ktypes').show();
         }
         // ---------------------------------------
 
@@ -71,7 +66,7 @@ EbayConfigurationHandler.prototype = Object.extend(new CommonHandler(), {
             closable: true,
             className: "magento",
             windowClassName: "popup-window",
-            title: M2ePro.translator.translate(title),
+            title: title,
             top: 50,
             maxHeight: 520,
             width: 700,

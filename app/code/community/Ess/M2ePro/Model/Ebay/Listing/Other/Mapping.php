@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -109,6 +109,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
 
             if ($type == 'title') {
                 $magentoProductId = $this->getTitleMappedMagentoProductId($otherListing);
+            }
+
+            if ($type == 'item_id') {
+                $magentoProductId = $this->getItemIdMappedMagentoProductId($otherListing);
             }
 
             if (is_null($magentoProductId)) {
@@ -242,6 +246,45 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
 
         $storeId = $otherListing->getChildObject()->getRelatedStoreId();
         $attributeValue = trim($otherListing->getChildObject()->getTitle());
+
+        $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
+        $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
+
+        if ($productObj && $productObj->getId()) {
+            return $productObj->getId();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Listing_Other $otherListing
+     * @return int|null
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function getItemIdMappedMagentoProductId(Ess_M2ePro_Model_Listing_Other $otherListing)
+    {
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Other $ebayListingOther */
+        $ebayListingOther = $otherListing->getChildObject();
+
+        $temp = $ebayListingOther->getItemId();
+
+        if (empty($temp)) {
+            return NULL;
+        }
+
+        $attributeCode = NULL;
+
+        if ($this->getAccount()->getChildObject()->isOtherListingsMappingItemIdModeCustomAttribute()) {
+            $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingItemIdAttribute();
+        }
+
+        if (is_null($attributeCode)) {
+            return NULL;
+        }
+
+        $storeId = $ebayListingOther->getRelatedStoreId();
+        $attributeValue = $ebayListingOther->getItemId();
 
         $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
         $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);

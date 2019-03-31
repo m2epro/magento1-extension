@@ -1,0 +1,209 @@
+<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form */ ?>
+
+<?php
+    $formData = $this->getFormData();
+    $default  = $this->getDefault();
+    $formData = array_merge($default, $formData);
+
+    /** @var Ess_M2ePro_Model_Mysql4_Walmart_Template_Category_Collection $collection */
+    $collection = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
+    $collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+
+    $categoryTemplates = $collection->getData();
+?>
+
+<script type="text/javascript">
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Listing'); ?>, 'Ess_M2ePro_Model_Listing');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Listing'); ?>, 'Ess_M2ePro_Model_Walmart_Listing');
+</script>
+
+<script type="text/javascript">
+
+    M2ePro.url.addNewCategoryTemplate = '<?php echo $this->getUrl('*/adminhtml_walmart_template_category/new', array(
+        'marketplace_id'        => $this->getListing()->getMarketplaceId()
+    )); ?>';
+    M2ePro.url.getCategoryTemplates = '<?php echo $this->getUrl('*/adminhtml_walmart_listing/getCategoryTemplatesList', array(
+        'marketplace_id'            => $this->getListing()->getMarketplaceId()
+    )); ?>';
+
+    ListingAutoActionHandlerObj.magentoCategoryIdsFromOtherGroups = <?php echo json_encode($this->getCategoriesFromOtherGroups()) ?>;
+
+    $('adding_mode')
+        .observe('change', ListingAutoActionHandlerObj.addingModeChange)
+        .simulate('change');
+
+    $('continue_button')
+        .stopObserving('click')
+        .observe('click', ListingAutoActionHandlerObj.categoryStepTwo);
+
+    $('reset_button')
+        .observe('click', function() {
+            ListingAutoActionHandlerObj.reset(false);
+        });
+
+    $('adding_category_template_id').observe('change', function(el) {
+        var options = $(el.target).select('.empty');
+        options.length > 0 && options[0].hide();
+    });
+
+</script>
+
+<style type="text/css">
+    #category_tree_container:hover {
+        overflow: auto;
+    }
+
+    #category_tree_container {
+        float: left;
+        width: 230px;
+        max-height: 350px;
+        overflow: hidden;
+        border-right: 1px solid #e0e0e0;
+    }
+
+    #category_form_container {
+        float: left;
+        padding: 0 10px;
+    }
+
+</style>
+
+<div id="data_container" style="padding-bottom: 10px;">
+
+    <div id="category_tree_container">
+        <?php echo $this->getChildHtml('category_tree') ?>
+    </div>
+
+    <div id="category_form_container">
+        <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+            <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+            <input name="id" value="<?php echo $formData['id'] ?>" type="hidden" id="group_id" />
+            <input name="auto_mode" value="<?php echo Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY ?>" type="hidden" id="auto_mode" />
+
+            <table class="form-list">
+                <tr>
+                    <td class="label">
+                        <label for="group_title"><?php echo Mage::helper('M2ePro')->__('Title') ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="group_title" name="title" id="group_title" class="input-text required-entry M2ePro-validate-category-group-title" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['title']) ?>" style="padding: 2px 0; width: 275px;" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label" style="width: 200px;">
+                        <label for="adding_mode"><?php echo Mage::helper('M2ePro')->__('Product Assigned to Categories') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select name="adding_mode" id="adding_mode" style="width: 275px;">
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::ADDING_MODE_NONE ?>" <?php if ($formData['adding_mode'] == Ess_M2ePro_Model_Listing::ADDING_MODE_NONE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No Action') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::ADDING_MODE_ADD ?>" <?php if ($formData['adding_mode'] == Ess_M2ePro_Model_Listing::ADDING_MODE_ADD): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Add to the Listing') ?></option>
+                        </select>
+                    </td>
+                    <td class="value">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                        <span class="tool-tip-message tip-left" style="left: 650px; display: none;">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                            <span><?php echo Mage::helper('M2ePro')->__('Action which will be applied automatically.'); ?></span>
+                        </span>
+                    </td>
+                </tr>
+
+                <tr id="adding_add_not_visible_field">
+                    <td class="label" style="width: 200px;">
+                        <label for="adding_add_not_visible"><?php echo Mage::helper('M2ePro')->__('Add not Visible Individually Products') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select name="adding_add_not_visible" id="adding_add_not_visible" style="width: 275px;">
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_NO ?>" <?php if ($formData['adding_add_not_visible'] == Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_NO): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES ?>" <?php if ($formData['adding_add_not_visible'] == Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                        </select>
+                    </td>
+                    <td class="value">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                    <span class="tool-tip-message" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                        <span><?php echo Mage::helper('M2ePro')->__('
+                            Set to <strong>Yes</strong> if you want the Magento Products with
+                            Visibility \'Not visible Individually\' to be added to the Listing
+                            Automatically.<br/>
+                            If set to <strong>No</strong>, only Variation (i.e.
+                            Parent) Magento Products will be added to the Listing Automatically,
+                            excluding Child Products.
+                        '); ?></span>
+                    </span>
+                    </td>
+                </tr>
+
+                <tr id="auto_action_walmart_add_and_assign_category_template">
+                    <td class="label" style="width: 200px;">
+                        <label for="adding_category_template_id"><?php echo Mage::helper('M2ePro')->__('Category Policy') ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <select name="adding_category_template_id" id="adding_category_template_id" style="width: 275px;" class="M2ePro-required-when-visible">
+                            <option class="empty"></option>
+                            <?php foreach($categoryTemplates as $template) { ?>
+                                <option value="<?php echo $template['id']; ?>" <?php echo $template['id'] == $formData['adding_category_template_id'] ? 'selected="selected"' : '' ?> ><?php echo $this->escapeHtml($template['title']); ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td class="value">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                        <span class="tool-tip-message tip-left" style="left: 650px; display: none;">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'Select Category Policy you want to assign to Product(s).<br><br>
+                                <strong>Note:</strong> Submitting of Category data is required when you create a new offer on Walmart. Category Policy must be assigned to Products before they are added to M2E Pro Listing.'
+                            ); ?></span>
+                            </span>
+                        <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionHandlerObj.addNewTemplate(M2ePro.url.addNewCategoryTemplate, ListingAutoActionHandlerObj.reloadCategoriesTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                    </td>
+                </tr>
+
+            </table>
+
+            <div style="padding-top: 20px;"></div>
+
+            <table class="form-list">
+                <tr>
+                    <td class="label" style="width: 200px;">
+                        <label for=""><?php echo Mage::helper('M2ePro')->__('Product Deleted from Categories') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select name="deleting_mode" id="deleting_mode" style="width: 275px;">
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_NONE ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_NONE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No Action') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_STOP ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Stop on Channel') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE ?>" <?php if ($formData['deleting_mode'] == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Stop on Channel and Delete from Listing') ?></option>
+                        </select>
+                    </td>
+                    <td class="value">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                        <span class="tool-tip-message tip-left" style="left: 650px; display: none;">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                            <span><?php echo Mage::helper('M2ePro')->__('Action which will be applied automatically.'); ?></span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+    </div>
+
+</div>
+
+<div>
+    <input type="hidden" name="validate_category_selection" id="validate_category_selection" class="M2ePro-validate-category-selection" />
+</div>
+
+<div style="clear: both;"></div>
+
+<div style="display: none;">
+    <?php echo $this->getChildHtml('confirm') ?>
+</div>
+
+<div id="dialog_confirm_content" style="display: none;">
+    <div style="margin: 10px; ">
+        <?php echo Mage::helper('M2ePro')->__('This Category is already used in the Rule %s. If you press "Confirm" Button, Category will be removed from that Rule.') ?>
+    </div>
+</div>

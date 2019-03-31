@@ -2,11 +2,11 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Block_Adminhtml_Development_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
+class Ess_M2ePro_Block_Adminhtml_Development_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
     //########################################
 
@@ -30,8 +30,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs extends Mage_Adminhtml_Block_W
             Ess_M2ePro_Helper_View_Development::TAB_DATABASE,
             Ess_M2ePro_Helper_View_Development::TAB_TOOLS,
             Ess_M2ePro_Helper_View_Development::TAB_MODULE,
-            Ess_M2ePro_Helper_View_Development::TAB_DEBUG,
-            Ess_M2ePro_Helper_View_Development::TAB_BUILD
+            Ess_M2ePro_Helper_View_Development::TAB_CRON,
+            Ess_M2ePro_Helper_View_Development::TAB_DEBUG
         );
 
         // ---------------------------------------
@@ -83,20 +83,14 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs extends Mage_Adminhtml_Block_W
             'label'     => Mage::helper('M2ePro')->__('Module'),
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_module')->toHtml(),
         ));
+        $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_CRON, array(
+            'label'     => Mage::helper('M2ePro')->__('Cron'),
+            'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_cron')->toHtml(),
+        ));
         $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_DEBUG, array(
             'label'     => Mage::helper('M2ePro')->__('Debug'),
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_debug')->toHtml(),
         ));
-
-        $block = 'M2ePro/adminhtml_development_tabs_build';
-        $blockClassName = Mage::getConfig()->getBlockClassName($block);
-
-        if (class_exists($blockClassName, false) || @mageFindClassFile($blockClassName)) {
-            $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_BUILD, array(
-                'label'     => Mage::helper('M2ePro')->__('Build'),
-                'content'   => $this->getLayout()->createBlock($block)->toHtml(),
-            ));
-        }
 
         $this->setActiveTab($activeTab);
 

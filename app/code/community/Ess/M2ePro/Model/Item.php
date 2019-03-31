@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -27,7 +27,8 @@ class Ess_M2ePro_Model_Item
         }
 
         foreach ($components as $component) {
-            $itemTable = $resource->getTableName("m2epro_{$component}_item");
+            $itemTable = Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix("m2epro_{$component}_item");
             if (!in_array($itemTable, $existTables)) {
                 continue;
             }

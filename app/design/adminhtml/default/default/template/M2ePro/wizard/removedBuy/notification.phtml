@@ -1,0 +1,25 @@
+<?php
+
+$completeLink = $this->getUrl("*/adminhtml_wizard_removedBuy/complete");
+
+?>
+
+<div class="wizard-note">
+
+    <a class="wizard-close" href="javascript:void(0);" onclick="WizardHandlerObj.complete('<?php echo $completeLink; ?>');" title="<?php echo Mage::helper('M2ePro')->__('Close') ?>">&times;</a>
+
+    <div>
+        <?php echo Mage::helper('M2ePro')->__('
+From this Module version, the <a href="https://rakuten.com/" target="_blank">Rakuten.com</a> is no longer supported.<br>
+The technical limitations imposed by Rakuten API and relatively low level of customers’ interest makes the future support for this integration unreasonable.
+M2E Pro is moving towards more demanded marketplaces, like Walmart.<br>
+Please follow our <a href="%announcements_url%" target="_blank">announcements</a> and tell us if you have any <a href="%suggestions_url%" target="_blank">suggestions</a>.
+ We want to hear from you to ultimately provide you with better service.',
+
+            Mage::helper('M2ePro/Module_Support')->getKnowledgebaseUrl('category/6286-general'),
+            Mage::helper('M2ePro/Module_Support')->getMainSupportUrl('ideas'),
+            $completeLink
+        );?>
+    </div>
+
+</div>

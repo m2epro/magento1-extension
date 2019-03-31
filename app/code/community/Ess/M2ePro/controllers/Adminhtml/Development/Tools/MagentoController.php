@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -165,6 +165,85 @@ HTML;
         $html .= '</table>';
 
         return $this->getResponse()->setBody($html);
+    }
+
+    /**
+     * @title "Show M2ePro Loggers"
+     * @description "M2ePro/Module_Logger in magento files"
+     * @new_line
+     */
+    public function showM2eProLoggersAction()
+    {
+        $recursiveIteratorIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(Mage::getBaseDir(), FilesystemIterator::FOLLOW_SYMLINKS)
+        );
+
+        $loggers = array();
+        foreach ($recursiveIteratorIterator as $splFileInfo) {
+            /**@var \SplFileInfo $splFileInfo */
+
+            if (!$splFileInfo->isFile() ||
+                !in_array($splFileInfo->getExtension(), array('php', 'phtml'))) {
+                continue;
+            }
+
+            if (strpos($splFileInfo->getRealPath(), 'Ess'.DIRECTORY_SEPARATOR.'M2ePro') !== false ||
+                strpos($splFileInfo->getRealPath(), 'Ess_M2ePro') !== false) {
+                continue;
+            }
+
+            $splFileObject = $splFileInfo->openFile();
+            if (!$splFileObject->getSize()) {
+                continue;
+            }
+
+            $content = $splFileObject->fread($splFileObject->getSize());
+            if (strpos($content, 'M2ePro/Module_Logger') === false) {
+                continue;
+            }
+
+            $content = explode("\n", $content);
+            foreach ($content as $line => $contentRow) {
+
+                if (strpos($contentRow, 'M2ePro/Module_Logger') === false) {
+                    continue;
+                }
+
+                $loggers[] = array(
+                    'path' => $splFileObject->getRealPath(),
+                    'line' => $line + 1,
+                    'code' => implode("\n", array_slice($content, $line - 2, 7)),
+                );
+            }
+        }
+
+        if (count($loggers) <= 0) {
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml('No M2ePro Loggers'));
+        }
+
+        $cdnURL = '//cdnjs.cloudflare.com/ajax/libs/prism/1.6.0';
+        $html = <<<HTML
+<link type="text/css" href="{$cdnURL}/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+<script type="text/javascript" src="{$cdnURL}/prism.min.js"></script>
+<script type="text/javascript" src="{$cdnURL}/components/prism-php.min.js"></script>
+<script type="text/javascript" src="{$cdnURL}/components/prism-php-extras.min.js"></script>
+
+<div style="max-width: 1280px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 0; padding-top: 25px">M2ePro Loggers in Magento files
+        <span style="color: #808080; font-size: 15px">(%count% entries)</span>
+    </h2>
+<br/>
+HTML;
+        foreach ($loggers as $logger) {
+            $html .= <<<HTML
+<figure>
+    <figcaption>{$logger['path']}:{$logger['line']}</figcaption>
+    <pre><code class="language-php">{$logger['code']}</code></pre>
+</figure>
+HTML;
+        }
+
+        return $this->getResponse()->setBody(str_replace('%count%', count($loggers), $html . '</div>'));
     }
 
     /**

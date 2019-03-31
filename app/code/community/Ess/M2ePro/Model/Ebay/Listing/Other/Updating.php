@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -11,6 +11,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
     const EBAY_STATUS_ACTIVE = 'Active';
     const EBAY_STATUS_ENDED = 'Ended';
     const EBAY_STATUS_COMPLETED = 'Completed';
+
+    const EBAY_DURATION_GTC         = 'GTC';
+    const EBAY_DURATION_DAYS_PREFIX = 'Days_';
 
     /**
      * @var Ess_M2ePro_Model_Account|null
@@ -38,7 +41,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
         }
 
         $responseData['items'] = $this->filterReceivedOnlyOtherListings($responseData['items']);
-        $responseData['items'] = $this->filterReceivedOnlyCurrentOtherListings($responseData['items']);
 
         /** @var $logModel Ess_M2ePro_Model_Listing_Other_Log */
         $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
@@ -54,19 +56,33 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                 ->addFieldToFilter('item_id', $receivedItem['id'])
                 ->addFieldToFilter('account_id', $this->getAccount()->getId());
 
+            /** @var Ess_M2ePro_Model_Listing_Other $existObject */
             $existObject = $collection->getFirstItem();
             $existsId = $existObject->getId();
 
+            if ($existsId && $existObject->isBlocked()) {
+                continue;
+            }
+
             $newData = array(
-                'title' => (string)$receivedItem['title'],
-                'currency' => (string)$receivedItem['currency'],
-                'online_price' => (float)$receivedItem['currentPrice'],
-                'online_qty' => (int)$receivedItem['quantity'],
+                'title'           => (string)$receivedItem['title'],
+                'currency'        => (string)$receivedItem['currency'],
+                'online_price'    => (float)$receivedItem['currentPrice'],
+                'online_qty'      => (int)$receivedItem['quantity'],
                 'online_qty_sold' => (int)$receivedItem['quantitySold'],
-                'online_bids' => (int)$receivedItem['bidCount'],
-                'start_date' => (string)Mage::helper('M2ePro')->getDate($receivedItem['startTime']),
-                'end_date' => (string)Mage::helper('M2ePro')->getDate($receivedItem['endTime'])
+                'online_bids'     => (int)$receivedItem['bidCount'],
+                'start_date'      => (string)Mage::helper('M2ePro')->getDate($receivedItem['startTime']),
+                'end_date'        => (string)Mage::helper('M2ePro')->getDate($receivedItem['endTime'])
             );
+
+            if (isset($receivedItem['listingDuration'])) {
+
+                $duration = str_replace(self::EBAY_DURATION_DAYS_PREFIX, '', $receivedItem['listingDuration']);
+                if ($duration == self::EBAY_DURATION_GTC) {
+                    $duration = Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC;
+                }
+                $newData['online_duration'] = $duration;
+            }
 
             if (isset($receivedItem['sku'])) {
                 $newData['sku'] = (string)$receivedItem['sku'];
@@ -84,7 +100,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                     ->getId();
             }
 
-            $tempListingType = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Selling::LISTING_TYPE_AUCTION;
+            $tempListingType = Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General::LISTING_TYPE_AUCTION;
             if ($receivedItem['listingType'] == $tempListingType) {
                 $newData['online_qty'] = 1;
             }
@@ -104,7 +120,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
 
             } else if ($receivedItem['listingStatus'] == self::EBAY_STATUS_ACTIVE &&
-                       $receivedItem['quantity'] <= 0) {
+                       $receivedItem['quantity'] - $receivedItem['quantitySold'] <= 0) {
 
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN;
 
@@ -113,8 +129,20 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
             }
 
-            if ($newData['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN ||
-                !empty($receivedItem['out_of_stock'])) {
+            $accountOutOfStockControl = $this->getAccount()->getChildObject()->getOutOfStockControl(true);
+
+            if (isset($receivedItem['out_of_stock'])) {
+
+                $newData['additional_data'] = array('out_of_stock_control' => (bool)$receivedItem['out_of_stock']);
+                $newData['additional_data'] = Mage::helper('M2ePro')->jsonEncode($newData['additional_data']);
+
+            } elseif ($newData['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN &&
+                      !is_null($accountOutOfStockControl) && !$accountOutOfStockControl) {
+
+                // Listed Hidden Status can be only for GTC items
+                if (!$existsId || is_null($existObject->getChildObject()->getOnlineDuration())) {
+                    $newData['online_duration'] = Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC;
+                }
 
                 if ($existsId) {
                     $additionalData = $existObject->getAdditionalData();
@@ -123,7 +151,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
                     $additionalData = array('out_of_stock_control' => true);
                 }
 
-                $newData['additional_data'] = json_encode($additionalData);
+                $newData['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
             }
 
             if ($existsId) {
@@ -288,50 +316,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
         return array_values($receivedItemsByItemId);
     }
 
-    protected function filterReceivedOnlyCurrentOtherListings(array $receivedItems)
-    {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        $resultItems = array();
-
-        foreach (array_chunk($receivedItems,500) as $partReceivedItems) {
-
-            if (count($partReceivedItems) <= 0) {
-                continue;
-            }
-
-            /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
-            $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other')
-                ->addFieldToFilter('account_id', $this->getAccount()->getId());
-
-            $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns(array('second_table.old_items'));
-
-            $method = 'where';
-            $partReceivedItemsByItemId = array();
-            foreach ($partReceivedItems as $partReceivedItem) {
-                $collection->getSelect()->$method('old_items LIKE \'%'.(string)$partReceivedItem['id'].'%\'');
-                $partReceivedItemsByItemId[(string)$partReceivedItem['id']] = $partReceivedItem;
-                $method = 'orWhere';
-            }
-
-            /** @var $stmtTemp Zend_Db_Statement_Pdo */
-            $stmtTemp = $connRead->query($collection->getSelect()->__toString());
-
-            while ($existItem = $stmtTemp->fetch()) {
-                $oldItems = trim(trim($existItem['old_items'],','));
-                $oldItems = !empty($oldItems) ? explode(',',$oldItems) : array();
-                foreach ($oldItems as $oldItem) {
-                    unset($partReceivedItemsByItemId[(string)$oldItem]);
-                }
-            }
-
-            $resultItems = array_merge($resultItems,$partReceivedItemsByItemId);
-        }
-
-        return array_values($resultItems);
-    }
-
     //########################################
 
     /**
@@ -348,7 +332,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
             return $this->logsActionId;
         }
 
-        return $this->logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getNextActionId();
+        return $this->logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
     }
 
     //########################################

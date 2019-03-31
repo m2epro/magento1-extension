@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -40,9 +40,16 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
         //set the url
         curl_setopt($curlObject, CURLOPT_URL, $url);
 
-        // stop CURL from verifying the peer's certificate
-        curl_setopt($curlObject, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlObject, CURLOPT_SSL_VERIFYHOST, false);
+        $sslVerifyPeer = true;
+        $sslVerifyHost = 2;
+
+        if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $url)) {
+            $sslVerifyPeer = false;
+            $sslVerifyHost = false;
+        }
+
+        curl_setopt($curlObject, CURLOPT_SSL_VERIFYPEER, $sslVerifyPeer);
+        curl_setopt($curlObject, CURLOPT_SSL_VERIFYHOST, $sslVerifyHost);
 
         // set the data body of the request
         curl_setopt($curlObject, CURLOPT_POST, true);
@@ -73,10 +80,22 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
             );
         }
 
+        $responseDecoded = Mage::helper('M2ePro')->jsonDecode($response);
+        if (!$responseDecoded || !is_array($responseDecoded)) {
+
+            throw new Ess_M2ePro_Model_Exception_Connection(
+                'The Action was not completed because server responded with an incorrect response.',
+                array(
+                    'raw_response' => $response,
+                    'curl_info'    => $curlInfo
+                )
+            );
+        }
+
         return array(
             'curl_error_number' => $errorNumber,
             'curl_info'         => $curlInfo,
-            'response'          => $response
+            'response'          => $responseDecoded
         );
     }
 

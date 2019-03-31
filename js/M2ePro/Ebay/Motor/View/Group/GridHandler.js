@@ -24,7 +24,7 @@ EbayMotorViewGroupGridHandler = Class.create(GridHandler, {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/removeGroupFromListingProduct'), {
-            postmethod: 'post',
+            method: 'post',
             parameters: {
                 groups_ids: self.getGridMassActionObj().checkedString,
                 listing_product_id: self.listingProductId,

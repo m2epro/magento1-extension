@@ -2,16 +2,16 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Search_Custom_ByQuery_Responser
-    extends Ess_M2ePro_Model_Connector_Amazon_Search_ByQuery_ItemsResponser
+    extends Ess_M2ePro_Model_Amazon_Connector_Search_ByQuery_ItemsResponser
 {
     //########################################
 
-    protected function processResponseData($response) {}
+    protected function processResponseData() {}
 
     //########################################
 }

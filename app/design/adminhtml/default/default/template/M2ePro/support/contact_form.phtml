@@ -72,28 +72,17 @@
         <input type="text" id="subject" name="subject" class="required-entry" placeholder="<?php echo Mage::helper('M2ePro')->__('Subject'); ?>" /><br/>
         <input type="text" id="contact_name" name="contact_name" class="required-entry" placeholder="<?php echo Mage::helper('M2ePro')->__('Contact Name'); ?>" /><br/>
         <input type="text" id="contact_mail" name="contact_mail" class="required-entry validate-email" placeholder="<?php echo Mage::helper('M2ePro')->__('Contact Email'); ?>" /><br/>
-        <?php if (Mage::helper('M2ePro/Module_Support')->isTypePremium()) : ?>
-            <select id="severity" name="severity">
-                <option value="minor"><?php echo Mage::helper('M2ePro')->__('Minor'); ?></option>
-                <option value="important"><?php echo Mage::helper('M2ePro')->__('Important'); ?></option>
-                <option value="critical"><?php echo Mage::helper('M2ePro')->__('Critical'); ?></option>
-            </select>
-        <?php endif; ?>
 
-        <select id="component" name="component" <?php if ($this->getRequest()->getParam('referrer') == Ess_M2ePro_Helper_View_Ebay::NICK) echo 'style="display: none"'?>>
+        <select id="component" name="component">
             <option selected value="none"><?php echo Mage::helper('M2ePro')->__('General Problem'); ?></option>
             <?php if (Mage::helper('M2ePro/Component_Ebay')->isActive()) { ?>
-                <option
-                    <?php if ($this->getRequest()->getParam('referrer') == Ess_M2ePro_Helper_View_Ebay::NICK) echo 'selected="selected"'; ?>
-                    <?php if ($this->getRequest()->getParam('referrer') == Ess_M2ePro_Helper_View_Common::NICK) echo 'style="display: none"'; ?>
-                    value="<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Ebay')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?>
-                </option>
+                <option value="<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Ebay')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
             <?php } ?>
             <?php if (Mage::helper('M2ePro/Component_Amazon')->isActive()) { ?>
                 <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Amazon')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
             <?php } ?>
-            <?php if (Mage::helper('M2ePro/Component_Buy')->isEnabled()) { ?>
-                <option value="<?php echo Ess_M2ePro_Helper_Component_Buy::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Buy')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
+            <?php if (Mage::helper('M2ePro/Component_Walmart')->isActive()) { ?>
+                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Walmart')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
             <?php } ?>
         </select>
 

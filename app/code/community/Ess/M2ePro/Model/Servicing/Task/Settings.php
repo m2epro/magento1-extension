@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -42,55 +42,37 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
 
     public function processResponseData(array $data)
     {
-        $this->updateLockData($data);
         $this->updateServersBaseUrls($data);
         $this->updateDefaultServerBaseUrlIndex($data);
+        $this->updateCronHosts($data);
         $this->updateLastVersion($data);
         $this->updateSendLogs($data);
+        $this->updateAnalytics($data);
     }
 
     //########################################
 
-    private function updateLockData(array $data)
-    {
-        if (!isset($data['lock'])) {
-            return;
-        }
-
-        $validValues = array(
-            Ess_M2ePro_Helper_Module::SERVER_LOCK_NO,
-            Ess_M2ePro_Helper_Module::SERVER_LOCK_YES
-        );
-
-        if (!in_array((int)$data['lock'],$validValues)) {
-            return;
-        }
-
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/server/','lock',(int)$data['lock']
-        );
-    }
-
     private function updateServersBaseUrls(array $data)
     {
-        if (!isset($data['servers_baseurls']) || !is_array($data['servers_baseurls'])) {
+        if (!is_array($data['servers_baseurls']) || empty($data['servers_baseurls'])) {
             return;
         }
+
+        $index = 1;
+        $configUpdates = array();
 
         $config = Mage::helper('M2ePro/Primary')->getConfig();
 
-        $index = 1;
         foreach ($data['servers_baseurls'] as $newHostName => $newBaseUrl) {
 
             $oldHostName = $config->getGroupValue('/server/','hostname_'.$index);
             $oldBaseUrl  = $config->getGroupValue('/server/','baseurl_'.$index);
 
-            if ($oldHostName != $newHostName) {
-                $config->setGroupValue('/server/', 'hostname_'.$index, $newHostName);
-            }
-
-            if ($oldBaseUrl != $newBaseUrl) {
-                $config->setGroupValue('/server/', 'baseurl_'.$index, $newBaseUrl);
+            if ($oldHostName != $newHostName || $oldBaseUrl != $newBaseUrl) {
+                $configUpdates[$index] = array(
+                    'hostname' => $newHostName,
+                    'baseurl' => $newBaseUrl
+                );
             }
 
             $index++;
@@ -105,13 +87,40 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
                 break;
             }
 
-            if (!is_null($deletedHostName)) {
-                $config->deleteGroupValue('/server/','hostname_'.$deletedIndex);
+            $config->deleteGroupValue('/server/','hostname_'.$deletedIndex);
+            $config->deleteGroupValue('/server/','baseurl_'.$deletedIndex);
+        }
+
+        if (empty($configUpdates)) {
+            return;
+        }
+
+        try {
+
+            foreach ($configUpdates as $index => $change) {
+
+                /** @var $dispatcherObject Ess_M2ePro_Model_M2ePro_Connector_Dispatcher */
+                $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
+                $connectorObj = $dispatcherObject->getConnector('server','check','state',
+                                                                array(
+                                                                   'base_url' => $change['baseurl'].'index.php',
+                                                                   'hostname' => $change['hostname'],
+                                                                ));
+                $dispatcherObject->process($connectorObj);
+                $response = $connectorObj->getResponseData();
+
+                if (empty($response['state'])) {
+                    return;
+                }
             }
 
-            if (!is_null($deletedBaseUrl)) {
-                $config->deleteGroupValue('/server/','baseurl_'.$deletedIndex);
-            }
+        } catch (Exception $e) {
+            return;
+        }
+
+        foreach ($configUpdates as $index => $change) {
+            $config->setGroupValue('/server/', 'hostname_'.$index, $change['hostname']);
+            $config->setGroupValue('/server/', 'baseurl_'.$index, $change['baseurl']);
         }
     }
 
@@ -130,6 +139,38 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         );
     }
 
+    private function updateCronHosts(array $data)
+    {
+        if (!isset($data['cron_domains'])) {
+            return;
+        }
+
+        $index = 1;
+        $config = Mage::helper('M2ePro/Module')->getConfig();
+
+        foreach ($data['cron_domains'] as $newCronHost) {
+
+            $oldGroupValue = $config->getGroupValue('/cron/service/','hostname_'.$index);
+
+            if ($oldGroupValue != $newCronHost) {
+                $config->setGroupValue('/cron/service/','hostname_'.$index, $newCronHost);
+            }
+
+            $index++;
+        }
+
+        for ($i = $index; $i < 100; $i++) {
+
+            $oldGroupValue = $config->getGroupValue('/cron/service/','hostname_'.$i);
+
+            if (is_null($oldGroupValue)) {
+                break;
+            }
+
+            $config->deleteGroupValue('/server/','hostname_'.$i);
+        }
+    }
+
     private function updateLastVersion(array $data)
     {
         if (empty($data['last_version'])) {
@@ -137,7 +178,11 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
 
         Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
-            '/installation/', 'last_version', $data['last_version']
+            '/installation/', 'public_last_version', $data['last_version']['magento_1']['public']
+        );
+
+        Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
+            '/installation/', 'build_last_version', $data['last_version']['magento_1']['build']
         );
     }
 
@@ -150,6 +195,19 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
             '/debug/logging/', 'send_to_server', (int)$data['send_logs']
         );
+    }
+
+    private function updateAnalytics(array $data)
+    {
+        if (empty($data['analytics'])) {
+            return;
+        }
+
+        $registry = Mage::getSingleton('M2ePro/Servicing_Task_Analytics_Registry');
+
+        if (isset($data['analytics']['planned_at']) && $data['analytics']['planned_at'] !== $registry->getPlannedAt()) {
+            $registry->markPlannedAt($data['analytics']['planned_at']);
+        }
     }
 
     //########################################

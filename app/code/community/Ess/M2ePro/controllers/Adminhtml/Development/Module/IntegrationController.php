@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -14,7 +14,6 @@ class Ess_M2ePro_Adminhtml_Development_Module_IntegrationController
     /**
      * @title "Revise Total"
      * @description "Full Force Revise"
-     * @new_line
      */
     public function reviseTotalAction()
     {
@@ -22,16 +21,16 @@ class Ess_M2ePro_Adminhtml_Development_Module_IntegrationController
         foreach (Mage::helper('M2ePro/Component')->getActiveComponents() as $component) {
 
             $reviseAllStartDate = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-                "/{$component}/templates/revise/total/", 'start_date'
+                "/{$component}/templates/synchronization/revise/total/", 'start_date'
             );
 
             $reviseAllEndDate = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-                "/{$component}/templates/revise/total/", 'end_date'
+                "/{$component}/templates/synchronization/revise/total/", 'end_date'
             );
 
             $reviseAllInProcessingState = !is_null(
                 Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-                    "/{$component}/templates/revise/total/", 'last_listing_product_id'
+                    "/{$component}/templates/synchronization/revise/total/", 'last_listing_product_id'
                 )
             );
 
@@ -85,15 +84,16 @@ HTML;
         }
 
         Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/revise/total/", 'start_date', Mage::helper('M2ePro')->getCurrentGmtDate()
+            "/{$component}/templates/synchronization/revise/total/", 'start_date',
+            Mage::helper('M2ePro')->getCurrentGmtDate()
         );
 
         Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/revise/total/", 'end_date', null
+            "/{$component}/templates/synchronization/revise/total/", 'end_date', null
         );
 
         Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/revise/total/", 'last_listing_product_id', 0
+            "/{$component}/templates/synchronization/revise/total/", 'last_listing_product_id', 0
         );
 
         $this->_redirect('*/*/reviseTotal');
@@ -113,7 +113,7 @@ HTML;
         }
 
         Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            "/{$component}/templates/revise/total/", 'last_listing_product_id', null
+            "/{$component}/templates/revise/synchronization/total/", 'last_listing_product_id', null
         );
 
         $this->_redirect('*/*/reviseTotal');
@@ -122,642 +122,576 @@ HTML;
     //########################################
 
     /**
-     * @title "Reset eBay 3rd Party"
-     * @description "Clear all eBay 3rd party items for all Accounts"
+     * @title "Print Request Data"
+     * @description "Print [List/Relist/Revise] Request Data"
      */
-    public function resetOtherListingsAction()
+    public function getRequestDataAction()
     {
-        $listingOther = Mage::getModel('M2ePro/Listing_Other');
-        $ebayListingOther = Mage::getModel('M2ePro/Ebay_Listing_Other');
+        if ($this->getRequest()->getParam('print')) {
 
-        $stmt = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other')->getSelect()->query();
+            /** @var Ess_M2ePro_Model_Listing_Product $lp */
+            $listingProductId = $this->getRequest()->getParam('listing_product_id');
+            $lp = Mage::helper('M2ePro/Component')->getUnknownObject('Listing_Product', $listingProductId);
 
-        foreach ($stmt as $row) {
-            $listingOther->setData($row);
-            $ebayListingOther->setData($row);
+            $componentMode    = $lp->getComponentMode();
+            $requestType      = $this->getRequest()->getParam('request_type');
 
-            $listingOther->setChildObject($ebayListingOther);
-            $ebayListingOther->setParentObject($listingOther);
+            if ($componentMode == 'ebay') {
 
-            $listingOther->deleteInstance();
-        }
+                /** @var Ess_M2ePro_Model_Ebay_Listing_Product $elp */
+                $elp = $lp->getChildObject();
 
-        foreach (Mage::helper('M2ePro/Component_Ebay')->getCollection('Account') as $account) {
-            $account->setData('other_listings_last_synchronization',NULL)->save();
-        }
+                /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
+                $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
-        $this->_getSession()->addSuccess('Successfully removed.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
-    }
+                /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request $request */
+                $request = Mage::getModel("M2ePro/Ebay_Listing_Product_Action_Type_{$requestType}_Request");
+                $request->setListingProduct($lp);
+                $request->setConfigurator($configurator);
 
-    /**
-     * @title "Reset eBay Images Hashes"
-     * @description "Clear eBay images hashes for listing products"
-     * @prompt "Please enter Listing Product ID or `all` code for reset all products."
-     * @prompt_var "listing_product_id"
-     */
-    public function resetEbayImagesHashesAction()
-    {
-        $listingProductId = $this->getRequest()->getParam('listing_product_id');
+                if ($requestType == 'Revise') {
 
-        $listingProducts = array();
-        if (strtolower($listingProductId) == 'all') {
+                    $outOfStockControlCurrentState  = $elp->getOutOfStockControl();
+                    $outOfStockControlTemplateState = $elp->getEbaySellingFormatTemplate()->getOutOfStockControl();
 
-            $listingProducts = Mage::getModel('M2ePro/Listing_Product')->getCollection()
-                ->addFieldToFilter('component_mode', 'ebay');
-        } else {
+                    if (!$outOfStockControlCurrentState && $outOfStockControlTemplateState) {
+                        $outOfStockControlCurrentState = true;
+                    }
 
-            $listingProduct = Mage::getModel('M2ePro/Listing_Product')->load((int)$listingProductId);
-            $listingProduct && $listingProducts[] = $listingProduct;
-        }
+                    $outOfStockControlResult = $outOfStockControlCurrentState ||
+                                               $elp->getEbayAccount()->getOutOfStockControl();
 
-        if (empty($listingProducts)) {
-            $this->_getSession()->addError('Failed to load Listing Product.');
-            return $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
-        }
-
-        $affected = 0;
-        foreach ($listingProducts as $listingProduct) {
-
-            $additionalData = $listingProduct->getAdditionalData();
-
-            if (!isset($additionalData['ebay_product_images_hash']) &&
-                !isset($additionalData['ebay_product_variation_images_hash'])) {
-                continue;
-            }
-
-            unset($additionalData['ebay_product_images_hash'],
-                  $additionalData['ebay_product_variation_images_hash']);
-
-            $affected++;
-            $listingProduct->setData('additional_data', json_encode($additionalData))
-                           ->save();
-        }
-
-        $this->_getSession()->addSuccess("Successfully removed for {$affected} affected Products.");
-        return $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
-    }
-
-    /**
-     * @title "Set eBay EPS Images Mode"
-     * @description "Set EPS Images Mode = true for listing products"
-     * @prompt "Please enter Listing Product ID or `all` code for all products."
-     * @prompt_var "listing_product_id"
-     */
-    public function setEpsImagesModeAction()
-    {
-        $listingProductId = $this->getRequest()->getParam('listing_product_id');
-
-        $listingProducts = array();
-        if (strtolower($listingProductId) == 'all') {
-
-            $listingProducts = Mage::getModel('M2ePro/Listing_Product')->getCollection()
-                ->addFieldToFilter('component_mode', 'ebay');
-        } else {
-
-            $listingProduct = Mage::getModel('M2ePro/Listing_Product')->load((int)$listingProductId);
-            $listingProduct && $listingProducts[] = $listingProduct;
-        }
-
-        if (empty($listingProducts)) {
-            $this->_getSession()->addError('Failed to load Listing Product.');
-            return $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
-        }
-
-        $affected = 0;
-        foreach ($listingProducts as $listingProduct) {
-
-            $additionalData = $listingProduct->getAdditionalData();
-
-            if (!isset($additionalData['is_eps_ebay_images_mode']) ||
-                $additionalData['is_eps_ebay_images_mode'] == true) {
-                continue;
-            }
-
-            $additionalData['is_eps_ebay_images_mode'] = true;
-            $affected++;
-
-            $listingProduct->setData('additional_data', json_encode($additionalData))
-                           ->save();
-        }
-
-        $this->_getSession()->addSuccess("Successfully set for {$affected} affected Products.");
-        return $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
-    }
-
-    //########################################
-
-    /**
-     * @title "Show eBay Nonexistent Templates"
-     * @description "Show Nonexistent Templates [eBay]"
-     * @new_line
-     */
-    public function showNonexistentTemplatesAction()
-    {
-        $nonexistentTemplates = array();
-
-        $simpleTemplates = array('category', 'other_category');
-        foreach ($simpleTemplates as $templateName) {
-
-            $tempResult = $this->getNonexistentTemplatesBySimpleLogic($templateName);
-            !empty($tempResult) && $nonexistentTemplates[$templateName] = $tempResult;
-        }
-
-        $difficultTemplates = array(
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
-        );
-        foreach ($difficultTemplates as $templateName) {
-
-            $tempResult = $this->getNonexistentTemplatesByDifficultLogic($templateName);
-            !empty($tempResult) && $nonexistentTemplates[$templateName] = $tempResult;
-        }
-
-        if (count($nonexistentTemplates) <= 0) {
-            return $this->getResponse()->setBody($this->getEmptyResultsHtml('There are no any nonexistent templates.'));
-        }
-
-        $tableContent = <<<HTML
-<tr>
-    <th>Listing ID</th>
-    <th>Listing Product ID</th>
-    <th>Policy ID</th>
-    <th>My Mode</th>
-    <th>Parent Mode</th>
-</tr>
-HTML;
-
-        $alreadyRendered = array();
-        foreach ($nonexistentTemplates as $templateName => $items) {
-
-            $tableContent .= <<<HTML
-<tr>
-    <td colspan="5" align="center">{$templateName}</td>
-</tr>
-HTML;
-
-            foreach ($items as $index => $itemInfo) {
-
-                $myMode = '';
-                if (isset($itemInfo['my_mode'])) {
-                    $myMode = 'parent';
-                    (int)$itemInfo['my_mode'] == 1 && $myMode = 'custom';
-                    (int)$itemInfo['my_mode'] == 2 && $myMode = 'template';
+                    $request->setParams(array(
+                        'out_of_stock_control_current_state' => $outOfStockControlCurrentState,
+                        'out_of_stock_control_result'        => $outOfStockControlResult,
+                    ));
                 }
 
-                $parentMode = '';
-                if (isset($itemInfo['parent_mode']) && isset($itemInfo['my_mode']) && (int)$itemInfo['my_mode'] == 0) {
-                    $parentMode = (int)$itemInfo['parent_mode'] == 1 ? 'custom' : 'template';
+                return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
+            }
+
+            if ($componentMode == 'amazon') {
+
+                /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator $configurator */
+                $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
+
+                /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request $request */
+                $request = Mage::getModel("M2ePro/Amazon_Listing_Product_Action_Type_{$requestType}_Request");
+                $request->setParams(array());
+                $request->setListingProduct($lp);
+                $request->setConfigurator($configurator);
+
+                if ($requestType == 'List') {
+                    $request->setCachedData(array(
+                                                    'sku'        => 'placeholder',
+                                                    'general_id' => 'placeholder',
+                                                    'list_type'  => 'placeholder'
+                                                ));
                 }
 
-                $key = $templateName .'##'. $myMode .'##'. $itemInfo['listing_id'];
-                if ($myMode == 'parent' && in_array($key, $alreadyRendered)) {
-                    continue;
-                }
-
-                $alreadyRendered[] = $key;
-                $tableContent .= <<<HTML
-<tr>
-    <td>{$itemInfo['listing_id']}</td>
-    <td>{$itemInfo['my_id']}</td>
-    <td>{$itemInfo['my_needed_id']}</td>
-    <td>{$myMode}</td>
-    <td>{$parentMode}</td>
-</tr>
-HTML;
-            }
-        }
-
-        $html = $this->getStyleHtml() . <<<HTML
-<html>
-    <body>
-        <h2 style="margin: 20px 0 0 10px">Nonexistent templates
-            <span style="color: #808080; font-size: 15px;">(#count# entries)</span>
-        </h2>
-        <br/>
-        <table class="grid" cellpadding="0" cellspacing="0">
-            {$tableContent}
-        </table>
-    </body>
-</html>
-HTML;
-
-        return $this->getResponse()->setBody(str_replace('#count#', count($alreadyRendered), $html));
-    }
-
-    private function getNonexistentTemplatesByDifficultLogic($templateCode)
-    {
-        /** @var $resource Mage_Core_Model_Resource */
-        $resource = Mage::getSingleton('core/resource');
-        $connRead = $resource->getConnection('core_write');
-
-        $subSelect = $connRead->select()
-            ->from(
-                array('melp' => $resource->getTableName('m2epro_ebay_listing_product')),
-                array(
-                    'my_id'          => 'listing_product_id',
-                    'my_mode'        => "template_{$templateCode}_mode",
-                    'my_template_id' => "template_{$templateCode}_id",
-                    'my_custom_id'   => "template_{$templateCode}_custom_id",
-
-                    'my_needed_id'   => new Zend_Db_Expr(
-                    "CASE
-                        WHEN melp.template_{$templateCode}_mode = 2 THEN melp.template_{$templateCode}_id
-                        WHEN melp.template_{$templateCode}_mode = 1 THEN melp.template_{$templateCode}_custom_id
-                        WHEN melp.template_{$templateCode}_mode = 0 THEN IF(mel.template_{$templateCode}_mode = 1,
-                                                                            mel.template_{$templateCode}_custom_id,
-                                                                            mel.template_{$templateCode}_id)
-                    END"
-                    ))
-            )
-            ->joinLeft(
-                array('mlp' => $resource->getTableName('m2epro_listing_product')),
-                'melp.listing_product_id = mlp.id',
-                array('listing_id' => 'listing_id')
-            )
-            ->joinLeft(
-                array('mel' => $resource->getTableName('m2epro_ebay_listing')),
-                'mlp.listing_id = mel.listing_id',
-                array(
-                    'parent_mode'        => "template_{$templateCode}_mode",
-                    'parent_template_id' => "template_{$templateCode}_id",
-                    'parent_custom_id'   => "template_{$templateCode}_custom_id"
-                )
-            );
-
-        $templateIdName = 'id';
-        $horizontalTemplates = array(
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION,
-            Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION,
-        );
-        in_array($templateCode, $horizontalTemplates) && $templateIdName = "template_{$templateCode}_id";
-
-        $result = $connRead->select()
-           ->from(
-               array('subselect' => new Zend_Db_Expr('('.$subSelect->__toString().')')),
-               array(
-                   'subselect.my_id',
-                   'subselect.listing_id',
-                   'subselect.my_mode',
-                   'subselect.parent_mode',
-                   'subselect.my_needed_id',
-               )
-           )
-           ->joinLeft(
-               array('template' => $resource->getTableName("m2epro_ebay_template_{$templateCode}")),
-               "subselect.my_needed_id = template.{$templateIdName}",
-               array()
-           )
-           ->where("template.{$templateIdName} IS NULL")
-           ->query()->fetchAll();
-
-        return $result;
-    }
-
-    private function getNonexistentTemplatesBySimpleLogic($templateCode)
-    {
-        /** @var $resource Mage_Core_Model_Resource */
-        $resource = Mage::getSingleton('core/resource');
-        $connRead = $resource->getConnection('core_read');
-
-        $select = $connRead->select()
-            ->from(
-                array('melp' => $resource->getTableName('m2epro_ebay_listing_product')),
-                array(
-                    'my_id'        => 'listing_product_id',
-                    'my_needed_id' => "template_{$templateCode}_id",
-                )
-            )
-            ->joinLeft(
-                array('mlp' => $resource->getTableName('m2epro_listing_product')),
-                'melp.listing_product_id = mlp.id',
-                array('listing_id' => 'listing_id')
-            )
-            ->joinLeft(
-                array('template' => $resource->getTableName("m2epro_ebay_template_{$templateCode}")),
-                "melp.template_{$templateCode}_id = template.id",
-                array()
-            )
-            ->where("melp.template_{$templateCode}_id IS NOT NULL")
-            ->where("template.id IS NULL");
-
-        return $select->query()->fetchAll();
-    }
-
-    //########################################
-
-    /**
-     * @title "Show eBay Duplicates [parse logs]"
-     * @description "Show eBay Duplicates According with Logs"
-     */
-    public function showEbayDuplicatesByLogsAction()
-    {
-        /** @var $resource Mage_Core_Model_Resource */
-        $resource = Mage::getSingleton('core/resource');
-        $queryObj = $resource->getConnection('core_read')
-                             ->select()
-                             ->from(array('mll' => $resource->getTableName('m2epro_listing_log')))
-                             ->joinLeft(
-                                 array('ml' => $resource->getTableName('m2epro_listing')),
-                                 'mll.listing_id = ml.id',
-                                 array('marketplace_id')
-                             )
-                            ->joinLeft(
-                                array('mm' => $resource->getTableName('m2epro_marketplace')),
-                                'ml.marketplace_id = mm.id',
-                                array('marketplace_title' => 'title')
-                            )
-                             ->where("mll.description LIKE '%a duplicate of your item%' OR " . // ENG
-                                     "mll.description LIKE '%ette annonce est identique%' OR " . // FR
-                                     "mll.description LIKE '%ngebot ist identisch mit dem%' OR " .  // DE
-                                     "mll.description LIKE '%un duplicato del tuo oggetto%' OR " . // IT
-                                     "mll.description LIKE '%es un duplicado de tu art%'" // ESP
-                             )
-                             ->where("mll.component_mode = ?", 'ebay')
-                             ->order('mll.id DESC')
-                             ->group(array('mll.product_id', 'mll.listing_id'))
-                             ->query();
-
-        $duplicatesInfo = array();
-        while ($row = $queryObj->fetch()) {
-
-            preg_match('/.*\((\d*)\)/', $row['description'], $matches);
-            $ebayItemId = !empty($matches[1]) ? $matches[1] : '';
-
-            $duplicatesInfo[] = array(
-                'listing_id'         => $row['listing_id'],
-                'listing_title'      => $row['listing_title'],
-                'product_id'         => $row['product_id'],
-                'product_title'      => $row['product_title'],
-                'listing_product_id' => $row['listing_product_id'],
-                'description'        => $row['description'],
-                'ebay_item_id'       => $ebayItemId,
-                'marketplace_title'  => $row['marketplace_title']
-            );
-        }
-
-        if (count($duplicatesInfo) <= 0) {
-            return $this->getResponse()->setBody(
-                $this->getEmptyResultsHtml('According to you logs there are no duplicates.')
-            );
-        }
-
-        $tableContent = <<<HTML
-<tr>
-    <th>Listing ID</th>
-    <th>Listing Title</th>
-    <th>Product ID</th>
-    <th>Product Title</th>
-    <th>Listing Product ID</th>
-    <th>eBay Item ID</th>
-    <th>eBay Site</th>
-</tr>
-HTML;
-        foreach ($duplicatesInfo as $row) {
-            $tableContent .= <<<HTML
-<tr>
-    <td>{$row['listing_id']}</td>
-    <td>{$row['listing_title']}</td>
-    <td>{$row['product_id']}</td>
-    <td>{$row['product_title']}</td>
-    <td>{$row['listing_product_id']}</td>
-    <td>{$row['ebay_item_id']}</td>
-    <td>{$row['marketplace_title']}</td>
-</tr>
-HTML;
-        }
-
-        $html = $this->getStyleHtml() . <<<HTML
-<html>
-    <body>
-        <h2 style="margin: 20px 0 0 10px">eBay Duplicates
-            <span style="color: #808080; font-size: 15px;">(#count# entries)</span>
-        </h2>
-        <br/>
-        <table class="grid" cellpadding="0" cellspacing="0">
-            {$tableContent}
-        </table>
-    </body>
-</html>
-HTML;
-        return $this->getResponse()->setBody(str_replace('#count#', count($duplicatesInfo), $html));
-    }
-
-    /**
-     * @title "Show eBay Duplicates [mysql query]"
-     * @description "[can be stopped and removed as option, by using remove=1 query param]"
-     * @new_line
-     */
-    public function showEbayDuplicatesByMysqlQueryAction()
-    {
-        $removeMode = (bool)$this->getRequest()->getQuery('remove', false);
-
-        /* @var $readConnection Varien_Db_Adapter_Pdo_Mysql */
-        $readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        /* @var $writeConnection Varien_Db_Adapter_Pdo_Mysql */
-        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $table = Mage::getSingleton('core/resource')->getTableName('m2epro_listing_product');
-
-        $subSelect = $readConnection
-            ->select()
-            ->from(array('mlp2' => $table),
-                   array('listing_id', 'product_id', new Zend_Db_Expr('COUNT(*) AS count_of_duplicates')))
-            ->where('component_mode = ?', 'ebay')
-            ->group(array('listing_id', 'product_id'))
-            ->having(new Zend_Db_Expr('count_of_duplicates > 1'));
-
-        $queryStmt = $readConnection
-            ->select()
-            ->from(array('mlp' => $table),
-                   array('mlp.id', 'mlp.listing_id', 'mlp.product_id', 'mlp.status'))
-            ->joinInner(array('dup' => $subSelect),
-                        'mlp.listing_id = dup.listing_id AND mlp.product_id = dup.product_id',
-                        array('dup.count_of_duplicates'))
-            ->where('component_mode = ?', 'ebay')
-            ->query();
-
-        $skipped    = array();
-        $duplicated = array();
-
-        while ($row = $queryStmt->fetch()) {
-
-            $key = $row['listing_id'].'##'.$row['product_id'];
-
-            if (!in_array($key, $skipped)) {
-                $skipped[] = $key;
-                continue;
+                return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
             }
 
-            $duplicated[$row['id']] = $row;
-            $duplicated[$row['id']]['actions'] = array();
+            if ($componentMode == 'walmart') {
 
-            if ($removeMode && $row['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                $dispatcherObject = Mage::getModel('M2ePro/Connector_Ebay_Item_Dispatcher');
-                $dispatcherObject->process(Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
-                                           array($row['id']), array());
+                /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
+                $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
 
-                $duplicated[$row['id']]['actions'][] = 'stopped';
+                /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request $request */
+                $request = Mage::getModel("M2ePro/Walmart_Listing_Product_Action_Type_{$requestType}_Request");
+                $request->setParams(array());
+                $request->setListingProduct($lp);
+                $request->setConfigurator($configurator);
+
+                return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
             }
 
-            if ($removeMode) {
-                $writeConnection->delete($table, array('id = ?' => $row['id']));
-                $duplicated[$row['id']]['actions'][] = 'removed';
-            }
+            return;
         }
 
-        if (count($duplicated) <= 0) {
-            return $this->getResponse()->setBody($this->getEmptyResultsHtml('There are no duplicates.'));
-        }
-
-        $tableContent = <<<HTML
-<tr>
-    <th>Listing Product ID</th>
-    <th>Listing ID</th>
-    <th>Magento Product ID</th>
-    <th>Count Of Copies</th>
-    <th>Actions</th>
-</tr>
-HTML;
-        foreach ($duplicated as $row) {
-            $actions = implode(', ', $row['actions']);
-            $tableContent .= <<<HTML
-<tr>
-    <td>{$row['id']}</td>
-    <td>{$row['listing_id']}</td>
-    <td>{$row['product_id']}</td>
-    <td>{$row['count_of_duplicates']}</td>
-    <td>{$actions}</td>
-</tr>
-HTML;
-        }
-
-        $html = $this->getStyleHtml() . <<<HTML
-<html>
-    <body>
-        <h2 style="margin: 20px 0 0 10px">eBay Duplicates
-            <span style="color: #808080; font-size: 15px;">(#count# entries)</span>
-        </h2>
-        <br/>
-        <table class="grid" cellpadding="0" cellspacing="0">
-            {$tableContent}
-        </table>
-    </body>
-</html>
-HTML;
-        return $this->getResponse()->setBody(str_replace('#count#', count($duplicated), $html));
-    }
-
-    //########################################
-
-    /**
-     * @title "Add Products into Listing"
-     * @description "Mass Action by SKU or Magento Product ID"
-     */
-    public function addProductsToListingAction()
-    {
-        $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/processAddProductsToListing');
         $formKey = Mage::getSingleton('core/session')->getFormKey();
-
-        $collection = Mage::getModel('M2ePro/Listing')->getCollection()
-                                                      ->addOrder('component_mode');
-        $currentOptGroup = null;
-        $listingsOptionsHtml = '';
-
-        /** @var Ess_M2ePro_Model_Listing $listing */
-        foreach ($collection as $listing) {
-
-            $currentOptGroup != $listing->getComponentMode() && !is_null($currentOptGroup)
-                && $listingsOptionsHtml .= '</optgroup>';
-
-            $currentOptGroup != $listing->getComponentMode()
-                && $listingsOptionsHtml .= '<optgroup label="'.$listing->getComponentMode().'">';
-
-            $tempValue = "[{$listing->getId()}]  {$listing->getTitle()}]";
-            $listingsOptionsHtml .= '<option value="'.$listing->getId().'">'.$tempValue.'</option>';
-
-            $currentOptGroup = $listing->getComponentMode();
-        }
+        $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
 
         return $this->getResponse()->setBody(<<<HTML
-<form method="post" enctype="multipart/form-data" action="{$actionUrl}">
+<form method="get" enctype="multipart/form-data" action="{$actionUrl}">
+
+    <div style="margin: 5px 0; width: 400px;">
+        <label style="width: 170px; display: inline-block;">Listing Product ID: </label>
+        <input name="listing_product_id" style="width: 200px;" required>
+    </div>
+
+    <div style="margin: 5px 0; width: 400px;">
+        <label style="width: 170px; display: inline-block;">Request Type: </label>
+        <select name="request_type" style="width: 200px;" required>
+            <option style="display: none;"></option>
+            <option value="List">List</option>
+            <option value="Relist">Relist</option>
+            <option value="Revise">Revise</option>
+        </select>
+    </div>
 
     <input name="form_key" value="{$formKey}" type="hidden" />
+    <input name="print" value="1" type="hidden" />
 
-    <label style="display: inline-block; width: 150px;">Source:&nbsp;</label>
-    <input type="file" accept=".csv" name="source" required /><br/>
+    <div style="margin: 10px 0; width: 365px; text-align: right;">
+        <button type="submit">Show</button>
+    </div>
 
-    <label style="display: inline-block; width: 150px;">Identifier Type:&nbsp;</label>
-    <select style="width: 250px;" name="source_type" required>
-        <option value="sku">SKU</option>
-        <option value="id">Product ID</option>
-    </select><br/>
-
-    <label style="display: inline-block; width: 150px;">Target Listing:&nbsp;</label>
-    <select style="width: 250px;" name="listing_id" required>
-        <option style="display: none;"></option>
-        {$listingsOptionsHtml}
-    </select><br/>
-
-    <input type="submit" title="Run Now" onclick="return confirm('Are you sure?');" />
 </form>
 HTML
         );
     }
 
+    //########################################
+
     /**
-     * @title "Process Adding Products into Listing"
-     * @hidden
+     * @title "Print Inspector Data"
+     * @description "Print Inspector Data"
+     * @new_line
      */
-    public function processAddProductsToListingAction()
+    public function getInspectorDataAction()
     {
-        $sourceType = $this->getRequest()->getPost('source_type', 'sku');
-        $listing = Mage::getModel('M2ePro/Listing')->load($this->getRequest()->getPost('listing_id'));
+        if (!$this->getRequest()->getParam('print')) {
 
-        if (empty($_FILES['source']['tmp_name']) || !$listing) {
-            $this->_getSession()->addError('Some required fields are empty.');
-            $this->_redirectUrl(Mage::helper('adminhtml')->getUrl('*/*/processAddProductsToListing'));
+            $formKey = Mage::getSingleton('core/session')->getFormKey();
+            $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
+
+            return $this->getResponse()->setBody(<<<HTML
+<form method="get" enctype="multipart/form-data" action="{$actionUrl}">
+
+    <div style="margin: 5px 0; width: 400px;">
+        <label style="width: 170px; display: inline-block;">Listing Product ID: </label>
+        <input name="listing_product_id" style="width: 200px;" required>
+    </div>
+
+    <input name="form_key" value="{$formKey}" type="hidden" />
+    <input name="print" value="1" type="hidden" />
+
+    <div style="margin: 10px 0; width: 365px; text-align: right;">
+        <button type="submit">Show</button>
+    </div>
+
+</form>
+HTML
+            );
         }
 
-        $csvParser = new Varien_File_Csv();
-        $tempCsvData = $csvParser->getData($_FILES['source']['tmp_name']);
+        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+        $listingProductId = $this->getRequest()->getParam('listing_product_id');
+        $listingProduct = Mage::helper('M2ePro/Component')->getUnknownObject('Listing_Product', $listingProductId);
 
-        $csvData = array();
-        $headers = array_shift($tempCsvData);
-        foreach ($tempCsvData as $csvRow) {
-            $csvData[] = array_combine($headers, $csvRow);
+        $checkerInput = Mage::getModel('M2ePro/Listing_Product_Instruction_SynchronizationTemplate_Checker_Input');
+        $checkerInput->setListingProduct($listingProduct);
+
+        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Instruction_Collection $collection */
+        $instructionCollection = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection');
+        $instructionCollection->applySkipUntilFilter();
+        $instructionCollection->addFieldToFilter('listing_product_id', $listingProduct->getId());
+
+        $instructions = array();
+        foreach ($instructionCollection->getItems() as $instruction) {
+            /**@var Ess_M2ePro_Model_Listing_Product_Instruction $instruction */
+            $instruction->setListingProduct($listingProduct);
+            $instructions[$instruction->getId()] = $instruction;
+        }
+        $checkerInput->setInstructions($instructions);
+
+        if ($listingProduct->getComponentMode() == Ess_M2ePro_Helper_Component_Amazon::NICK) {
+
+            $html = '<pre>';
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Amazon_Listing_Product_Instruction_SynchronizationTemplate_Checker_NotListed'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>NotListed</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetList: '.json_encode($checker->isMeetListRequirements()).'<br><br>';
+            //--
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Amazon_Listing_Product_Instruction_SynchronizationTemplate_Checker_Inactive'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>Inactive</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetRelist: '.json_encode($checker->isMeetRelistRequirements()).'<br><br>';
+            //--
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Amazon_Listing_Product_Instruction_SynchronizationTemplate_Checker_Active'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>Active</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetStop: '.json_encode($checker->isMeetStopRequirements()).'<br><br>';
+
+            $html .= 'isMeetReviseQty: '.json_encode($checker->isMeetReviseQtyRequirements()).'<br>';
+            $html .= 'isMeetRevisePriceReg: '.json_encode($checker->isMeetRevisePriceRegularRequirements()).'<br>';
+            $html .= 'isMeetRevisePriceBus: '.json_encode($checker->isMeetRevisePriceBusinessRequirements()).'<br>';
+            $html .= 'isMeetReviseDetails: '.json_encode($checker->isMeetReviseDetailsRequirements()).'<br>';
+            $html .= 'isMeetReviseImages: '.json_encode($checker->isMeetReviseImagesRequirements()).'<br><br>';
+            //--
+
+            //--
+            $magentoProduct = $listingProduct->getMagentoProduct();
+            $html .= 'isStatusEnabled: '.json_encode($magentoProduct->isStatusEnabled()).'<br>';
+            $html .= 'isStockAvailability: '.json_encode($magentoProduct->isStockAvailability()).'<br>';
+            //--
+
+            return $this->getResponse()->setBody($html);
         }
 
-        $success = 0;
-        foreach ($csvData as $csvRow) {
+        if ($listingProduct->getComponentMode() == Ess_M2ePro_Helper_Component_Ebay::NICK) {
 
-            $magentoProduct = $sourceType == 'id'
-                ? Mage::getModel('catalog/product')->load($csvRow['id'])
-                : Mage::getModel('catalog/product')->loadByAttribute('sku', $csvRow['sku']);
+            $html = '<pre>';
 
-            if (!$magentoProduct) {
-                continue;
-            }
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Ebay_Listing_Product_Instruction_SynchronizationTemplate_Checker_NotListed'
+            );
+            $checker->setInput($checkerInput);
 
-            $listingProduct = $listing->addProduct($magentoProduct);
-            if ($listingProduct instanceof Ess_M2ePro_Model_Listing_Product) {
-                $success++;
-            }
+            $html .= '<b>NotListed</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetList: '.json_encode($checker->isMeetListRequirements()).'<br><br>';
+            //--
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Ebay_Listing_Product_Instruction_SynchronizationTemplate_Checker_Inactive'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>Inactive</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetRelist: '.json_encode($checker->isMeetRelistRequirements()).'<br><br>';
+            //--
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Ebay_Listing_Product_Instruction_SynchronizationTemplate_Checker_Active'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>Active</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetStop: '.json_encode($checker->isMeetStopRequirements()).'<br><br>';
+
+            $html .= 'isMeetReviseQty: '.json_encode($checker->isMeetReviseQtyRequirements()).'<br>';
+            $html .= 'isMeetRevisePrice: '.json_encode($checker->isMeetRevisePriceRequirements()).'<br>';
+            $html .= 'isMeetReviseTitle: '.json_encode($checker->isMeetReviseTitleRequirements()).'<br>';
+            $html .= 'isMeetReviseSubtitle: '.json_encode($checker->isMeetReviseSubtitleRequirements()).'<br>';
+            $html .= 'isMeetReviseDescription: '.json_encode($checker->isMeetReviseDescriptionRequirements()).'<br>';
+            $html .= 'isMeetReviseImages: '.json_encode($checker->isMeetReviseImagesRequirements()).'<br>';
+            $html .= 'isMeetReviseCategories: '.json_encode($checker->isMeetReviseCategoriesRequirements()).'<br>';
+            $html .= 'isMeetRevisePayment: '.json_encode($checker->isMeetRevisePaymentRequirements()).'<br>';
+            $html .= 'isMeetReviseShipping: '.json_encode($checker->isMeetReviseShippingRequirements()).'<br>';
+            $html .= 'isMeetReviseReturn: '.json_encode($checker->isMeetReviseReturnRequirements()).'<br>';
+            $html .= 'isMeetReviseOther: '.json_encode($checker->isMeetReviseOtherRequirements()).'<br><br>';
+
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Product $elp */
+            $elp = $listingProduct->getChildObject();
+            $html .= 'isSetCategoryTemplate: ' .json_encode($elp->isSetCategoryTemplate()).'<br>';
+            $html .= 'isInAction: ' .json_encode($listingProduct->isSetProcessingLock('in_action')). '<br><br>';
+
+            $magentoProduct = $listingProduct->getMagentoProduct();
+            $html .= 'isStatusEnabled: ' .json_encode($magentoProduct->isStatusEnabled()).'<br>';
+            $html .= 'isStockAvailability: ' .json_encode($magentoProduct->isStockAvailability()).'<br>';
+            //--
+
+            return $this->getResponse()->setBody($html);
         }
 
-        $this->_getSession() ->addSuccess("Success '{$success}' Products.");
-        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
+        return $this->getResponse()->setBody('Is not supported');
     }
 
     //########################################
 
-    private function getEmptyResultsHtml($messageText)
+    /**
+     * @title "Build Order Quote"
+     * @description "Print Order Quote Data"
+     * @new_line
+     */
+    public function getPrintOrderQuoteDataAction()
+    {
+        if ($this->getRequest()->getParam('print')) {
+
+            /** @var Ess_M2ePro_Model_Order $order */
+            $orderId = $this->getRequest()->getParam('order_id');
+            $order =  Mage::helper('M2ePro/Component')->getUnknownObject('Order', $orderId);
+
+            if (!$order->getId()) {
+
+                $this->_getSession()->addError('Unable to load order instance.');
+                $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
+                return;
+            }
+
+            // Store must be initialized before products
+            // ---------------------------------------
+            $order->associateWithStore();
+            $order->associateItemsWithProducts();
+            // ---------------------------------------
+
+            $proxy = $order->getProxy()->setStore($order->getStore());
+
+            $magentoQuote = Mage::getModel('M2ePro/Magento_Quote', $proxy);
+            $magentoQuote->buildQuote();
+            $magentoQuote->getQuote()->setIsActive(false)->save();
+
+            $shippingAddressData = $magentoQuote->getQuote()->getShippingAddress()->getData();
+            unset(
+                $shippingAddressData['cached_items_all'],
+                $shippingAddressData['cached_items_nominal'],
+                $shippingAddressData['cached_items_nonnominal']
+            );
+            $billingAddressData  = $magentoQuote->getQuote()->getBillingAddress()->getData();
+            unset(
+                $billingAddressData['cached_items_all'],
+                $billingAddressData['cached_items_nominal'],
+                $billingAddressData['cached_items_nonnominal']
+            );
+
+            $quote = $magentoQuote->getQuote();
+
+            $resultHtml = '';
+
+            $resultHtml .= '<pre><b>Grand Total:</b> ' .$quote->getGrandTotal(). '<br>';
+            $resultHtml .= '<pre><b>Shipping Amount:</b> ' .$quote->getShippingAddress()->getShippingAmount(). '<br>';
+
+            $resultHtml .= '<pre><b>Quote Data:</b> ' .print_r($quote->getData(), true). '<br>';
+            $resultHtml .= '<pre><b>Shipping Address Data:</b> ' .print_r($shippingAddressData, true). '<br>';
+            $resultHtml .= '<pre><b>Billing Address Data:</b> ' .print_r($billingAddressData, true). '<br>';
+
+            return $this->getResponse()->setBody($resultHtml);
+        }
+
+        $formKey = Mage::getSingleton('core/session')->getFormKey();
+        $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
+
+        return $this->getResponse()->setBody(<<<HTML
+<form method="get" enctype="multipart/form-data" action="{$actionUrl}">
+
+    <div style="margin: 5px 0; width: 400px;">
+        <label style="width: 170px; display: inline-block;">Order ID: </label>
+        <input name="order_id" style="width: 200px;" required>
+    </div>
+
+    <input name="form_key" value="{$formKey}" type="hidden" />
+    <input name="print" value="1" type="hidden" />
+
+    <div style="margin: 10px 0; width: 365px; text-align: right;">
+        <button type="submit">Build</button>
+    </div>
+
+</form>
+HTML
+        );
+    }
+
+    //########################################
+
+    /**
+     * @title "Search Troubles With Parallel Execution"
+     * @description "By operation history table"
+     * @new_line
+     */
+    public function searchTroublesWithParallelExecutionAction()
+    {
+        if (!$this->getRequest()->getParam('print')) {
+
+            $formKey = Mage::getSingleton('core/session')->getFormKey();
+            $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
+
+            $collection = Mage::getModel('M2ePro/OperationHistory')->getCollection();
+            $collection->getSelect()->reset(\Zend_Db_Select::COLUMNS);
+            $collection->getSelect()->columns(array('nick'));
+            $collection->getSelect()->order('nick ASC');
+            $collection->getSelect()->distinct();
+
+            $optionsHtml = '';
+            foreach ($collection->getItems() as $item) {
+                $optionsHtml .= <<<HTML
+<option value="{$item->getData('nick')}">{$item->getData('nick')}</option>
+HTML;
+            }
+
+            $html = <<<HTML
+<form method="get" enctype="multipart/form-data" action="{$actionUrl}">
+
+    <div style="margin: 5px 0; width: 400px;">
+        <label style="width: 170px; display: inline-block;">Search by nick: </label>
+        <select name="nick" style="width: 200px;" required>
+            <option value="" style="display: none;"></option>
+            {$optionsHtml}
+        </select>
+    </div>
+
+    <input name="form_key" value="{$formKey}" type="hidden" />
+    <input name="print" value="1" type="hidden" />
+
+    <div style="margin: 10px 0; width: 365px; text-align: right;">
+        <button type="submit">Search</button>
+    </div>
+
+</form>
+HTML;
+            return $this->getResponse()->setBody($html);
+        }
+
+        $searchByNick = (string)$this->getRequest()->getParam('nick');
+
+        $collection = Mage::getModel('M2ePro/OperationHistory')->getCollection();
+        $collection->addFieldToFilter('nick', $searchByNick);
+        $collection->getSelect()->order('id ASC');
+
+        $results = array();
+        $prevItem = NULL;
+
+        foreach ($collection->getItems() as $item) {
+            /** @var Ess_M2ePro_Model_OperationHistory $item */
+            /** @var Ess_M2ePro_Model_OperationHistory $prevItem */
+
+            if (is_null($item->getData('end_date'))) {
+                continue;
+            }
+
+            if (is_null($prevItem)) {
+
+                $prevItem = $item;
+                continue;
+            }
+
+            $prevEnd   = new DateTime($prevItem->getData('end_date'), new \DateTimeZone('UTC'));
+            $currStart = new DateTime($item->getData('start_date'), new \DateTimeZone('UTC'));
+
+            if ($currStart->getTimeStamp() < $prevEnd->getTimeStamp()) {
+
+                $results[$item->getId().'##'.$prevItem->getId()] = array(
+                    'curr' => array(
+                        'id'    => $item->getId(),
+                        'start' => $item->getData('start_date'),
+                        'end'   => $item->getData('end_date')
+                    ),
+                    'prev' => array(
+                        'id'    => $prevItem->getId(),
+                        'start' => $prevItem->getData('start_date'),
+                        'end'   => $prevItem->getData('end_date')
+                    ),
+                );
+            }
+
+            $prevItem = $item;
+        }
+
+        if (count($results) <= 0) {
+            return $this->getResponse()->setBody($this->getEmptyResultsHtml(
+                'There are no troubles with a parallel work of crons.'
+            ));
+        }
+
+        $tableContent = <<<HTML
+<tr>
+    <th>Num</th>
+    <th>Type</th>
+    <th>ID</th>
+    <th>Started</th>
+    <th>Finished</th>
+    <th>Total</th>
+    <th>Delay</th>
+</tr>
+HTML;
+        $index = 1;
+        $results = array_reverse($results, true);
+
+        foreach ($results as $key => $row) {
+
+            $currStart = new \DateTime($row['curr']['start'], new \DateTimeZone('UTC'));
+            $currEnd   = new \DateTime($row['curr']['end'], new \DateTimeZone('UTC'));
+            $currTime = $currEnd->diff($currStart);
+            $currTime = $currTime->format('%H:%I:%S');
+
+            $currUrlUp = $this->getUrl(
+                '*/adminhtml_development_database/showOperationHistoryExecutionTreeUp',
+                array('operation_history_id' => $row['curr']['id'])
+            );
+            $currUrlDown = $this->getUrl(
+                '*/adminhtml_development_database/showOperationHistoryExecutionTreeDown',
+                array('operation_history_id' => $row['curr']['id'])
+            );
+
+            $prevStart = new \DateTime($row['prev']['start'], new \DateTimeZone('UTC'));
+            $prevEnd   = new \DateTime($row['prev']['end'], new \DateTimeZone('UTC'));
+            $prevTime = $prevEnd->diff($prevStart);
+            $prevTime = $prevTime->format('%H:%I:%S');
+
+            $prevUrlUp = $this->getUrl(
+                '*/adminhtml_development_database/showOperationHistoryExecutionTreeUp',
+                array('operation_history_id' => $row['prev']['id'])
+            );
+            $prevUrlDown = $this->getUrl(
+                '*/adminhtml_development_database/showOperationHistoryExecutionTreeDown',
+                array('operation_history_id' => $row['prev']['id'])
+            );
+
+            $delayTime = $currStart->diff($prevStart);
+            $delayTime = $delayTime->format('%H:%I:%S');
+
+            $tableContent .= <<<HTML
+<tr>
+    <td rowspan="2">{$index}</td>
+    <td>Previous</td>
+    <td>
+        {$row['prev']['id']}&nbsp;
+        <a style="color: green;" href="{$prevUrlUp}" target="_blank"><span>&uarr;</span></a>&nbsp;
+        <a style="color: green;" href="{$prevUrlDown}" target="_blank"><span>&darr;</span></a>
+    </td>
+    <td><span>{$row['prev']['start']}</span></td>
+    <td><span>{$row['prev']['end']}</span></td>
+    <td><span>{$prevTime}</span></td>
+    <td rowspan="2"><span>{$delayTime}</span>
+</tr>
+<tr>
+    <td>Current</td>
+    <td>
+        {$row['curr']['id']}&nbsp;
+        <a style="color: green;" href="{$currUrlUp}" target="_blank"><span>&uarr;</span></a>&nbsp;&nbsp;
+        <a style="color: green;" href="{$currUrlDown}" target="_blank"><span>&darr;</span></a>
+        </td>
+    <td><span>{$row['curr']['start']}</span></td>
+    <td><span>{$row['curr']['end']}</span></td>
+    <td><span>{$currTime}</span></td>
+</tr>
+HTML;
+            $index++;
+        }
+
+        $html = $this->getStyleHtml() . <<<HTML
+<html>
+    <body>
+        <h2 style="margin: 20px 0 0 10px">Parallel work of [{$searchByNick}]
+            <span style="color: #808080; font-size: 15px;">(#count# entries)</span>
+        </h2>
+        <br/>
+        <table class="grid" cellpadding="0" cellspacing="0">
+            {$tableContent}
+        </table>
+    </body>
+</html>
+HTML;
+        return $this->getResponse()->setBody(str_replace('#count#', count($results), $html));
+    }
+
+    //########################################
+
+    protected function getEmptyResultsHtml($messageText)
     {
         $backUrl = Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl();
 

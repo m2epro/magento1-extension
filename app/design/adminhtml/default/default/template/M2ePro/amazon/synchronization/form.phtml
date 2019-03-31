@@ -1,0 +1,82 @@
+<?php
+
+$translations = array();
+
+// ->__('Synchronization Settings have been saved.')
+$text = 'Synchronization Settings have been saved.';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Running All Enabled Tasks')
+$text = 'Running All Enabled Tasks';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Another Synchronization Is Already Running.')
+$text = 'Another Synchronization Is Already Running.';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Getting information. Please wait ...')
+$text = 'Getting information. Please wait ...';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Preparing to start. Please wait ...')
+$text = 'Preparing to start. Please wait ...';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Synchronization has successfully ended.')
+$text = 'Synchronization has successfully ended.';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.')
+$text = 'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.')
+$text = 'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Revise All')
+$text = 'Revise All';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+$translations = json_encode($translations);
+
+?>
+
+<script type="text/javascript">
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit' => $this->getUrl('M2ePro/adminhtml_amazon_synchronization/save'),
+        'logViewUrl' => $this->getUrl('M2ePro/adminhtml_amazon_log/synchronization',array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_amazon_synchronization/index'))),
+
+        'runReviseAll'        => $this->getUrl('M2ePro/adminhtml_amazon_synchronization/runReviseAll'),
+
+        'synchCheckProcessingNow' => $this->getUrl('M2ePro/adminhtml_amazon_synchronization/synchCheckProcessingNow')
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo $translations; ?>);
+
+    Event.observe(window, 'load', function() {
+        setTimeout(function() {
+            SynchronizationProgressHandlerObj = new SynchProgressHandler(SynchProgressBarObj, SynchWrapperObj );
+            SynchronizationHandlerObj = new SynchronizationHandler(SynchronizationProgressHandlerObj);
+
+            editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+
+            <?php if (!is_null($this->getChildBlockId())) { ?>
+                <?php
+                    $childBlockId = Mage::helper('M2ePro')->escapeJs($this->getChildBlockId());
+                    $destinationBlockId = Mage::helper('M2ePro')->escapeJs($this->getForm()->getId());
+                ?>
+                SynchronizationHandlerObj.moveChildBlockContent('<?php echo $childBlockId; ?>', '<?php echo $destinationBlockId; ?>');
+            <?php } ?>
+
+        }, 350);
+    });
+
+</script>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+</form>

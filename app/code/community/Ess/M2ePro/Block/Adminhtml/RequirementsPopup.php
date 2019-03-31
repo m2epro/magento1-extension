@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_RequirementsPopup extends Mage_Adminhtml_Block_
     {
         // ---------------------------------------
         $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Close'),
+            'label'   => Mage::helper('M2ePro')->__('Confirm and Close'),
             'onclick' => 'closeRequirementsPopup();',
             'style' => 'float:right;'
         );

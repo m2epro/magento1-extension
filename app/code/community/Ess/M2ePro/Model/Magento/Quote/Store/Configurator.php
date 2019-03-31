@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -113,7 +113,7 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
 
     //########################################
 
-    private function isPriceIncludesTax()
+    public function isPriceIncludesTax()
     {
         if (!is_null($this->proxyOrder->isProductPriceIncludeTax())) {
             return $this->proxyOrder->isProductPriceIncludeTax();
@@ -122,7 +122,7 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
         return (bool)$this->getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_PRICE_INCLUDES_TAX);
     }
 
-    private function isShippingPriceIncludesTax()
+    public function isShippingPriceIncludesTax()
     {
         if (!is_null($this->proxyOrder->isShippingPriceIncludeTax())) {
             return $this->proxyOrder->isShippingPriceIncludeTax();
@@ -133,7 +133,7 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
 
     //########################################
 
-    private function getShippingTaxClassId()
+    public function getShippingTaxClassId()
     {
         $proxyOrder = $this->proxyOrder;
         $hasRatesForCountry = Mage::getSingleton('M2ePro/Magento_Tax_Helper')
@@ -165,7 +165,7 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
         // ---------------------------------------
         /** @var $taxRuleBuilder Ess_M2ePro_Model_Magento_Tax_Rule_Builder */
         $taxRuleBuilder = Mage::getModel('M2ePro/Magento_Tax_Rule_Builder');
-        $taxRuleBuilder->buildTaxRule(
+        $taxRuleBuilder->buildShippingTaxRule(
             $shippingPriceTaxRate,
             $this->quote->getShippingAddress()->getCountryId(),
             $this->quote->getCustomerTaxClassId()
@@ -274,7 +274,7 @@ class Ess_M2ePro_Model_Magento_Quote_Store_Configurator
 
     //########################################
 
-    private function getTaxCalculationBasedOn()
+    public function getTaxCalculationBasedOn()
     {
         $basedOn = $this->getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_BASED_ON);
 

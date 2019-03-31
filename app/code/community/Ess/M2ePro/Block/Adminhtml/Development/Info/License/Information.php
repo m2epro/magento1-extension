@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -34,11 +34,9 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_License_Information extends Ma
         $this->licenseData = array(
             'domain' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getDomain()),
             'ip' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getIp()),
-            'directory' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getDirectory()),
             'valid' => array(
                 'domain' => $licenseHelper->isValidDomain(),
-                'ip' => $licenseHelper->isValidIp(),
-                'directory' => $licenseHelper->isValidDirectory()
+                'ip' => $licenseHelper->isValidIp()
             )
         );
 

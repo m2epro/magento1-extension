@@ -1,0 +1,1161 @@
+<div id="block_notice_walmart_template_description_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'Description Policy highlights the key details and features of Product as a physical object that is for sale.
+        Providing maximum Product information and high-quality images is critical if you want to enhance the buyers’ shopping experience.<br/><br/>
+
+        <strong>Note:</strong> Description Policy is required when you create a new offer on Walmart.<br/><br/>
+
+        The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
+    ); ?>
+</div>
+
+<?php
+
+    $isEdit = !!$this->getRequest()->getParam('id');
+
+    $formData = array();
+    $isEdit && $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getData();
+
+    $default = array(
+        'id'             => '',
+        'title'          => '',
+
+        'title_mode'     => Ess_M2ePro_Model_Walmart_Template_Description::TITLE_MODE_PRODUCT,
+        'title_template' => '',
+
+        'brand_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_VALUE,
+        'brand_custom_value'     => '',
+        'brand_custom_attribute' => '',
+
+        'manufacturer_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_NONE,
+        'manufacturer_custom_value'     => '',
+        'manufacturer_custom_attribute' => '',
+
+        'manufacturer_part_number_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_NONE,
+        'manufacturer_part_number_custom_value'     => '',
+        'manufacturer_part_number_custom_attribute' => '',
+
+        // ---
+
+        'model_number_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_NONE,
+        'model_number_custom_value'     => '',
+        'model_number_custom_attribute' => '',
+
+        'total_count_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_NONE,
+        'total_count_custom_value'     => '',
+        'total_count_custom_attribute' => '',
+
+        'count_per_pack_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_NONE,
+        'count_per_pack_custom_value'     => '',
+        'count_per_pack_custom_attribute' => '',
+
+        'multipack_quantity_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_NONE,
+        'multipack_quantity_custom_value'     => '',
+        'multipack_quantity_custom_attribute' => '',
+
+        // ---
+
+        'msrp_rrp_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_NONE,
+        'msrp_rrp_custom_attribute' => '',
+
+        // ---
+
+        'description_mode'     => '',
+        'description_template' => '',
+
+        'image_main_mode'      => Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_PRODUCT,
+        'image_main_attribute' => '',
+
+        'image_variation_difference_mode'      => Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_NONE,
+        'image_variation_difference_attribute' => '',
+
+        'gallery_images_mode'      => Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_NONE,
+        'gallery_images_limit'     => 1,
+        'gallery_images_attribute' => '',
+
+        'key_features_mode' => Ess_M2ePro_Model_Walmart_Template_Description::KEY_FEATURES_MODE_NONE,
+        'key_features'      => json_encode(array()),
+
+        'other_features_mode' => Ess_M2ePro_Model_Walmart_Template_Description::OTHER_FEATURES_MODE_NONE,
+        'other_features'      => json_encode(array()),
+
+        'keywords_mode'             => Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE,
+        'keywords_custom_value'     => '',
+        'keywords_custom_attribute' => '',
+
+        'attributes_mode' => Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_NONE,
+        'attributes'      => json_encode(array()),
+    );
+
+    $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
+
+    !empty($formData['key_features']) && $formData['key_features'] = json_decode($formData['key_features'], true);
+    !empty($formData['other_features'])   && $formData['other_features'] = json_decode($formData['other_features'], true);
+    !empty($formData['attributes'])    && $formData['attributes'] = json_decode($formData['attributes'], true);
+    
+    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+    
+    $generalAttributesByInputTypes = array(
+        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'select')),
+        'text_weight' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'weight')),
+        'text_images' => $magentoAttributeHelper->filterByInputTypes(
+            $this->getData('general_attributes'),
+            array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
+        ),
+        'text_price' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'price')),
+    );
+    
+    $allAttributesByInputTypes = array(
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('text', 'select')),
+    );
+?>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson(
+        'Ess_M2ePro_Model_Walmart_Template_Description'); ?>, 'Ess_M2ePro_Model_Walmart_Template_Description'
+    );
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson(
+        'Ess_M2ePro_Helper_Component_Walmart'); ?>, 'Ess_M2ePro_Helper_Component_Walmart'
+    );
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_walmart_template_description')); ?>);
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit'    => $this->getUrl('M2ePro/adminhtml_walmart_template_description/save', array('id' => $this->getRequest()->getParam('id'))),
+        'formSubmitNew' => $this->getUrl('M2ePro/adminhtml_walmart_template_description/save'),
+        'deleteAction'  => $this->getUrl('M2ePro/adminhtml_walmart_template_description/delete', array('id' => $this->getRequest()->getParam('id'))),
+
+        'adminhtml_walmart_marketplace/index' => $this->getUrl('M2ePro/adminhtml_walmart_marketplace/index')
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Add Description Policy' => Mage::helper('M2ePro')->__('Add Description Policy'),
+
+        'Change Category' => Mage::helper('M2ePro')->__('Change Category'),
+        'Not Selected'    => Mage::helper('M2ePro')->__('Not Selected'),
+        'Select'          => Mage::helper('M2ePro')->__('Select'),
+
+        'The specified Title is already used for another Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for another Policy. Policy Title must be unique.'),
+        'You should select Marketplace first.' => Mage::helper('M2ePro')->__('You should select Marketplace first.'),
+        'You should select Category and Product Type first' => Mage::helper('M2ePro')->__('You should select Category and Product Type first'),
+
+        'Recommended' => Mage::helper('M2ePro')->__('Recommended'),
+        'Recent'      => Mage::helper('M2ePro')->__('Recent'),
+    )); ?>);
+
+    //-----------------------------
+
+    M2ePro.formData = <?php echo json_encode($formData); ?>;
+
+    Event.observe(window, 'load', function() {
+
+        AttributeHandlerObj = new AttributeHandler();
+        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
+
+        WalmartTemplateDescriptionHandlerObj = new WalmartTemplateDescriptionHandler();
+
+        $('title_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.title_mode_change)
+            .simulate('change');
+
+        $('brand_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.brand_mode_change)
+            .simulate('change');
+
+        $('manufacturer_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.manufacturer_mode_change)
+            .simulate('change');
+
+        $('manufacturer_part_number_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.manufacturer_part_number_mode_change)
+            .simulate('change');
+
+        $('model_number_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.model_number_mode_change)
+            .simulate('change');
+
+        $('total_count_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.total_count_mode_change)
+            .simulate('change');
+
+        $('keywords_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.keywords_mode_change)
+            .simulate('change');
+
+        // ---
+
+        $('count_per_pack_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.onChangeCountPerPackMode)
+            .simulate('change');
+
+        $('multipack_quantity_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.onChangeMultipackQuantityMode)
+            .simulate('change');
+
+        // ---
+
+        $('msrp_rrp_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.onChangeMsrpRrpMode)
+            .simulate('change');
+
+        // ---
+
+        $('key_features_mode')
+            .observe('change', function () {
+                WalmartTemplateDescriptionHandlerObj.multi_element_mode_change.call(this,'key_features',5);
+            })
+            .simulate('change');
+
+        $('other_features_mode')
+            .observe('change', function () {
+                WalmartTemplateDescriptionHandlerObj.multi_element_mode_change.call(this,'other_features',5);
+            })
+            .simulate('change');
+
+        $('attributes_mode')
+            .observe('change', function () {
+                WalmartTemplateDescriptionHandlerObj.multi_element_mode_change.call(this,'attributes',5);
+            })
+            .simulate('change');
+
+        $('description_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.description_mode_change)
+            .simulate('change');
+
+        $('image_main_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.image_main_mode_change)
+            .simulate('change');
+
+        $('image_variation_difference_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.image_variation_difference_mode_change)
+            .simulate('change');
+
+        $('gallery_images_mode')
+            .observe('change', WalmartTemplateDescriptionHandlerObj.gallery_images_mode_change)
+            .simulate('change');
+    });
+
+</script>
+
+<style type="text/css">
+
+    .input-text-small {
+        width: 120px !important;
+    }
+    .textarea {
+        width: 98% !important;
+        height: 250px !important;
+    }
+    select.select-main {
+        width: 356px !important;
+    }
+    .select-wrapper {
+        margin-left: 15px;
+    }
+    a.action-disabled {
+        color: gray !important;
+        text-decoration: none !important;
+    }
+    a.action-disabled:hover {
+        color: gray !important;
+        text-decoration: none !important;
+    }
+    td.value {
+        width: auto !important;
+    }
+    .form-list td.label {
+        width: 275px;
+    }
+    .form-list td.label label {
+        width: 260px;
+    }
+</style>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+<div class="entry-edit" id="magento_block_walmart_template_description_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" name="title" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-description-template-title" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Policy Title for your internal use.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_template_description_details">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Details'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <select id="title_mode" name="title_mode" class="select required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::TITLE_MODE_PRODUCT; ?>" <?php if ($formData['title_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::TITLE_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Name'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::TITLE_MODE_CUSTOM; ?>" <?php if ($formData['title_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::TITLE_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Item Name that will be available on Walmart.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="custom_title_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Title Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title_template" name="title_template" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['title_template']); ?>" type="text" class="input-text M2ePro-required-when-visible" />
+                    </td>
+                    <td class="value">
+                        <span id="select_attributes_for_title_span" class="select-wrapper">
+                             <select id="select_attributes_for_title" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                 <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                     <option value="<?php echo $attribute['code']; ?>">
+                                         <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                     </option>
+                                 <?php endforeach; ?>
+                             </select>
+                        </span>
+                        <?php echo $this->getChildHtml('select_attributes_for_title_button'); ?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding: 10px 0">
+                        <hr style="border: 1px solid silver; border-bottom: none;">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Brand'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="brand_custom_attribute" name="brand_custom_attribute" value="<?php echo $formData['brand_custom_attribute']; ?>" />
+
+                        <select id="brand_mode" name="brand_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['brand_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['brand_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::BRAND_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['brand_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify the Item brand.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="brand_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Brand Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="brand_custom_value" name="brand_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['brand_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Manufacturer'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="manufacturer_custom_attribute" name="manufacturer_custom_attribute" value="<?php echo $formData['manufacturer_custom_attribute']; ?>" />
+
+                        <select id="manufacturer_mode" name="manufacturer_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_NONE; ?>" <?php if ($formData['manufacturer_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['manufacturer_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['manufacturer_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['manufacturer_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify the Item manufacturer name.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="manufacturer_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Manufacturer Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="manufacturer_custom_value" name="manufacturer_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['manufacturer_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Manufacturer Part Number'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="manufacturer_part_number_custom_attribute" name="manufacturer_part_number_custom_attribute" value="<?php echo $formData['manufacturer_part_number_custom_attribute']; ?>" />
+
+                        <select id="manufacturer_part_number_mode" name="manufacturer_part_number_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_NONE; ?>" <?php if ($formData['manufacturer_part_number_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['manufacturer_part_number_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['manufacturer_part_number_custom_attribute'], $generalAttributesByInputTypes['text'], Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MANUFACTURER_PART_NUMBER_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['manufacturer_part_number_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('A unique identifier assigned to Product by manufacturer. May be identical to the Model Number.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="manufacturer_part_number_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Manufacturer Part Number Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="manufacturer_part_number_custom_value" name="manufacturer_part_number_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['manufacturer_part_number_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Model Number'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="model_number_custom_attribute" name="model_number_custom_attribute" value="<?php echo $formData['model_number_custom_attribute']; ?>" />
+
+                        <select id="model_number_mode" name="model_number_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_NONE; ?>" <?php if ($formData['model_number_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['model_number_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['model_number_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MODEL_NUMBER_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['model_number_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('A unique number given to Product model by manufacturer. May be identical to the Manufacturer Part Number.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="model_number_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Model Number Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="model_number_custom_value" name="model_number_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['model_number_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_template_description_price">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Price'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="label">
+                        <label for="image_main_mode"><?php echo Mage::helper('M2ePro')->__('MSRP / RRP'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="msrp_rrp_custom_attribute" name="msrp_rrp_custom_attribute" value="<?php echo $formData['msrp_rrp_custom_attribute']; ?>" />
+
+                        <select id="msrp_rrp_mode" name="msrp_rrp_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_NONE; ?>" <?php if ($formData['msrp_rrp_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['msrp_rrp_custom_attribute'], $generalAttributesByInputTypes['text_price'], Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_price'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MSRP_RRP_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['msrp_rrp_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Manufacturer\'s suggested retail price (MSRP), or recommended retail price (RRP) is a price at which manufacturer recommends the retailers to sell the Product<br/>
+                                    <strong>Note:</strong> it is not the price that buyers will pay for your Item. Your retail price should be set in Selling Policy.'
+                                ); ?>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_template_description_image">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Images'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="image_main_mode"><?php echo Mage::helper('M2ePro')->__('Main Image'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="image_main_attribute" name="image_main_attribute" value="<?php echo $formData['image_main_attribute']; ?>" />
+
+                        <select id="image_main_mode" name="image_main_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_NONE; ?>" <?php if ($formData['image_main_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_PRODUCT; ?>" <?php if ($formData['image_main_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['image_main_attribute'], $generalAttributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_MAIN_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['image_main_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'The primary Product image that will be shown on your Walmart Item page and next to your Item in the search results.<br>
+                                <strong>Note:</strong> Selected Magento Attribute should contain absolute url. e.g.<br>
+                                <i>http://mymagentostore.com/images/main_image.jpg</i>'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="gallery_images_mode_tr">
+                    <td class="label">
+                        <label for="gallery_images_mode"><?php echo Mage::helper('M2ePro')->__('Additional Images'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="gallery_images_limit" name="gallery_images_limit" value="<?php echo $formData['gallery_images_limit']; ?>" />
+                        <input type="hidden" id="gallery_images_attribute" name="gallery_images_attribute" value="<?php echo $formData['gallery_images_attribute']; ?>" />
+
+                        <select id="gallery_images_mode" name="gallery_images_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_NONE; ?>" <?php if ($formData['gallery_images_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+
+                            <optgroup label="Product Images Quantity">
+                                <option attribute_code="1" <?php if ($formData['gallery_images_limit'] == 1 && ($formData['gallery_images_mode'] != Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_NONE)): echo ' selected="selected"'; endif; ?>>1</option>
+                                <?php for ($i = 2; $i <= 8; $i++): ?>
+                                    <option attribute_code="<?php echo $i; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_PRODUCT; ?>" <?php if ($formData['gallery_images_limit'] == $i): echo ' selected="selected"'; endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->__('Up to').' '.$i; ?>
+                                    </option>
+                                <?php endfor ?>
+                            </optgroup>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['gallery_images_attribute'], $generalAttributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::GALLERY_IMAGES_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['gallery_images_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Additional images that may show different views of the Product. Images will be displayed as thumbnails under the Main Image on your Walmart Item page.<br>
+                                    <strong>Note:</strong> Magento Attributes with Text, Multiple Select or Dropdown type can be used.
+                                    Enter a comma separated list of absolute image urls, e.g.<br>
+                                    <i>http://mymagentostore.com/images/image1.jpg, http://mymagentostore.com/images/image2.jpg</i>'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="image_variation_difference_mode"><?php echo Mage::helper('M2ePro')->__('Swatch Image'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="image_variation_difference_attribute" name="image_variation_difference_attribute" value="<?php echo $formData['image_variation_difference_attribute']; ?>" />
+
+                        <select id="image_variation_difference_mode" name="image_variation_difference_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_NONE; ?>" <?php if ($formData['image_variation_difference_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_PRODUCT; ?>" <?php if ($formData['image_variation_difference_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['image_variation_difference_attribute'], $generalAttributesByInputTypes['text_images'], Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_images'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::IMAGE_VARIATION_DIFFERENCE_MODE_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['image_variation_difference_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'Image that shows a selected Item Variation on Walmart Item page.<br><br>
+
+                                <strong>Note:</strong> The option is applied only for Configurable and Grouped Magento Products.<br>
+                                Image will be taken from the Child Products of Magento Variational Product.<br><br>
+                                
+                                <strong>Note:</strong> To show the Swatch Image on Walmart, you must define a Swatch Variant Attribute.<br>
+                                In M2E Pro Listing, click Manage Variations next to the Variational Item.<br>
+                                Select the Swatch Variant Attribute under the Settings tab of Manage Variations pop-up.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_template_description_description">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Description'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Description'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <select id="description_mode" name="description_mode" class="required-entry">
+                            <option value=""></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_PRODUCT; ?>" <?php if ($formData['description_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Description'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_SHORT; ?>" <?php if ($formData['description_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_SHORT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Short Description'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_CUSTOM; ?>" <?php if ($formData['description_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::DESCRIPTION_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'The key Product details and features that will be displayed on your Walmart Item page.<br>
+                                You can use Magento Product data or create a Custom description.<br>
+                                To complete your description with Magento Attribute data, use the Custom Inserts tool'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr class="c-custom_description_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Description Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+
+                        <script type="text/javascript">
+                            wysiwygtext = {
+                                isEnabled: function() {
+                                    return false;
+                                }
+                            };
+                        </script>
+
+                        <textarea id="description_template" name="description_template" class="textarea M2ePro-required-when-visible"><?php echo Mage::helper('M2ePro')->escapeHtml($formData['description_template']); ?></textarea>
+
+                    </td>
+                </tr>
+
+                <tr class="c-custom_description_tr" style="display: none;">
+                    <td class="label"></td>
+                    <td class="value">
+
+                        <div class="entry-edit-head" style="background: #D6D6D6;">
+                            <h4 class="icon-head head-edit-form fieldset-legend" style="color: #EA7601;"><?php echo Mage::helper('M2ePro')->__('Custom Inserts'); ?></h4>
+                        </div>
+
+                        <div class="fieldset">
+                            <div class="hor-scroll">
+                                <table cellspacing="0" class="form-list">
+                                    <tr>
+                                        <td class="label">
+                                            <label for="select_attributes_span"><?php echo Mage::helper('M2ePro')->__('Product Attribute');?>:</label>
+                                        </td>
+                                        <td class="value">
+                                                <span id="select_attributes_span">
+                                                    <select id="select_attributes" class="M2ePro-custom-attribute-can-be-created" style="width: 150px;">
+                                                        <?php foreach($this->getData('all_attributes') as $attribute) : ?>
+                                                            <option value="<?php echo $attribute['code']; ?>">
+                                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </span>
+                                            &nbsp;
+                                            <?php echo $this->getChildHtml('add_product_attribute_button'); ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_template_description_packaging">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Packaging'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr class="entry-edit" id="multipack_quantity_mode_tr">
+                    <td class="label">
+                        <label for="multipack_quantity_mode"><?php echo Mage::helper('M2ePro')->__('Multipack Quantity') ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="multipack_quantity_custom_attribute" name="multipack_quantity_custom_attribute" value="<?php echo $formData['multipack_quantity_custom_attribute']; ?>" />
+
+                        <select name="multipack_quantity_mode" id="multipack_quantity_mode" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" >
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_NONE; ?>" <?php if ($formData['multipack_quantity_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['multipack_quantity_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php if ($formData['multipack_quantity_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['multipack_quantity_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
+                                    <option attribute_code="<?php echo $formData['multipack_quantity_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['multipack_quantity_custom_attribute'])); ?>
+                                    </option>
+                                <?php endif; ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::MULTIPACK_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['multipack_quantity_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                'The number of identical, individually packaged-for-sale Items inside the Product.<br/>
+                                <strong>For example</strong>, the case/box containing 3 packs of 50 pencils has Multipack Quantity = 3.'
+                            ); ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr class="entry-edit" id="multipack_quantity_custom_value_tr">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Number of Items Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="multipack_quantity_custom_value" name="multipack_quantity_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['multipack_quantity_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-int" />
+                    </td>
+                </tr>
+
+                <tr class="entry-edit" id="count_per_pack_mode_tr">
+                    <td class="label">
+                        <label for="count_per_pack_mode"><?php echo Mage::helper('M2ePro')->__('Count Per Pack') ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="count_per_pack_custom_attribute" name="count_per_pack_custom_attribute" value="<?php echo $formData['count_per_pack_custom_attribute']; ?>" />
+
+                        <select name="count_per_pack_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" id="count_per_pack_mode">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_NONE; ?>" <?php if ($formData['count_per_pack_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['count_per_pack_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php if ($formData['count_per_pack_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['count_per_pack_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
+                                    <option attribute_code="<?php echo $formData['count_per_pack_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['count_per_pack_custom_attribute'])); ?>
+                                    </option>
+                                <?php endif; ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::COUNT_PER_PACK_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['count_per_pack_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                'The number of identical Items included in each individual pack given by the Multipack Quantity attribute.<br>
+                                <strong>For example</strong>, the case/box containing 3 packs of 50 pencils has Count Per Pack = 50.'
+                            ); ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr class="entry-edit" id="count_per_pack_custom_value_tr">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Package Quantity Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="count_per_pack_custom_value" name="count_per_pack_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['count_per_pack_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-int" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Total Count'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="total_count_custom_attribute" name="total_count_custom_attribute" value="<?php echo $formData['total_count_custom_attribute']; ?>" />
+
+                        <select id="total_count_mode" name="total_count_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_NONE; ?>" <?php if ($formData['total_count_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['total_count_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['total_count_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::TOTAL_COUNT_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['total_count_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'The total number of identical Items inside the Product. Total Count is a result of multiplication of Multipack Quantity by Count Per Pack.<br>
+                                <strong>For example</strong>, the case/box containing 3 packs of 50 pencils has Total Count = 150.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="total_count_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Total Count Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="total_count_custom_value" name="total_count_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['total_count_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-int" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_template_description_additional">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Additional'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Key Features') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="key_features_mode" name="key_features_mode" class="select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEY_FEATURES_MODE_NONE; ?>" <?php if ($formData['key_features_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEY_FEATURES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEY_FEATURES_MODE_CUSTOM; ?>" <?php if ($formData['key_features_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEY_FEATURES_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'Specify up to 5 features that highlight the most essential information about your Item.<br>
+                                The text will appear as bulleted list on your Walmart Item page and in the search results.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <?php for ($i = 0; $i < 5; $i++): ?>
+                    <tr class="key_features_tr" style="display: none;">
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Key Features #%s', $i + 1); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input id="key_features_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('key_features',this)"
+                                   name="key_features[]" type="text" class="input-text M2ePro-required-when-visible"
+                                   value="<?php echo !empty($formData['key_features'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['key_features'][$i]) : ''; ?>">
+                        </td>
+                        <td></td>
+                        <td class="value attributes-container-td">
+                                <span id="select_attributes_for_key_features_<?php echo $i; ?>_span" class="select-wrapper">
+                                    <select id="select_attributes_for_key_features_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                        <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                            <option value="<?php echo $attribute['code']; ?>">
+                                                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </span>
+                            <?php echo $this->getChildHtml("select_attributes_for_key_features_{$i}_button"); ?>
+                        </td>
+                    </tr>
+                <?php endfor; ?>
+
+                <tr id="key_features_actions_tr" style="display: none;">
+                    <td></td>
+                    <td class="value" style="padding-top: 0 !important;">
+                        <a id="show_key_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.showElement('key_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        /
+                        <a id="hide_key_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.hideElement('key_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding: 10px 0">
+                        <hr style="border: 1px solid silver; border-bottom: none;">
+                    </td>
+                </tr>
+
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Other Features') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="other_features_mode" name="other_features_mode" class="select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::OTHER_FEATURES_MODE_NONE; ?>" <?php if ($formData['other_features_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::OTHER_FEATURES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::OTHER_FEATURES_MODE_CUSTOM; ?>" <?php if ($formData['other_features_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::OTHER_FEATURES_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify up to 5 additional features that describe your Item.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <?php for ($i = 0; $i < 5; $i++): ?>
+                    <tr class="other_features_tr" style="display: none;">
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Other Features #%s', $i + 1); ?>:&nbsp;<span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input id="other_features_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('other_features',this)"
+                                   name="other_features[]" type="text" class="input-text M2ePro-required-when-visible"
+                                   value="<?php echo !empty($formData['other_features'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['other_features'][$i]) : ''; ?>">
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Max. 50 characters.'); ?></span>
+                            </p>
+                        </td>
+                        <td class="value">
+                            <span id="select_attributes_for_other_features_<?php echo $i; ?>_span" class="select-wrapper">
+                                <select id="select_attributes_for_other_features_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                    <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                        <option value="<?php echo $attribute['code']; ?>">
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </span>
+                            <?php echo $this->getChildHtml("select_attributes_for_other_features_{$i}_button"); ?>
+                        </td>
+                    </tr>
+                <?php endfor; ?>
+
+                <tr id="other_features_actions_tr" style="display: none;">
+                    <td></td>
+                    <td class="value" style="padding-top: 0 !important;">
+                        <a id="show_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.showElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        /
+                        <a id="hide_other_features_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.hideElement('other_features');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding: 10px 0">
+                        <hr style="border: 1px solid silver; border-bottom: none;">
+                    </td>
+                </tr>
+
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Keywords'); ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="keywords_custom_attribute" name="keywords_custom_attribute" value="<?php echo $formData['keywords_custom_attribute']; ?>" />
+
+                        <select id="keywords_mode" name="keywords_mode" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE; ?>" <?php if ($formData['keywords_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['keywords_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php echo $this->getForceAddedAttributeOptionHtml($formData['keywords_custom_attribute'], $generalAttributesByInputTypes['text_select'], Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE); ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::KEYWORDS_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['keywords_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify the relevant keywords that buyer would use to find your Item.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="keywords_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Keywords Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <textarea name="keywords_custom_value" id="keywords_custom_value" cols="30" rows="5" class="input-text M2ePro-required-when-visible" style="height: 5em;"><?php
+                            echo Mage::helper('M2ePro')->escapeHtml($formData['keywords_custom_value']);
+                        ?></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding: 10px 0">
+                        <hr style="border: 1px solid silver; border-bottom: none;">
+                    </td>
+                </tr>
+
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Attributes') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="attributes_mode" name="attributes_mode" class="select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_NONE; ?>" <?php if ($formData['attributes_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_CUSTOM; ?>" <?php if ($formData['attributes_mode'] == Ess_M2ePro_Model_Walmart_Template_Description::ATTRIBUTES_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Add up to 5 custom attributes that describe your Item.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <?php for ($i = 0; $i < 5; $i++): ?>
+                    <tr class="attributes_tr" style="display: none;">
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Attributes (name / value) #%s', $i + 1); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input id="attributes_name_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('attributes',this)"
+                                   name="attributes_name[]" type="text" class="input-text M2ePro-required-when-visible"
+                                   value="<?php echo !empty($formData['attributes'][$i]['name']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['name']) : ''; ?>">
+                        </td>
+                        <td class="value">&nbsp;/</td>
+                        <td class="value">
+                            <input id="attributes_value_<?php echo $i; ?>" onkeyup="WalmartTemplateDescriptionHandlerObj.multi_element_keyup('attributes',this)"
+                                   name="attributes_value[]" type="text" class="input-text M2ePro-required-when-visible"
+                                   value="<?php echo !empty($formData['attributes'][$i]['value']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['value']) : ''; ?>">
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Max. 100 characters.'); ?></span>
+                            </p>
+                        </td>
+                        <td class="value">
+                            <span id="select_attributes_for_attributes_<?php echo $i; ?>_span" class="select-wrapper">
+                                 <select id="select_attributes_for_attributes_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                     <?php foreach($allAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                         <option value="<?php echo $attribute['code']; ?>">
+                                             <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                         </option>
+                                     <?php endforeach; ?>
+                                 </select>
+                            </span>
+                            <?php echo $this->getChildHtml("select_attributes_for_attributes_{$i}_button"); ?>
+                        </td>
+                    </tr>
+                <?php endfor; ?>
+
+                <tr id="attributes_actions_tr" style="display: none;">
+                    <td></td>
+                    <td class="value" style="padding-top: 0 !important;">
+                        <a id="show_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.showElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        /
+                        <a id="hide_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateDescriptionHandlerObj.hideElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+</form>

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -71,23 +71,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
 
         // Get collection
         // ---------------------------------------
-        /* @var $collection Mage_Catalog_Model_Resource_Product_Collection */
-        $collection = Mage::getModel('catalog/product')->getCollection();
+        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
+                                                          Mage::getModel('catalog/product')->getResource());
+        $collection->getSelect()->group('e.entity_id');
+        $collection->setListing($listing);
+        $collection->setStoreId($listing->getStoreId());
+
         $collection
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('type_id')
-            ->joinTable(
-                array('cisi' => 'cataloginventory/stock_item'),
-                'product_id=entity_id',
-                array('qty' => 'qty',
-                      'is_in_stock' => 'is_in_stock'),
-                '{{table}}.stock_id=1',
-                'left'
-            );
-        // ---------------------------------------
+            ->joinStockItem(array('qty' => 'qty', 'is_in_stock' => 'is_in_stock'));
 
-        // ---------------------------------------
+        if ($this->isFilterOrSortByPriceIsUsed(null, 'ebay_online_current_price')) {
+            $collection->setIsNeedToUseIndexerParent(true);
+        }
+
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
             'product_id=entity_id',
@@ -108,22 +108,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
                 'online_sku'            => 'online_sku',
                 'available_qty'         => new Zend_Db_Expr('(online_qty - online_qty_sold)'),
                 'ebay_item_id'          => 'ebay_item_id',
-                'online_category'       => 'online_category',
+                'online_main_category'  => 'online_main_category',
                 'online_qty_sold'       => 'online_qty_sold',
                 'online_start_price'    => 'online_start_price',
                 'online_current_price'  => 'online_current_price',
                 'online_reserve_price'  => 'online_reserve_price',
                 'online_buyitnow_price' => 'online_buyitnow_price',
-                'min_online_price'      => 'IF(
-                    (`t`.`variation_min_price` IS NULL),
-                    `elp`.`online_current_price`,
-                    `t`.`variation_min_price`
-                )',
-                'max_online_price'      => 'IF(
-                    (`t`.`variation_max_price` IS NULL),
-                    `elp`.`online_current_price`,
-                    `t`.`variation_max_price`
-                )'
             ),
             NULL,
             'left'
@@ -137,26 +127,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
             NULL,
             'left'
         );
-        $collection->getSelect()->joinLeft(
-            new Zend_Db_Expr('(
-                SELECT
-                    `mlpv`.`listing_product_id`,
-                    MIN(`melpv`.`online_price`) as variation_min_price,
-                    MAX(`melpv`.`online_price`) as variation_max_price
-                FROM `'. Mage::getResourceModel('M2ePro/Listing_Product_Variation')->getMainTable() .'` AS `mlpv`
-                INNER JOIN `' .
-                Mage::getResourceModel('M2ePro/Ebay_Listing_Product_Variation')->getMainTable() .
-                '` AS `melpv`
-                    ON (`mlpv`.`id` = `melpv`.`listing_product_variation_id`)
-                WHERE `melpv`.`status` != ' . Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED . '
-                GROUP BY `mlpv`.`listing_product_id`
-            )'),
-            'elp.listing_product_id=t.listing_product_id',
-            array(
-                'variation_min_price' => 'variation_min_price',
-                'variation_max_price' => 'variation_max_price',
-            )
-        );
         // ---------------------------------------
 
         // Set filter store
@@ -165,16 +135,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
 
         if ($store->getId()) {
             $collection->joinAttribute(
-                'price', 'catalog_product/price', 'entity_id', NULL, 'left', $store->getId()
+                'name', 'catalog_product/name', 'entity_id', NULL, 'left', $store->getId()
             );
             $collection->joinAttribute(
-                'status', 'catalog_product/status', 'entity_id', NULL, 'inner',$store->getId()
+                'magento_price', 'catalog_product/price', 'entity_id', NULL, 'left', $store->getId()
             );
             $collection->joinAttribute(
-                'visibility', 'catalog_product/visibility', 'entity_id', NULL, 'inner',$store->getId()
+                'status', 'catalog_product/status', 'entity_id', NULL, 'inner', $store->getId()
             );
             $collection->joinAttribute(
-                'thumbnail', 'catalog_product/thumbnail', 'entity_id', NULL, 'left',$store->getId()
+                'visibility', 'catalog_product/visibility', 'entity_id', NULL, 'inner', $store->getId()
+            );
+            $collection->joinAttribute(
+                'thumbnail', 'catalog_product/thumbnail', 'entity_id', NULL, 'left', $store->getId()
             );
         } else {
             $collection->addAttributeToSelect('price');
@@ -184,14 +157,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
         }
         // ---------------------------------------
 
-        // Set collection to grid
-        $this->setCollection($collection);
+        if ($collection->isNeedUseIndexerParent()) {
+            $collection->joinIndexerParent();
+        }
 
-        parent::_prepareCollection();
+        $this->setCollection($collection);
+        $result = parent::_prepareCollection();
 
         $this->getCollection()->addWebsiteNamesToResult();
 
-        return $this;
+        return $result;
     }
 
     protected function _prepareColumns()
@@ -203,7 +178,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
             'type'      => 'number',
             'index'     => 'entity_id',
             'filter_index' => 'entity_id',
-            'frame_callback' => array($this, 'callbackColumnProductId')
+            'frame_callback' => array($this, 'callbackColumnListingProductId')
         ));
 
         $this->addColumn('name', array(
@@ -255,14 +230,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
 
         $store = $this->_getStore();
 
-        $this->addColumn('price', array(
+        $priceAttributeAlias = 'price';
+        if ($store->getId()) {
+            $priceAttributeAlias = 'magento_price';
+        }
+
+        $this->addColumn($priceAttributeAlias, array(
             'header'    => Mage::helper('M2ePro')->__('Price'),
             'align'     => 'right',
             'width'     => '100px',
             'type'      => 'price',
             'currency_code' => $store->getBaseCurrency()->getCode(),
-            'index'     => 'price',
-            'filter_index' => 'price',
+            'index'     => $priceAttributeAlias,
+            'filter_index' => $priceAttributeAlias,
             'frame_callback' => array($this, 'callbackColumnPrice')
         ));
 
@@ -314,6 +294,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
         }
 
         return parent::_prepareColumns();
+    }
+
+    //########################################
+
+    public function callbackColumnPrice($value, $row, $column, $isExport)
+    {
+        $rowVal = $row->getData();
+
+        if ($column->getId() == 'magento_price' &&
+            (!isset($rowVal['magento_price']) || (float)$rowVal['magento_price'] <= 0)
+        ) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        if ($column->getId() == 'price' &&
+            (!isset($rowVal['price']) || (float)$rowVal['price'] <= 0)
+        ) {
+            $value = '<span style="color: red;">0</span>';
+        }
+
+        return $value;
     }
 
     //########################################

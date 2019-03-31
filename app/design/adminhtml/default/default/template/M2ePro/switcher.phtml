@@ -8,7 +8,11 @@
 
         <label for="<?php echo $this->getParamName(); ?>_switcher"><?php echo $this->getLabel(); ?>:</label>
 
-        <select id="<?php echo $this->getParamName(); ?>_switcher" name="<?php echo $this->getParamName(); ?>_switcher" onchange="return <?php echo $this->getSwitchCallback() ?>(this);">
+        <select id="<?php echo $this->getParamName(); ?>_switcher"
+                name="<?php echo $this->getParamName(); ?>_switcher"
+                onchange="return <?php echo $this->getSwitchCallback() ?>(this);"
+                <?php if ($this->hasIsDisabled()): ?>disabled="disabled"<?php endif; ?>
+        >
             <?php if ($this->hasDefaultOption()) { ?>
                 <option value="<?php echo $this->getDefaultOptionValue(); ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getDefaultOptionName()); ?></option>
             <?php } ?>
@@ -20,7 +24,12 @@
                 <?php } ?>
 
                 <?php foreach ($item['value'] as $nestedItem) { ?>
-                    <option value="<?php echo $nestedItem['value'] ?>" <?php if ($this->getSelectedParam() == $nestedItem['value']) echo ' selected="selected"' ?>><?php echo $nestedItem['label'] ?></option>
+                    <option
+                        value="<?php echo $nestedItem['value'] ?>"
+                        <?php if ($this->getSelectedParam() == $nestedItem['value']) echo ' selected="selected"' ?>
+                    >
+                        <?php echo $nestedItem['label'] ?>
+                    </option>
                 <?php } ?>
 
                 <?php if (count($items) > 1) { ?>

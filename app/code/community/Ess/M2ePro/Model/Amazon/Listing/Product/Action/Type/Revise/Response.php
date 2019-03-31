@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -18,18 +18,27 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
     {
         $data = array();
 
-        if ($this->getConfigurator()->isAllAllowed()) {
-            $data['synch_status'] = Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_OK;
-            $data['synch_reasons'] = NULL;
+        if ($this->getConfigurator()->isDetailsAllowed()) {
+            $data['defected_messages'] = null;
+            $data['is_details_data_changed'] = 0;
         }
 
-        if ($this->getConfigurator()->isDetailsAllowed() || $this->getConfigurator()->isImagesAllowed()) {
+        if ($this->getConfigurator()->isImagesAllowed()) {
             $data['defected_messages'] = null;
+            $data['is_images_data_changed'] = 0;
         }
 
         $data = $this->appendStatusChangerValue($data);
         $data = $this->appendQtyValues($data);
-        $data = $this->appendPriceValues($data);
+        $data = $this->appendRegularPriceValues($data);
+        $data = $this->appendBusinessPriceValues($data);
+        $data = $this->appendGiftSettingsStatus($data);
+        $data = $this->appendDetailsValues($data);
+        $data = $this->appendImagesValues($data);
+
+        if (isset($data['additional_data'])) {
+            $data['additional_data'] = Mage::helper('M2ePro')->jsonEncode($data['additional_data']);
+        }
 
         $this->getListingProduct()->addData($data);
 
@@ -45,13 +54,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
      */
     public function getSuccessfulMessage()
     {
-        if ($this->getConfigurator()->isAllAllowed()) {
+        if ($this->getConfigurator()->isExcludingMode()) {
             // M2ePro_TRANSLATIONS
             // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
-        $sequenceString = '';
+        $sequenceStrings = array();
+        $isPlural = false;
 
         if ($this->getConfigurator()->isQtyAllowed()) {
 
@@ -59,7 +69,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
 
             if (!empty($params['switch_to']) &&
                 $params['switch_to'] ===
-                    Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request_Qty::FULFILLMENT_MODE_AFN) {
+                Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
 
                 // M2ePro_TRANSLATIONS
                 // Item was successfully switched to AFN
@@ -68,7 +78,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
 
             if (!empty($params['switch_to']) &&
                 $params['switch_to'] ===
-                    Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request_Qty::FULFILLMENT_MODE_MFN) {
+                Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
 
                 // M2ePro_TRANSLATIONS
                 // Item was successfully switched to MFN
@@ -77,36 +87,53 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
 
             // M2ePro_TRANSLATIONS
             // QTY
-            $sequenceString .= 'QTY,';
+            $sequenceStrings[] = 'QTY';
         }
 
-        if ($this->getConfigurator()->isPriceAllowed()) {
+        if ($this->getConfigurator()->isRegularPriceAllowed()) {
             // M2ePro_TRANSLATIONS
             // Price
-            $sequenceString .= 'Price,';
+            $sequenceStrings[] = 'Price';
+        }
+
+        if ($this->getConfigurator()->isBusinessPriceAllowed()) {
+            // M2ePro_TRANSLATIONS
+            // Business Price
+            $sequenceStrings[] = 'Business Price';
         }
 
         if ($this->getConfigurator()->isDetailsAllowed()) {
             // M2ePro_TRANSLATIONS
             // details
-            $sequenceString .= 'details,';
+            $sequenceStrings[] = 'Details';
+            $isPlural = true;
         }
 
         if ($this->getConfigurator()->isImagesAllowed()) {
             // M2ePro_TRANSLATIONS
             // images
-            $sequenceString .= 'images,';
+            $sequenceStrings[] = 'Images';
+            $isPlural = true;
         }
 
-        if (empty($sequenceString)) {
+        if (empty($sequenceStrings)) {
             // M2ePro_TRANSLATIONS
             // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
+        if (count($sequenceStrings) == 1) {
+            $verb = 'was';
+            if ($isPlural) {
+                $verb = 'were';
+            }
+
+            return ucfirst($sequenceStrings[0]).' '.$verb.' successfully Revised';
+        }
+
         // M2ePro_TRANSLATIONS
         // was successfully Revised
-        return ucfirst(trim($sequenceString,',')).' was successfully Revised';
+        return ucfirst(implode(', ', $sequenceStrings)).' were successfully Revised';
     }
 
     //########################################
@@ -116,7 +143,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         $params = $this->getParams();
 
         if (!empty($params['switch_to']) &&
-            $params['switch_to'] === Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request_Qty::FULFILLMENT_MODE_AFN) {
+            $params['switch_to']
+                === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
 
             $data['is_afn_channel'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_YES;
             $data['online_qty'] = null;
@@ -126,7 +154,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         }
 
         if (!empty($params['switch_to']) &&
-            $params['switch_to'] === Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request_Qty::FULFILLMENT_MODE_MFN) {
+            $params['switch_to']
+                === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
 
             $data['is_afn_channel'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_NO;
         }

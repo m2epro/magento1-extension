@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -56,8 +56,10 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
                     continue;
                 }
 
-                $parentTablePrefix = Mage::getSingleton('core/resource')->getTableName($parentTable);
-                $childTablePrefix = Mage::getSingleton('core/resource')->getTableName($childTable);
+                $parentTablePrefix = Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix($parentTable);
+                $childTablePrefix = Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix($childTable);
 
                 $parentIdColumn = Mage::helper('M2ePro/Module_Database_Structure')->getIdColumn($parentTable);
                 $childIdColumn  = Mage::helper('M2ePro/Module_Database_Structure')->getIdColumn($childTable);
@@ -71,7 +73,9 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
                         ->joinLeft(array('child' => $childTablePrefix),
                                    '`parent`.`'.$parentIdColumn.'` = `child`.`'.$childIdColumn.'`',
                                    array())
-                        ->where('`parent`.`component_mode` = ?', $component)
+                        ->where('`parent`.`component_mode` = \''.$component.'\' OR
+                                (`parent`.`component_mode` NOT IN (?) OR `parent`.`component_mode` IS NULL)',
+                                Mage::helper('M2ePro/Component')->getComponents())
                         ->where('`child`.`'.$childIdColumn.'` IS NULL')
                         ->query();
 
@@ -79,11 +83,11 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
 
                     $stmtQuery = $connRead->select()
                         ->from(array('child' => $childTablePrefix),
-                               $returnOnlyCount ? new Zend_Db_Expr('count(*) as `count_total`')
-                                                : array('id' => $childIdColumn))
+                                     $returnOnlyCount ? new \Zend_Db_Expr('count(*) as `count_total`')
+                                                      : array('id' => $childIdColumn))
                         ->joinLeft(array('parent' => $parentTablePrefix),
-                                   '`child`.`'.$childIdColumn.'` = `parent`.`'.$parentIdColumn.'`',
-                                   array())
+                                   "`child`.`{$childIdColumn}` = `parent`.`{$parentIdColumn}`",
+                                    array())
                         ->where('`parent`.`'.$parentIdColumn.'` IS NULL')
                         ->query();
                 }
@@ -93,10 +97,15 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
                     $result += (int)$row['count_total'];
                 } else {
                     while ($row = $stmtQuery->fetch()) {
-                        $result[] = (int)$row['id'];
+                        $id = (int)$row['id'];
+                        $result[$id] = $id;
                     }
                 }
             }
+        }
+
+        if (!$returnOnlyCount) {
+            $result = array_values($result);
         }
 
         return $result;
@@ -115,7 +124,7 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
             }
             $brokenIds = array_slice($brokenIds,0,50000);
 
-            $tableWithPrefix = Mage::getSingleton('core/resource')->getTableName($table);
+            $tableWithPrefix = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table);
             $idColumnName = Mage::helper('M2ePro/Module_Database_Structure')->getIdColumn($table);
 
             foreach (array_chunk($brokenIds,1000) as $brokenIdsPart) {
@@ -146,10 +155,15 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
-        $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
-        $result = $connWrite->query("REPAIR TABLE `{$tableName}`")->fetch();
-        return $result['Msg_text'];
+        try {
+            $result = $connWrite->query("REPAIR TABLE `{$tableName}`")->fetch();
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return $result['Msg_type'] == 'error' ? false : true;
     }
 
     // ---------------------------------------
@@ -161,7 +175,7 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         }
 
         $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         if (empty($columnInfo['key'])) {
             $writeConnection->dropIndex($tableName, $columnInfo['name']);
@@ -185,10 +199,11 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         $columnInfo['null'] == 'no' && $definition .= 'NOT NULL ';
         $columnInfo['default'] != '' && $definition .= "DEFAULT '{$columnInfo['default']}' ";
         ($columnInfo['null'] == 'yes' && $columnInfo['default'] == '') && $definition .= 'DEFAULT NULL ';
+        $columnInfo['extra'] == 'auto_increment' && $definition .= 'AUTO_INCREMENT ';
         !empty($columnInfo['after']) && $definition .= "AFTER `{$columnInfo['after']}`";
 
         $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         if ($writeConnection->tableColumnExists($tableName, $columnInfo['name']) === false) {
             $writeConnection->addColumn($tableName, $columnInfo['name'], $definition);
@@ -205,7 +220,7 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         }
 
         $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         $writeConnection->dropColumn($tableName, $columnInfo['name']);
     }

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -14,10 +14,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Component_Switcher extends Ess_M2ePro_
     {
         $label = trim($label);
 
-        if (is_null($this->getData('component_mode')) ||
-            ($this->getData('component_mode') != Ess_M2ePro_Helper_Component_Ebay::NICK &&
-             count(Mage::helper('M2ePro/View_Common_Component')->getActiveComponents()) == 1)) {
-
+        if (is_null($this->getData('component_mode'))) {
             return trim(preg_replace(array('/%component%/', '/\s{2,}/'), ' ', $label));
         }
 
@@ -44,26 +41,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Component_Switcher extends Ess_M2ePro_
         }
 
         return $this->getData('component_mode') . ucfirst($this->paramName);
-    }
-
-    public function getSwitchUrl()
-    {
-        $params = array(
-            '_current' => true,
-            $this->getParamName() => $this->getParamPlaceHolder()
-        );
-
-        $tabId = Ess_M2ePro_Block_Adminhtml_Common_Component_Abstract::getTabIdByComponent(
-            $this->getData('component_mode')
-        );
-
-        if (!is_null($tabId)) {
-            $params['tab'] = $tabId;
-        }
-
-        $controllerName = $this->getData('controller_name') ? $this->getData('controller_name') : '*';
-
-        return $this->getUrl("*/{$controllerName}/*", $params);
     }
 
     public function getSwitchCallback()

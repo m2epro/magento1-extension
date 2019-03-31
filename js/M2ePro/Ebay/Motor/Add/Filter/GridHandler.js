@@ -80,7 +80,7 @@ EbayMotorAddFilterGridHandler = Class.create(GridHandler, {
             data['filters_ids'] = self.getGridMassActionObj().checkedString;
 
             new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/setNoteToFilters'), {
-                postmethod: 'post',
+                method: 'post',
                 parameters: data,
                 onSuccess: function(transport) {
 
@@ -104,7 +104,7 @@ EbayMotorAddFilterGridHandler = Class.create(GridHandler, {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/setNoteToFilters'), {
-            postmethod: 'post',
+            method: 'post',
             parameters: {
                 filters_ids: self.getGridMassActionObj().checkedString,
                 note: ''
@@ -158,13 +158,13 @@ EbayMotorAddFilterGridHandler = Class.create(GridHandler, {
             data.mode = M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Motor_Group::MODE_FILTER');
 
             new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/saveAsGroup'), {
-                postmethod: 'post',
+                method: 'post',
                 parameters: data,
                 onSuccess: function(transport) {
 
                     if (transport.responseText == '0') {
                         self.unselectAll();
-                        $(self.getGridObj().massaction.select).value = '';
+                        $(self.getGridMassActionObj().select).value = '';
 
                         EbayMotorAddGroupGridHandlerObj.unselectAllAndReload();
                     }
@@ -184,10 +184,22 @@ EbayMotorAddFilterGridHandler = Class.create(GridHandler, {
 
     removeFilter: function()
     {
-        var self = this;
+        var self = this,
+            filters = self.getGridMassActionObj().checkedString.split(',');
+
+        filters.each(function(filter){
+
+            var index = EbayMotorsHandlerObj.selectedData.filters.indexOf(filter);
+
+            if (index > -1) {
+                EbayMotorsHandlerObj.selectedData.filters.splice(index, 1);
+            }
+        });
+
+        EbayMotorsHandlerObj.updateSelectedData();
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/removeFilter'), {
-            postmethod: 'post',
+            method: 'post',
             parameters: {
                 filters_ids: self.getGridMassActionObj().checkedString
             },
@@ -227,7 +239,7 @@ EbayMotorAddFilterGridHandler = Class.create(GridHandler, {
         });
 
         return result;
-    },
+    }
 
     //##################################
 

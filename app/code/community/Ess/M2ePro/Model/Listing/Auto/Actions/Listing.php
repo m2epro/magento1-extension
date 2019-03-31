@@ -2,12 +2,17 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
 {
+    const INSTRUCTION_TYPE_STOP            = 'auto_actions_stop';
+    const INSTRUCTION_TYPE_STOP_AND_REMOVE = 'auto_actions_stop_and_remove';
+
+    const INSTRUCTION_INITIATOR = 'auto_actions';
+
     /**
      * @var null|Ess_M2ePro_Model_Listing
      */
@@ -53,17 +58,27 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
                 return;
             }
 
+            if ($deletingMode == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP && !$listingProduct->isStoppable()) {
+                continue;
+            }
+
             try {
 
-                if ($deletingMode == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP) {
-                    $listingProduct->isStoppable() && Mage::getModel('M2ePro/StopQueue')->add($listingProduct);
-                }
+                $instructionType = self::INSTRUCTION_TYPE_STOP;
 
                 if ($deletingMode == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE) {
-                    $listingProduct->isStoppable() && Mage::getModel('M2ePro/StopQueue')->add($listingProduct);
-                    $listingProduct->addData(array('status'=>Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED))->save();
-                    $listingProduct->deleteInstance();
+                    $instructionType = self::INSTRUCTION_TYPE_STOP_AND_REMOVE;
                 }
+
+                $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
+                $instruction->setData(array(
+                    'listing_product_id' => $listingProduct->getId(),
+                    'component'          => $listingProduct->getComponentMode(),
+                    'type'               => $instructionType,
+                    'initiator'          => self::INSTRUCTION_INITIATOR,
+                    'priority'           => $listingProduct->isStoppable() ? 60 : 0,
+                ));
+                $instruction->save();
 
             } catch (Exception $exception) {}
         }
@@ -79,6 +94,30 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
 
     abstract public function addProductByWebsiteListing(Mage_Catalog_Model_Product $product,
                                                         Ess_M2ePro_Model_Listing $listing);
+
+    //########################################
+
+    /**
+     * @param Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    protected function logAddedToMagentoProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    {
+        $tempLog = Mage::getModel('M2ePro/Listing_Log');
+        $tempLog->setComponentMode($this->getListing()->getComponentMode());
+        $tempLog->addProductMessage(
+            $this->getListing()->getId(),
+            $listingProduct->getProductId(),
+            $listingProduct->getId(),
+            Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
+            NULL,
+            Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_MAGENTO,
+            // M2ePro_TRANSLATIONS
+            // Product was successfully Added
+            'Product was successfully Added',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
+            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
+    }
 
     //########################################
 }

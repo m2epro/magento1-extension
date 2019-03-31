@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Repricing
 
     //########################################
 
-    public function getAllSkus(Ess_M2ePro_Model_Account $account, $repricingDisabled = null)
+    public function getSkus(Ess_M2ePro_Model_Account $account, $filterSkus = NULL, $repricingDisabled = NULL)
     {
         /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
@@ -33,6 +33,10 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Repricing
         $listingProductCollection->addFieldToFilter('is_repricing', 1);
         $listingProductCollection->addFieldToFilter('l.account_id', $account->getId());
         $listingProductCollection->addFieldToFilter('second_table.sku', array('notnull' => true));
+        if (!empty($filterSkus)) {
+            $listingProductCollection->addFieldToFilter('second_table.sku', array('in' => $filterSkus));
+        }
+        $listingProductCollection->addFieldToFilter('second_table.online_regular_price', array('notnull' => true));
 
         if (!is_null($repricingDisabled)) {
             $listingProductCollection->getSelect()->joinLeft(
@@ -57,7 +61,10 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Repricing
     {
         $this->_getWriteAdapter()->update(
             $this->getMainTable(),
-            array('is_process_required' => 1),
+            array(
+                'update_date'         => Mage::helper('M2ePro')->getCurrentGmtDate(),
+                'is_process_required' => 1
+            ),
             array(
                 'listing_product_id IN (?)' => array_unique($listingsProductsIds),
                 'is_process_required = ?'   => 0,
@@ -69,7 +76,10 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Repricing
     {
         $this->_getWriteAdapter()->update(
             $this->getMainTable(),
-            array('is_process_required' => 0),
+            array(
+                'update_date'         => Mage::helper('M2ePro')->getCurrentGmtDate(),
+                'is_process_required' => 0
+            ),
             array(
                 'listing_product_id IN (?)' => array_unique($listingsProductsIds),
                 'is_process_required = ?'   => 1,

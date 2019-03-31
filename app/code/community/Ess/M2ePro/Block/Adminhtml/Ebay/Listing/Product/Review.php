@@ -2,12 +2,16 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode as SourceModeBlock;
+
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
+    protected $source;
+
     //########################################
 
     public function __construct()
@@ -39,6 +43,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_
 
         // ---------------------------------------
 
+        /** @var Ess_M2ePro_Model_Listing $listing */
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
             'Listing', $this->getRequest()->getParam('listing_id')
         );
@@ -96,6 +101,35 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_
         $this->getRequest()->getParam('disable_list', false) && $buttonBlock->setData('style','display: none');
         $this->setChild('save_and_list', $buttonBlock);
         // ---------------------------------------
+
+        // ---------------------------------------
+        if ($this->getSource() === SourceModeBlock::SOURCE_OTHER) {
+            $url = $this->getUrl('*/adminhtml_ebay_listing_other/view', array(
+                'account'     => $listing->getAccountId(),
+                'marketplace' => $listing->getMarketplaceId(),
+            ));
+            $buttonBlock = $this->getLayout()
+                ->createBlock('adminhtml/widget_button')
+                ->setData(array(
+                    'label'   => Mage::helper('M2ePro')->__('Back to 3rd Party Listing'),
+                    'onclick' => 'setLocation(\''.$url.'\');',
+                    'class' => 'save'
+                ));
+            $this->setChild('back_to_listing_other', $buttonBlock);
+        }
+        // ---------------------------------------
+    }
+
+    //########################################
+
+    public function setSource($value)
+    {
+        $this->source = $value;
+    }
+
+    public function getSource()
+    {
+        return $this->source;
     }
 
     //########################################

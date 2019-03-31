@@ -1,0 +1,62 @@
+<?php /* @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Variation_Edit */?>
+<div style="margin-top: 10px; height: 350px; overflow-y: auto">
+
+    <div id="block_notice_listing_product_variation_edit" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Manage Magento Product Variation'); ?>">
+        <?php echo Mage::helper('M2ePro')->__('Magento Variation, to which this Product is linked to, can be changed here.'); ?>
+    </div>
+
+    <div class="entry-edit" style="margin-top: 10px">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Variation'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <form id="variation_edit_form">
+                    <table class="form-list" cellspacing="0" cellpadding="0" style="width: auto">
+
+                        <tr>
+                            <td>
+                                <table id="variation_edit_container" class="form-list" cellspacing="0" cellpadding="0" style="width: auto">
+
+                                </table>
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="clear: both; margin-top: 10px"></div>
+
+<div style="padding: 7px 0; text-align: right">
+    <a href="javascript:void(0);" id="variation_edit_close" class="close" onclick="ListingProductVariationHandlerObj.editPopup.close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    &nbsp;
+    <?php echo $this->getChildHtml('variation_edit_confirm'); ?>
+</div>
+
+<div style="clear: both; margin-top: 10px"></div>
+
+<script type="text/javascript">
+
+    var init = function() {
+        ListingProductVariationHandlerObj.setNeededVariationData(
+            <?php echo json_encode(array_keys($this->getMagentoVariationsSets())); ?>,
+            <?php echo json_encode($this->getMagentoVariationsTree()); ?>
+        );
+        ListingProductVariationHandlerObj.editPopupInit(
+            <?php echo json_encode($this->currentVariation); ?>
+        );
+    };
+
+    <?php if ($this->getRequest()->isXmlHttpRequest()) { ?>
+        init();
+    <?php } else { ?>
+        Event.observe(window,'load',init);
+    <?php } ?>
+
+</script>

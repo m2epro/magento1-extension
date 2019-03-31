@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
         if (!Mage::helper('M2ePro/Component_Amazon')->isASIN($generalId) &&
             !Mage::helper('M2ePro')->isISBN10($generalId)
         ) {
-            throw new InvalidArgumentException('General ID is invalid.');
+            throw new InvalidArgumentException('General ID "'.$generalId.'" is invalid.');
         }
 
         $this->generalId = $generalId;
@@ -104,13 +104,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
             'store_id'       => $this->getListingProduct()->getListing()->getStoreId(),
         );
 
+        $helper = Mage::helper('M2ePro/Data');
+
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()
         ) {
 
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_PhysicalUnit $typeModel */
             $typeModel = $this->getVariationManager()->getTypeModel();
-            $data['variation_product_options'] = json_encode($typeModel->getProductOptions());
+            $data['variation_product_options'] = $helper->jsonEncode($typeModel->getProductOptions());
         }
 
         if ($this->getVariationManager()->isRelationChildType()) {
@@ -118,11 +120,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
             $typeModel = $this->getVariationManager()->getTypeModel();
 
             if ($typeModel->isVariationProductMatched()) {
-                $data['variation_product_options'] = json_encode($typeModel->getRealProductOptions());
+                $data['variation_product_options'] = $helper->jsonEncode($typeModel->getRealProductOptions());
             }
 
             if ($typeModel->isVariationChannelMatched()) {
-                $data['variation_channel_options'] = json_encode($typeModel->getRealChannelOptions());
+                $data['variation_channel_options'] = $helper->jsonEncode($typeModel->getRealChannelOptions());
             }
         }
 
@@ -199,7 +201,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
 
         $this->createAmazonItem();
 
-        $parentTypeModel->getProcessor()->process();
+        try {
+            $parentTypeModel->getProcessor()->process();
+        } catch (\Exception $exception) {
+            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            return false;
+        }
 
         return true;
     }
@@ -242,7 +249,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
 
         $this->getListingProduct()->save();
 
-        $typeModel->getProcessor()->process();
+        try {
+            $typeModel->getProcessor()->process();
+        } catch (\Exception $exception) {
+            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+            return false;
+        }
 
         return true;
     }
@@ -307,12 +319,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Linking
             'variation_child_modification' => 'none',
         );
 
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector('product', 'search', 'byAsin',
                                                                $params, 'item',
                                                                $this->getListingProduct()->getListing()->getAccount());
 
-        return $dispatcherObject->process($connectorObj);
+        $dispatcherObject->process($connectorObj);
+
+        return $connectorObj->getResponseData();
     }
 
     //########################################

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -33,7 +33,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Installation
     protected function prepareInfo()
     {
         $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
-        $this->latestVersion = $cacheConfig->getGroupValue('/installation/', 'last_version');
+        $this->latestVersion = $cacheConfig->getGroupValue('/installation/', 'public_last_version');
+        $this->buildLatestVersion = $cacheConfig->getGroupValue('/installation/', 'build_last_version');
 
         $registryModel = Mage::getModel('M2ePro/Registry');
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');

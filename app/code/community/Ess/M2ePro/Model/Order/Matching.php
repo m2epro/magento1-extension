@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -84,8 +84,8 @@ class Ess_M2ePro_Model_Order_Matching extends Ess_M2ePro_Model_Abstract
 
         $matching->addData(array(
             'product_id'               => (int)$productId,
-            'input_variation_options'  => json_encode($input),
-            'output_variation_options' => json_encode($output),
+            'input_variation_options'  => Mage::helper('M2ePro')->jsonEncode($input),
+            'output_variation_options' => Mage::helper('M2ePro')->jsonEncode($output),
             'hash'                     => $hash,
             'component'                => $component,
         ));

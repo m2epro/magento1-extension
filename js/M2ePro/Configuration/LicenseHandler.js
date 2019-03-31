@@ -3,23 +3,64 @@ ConfigurationLicenseHandler.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    initialize: function() {},
-
-    // ---------------------------------------
-
-    changeLicenseKey: function()
+    changeLicenseKeyPopup: function()
     {
-        $('license_text_key_container').hide();
-        $('license_input_key_container').show();
-        $('change_license_key_container').hide();
-        $('confirm_license_key_container').show();
+        changeLicensePopup = Dialog.info(null, {
+            draggable: true,
+            resizable: true,
+            closable: true,
+            className: "magento",
+            windowClassName: "popup-window",
+            title: M2ePro.translator.translate('Extension Key'),
+            top: 150,
+            width: 450,
+            height: 250,
+            zIndex: 100,
+            hideEffect: Element.hide,
+            showEffect: Element.show
+        });
+
+        changeLicensePopup.options.destroyOnClose = true;
+        $('modal_dialog_message').insert($('change_license_popup').innerHTML);
+        ModuleNoticeObj.observeModulePrepareStart($('modal_dialog_message').down('#block_notice_change_license'));
+
+        var self = this;
+        $('block_notice_change_license').observe('click', function(e) {
+            setTimeout(function() {
+                self.autoHeightFix();
+            }.bind(this), 1000)
+        });
+        self.autoHeightFix();
     },
 
     // ---------------------------------------
 
     confirmLicenseKey: function()
     {
-        configEditForm.submit(M2ePro.url.get('adminhtml_configuration_license/confirmKey'));
+        var newLicenseKey = $('new_license_key').value.trim(),
+            oldLicenseKey = $('license_text_key_container').innerHTML.trim();
+
+        var licenseForm = new varienForm('popup_change_license_form');
+        if (!licenseForm.validate()) {
+            return;
+        }
+
+        if (oldLicenseKey == newLicenseKey) {
+            changeLicensePopup.close();
+            return;
+        }
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_configuration_license/confirmKey'), {
+            method: 'post',
+            asynchronous: false,
+            parameters: {
+                key: newLicenseKey
+            },
+            onSuccess: function(transport) {}
+        });
+
+        changeLicensePopup.close();
+        location.reload();
     },
 
     // ---------------------------------------
@@ -38,7 +79,7 @@ ConfigurationLicenseHandler.prototype = Object.extend(new CommonHandler(), {
                     window.opener.completeStep = 1;
                     window.close();
                 } else {
-                    MagentoMessageObj.addError(M2ePro.translator.translate('You must get valid License Key.'));
+                    MagentoMessageObj.addError(M2ePro.translator.translate('You must get valid Trial or Live Extension Key.'));
                 }
             }
         });

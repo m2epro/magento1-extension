@@ -2,12 +2,15 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adminhtml_Block_Widget
 {
+    const MODE_LISTING_PRODUCT = 1;
+    const MODE_COMMON          = 2;
+
     private $templates = NULL;
 
     //########################################
@@ -41,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
                 $title = Mage::helper('M2ePro')->__('Return');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:
-                $title = Mage::helper('M2ePro')->__('Price, Quantity and Format');
+                $title = Mage::helper('M2ePro')->__('Selling');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION:
                 $title = Mage::helper('M2ePro')->__('Description');
@@ -67,7 +70,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION:
-                $width = 200;
+                $width = 100;
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION:
@@ -84,10 +87,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
 
     //########################################
 
-    public static function getSwitcherUrlHtml()
+    public static function getSwitcherUrlHtml($mode)
     {
-        $urls = json_encode(array(
-            'adminhtml_ebay_template/getTemplateHtml' => self::getSwitcherUrl()
+        $urls = Mage::helper('M2ePro')->jsonEncode(array(
+            'adminhtml_ebay_template/getTemplateHtml' => self::getSwitcherUrl($mode)
         ));
 
         return <<<HTML
@@ -97,7 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
 HTML;
     }
 
-    public static function getSwitcherUrl()
+    public static function getSwitcherUrl($mode)
     {
         $params = array();
 
@@ -115,8 +118,10 @@ HTML;
 
         // initiate attribute sets param
         // ---------------------------------------
-        $attributeSets = Mage::helper('M2ePro/Data_Global')->getValue('ebay_attribute_sets');
-        $params['attribute_sets'] = implode(',', $attributeSets);
+        if ($mode == self::MODE_LISTING_PRODUCT) {
+            $attributeSets = Mage::helper('M2ePro/Data_Global')->getValue('ebay_attribute_sets');
+            $params['attribute_sets'] = implode(',', $attributeSets);
+        }
         // ---------------------------------------
 
         // initiate display use default option param

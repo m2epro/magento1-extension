@@ -2,10 +2,19 @@
 
     <tr>
         <td class="label">
-            <label><?php echo Mage::helper('M2ePro')->__('Latest Available Version'); ?>: </label>
+            <label><?php echo Mage::helper('M2ePro')->__('Public Latest Available Version'); ?>: </label>
         </td>
         <td class="value">
             <?php echo $this->latestVersion; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Build Latest Available Version'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->buildLatestVersion; ?>
         </td>
     </tr>
 

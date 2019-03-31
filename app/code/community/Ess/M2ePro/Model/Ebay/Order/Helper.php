@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -101,7 +101,8 @@ class Ess_M2ePro_Model_Ebay_Order_Helper
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableDictMarketplace = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_marketplace');
+        $tableDictMarketplace = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_dictionary_marketplace');
 
         $dbSelect = $connRead->select()
             ->from($tableDictMarketplace, 'payments')
@@ -112,7 +113,7 @@ class Ess_M2ePro_Model_Ebay_Order_Helper
             return $code;
         }
 
-        $payments = (array)json_decode($marketplace['payments'], true);
+        $payments = (array)Mage::helper('M2ePro')->jsonDecode($marketplace['payments']);
 
         foreach ($payments as $payment) {
             if ($payment['ebay_id'] == $code) {
@@ -131,7 +132,8 @@ class Ess_M2ePro_Model_Ebay_Order_Helper
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead          = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableDictShipping = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_shipping');
+        $tableDictShipping = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_dictionary_shipping');
 
         $dbSelect = $connRead->select()
             ->from($tableDictShipping, 'title')

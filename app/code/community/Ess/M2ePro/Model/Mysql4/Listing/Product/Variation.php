@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -29,6 +29,9 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         }
 
         $statuses = $this->getVariationsStatuses($variationsProductsIds, $storeId);
+        if (empty($statuses)) {
+            return NULL;
+        }
 
         return (int)max($statuses) == Mage_Catalog_Model_Product_Status::STATUS_ENABLED;
     }
@@ -42,13 +45,16 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         }
 
         $statuses = $this->getVariationsStatuses($variationsProductsIds, $storeId);
+        if (empty($statuses)) {
+            return NULL;
+        }
 
         return (int)min($statuses) == Mage_Catalog_Model_Product_Status::STATUS_DISABLED;
     }
 
     // ---------------------------------------
 
-    public function isAllHaveStockAvailabilities($listingProductId)
+    public function isAllHaveStockAvailabilities($listingProductId, $storeId)
     {
         $variationsProductsIds = $this->getVariationsProductsIds($listingProductId);
 
@@ -56,12 +62,15 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
             return NULL;
         }
 
-        $stocks = $this->getVariationsStockAvailabilities($variationsProductsIds);
+        $stocks = $this->getVariationsStockAvailabilities($variationsProductsIds, $storeId);
+        if (empty($stocks)) {
+            return NULL;
+        }
 
         return (int)min($stocks);
     }
 
-    public function isAllDoNotHaveStockAvailabilities($listingProductId)
+    public function isAllDoNotHaveStockAvailabilities($listingProductId, $storeId)
     {
         $variationsProductsIds = $this->getVariationsProductsIds($listingProductId);
 
@@ -69,7 +78,10 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
             return NULL;
         }
 
-        $stocks = $this->getVariationsStockAvailabilities($variationsProductsIds);
+        $stocks = $this->getVariationsStockAvailabilities($variationsProductsIds, $storeId);
+        if (empty($stocks)) {
+            return NULL;
+        }
 
         return !(int)max($stocks);
     }
@@ -140,7 +152,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         return $variationsStatuses;
     }
 
-    private function getVariationsStockAvailabilities(array $variationsProductsIds)
+    private function getVariationsStockAvailabilities(array $variationsProductsIds, $storeId)
     {
         $productsIds = array();
 
@@ -151,7 +163,8 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
         }
 
         $productsIds = array_values(array_unique($productsIds));
-        $catalogInventoryTable = Mage::getSingleton('core/resource')->getTableName('cataloginventory_stock_item');
+        $catalogInventoryTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('cataloginventory_stock_item');
 
         $select = $this->_getReadAdapter()
                        ->select()
@@ -159,7 +172,8 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product_Variation
                             array('cisi' => $catalogInventoryTable),
                             array('product_id','is_in_stock', 'manage_stock', 'use_config_manage_stock')
                        )
-                       ->where('cisi.product_id IN ('.implode(',',$productsIds).')');
+                       ->where('cisi.product_id IN ('.implode(',',$productsIds).')')
+                       ->where('cisi.stock_id = ?', Mage::helper('M2ePro/Magento_Store')->getStockId($storeId));
 
         $stocks = $select->query()->fetchAll();
 

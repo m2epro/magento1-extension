@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -17,6 +17,8 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     const UPDATE_COMPLETED_SHIPPING = 'completed_shipping';
     const UPDATE_BUYER_MESSAGE      = 'buyer_message';
     const UPDATE_PAYMENT_DATA       = 'payment_data';
+    const UPDATE_SHIPPING_TAX_DATA  = 'shipping_tax_data';
+    const UPDATE_ITEMS_COUNT        = 'items_count';
     const UPDATE_EMAIL              = 'email';
 
     //########################################
@@ -243,6 +245,19 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         $this->createOrUpdateItems();
         $this->createOrUpdateExternalTransactions();
 
+        $finalFee = $this->order->getChildObject()->getFinalFee();
+        $magentoOrder = $this->order->getMagentoOrder();
+
+        if (!empty($finalFee) && !empty($magentoOrder) && $magentoOrder->getPayment()) {
+            $paymentAdditionalData = $magentoOrder->getPayment()->getAdditionalData();
+            $paymentAdditionalData = @unserialize($paymentAdditionalData);
+            if (!empty($paymentAdditionalData)) {
+                $paymentAdditionalData['channel_final_fee'] = $finalFee;
+                $magentoOrder->getPayment()->setAdditionalData(serialize($paymentAdditionalData));
+                $magentoOrder->getPayment()->save();
+            }
+        }
+
         if ($this->isNew()) {
             $this->processNew();
         }
@@ -391,9 +406,9 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     {
         $this->prepareShippingAddress();
 
-        $this->setData('tax_details', json_encode($this->getData('tax_details')));
-        $this->setData('shipping_details', json_encode($this->getData('shipping_details')));
-        $this->setData('payment_details', json_encode($this->getData('payment_details')));
+        $this->setData('tax_details', Mage::helper('M2ePro')->jsonEncode($this->getData('tax_details')));
+        $this->setData('shipping_details', Mage::helper('M2ePro')->jsonEncode($this->getData('shipping_details')));
+        $this->setData('payment_details', Mage::helper('M2ePro')->jsonEncode($this->getData('payment_details')));
 
         $this->order->addData($this->getData());
         $this->order->save();
@@ -475,7 +490,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             if ($order->canCancelMagentoOrder()) {
                 $description = 'Magento Order #%order_id% should be canceled '.
                            'as new combined eBay order #%new_id% was created.';
-                $description = $log->encodeDescription($description, array(
+                $description = Mage::helper('M2ePro/Module_Log')->encodeDescription($description, array(
                     '!order_id' => $order->getMagentoOrder()->getRealOrderId(),
                     '!new_id' => $this->order->getData('ebay_order_id')
                 ));
@@ -495,7 +510,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
             $order->deleteInstance();
 
             $description = 'eBay Order #%old_id% was deleted as new combined eBay order #%new_id% was created.';
-            $description = $log->encodeDescription($description, array(
+            $description = Mage::helper('M2ePro/Module_Log')->encodeDescription($description, array(
                 '!old_id' => $orderId,
                 '!new_id' => $this->order->getData('ebay_order_id')
             ));
@@ -524,8 +539,14 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         if ($this->hasUpdatedPaymentData()) {
             $this->updates[] = self::UPDATE_PAYMENT_DATA;
         }
+        if ($this->hasUpdatedShippingTaxData()) {
+            $this->updates[] = self::UPDATE_SHIPPING_TAX_DATA;
+        }
         if ($this->hasUpdatedCompletedShipping()) {
             $this->updates[] = self::UPDATE_COMPLETED_SHIPPING;
+        }
+        if ($this->hasUpdatedItemsCount()) {
+            $this->updates[] = self::UPDATE_ITEMS_COUNT;
         }
         if ($this->hasUpdatedEmail()) {
             $this->updates[] = self::UPDATE_EMAIL;
@@ -601,6 +622,43 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         return false;
     }
 
+    private function hasUpdatedShippingTaxData()
+    {
+        if (!$this->isUpdated()) {
+            return false;
+        }
+
+        /** @var $ebayOrder Ess_M2ePro_Model_Ebay_Order */
+        $ebayOrder = $this->order->getChildObject();
+        $shippingDetails = $this->getData('shipping_details');
+        $taxDetails      = $this->getData('tax_details');
+
+        if (!empty($shippingDetails['price']) && $shippingDetails['price'] != $ebayOrder->getShippingPrice() ||
+            !empty($shippingDetails['service']) && $shippingDetails['service'] != $ebayOrder->getShippingService())
+        {
+            return true;
+        }
+
+        if ((!empty($taxDetails['rate']) && $taxDetails['rate'] != $ebayOrder->getTaxRate()) ||
+            (!empty($taxDetails['amount']) && $taxDetails['amount'] != $ebayOrder->getTaxAmount()))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ---------------------------------------
+
+    private function hasUpdatedItemsCount()
+    {
+        if (!$this->isUpdated()) {
+            return false;
+        }
+
+        return count($this->items) != $this->order->getItemsCollection()->getSize();
+    }
+
     // ---------------------------------------
 
     private function hasUpdatedEmail()
@@ -650,6 +708,20 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
         if ($this->hasUpdate(self::UPDATE_COMPLETED_SHIPPING)) {
             $this->order->addSuccessLog('Shipping status was updated to Shipped on eBay.');
             $this->order->setStatusUpdateRequired(true);
+        }
+
+        if ($this->hasUpdate(self::UPDATE_SHIPPING_TAX_DATA) && $this->order->getMagentoOrderId()) {
+
+            $message  = 'Attention! Shipping/Tax details have been modified on the channel. ';
+            $message .= 'Magento order is already created and cannot be updated to reflect these changes.';
+            $this->order->addWarningLog($message);
+        }
+
+        if ($this->hasUpdate(self::UPDATE_ITEMS_COUNT) && $this->order->getMagentoOrderId()) {
+
+            $message  = 'Attention! The number of ordered Items has been modified on the channel. ';
+            $message .= 'Magento order is already created and cannot be updated to reflect these changes.';
+            $this->order->addWarningLog($message);
         }
     }
 

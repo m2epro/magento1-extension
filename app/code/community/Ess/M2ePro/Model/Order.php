@@ -2,11 +2,12 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 /**
+ * @method Ess_M2ePro_Model_Amazon_Order|Ess_M2ePro_Model_Ebay_Order|Ess_M2ePro_Model_Walmart_Order getChildObject()
  */
 class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -27,6 +28,9 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     // Shipping method "M2E Pro Shipping" is disabled in Magento Configuration.
 
     const ADDITIONAL_DATA_KEY_IN_ORDER = 'm2epro_order';
+
+    const MAGENTO_ORDER_CREATION_FAILED_NO  = 0;
+    const MAGENTO_ORDER_CREATION_FAILED_YES = 1;
 
     private $account = NULL;
 
@@ -100,6 +104,21 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     public function getMagentoOrderId()
     {
         return $this->getData('magento_order_id');
+    }
+
+    public function isMagentoOrderCreationFailed()
+    {
+        return (bool)(int)$this->getData('magento_order_creation_failure');
+    }
+
+    public function getMagentoOrderCreationFailsCount()
+    {
+        return (int)$this->getData('magento_order_creation_fails_count');
+    }
+
+    public function getMagentoOrderCreationLatestAttemptDate()
+    {
+        return $this->getData('magento_order_creation_latest_attempt_date');
     }
 
     public function getStoreId()
@@ -242,7 +261,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
      */
     public function isSingle()
     {
-        return $this->getItemsCollection()->count() == 1;
+        return $this->getItemsCollection()->getSize() == 1;
     }
 
     /**
@@ -252,7 +271,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
      */
     public function isCombined()
     {
-        return $this->getItemsCollection()->count() > 1;
+        return $this->getItemsCollection()->getSize() > 1;
     }
 
     // ---------------------------------------
@@ -302,7 +321,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     {
         $channelItems = $this->getChannelItems();
 
-        return count($channelItems) != $this->getItemsCollection()->count();
+        return count($channelItems) != $this->getItemsCollection()->getSize();
     }
 
     //########################################
@@ -313,7 +332,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         $log = $this->getLog();
 
         if (!empty($params)) {
-            $description = $log->encodeDescription($description, $params, $links);
+            $description = Mage::helper('M2ePro/Module_Log')->encodeDescription($description, $params, $links);
         }
 
         $log->addMessage($this->getId(), $description, $type);
@@ -416,11 +435,9 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     /**
      * Find the store, where order should be placed
-     *
-     * @param bool $strict
      * @throws Ess_M2ePro_Model_Exception
      */
-    public function associateWithStore($strict = true)
+    public function associateWithStore()
     {
         $storeId = $this->getStoreId() ? $this->getStoreId() : $this->getChildObject()->getAssociatedStoreId();
         $store = Mage::getModel('core/store')->load($storeId);
@@ -433,14 +450,16 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             $this->setData('store_id', $store->getId())->save();
         }
 
-        if (!Mage::getStoreConfig('payment/m2epropayment/active', $store) && $strict) {
-            throw new Ess_M2ePro_Model_Exception('Payment method "M2E Pro Payment" is disabled in
-                Magento Configuration.');
+        if (!Mage::getStoreConfig('payment/m2epropayment/active', $store)) {
+            throw new Ess_M2ePro_Model_Exception(
+                'Payment method "M2E Pro Payment" is disabled in Magento Configuration.'
+            );
         }
 
-        if (!Mage::getStoreConfig('carriers/m2eproshipping/active', $store) && $strict) {
-            throw new Ess_M2ePro_Model_Exception('Shipping method "M2E Pro Shipping" is disabled in
-                Magento Configuration.');
+        if (!Mage::getStoreConfig('carriers/m2eproshipping/active', $store)) {
+            throw new Ess_M2ePro_Model_Exception(
+                'Shipping method "M2E Pro Shipping" is disabled in Magento Configuration.'
+            );
         }
     }
 
@@ -448,27 +467,13 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     /**
      * Associate each order item with product in magento
-     *
-     * @param bool $strict
      * @throws Exception|null
      */
-    public function associateItemsWithProducts($strict = true)
+    public function associateItemsWithProducts()
     {
-        $exception = null;
-
         foreach ($this->getItemsCollection()->getItems() as $item) {
-            try {
-                /** @var $item Ess_M2ePro_Model_Order_Item */
-                $item->associateWithProduct();
-            } catch (Exception $e) {
-                if (is_null($exception)) {
-                    $exception = $e;
-                }
-            }
-        }
-
-        if ($strict && $exception) {
-            throw $exception;
+            /** @var $item Ess_M2ePro_Model_Order_Item */
+            $item->associateWithProduct();
         }
     }
 
@@ -484,8 +489,16 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             return false;
         }
 
-        if (method_exists($this->getChildObject(), 'isReservable')) {
-            return $this->getChildObject()->isReservable();
+        if (!$this->getChildObject()->isReservable()) {
+            return false;
+        }
+
+        foreach ($this->getItemsCollection()->getItems() as $item) {
+            /** @var $item Ess_M2ePro_Model_Order_Item */
+
+            if (!$item->isReservable()) {
+                return false;
+            }
         }
 
         return true;
@@ -503,6 +516,14 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             return false;
         }
 
+        foreach ($this->getItemsCollection()->getItems() as $item) {
+            /** @var $item Ess_M2ePro_Model_Order_Item */
+
+            if (!$item->canCreateMagentoOrder()) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -510,6 +531,10 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     private function beforeCreateMagentoOrder()
     {
+        if (!is_null($this->getMagentoOrderId())) {
+            throw new Ess_M2ePro_Model_Exception('Magento Order is already created.');
+        }
+
         if (method_exists($this->getChildObject(), 'beforeCreateMagentoOrder')) {
             $this->getChildObject()->beforeCreateMagentoOrder();
         }
@@ -526,13 +551,31 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     {
         try {
 
-            $this->beforeCreateMagentoOrder();
+            // Check if we are wrapped by an another MySql transaction
+            // ---------------------------------------
+            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+            if ($transactionLevel = $connection->getTransactionLevel()) {
+
+                Mage::helper('M2ePro/Module_Logger')->process(
+                    array(
+                        'transaction_level' => $transactionLevel
+                    ),
+                    'MySql Transaction Level Problem'
+                );
+
+                while ($connection->getTransactionLevel()) {
+                    $connection->rollBack();
+                }
+            }
+            // ---------------------------------------
 
             // Store must be initialized before products
             // ---------------------------------------
             $this->associateWithStore();
             $this->associateItemsWithProducts();
             // ---------------------------------------
+
+            $this->beforeCreateMagentoOrder();
 
             // Create magento order
             // ---------------------------------------
@@ -553,7 +596,14 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
             $magentoOrderId = $this->getMagentoOrderId();
             if (empty($magentoOrderId)) {
-                $this->setData('magento_order_id', $this->magentoOrder->getId());
+
+                $this->addData(array(
+                    'magento_order_id'                           => $this->magentoOrder->getId(),
+                    'magento_order_creation_failure'             => self::MAGENTO_ORDER_CREATION_FAILED_NO,
+                    'magento_order_creation_latest_attempt_date' => Mage::helper('M2ePro')->getCurrentGmtDate()
+                ));
+
+                $this->setMagentoOrder($this->magentoOrder);
                 $this->save();
             }
 
@@ -563,15 +613,51 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             unset($magentoOrderBuilder);
             // ---------------------------------------
 
+            /** @var Mage_Sales_Model_Order $magentoOrder */
+            $magentoOrder = Mage::getModel('sales/order')->load($magentoOrderId);
+            $magentoOrder->setCustomerGroupId($this->getProxy()->getCustomer()->getGroupId());
+            $magentoOrder->save();
+
         } catch (Exception $e) {
+
+            unset($magentoQuoteBuilder);
+            unset($magentoOrderBuilder);
+
+            /**
+             * Mage_CatalogInventory_Model_Stock::registerProductsSale() could open an transaction and may does not
+             * close it in case of Exception. So all the next changes may be lost.
+             */
+            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+            if ($transactionLevel = $connection->getTransactionLevel()) {
+
+                Mage::helper('M2ePro/Module_Logger')->process(
+                    array(
+                        'transaction_level' => $transactionLevel,
+                        'error'             => $e->getMessage(),
+                        'trace'             => $e->getTraceAsString()
+                    ),
+                    'MySql Transaction Level Problem'
+                );
+
+                while ($connection->getTransactionLevel()) {
+                    $connection->rollBack();
+                }
+            }
 
             Mage::dispatchEvent('m2epro_order_place_failure', array('order' => $this));
 
-            $this->addErrorLog('Magento Order was not created. Reason: %msg%', array('msg' => $e->getMessage()));
+            $this->addData(array(
+                'magento_order_creation_failure'             => self::MAGENTO_ORDER_CREATION_FAILED_YES,
+                'magento_order_creation_fails_count'         => $this->getMagentoOrderCreationFailsCount() + 1,
+                'magento_order_creation_latest_attempt_date' => Mage::helper('M2ePro')->getCurrentGmtDate()
+            ));
+            $this->save();
 
-            // reserve qty back only if it was canceled before the order creation process started
+            $this->addErrorLog('Magento Order was not created. Reason: %msg%', array('msg' => $e->getMessage()));
+            Mage::helper('M2ePro/Module_Exception')->process($e, false);
+
             // ---------------------------------------
-            if ($this->isReservable() && $this->getReserve()->getFlag('order_reservation')) {
+            if ($this->isReservable()) {
                 $this->getReserve()->place();
             }
             // ---------------------------------------

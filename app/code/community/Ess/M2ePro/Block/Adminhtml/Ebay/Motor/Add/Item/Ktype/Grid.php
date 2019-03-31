@@ -2,20 +2,13 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Ktype_Grid
     extends Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Grid
 {
-    //########################################
-
-    public function getMotorsType()
-    {
-        return Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE;
-    }
-
     //########################################
 
     protected function _prepareCollection()

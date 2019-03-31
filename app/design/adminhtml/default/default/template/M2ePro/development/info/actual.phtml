@@ -20,6 +20,18 @@
 
     <tr>
         <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Core Resource'); ?>: </label>
+        </td>
+        <td class="value">
+            <span <?php if ($this->moduleVersion != $this->coreResourceVersion || $this->moduleVersion != $this->coreResourceDataVersion) : echo ' style="color: red;" '; endif; ?>>
+                <?php echo ($this->coreResourceVersion ? $this->coreResourceVersion : 'N/A') .' / '.
+                           ($this->coreResourceDataVersion ? $this->coreResourceDataVersion : 'N/A') ?>
+            </span>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
             <label><?php echo Mage::helper('M2ePro')->__('PHP'); ?>: </label>
         </td>
         <td class="value">

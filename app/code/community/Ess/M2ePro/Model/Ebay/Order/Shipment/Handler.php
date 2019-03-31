@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -16,26 +16,31 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
             throw new InvalidArgumentException('Invalid component mode.');
         }
 
-        $trackingDetails = $this->getTrackingDetails($shipment);
+        $trackingDetails = $this->getTrackingDetails($order, $shipment);
 
         if (!$order->getChildObject()->canUpdateShippingStatus($trackingDetails)) {
             return self::HANDLE_RESULT_SKIPPED;
         }
 
         if (empty($trackingDetails)) {
-            return $this->processOrder($order) ? self::HANDLE_RESULT_SUCCEEDED : self::HANDLE_RESULT_FAILED;
+
+            return $order->getChildObject()->updateShippingStatus()
+                ? self::HANDLE_RESULT_SUCCEEDED
+                : self::HANDLE_RESULT_FAILED;
         }
 
         $itemsToShip = $this->getItemsToShip($order, $shipment);
 
         if (empty($itemsToShip) || count($itemsToShip) == $order->getItemsCollection()->getSize()) {
-            return $this->processOrder($order, $trackingDetails)
-                ? self::HANDLE_RESULT_SUCCEEDED : self::HANDLE_RESULT_FAILED;
+
+            return $order->getChildObject()->updateShippingStatus($trackingDetails)
+                ? self::HANDLE_RESULT_SUCCEEDED
+                : self::HANDLE_RESULT_FAILED;
         }
 
         $succeeded = true;
         foreach ($itemsToShip as $item) {
-            if ($this->processOrderItem($item, $trackingDetails)) {
+            if ($item->getChildObject()->updateShippingStatus($trackingDetails)) {
                 continue;
             }
 
@@ -46,39 +51,6 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
     }
 
     //########################################
-
-    private function processOrder(Ess_M2ePro_Model_Order $order, array $trackingDetails = array())
-    {
-        $changeParams = array(
-            'tracking_details' => $trackingDetails,
-        );
-        $this->createChange($order, $changeParams);
-
-        return $order->getChildObject()->updateShippingStatus($trackingDetails);
-    }
-
-    private function processOrderItem(Ess_M2ePro_Model_Order_Item $item, array $trackingDetails)
-    {
-        $changeParams = array(
-            'tracking_details' => $trackingDetails,
-            'item_id' => $item->getId(),
-        );
-        $this->createChange($item->getOrder(), $changeParams);
-
-        return $item->getChildObject()->updateShippingStatus($trackingDetails);
-    }
-
-    // ---------------------------------------
-
-    private function createChange(Ess_M2ePro_Model_Order $order, array $params)
-    {
-        $orderId   = $order->getId();
-        $action    = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
-        $creator   = Ess_M2ePro_Model_Order_Change::CREATOR_TYPE_OBSERVER;
-        $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
-
-        Mage::getModel('M2ePro/Order_Change')->create($orderId, $action, $creator, $component, $params);
-    }
 
     private function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
     {

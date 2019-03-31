@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -139,10 +139,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Filter_Grid extends Mage_Adminht
     {
         /** @var Ess_M2ePro_Model_Ebay_Motor_Filter $row */
         $conditions = $row->getConditions();
+        $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
 
         $select = Mage::getResourceModel('core/config')->getReadConnection()
             ->select()
-            ->from(Mage::helper('M2ePro/Component_Ebay_Motors')->getDictionaryTable($this->getMotorsType()));
+            ->from($helper->getDictionaryTable($this->getMotorsType()));
+
+        $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
+        if ($helper->isTypeBasedOnEpids($this->getMotorsType())) {
+            $select->where('scope = ?', $helper->getEpidsScopeByType($this->getMotorsType()));
+        }
 
         foreach ($conditions as $key => $value) {
 
@@ -186,34 +192,43 @@ HTML;
 
     public function callbackColumnConditions($value, $row, $column, $isExport)
     {
-        $conditions = json_decode($value, true);
+        $conditions = Mage::helper('M2ePro')->jsonDecode($value);
 
-        if ($this->getMotorsType() == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID) {
+        if (Mage::helper('M2ePro/Component_Ebay_Motors')->isTypeBasedOnEpids($this->getMotorsType())) {
 
             if (!empty($conditions['year'])) {
-                !empty($conditions['year']['from']) && $conditions['Year From'] = $conditions['year']['from'];
-                !empty($conditions['year']['to']) && $conditions['Year To'] = $conditions['year']['to'];
+                $yearIndex = array_search("year",array_keys($conditions));
+
+                !empty($conditions['year']['to']) && $conditions = array_merge(
+                    array_slice($conditions, 0, $yearIndex),
+                    array('Year To' => $conditions['year']['to']),
+                    array_slice($conditions, $yearIndex)
+                );
+
+                !empty($conditions['year']['from']) && $conditions = array_merge(
+                    array_slice($conditions, 0, $yearIndex),
+                    array('Year From' => $conditions['year']['from']),
+                    array_slice($conditions, $yearIndex)
+                );
 
                 unset($conditions['year']);
             }
 
-            if (!empty($conditions['product_type'])) {
+            if (isset($conditions['product_type']) && $conditions['product_type'] != '') {
 
                 switch($conditions['product_type']) {
                     case Ess_M2ePro_Helper_Component_Ebay_Motors::PRODUCT_TYPE_VEHICLE:
-                        $conditions['Type'] = Mage::helper('M2ePro')->__('Car / Truck');
+                        $conditions['product_type'] = Mage::helper('M2ePro')->__('Car / Truck');
                         break;
 
                     case Ess_M2ePro_Helper_Component_Ebay_Motors::PRODUCT_TYPE_MOTORCYCLE:
-                        $conditions['Type'] = Mage::helper('M2ePro')->__('Motorcycle');
+                        $conditions['product_type'] = Mage::helper('M2ePro')->__('Motorcycle');
                         break;
 
                     case Ess_M2ePro_Helper_Component_Ebay_Motors::PRODUCT_TYPE_ATV:
-                        $conditions['Type'] = Mage::helper('M2ePro')->__('ATV / Snowmobiles');
+                        $conditions['product_type'] = Mage::helper('M2ePro')->__('ATV / Snowmobiles');
                         break;
                 }
-
-                unset($conditions['product_type']);
             }
         }
 
@@ -223,10 +238,12 @@ HTML;
 
             if ($key == 'epid') {
                 $key = Mage::helper('M2ePro')->escapeHtml('ePID');
-            } else if($key == 'ktype') {
+            } else if ($key == 'ktype') {
                 $key = Mage::helper('M2ePro')->escapeHtml('kType');
-            } else if($key == 'body_style') {
+            } else if ($key == 'body_style') {
                 $key = Mage::helper('M2ePro')->escapeHtml('Body Style');
+            } else if ($key == 'product_type') {
+                $key = Mage::helper('M2ePro')->escapeHtml('Type');
             } else {
                 $key = Mage::helper('M2ePro')->escapeHtml(ucfirst($key));
             }
@@ -329,7 +346,7 @@ JS;
 
     public function getItemsColumnTitle()
     {
-        if ($this->getMotorsType() == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID) {
+        if (Mage::helper('M2ePro/Component_Ebay_Motors')->isTypeBasedOnEpids($this->getMotorsType())) {
             return Mage::helper('M2ePro')->__('ePID(s)');
         }
 

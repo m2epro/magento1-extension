@@ -2,18 +2,18 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
 {
-    const MODE_FULL    = 'full';
-    const MODE_PARTIAL = 'partial';
+    const MODE_INCLUDING = 'including';
+    const MODE_EXCLUDING = 'excluding';
 
     //########################################
 
-    protected $mode = self::MODE_FULL;
+    protected $mode = self::MODE_EXCLUDING;
 
     protected $allowedDataTypes = array();
 
@@ -21,74 +21,9 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
 
     //########################################
 
-    public function getAllModes()
+    public function __construct()
     {
-        return array(
-            self::MODE_FULL,
-            self::MODE_PARTIAL,
-        );
-    }
-
-    //########################################
-
-    /**
-     * @param string $mode
-     * @return $this
-     */
-    public function setMode($mode)
-    {
-        if (!in_array($mode, $this->getAllModes())) {
-            throw new InvalidArgumentException('Mode is invalid.');
-        }
-
-        $this->mode = $mode;
-        $this->allowedDataTypes = array();
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMode()
-    {
-        return $this->mode;
-    }
-
-    //########################################
-
-    /**
-     * @return bool
-     */
-    public function isFullMode()
-    {
-        return $this->mode == self::MODE_FULL;
-    }
-
-    /**
-     * @return Ess_M2ePro_Model_Listing_Product_Action_Configurator
-     */
-    public function setFullMode()
-    {
-        return $this->setMode(self::MODE_FULL);
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isPartialMode()
-    {
-        return $this->mode == self::MODE_PARTIAL;
-    }
-
-    /**
-     * @return Ess_M2ePro_Model_Listing_Product_Action_Configurator
-     */
-    public function setPartialMode()
-    {
-        return $this->setMode(self::MODE_PARTIAL);
+        $this->enableAll();
     }
 
     //########################################
@@ -97,27 +32,60 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
 
     //########################################
 
-    /**
-     * @return bool
-     */
-    public function isAllAllowed()
+    public function enableAll()
     {
-        if ($this->isFullMode()) {
-            return true;
-        }
+        $this->mode             = self::MODE_EXCLUDING;
+        $this->allowedDataTypes = $this->getAllDataTypes();
 
-        return !array_diff($this->getAllDataTypes(), $this->getAllowedDataTypes());
+        return $this;
     }
+
+    public function disableAll()
+    {
+        $this->mode             = self::MODE_INCLUDING;
+        $this->allowedDataTypes = array();
+
+        return $this;
+    }
+
+    //########################################
+
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    public function isExcludingMode()
+    {
+        return $this->mode == self::MODE_EXCLUDING;
+    }
+
+    public function isIncludingMode()
+    {
+        return $this->mode == self::MODE_INCLUDING;
+    }
+
+    // ---------------------------------------
+
+    public function setModeExcluding()
+    {
+        $this->mode = self::MODE_EXCLUDING;
+        return $this;
+    }
+
+    public function setModeIncluding()
+    {
+        $this->mode = self::MODE_INCLUDING;
+        return $this;
+    }
+
+    //########################################
 
     /**
      * @return array
      */
     public function getAllowedDataTypes()
     {
-        if ($this->isFullMode()) {
-            return $this->getAllDataTypes();
-        }
-
         return $this->allowedDataTypes;
     }
 
@@ -126,11 +94,6 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
     public function isAllowed($dataType)
     {
         $this->validateDataType($dataType);
-
-        if ($this->isFullMode()) {
-            return true;
-        }
-
         return in_array($dataType, $this->allowedDataTypes);
     }
 
@@ -151,13 +114,6 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
         $this->validateDataType($dataType);
 
         if (!$this->isAllowed($dataType)) {
-            return $this;
-        }
-
-        if ($this->isFullMode()) {
-            $this->setPartialMode();
-            $this->allowedDataTypes = array_diff($this->getAllDataTypes(), array($dataType));
-
             return $this;
         }
 
@@ -193,14 +149,6 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function isDataConsists(Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator)
     {
-        if ($this->isAllAllowed()) {
-            return true;
-        }
-
-        if ($configurator->isAllAllowed()) {
-            return false;
-        }
-
         return !array_diff($configurator->getAllowedDataTypes(), $this->getAllowedDataTypes());
     }
 
@@ -221,17 +169,8 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function mergeData(Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator)
     {
-        if ($this->isAllAllowed()) {
-            return $this;
-        }
-
-        if ($configurator->isAllAllowed()) {
-            $this->setFullMode();
-            return $this;
-        }
-
-        if (!$this->isPartialMode()) {
-            $this->setPartialMode();
+        if ($configurator->isExcludingMode()) {
+            $this->mode = self::MODE_EXCLUDING;
         }
 
         $this->allowedDataTypes = array_unique(array_merge(
@@ -274,19 +213,16 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function setData(array $data)
     {
-        if (!empty($data['mode'])) {
-            if (!in_array($data['mode'], $this->getAllModes())) {
-                throw new InvalidArgumentException('Mode is invalid.');
-            }
-
-            $this->mode = $data['mode'];
-        }
+        $this->mode = $data['mode'];
 
         if (!empty($data['allowed_data_types'])) {
             if (!is_array($data['allowed_data_types']) ||
                 array_diff($data['allowed_data_types'], $this->getAllDataTypes())
             ) {
-                throw new InvalidArgumentException('Allowed data types are invalid.');
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'Allowed data types are invalid.',
+                    array('allowed_data_types' => $data['allowed_data_types'])
+                );
             }
 
             $this->allowedDataTypes = $data['allowed_data_types'];
@@ -308,7 +244,9 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
     protected function validateDataType($dataType)
     {
         if (!in_array($dataType, $this->getAllDataTypes())) {
-            throw new Ess_M2ePro_Model_Exception_Logic('Data type is invalid');
+            throw new Ess_M2ePro_Model_Exception_Logic(
+                'Data type is invalid', array('data_type' => $dataType)
+            );
         }
     }
 

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -32,8 +32,13 @@ class Ess_M2ePro_Adminhtml_Configuration_SettingsController
             (int)$this->getRequest()->getParam('force_qty_value')
         );
 
-        Mage::helper('M2ePro/Module')->getSynchronizationConfig()->setGroupValue(
-            '/defaults/inspector/', 'mode',
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
+            '/magento/attribute/','price_type_converting',
+            (int)$this->getRequest()->getParam('price_convert_mode')
+        );
+
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
+            '/listing/product/inspector/', 'mode',
             (int)$this->getRequest()->getParam('inspector_mode')
         );
 
@@ -48,12 +53,25 @@ class Ess_M2ePro_Adminhtml_Configuration_SettingsController
 
     public function restoreBlockNoticesAction()
     {
-        foreach ($_COOKIE as $name => $value) {
-            strpos($name,'m2e_bn_') !== false && setcookie($name, '', 0, '/');
+        foreach (Mage::getModel('M2ePro/Listing')->getCollection() as $listing) {
+            /** @var $listing Ess_M2ePro_Model_Listing */
+
+            $additionalData = $listing->getSettings('additional_data');
+
+            if ($listing->isComponentModeEbay()) {
+                unset($additionalData['show_settings_step']);
+                unset($additionalData['mode_same_category_data']);
+            }
+
+            if ($listing->isComponentModeAmazon()) {
+                unset($additionalData['show_new_asin_step']);
+            }
+
+            $listing->setSettings('additional_data', $additionalData);
+            $listing->save();
         }
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('All Help Blocks were restored.'));
-        $this->_redirectUrl($this->_getRefererUrl());
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('success' => true)));
     }
 
     //########################################

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -61,7 +61,8 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $etocTable = Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable();
-        $eascTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_account_store_category');
+        $eascTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
 
         // prepare category main select
         // ---------------------------------------

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -218,33 +218,34 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Grid extends Mage_Adminhtml_
 
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $collection->getSelect()->columns(
-            array('account_id', 'marketplace_id', 'status', 'second_table.online_qty_sold')
-        );
+        $collection->getSelect()->columns(array(
+            'count' => new \Zend_Db_Expr('COUNT(id)'),
+            'sold' => new \Zend_Db_Expr('SUM(second_table.online_qty_sold)'),
+            'account_id',
+            'marketplace_id',
+            'status',
+        ));
+        $collection->getSelect()->group(array('account_id','marketplace_id','status'));
 
-        /* @var $item Ess_M2ePro_Model_Listing_Other */
         foreach ($collection->getItems() as $item) {
 
-            $accountId = $item->getAccountId();
-            $marketplaceId = $item->getMarketplaceId();
-            $key = $accountId . ',' . $marketplaceId;
+            $key = $item->getData('account_id') . ',' . $item->getData('marketplace_id');
 
             empty($this->cacheData[$key]) && ($this->cacheData[$key] = array(
-                'total_items' => 0,
-                'active_items' => 0,
+                'total_items'    => 0,
+                'active_items'   => 0,
                 'inactive_items' => 0,
-                'sold_qty' => 0
+                'sold_qty'       => 0
             ));
 
-            ++$this->cacheData[$key]['total_items'];
-
-            if ($item->getStatus() == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                ++$this->cacheData[$key]['active_items'];
+            if ($item->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
+                $this->cacheData[$key]['active_items'] += (int)$item['count'];
             } else {
-                ++$this->cacheData[$key]['inactive_items'];
+                $this->cacheData[$key]['inactive_items'] += (int)$item['count'];
             }
 
-            $this->cacheData[$key]['sold_qty'] += $item->getData('online_qty_sold');
+            $this->cacheData[$key]['total_items'] += (int)$item->getData('count');
+            $this->cacheData[$key]['sold_qty'] += (int)$item->getData('sold');
         }
     }
 

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -11,6 +11,9 @@
  */
 class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_Abstract
 {
+    const RETURNS_ACCEPTED     = 'ReturnsAccepted';
+    const RETURNS_NOT_ACCEPTED = 'ReturnsNotAccepted';
+
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
@@ -45,17 +48,21 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
         }
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
-                            ->getCollection()
-                            ->addFieldToFilter('template_return_mode',
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE)
-                            ->addFieldToFilter('template_return_id', $this->getId())
-                            ->getSize() ||
-               (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
-                            ->getCollection()
-                            ->addFieldToFilter('template_return_mode',
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE)
-                            ->addFieldToFilter('template_return_id', $this->getId())
-                            ->getSize();
+                ->getCollection()
+                ->addFieldToFilter(
+                    'template_return_mode',
+                    Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                )
+                ->addFieldToFilter('template_return_id', $this->getId())
+                ->getSize() ||
+            (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
+                ->getCollection()
+                ->addFieldToFilter(
+                    'template_return_mode',
+                    Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                )
+                ->addFieldToFilter('template_return_id', $this->getId())
+                ->getSize();
     }
 
     public function deleteInstance()
@@ -86,7 +93,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-         $this->marketplaceModel = $instance;
+        $this->marketplaceModel = $instance;
     }
 
     //########################################
@@ -141,23 +148,34 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
         return $this->getData('within');
     }
 
-    /**
-     * @return bool
-     */
-    public function isHolidayEnabled()
-    {
-        return (bool)$this->getData('holiday_mode');
-    }
-
     public function getShippingCost()
     {
         return $this->getData('shipping_cost');
     }
 
-    public function getRestockingFee()
+    // ---------------------------------------
+
+    public function getInternationalAccepted()
     {
-        return $this->getData('restocking_fee');
+        return $this->getData('international_accepted');
     }
+
+    public function getInternationalOption()
+    {
+        return $this->getData('international_option');
+    }
+
+    public function getInternationalWithin()
+    {
+        return $this->getData('international_within');
+    }
+
+    public function getInternationalShippingCost()
+    {
+        return $this->getData('international_shipping_cost');
+    }
+
+    // ---------------------------------------
 
     public function getDescription()
     {
@@ -169,34 +187,20 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
     /**
      * @return array
      */
-    public function getTrackingAttributes()
-    {
-        return array();
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsedAttributes()
-    {
-        return array();
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
     public function getDefaultSettingsSimpleMode()
     {
         return array(
-            'accepted'       => 'ReturnsAccepted',
-            'option'         => '',
-            'within'         => '',
-            'holiday_mode'   => 0,
-            'shipping_cost'  => '',
-            'restocking_fee' => '',
-            'description'    => ''
+            'accepted'      => self::RETURNS_ACCEPTED,
+            'option'        => '',
+            'within'        => '',
+            'shipping_cost' => '',
+
+            'international_accepted'      => self::RETURNS_NOT_ACCEPTED,
+            'international_option'        => '',
+            'international_within'        => '',
+            'international_shipping_cost' => '',
+
+            'description' => ''
         );
     }
 
@@ -206,54 +210,6 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
     public function getDefaultSettingsAdvancedMode()
     {
         return $this->getDefaultSettingsSimpleMode();
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asArrays
-     * @param string|array $columns
-     * @return array
-     */
-    public function getAffectedListingsProducts($asArrays = true, $columns = '*')
-    {
-        $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
-        $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN);
-
-        $listingsProducts = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->getId(), $asArrays, $columns
-        );
-
-        $listings = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->getId(), false
-        );
-
-        foreach ($listings as $listing) {
-
-            $tempListingsProducts = $listing->getChildObject()
-                                            ->getAffectedListingsProductsByTemplate(
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
-                                                $asArrays, $columns
-                                            );
-
-            foreach ($tempListingsProducts as $listingProduct) {
-                if (!isset($listingsProducts[$listingProduct['id']])) {
-                    $listingsProducts[$listingProduct['id']] = $listingProduct;
-                }
-            }
-        }
-
-        return $listingsProducts;
-    }
-
-    public function setSynchStatusNeed($newData, $oldData)
-    {
-        $listingsProducts = $this->getAffectedListingsProducts(true, array('id'));
-        if (empty($listingsProducts)) {
-            return;
-        }
-
-        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     //########################################

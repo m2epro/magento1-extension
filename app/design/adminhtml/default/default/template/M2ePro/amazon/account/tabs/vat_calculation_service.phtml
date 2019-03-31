@@ -1,0 +1,76 @@
+<div id="block_notice_amazon_accounts_vat_calculation_service" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('VAT Calculation Service'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'This section allows providing the settings for VAT Calculation Service.<br />
+         After you enable the <strong>VAT Calculation Service</strong> option, an ability to disable Magento Invoice creation for your Channel Sales will become available.<br />
+         If the <strong>Disable Magento Invoice Creation</strong> option is set to <strong>Yes</strong>, it will prevent the issue of duplicate invoices.<br /><br />
+         <strong>Note:</strong> You have to be enrolled in Amazon VAT Calculation Service.'
+    ); ?>
+</div>
+
+<?php
+    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
+
+    $defaults = array(
+        'is_vat_calculation_service_enabled'   => 0,
+        'is_magento_invoice_creation_disabled' => 0,
+    );
+
+    $formData = array_merge($defaults, $formData);
+    $isEdit = !!$this->getRequest()->getParam('id');
+?>
+
+<script type="text/javascript">
+    Event.observe(window, 'load', function() {
+        $('is_vat_calculation_service_enabled')
+            .observe('change', AmazonAccountHandlerObj.vatCalculationModeChange)
+            .simulate('change');
+    });
+</script>
+
+<div class="entry-edit" id="magento_block_amazon_accounts_vat_calculation_service_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="is_vat_calculation_service_enabled"><?php echo Mage::helper('M2ePro')->__('VAT Calculation Service'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="is_vat_calculation_service_enabled" name="is_vat_calculation_service_enabled">
+                            <option value="0" <?php if($formData['is_vat_calculation_service_enabled'] == 0) echo ' selected="selected" '; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                            <option value="1" <?php if($formData['is_vat_calculation_service_enabled'] == 1) echo ' selected="selected" '; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr id="is_magento_invoice_creation_disabled_tr">
+                    <td class="label">
+                        <label for="is_magento_invoice_creation_disabled"><?php echo Mage::helper('M2ePro')->__('Disable Magento Invoice Creation'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="is_magento_invoice_creation_disabled" name="is_magento_invoice_creation_disabled">
+                            <option value="0" <?php if($formData['is_magento_invoice_creation_disabled'] == 0) echo ' selected="selected" '; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if($formData['is_magento_invoice_creation_disabled'] == 1) echo ' selected="selected" '; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('
+                                Set <strong>Yes</strong> to disable Magento Invoice creation for your Amazon Orders.<br />
+                                It will prevent the issue of duplicate invoices when VAT Calculation Service is enabled in your Seller Central Account.
+                            '); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -95,7 +95,7 @@ HTML;
             $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
             $connWrite->update(
-                Mage::getSingleton('core/resource')->getTableName('core_resource'),
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('core_resource'),
                 array(
                     'version'      => $version,
                     'data_version' => $version
@@ -127,9 +127,10 @@ HTML;
      */
     public function checkFilesValidityAction()
     {
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector('files','get','info');
-        $responseData = $dispatcherObject->process($connectorObj);
+        $dispatcherObject->process($connectorObj);
+        $responseData = $connectorObj->getResponseData();
 
         if (count($responseData) <= 0) {
             return $this->getResponse()->setBody(
@@ -213,11 +214,12 @@ HTML;
     {
         $tablesInfo = Mage::helper('M2ePro/Module_Database_Structure')->getTablesInfo();
 
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector('tables','get','diff',
                                                                array('tables_info' => json_encode($tablesInfo)));
 
-        $responseData = $dispatcherObject->process($connectorObj);
+        $dispatcherObject->process($connectorObj);
+        $responseData = $connectorObj->getResponseData();
 
         if (!isset($responseData['diff'])) {
             return $this->getResponse()->setBody(
@@ -270,11 +272,12 @@ HTML;
 
                 $urlParams = array(
                     'table_name'  => $tableName,
-                    'column_info' => json_encode($resultInfo['original_data'])
+                    'column_info' => Mage::helper('M2ePro')->jsonEncode($resultInfo['original_data'])
                 );
 
                 if (empty($resultInfo['current_data']) ||
-                    (isset($diffData['type']) || isset($diffData['default']) || isset($diffData['null']))) {
+                    (isset($diffData['type']) || isset($diffData['default']) ||
+                     isset($diffData['null']) || isset($diffData['extra']))) {
 
                     $urlParams['mode'] = 'properties';
                     $url = $this->getUrl('*/*/fixColumn', $urlParams);
@@ -291,7 +294,7 @@ HTML;
                 if (empty($resultInfo['original_data']) && !empty($resultInfo['current_data'])) {
 
                     $urlParams['mode'] = 'drop';
-                    $urlParams['column_info'] = json_encode($resultInfo['current_data']);
+                    $urlParams['column_info'] = Mage::helper('M2ePro')->jsonEncode($resultInfo['current_data']);
                     $url = $this->getUrl('*/*/fixColumn', $urlParams);
                     $actionsHtml .= "<a href=\"{$url}\">Drop</a>";
                 }
@@ -317,9 +320,10 @@ HTML;
      */
     public function checkConfigsValidityAction()
     {
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector('configs','get','info');
-        $responseData = $dispatcherObject->process($connectorObj);
+        $dispatcherObject->process($connectorObj);
+        $responseData = $connectorObj->getResponseData();
 
         if (!isset($responseData['configs_info'])) {
             return $this->getResponse()->setBody(
@@ -419,6 +423,10 @@ new Ajax.Request( '{$url}' , {
     parameters : formData
 });
 JS;
+            $group = is_null($row['item']['group']) ? 'null' : $row['item']['group'];
+            $key   = is_null($row['item']['key'])   ? 'null' : $row['item']['key'];
+            $value = is_null($row['item']['value']) ? 'null' : $row['item']['value'];
+
         $html .= <<<HTML
 <tr>
     <td>{$row['table']}</td>
@@ -430,9 +438,9 @@ JS;
             <input type="checkbox" name="cells[]" value="key" style="display: none;" checked="checked">
             <input type="checkbox" name="cells[]" value="value" style="display: none;" checked="checked">
 
-            <input type="hidden" name="value_group" value="{$row['item']['group']}">
-            <input type="hidden" name="value_key" value="{$row['item']['key']}">
-            <input type="text" name="value_value" value="{$row['item']['value']}">
+            <input type="hidden" name="value_group" value="{$group}">
+            <input type="hidden" name="value_key" value="{$key}">
+            <input type="text" name="value_value" value="{$value}">
         </form>
     </td>
     <td align="center">
@@ -456,7 +464,7 @@ HTML;
     {
         $tableName  = $this->getRequest()->getParam('table_name');
         $columnInfo = $this->getRequest()->getParam('column_info');
-        $columnInfo = (array)json_decode($columnInfo, true);
+        $columnInfo = (array)Mage::helper('M2ePro')->jsonDecode($columnInfo);
 
         $repairMode = $this->getRequest()->getParam('mode');
 
@@ -488,11 +496,12 @@ HTML;
             'path'    => $originalPath ? $originalPath : $filePath
         );
 
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector('files','get','diff',
                                                                $params);
 
-        $responseData = $dispatcherObject->process($connectorObj);
+        $dispatcherObject->process($connectorObj);
+        $responseData = $connectorObj->getResponseData();
 
         $html = $this->getStyleHtml();
 
@@ -515,7 +524,6 @@ HTML;
     /**
      * @title "Show UnWritable Directories"
      * @description "Show UnWritable Directories"
-     * @new_line
      */
     public function showUnWritableDirectoriesAction()
     {
@@ -551,105 +559,21 @@ HTML;
         return $this->getResponse()->setBody(str_replace('%count%',count($unWritableDirectories),$html));
     }
 
-    //########################################
-
     /**
-     * @title "Reset Module (Clear Installation)"
-     * @description "Clear all M2ePro data tables, reset wizards"
-     * @confirm "This will remove all M2e Pro data. Are you sure?"
-     * @non-production
+     * @title "Remove Configs Duplicates"
+     * @description "Remove Configuration Duplicates"
+     * @confirm "Are you sure?"
      */
-    public function fullResetModuleStateAction()
+    public function removeConfigsDuplicatesAction()
     {
-        $this->truncateModuleTables();
+        /** @var $installerInstance Ess_M2ePro_Model_Upgrade_MySqlSetup */
+        $installerInstance = new Ess_M2ePro_Model_Upgrade_MySqlSetup('M2ePro_setup');
+        $installerInstance->removeConfigsDuplicates();
 
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
+        Mage::helper('M2ePro/Module')->clearCache();
 
-        $connWrite->update(
-            Mage::getSingleton('core/resource')->getTableName('m2epro_primary_config'),
-            array('value' => null),
-            "`group` LIKE '%license%'"
-        );
-        $connWrite->update(
-            Mage::getSingleton('core/resource')->getTableName('m2epro_config'),
-            array('value' => 1),
-            "`key` = 'mode' AND `group` LIKE '/component/%'"
-        );
-
-        $skipWizards = array('migrationToV6','migrationNewAmazon','removedPay','ebayProductDetails',
-                             'fullAmazonCategories','amazonShippingOverridePolicy');
-
-        array_walk($skipWizards, function(&$el, $key) { $el = "'{$el}'"; });
-        $skipWizards = implode(',', $skipWizards);
-
-        $connWrite->update(
-            Mage::getSingleton('core/resource')->getTableName('m2epro_wizard'),
-            array('status' => 0, 'step' => null),
-            "nick NOT IN ({$skipWizards})"
-        );
-
-        Mage::helper('M2ePro/Magento')->clearCache();
-
-        $this->_getSession()->addSuccess('Full Reset Module State was successfully completed.');
+        $this->_getSession()->addSuccess('Remove duplicates was successfully completed.');
         $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageToolsTabUrl());
-    }
-
-    /**
-     * @title "Reset Module (Without Wizards)"
-     * @description "Clear all M2ePro data tables, set wizards as skipped"
-     * @confirm "This will remove all M2e Pro data. Are you sure?"
-     * @non-production
-     */
-    public function resetModuleStateAndSkippingWizardsAction()
-    {
-        $this->truncateModuleTables();
-
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $connWrite->update(
-            Mage::getSingleton('core/resource')->getTableName('m2epro_config'),
-            array('value' => 1),
-            "`key` = 'mode' AND `group` LIKE '/component/%'"
-        );
-        $connWrite->update(
-            Mage::getSingleton('core/resource')->getTableName('m2epro_wizard'),
-            array('status' => 3, 'step' => null)
-        );
-
-        Mage::helper('M2ePro/Magento')->clearCache();
-
-        $this->_getSession()->addSuccess('Reset Module State was successfully completed.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageToolsTabUrl());
-    }
-
-    // ---------------------------------------
-
-    private function truncateModuleTables()
-    {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $moduleTables = Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables();
-
-        $excludeTables = array(
-            'm2epro_primary_config',
-            'm2epro_config',
-            'm2epro_synchronization_config',
-
-            'm2epro_marketplace',
-            'm2epro_amazon_marketplace',
-            'm2epro_buy_marketplace',
-            'm2epro_ebay_marketplace',
-
-            'm2epro_wizard'
-        );
-
-        $tablesForTruncate = array_diff($moduleTables, $excludeTables);
-        foreach ($tablesForTruncate as $table) {
-            $connWrite->delete(Mage::getSingleton('core/resource')->getTableName($table));
-        }
     }
 
     //########################################

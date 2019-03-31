@@ -5,7 +5,7 @@
 <script type="text/javascript">
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'An error during of license creation occurred.' => Mage::helper('M2ePro')->__('The eBay token obtaining is currently unavailable. Please try again later.'),
+        'An error during of Extension Key creation occurred.' => Mage::helper('M2ePro')->__('The eBay token obtaining is currently unavailable. Please try again later.'),
         'Register Your M2E Pro Extension' => Mage::helper('M2ePro')->__('Register Your M2E Pro Extension')
     )); ?>);
 
@@ -18,11 +18,11 @@
         });
 
         $('sign_into_ebay_button').observe('click',function() {
-            InstallationEbayWizardObj.createLicenseAndGetToken('<?php echo Ess_M2ePro_Model_Connector_Ebay_Abstract::MODE_PRODUCTION; ?>');
+            InstallationEbayWizardObj.createLicenseAndGetToken('production');
         });
 
         var ebaySandboxSignIn = function() {
-            InstallationEbayWizardObj.createLicenseAndGetToken('<?php echo Ess_M2ePro_Model_Connector_Ebay_Abstract::MODE_SANDBOX; ?>');
+            InstallationEbayWizardObj.createLicenseAndGetToken('sandbox');
         };
         $('sign_into_ebay_sandbox').observe('click',ebaySandboxSignIn);
 
@@ -115,7 +115,7 @@
                             <?php echo Mage::helper('M2ePro')->__('First Name') ?>:
                         </td>
                         <td id="firstname" class="value" style="width: 200px">
-                            <input type="hidden" name="form_email" class="required-entry" value="<?php echo $this->getUserInfoValue('firstname') ; ?>">
+                            <input type="hidden" name="form_firstname" class="required-entry" value="<?php echo $this->getUserInfoValue('firstname') ; ?>">
                             <span><?php echo $this->getUserInfoValue('firstname', 'span'); ?></span>
                         </td>
                     </tr>
@@ -125,7 +125,7 @@
                             <?php echo Mage::helper('M2ePro')->__('Last Name') ?>:
                         </td>
                         <td id="lastname" class="value" style="width: 200px">
-                            <input type="hidden" name="form_email" class="required-entry" value="<?php echo $this->getUserInfoValue('lastname') ; ?>">
+                            <input type="hidden" name="form_lastname" class="required-entry" value="<?php echo $this->getUserInfoValue('lastname') ; ?>">
                             <span><?php echo $this->getUserInfoValue('lastname', 'span'); ?></span>
                         </td>
                     </tr>
@@ -135,7 +135,7 @@
                             <?php echo Mage::helper('M2ePro')->__('Phone') ?>:
                         </td>
                         <td id="phone" class="value" style="width: 200px">
-                            <input type="hidden" name="form_phone" value="<?php echo $this->getUserInfoValue('phone') ; ?>">
+                            <input type="hidden" name="form_phone" class="required-entry" value="<?php echo $this->getUserInfoValue('phone') ; ?>">
                             <span><?php echo $this->getUserInfoValue('phone', 'span'); ?></span>
                         </td>
                     </tr>
@@ -159,7 +159,7 @@
                             <?php echo Mage::helper('M2ePro')->__('City') ?>:
                         </td>
                         <td id="city" class="value" style="width: 200px">
-                            <input type="hidden" name="form_email" class="required-entry" value="<?php echo $this->getUserInfoValue('city') ; ?>">
+                            <input type="hidden" name="form_city" class="required-entry" value="<?php echo $this->getUserInfoValue('city') ; ?>">
                             <span><?php echo $this->getUserInfoValue('city', 'span'); ?></span>
                         </td>
                     </tr>
@@ -169,7 +169,7 @@
                             <?php echo Mage::helper('M2ePro')->__('Postal Code') ?>:
                         </td>
                         <td id="postal_code" class="value" style="width: 200px">
-                            <input type="hidden" name="form_email" class="required-entry" value="<?php echo $this->getUserInfoValue('postal_code') ; ?>">
+                            <input type="hidden" name="form_postal_code" class="required-entry" value="<?php echo $this->getUserInfoValue('postal_code') ; ?>">
                             <span><?php echo $this->getUserInfoValue('postal_code', 'span'); ?></span>
                         </td>
                     </tr>

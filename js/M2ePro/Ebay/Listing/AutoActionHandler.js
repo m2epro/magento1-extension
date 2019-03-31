@@ -2,7 +2,10 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
 
     // ---------------------------------------
 
-    controller: 'adminhtml_ebay_listing_autoAction',
+    getController: function()
+    {
+        return 'adminhtml_ebay_listing_autoAction';
+    },
 
     // ---------------------------------------
 
@@ -30,7 +33,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
 
     loadCategoryChooser: function(callback)
     {
-        new Ajax.Request(M2ePro.url.get(ListingAutoActionHandlerObj.controller + '/getCategoryChooserHtml'), {
+        new Ajax.Request(M2ePro.url.get(ListingAutoActionHandlerObj.getController() + '/getCategoryChooserHtml'), {
             method: 'get',
             asynchronous: true,
             parameters: {
@@ -58,7 +61,7 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
             return;
         }
 
-        new Ajax.Request(M2ePro.url.get(ListingAutoActionHandlerObj.controller + '/getCategorySpecificHtml'), {
+        new Ajax.Request(M2ePro.url.get(ListingAutoActionHandlerObj.getController() + '/getCategorySpecificHtml'), {
             method: 'get',
             asynchronous: true,
             parameters: {
@@ -88,21 +91,6 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
 
     // ---------------------------------------
 
-    globalStepTwo: function()
-    {
-        ListingAutoActionHandlerObj.collectData();
-
-        var callback = function() {
-            $('continue_button')
-                .stopObserving('click')
-                .observe('click', ListingAutoActionHandlerObj.globalStepThree);
-
-            ListingAutoActionHandlerObj.highlightBreadcrumbStep(2);
-        };
-
-        ListingAutoActionHandlerObj.loadCategoryChooser(callback);
-    },
-
     globalStepThree: function()
     {
         if (!EbayListingCategoryChooserHandlerObj.validate()) {
@@ -121,23 +109,6 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         ListingAutoActionHandlerObj.loadSpecific(callback);
     },
 
-    // ---------------------------------------
-
-    websiteStepTwo: function()
-    {
-        ListingAutoActionHandlerObj.collectData();
-
-        var callback = function() {
-            $('continue_button')
-                .stopObserving('click')
-                .observe('click', ListingAutoActionHandlerObj.websiteStepThree);
-
-            ListingAutoActionHandlerObj.highlightBreadcrumbStep(2);
-        };
-
-        ListingAutoActionHandlerObj.loadCategoryChooser(callback);
-    },
-
     websiteStepThree: function()
     {
         if (!EbayListingCategoryChooserHandlerObj.validate()) {
@@ -154,39 +125,6 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
         };
 
         ListingAutoActionHandlerObj.loadSpecific(callback);
-    },
-
-    // ---------------------------------------
-
-    categoryStepOne: function(groupId)
-    {
-        var callback = function() {
-            $('add_button').hide();
-            $('reset_button').hide();
-            $('close_button').hide();
-            $('cancel_button').show();
-        };
-
-        this.loadAutoCategoryForm(groupId, callback);
-    },
-
-    categoryStepTwo: function()
-    {
-        if (!ListingAutoActionHandlerObj.validate()) {
-            return;
-        }
-
-        ListingAutoActionHandlerObj.collectData();
-
-        var callback = function() {
-            $('continue_button')
-                .stopObserving('click')
-                .observe('click', ListingAutoActionHandlerObj.categoryStepThree);
-
-            ListingAutoActionHandlerObj.highlightBreadcrumbStep(2);
-        };
-
-        ListingAutoActionHandlerObj.loadCategoryChooser(callback);
     },
 
     categoryStepThree: function()
@@ -208,70 +146,6 @@ EbayListingAutoActionHandler = Class.create(ListingAutoActionHandler, {
     },
 
     // ---------------------------------------
-
-    categoryDeleteGroup: function(groupId)
-    {
-        if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
-            return;
-        }
-
-        new Ajax.Request(M2ePro.url.get(ListingAutoActionHandlerObj.controller + '/deleteCategoryGroup'), {
-            method: 'post',
-            asynchronous: true,
-            parameters: {
-                group_id: groupId
-            },
-            onSuccess: function(transport) {
-                listingAutoActionModeCategoryGroupGridJsObject.doFilter();
-            }.bind(this)
-        });
-    },
-
-    // ---------------------------------------
-
-    validate: function()
-    {
-        var validationResult = [];
-
-        if ($('edit_form')) {
-            validationResult = Form.getElements('edit_form').collect(Validation.validate);
-
-            if ($('auto_mode') && $('auto_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY')) {
-                validationResult.push(Validation.validate($('validate_category_selection')));
-            }
-        } else if ($('category_specific_form')) {
-            validationResult = Form.getElements('category_specific_form').collect(Validation.validate);
-        }
-
-        if (validationResult.indexOf(false) != -1) {
-            return false;
-        }
-
-        return true;
-    },
-
-    confirm: function()
-    {
-        if ($('listingAutoActionModeCategoryGroupGrid')) {
-            Windows.getFocusedWindow().close();
-            return;
-        }
-
-        if (!ListingAutoActionHandlerObj.validate()) {
-            return;
-        }
-
-        ListingAutoActionHandlerObj.collectData();
-
-        var callback;
-        if (ListingAutoActionHandlerObj.internalData.auto_mode == M2ePro.php.constant('Ess_M2ePro_Model_Listing::AUTO_MODE_CATEGORY')) {
-            callback = ListingAutoActionHandlerObj.loadAutoActionHtml.bind(ListingAutoActionHandlerObj);
-        } else {
-            callback = Windows.getFocusedWindow().close.bind(Windows.getFocusedWindow());
-        }
-
-        ListingAutoActionHandlerObj.submitData(callback);
-    },
 
     collectData: function()
     {

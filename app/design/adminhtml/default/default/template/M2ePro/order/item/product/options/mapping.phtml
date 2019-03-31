@@ -118,6 +118,9 @@
     </div>
 
     <div class="buttons-container">
+        <div id="error_container" style="display: none; float: left;">
+            <img src="<?php echo $this->getSkinUrl('M2ePro/images/error.png'); ?>" alt="" />&nbsp;<span class="error_msg"></span>
+        </div>
         <div id="selected_product_option_is_out_of_stock" style="display: none; float: left;">
             <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" alt="" />&nbsp;<span><?php echo Mage::helper('M2ePro')->__('Selected Product Option is Out of Stock.') ?></span>
         </div>
@@ -150,9 +153,23 @@
                 method: 'get',
                 parameters: Form.serialize('modal_dialog_message'),
                 onSuccess: function(transport) {
-                    var isInStock = transport.responseText.evalJSON()['is_in_stock'];
+                    var response = isInStock = transport.responseText.evalJSON(),
+                        errorContainer = $('error_container'),
+                        button = $('product_options_mapping_submit_button');
 
-                    if (!isInStock) {
+                    errorContainer.hide();
+                    button.enable();
+                    button.hasClassName('disabled') && button.removeClassName('disabled');
+
+                    if (response['error']) {
+                        errorContainer.down('.error_msg').innerText = response['error'].replace("\r\n", "");
+                        errorContainer.show();
+                        button.disable();
+                        button.addClassName('disabled');
+                        return;
+                    }
+
+                    if (!response['is_in_stock']) {
                         $('selected_product_option_is_out_of_stock').show();
                     } else {
                         $('selected_product_option_is_out_of_stock').hide();

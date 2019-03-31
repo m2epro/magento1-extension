@@ -1,0 +1,18 @@
+<div id="block_notice_amazon_orders_list" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Orders'); ?>">
+    <?php
+    echo Mage::helper('M2ePro')->__('This Page contains all Orders.<br/><br/>
+    Use Accounts Dropdown to filter Orders by Accounts.
+    If Magento Order, Invoice or / and Shipment was not created automatically,
+    you can create them manually by using appropriate Options in the <strong>Action</strong> Dropdown.<br/><br/>
+    <b>Note:</b> Automatic creation of Magento Orders, Invoices, and Shipments executes according to <i class="underline">Accounts Settings</i> in (%menu_path%).',
+        Mage::helper('M2ePro/View_Amazon')->getPageNavigationPath('configuration', 'Accounts', '', '[Needed Account] > Orders Tab')
+    );
+
+    $url = Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/G40VAQ");
+
+    echo Mage::helper('M2ePro')->__('
+        <br/><br/>More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        $url
+    );
+?>
+</div>

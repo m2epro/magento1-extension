@@ -144,7 +144,10 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
 
     checkMessages: function(templateNick)
     {
-        if (!this.checkAttributesAvailability && templateNick != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT')) {
+        if (!this.checkAttributesAvailability &&
+            templateNick != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT') &&
+            templateNick != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING')
+        ) {
             return;
         }
 
@@ -395,6 +398,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
                                 EbayListingTemplateSwitcherHandlerObj.updateButtonsVisibility(template.nick);
                                 EbayListingTemplateSwitcherHandlerObj.updateEditVisibility(template.nick);
                                 EbayListingTemplateSwitcherHandlerObj.updateTemplateLabelVisibility(template.nick);
+                                EbayListingTemplateSwitcherHandlerObj.checkMessages(template.nick);
                             });
                         }.bind(this)
                     });

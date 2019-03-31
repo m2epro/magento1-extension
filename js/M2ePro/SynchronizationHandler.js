@@ -6,7 +6,6 @@ SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
     initialize: function(synchProgressObj)
     {
         this.synchProgressObj = synchProgressObj;
-        this.synchProgressObj.addProcessingNowWarning();
     },
 
     // ---------------------------------------
@@ -42,17 +41,6 @@ SynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
                 }
             }
         });
-    },
-
-    // ---------------------------------------
-
-    runAllEnabledNow: function(components)
-    {
-        this.synchProgressObj.runTask(
-            M2ePro.translator.translate('Running All Enabled Tasks'),
-            M2ePro.url.get('runAllEnabledNow'),
-            components
-        );
     },
 
     // ---------------------------------------

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -16,6 +16,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             ->_title(Mage::helper('M2ePro')->__('Configuration'));
 
         $this->getLayout()->getBlock('head')
+            ->addJs('M2ePro/Plugin/ActionColumn.js')
             ->addJs('M2ePro/Ebay/Configuration/CategoryHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Category/ChooserHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Category/SpecificHandler.js')
@@ -23,14 +24,16 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367053');
+        $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
 
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/configuration');
+        return Mage::getSingleton('admin/session')->isAllowed(
+            Ess_M2ePro_Helper_View_Ebay::MENU_ROOT_NODE_NICK . '/configuration'
+        );
     }
 
     //########################################
@@ -112,9 +115,14 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $templateIds = $this->getTemplateCategoryIds($post, $typePrefix, $categoryModelName);
         $oldSnapshots = array();
         foreach ($templateIds as $templateId) {
-            $oldSnapshots[$templateId] = Mage::getModel('M2ePro/Ebay_Template_' . $categoryModelName)
-                ->loadInstance((int)$templateId)
-                ->getDataSnapshot();
+            $model = Mage::getModel('M2ePro/Ebay_Template_' . $categoryModelName)
+                ->loadInstance((int)$templateId);
+
+            /** @var Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract $snapshotBuilder */
+            $snapshotBuilder = Mage::getModel('M2ePro/Ebay_Template_'.$categoryModelName.'_SnapshotBuilder');
+            $snapshotBuilder->setModel($model);
+
+            $oldSnapshots[$templateId] = $snapshotBuilder->getSnapshot();
         }
 
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
@@ -129,13 +137,13 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_othercategory');
 
         if (empty($post['specifics_data'])) {
-            $this->setSynchStatusNeed($oldSnapshots, $categoryModelName);
+            $this->processChange($oldSnapshots, $categoryModelName);
             return;
         }
 
-        $specificsData = json_decode($post['specifics_data'], true);
+        $specificsData = Mage::helper('M2ePro')->jsonDecode($post['specifics_data']);
         if (empty($specificsData)) {
-            $this->setSynchStatusNeed($oldSnapshots, $categoryModelName);
+            $this->processChange($oldSnapshots, $categoryModelName);
             return;
         }
 
@@ -171,7 +179,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_category');
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('ebay_template_othercategory');
 
-        $this->setSynchStatusNeed($oldSnapshots, $categoryModelName);
+        $this->processChange($oldSnapshots, $categoryModelName);
     }
 
     //########################################
@@ -192,7 +200,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
 
         $selectedCategories = array();
         if (!is_null($selectedCategoriesJson)) {
-            $selectedCategories = json_decode($selectedCategoriesJson, true);
+            $selectedCategories = Mage::helper('M2ePro')->jsonDecode($selectedCategoriesJson);
         }
         // ---------------------------------------
 
@@ -368,7 +376,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         if ((in_array($categoryType, $ebayCategoryTypes) && is_null($marketplaceId)) ||
             (in_array($categoryType, $storeCategoryTypes) && is_null($accountId))
         ) {
-            $this->getResponse()->setBody(json_encode($data));
+            $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($data));
             return;
         }
 
@@ -378,8 +386,8 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
                 ->getChildObject()
                 ->getChildCategories($parentCategoryId);
         } elseif (in_array($categoryType, $storeCategoryTypes)) {
-            $tableAccountStoreCategories = Mage::getSingleton('core/resource')
-                ->getTableName('m2epro_ebay_account_store_category');
+            $tableAccountStoreCategories = Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
 
             /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
             $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
@@ -393,7 +401,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             $data = $connRead->fetchAll($dbSelect);
         }
 
-        $this->getResponse()->setBody(json_encode($data));
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($data));
     }
 
     public function getPathAction()
@@ -453,16 +461,18 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             || (in_array($categoryType, $ebayCategoryTypes) && is_null($marketplaceId))
             || (in_array($categoryType, $storeCategoryTypes) && is_null($accountId))
         ) {
-            $this->getResponse()->setBody(json_encode($result));
+            $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));
             return;
         }
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
         if (in_array($categoryType, $ebayCategoryTypes)) {
-            $tableName = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_category');
+            $tableName = Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix('m2epro_ebay_dictionary_category');
         } else {
-            $tableName = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_account_store_category');
+            $tableName = Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
         }
 
         $dbSelect = $connRead->select();
@@ -507,7 +517,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             );
         }
 
-        $this->getResponse()->setBody(json_encode($result));
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));
     }
 
     public function getAttributeLabelsAction()
@@ -521,7 +531,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $attributes = explode(',', $attributesParam);
         $labels = Mage::helper('M2ePro/Magento_Attribute')->getAttributesLabels($attributes);
 
-        $this->getResponse()->setBody(json_encode($labels));
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($labels));
     }
 
     public function getRecentAction()
@@ -541,7 +551,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
             );
         }
 
-        $this->getResponse()->setBody(json_encode($categories));
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($categories));
     }
 
     //########################################
@@ -559,17 +569,19 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         $attribute = Mage::getResourceModel('catalog/product')->getAttribute($attributeCode);
 
         if ($attribute === false) {
-            $this->getResponse()->setBody(json_encode(array('type' => null)));
+            $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('type' => null)));
             return;
         }
 
-        $this->getResponse()->setBody(json_encode(array('type' => $attribute->getBackendType())));
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(array('type' => $attribute->getBackendType()))
+        );
     }
 
     public function getJsonSpecificsFromPostAction()
     {
         $itemSpecifics = $this->_getSpecificsFromPost($this->getRequest()->getPost());
-        $this->getResponse()->setBody(json_encode($itemSpecifics));
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($itemSpecifics));
     }
 
     public function getSpecificHtmlAction()
@@ -601,7 +613,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
 
         $templates = $this->getRequest()->getParam('templates');
         if (is_string($templates) && !empty($templates)) {
-            $templates = json_decode($templates, true);
+            $templates = Mage::helper('M2ePro')->jsonDecode($templates);
         }
 
         Mage::helper('M2ePro/Data_Global')->setValue('chooser_data', array(
@@ -675,8 +687,10 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
                     'mode'                   => (int)$post['item_specifics_mode_'.$i],
                     'attribute_title'        => $post['item_specifics_attribute_title_'.$i],
                     'value_mode'             => (int)$post['item_specifics_value_mode_'.$i],
-                    'value_ebay_recommended' => !empty($ebayRecommendedTemp) ? json_encode($ebayRecommendedTemp) : '',
-                    'value_custom_value'     => !empty($attributeValue)      ? json_encode($attributeValue)      : '',
+                    'value_ebay_recommended' => !empty($ebayRecommendedTemp)
+                                                ? Mage::helper('M2ePro')->jsonEncode($ebayRecommendedTemp) : '',
+                    'value_custom_value'     => !empty($attributeValue)
+                                                ? Mage::helper('M2ePro')->jsonEncode($attributeValue)      : '',
                     'value_custom_attribute' => $customAttribute
                 );
             }
@@ -711,7 +725,8 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
                     'attribute_title'           => $attributeTitle,
                     'value_mode'                => (int)$post['custom_item_specifics_value_mode_' . $i],
                     'value_ebay_recommended'    => '',
-                    'value_custom_value'        => !empty($attributeValue) ? json_encode($attributeValue) : '',
+                    'value_custom_value'        => !empty($attributeValue)
+                                                   ? Mage::helper('M2ePro')->jsonEncode($attributeValue) : '',
                     'value_custom_attribute'    => $customAttribute
                 );
             }
@@ -790,7 +805,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
         return $templateIds;
     }
 
-    private function setSynchStatusNeed($oldSnapshots, $categoryModelName)
+    private function processChange($oldSnapshots, $categoryModelName)
     {
         if (empty($oldSnapshots)) {
             return;
@@ -798,7 +813,27 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
 
         foreach ($oldSnapshots as $templateId => $oldSnapshot) {
             $model = Mage::getModel('M2ePro/Ebay_Template_' . $categoryModelName)->loadInstance((int)$templateId);
-            $model->setSynchStatusNeed($model->getDataSnapshot(), $oldSnapshot);
+
+            /** @var Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract $snapshotBuilder */
+            $snapshotBuilder = Mage::getModel('M2ePro/Ebay_Template_'.$categoryModelName.'_SnapshotBuilder');
+            $snapshotBuilder->setModel($model);
+
+            $newSnapshot = $snapshotBuilder->getSnapshot();
+
+            /** @var Ess_M2ePro_Model_Template_Diff_Abstract $diff */
+            $diff = Mage::getModel('M2ePro/Ebay_Template_'.$categoryModelName.'_Diff');
+            $diff->setNewSnapshot($newSnapshot);
+            $diff->setOldSnapshot($oldSnapshot);
+
+            /** @var Ess_M2ePro_Model_Template_AffectedListingsProducts_Abstract $affectedListingsProducts */
+            $affectedListingsProducts = Mage::getModel(
+                'M2ePro/Ebay_Template_'.$categoryModelName.'_AffectedListingsProducts'
+            );
+            $affectedListingsProducts->setModel($model);
+
+            /** @var Ess_M2ePro_Model_Template_ChangeProcessor_Abstract $changeProcessor */
+            $changeProcessor = Mage::getModel('M2ePro/Ebay_Template_'.$categoryModelName.'_ChangeProcessor');
+            $changeProcessor->process($diff, $affectedListingsProducts->getData(array('id', 'status')));
         }
     }
 

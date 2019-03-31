@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -51,18 +51,21 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const _ACTION_STOP_AND_REMOVE_PRODUCT = 'Stop on Channel / Remove from Listing';
     const ACTION_DELETE_AND_REMOVE_PRODUCT = 23;
     const _ACTION_DELETE_AND_REMOVE_PRODUCT = 'Remove from Channel & Listing';
-    const ACTION_NEW_SKU_PRODUCT_ON_COMPONENT = 27;
-    const _ACTION_NEW_SKU_PRODUCT_ON_COMPONENT = 'New SKU Item on Channel';
     const ACTION_SWITCH_TO_AFN_ON_COMPONENT = 29;
     const _ACTION_SWITCH_TO_AFN_ON_COMPONENT = 'Switching Fulfillment to AFN';
     const ACTION_SWITCH_TO_MFN_ON_COMPONENT = 30;
     const _ACTION_SWITCH_TO_MFN_ON_COMPONENT = 'Switching Fulfillment to MFN';
+    const ACTION_RESET_BLOCKED_PRODUCT = 32;
+    const _ACTION_RESET_BLOCKED_PRODUCT = 'Reset Inactive (Blocked) Item';
 
     const ACTION_CHANGE_PRODUCT_SPECIAL_PRICE_FROM_DATE = 19;
     const _ACTION_CHANGE_PRODUCT_SPECIAL_PRICE_FROM_DATE = 'Change of Product Special Price from date in Magento Store';
 
     const ACTION_CHANGE_PRODUCT_SPECIAL_PRICE_TO_DATE = 20;
     const _ACTION_CHANGE_PRODUCT_SPECIAL_PRICE_TO_DATE = 'Change of Product Special Price to date in Magento Store';
+
+    const ACTION_CHANGE_PRODUCT_TIER_PRICE = 31;
+    const _ACTION_CHANGE_PRODUCT_TIER_PRICE = 'Change of Product Tier Price in Magento Store';
 
     const ACTION_CHANGE_CUSTOM_ATTRIBUTE = 18;
     const _ACTION_CHANGE_CUSTOM_ATTRIBUTE = 'Change of Product Custom Attribute in Magento Store';
@@ -71,7 +74,10 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const _ACTION_MOVE_TO_LISTING = 'Move to another Listing';
 
     const ACTION_MOVE_FROM_OTHER_LISTING = 22;
-    const _ACTION_MOVE_FROM_OTHER_LISTING = 'Move from other Listing';
+    const _ACTION_MOVE_FROM_OTHER_LISTING = 'Move from 3rd Party Listing';
+
+    const ACTION_SELL_ON_ANOTHER_EBAY_SITE = 33;
+    const _ACTION_SELL_ON_ANOTHER_EBAY_SITE = 'Sell on Another Ebay Site';
 
     const ACTION_CHANNEL_CHANGE = 25;
     const _ACTION_CHANNEL_CHANGE = 'Change Item on Channel';
@@ -120,7 +126,8 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
                                       $action = NULL,
                                       $description = NULL,
                                       $type = NULL,
-                                      $priority = NULL)
+                                      $priority = NULL,
+                                      array $additionalData = array())
     {
         $dataForAdd = $this->makeDataForAdd($listingId,
                                             $initiator,
@@ -130,62 +137,26 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
                                             $action,
                                             $description,
                                             $type,
-                                            $priority);
+                                            $priority,
+                                            $additionalData);
 
         $this->createMessage($dataForAdd);
     }
 
     //########################################
 
-    public function updateListingTitle($listingId , $title)
-    {
-        if ($title == '') {
-             return false;
-        }
-
-        Mage::getSingleton('core/resource')->getConnection('core_write')
-             ->update($this->getResource()->getMainTable(),
-                      array('listing_title'=>$title),array('listing_id = ?'=>(int)$listingId));
-
-        return true;
-    }
-
-    public function updateProductTitle($productId , $title)
-    {
-         if ($title == '') {
-             return false;
-         }
-
-        Mage::getSingleton('core/resource')->getConnection('core_write')
-             ->update($this->getResource()->getMainTable(),
-                      array('product_title'=>$title),array('product_id = ?'=>(int)$productId));
-
-        return true;
-    }
-
-    // ---------------------------------------
-
-    public function getActionTitle($type)
-    {
-        return $this->getActionTitleByClass(__CLASS__,$type);
-    }
-
-    public function getActionsTitles()
-    {
-        return $this->getActionsTitlesByClass(__CLASS__,'ACTION_');
-    }
-
-    // ---------------------------------------
-
     public function clearMessages($listingId = NULL)
     {
-        $columnName = !is_null($listingId) ? 'listing_id' : NULL;
-        $this->clearMessagesByTable('M2ePro/Listing_Log',$columnName,$listingId);
-    }
+        $filters = array();
 
-    public function getLastActionIdConfigKey()
-    {
-        return 'listings';
+        if (!is_null($listingId)) {
+            $filters['listing_id'] = $listingId;
+        }
+        if (!is_null($this->componentMode)) {
+            $filters['component_mode'] = $this->componentMode;
+        }
+
+        $this->getResource()->clearMessages($filters);
     }
 
     //########################################
@@ -271,7 +242,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
             $dataForAdd['priority'] = self::PRIORITY_LOW;
         }
 
-        $dataForAdd['additional_data'] = json_encode($additionalData);
+        $dataForAdd['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
 
         return $dataForAdd;
     }

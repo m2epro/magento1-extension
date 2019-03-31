@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -47,7 +47,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
                        '(mea.account_id = `main_table`.account_id)',
                        array('account_mode' => 'mode'))
                    ->joinLeft(
-                       array('so' => Mage::getSingleton('core/resource')->getTableName('sales/order')),
+                       array(
+                           'so' => Mage::helper('M2ePro/Module_Database_Structure')
+                               ->getTableNameWithPrefix('sales/order')
+                       ),
                        '(so.entity_id = `main_table`.magento_order_id)',
                        array('magento_order_num' => 'increment_id'));
 
@@ -108,9 +111,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         $this->addColumn('ebay_order_id', array(
             'header' => Mage::helper('M2ePro')->__('eBay Order #'),
             'align'  => 'left',
-            'width'  => '110px',
+            'width'  => '145px',
             'index'  => 'ebay_order_id',
             'frame_callback' => array($this, 'callbackColumnEbayOrder'),
+            'filter'   => 'M2ePro/adminhtml_ebay_grid_column_filter_orderId',
             'filter_condition_callback' => array($this, 'callbackFilterEbayOrderId')
         ));
 
@@ -248,38 +252,70 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         $this->getMassactionBlock()->setFormFieldName('ids');
         // ---------------------------------------
 
+        $groups = array(
+            'general' => Mage::helper('M2ePro')->__('General'),
+        );
+
+        if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
+            $groups['in_store_pickup'] = Mage::helper('M2ePro')->__('In-Store Pickup');
+        }
+
+        $this->getMassactionBlock()->setGroups($groups);
+
         // Set mass-action
         // ---------------------------------------
         $this->getMassactionBlock()->addItem('reservation_place', array(
              'label'    => Mage::helper('M2ePro')->__('Reserve QTY'),
              'url'      => $this->getUrl('*/adminhtml_order/reservationPlace'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'general');
 
         $this->getMassactionBlock()->addItem('reservation_cancel', array(
              'label'    => Mage::helper('M2ePro')->__('Cancel QTY Reserve'),
              'url'      => $this->getUrl('*/adminhtml_order/reservationCancel'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'general');
 
         $this->getMassactionBlock()->addItem('ship', array(
              'label'    => Mage::helper('M2ePro')->__('Mark Order(s) as Shipped'),
              'url'      => $this->getUrl('*/adminhtml_ebay_order/updateShippingStatus'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'general');
 
         $this->getMassactionBlock()->addItem('pay', array(
              'label'    => Mage::helper('M2ePro')->__('Mark Order(s) as Paid'),
              'url'      => $this->getUrl('*/adminhtml_ebay_order/updatePaymentStatus'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'general');
 
         $this->getMassactionBlock()->addItem('resend_shipping', array(
              'label'    => Mage::helper('M2ePro')->__('Resend Shipping Information'),
              'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'general');
         // ---------------------------------------
+
+        if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
+            return parent::_prepareMassaction();
+        }
+
+        $this->getMassactionBlock()->addItem('mark_as_ready_for_pickup', array(
+            'label'    => Mage::helper('M2ePro')->__('Mark as Ready For Pickup'),
+            'url'      => $this->getUrl('*/adminhtml_ebay_order/markAsReadyForPickup'),
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+        ), 'in_store_pickup');
+
+        $this->getMassactionBlock()->addItem('mark_as_picked_up', array(
+            'label'    => Mage::helper('M2ePro')->__('Mark as Picked Up'),
+            'url'      => $this->getUrl('*/adminhtml_ebay_order/markAsPickedUp'),
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+        ), 'in_store_pickup');
+
+        $this->getMassactionBlock()->addItem('mark_as_cancelled', array(
+            'label'    => Mage::helper('M2ePro')->__('Mark as Cancelled'),
+            'url'      => $this->getUrl('*/adminhtml_ebay_order/markAsCancelled'),
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+        ), 'in_store_pickup');
 
         return parent::_prepareMassaction();
     }
@@ -389,6 +425,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         if ($row['selling_manager_id'] > 0) {
             $returnString .= '<br/> [ <b>SM: </b> # ' . $row['selling_manager_id'] . ' ]';
         }
+
+        if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
+            return $returnString;
+        }
+
+        if (empty($row['shipping_details'])) {
+            return $returnString;
+        }
+
+        $shippingDetails = Mage::helper('M2ePro')->jsonDecode($row['shipping_details']);
+        if (empty($shippingDetails['in_store_pickup_details'])) {
+            return $returnString;
+        }
+
+        $skinUrl = $this->getSkinUrl('M2ePro');
+
+        $returnString = '<img src="'.$skinUrl.'/images/in_store_pickup.png" />&nbsp;'.$returnString;
 
         return $returnString;
     }
@@ -550,13 +603,22 @@ HTML;
     protected function callbackFilterEbayOrderId($collection, $column)
     {
         $value = $column->getFilter()->getValue();
-        if ($value == null) {
+        if (empty($value)) {
             return;
         }
 
-        $collection
-            ->getSelect()
-                ->where('ebay_order_id LIKE ? OR selling_manager_id LIKE ?', '%'.$value.'%');
+        if (!empty($value['value'])) {
+            $collection
+                ->getSelect()
+                ->where('ebay_order_id LIKE ? OR selling_manager_id LIKE ?', '%'.$value['value'].'%');
+        }
+
+        if (!empty($value['is_in_store_pickup'])) {
+            $collection->getSelect()->where(
+                'shipping_details regexp ?',
+                '"in_store_pickup_details":\{.+\}'
+            );
+        }
     }
 
     protected function callbackFilterItems($collection, $column)

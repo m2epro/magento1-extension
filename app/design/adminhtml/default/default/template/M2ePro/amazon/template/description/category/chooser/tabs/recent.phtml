@@ -1,0 +1,40 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Category_Chooser_Tabs_Recent $this */
+?>
+
+<style>
+
+    #chooser_recent_table td {
+        padding: 2px !important;
+    }
+
+</style>
+
+<div id="chooser_recent">
+    <table id="chooser_recent_table">
+
+        <?php if (count($this->getCategories()) <= 0) : ?>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <strong><?php echo Mage::helper('M2ePro')->__('No recently used Categories'); ?></strong>
+                </td>
+            </tr>
+        <?php endif; ?>
+
+        <?php foreach ($this->getCategories() as $category) : ?>
+
+            <?php $nodeId       = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($category['browsenode_id'])); ?>
+            <?php $categoryPath = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($category['path'])); ?>
+
+            <tr>
+                <td width="730px">
+                    <?php echo $category['path'] .' ('.$category['browsenode_id'].')'; ?>
+                </td>
+                <td width="68px">
+                    <a href="javascript:void(0)" onclick="AmazonTemplateDescriptionCategoryChooserHandlerObj.recentClickCategory('<?php echo $nodeId; ?>','<?php echo $categoryPath; ?>');"><?php echo Mage::helper('M2ePro')->__('Select'); ?></a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+
+    </table>
+</div>

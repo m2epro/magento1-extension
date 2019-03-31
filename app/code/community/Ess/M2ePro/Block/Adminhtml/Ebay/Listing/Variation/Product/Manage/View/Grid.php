@@ -2,9 +2,11 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
+
+use Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController as ManageController;
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
@@ -15,6 +17,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
     protected $variationAttributes;
 
     protected $listingProductId;
+
+    protected $identifiers = array(
+        'upc'  => 'UPC',
+        'ean'  => 'EAN',
+        'isbn' => 'ISBN',
+        'mpn'  => 'MPN',
+        'epid' => 'ePID'
+    );
 
     //########################################
 
@@ -188,12 +198,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
             'index' => 'additional_data',
             'filter_index' => 'additional_data',
             'filter' => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
-            'options' => array(
-                'upc'  => 'UPC',
-                'ean'  => 'EAN',
-                'isbn' => 'ISBN',
-                'mpn'  => 'MPN'
-            ),
+            'options' => $this->identifiers,
             'frame_callback' => array($this, 'callbackColumnIdentifiers'),
             'filter_condition_callback' => array($this, 'callbackFilterIdentifiers')
         ));
@@ -332,20 +337,36 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
     {
         $html = '';
         $formHtml = '';
+
         $variationId = $row->getData('id');
-        $additionalData = json_decode($row->getData('additional_data'), true);
-        $linkTitle = Mage::helper('M2ePro')->__('Change');
+        $additionalData = Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
+
+        $linkTitle   = Mage::helper('M2ePro')->__('Change');
         $linkContent = Mage::helper('M2ePro')->__('Change');
 
         $html .= '<div id="variation_identifiers_' . $variationId .
-            '" style="font-size: 11px; color: grey; margin-left: 7px">';
+            '" style="font-size: 11px; color: grey; margin-left: 7px; width: 165px;">';
+
         if (!empty($additionalData['product_details'])) {
             foreach ($additionalData['product_details'] as $identifier => $identifierValue) {
-                !$identifierValue && $identifierValue = '--';
-                $html .= '<span><span><strong>' .
-                    Mage::helper('M2ePro')->escapeHtml(strtoupper($identifier)) .
-                    '</strong></span>:&nbsp;<span class="value">' .
-                    Mage::helper('M2ePro')->escapeHtml($identifierValue) . '</span></span><br/>';
+
+                $identifier = isset($this->identifiers[$identifier])
+                    ? Mage::helper('M2ePro')->escapeHtml($this->identifiers[$identifier])
+                    : Mage::helper('M2ePro')->escapeHtml($identifier);
+
+                $identifierValue = $identifierValue ? Mage::helper('M2ePro')->escapeHtml($identifierValue)
+                                                    : '--';
+                $html .= <<<HTML
+<span>
+    <span>
+        <strong>{$identifier}</strong>
+    </span>:&nbsp;
+    <span class="value">
+        {$identifierValue}
+    </span>
+</span>
+<br/>
+HTML;
             }
         } else {
             $linkTitle = Mage::helper('M2ePro')->__('Set');
@@ -359,30 +380,44 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View_Grid
                 '' : $additionalData['product_details'][$optionKey];
 
             $formHtml .= <<<HTML
-<div style="padding: 2px 0;">
-    <span style="width: 30px;">{$optionVal}: </span>
-    <input type="text" name="product_details[{$optionKey}]" class="M2ePro-{$optionKey}" value="{$identifierValue}"
-        style="float: right; width: 122px; ">
+<div style="display: table-row;">
+    <div style="display: table-cell; vertical-align: middle;">
+        <div style="width: 40px;">
+        {$optionVal}:&nbsp;
+        </div>
+    </div>
+    <div style="display: table-cell;">
+        <input type="text" name="product_details[{$optionKey}]" class="M2ePro-{$optionKey}" value="{$identifierValue}"
+            style="width: 125px; margin: 5px 0px;">
+    </div>
 </div>
 HTML;
         }
 
+        $manageMode = ManageController::MANAGE_VARIATION_MODE;
         $html .= <<<HTML
-<div style="margin: 0px 7px;">
+<div style="margin: 0px 7px; width: 150px;">
 <form action="javascript:void(0);" id="variation_identifiers_edit_{$variationId}" style="font-size:11px;display: none">
     {$formHtml}
-    <input type="hidden" name="variation_id" value="{$variationId}">
-    <button class="scalable confirm-btn"
-            onclick="VariationsGridHandlerObj.confirmVariationIdentifiers(this, {$variationId})"
-            style="margin-top: 8px; float: right;">Confirm</button>
-    <a href="javascript:void(0);" class="scalable"
-        onclick="VariationsGridHandlerObj.cancelVariationIdentifiers({$variationId})"
-        style="margin: 7px 8px; float: right;">Cancel</a>
+    <div style="display: table-row;">
+        <div style="display: table-cell;"></div>
+        <div style="display: table-cell;">
+            <input type="hidden" name="variation_id" value="{$variationId}">
+            <input type="hidden" name="listing_product_id" value="{$this->getListingProduct()->getId()}">
+            <input type="hidden" name="manage_mode" value="{$manageMode}">
+            <button class="scalable confirm-btn"
+                    onclick="VariationsGridHandlerObj.confirmVariationIdentifiers(this, '{$variationId}')"
+                    style="margin-top: 8px; float: right;">Confirm</button>
+            <a href="javascript:void(0);" class="scalable"
+                onclick="VariationsGridHandlerObj.cancelVariationIdentifiers('{$variationId}')"
+                style="margin: 7px 8px; float: right;">Cancel</a>
+        </div>
+    </div>
 </form>
 <div style="text-align: left;">
 <a href="javascript:"
     id="edit_variations_{$variationId}"
-    onclick="VariationsGridHandlerObj.editVariationIdentifiers(this, {$variationId})"
+    onclick="VariationsGridHandlerObj.editVariationIdentifiers(this, '{$variationId}')"
     title="{$linkTitle}">{$linkContent}</a>
 </div>
 </div>
@@ -452,7 +487,12 @@ HTML;
 
         foreach ($values as $value) {
             if (is_array($value) && !empty($value['value'])) {
-                $collection->getSelect()->where('attributes REGEXP "'.$value['attr'].'=='.$value['value'].'"');
+                $collection->addFieldToFilter(
+                    'attributes',
+                    array('regexp'=>
+                          '[[:space:]]*'.$value['attr'].'[[:space:]]*==[[:space:]]*'.$value['value'].'[[:space:]]*'
+                    )
+                );
             }
         }
     }
@@ -469,9 +509,9 @@ HTML;
             if (is_array($value) && !empty($value['value'])) {
                 $collection->addFieldToFilter(
                     'additional_data',
-                    array('regexp'=> '"product_details":[^}]*'.$value['attr'].'":"' .
+                    array('regexp'=> '"product_details":[^}]*'.$value['attr'].'[[:space:]]*":"[[:space:]]*' .
                         // trying to screen slashes that in json
-                        addslashes(addslashes($value['value'])))
+                        addslashes(addslashes($value['value']).'[[:space:]]*'))
                 );
             }
         }
@@ -495,13 +535,11 @@ HTML;
 
     protected function _toHtml()
     {
-        $urls = array(
+        $urls = Mage::helper('M2ePro')->jsonEncode(array(
             'adminhtml_ebay_listing_variation_product_manage/setIdentifiers' => $this->getUrl(
                 '*/adminhtml_ebay_listing_variation_product_manage/setIdentifiers'
             )
-        );
-
-        $urls = json_encode($urls);
+        ));
 
         $javascriptMain = <<<HTML
 <script type="text/javascript">
@@ -510,6 +548,7 @@ HTML;
 
     Event.observe(window, 'load', function() {
 
+        FrameHandlerObj = new FrameHandler();
         CommonHandler.prototype.scroll_page_to_top = function() { return; }
 
         VariationsGridHandlerObj = new EbayListingVariationProductManageVariationsGridHandler(
@@ -528,38 +567,7 @@ HTML;
 </script>
 HTML;
 
-        $additionalCss = <<<HTML
-<style>
-    body {
-        background: none;
-    }
-
-    .wrapper {
-        min-width: inherit;
-    }
-
-    .footer {
-        display: none;
-    }
-
-    .middle {
-        padding: 0px;
-        background: none;
-    }
-
-    td.help_line .hl_close {
-        margin-top: -6px;
-    }
-
-    td.help_line .hl_header {
-        padding: 0 0 10px !important;
-    }
-
-</style>
-HTML;
-        return  $additionalCss .
-            parent::_toHtml() .
-            $javascriptMain;
+        return $javascriptMain . parent::_toHtml();
     }
 
     //########################################
@@ -568,8 +576,10 @@ HTML;
     {
         if (is_null($this->variationAttributes)) {
             $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-            $tableVariation = Mage::getSingleton('core/resource')->getTableName('m2epro_listing_product_variation');
-            $tableOption = Mage::getSingleton('core/resource')->getTableName('m2epro_listing_product_variation_option');
+            $tableVariation = Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix('m2epro_listing_product_variation');
+            $tableOption = Mage::helper('M2ePro/Module_Database_Structure')
+                ->getTableNameWithPrefix('m2epro_listing_product_variation_option');
 
             $select = $connRead->select();
             $select->from(array('mlpv' => $tableVariation), array())

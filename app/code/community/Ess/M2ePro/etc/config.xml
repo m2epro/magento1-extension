@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.4.14</version>
+            <version>6.5.4</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -67,81 +67,115 @@
         </translate>
         <menu>
 
-            <m2epro_ebay module="M2ePro">
-                <title>Sell On eBay</title>
+            <m2epro module="M2ePro">
+                <title>eBay, Amazon, Walmart</title>
                 <sort_order>71</sort_order>
                 <children>
 
-                    <listings module="M2ePro">
-                        <title>Listings</title>
+                    <ebay module="M2ePro">
+                        <title>eBay</title>
                         <sort_order>1</sort_order>
-                        <action>M2ePro/adminhtml_ebay_listing/index</action>
-                    </listings>
+                        <children>
 
-                    <orders module="M2ePro">
-                        <title>Sales</title>
+                            <listings module="M2ePro">
+                                <title>Listings</title>
+                                <sort_order>1</sort_order>
+                                <action>M2ePro/adminhtml_ebay_listing/index</action>
+                            </listings>
+
+                            <orders module="M2ePro">
+                                <title>Sales</title>
+                                <sort_order>1</sort_order>
+                                <action>M2ePro/adminhtml_ebay_order/index</action>
+                            </orders>
+
+                            <logs module="M2ePro">
+                                <title>Logs</title>
+                                <sort_order>3</sort_order>
+                                <action>M2ePro/adminhtml_ebay_log/listing</action>
+                            </logs>
+
+                            <configuration module="M2ePro">
+                                <title>Configuration</title>
+                                <sort_order>4</sort_order>
+                                <action>M2ePro/adminhtml_ebay_synchronization/index</action>
+                            </configuration>
+
+                        </children>
+                    </ebay>
+
+                    <amazon module="M2ePro">
+                        <title>Amazon</title>
                         <sort_order>2</sort_order>
-                        <action>M2ePro/adminhtml_ebay_order/index</action>
-                    </orders>
+                        <children>
 
-                    <logs module="M2ePro">
-                        <title>Logs</title>
+                            <listings module="M2ePro">
+                                <title>Listings</title>
+                                <sort_order>1</sort_order>
+                                <action>M2ePro/adminhtml_amazon_listing/index</action>
+                            </listings>
+
+                            <orders module="M2ePro">
+                                <title>Sales</title>
+                                <sort_order>2</sort_order>
+                                <action>M2ePro/adminhtml_amazon_order/index</action>
+                            </orders>
+
+                            <logs module="M2ePro">
+                                <title>Logs</title>
+                                <sort_order>3</sort_order>
+                                <action>M2ePro/adminhtml_amazon_log/listing</action>
+                            </logs>
+
+                            <configuration module="M2ePro">
+                                <title>Configuration</title>
+                                <sort_order>4</sort_order>
+                                <action>M2ePro/adminhtml_amazon_synchronization/index</action>
+                            </configuration>
+
+                        </children>
+                    </amazon>
+
+                    <walmart module="M2ePro">
+                        <title>Walmart</title>
                         <sort_order>3</sort_order>
-                        <action>M2ePro/adminhtml_ebay_log/listing</action>
-                    </logs>
+                        <children>
 
-                    <configuration module="M2ePro">
-                        <title>Configuration</title>
-                        <sort_order>4</sort_order>
-                        <action>M2ePro/adminhtml_ebay_synchronization/index</action>
-                    </configuration>
+                            <listings module="M2ePro">
+                                <title>Listings</title>
+                                <sort_order>1</sort_order>
+                                <action>M2ePro/adminhtml_walmart_listing/index</action>
+                            </listings>
+
+                            <orders module="M2ePro">
+                                <title>Sales</title>
+                                <sort_order>2</sort_order>
+                                <action>M2ePro/adminhtml_walmart_order/index</action>
+                            </orders>
+
+                            <logs module="M2ePro">
+                                <title>Logs</title>
+                                <sort_order>3</sort_order>
+                                <action>M2ePro/adminhtml_walmart_log/listing</action>
+                            </logs>
+
+                            <configuration module="M2ePro">
+                                <title>Configuration</title>
+                                <sort_order>4</sort_order>
+                                <action>M2ePro/adminhtml_walmart_synchronization/index</action>
+                            </configuration>
+
+                        </children>
+                    </walmart>
 
                     <help module="M2ePro">
                         <title>Help</title>
-                        <sort_order>5</sort_order>
-                        <action>M2ePro/adminhtml_support/index/referrer/ebay</action>
+                        <sort_order>10</sort_order>
+                        <action>M2ePro/adminhtml_support/index</action>
                     </help>
 
                 </children>
-            </m2epro_ebay>
-
-            <m2epro_common module="M2ePro">
-                <title>Sell On Multi-Channels</title>
-                <sort_order>72</sort_order>
-                <children>
-
-                    <listings module="M2ePro">
-                        <title>Listings</title>
-                        <sort_order>1</sort_order>
-                        <action>M2ePro/adminhtml_common_listing/index</action>
-                    </listings>
-
-                    <orders module="M2ePro">
-                        <title>Sales</title>
-                        <sort_order>2</sort_order>
-                        <action>M2ePro/adminhtml_common_order/index</action>
-                    </orders>
-
-                    <logs module="M2ePro">
-                        <title>Logs</title>
-                        <sort_order>3</sort_order>
-                        <action>M2ePro/adminhtml_common_log/listing</action>
-                    </logs>
-
-                    <configuration module="M2ePro">
-                        <title>Configuration</title>
-                        <sort_order>4</sort_order>
-                        <action>M2ePro/adminhtml_common_synchronization/index</action>
-                    </configuration>
-
-                    <help module="M2ePro">
-                        <title>Help</title>
-                        <sort_order>5</sort_order>
-                        <action>M2ePro/adminhtml_support/index/referrer/common</action>
-                    </help>
-
-                </children>
-            </m2epro_common>
+            </m2epro>
 
         </menu>
         <acl>
@@ -152,30 +186,94 @@
                 <admin>
                     <children>
 
-                        <m2epro_ebay>
-                            <title>Sell On eBay</title>
+                        <m2epro>
+                            <title>eBay, Amazon, Walmart</title>
                             <sort_order>71</sort_order>
                             <children>
 
-                                <listings>
-                                    <title>Listings</title>
+                                <ebay module="M2ePro">
+                                    <title>eBay</title>
                                     <sort_order>1</sort_order>
-                                </listings>
+                                    <children>
 
-                                <orders>
-                                    <title>Sales</title>
+                                        <listings>
+                                            <title>Listings</title>
+                                            <sort_order>1</sort_order>
+                                        </listings>
+
+                                        <orders>
+                                            <title>Sales</title>
+                                            <sort_order>2</sort_order>
+                                        </orders>
+
+                                        <logs>
+                                            <title>Logs</title>
+                                            <sort_order>3</sort_order>
+                                        </logs>
+
+                                        <configuration>
+                                            <title>Configuration</title>
+                                            <sort_order>4</sort_order>
+                                        </configuration>
+
+                                    </children>
+                                </ebay>
+
+                                <amazon module="M2ePro">
+                                    <title>Amazon</title>
                                     <sort_order>2</sort_order>
-                                </orders>
+                                    <children>
 
-                                <logs>
-                                    <title>Logs</title>
+                                        <listings>
+                                            <title>Listings</title>
+                                            <sort_order>1</sort_order>
+                                        </listings>
+
+                                        <orders>
+                                            <title>Sales</title>
+                                            <sort_order>2</sort_order>
+                                        </orders>
+
+                                        <logs>
+                                            <title>Logs</title>
+                                            <sort_order>3</sort_order>
+                                        </logs>
+
+                                        <configuration>
+                                            <title>Configuration</title>
+                                            <sort_order>4</sort_order>
+                                        </configuration>
+
+                                    </children>
+                                </amazon>
+
+                                <walmart module="M2ePro">
+                                    <title>Walmart</title>
                                     <sort_order>3</sort_order>
-                                </logs>
+                                    <children>
 
-                                <configuration>
-                                    <title>Configuration</title>
-                                    <sort_order>4</sort_order>
-                                </configuration>
+                                        <listings>
+                                            <title>Listings</title>
+                                            <sort_order>1</sort_order>
+                                        </listings>
+
+                                        <orders>
+                                            <title>Sales</title>
+                                            <sort_order>2</sort_order>
+                                        </orders>
+
+                                        <logs>
+                                            <title>Logs</title>
+                                            <sort_order>3</sort_order>
+                                        </logs>
+
+                                        <configuration>
+                                            <title>Configuration</title>
+                                            <sort_order>4</sort_order>
+                                        </configuration>
+
+                                    </children>
+                                </walmart>
 
                                 <help>
                                     <title>Help</title>
@@ -183,40 +281,7 @@
                                 </help>
 
                             </children>
-                        </m2epro_ebay>
-
-                        <m2epro_common>
-                            <title>Sell On Multi-Channels</title>
-                            <sort_order>72</sort_order>
-                            <children>
-
-                                <listings>
-                                    <title>Listings</title>
-                                    <sort_order>1</sort_order>
-                                </listings>
-
-                                <orders>
-                                    <title>Sales</title>
-                                    <sort_order>2</sort_order>
-                                </orders>
-
-                                <logs>
-                                    <title>Logs</title>
-                                    <sort_order>3</sort_order>
-                                </logs>
-
-                                <configuration>
-                                    <title>Configuration</title>
-                                    <sort_order>4</sort_order>
-                                </configuration>
-
-                                <help>
-                                    <title>Help</title>
-                                    <sort_order>5</sort_order>
-                                </help>
-
-                            </children>
-                        </m2epro_common>
+                        </m2epro>
 
                         <system>
                             <children>
@@ -235,7 +300,7 @@
                                             <sort_order>3</sort_order>
                                         </m2epro_logs_clearing>
                                         <m2epro_license>
-                                            <title>License</title>
+                                            <title>Billing Info</title>
                                             <sort_order>4</sort_order>
                                         </m2epro_license>
                                     </children>
@@ -265,10 +330,20 @@
 
             <!-- system configuration -->
 
+            <adminhtml_init_system_config>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>systemConfigurationInit</method>
+                    </M2ePro_observer>
+                </observers>
+            </adminhtml_init_system_config>
+
             <controller_action_predispatch_adminhtml_system_config_save>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>systemConfigurationSaveAction</method>
                     </M2ePro_observer>
@@ -280,7 +355,7 @@
             <catalog_product_save_before>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>catalogProductSaveBefore</method>
                     </M2ePro_observer>
@@ -289,7 +364,7 @@
             <catalog_product_save_after>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>catalogProductSaveAfter</method>
                     </M2ePro_observer>
@@ -299,7 +374,7 @@
             <catalog_product_delete_before>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>catalogProductDeleteBefore</method>
                     </M2ePro_observer>
@@ -311,19 +386,31 @@
             <catalog_product_attribute_update_before>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>catalogProductAttributeUpdateBefore</method>
                     </M2ePro_observer>
                 </observers>
             </catalog_product_attribute_update_before>
 
+            <!-- websites -->
+
+            <catalog_product_website_update_before>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>catalogProductWebsiteUpdateBefore</method>
+                    </M2ePro_observer>
+                </observers>
+            </catalog_product_website_update_before>
+
             <!-- categories & stock items -->
 
             <catalog_category_change_products>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>catalogCategoryChangeProducts</method>
                     </M2ePro_observer>
@@ -333,7 +420,7 @@
             <cataloginventory_stock_item_save_after>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>catalogInventoryStockItemSaveAfter</method>
                     </M2ePro_observer>
@@ -345,7 +432,7 @@
             <m2epro_synchronization_before_start>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>synchronizationBeforeStart</method>
                     </M2ePro_observer>
@@ -355,7 +442,7 @@
             <m2epro_synchronization_after_end>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>synchronizationAfterStart</method>
                     </M2ePro_observer>
@@ -367,7 +454,7 @@
             <sales_order_invoice_pay>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>salesOrderInvoicePay</method>
                     </M2ePro_observer>
@@ -377,7 +464,7 @@
             <sales_order_shipment_save_after>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>salesOrderShipmentSaveAfter</method>
                     </M2ePro_observer>
@@ -387,7 +474,7 @@
             <sales_order_shipment_track_save_after>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>salesOrderShipmentTrackSaveAfter</method>
                     </M2ePro_observer>
@@ -397,7 +484,7 @@
             <sales_order_creditmemo_refund>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>salesOrderCreditmemoRefund</method>
                     </M2ePro_observer>
@@ -406,51 +493,101 @@
 
             <sales_order_save_after>
                 <observers>
-                    <M2ePro_observer>
-                        <type>singleton</type>
+                    <M2ePro_observer_order_create>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
-                        <method>salesOrderSaveAfter</method>
-                    </M2ePro_observer>
+                        <method>magentoOrderCreate</method>
+                    </M2ePro_observer_order_create>
+                </observers>
+            </sales_order_save_after>
+
+            <sales_order_save_after>
+                <observers>
+                    <M2ePro_observer_order_status_change>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>magentoOrderStatusChange</method>
+                    </M2ePro_observer_order_status_change>
                 </observers>
             </sales_order_save_after>
 
             <sales_convert_quote_item_to_order_item>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>salesConvertQuoteItemToOrderItem</method>
                     </M2ePro_observer>
                 </observers>
             </sales_convert_quote_item_to_order_item>
 
+            <controller_action_layout_render_before_adminhtml_sales_order_view>
+                <observers>
+                    <M2ePro_observer_order_view_before>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>orderViewBefore</method>
+                    </M2ePro_observer_order_view_before>
+                </observers>
+            </controller_action_layout_render_before_adminhtml_sales_order_view>
+
+            <controller_action_layout_render_before_adminhtml_sales_order_shipment_view>
+                <observers>
+                    <M2ePro_observer_shipment_view>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>shipmentView</method>
+                    </M2ePro_observer_shipment_view>
+                </observers>
+            </controller_action_layout_render_before_adminhtml_sales_order_shipment_view>
+
+            <controller_action_layout_render_before_adminhtml_sales_order_invoice_view>
+                <observers>
+                    <M2ePro_observer_invoice_view>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>invoiceView</method>
+                    </M2ePro_observer_invoice_view>
+                </observers>
+            </controller_action_layout_render_before_adminhtml_sales_order_invoice_view>
+
+            <controller_action_layout_render_before_adminhtml_sales_order_creditmemo_view>
+                <observers>
+                    <M2ePro_observer_creditmemo_view>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>creditMemoView</method>
+                    </M2ePro_observer_creditmemo_view>
+                </observers>
+            </controller_action_layout_render_before_adminhtml_sales_order_creditmemo_view>
+
             <core_block_abstract_prepare_layout_after>
                 <observers>
-                    <M2ePro_observer_view_order>
-                        <type>singleton</type>
+                    <M2ePro_observer_order_view_after>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
-                        <method>orderView</method>
-                    </M2ePro_observer_view_order>
+                        <method>orderViewAfter</method>
+                    </M2ePro_observer_order_view_after>
                 </observers>
             </core_block_abstract_prepare_layout_after>
 
             <core_block_abstract_prepare_layout_after>
                 <observers>
-                    <M2ePro_observer_view_shipment_before>
-                        <type>singleton</type>
+                    <M2ePro_observer_shipment_view_before>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>shipmentViewBefore</method>
-                    </M2ePro_observer_view_shipment_before>
+                    </M2ePro_observer_shipment_view_before>
                 </observers>
             </core_block_abstract_prepare_layout_after>
 
             <core_block_abstract_to_html_after>
                 <observers>
-                    <M2ePro_observer_view_shipment_after>
-                        <type>singleton</type>
+                    <M2ePro_observer_shipment_view_after>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>shipmentViewAfter</method>
-                    </M2ePro_observer_view_shipment_after>
+                    </M2ePro_observer_shipment_view_after>
                 </observers>
             </core_block_abstract_to_html_after>
 
@@ -459,7 +596,7 @@
             <m2epro_associate_ebay_order_item_to_product>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>associateEbayItemWithProduct</method>
                     </M2ePro_observer>
@@ -468,33 +605,177 @@
             <m2epro_associate_amazon_order_item_to_product>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>associateAmazonItemWithProduct</method>
                     </M2ePro_observer>
                 </observers>
             </m2epro_associate_amazon_order_item_to_product>
-            <m2epro_associate_buy_order_item_to_product>
+            <m2epro_associate_walmart_order_item_to_product>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
-                        <method>associateBuyItemWithProduct</method>
+                        <method>associateWalmartItemWithProduct</method>
                     </M2ePro_observer>
                 </observers>
-            </m2epro_associate_buy_order_item_to_product>
+            </m2epro_associate_walmart_order_item_to_product>
 
             <!-- amazon orders -->
 
             <m2epro_amazon_fba_magento_order_place_after>
                 <observers>
                     <M2ePro_observer>
-                        <type>singleton</type>
+                        <type>model</type>
                         <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
                         <method>revertAmazonOrderedQty</method>
                     </M2ePro_observer>
                 </observers>
             </m2epro_amazon_fba_magento_order_place_after>
+
+            <!-- listing product -->
+
+            <m2epro_listing_product_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>listingProductSaveAfter</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_listing_product_save_after>
+
+            <m2epro_listing_product_delete_before>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>listingProductDeleteBefore</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_listing_product_delete_before>
+
+            <!-- cron -->
+
+            <m2epro_cron_keep_alive_activate>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_cron_keep_alive_activate>
+
+            <model_save_before>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </model_save_before>
+
+            <model_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </model_save_after>
+
+            <model_load_before>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </model_load_before>
+
+            <model_load_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </model_load_after>
+
+            <core_collection_abstract_load_before>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </core_collection_abstract_load_before>
+
+            <core_collection_abstract_load_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_KeepAlive</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </core_collection_abstract_load_after>
+
+            <m2epro_cron_progress_start>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_Progress</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_cron_progress_start>
+
+            <m2epro_cron_progress_set_percentage>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_Progress</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_cron_progress_set_percentage>
+
+            <m2epro_cron_progress_set_details>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_Progress</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_cron_progress_set_details>
+
+            <m2epro_cron_progress_stop>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>M2ePro/Cron_Strategy_Observer_Progress</class>
+                        <method>process</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_cron_progress_stop>
+
+            <m2epro_magento_static_block_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>model</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>magentoStaticBlockChanged</method>
+                    </M2ePro_observer>
+                </observers>
+            </m2epro_magento_static_block_save_after>
 
         </events>
         <models>
@@ -517,32 +798,27 @@
                     <Config_Cache>
                         <table>m2epro_cache_config</table>
                     </Config_Cache>
-                    <Config_Synchronization>
-                        <table>m2epro_synchronization_config</table>
-                    </Config_Synchronization>
 
                     <Registry>
                         <table>m2epro_registry</table>
                     </Registry>
+                    <ArchivedEntity>
+                        <table>m2epro_archived_entity</table>
+                    </ArchivedEntity>
 
-                    <LockItem>
+                    <Lock_Item>
                         <table>m2epro_lock_item</table>
-                    </LockItem>
+                    </Lock_Item>
                     <Lock_Transactional>
                         <table>m2epro_lock_transactional</table>
                     </Lock_Transactional>
-                    <LockedObject>
-                        <table>m2epro_locked_object</table>
-                    </LockedObject>
-                    <ProductChange>
-                        <table>m2epro_product_change</table>
-                    </ProductChange>
+
+                    <Magento_Product_Websites_Update>
+                        <table>m2epro_magento_product_websites_update</table>
+                    </Magento_Product_Websites_Update>
                     <OperationHistory>
                         <table>m2epro_operation_history</table>
                     </OperationHistory>
-                    <Processing_Request>
-                        <table>m2epro_processing_request</table>
-                    </Processing_Request>
                     <Synchronization_Log>
                         <table>m2epro_synchronization_log</table>
                     </Synchronization_Log>
@@ -558,6 +834,33 @@
                         <table>m2epro_wizard</table>
                     </Wizard>
 
+                    <!-- PROCESSING -->
+
+                    <Processing>
+                        <table>m2epro_processing</table>
+                    </Processing>
+                    <Processing_Lock>
+                        <table>m2epro_processing_lock</table>
+                    </Processing_Lock>
+
+                    <!-- REQUEST -->
+
+                    <Request_Pending_Single>
+                        <table>m2epro_request_pending_single</table>
+                    </Request_Pending_Single>
+                    <Request_Pending_Partial>
+                        <table>m2epro_request_pending_partial</table>
+                    </Request_Pending_Partial>
+
+                    <!-- CONNECTOR -->
+
+                    <Connector_Command_Pending_Processing_Single>
+                        <table>m2epro_connector_command_pending_processing_single</table>
+                    </Connector_Command_Pending_Processing_Single>
+                    <Connector_Command_Pending_Processing_Partial>
+                        <table>m2epro_connector_command_pending_processing_partial</table>
+                    </Connector_Command_Pending_Processing_Partial>
+
                     <!-- ACCOUNTS AND MARKETPLACES -->
 
                     <Account>
@@ -566,12 +869,22 @@
                     <Ebay_Account>
                         <table>m2epro_ebay_account</table>
                     </Ebay_Account>
+                    <Ebay_Account_PickupStore>
+                        <table>m2epro_ebay_account_pickup_store</table>
+                    </Ebay_Account_PickupStore>
+                    <Ebay_Account_PickupStore_State>
+                        <table>m2epro_ebay_account_pickup_store_state</table>
+                    </Ebay_Account_PickupStore_State>
+                    <Ebay_Account_PickupStore_Log>
+                        <table>m2epro_ebay_account_pickup_store_log</table>
+                    </Ebay_Account_PickupStore_Log>
+
                     <Amazon_Account>
                         <table>m2epro_amazon_account</table>
                     </Amazon_Account>
-                    <Buy_Account>
-                        <table>m2epro_buy_account</table>
-                    </Buy_Account>
+                    <Walmart_Account>
+                        <table>m2epro_walmart_account</table>
+                    </Walmart_Account>
 
                     <Marketplace>
                         <table>m2epro_marketplace</table>
@@ -582,9 +895,9 @@
                     <Amazon_Marketplace>
                         <table>m2epro_amazon_marketplace</table>
                     </Amazon_Marketplace>
-                    <Buy_Marketplace>
-                        <table>m2epro_buy_marketplace</table>
-                    </Buy_Marketplace>
+                    <Walmart_Marketplace>
+                        <table>m2epro_walmart_marketplace</table>
+                    </Walmart_Marketplace>
 
                     <!-- TEMPLATES -->
 
@@ -597,9 +910,15 @@
                     <Amazon_Template_SellingFormat>
                         <table>m2epro_amazon_template_selling_format</table>
                     </Amazon_Template_SellingFormat>
-                    <Buy_Template_SellingFormat>
-                        <table>m2epro_buy_template_selling_format</table>
-                    </Buy_Template_SellingFormat>
+                    <Walmart_Template_SellingFormat>
+                        <table>m2epro_walmart_template_selling_format</table>
+                    </Walmart_Template_SellingFormat>
+                    <Walmart_Template_SellingFormat_Promotion>
+                        <table>m2epro_walmart_template_selling_format_promotion</table>
+                    </Walmart_Template_SellingFormat_Promotion>
+                    <Walmart_Template_SellingFormat_ShippingOverrideService>
+                        <table>m2epro_walmart_template_selling_format_shipping_override_service</table>
+                    </Walmart_Template_SellingFormat_ShippingOverrideService>
 
                     <Template_Synchronization>
                         <table>m2epro_template_synchronization</table>
@@ -610,9 +929,9 @@
                     <Amazon_Template_Synchronization>
                         <table>m2epro_amazon_template_synchronization</table>
                     </Amazon_Template_Synchronization>
-                    <Buy_Template_Synchronization>
-                        <table>m2epro_buy_template_synchronization</table>
-                    </Buy_Template_Synchronization>
+                    <Walmart_Template_Synchronization>
+                        <table>m2epro_walmart_template_synchronization</table>
+                    </Walmart_Template_Synchronization>
 
                     <Template_Description>
                         <table>m2epro_template_description</table>
@@ -623,6 +942,9 @@
                     <Amazon_Template_Description>
                         <table>m2epro_amazon_template_description</table>
                     </Amazon_Template_Description>
+                    <Walmart_Template_Description>
+                        <table>m2epro_walmart_template_description</table>
+                    </Walmart_Template_Description>
 
                     <!-- LISTINGS -->
 
@@ -639,9 +961,9 @@
                     <Amazon_Listing_Auto_Category_Group>
                         <table>m2epro_amazon_listing_auto_category_group</table>
                     </Amazon_Listing_Auto_Category_Group>
-                    <Buy_Listing_Auto_Category_Group>
-                        <table>m2epro_buy_listing_auto_category_group</table>
-                    </Buy_Listing_Auto_Category_Group>
+                    <Walmart_Listing_Auto_Category_Group>
+                        <table>m2epro_walmart_listing_auto_category_group</table>
+                    </Walmart_Listing_Auto_Category_Group>
 
                     <Listing_Log>
                         <table>m2epro_listing_log</table>
@@ -659,9 +981,9 @@
                     <Amazon_Listing_Other>
                         <table>m2epro_amazon_listing_other</table>
                     </Amazon_Listing_Other>
-                    <Buy_Listing_Other>
-                        <table>m2epro_buy_listing_other</table>
-                    </Buy_Listing_Other>
+                    <Walmart_Listing_Other>
+                        <table>m2epro_walmart_listing_other</table>
+                    </Walmart_Listing_Other>
 
                     <Listing>
                         <table>m2epro_listing</table>
@@ -672,9 +994,9 @@
                     <Amazon_Listing>
                         <table>m2epro_amazon_listing</table>
                     </Amazon_Listing>
-                    <Buy_Listing>
-                        <table>m2epro_buy_listing</table>
-                    </Buy_Listing>
+                    <Walmart_Listing>
+                        <table>m2epro_walmart_listing</table>
+                    </Walmart_Listing>
 
                     <Listing_Product>
                         <table>m2epro_listing_product</table>
@@ -685,9 +1007,13 @@
                     <Amazon_Listing_Product>
                         <table>m2epro_amazon_listing_product</table>
                     </Amazon_Listing_Product>
-                    <Buy_Listing_Product>
-                        <table>m2epro_buy_listing_product</table>
-                    </Buy_Listing_Product>
+                    <Walmart_Listing_Product>
+                        <table>m2epro_walmart_listing_product</table>
+                    </Walmart_Listing_Product>
+
+                    <Ebay_Listing_Product_PickupStore>
+                        <table>m2epro_ebay_listing_product_pickup_store</table>
+                    </Ebay_Listing_Product_PickupStore>
 
                     <Listing_Product_Variation>
                         <table>m2epro_listing_product_variation</table>
@@ -698,9 +1024,9 @@
                     <Amazon_Listing_Product_Variation>
                         <table>m2epro_amazon_listing_product_variation</table>
                     </Amazon_Listing_Product_Variation>
-                    <Buy_Listing_Product_Variation>
-                        <table>m2epro_buy_listing_product_variation</table>
-                    </Buy_Listing_Product_Variation>
+                    <Walmart_Listing_Product_Variation>
+                        <table>m2epro_walmart_listing_product_variation</table>
+                    </Walmart_Listing_Product_Variation>
 
                     <Listing_Product_Variation_Option>
                         <table>m2epro_listing_product_variation_option</table>
@@ -711,9 +1037,33 @@
                     <Amazon_Listing_Product_Variation_Option>
                         <table>m2epro_amazon_listing_product_variation_option</table>
                     </Amazon_Listing_Product_Variation_Option>
-                    <Buy_Listing_Product_Variation_Option>
-                        <table>m2epro_buy_listing_product_variation_option</table>
-                    </Buy_Listing_Product_Variation_Option>
+                    <Walmart_Listing_Product_Variation_Option>
+                        <table>m2epro_walmart_listing_product_variation_option</table>
+                    </Walmart_Listing_Product_Variation_Option>
+
+                    <Ebay_Listing_Product_Action_Processing>
+                        <table>m2epro_ebay_listing_product_action_processing</table>
+                    </Ebay_Listing_Product_Action_Processing>
+                    <Amazon_Listing_Product_Action_Processing>
+                        <table>m2epro_amazon_listing_product_action_processing</table>
+                    </Amazon_Listing_Product_Action_Processing>
+                    <Walmart_Listing_Product_Action_Processing>
+                        <table>m2epro_walmart_listing_product_action_processing</table>
+                    </Walmart_Listing_Product_Action_Processing>
+
+                    <Amazon_Listing_Product_Action_ProcessingListSku>
+                        <table>m2epro_amazon_listing_product_action_processing_list_sku</table>
+                    </Amazon_Listing_Product_Action_ProcessingListSku>
+                    <Walmart_Listing_Product_Action_ProcessingList>
+                        <table>m2epro_walmart_listing_product_action_processing_list</table>
+                    </Walmart_Listing_Product_Action_ProcessingList>
+
+                    <Listing_Product_Instruction>
+                        <table>m2epro_listing_product_instruction</table>
+                    </Listing_Product_Instruction>
+                    <Listing_Product_ScheduledAction>
+                        <table>m2epro_listing_product_scheduled_action</table>
+                    </Listing_Product_ScheduledAction>
 
                     <!-- ORDERS -->
 
@@ -736,9 +1086,15 @@
                     <Amazon_Order>
                         <table>m2epro_amazon_order</table>
                     </Amazon_Order>
-                    <Buy_Order>
-                        <table>m2epro_buy_order</table>
-                    </Buy_Order>
+                    <Amazon_Order_Action_Processing>
+                        <table>m2epro_amazon_order_action_processing</table>
+                    </Amazon_Order_Action_Processing>
+                    <Walmart_Order>
+                        <table>m2epro_walmart_order</table>
+                    </Walmart_Order>
+                    <Walmart_Order_Action_Processing>
+                        <table>m2epro_walmart_order_action_processing</table>
+                    </Walmart_Order_Action_Processing>
 
                     <Order_Item>
                         <table>m2epro_order_item</table>
@@ -749,9 +1105,9 @@
                     <Amazon_Order_Item>
                         <table>m2epro_amazon_order_item</table>
                     </Amazon_Order_Item>
-                    <Buy_Order_Item>
-                        <table>m2epro_buy_order_item</table>
-                    </Buy_Order_Item>
+                    <Walmart_Order_Item>
+                        <table>m2epro_walmart_order_item</table>
+                    </Walmart_Order_Item>
 
                     <!-- EBAY -->
 
@@ -818,12 +1174,16 @@
                         <table>m2epro_amazon_item</table>
                     </Amazon_Item>
 
-                    <Amazon_Template_ShippingOverride>
-                        <table>m2epro_amazon_template_shipping_override</table>
-                    </Amazon_Template_ShippingOverride>
-                    <Amazon_Template_ShippingOverride_Service>
-                        <table>m2epro_amazon_template_shipping_override_service</table>
-                    </Amazon_Template_ShippingOverride_Service>
+                    <Amazon_Template_SellingFormat_BusinessDiscount>
+                        <table>m2epro_amazon_template_selling_format_business_discount</table>
+                    </Amazon_Template_SellingFormat_BusinessDiscount>
+                    <Amazon_Template_Shipping>
+                        <table>m2epro_amazon_template_shipping</table>
+                    </Amazon_Template_Shipping>
+
+                    <Amazon_Template_ProductTaxCode>
+                        <table>m2epro_amazon_template_product_tax_code</table>
+                    </Amazon_Template_ProductTaxCode>
 
                     <Amazon_Template_Description_Definition>
                         <table>m2epro_amazon_template_description_definition</table>
@@ -832,25 +1192,40 @@
                         <table>m2epro_amazon_template_description_specific</table>
                     </Amazon_Template_Description_Specific>
 
-                    <!-- BUY -->
+                    <!-- WALMART -->
 
-                    <Buy_Item>
-                        <table>m2epro_buy_item</table>
-                    </Buy_Item>
-                    <Buy_Template_NewProduct>
-                        <table>m2epro_buy_template_new_product</table>
-                    </Buy_Template_NewProduct>
+                    <Walmart_Item>
+                        <table>m2epro_walmart_item</table>
+                    </Walmart_Item>
 
-                    <Buy_Template_NewProduct_Core>
-                        <table>m2epro_buy_template_new_product_core</table>
-                    </Buy_Template_NewProduct_Core>
+                    <Walmart_Template_Category>
+                        <table>m2epro_walmart_template_category</table>
+                    </Walmart_Template_Category>
+                    <Walmart_Template_Category_Specific>
+                        <table>m2epro_walmart_template_category_specific</table>
+                    </Walmart_Template_Category_Specific>
 
-                    <Buy_Template_NewProduct_Attribute>
-                        <table>m2epro_buy_template_new_product_attribute</table>
-                    </Buy_Template_NewProduct_Attribute>
+                    <!-- INDEXERS -->
+
+                    <Ebay_Indexer_Listing_Product_Parent>
+                        <table>m2epro_ebay_indexer_listing_product_parent</table>
+                    </Ebay_Indexer_Listing_Product_Parent>
+                    <Amazon_Indexer_Listing_Product_Parent>
+                        <table>m2epro_amazon_indexer_listing_product_parent</table>
+                    </Amazon_Indexer_Listing_Product_Parent>
+                    <Walmart_Indexer_Listing_Product_Parent>
+                        <table>m2epro_walmart_indexer_listing_product_parent</table>
+                    </Walmart_Indexer_Listing_Product_Parent>
 
                 </entities>
             </M2ePro_mysql4>
+
+            <cms>
+                <rewrite>
+                    <block>Ess_M2ePro_Block_Adminhtml_Magento_StaticBlock</block>
+                </rewrite>
+            </cms>
+
         </models>
         <resources>
             <M2ePro_setup>

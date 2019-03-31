@@ -26,7 +26,7 @@ EbayMotorViewItemGridHandler = Class.create(GridHandler, {
         var self = this;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/removeItemFromProduct'), {
-            postmethod: 'post',
+            method: 'post',
             parameters: {
                 items_ids: self.getGridMassActionObj().checkedString,
                 entity_id: self.entityId,

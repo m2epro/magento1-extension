@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -46,8 +46,19 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
             $this->cronIsNotWorking = Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(12,true);
         }
 
-        $serviceHostName = $moduleConfig->getGroupValue('/cron/service/', 'hostname');
-        $this->cronServiceIp = gethostbyname($serviceHostName);
+        $cronServiceIps = array();
+
+        for ($i = 1; $i < 100; $i++) {
+            $serviceHostName = $moduleConfig->getGroupValue('/cron/service/','hostname_'.$i);
+
+            if (is_null($serviceHostName)) {
+                break;
+            }
+
+            $cronServiceIps[] = gethostbyname($serviceHostName);
+        }
+
+        $this->cronServiceIps = implode(', ', $cronServiceIps);
 
         $this->isMagentoCronDisabled = (bool)(int)$moduleConfig->getGroupValue('/cron/magento/','disabled');
         $this->isServiceCronDisabled = (bool)(int)$moduleConfig->getGroupValue('/cron/service/','disabled');

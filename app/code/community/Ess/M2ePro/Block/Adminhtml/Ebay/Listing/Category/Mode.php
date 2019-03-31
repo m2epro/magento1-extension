@@ -2,12 +2,19 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode as SourceModeBlock;
+
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
+    const MODE_SAME     = 'same';
+    const MODE_CATEGORY = 'category';
+    const MODE_MANUALLY = 'manually';
+    const MODE_PRODUCT  = 'product';
+
     //########################################
 
     public function __construct()
@@ -23,15 +30,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_B
         $listingId = $this->getRequest()->getParam('listing_id');
         $listing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',$listingId);
 
-        $listingAdditionalData = $listing->getData('additional_data');
-        $listingAdditionalData = json_decode($listingAdditionalData, true);
+        $additionalData = $listing->getSettings('additional_data');
         // ---------------------------------------
 
         $this->_headerText = Mage::helper('M2ePro')->__('Set Your eBay Categories');
 
         $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd',array('step' => 2, '_current' => true));
 
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
+        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() ||
+            (isset($additionalData['source']) && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER))
+        {
             $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd/deleteAll',array('_current' => true));
         }
 
@@ -40,8 +48,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_B
         if (isset($productAddSessionData['show_settings_step'])) {
             !(bool)$productAddSessionData['show_settings_step'] &&
                 $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd/deleteAll',array('_current' => true));
-        } elseif (isset($listingAdditionalData['show_settings_step'])) {
-            !(bool)$listingAdditionalData['show_settings_step'] &&
+        } elseif (isset($additionalData['show_settings_step'])) {
+            !(bool)$additionalData['show_settings_step'] &&
                 $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd/deleteAll',array('_current' => true));
         }
 

@@ -177,7 +177,7 @@ EbayListingCategorySpecificWrapperHandler = Class.create(CommonHandler, {
             new Ajax.Request(url, {
                 method: 'post',
                 onSuccess: function(transport) {
-                    setLocation(M2ePro.url.get('adminhtml_ebay_listing/review'))
+                    setLocation(M2ePro.url.get('adminhtml_ebay_listing_categorySettings/review'))
                 }
             });
         });

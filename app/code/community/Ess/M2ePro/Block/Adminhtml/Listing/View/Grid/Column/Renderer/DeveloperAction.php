@@ -1,35 +1,9 @@
 <?php
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    Mage
- * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
 
-/**
- * Adminhtml grid item abstract renderer
- *
- * @category   Mage
- * @package    Mage_Adminhtml
- * @author      Magento Core Team <core@magentocommerce.com>
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Listing_View_Grid_Column_Renderer_DeveloperAction
@@ -50,8 +24,17 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Grid_Column_Renderer_DeveloperActi
 
         $status = $row->getData('status');
 
-        $row->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK && $row->getData('ebay_status');
-        $row->getData('component_mode') == Ess_M2ePro_Helper_Component_Amazon::NICK && $row->getData('amazon_status');
+        if ($row->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK &&
+            $row->getData('ebay_status')) {
+
+            $status = $row->getData('ebay_status');
+        }
+
+        if ($row->getData('component_mode') == Ess_M2ePro_Helper_Component_Amazon::NICK &&
+            $row->getData('amazon_status')) {
+
+            $status = $row->getData('amazon_status');
+        }
 
         if ($status == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED ||
             $status == Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED) {

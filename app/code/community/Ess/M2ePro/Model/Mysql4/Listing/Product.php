@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product
 
     public function getItemsByProductId($productId, array $filters = array())
     {
-        $cacheKey   = __METHOD__.$productId.sha1(json_encode($filters));
+        $cacheKey   = __METHOD__.$productId.sha1(Mage::helper('M2ePro')->jsonEncode($filters));
         $cacheValue = Mage::helper('M2ePro/Data_Cache_Session')->getValue($cacheKey);
 
         if (!is_null($cacheValue)) {
@@ -43,7 +43,7 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product
             ->select()
             ->from(
                 $this->getMainTable(),
-                array('id','component_mode', 'option_id' => new Zend_Db_Expr('NULL'))
+                array('id','component_mode','option_id' => new Zend_Db_Expr('NULL'))
             )
             ->where("`product_id` = ?",(int)$productId);
 
@@ -116,169 +116,6 @@ class Ess_M2ePro_Model_Mysql4_Listing_Product
         Mage::helper('M2ePro/Data_Cache_Session')->setValue($cacheKey, $result);
 
         return array_values($result);
-    }
-
-    //########################################
-
-    public function getChangedItems(array $attributes,
-                                    $componentMode = NULL,
-                                    $withStoreFilter = false)
-    {
-        $resultsByListingProduct = $this->getChangedItemsByListingProduct($attributes,
-                                                                          $componentMode,
-                                                                          $withStoreFilter);
-
-        $resultsByVariationOption = $this->getChangedItemsByVariationOption($attributes,
-                                                                            $componentMode,
-                                                                            $withStoreFilter);
-
-        $results = array();
-
-        foreach ($resultsByListingProduct as $item) {
-            if (isset($results[$item['id'].'_'.$item['changed_attribute']])) {
-                continue;
-            }
-            $results[$item['id'].'_'.$item['changed_attribute']] = $item;
-        }
-
-        foreach ($resultsByVariationOption as $item) {
-            if (isset($results[$item['id'].'_'.$item['changed_attribute']])) {
-                continue;
-            }
-            $results[$item['id'].'_'.$item['changed_attribute']] = $item;
-        }
-
-        return array_values($results);
-    }
-
-    // ---------------------------------------
-
-    public function getChangedItemsByListingProduct(array $attributes,
-                                                    $componentMode = NULL,
-                                                    $withStoreFilter = false)
-    {
-        if (count($attributes) <= 0) {
-            return array();
-        }
-
-        $listingsTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
-        $productsChangesTable = Mage::getResourceModel('M2ePro/ProductChange')->getMainTable();
-
-        $limit = (int)Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-            '/settings/product_change/', 'max_count_per_one_time'
-        );
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                       ->from($productsChangesTable,'*')
-                       ->order(array('id ASC'))
-                       ->limit($limit);
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                       ->from(
-                          array('pc' => $select),
-                          array(
-                              'changed_attribute'=>'attribute',
-                              'changed_to_value'=>'value_new',
-                              'change_initiators'=>'initiators',
-                          )
-                       )
-                       ->join(
-                          array('lp' => $this->getMainTable()),
-                          '`pc`.`product_id` = `lp`.`product_id`',
-                          'id'
-                       )
-                       ->where('`pc`.`action` = ?',(string)Ess_M2ePro_Model_ProductChange::ACTION_UPDATE)
-                       ->where("`pc`.`attribute` IN ('".implode("','",$attributes)."')");
-
-        if ($withStoreFilter) {
-            $select->join(array('l' => $listingsTable),'`lp`.`listing_id` = `l`.`id`',array());
-            $select->where("`l`.`store_id` = `pc`.`store_id`");
-        }
-
-        !is_null($componentMode) && $select->where("`lp`.`component_mode` = ?",(string)$componentMode);
-
-        $results = array();
-
-        foreach ($select->query()->fetchAll() as $item) {
-            if (isset($results[$item['id'].'_'.$item['changed_attribute']])) {
-                continue;
-            }
-            $results[$item['id'].'_'.$item['changed_attribute']] = $item;
-        }
-
-        return array_values($results);
-    }
-
-    public function getChangedItemsByVariationOption(array $attributes,
-                                                     $componentMode = NULL,
-                                                     $withStoreFilter = false)
-    {
-        if (count($attributes) <= 0) {
-            return array();
-        }
-
-        $listingsTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
-        $variationsTable = Mage::getResourceModel('M2ePro/Listing_Product_Variation')->getMainTable();
-        $optionsTable = Mage::getResourceModel('M2ePro/Listing_Product_Variation_Option')->getMainTable();
-        $productsChangesTable = Mage::getResourceModel('M2ePro/ProductChange')->getMainTable();
-
-        $limit = (int)Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-            '/settings/product_change/', 'max_count_per_one_time'
-        );
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                       ->from($productsChangesTable,'*')
-                       ->order(array('id ASC'))
-                       ->limit($limit);
-
-        $select = $this->_getReadAdapter()
-                       ->select()
-                       ->from(
-                            array('pc' => $select),
-                            array(
-                                'changed_attribute'=>'attribute',
-                                'changed_to_value'=>'value_new',
-                                'change_initiators'=>'initiators',
-                            )
-                     )
-                     ->join(
-                        array('lpvo' => $optionsTable),
-                        '`pc`.`product_id` = `lpvo`.`product_id`',
-                        array()
-                     )
-                     ->join(
-                        array('lpv' => $variationsTable),
-                        '`lpvo`.`listing_product_variation_id` = `lpv`.`id`',
-                        array()
-                     )
-                     ->join(
-                        array('lp' => $this->getMainTable()),
-                        '`lpv`.`listing_product_id` = `lp`.`id`',
-                        array('id')
-                     )
-                     ->where('`pc`.`action` = ?',(string)Ess_M2ePro_Model_ProductChange::ACTION_UPDATE)
-                     ->where("`pc`.`attribute` IN ('".implode("','",$attributes)."')");
-
-        if ($withStoreFilter) {
-            $select->join(array('l' => $listingsTable),'`lp`.`listing_id` = `l`.`id`',array());
-            $select->where("`l`.`store_id` = `pc`.`store_id`");
-        }
-
-        !is_null($componentMode) && $select->where("`lpvo`.`component_mode` = ?",(string)$componentMode);
-
-        $results = array();
-
-        foreach ($select->query()->fetchAll() as $item) {
-            if (isset($results[$item['id'].'_'.$item['changed_attribute']])) {
-                continue;
-            }
-            $results[$item['id'].'_'.$item['changed_attribute']] = $item;
-        }
-
-        return array_values($results);
     }
 
     //########################################

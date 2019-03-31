@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,7 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
         return Mage::helper('M2ePro')->__($this->getComponentLabel('%component% Marketplace'));
     }
 
-    public function getItems()
+    protected function loadItems()
     {
         $collection = Mage::getModel('M2ePro/Marketplace')->getCollection()
             ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
@@ -32,8 +32,14 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
             $collection->addFieldToFilter('component_mode', $this->componentMode);
         }
 
+        if (!$collection->getSize()) {
+            $this->items = array();
+            return;
+        }
+
         if ($collection->getSize() < 2) {
-            return array();
+            $this->hasDefaultOption = false;
+            $this->setIsDisabled(true);
         }
 
         $componentTitles = Mage::helper('M2ePro/Component')->getComponentsTitles();
@@ -57,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
             );
         }
 
-        return $items;
+        $this->items = $items;
     }
 
     //########################################

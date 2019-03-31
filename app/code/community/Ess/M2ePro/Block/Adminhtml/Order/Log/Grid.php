@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -42,7 +42,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
         );
 
         $collection->getSelect()->joinLeft(
-            array('so' => Mage::getSingleton('core/resource')->getTableName('sales/order')),
+            array('so' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales/order')),
             '(so.entity_id = `mo`.magento_order_id)',
             array('magento_order_number' => 'increment_id')
         );
@@ -62,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
         }
 
         $channel = $this->getRequest()->getParam('channel');
-        if (!empty($channel) && $channel != Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::CHANNEL_ID_ALL) {
+        if (!empty($channel)) {
             $collection->getSelect()->where('main_table.component_mode = ?', $channel);
         } else {
             $components = Mage::helper('M2ePro/View')->getComponentHelper()->getActiveComponents();
@@ -169,14 +169,14 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
                 $message = "<span style=\"color: green;\">{$value}</span>";
                 break;
             case Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE:
-                $message = "<span style=\"color: blue;\">{$value}</span>";
+                $message = "<span>{$value}</span>";
                 break;
             case Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING:
-                $message = "<span style=\"color: orange;\">{$value}</span>";
+                $message = "<span style=\"font-weight: bold; color: orange;\">{$value}</span>";
                 break;
             case Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR:
             default:
-                $message = "<span style=\"color: red;\">{$value}</span>";
+                $message = "<span style=\"font-weight: bold; color: red;\">{$value}</span>";
                 break;
         }
 
@@ -219,11 +219,11 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
                 break;
             case Ess_M2ePro_Helper_Component_Amazon::NICK:
                 $channelOrderId = $order->getData('amazon_order_id');
-                $url = $this->getUrl('*/adminhtml_common_amazon_order/view', array('id' => $row->getData('order_id')));
+                $url = $this->getUrl('*/adminhtml_amazon_order/view', array('id' => $row->getData('order_id')));
                 break;
-            case Ess_M2ePro_Helper_Component_Buy::NICK:
-                $channelOrderId = $order->getData('buy_order_id');
-                $url = $this->getUrl('*/adminhtml_common_buy_order/view', array('id' => $row->getData('order_id')));
+            case Ess_M2ePro_Helper_Component_Walmart::NICK:
+                $channelOrderId = $order->getData('walmart_order_id');
+                $url = $this->getUrl('*/adminhtml_walmart_order/view', array('id' => $row->getData('order_id')));
                 break;
             default:
                 $channelOrderId = Mage::helper('M2ePro')->__('N/A');
@@ -272,10 +272,10 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
             $ordersIds = array_merge($ordersIds, $tempOrdersIds);
         }
 
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $tempOrdersIds = Mage::getModel('M2ePro/Buy_Order')
+        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+            $tempOrdersIds = Mage::getModel('M2ePro/Walmart_Order')
                 ->getCollection()
-                ->addFieldToFilter('buy_order_id', array('like' => '%'.$value.'%'))
+                ->addFieldToFilter('walmart_order_id', array('like' => '%'.$value.'%'))
                 ->getColumnValues('order_id');
             $ordersIds = array_merge($ordersIds, $tempOrdersIds);
         }

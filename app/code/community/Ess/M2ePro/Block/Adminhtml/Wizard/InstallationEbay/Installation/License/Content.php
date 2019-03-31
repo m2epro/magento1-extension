@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_License_Co
                                                             ->getData('value');
 
         if ($earlierFormData) {
-            $earlierFormData = (array)json_decode($earlierFormData, true);
+            $earlierFormData = (array)Mage::helper('M2ePro')->jsonDecode($earlierFormData);
             $userInfo = array_merge($userInfo, $earlierFormData);
         }
 

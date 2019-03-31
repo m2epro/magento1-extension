@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -82,6 +82,57 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product
         }
 
         return $listingProductCollection->getData();
+    }
+
+    //########################################
+
+    public function moveChildrenToListing(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    {
+        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
+        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
+
+        /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
+        $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
+
+        // Get child products ids
+        // ---------------------------------------
+        $dbSelect = $connRead->select()
+            ->from(
+                Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable(),
+                array('listing_product_id', 'sku')
+            )
+            ->where('`variation_parent_id` = ?', $listingProduct->getId());
+        $products = $connRead->fetchPairs($dbSelect);
+
+        if (!empty($products)) {
+            $connWrite->update(
+                Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable(),
+                array(
+                    'listing_id' => $listingProduct->getListing()->getId()
+                ),
+                '`id` IN (' . implode(',', array_keys($products)) . ')'
+            );
+        }
+
+        $dbSelect = $connRead->select()
+            ->from(
+                Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable(),
+                array('id')
+            )
+            ->where('`account_id` = ?', $listingProduct->getListing()->getAccountId())
+            ->where('`marketplace_id` = ?', $listingProduct->getListing()->getMarketplaceId())
+            ->where('`sku` IN (?)', implode(',', array_values($products)));
+        $items = $connRead->fetchCol($dbSelect);
+
+        if (!empty($items)) {
+            $connWrite->update(
+                Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable(),
+                array(
+                    'store_id' => $listingProduct->getListing()->getStoreId()
+                ),
+                '`id` IN ('.implode(',', $items).')'
+            );
+        }
     }
 
     //########################################

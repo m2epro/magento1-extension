@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -53,6 +53,7 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
         $this->getProxy()->setData('special_price',(float)$this->getProduct()->getSpecialPrice());
         $this->getProxy()->setData('special_price_from_date',$this->getProduct()->getSpecialFromDate());
         $this->getProxy()->setData('special_price_to_date',$this->getProduct()->getSpecialToDate());
+        $this->getProxy()->setData('tier_price',$this->getProduct()->getTierPrice());
 
         $this->getProxy()->setAttributes($this->getTrackingAttributesWithValues());
     }
@@ -113,13 +114,14 @@ class Ess_M2ePro_Model_Observer_Product_AddUpdate_Before extends Ess_M2ePro_Mode
         $attributes = array();
 
         foreach ($this->getAffectedListingsProducts() as $listingProduct) {
-            /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-            $tempAttributes = $listingProduct->getTrackingAttributes();
-            $attributes = array_merge($attributes, $tempAttributes);
-        }
+            /** @var Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract $changeProcessor */
+            $changeProcessor = Mage::getModel(
+                'M2ePro/'.ucfirst($listingProduct->getComponentMode()).'_Magento_Product_ChangeProcessor'
+            );
+            $changeProcessor->setListingProduct($listingProduct);
 
-        $tempAttributes = Mage::getModel('M2ePro/Ebay_Listing_Other_Source')->getTrackingAttributes();
-        $attributes = array_merge($attributes, $tempAttributes);
+            $attributes = array_merge($attributes, $changeProcessor->getTrackingAttributes());
+        }
 
         return array_values(array_unique($attributes));
     }

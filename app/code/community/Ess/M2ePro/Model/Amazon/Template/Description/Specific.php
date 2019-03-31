@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -161,7 +161,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     public function getAttributes()
     {
         $value = $this->getData('attributes');
-        return is_string($value) ? (array)json_decode($value, true) : array();
+        return is_string($value) ? (array)Mage::helper('M2ePro')->jsonDecode($value) : array();
     }
 
     //########################################
@@ -208,30 +208,6 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     public function isTypeDateTime()
     {
         return $this->getType() == self::TYPE_DATETIME;
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getTrackingAttributes()
-    {
-        return $this->getUsedAttributes();
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsedAttributes()
-    {
-        $attribute = $this->getCustomAttribute();
-
-        if (empty($attribute)) {
-            return array();
-        }
-
-        return array($attribute);
     }
 
     //########################################

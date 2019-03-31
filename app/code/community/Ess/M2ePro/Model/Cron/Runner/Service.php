@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -58,8 +58,9 @@ final class Ess_M2ePro_Model_Cron_Runner_Service extends Ess_M2ePro_Model_Cron_R
 
     public function resetTasksStartFrom()
     {
-        $this->resetTaskStartFrom('servicing');
-        $this->resetTaskStartFrom('synchronization');
+        $this->resetTaskStartFrom(Ess_M2ePro_Model_Cron_Task_System_Servicing_Synchronize::NICK);
+        $this->resetTaskStartFrom(Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive::NICK);
+        $this->resetTaskStartFrom(Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges::NICK);
     }
 
     //########################################
@@ -94,6 +95,16 @@ final class Ess_M2ePro_Model_Cron_Runner_Service extends Ess_M2ePro_Model_Cron_R
                !is_null($this->requestConnectionId) &&
                $authKey == $this->requestAuthKey &&
                parent::isPossibleToRun();
+    }
+
+    //########################################
+
+    protected function getOperationHistoryData()
+    {
+        return array_merge(parent::getOperationHistoryData(), array(
+            'auth_key'      => $this->requestAuthKey,
+            'connection_id' => $this->requestConnectionId
+        ));
     }
 
     //########################################

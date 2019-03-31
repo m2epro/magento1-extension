@@ -1,0 +1,204 @@
+<?php
+    /**
+     * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_ShippingServices
+     */
+
+    $shippingServices = $this->getData('shipping_services');
+?>
+
+<style>
+    .control {
+        text-align: right;
+        margin-bottom: 15px;
+        margin-top: 10px;
+    }
+
+    #fulfillment_shipping_services th, #fulfillment_shipping_services td {
+        padding: 5px 10px 2px 10px !important;
+    }
+
+    .radio-input{
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .shipping-service-prop{
+        color: grey;
+    }
+
+    .shipping-service-details{
+        font-size: 11px;
+        margin-top: 5px;
+    }
+    .temporarily-unavailable-details {
+        color: #860000;
+    }
+    .conditions-not-accepted-details {
+        color: #825600;
+    }
+    .no-services {
+        color: grey;
+        text-align: center;
+        padding: 10px;
+    }
+    #fulfillment_form_container {
+        height: 320px;
+        overflow: auto;
+        padding-right: 10px;
+    }
+</style>
+
+<script type="text/javascript">
+
+    $$('.shipping-services-radio-input').invoke(
+        'observe',
+        'change',
+        OrderMerchantFulfillmentHandlerObj.shippingServicesChange
+    );
+
+</script>
+
+<br/>
+<div class="preview_header block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        Amazon\' s Shipping Services offer a variety of <strong>Shipping Benefits</strong>, including several
+        Shipping Options if you need to expedite your delivery.<br/>
+        This Tool provides <strong>programmatic access</strong> to Amazon’s Shipping Services for Sellers,
+        including competitive rates from Amazon-partnered Carriers. Sellers can find out what Shipping Service
+        offers are available by <strong>submitting information</strong> about a proposed Shipment, such as
+        <strong>Package Size</strong> and <strong>Weight</strong>, <strong>Shipment Origin</strong>, and
+        <strong>Delivery Date</strong> requirements. Sellers can choose from the Shipping Service
+        offers returned by Amazon, and then Purchase Shipping Labels for Fulfilling their Orders.<br/>
+        For more information about Amazon\'s Shipping Services Program, see the Seller Central Help.<br/><br/>
+        Amazon\'s Shipping Service tool is required to be used for Amazon Prime Orders.'); ?>
+</div>
+
+<?php echo $this->getChildHtml('breadcrumb'); ?>
+
+<div id="fulfillment_form_container">
+
+    <?php if(!is_null($this->getData('error_message'))): ?>
+        <div>
+            <ul class="messages">
+                <li class="warning-msg">
+                    <ul>
+                        <li>
+                            <?php echo $this->getData('error_message'); ?>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    <?php elseif((empty($shippingServices['items']['available'])
+            && empty($shippingServices['items']['unavailable'])
+            && empty($shippingServices['not_accepted']))
+        ): ?>
+
+            <div class="no-services">
+                <?php echo Mage::helper('M2ePro')->__('
+                    There were <strong>no</strong> suitable <strong>Shipping Services</strong> found according to the
+                    provided <strong>Configuration Settings</strong>.<br/>
+                    You can press \'<strong>Back</strong>\' Button and Return to the <strong>Previous Page</strong> to
+                    adjust the Settings. We recommend you to edit \'<strong>Carrier Will Pick Up</strong>\' and \'<strong>Delivery Experience</strong>\'
+                    Conditions.
+                '); ?>
+            </div>
+
+        <?php else: ?>
+
+        <form id="fulfillment_form" method="post" enctype="multipart/form-data">
+            <div class="grid">
+                <table id="fulfillment_shipping_services" class="border" cellpadding="0" cellspacing="0">
+                    <thead>
+                    <tr class="headings">
+                        <th style="width: 10px;"></th>
+                        <th><?php echo Mage::helper('M2ePro')->__('Shipping Service'); ?> <?php if(!empty($shippingServices['items']['available'])): ?><span class="required">*</span><?php endif; ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($shippingServices['items']['available'] as $shippingService): ?>
+                            <tr>
+                                <td class="radio-input">
+                                    <input id="<?php echo $shippingService['id']; ?>" value="<?php echo $shippingService['id']; ?>" class="shipping-services-radio-input" name="shipping_service_id" type="radio" />
+                                </td class="radio-input">
+                                <td>
+                                    <label for="<?php echo $shippingService['id']; ?>">
+                                        <strong>
+                                            <?php echo $shippingService['name']; ?>
+                                        </strong>
+                                        <div class="shipping-service-details">
+                                            <div>
+                                                <span class="shipping-service-prop"><?php echo Mage::helper('M2ePro')->__('Ship Date'); ?>:</span>
+                                                <?php echo Mage::helper('core')->formatDate($shippingService['date']['ship'], 'medium', true); ?>
+
+                                            </div>
+                                            <div>
+                                                <span class="shipping-service-prop"><?php echo Mage::helper('M2ePro')->__('Estimated Delivery Date'); ?>:</span>
+                                                <?php echo Mage::helper('core')->formatDate($shippingService['date']['estimated_delivery']['latest'], 'medium', true); ?>
+                                            </div>
+                                            <div>
+                                                <span class="shipping-service-prop"><?php echo Mage::helper('M2ePro')->__('Rate'); ?>:</span>
+                                                <?php echo Mage::app()->getLocale()->currency($shippingService['rate']['currency_code'])->toCurrency($shippingService['rate']['amount']); ?>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+
+                        <?php foreach ($shippingServices['items']['unavailable'] as $notAcceptedCarrier): ?>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <strong>
+                                        <?php echo $notAcceptedCarrier; ?>
+                                    </strong>
+                                    <div class="shipping-service-details conditions-not-accepted-details">
+                                        <?php echo Mage::helper('M2ePro')->__('
+                                            The Terms and Conditions for this Carrier have not been accepted by the Seller
+                                            in Amazon Seller Central Account.<br/><br/>
+                                            Please, <strong>Modify the Settings</strong> in your Seller Central Account
+                                            in order to <strong>use this Carrier</strong>.
+                                        '); ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+
+                        <?php foreach ($shippingServices['not_accepted'] as $temporarilyUnavailableCarrier): ?>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <strong>
+                                        <?php echo $temporarilyUnavailableCarrier; ?>
+                                    </strong>
+                                    <div class="shipping-service-details temporarily-unavailable-details">
+                                        <?php echo Mage::helper('M2ePro')->__('
+                                            A Carrier is temporarily unavailable, most likely due to a service outage
+                                            experienced by the carrier. Please, try again later.
+                                        '); ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+    <?php endif; ?>
+
+</div>
+
+<div class="control">
+    <?php echo $this->getChildHtml('back_button'); ?>
+    <?php if(!empty($shippingServices['items']['available'])
+            || !empty($shippingServices['items']['unavailable'])
+            || !empty($shippingServices['not_accepted'])): ?>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <?php echo $this->getChildHtml('continue_button'); ?>
+    <?php endif; ?>
+</div>

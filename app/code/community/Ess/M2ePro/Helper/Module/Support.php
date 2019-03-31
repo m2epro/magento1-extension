@@ -2,15 +2,12 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 {
-    const TYPE_BRONZE  = 'bronze';
-    const TYPE_SILVER  = 'silver';
-    const TYPE_GOLD    = 'gold';
 
     //########################################
 
@@ -44,8 +41,8 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
                 $urlParts[] = 'eBayMagentoV6X';
             } elseif ($component == Ess_M2ePro_Helper_Component_Amazon::NICK) {
                 $urlParts[] = 'AmazonMagentoV6X';
-            } elseif ($component == Ess_M2ePro_Helper_Component_Buy::NICK) {
-                $urlParts[] = 'RakutenMagentoV6X';
+            } elseif ($component == Ess_M2ePro_Helper_Component_Walmart::NICK) {
+                $urlParts[] = 'WalmartMagentoV6X';
             } else {
                 throw new Ess_M2ePro_Model_Exception_Logic('Invalid Channel.');
             }
@@ -67,7 +64,6 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         $urlParts[] = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'knowledge_base_url');
 
         if ($articleUrl) {
-            $urlParts[] = 'articles';
             $urlParts[] = trim($articleUrl, '/');
         }
 
@@ -93,9 +89,18 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    public function getMainSupportUrl()
+    public function getMainSupportUrl($urlPart = null)
     {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'main_support_url');
+        $urlParts[] = trim(
+            Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'main_support_url'),
+            '/'
+        );
+
+        if ($urlPart) {
+            $urlParts[] = trim($urlPart, '/');
+        }
+
+        return implode('/', $urlParts);
     }
 
     public function getMagentoConnectUrl()
@@ -107,62 +112,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
     public function getContactEmail()
     {
-        $email = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'contact_email');
-
-        try {
-
-            $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('settings','get','supportEmail');
-            $response = $dispatcherObject->process($connectorObj);
-
-            if (!empty($response['email'])) {
-                $email = $response['email'];
-            }
-
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-        }
-
-        return $email;
-    }
-
-    public function getType()
-    {
-        $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
-
-        $type = $cacheConfig->getGroupValue('/support/premium/','type');
-        $lastUpdateDate = $cacheConfig->getGroupValue('/support/premium/','last_update_time');
-
-        if ($type && strtotime($lastUpdateDate) + 3600*24 > Mage::helper('M2ePro')->getCurrentGmtDate(true)) {
-            return $type;
-        }
-
-        $type = self::TYPE_BRONZE;
-
-        try {
-
-            $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('settings','get','supportType');
-            $response = $dispatcherObject->process($connectorObj);
-
-            !empty($response['type']) && $type = $response['type'];
-
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-        }
-
-        $cacheConfig->setGroupValue('/support/premium/','type',$type);
-        $cacheConfig->setGroupValue('/support/premium/','last_update_time',
-                                    Mage::helper('M2ePro')->getCurrentGmtDate());
-
-        return $type;
-    }
-
-    // ---------------------------------------
-
-    public function isTypePremium()
-    {
-        return $this->getType() == self::TYPE_GOLD || $this->getType() == self::TYPE_SILVER;
+        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'contact_email');
     }
 
     //########################################

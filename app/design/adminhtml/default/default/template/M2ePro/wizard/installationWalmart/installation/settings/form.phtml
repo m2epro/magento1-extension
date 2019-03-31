@@ -1,0 +1,371 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Settings_Form $showWarning */
+
+    $showWarning = false;
+    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+    $attributesByInputTypes = array(
+        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+    );
+
+    $generalAttributesByInputTypes = array(
+        'boolean' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('boolean')),
+        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+        'text_date' => $magentoAttributeHelper->filterByInputTypes(
+            $this->getData('general_attributes'), array('text', 'date', 'datetime')
+        ),
+        'text_select' => $magentoAttributeHelper->filterByInputTypes(
+            $this->getData('general_attributes'), array('text', 'select')
+        ),
+        'text_images' => $magentoAttributeHelper->filterByInputTypes(
+            $this->getData('general_attributes'),
+            array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
+        )
+    );
+?>
+
+<script type="text/javascript">
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Settings have been saved.' => Mage::helper('M2ePro')->__('Settings have been saved.'),
+        'Required at least one identifier' => Mage::helper('M2ePro')->__('Required at least one identifier')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        varienGlobalEvents && varienGlobalEvents.fireEvent('initReady');
+
+        wizardSettings = new varienForm('<?php echo $this->getForm()->getId(); ?>', '<?php echo $this->getValidationUrl(); ?>');
+
+        WalmartGeneralSettingsObj = new WalmartGeneralSettings();
+        WalmartGeneralSettingsObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart'); ?>');
+        WalmartGeneralSettingsObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart_Configuration'); ?>');
+
+        $('sku_mode').observe('change', WalmartGeneralSettingsObj.sku_mode_change);
+
+        $('sku_modification_mode')
+            .observe('change', WalmartGeneralSettingsObj.sku_modification_mode_change);
+
+        $('upc_mode').observe('change', WalmartGeneralSettingsObj.upc_mode_change);
+        $('ean_mode').observe('change', WalmartGeneralSettingsObj.ean_mode_change);
+        $('gtin_mode').observe('change', WalmartGeneralSettingsObj.gtin_mode_change);
+        $('isbn_mode').observe('change', WalmartGeneralSettingsObj.isbn_mode_change);
+    });
+
+</script>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <div class="entry-edit" id="magento_block_walmart_listing_sku_settings">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('SKU Settings'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label for="sku_mode"><?php echo Mage::helper('M2ePro')->__('Source') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="sku_custom_attribute" name="sku_custom_attribute" value="<?php echo $this->getData('sku_custom_attribute'); ?>" />
+
+                            <select name="sku_mode" id="sku_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_PRODUCT_ID ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_PRODUCT_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product ID') ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_DEFAULT ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product SKU') ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php foreach ($generalAttributesByInputTypes['text'] as $attribute): ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('sku_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                    <?php endforeach ?>
+                                </optgroup>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('SKU is a unique identifier for each Item in your catalog. Select Attribute where the SKU values are stored.<br/>
+                                                                            <b>Note:</b> SKU is required when you create a new offer on Walmart. Must be less than 50 characters.'); ?>
+                                </span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="sku_modification_mode"><?php echo Mage::helper('M2ePro')->__('Modification') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select name="sku_modification_mode" id="sku_modification_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_NONE; ?>" <?php if ($this->getData('sku_modification_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_PREFIX; ?>" <?php if ($this->getData('sku_modification_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_PREFIX) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Prefix'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_POSTFIX; ?>" <?php if ($this->getData('sku_modification_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_POSTFIX) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Postfix'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_TEMPLATE; ?>" <?php if ($this->getData('sku_modification_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_TEMPLATE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Template'); ?></option>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Select one of the available options to modify the SKU value taken from the Source Attribute.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="sku_modification_custom_value_tr" <?php if ($this->getData('sku_modification_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::SKU_MODIFICATION_MODE_NONE): ?>style="display: none;"<?php endif; ?>>
+                        <td class="label">
+                            <label for="sku_modification_custom_value"><?php echo Mage::helper('M2ePro')->__('Modification Value') ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input type="text" id="sku_modification_custom_value" name="sku_modification_custom_value" class="input-text M2ePro-required-when-visible M2ePro-validate-sku-modification-custom-value M2ePro-validate-sku-modification-custom-value-max-length" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('sku_modification_custom_value')); ?>" />
+                        <td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="generate_sku_mode"><?php echo Mage::helper('M2ePro')->__('Generate') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select name="generate_sku_mode" id="generate_sku_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::GENERATE_SKU_MODE_NO; ?>" <?php if ($this->getData('generate_sku_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::GENERATE_SKU_MODE_NO) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::GENERATE_SKU_MODE_YES ?>" <?php if ($this->getData('generate_sku_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::GENERATE_SKU_MODE_YES) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Enable to automatically generate another SKU value if Item SKU that you submit to the Channel already exists in your Walmart Inventory.'
+                                ); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="entry-edit" id="magento_block_walmart_listing_add_search_identifiers">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Product Identifiers'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label for="upc_mode"><?php echo Mage::helper('M2ePro')->__('UPC') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="upc_custom_attribute" name="upc_custom_attribute" value="<?php echo $this->getData('upc_custom_attribute');?>"/>
+
+                            <select name="upc_mode" class="M2ePro-walmart-required-identifier-setting M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" id="upc_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::UPC_MODE_NOT_SET ?>" <?php if ($this->getData('upc_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::UPC_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php if ($this->getData('upc_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::UPC_MODE_CUSTOM_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($this->getData('upc_custom_attribute'), $attributesByInputTypes['text']) && $this->getData('upc_custom_attribute') != '') : ?>
+                                        <?php $showWarning = true; ?>
+                                        <option attribute_code="<?php echo $this->getData('upc_custom_attribute')?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::UPC_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($this->getData('upc_custom_attribute'))) ?>
+                                        </option>
+                                    <?php endif; ?>
+                                    <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::UPC_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('upc_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                    <?php endforeach ?>
+                                </optgroup>
+                            </select>
+                        </td>
+
+                        <td class="value">
+                            <span>
+                                <img class="tool-tip-image" src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>">
+                                <span class="tool-tip-message tip-right" style="left: 538px; top: 407px; display: none;">
+                                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                    <span><?php echo Mage::helper('M2ePro')->__(
+                                        'Walmart uses Product IDs to associate your Item with its catalog. Select Attribute where the UPC values are stored.<br>
+                                        <strong>Note:</strong> At least one Product ID has to be specified when you create a new offer on Walmart.'
+                                    ); ?></span>
+                                </span>
+                            </span>
+                            <?php if ($showWarning) :?>
+                                <?php $showWarning = false; ?>
+                                <span id="warning_message">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
+                            <span class="tool-tip-message" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/i_notice.gif'); ?>" style="margin-top: -21px;">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Selected Magento Attribute is invalid. 
+                                    Please ensure that the Attribute exists in your Magento, has a relevant Input Type and it is included in all Attribute Sets. 
+                                    Otherwise, select a different Attribute from the drop-down.'
+                                ); ?></span>
+                            </span>
+                        </span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="ean_mode"><?php echo Mage::helper('M2ePro')->__('EAN') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="ean_custom_attribute" name="ean_custom_attribute" value="<?php echo $this->getData('ean_custom_attribute');?>"/>
+
+                            <select name="ean_mode" class="M2ePro-walmart-required-identifier-setting M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" id="ean_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::EAN_MODE_NOT_SET ?>" <?php if ($this->getData('ean_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::EAN_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php if ($this->getData('ean_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::EAN_MODE_CUSTOM_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($this->getData('ean_custom_attribute'), $attributesByInputTypes['text']) && $this->getData('ean_custom_attribute') != '') : ?>
+                                        <?php $showWarning = true; ?>
+                                        <option attribute_code="<?php echo $this->getData('ean_custom_attribute')?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::EAN_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($this->getData('ean_custom_attribute'))) ?>
+                                        </option>
+                                    <?php endif; ?>
+                                    <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::EAN_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('ean_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                    <?php endforeach ?>
+                                </optgroup>
+                            </select>
+                        </td>
+
+                        <td class="value">
+                        <span>
+                            <img class="tool-tip-image" src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>">
+                            <span class="tool-tip-message tip-right" style="left: 538px; top: 407px; display: none;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Walmart uses Product IDs to associate your Item with its catalog. Select Attribute where the EAN values are stored.<br>
+                                    <strong>Note:</strong> At least one Product ID has to be specified when you create a new offer on Walmart.'
+                                ); ?></span>
+                            </span>
+                        </span>
+                            <?php if ($showWarning) :?>
+                                <?php $showWarning = false; ?>
+                                <span id="warning_message">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
+                            <span class="tool-tip-message" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/i_notice.gif'); ?>" style="margin-top: -21px;">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Selected Magento Attribute is invalid. 
+                                    Please ensure that the Attribute exists in your Magento, has a relevant Input Type and it is included in all Attribute Sets. 
+                                    Otherwise, select a different Attribute from the drop-down.'
+                                ); ?></span>
+                            </span>
+                        </span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="gtin_mode"><?php echo Mage::helper('M2ePro')->__('GTIN') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="gtin_custom_attribute" name="gtin_custom_attribute" value="<?php echo $this->getData('gtin_custom_attribute');?>"/>
+
+                            <select name="gtin_mode" class="M2ePro-walmart-required-identifier-setting M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" id="gtin_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::GTIN_MODE_NOT_SET ?>" <?php if ($this->getData('gtin_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::GTIN_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php if ($this->getData('gtin_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::GTIN_MODE_CUSTOM_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($this->getData('gtin_custom_attribute'), $attributesByInputTypes['text']) && $this->getData('gtin_custom_attribute') != '') : ?>
+                                        <?php $showWarning = true; ?>
+                                        <option attribute_code="<?php echo $this->getData('gtin_custom_attribute')?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::GTIN_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($this->getData('gtin_custom_attribute'))) ?>
+                                        </option>
+                                    <?php endif; ?>
+                                    <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::GTIN_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('gtin_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                    <?php endforeach ?>
+                                </optgroup>
+                            </select>
+                        </td>
+
+                        <td class="value">
+                        <span>
+                            <img class="tool-tip-image" src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>">
+                            <span class="tool-tip-message tip-right" style="left: 538px; top: 407px; display: none;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Walmart uses Product IDs to associate your Item with its catalog. Select Attribute where the GTIN values are stored.<br>
+                                    <strong>Note:</strong> At least one Product ID has to be specified when you create a new offer on Walmart.'
+                                ); ?></span>
+                            </span>
+                        </span>
+                            <?php if ($showWarning) :?>
+                                <?php $showWarning = false; ?>
+                                <span id="warning_message">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
+                            <span class="tool-tip-message" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/i_notice.gif'); ?>" style="margin-top: -21px;">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Selected Magento Attribute is invalid. 
+                                    Please ensure that the Attribute exists in your Magento, has a relevant Input Type and it is included in all Attribute Sets. 
+                                    Otherwise, select a different Attribute from the drop-down.'
+                                ); ?></span>
+                            </span>
+                        </span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="isbn_mode"><?php echo Mage::helper('M2ePro')->__('ISBN') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="isbn_custom_attribute" name="isbn_custom_attribute" value="<?php echo $this->getData('isbn_custom_attribute');?>"/>
+
+                            <select name="isbn_mode" class="M2ePro-walmart-required-identifier-setting M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" id="isbn_mode">
+                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::ISBN_MODE_NOT_SET ?>" <?php if ($this->getData('isbn_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::ISBN_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php if ($this->getData('isbn_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::ISBN_MODE_CUSTOM_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($this->getData('isbn_custom_attribute'), $attributesByInputTypes['text']) && $this->getData('isbn_custom_attribute') != '') : ?>
+                                        <?php $showWarning = true; ?>
+                                        <option attribute_code="<?php echo $this->getData('isbn_custom_attribute')?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::ISBN_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected">
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($this->getData('isbn_custom_attribute'))) ?>
+                                        </option>
+                                    <?php endif; ?>
+                                    <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::ISBN_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($this->getData('isbn_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                    <?php endforeach ?>
+                                </optgroup>
+                            </select>
+                        </td>
+
+                        <td class="value">
+                        <span>
+                            <img class="tool-tip-image" src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>">
+                            <span class="tool-tip-message tip-right" style="left: 538px; top: 407px; display: none;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Walmart uses Product IDs to associate your Item with its catalog. Select Attribute where the ISBN values are stored.<br>
+                                    <strong>Note:</strong> At least one Product ID has to be specified when you create a new offer on Walmart.'
+                                ); ?></span>
+                            </span>
+                        </span>
+                            <?php if ($showWarning) :?>
+                                <?php $showWarning = false; ?>
+                                <span id="warning_message">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
+                            <span class="tool-tip-message" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/i_notice.gif'); ?>" style="margin-top: -21px;">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Selected Magento Attribute is invalid. 
+                                    Please ensure that the Attribute exists in your Magento, has a relevant Input Type and it is included in all Attribute Sets. 
+                                    Otherwise, select a different Attribute from the drop-down.'
+                                ); ?></span>
+                            </span>
+                        </span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</form>

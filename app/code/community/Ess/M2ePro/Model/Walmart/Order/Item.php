@@ -1,0 +1,335 @@
+<?php
+
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+/**
+ * @method Ess_M2ePro_Model_Order_Item getParentObject()
+ */
+class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
+{
+    const STATUS_CREATED           = 'created';
+    const STATUS_ACKNOWLEDGED      = 'acknowledged';
+    const STATUS_SHIPPED           = 'shipped';
+    const STATUS_SHIPPED_PARTIALLY = 'shippedPartially';
+    const STATUS_CANCELLED         = 'cancelled';
+
+    // M2ePro_TRANSLATIONS
+    // Product Import is disabled in Walmart Account Settings.
+    // Product for Walmart Item "%id%" was Created in Magento Catalog.
+    // Product for Walmart Item "%title%" was Created in Magento Catalog.
+
+    /** @var $channelItem Ess_M2ePro_Model_Walmart_Item */
+    private $channelItem = NULL;
+
+    //########################################
+
+    public function _construct()
+    {
+        parent::_construct();
+        $this->_init('M2ePro/Walmart_Order_Item');
+    }
+
+    //########################################
+
+    public function getProxy()
+    {
+        return Mage::getModel('M2ePro/Walmart_Order_Item_Proxy', $this);
+    }
+
+    //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Walmart_Order
+     */
+    public function getWalmartOrder()
+    {
+        return $this->getParentObject()->getOrder()->getChildObject();
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Walmart_Account
+     */
+    public function getWalmartAccount()
+    {
+        return $this->getWalmartOrder()->getWalmartAccount();
+    }
+
+    //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Walmart_Item|null
+     */
+    public function getChannelItem()
+    {
+        if (is_null($this->channelItem)) {
+            $this->channelItem = Mage::getModel('M2ePro/Walmart_Item')->getCollection()
+                ->addFieldToFilter('account_id', $this->getParentObject()->getOrder()->getAccountId())
+                ->addFieldToFilter('marketplace_id', $this->getParentObject()->getOrder()->getMarketplaceId())
+                ->addFieldToFilter('sku', $this->getSku())
+                ->setOrder('create_date', Varien_Data_Collection::SORT_ORDER_DESC)
+                ->getFirstItem();
+        }
+
+        return !is_null($this->channelItem->getId()) ? $this->channelItem : NULL;
+    }
+
+    //########################################
+
+    public function getWalmartOrderItemId()
+    {
+        return $this->getData('walmart_order_item_id');
+    }
+
+    public function getMergedWalmartOrderItemIds()
+    {
+        return $this->getSettings('merged_walmart_order_item_ids');
+    }
+
+    // ---------------------------------------
+
+    public function getStatus()
+    {
+        return $this->getData('status');
+    }
+
+    // ---------------------------------------
+
+    public function getTitle()
+    {
+        return $this->getData('title');
+    }
+
+    public function getSku()
+    {
+        return $this->getData('sku');
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return float
+     */
+    public function getPrice()
+    {
+        return (float)$this->getData('price');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return $this->getData('currency');
+    }
+
+    /**
+     * @return int
+     */
+    public function getQty()
+    {
+        return (int)$this->getData('qty');
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return array
+     */
+    public function getVariationProductOptions()
+    {
+        $channelItem = $this->getChannelItem();
+
+        if (is_null($channelItem)) {
+            return array();
+        }
+
+        return $channelItem->getVariationProductOptions();
+    }
+
+    /**
+     * @return array
+     */
+    public function getVariationChannelOptions()
+    {
+        $channelItem = $this->getChannelItem();
+
+        if (is_null($channelItem)) {
+            return array();
+        }
+
+        return $channelItem->getVariationChannelOptions();
+    }
+
+    //########################################
+
+    /**
+     * @return int
+     */
+    public function getAssociatedStoreId()
+    {
+        // Item was listed by M2E
+        // ---------------------------------------
+        if (!is_null($this->getChannelItem())) {
+            return $this->getWalmartAccount()->isMagentoOrdersListingsStoreCustom()
+                ? $this->getWalmartAccount()->getMagentoOrdersListingsStoreId()
+                : $this->getChannelItem()->getStoreId();
+        }
+        // ---------------------------------------
+
+        return $this->getWalmartAccount()->getMagentoOrdersListingsOtherStoreId();
+    }
+
+    //########################################
+
+    public function canCreateMagentoOrder()
+    {
+        return $this->isOrdersCreationEnabled();
+    }
+
+    public function isReservable()
+    {
+        return $this->isOrdersCreationEnabled();
+    }
+
+    // ---------------------------------------
+
+    private function isOrdersCreationEnabled()
+    {
+        $channelItem = $this->getChannelItem();
+
+        if (!is_null($channelItem) && !$this->getWalmartAccount()->isMagentoOrdersListingsModeEnabled()) {
+            return false;
+        }
+
+        if (is_null($channelItem) && !$this->getWalmartAccount()->isMagentoOrdersListingsOtherModeEnabled()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //########################################
+
+    /**
+     * @return int|mixed
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    public function getAssociatedProductId()
+    {
+        // Item was listed by M2E
+        // ---------------------------------------
+        if (!is_null($this->getChannelItem())) {
+            return $this->getChannelItem()->getProductId();
+        }
+        // ---------------------------------------
+
+        // 3rd party Item
+        // ---------------------------------------
+        $sku = $this->getSku();
+        if ($sku != '' && strlen($sku) <= Ess_M2ePro_Helper_Magento_Product::SKU_MAX_LENGTH) {
+            $product = Mage::getModel('catalog/product')
+                ->setStoreId($this->getWalmartOrder()->getAssociatedStoreId())
+                ->getCollection()
+                ->addAttributeToSelect('sku')
+                ->addAttributeToFilter('sku', $sku)
+                ->getFirstItem();
+
+            if ($product->getId()) {
+                Mage::dispatchEvent('m2epro_associate_walmart_order_item_to_product', array(
+                    'product'    => $product,
+                    'order_item' => $this->getParentObject(),
+                ));
+
+                return $product->getId();
+            }
+        }
+        // ---------------------------------------
+
+        $product = $this->createProduct();
+
+        Mage::dispatchEvent('m2epro_associate_walmart_order_item_to_product', array(
+            'product'    => $product,
+            'order_item' => $this->getParentObject(),
+        ));
+
+        return $product->getId();
+    }
+
+    /**
+     * @return Mage_Catalog_Model_Product
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    private function createProduct()
+    {
+        if (!$this->getWalmartAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
+            throw new Ess_M2ePro_Model_Exception('Product Import is disabled in Walmart Account Settings.');
+        }
+
+        $storeId = $this->getWalmartAccount()->getMagentoOrdersListingsOtherStoreId();
+        if ($storeId == 0) {
+            $storeId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
+        }
+
+        $sku = $this->getSku();
+        if (strlen($sku) > Ess_M2ePro_Helper_Magento_Product::SKU_MAX_LENGTH) {
+            $hashLength = 10;
+            $savedSkuLength = Ess_M2ePro_Helper_Magento_Product::SKU_MAX_LENGTH - $hashLength - 1;
+            $hash = Mage::helper('M2ePro')->generateUniqueHash($sku, $hashLength);
+
+            $isSaveStart = (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+                '/order/magento/settings/', 'save_start_of_long_sku_for_new_product'
+            );
+
+            if ($isSaveStart) {
+                $sku = substr($sku, 0, $savedSkuLength).'-'.$hash;
+            } else {
+                $sku = $hash.'-'.substr($sku, strlen($sku) - $savedSkuLength, $savedSkuLength);
+            }
+        }
+
+        $productData = array(
+            'title'             => $this->getTitle(),
+            'sku'               => $sku,
+            'description'       => '',
+            'short_description' => '',
+            'qty'               => $this->getQtyForNewProduct(),
+            'price'             => $this->getPrice(),
+            'store_id'          => $storeId,
+            'tax_class_id'      => $this->getWalmartAccount()->getMagentoOrdersListingsOtherProductTaxClassId()
+        );
+
+        // Create product in magento
+        // ---------------------------------------
+        /** @var $productBuilder Ess_M2ePro_Model_Magento_Product_Builder */
+        $productBuilder = Mage::getModel('M2ePro/Magento_Product_Builder')->setData($productData);
+        $productBuilder->buildProduct();
+        // ---------------------------------------
+
+        $this->getParentObject()->getOrder()->addSuccessLog(
+            'Product for Walmart Item "%title%" was Created in Magento Catalog.', array('!title' => $this->getTitle())
+        );
+
+        return $productBuilder->getProduct();
+    }
+
+    private function getQtyForNewProduct()
+    {
+        $otherListing = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other')
+            ->addFieldToFilter('account_id', $this->getParentObject()->getOrder()->getAccountId())
+            ->addFieldToFilter('marketplace_id', $this->getParentObject()->getOrder()->getMarketplaceId())
+            ->addFieldToFilter('sku', $this->getSku())
+            ->getFirstItem();
+
+        if ((int)$otherListing->getOnlineQty() > $this->getQty()) {
+            return $otherListing->getOnlineQty();
+        }
+
+        return $this->getQty();
+    }
+
+    //########################################
+}

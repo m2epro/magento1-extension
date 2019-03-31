@@ -1,0 +1,17 @@
+<div id="regular_price_popup">
+    <div style="padding: 10px;">
+        <?php echo Mage::helper('M2ePro')->__('
+            Some of the selected Products will not be added to Amazon Repricing Tool since B2C Price is not specified for them. Only Products with B2C Price can be repriced.
+        '); ?>
+
+        <div class="clear"></div>
+
+        <div style="text-align: right">
+            <a href="javascript:"
+               onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <?php echo $this->getChildHtml('yes_btn'); ?>
+        </div>
+    </div>
+
+</div>

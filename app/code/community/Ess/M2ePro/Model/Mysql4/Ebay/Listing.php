@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -147,7 +147,9 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
             return;
         }
 
-        $productCollection = Mage::getModel('catalog/product')->getCollection();
+        /* @var $productCollection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
+        $productCollection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
+                                                                 Mage::getModel('catalog/product')->getResource());
         $productCollection->setStoreId($storeId);
         $productCollection->addFieldToFilter('entity_id', array('in' => $productIds));
         $productCollection->addAttributeToSelect($attribute);
@@ -167,6 +169,25 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Listing
                 $storeId
             );
         }
+    }
+
+    public function getTemplateCategoryIds($listingId)
+    {
+        $listingProductTable     = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
+        $ebayListingProductTable = Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable();
+
+        $select = $this->_getReadAdapter()
+            ->select()
+            ->from(array('elp' => $ebayListingProductTable))
+            ->joinLeft(array('lp' => $listingProductTable), 'lp.id = elp.listing_product_id')
+            ->reset(Zend_Db_Select::COLUMNS)
+            ->columns(array('template_category_id'))
+            ->where('lp.listing_id = ?', $listingId)
+            ->where('template_category_id IS NOT NULL');
+
+        $ids = $select->query()->fetchAll(PDO::FETCH_COLUMN);
+
+        return array_unique($ids);
     }
 
     //########################################

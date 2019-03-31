@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -29,12 +29,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Synchronization extends Mage_Adminhtml_Blo
         $this->removeButton('save');
         $this->removeButton('reset');
         $this->removeButton('back');
-
-        $this->_addButton('run_all_enabled_now', array(
-            'label'     => Mage::helper('M2ePro')->__('Synchronize'),
-            'onclick'   => 'SynchronizationHandlerObj.saveSettings(\'runAllEnabledNow\');',
-            'class'     => 'save'
-        ));
 
         $this->_addButton('save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),

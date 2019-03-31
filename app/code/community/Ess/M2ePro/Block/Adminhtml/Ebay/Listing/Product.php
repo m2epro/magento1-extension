@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -14,18 +14,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
     {
         parent::__construct();
 
+        /** @var Ess_M2ePro_Model_Listing $listing */
+        $listing = Mage::helper('M2ePro/Component_Ebay')
+            ->getCachedObject('Listing', $this->getRequest()->getParam('listing_id'));
+
         // Initialization block
         // ---------------------------------------
         $this->setId('ebayListingProduct');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_product_source';
-        $this->_controller .= ucfirst($this->getRequest()->getParam('source'));
+        $this->_controller .= ucfirst($listing->getSetting('additional_data', 'source'));
         // ---------------------------------------
 
         // Set header text
         // ---------------------------------------
-
-        $this->_headerText = Mage::helper('M2ePro')->__('Select Products');
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products", $componentName);
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("Select Products");
+        }
         // ---------------------------------------
 
         // Set buttons actions
@@ -39,17 +47,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
         // ---------------------------------------
 
         // ---------------------------------------
+        $url = $this->getUrl('*/*/index', array('_current' => true, 'clear' => true));
 
-        if ((bool)$this->getRequest()->getParam('listing_creation',false)) {
-            $url = $this->getUrl('*/*/sourceMode', array('_current' => true));
-        } else {
-            $url = $this->getUrl('*/adminhtml_ebay_listing/view',array(
-                'id' => $this->getRequest()->getParam('listing_id'),
-            ));
-
-            if ($backParam = $this->getRequest()->getParam('back')) {
-                $url = Mage::helper('M2ePro')->getBackUrl();
-            }
+        if ($backParam = $this->getRequest()->getParam('back')) {
+            $url = Mage::helper('M2ePro')->getBackUrl();
         }
 
         $this->_addButton('back', array(
@@ -58,11 +59,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
             'onclick'   => 'setLocation(\''.$url.'\')'
         ));
         // ---------------------------------------
-        $this->_addButton('video_tutorial', array(
-            'label'     => Mage::helper('M2ePro')->__('Show Video Tutorial'),
-            'class'     => 'button_link',
-            'onclick'   => 'VideoTutorialHandlerObj.openPopUp();'
-        ));
 
         // ---------------------------------------
         if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
@@ -87,8 +83,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
         $listingId = (int)$this->getRequest()->getParam('listing_id');
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
-            array('listing' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',$listingId))
+            'M2ePro/adminhtml_listing_view_header', '',
+            array('listing' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $listingId))
         );
 
         return $viewHeaderBlock->toHtml() .
@@ -155,7 +151,7 @@ JS;
         {$helper->__(
 '<b>
  Do you want to set up a Rule by which Products will be automatically Added or Deleted from the current M2E Pro Listing?
-</b>.
+</b>
 <br/><br/>
 Click Start Configure to create a Rule<br/> or Cancel if you do not want to do it now.
 <br/><br/>

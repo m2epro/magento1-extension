@@ -4,7 +4,11 @@
     var BLOCK_NOTICES_DISABLE_COLLAPSE = <?php echo json_encode((bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/view/ebay/notice/', 'disable_collapse')); ?>;
 
     var IS_VIEW_EBAY = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewEbay()); ?>;
-    var IS_VIEW_COMMON = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewCommon()); ?>;
+    var IS_VIEW_AMAZON = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewAmazon()); ?>;
+    var IS_VIEW_WALMART = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewWalmart()); ?>;
+
+    var IS_VIEW_INTEGRATION = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewIntegration()); ?>;
+    var IS_VIEW_WIZARD = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewWizard()); ?>;
     var IS_VIEW_CONFIGURATION = <?php echo json_encode(Mage::helper('M2ePro/View')->isCurrentViewConfiguration()); ?>;
 
     var M2ePro = {};
@@ -24,7 +28,9 @@
         'm2epro_skin_url' => $this->getSkinUrl('M2ePro')
     )); ?>);
 
-    setPageHelpLink('<?php echo $this->getPageHelpLink(); ?>');
+    if (typeof setPageHelpLink != 'undefined') {
+        setPageHelpLink('<?php echo $this->getPageHelpLink(); ?>');
+    }
 
     M2ePro.translator.add(<?php echo Zend_Json::encode(array(
 
@@ -45,19 +51,23 @@
         'Product(s)'    => Mage::helper('M2ePro')->__('Product(s)'),
 
         'Please select the Products you want to perform the Action on.' => Mage::helper('M2ePro')->__('Please select the Products you want to perform the Action on.'),
-        'Please select Items.'  => Mage::helper('M2ePro')->__('Please select Items.'),
-        'Please select Action.' => Mage::helper('M2ePro')->__('Please select Action.'),
-        'View All Product Log' => Mage::helper('M2ePro')->__('View All Product Log'),
-        'This is a required field.' => Mage::helper('M2ePro')->__('This is a required field.'),
-        'Please enter valid UPC' => Mage::helper('M2ePro')->__('Please enter valid UPC'),
-        'Please enter valid EAN' => Mage::helper('M2ePro')->__('Please enter valid EAN'),
-        'Please enter valid ISBN' => Mage::helper('M2ePro')->__('Please enter valid ISBN'),
-        'Invalid input data. Decimal value required. Example 12.05' => Mage::helper('M2ePro')->__('Invalid input data. Decimal value required. Example 12.05'),
+        'Please select Items.'                                          => Mage::helper('M2ePro')->__('Please select Items.'),
+        'Please select Action.'                                         => Mage::helper('M2ePro')->__('Please select Action.'),
+        'View All Product Log'                                          => Mage::helper('M2ePro')->__('View All Product Log'),
+        'This is a required field.'                                     => Mage::helper('M2ePro')->__('This is a required field.'),
+        'Please enter valid UPC'                                        => Mage::helper('M2ePro')->__('Please enter valid UPC'),
+        'Please enter valid EAN'                                        => Mage::helper('M2ePro')->__('Please enter valid EAN'),
+        'Please enter valid ISBN'                                       => Mage::helper('M2ePro')->__('Please enter valid ISBN'),
+        'Invalid input data. Decimal value required. Example 12.05'     => Mage::helper('M2ePro')->__('Invalid input data. Decimal value required. Example 12.05'),
+        'Invalid input data. Integer value required. Example 12'        => Mage::helper('M2ePro')->__('Invalid input data. Integer value required. Example 12'),
+        'Invalid date time format string.'                              => Mage::helper('M2ePro')->__('Invalid date time format string.'),
+        'Invalid date format string.'                                   => Mage::helper('M2ePro')->__('Invalid date format string.'),
+        'Please enter a valid number value in a specified range.'       => Mage::helper('M2ePro')->__('Please enter a valid number value in a specified range.'),
 
-        'You should select Attribute Set first.' => Mage::helper('M2ePro')->__('You should select Attribute Set first.'),
+        'Create a New One...'               => Mage::helper('M2ePro')->__('Create a New One...'),
+        'Creation of New Magento Attribute' => Mage::helper('M2ePro')->__('Creation of New Magento Attribute'),
 
-        'Create a New One...' => Mage::helper('M2ePro')->__('Create a New One...'),
-        'Creation of New Magento Attribute' => Mage::helper('M2ePro')->__('Creation of New Magento Attribute')
+        'Unauthorized! Please login again.' => Mage::helper('M2ePro')->__('Unauthorized! Please login again.')
     )); ?>);
 
 </script>

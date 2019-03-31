@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -24,8 +24,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Menu extends Mage_Adminhtml_Block_Page_
 
         try {
 
-            $menuArray = Mage::helper('M2ePro/View_Ebay')->prepareMenu($menuArray);
-            $menuArray = Mage::helper('M2ePro/View_Common')->prepareMenu($menuArray);
+            $menuArray = Mage::helper('M2ePro/Component')->prepareMenu($menuArray);
 
         } catch (Exception $exception) {}
 

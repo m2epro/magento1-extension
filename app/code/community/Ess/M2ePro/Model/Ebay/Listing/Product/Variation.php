@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -17,6 +17,46 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     {
         parent::_construct();
         $this->_init('M2ePro/Ebay_Listing_Product_Variation');
+    }
+
+    //########################################
+
+    protected function _afterSave()
+    {
+        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+            "listing_product_{$this->getListingProduct()->getId()}_variations"
+        );
+        return parent::_afterSave();
+    }
+
+    protected function _beforeDelete()
+    {
+        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+            "listing_product_{$this->getListingProduct()->getId()}_variations"
+        );
+        return parent::_beforeDelete();
+    }
+
+    //########################################
+
+    public function deleteInstance()
+    {
+        if (is_null($this->getId())) {
+            throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
+        }
+
+        if ($this->isLocked()) {
+            return false;
+        }
+
+        if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
+            Mage::getResourceModel('M2ePro/Ebay_Listing_Product_PickupStore')->processDeletedVariation(
+                $this->getParentObject()
+            );
+        }
+
+        $this->delete();
+        return true;
     }
 
     //########################################
@@ -176,11 +216,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     /**
      * @param bool $asObjects
      * @param array $filters
+     * @param bool $tryToGetFromStorage
      * @return Ess_M2ePro_Model_Listing_Product_Variation_Option[]
      */
-    public function getOptions($asObjects = false, array $filters = array())
+    public function getOptions($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
     {
-        return $this->getParentObject()->getOptions($asObjects,$filters);
+        return $this->getParentObject()->getOptions($asObjects,$filters,$tryToGetFromStorage);
     }
 
     //########################################
@@ -421,10 +462,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
                     $sku .= $tempSku;
                 }
             }
-        }
 
-        if (strlen($sku) >= 80) {
-            $sku = 'RANDOM_'.sha1($sku);
+        // Downloadable with separated links product
+        } else if ($this->getListingProduct()->getMagentoProduct()->isDownloadableTypeWithSeparatedLinks()) {
+
+            /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
+
+            $option = reset($options);
+            $sku = $option->getMagentoProduct()->getSku().'-'
+                   .Mage::helper('M2ePro')->convertStringToSku($option->getOption());
         }
 
         return $sku;
@@ -449,7 +495,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     public function getPrice()
     {
         $src = $this->getEbaySellingFormatTemplate()->getFixedPriceSource();
-        return $this->getCalculatedPrice($src, true, true);
+
+        $vatPercent = NULL;
+        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+            $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
+        }
+
+        return $this->getCalculatedPrice(
+            $src, $vatPercent, $this->getEbaySellingFormatTemplate()->getFixedPriceCoefficient()
+        );
     }
 
     // ---------------------------------------
@@ -460,7 +514,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     public function getPriceDiscountStp()
     {
         $src = $this->getEbaySellingFormatTemplate()->getPriceDiscountStpSource();
-        return $this->getCalculatedPrice($src, true, false);
+
+        $vatPercent = NULL;
+        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+            $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
+        }
+
+        return $this->getCalculatedPrice($src, $vatPercent);
     }
 
     /**
@@ -469,18 +529,24 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     public function getPriceDiscountMap()
     {
         $src = $this->getEbaySellingFormatTemplate()->getPriceDiscountMapSource();
-        return $this->getCalculatedPrice($src, true, false);
+
+        $vatPercent = NULL;
+        if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
+            $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
+        }
+
+        return $this->getCalculatedPrice($src, $vatPercent);
     }
 
     // ---------------------------------------
 
-    private function getCalculatedPrice($src, $increaseByVatPercent = false, $modifyByCoefficient = false)
+    private function getCalculatedPrice($src, $vatPercent = NULL, $coefficient = NULL)
     {
         /** @var $calculator Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Ebay_Listing_Product_PriceCalculator');
         $calculator->setSource($src)->setProduct($this->getListingProduct());
-        $calculator->setIsIncreaseByVatPercent($increaseByVatPercent);
-        $calculator->setModifyByCoefficient($modifyByCoefficient);
+        $calculator->setVatPercent($vatPercent);
+        $calculator->setCoefficient($coefficient);
         $calculator->setPriceVariationMode($this->getEbaySellingFormatTemplate()->getPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());

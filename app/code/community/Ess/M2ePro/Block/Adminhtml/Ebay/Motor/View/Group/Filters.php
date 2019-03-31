@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -80,7 +80,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Group_Filters
         /** @var Ess_M2ePro_Model_Mysql4_Ebay_Motor_Filter_Collection $collection */
         $collection = Mage::getModel('M2ePro/Ebay_Motor_Filter')->getCollection();
         $collection->getSelect()->join(
-            array('ftg' => Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_motor_filter_to_group')),
+            array(
+                'ftg' => Mage::helper('M2ePro/Module_Database_Structure')->
+                    getTableNameWithPrefix('m2epro_ebay_motor_filter_to_group')
+            ),
             'ftg.filter_id=main_table.id',
             array()
         );

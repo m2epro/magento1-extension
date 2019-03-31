@@ -1,0 +1,14 @@
+<div id="block_notice_amazon_listing_search_help" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Search Items'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        This Page shows all <strong>Products</strong> of M2E Pro Listings and 3rd Party Listing.<br/><br/>
+        Use the Filters to find the Product you want to manage. Clicking the Arrows Icon in the Manage Column will take you to the M2E Pro Listing\'s Products Page.'
+        );
+
+    $url = Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/l4gVAQ");
+
+    echo Mage::helper('M2ePro')->__('
+                <br/><br/>More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Search+Products')
+    );
+?>
+</div>

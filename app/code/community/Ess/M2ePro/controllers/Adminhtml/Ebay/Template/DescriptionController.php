@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -28,6 +28,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
             @unlink($watermarkPath);
         }
 
+        /** @var Ess_M2ePro_Model_Ebay_Template_Description $template */
         $template = Mage::getModel('M2ePro/Ebay_Template_Description')->load((int)$templateData['id']);
         $template->updateWatermarkHashes();
 
@@ -125,6 +126,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
 
             /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Description_Renderer $renderer */
             $renderer = Mage::getSingleton('M2ePro/Ebay_Listing_Product_Description_Renderer');
+            $renderer->setRenderMode(Ess_M2ePro_Model_Ebay_Listing_Product_Description_Renderer::MODE_PREVIEW);
             $renderer->setListingProduct($listingProduct->getChildObject());
             $description = $renderer->parseTemplate($description);
         }
@@ -152,10 +154,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
             $newTag = str_replace(' m2e_watermark="1"', '', $tagsArr[0][$i]);
             $newTag = '<div class="description-preview-watermark-info">'.$newTag;
 
-            if ($tag->getAttribute('width') == '' || $tag->getAttribute('width') > 100) {
-                $newTag = $newTag.'<p>Watermark will be applied to this picture.</p></div>';
+            if ($tag->getAttribute('width') === '' || $tag->getAttribute('width') > 100) {
+                $newTag .= '<p>Watermark will be applied to this picture.</p></div>';
             } else {
-                $newTag = $newTag.'<p>Watermark.</p></div>';
+                $newTag .= '<p>Watermark.</p></div>';
             }
             $description = str_replace($tagsArr[0][$i], $newTag, $description);
         }

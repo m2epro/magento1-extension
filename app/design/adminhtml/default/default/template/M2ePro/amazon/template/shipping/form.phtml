@@ -1,0 +1,167 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit_Form */
+
+    /** @var Ess_M2ePro_Model_Amazon_Template_Shipping $model */
+    $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+    $formData = array();
+    if ($model) {
+        $formData = $model->toArray();
+    }
+
+    $default = array(
+        'title'         => '',
+
+        'template_name_mode' => '',
+        'template_name_value' => '',
+        'template_name_attribute' => '',
+    );
+
+    $formData = array_merge($default, $formData);
+
+    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+    $attributes = $magentoAttributeHelper->getGeneralFromAllAttributeSets();
+
+    $attributesByInputTypes = array(
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($attributes, array('text', 'select'))
+    );
+?>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,
+        'Ess_M2ePro_Helper_Component_Amazon'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Template_Shipping'); ?>,
+        'Ess_M2ePro_Model_Amazon_Template_Shipping'
+    );
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit'    => $this->getUrl('M2ePro/adminhtml_amazon_template_shipping/save', array('id' => $this->getRequest()->getParam('id'))),
+        'formSubmitNew' => $this->getUrl('M2ePro/adminhtml_amazon_template_shipping/save'),
+        'deleteAction'  => $this->getUrl('M2ePro/adminhtml_amazon_template_shipping/delete', array('id' => $this->getRequest()->getParam('id')))
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Add Shipping Policy' => Mage::helper('M2ePro')->__('Add Shipping Policy'),
+        'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
+    )); ?>);
+
+    M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
+    M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
+
+    Event.observe(window, 'load', function() {
+        AmazonTemplateShippingHandlerObj = new AmazonTemplateShippingHandler();
+
+        $('template_name_mode')
+            .observe('change', AmazonTemplateShippingHandlerObj.templateNameModeChange)
+            .simulate('change');
+
+        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+    });
+    //-----------------------------
+
+</script>
+
+<?php
+// todo "more info" link must be added when develop branch becomes "public"
+?>
+<div id="block_notice_amazon_template_shipping" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Shipping Policy'); ?>">
+    <?php
+        echo Mage::helper('M2ePro')->__(
+            'The Shipping Policy allows to provide Shipping Settings for the Items being listed to Amazon. So you should provide a Channel Template Name which you would like to be used.<br />'
+        ); ?>
+</div>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+<div class="entry-edit" id="magento_block_amazon_template_shipping_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-shipping-tpl-title"/>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Short meaningful Policy Title for your internal use.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_amazon_template_shipping_channel">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Channel'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="template_name"><?php echo Mage::helper('M2ePro')->__('Template Name'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="template_name_attribute" name="template_name_attribute" value="<?php echo $formData['template_name_attribute']; ?>"/>
+
+                        <select id="template_name_mode" name="template_name_mode" class="required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                            <option class="empty-option"></option>
+                            <option id="template_name_mode_cv" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Shipping::TEMPLATE_NAME_VALUE; ?>" <?php if (Ess_M2ePro_Model_Amazon_Template_Shipping::TEMPLATE_NAME_VALUE == $formData['template_name_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Amazon_Template_Shipping::TEMPLATE_NAME_ATTRIBUTE; ?>">
+                                <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Shipping::TEMPLATE_NAME_ATTRIBUTE; ?>" <?php if ($formData['template_name_mode'] == Ess_M2ePro_Model_Amazon_Template_Shipping::TEMPLATE_NAME_ATTRIBUTE && $attribute['code'] == $formData['template_name_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Template Name which you would like to be used.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="template_name_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label for="template_name_value"><?php echo Mage::helper('M2ePro')->__('Template Name Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="template_name_value" name="template_name_value" value="<?php echo $this->escapeHtml($formData['template_name_value']); ?>" type="text" class="input-text M2ePro-required-when-visible" />
+                    </td>
+                </tr>
+
+            </table>
+
+        <div>
+    </div>
+
+</div>

@@ -1,0 +1,102 @@
+<?php /* @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Variation_Manage */?>
+<div style="margin-top: 10px;">
+
+    <div id="block_notice_listing_product_variation_manage" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Manage Magento Product Variations'); ?>">
+        <?php echo Mage::helper('M2ePro')->__('On this Tab the specific Magento Variation can be chosen for selling on %component% as an Individual Product.
+        To do so, you need to set values for all the Configurable Attributes that exist in this Magento Variation Product. You can add multiple Variations at the same time. <br/><br/>
+
+        There are two shortcut Options available to speed up the process of Adding Specific Variations to the list:
+        <ul style="margin: 10px 0 !important; padding-left: 30px !important;list-style-type: decimal;">
+            <li><strong>Generate All Variations</strong> – generates all the unique combinations of Configurable Attributes values of this Magento Variational Product.</li>
+            <li><strong>Generate Non-Existing Variations</strong> – generates all the Variations of this Magento Product that are not presented in this Listing.</li>
+        </ul>',
+        $this->getComponentTitle()); ?>
+    </div>
+
+    <div style="margin-bottom: 10px">
+
+        <?php echo $this->getChildHtml('variation_manage_generate_all'); ?>
+        &nbsp;
+        <?php echo $this->getChildHtml('variation_manage_generate_unique'); ?>
+
+    </div>
+
+    <form id="variation_manage_form">
+        <div style="overflow-y: auto;">
+            <table id="variation_manage" class="form-list" cellspacing="0" cellpadding="0" style="margin: 0 auto; width: 100%">
+
+                <tr>
+                    <td class="grid">
+
+                        <table class="border" cellpadding="0" cellspacing="0">
+                            <thead>
+                                <tr class="headings">
+
+                                    <?php foreach ($this->getMagentoVariationsSets() as $attribute => $values) { ?>
+
+                                        <th class="attribute" style="width: <?php echo round(97/count($this->getMagentoVariationsSets()));?>%" attribute="<?php echo $attribute; ?>">
+                                            <?php echo $attribute; ?>
+                                            <span class="required">*</span>
+                                        </th>
+
+                                    <?php } ?>
+
+                                    <th style="width: 3%">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="variation_manage_tbody">
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="<?php echo count($this->getMagentoVariationsSets()) + 1;?>" class="a-right">
+                                        <?php echo $this->getChildHtml('add_more_variation_button'); ?>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+    </form>
+
+</div>
+
+<div style="clear: both"></div>
+
+<div style="padding: 7px 0; text-align: right">
+    <a href="javascript:void(0);" id="variation_manage_close" class="close" onclick="ListingProductVariationHandlerObj.managePopup.close();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+    &nbsp;
+    <?php echo $this->getChildHtml('variation_manage_confirm'); ?>
+</div>
+
+<script type="text/javascript">
+
+    var init = function() {
+
+        $$('#variation_manage th').each(function(el){
+            el.style.padding = '2px 4px';
+        });
+
+        $$('#variation_manage td').each(function(el){
+            el.style.padding = '2px 4px';
+        });
+
+        ListingProductVariationHandlerObj.setNeededVariationData(
+            <?php echo json_encode(array_keys($this->getMagentoVariationsSets())); ?>,
+            <?php echo json_encode($this->getMagentoVariationsTree()); ?>
+        );
+        ListingProductVariationHandlerObj.managePopupInit();
+    };
+
+    <?php if ($this->getRequest()->isXmlHttpRequest()) { ?>
+        init();
+    <?php } else { ?>
+        Event.observe(window,'load',init);
+    <?php } ?>
+
+</script>

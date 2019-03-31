@@ -2,29 +2,55 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
 {
-    const TASK_UNKNOWN = 0;
-    const _TASK_UNKNOWN = 'System';
 
-    const TASK_DEFAULTS = 1;
-    const _TASK_DEFAULTS = 'Default Synchronization';
-    const TASK_TEMPLATES = 2;
-    const _TASK_TEMPLATES = 'Inventory Synchronization';
+    // TODO migration
+//- Other Synchronization
+//    const TASK_UNKNOWN = 0;
+//    const _TASK_UNKNOWN = 'System';
+//    const TASK_GENERAL = 1;
+//    const _TASK_GENERAL = 'General Synchronization';
+
+    const TASK_OTHER = 0;
+    const _TASK_OTHER = 'Other Synchronization';
+
+//- M2E Pro Listings Synchronization
+//    const TASK_LISTINGS_PRODUCTS = 2;
+//    const _TASK_LISTINGS_PRODUCTS = 'Listings Products Synchronization';
+//    const TASK_TEMPLATES = 3;
+//    const _TASK_TEMPLATES = 'Inventory Synchronization';
+
+    const TASK_LISTINGS = 2;
+    const _TASK_LISTINGS = 'M2E Pro Listings Synchronization';
+
+//- Orders Synchronization
+//    const TASK_ORDERS = 4;
     const TASK_ORDERS = 3;
     const _TASK_ORDERS = 'Orders Synchronization';
-    const TASK_FEEDBACKS = 4;
-    const _TASK_FEEDBACKS = 'Feedback Synchronization';
-    const TASK_MARKETPLACES = 5;
+
+//- Marketplaces Synchronization
+//    const TASK_MARKETPLACES = 5;
+    const TASK_MARKETPLACES = 4;
     const _TASK_MARKETPLACES = 'Marketplaces Synchronization';
-    const TASK_OTHER_LISTINGS = 6;
+
+//- 3rd party Listings Synchronization
+//    const TASK_OTHER_LISTINGS = 6;
+    const TASK_OTHER_LISTINGS = 5;
     const _TASK_OTHER_LISTINGS = '3rd Party Listings Synchronization';
-    const TASK_POLICIES = 7;
-    const _TASK_OTHER_POLICIES = 'Business Policies Synchronization';
+
+//delete
+//    const TASK_POLICIES = 7;
+//    const _TASK_OTHER_POLICIES = 'Business Policies Synchronization';
+
+//- Amazon Repricing Synchronization
+//    const TASK_REPRICING = 8;
+    const TASK_REPRICING = 6;
+    const _TASK_REPRICING = 'Repricing Synchronization';
 
     /**
      * @var null|int
@@ -34,7 +60,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
     /**
      * @var int
      */
-    private $task = self::TASK_UNKNOWN;
+    private $task = self::TASK_OTHER;
 
     /**
      * @var int
@@ -70,7 +96,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
     /**
      * @param int $task
      */
-    public function setSynchronizationTask($task = self::TASK_UNKNOWN)
+    public function setSynchronizationTask($task = self::TASK_OTHER)
     {
         $this->task = (int)$task;
     }
@@ -89,27 +115,18 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //########################################
 
-    public function getActionTitle($type)
-    {
-        return $this->getActionTitleByClass(__CLASS__,$type);
-    }
-
-    public function getActionsTitles()
-    {
-        return $this->getActionsTitlesByClass(__CLASS__,'TASK_');
-    }
-
-    // ---------------------------------------
-
     public function clearMessages($task = NULL)
     {
-        $columnName = !is_null($task) ? 'task' : NULL;
-        $this->clearMessagesByTable('M2ePro/Synchronization_Log',$columnName,$task);
-    }
+        $filters = array();
 
-    public function getLastActionIdConfigKey()
-    {
-        return 'synchronization';
+        if (!is_null($task)) {
+            $filters['task'] = $task;
+        }
+        if (!is_null($this->componentMode)) {
+            $filters['component_mode'] = $this->componentMode;
+        }
+
+        $this->getResource()->clearMessages($filters);
     }
 
     //########################################
@@ -150,7 +167,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
             $dataForAdd['priority'] = self::PRIORITY_LOW;
         }
 
-        $dataForAdd['additional_data'] = json_encode($additionalData);
+        $dataForAdd['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
 
         return $dataForAdd;
     }

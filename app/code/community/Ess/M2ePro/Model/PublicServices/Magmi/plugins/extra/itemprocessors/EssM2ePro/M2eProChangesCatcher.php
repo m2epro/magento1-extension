@@ -2,22 +2,21 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class M2eProChangesCatcher extends Magmi_ItemProcessor
 {
-    const CHANGE_UPDATE_ATTRIBUTE_CODE = '__INSTANCE__';
-    const CHANGE_UPDATE_ACTION         = 'update';
-    const CHANGE_INITIATOR_DEVELOPER   = 4;
+    const INSTRUCTION_TYPE_PRODUCT_CHANGED = 'magmi_plugin_product_changed';
+    const INSTRUCTION_INITIATOR            = 'public_services_magmi_plugin';
 
-    protected $changes = array();
+    protected $changedMagentoProductsIds = array();
 
     protected $statistics = array(
-        'not_presented' => 0,
-        'existed'       => 0,
-        'inserted'      => 0
+        'total_magento_products'      => 0,
+        'total_listings_products'     => 0,
+        'processed_listings_products' => 0,
     );
 
     //########################################
@@ -32,8 +31,8 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
         return array(
             "name"    => "Ess M2ePro Product Changes Inspector",
             "author"  => "ESS",
-            "version" => "1.0.7",
-            "url"     => "http://docs.m2epro.com/display/BestPractice/Plugin+for+Magmi+Import+Tool"
+            "version" => "2.1.0",
+            "url"     => "https://docs.m2epro.com/x/CQ1PAQ"
         );
     }
 
@@ -41,10 +40,7 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
 
     public function processItemAfterId(&$item, $params = null)
     {
-        $this->changes[$params['product_id']] = array(
-            'product_id' => $params['product_id']
-        );
-
+        $this->changedMagentoProductsIds[] = (int)$params['product_id'];
         return true;
     }
 
@@ -53,99 +49,121 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
      */
     public function endImport()
     {
-        $this->filterOnlyAffectedChanges();
-        $this->insertChanges();
+        $this->processChanges();
+
+        $this->saveStatistics();
+        $this->resetStatistics();
 
         return true;
     }
 
     //########################################
 
-    private function filterOnlyAffectedChanges()
+    private function getChangedListingsProductsData()
     {
-        $count = count($this->changes);
-        $this->log("Will be checked {$count} products.");
-
-        if ($count <= 0) {
-            return;
+        if (empty($this->changedMagentoProductsIds)) {
+            return array();
         }
 
         $listingProductTable  = $this->tablename('m2epro_listing_product');
+        $variationTable       = $this->tablename('m2epro_listing_product_variation');
         $variationOptionTable = $this->tablename('m2epro_listing_product_variation_option');
-        $listingOtherTable    = $this->tablename('m2epro_listing_other');
 
-        $stmt = $this->select("SELECT DISTINCT `product_id` FROM `{$listingProductTable}`
-                               UNION
-                               SELECT DISTINCT `product_id` FROM `{$variationOptionTable}`
-                               UNION
-                               SELECT DISTINCT `product_id` FROM `{$listingOtherTable}`
-                               WHERE `component_mode` = 'ebay' AND
-                                     `product_id` IS NOT NULL");
+        $listingsProductsData = array();
 
-        $productsInListings = array();
-        while ($row = $stmt->fetch()) {
-            $productsInListings[] = (int)$row['product_id'];
-        }
+        foreach (array_chunk($this->changedMagentoProductsIds, 1000) as $changedMagentoProductsIdsPart) {
 
-        foreach ($this->changes as $key => $change) {
+            $productsIds = implode(',', $changedMagentoProductsIdsPart);
+            $stmt = $this->select(<<<SQL
+SELECT DISTINCT `id` AS `listing_product_id`, `component_mode`
+FROM `{$listingProductTable}`
+WHERE `product_id` IN ({$productsIds})
 
-            if (!in_array($change['product_id'], $productsInListings)) {
-                $this->statistics['not_presented']++;
-                unset($this->changes[$key]);
-            }
-        }
-    }
+UNION
 
-    private function insertChanges()
-    {
-        if (count($this->changes) <= 0) {
-            $this->log('The updated products are not presented in the M2e Pro Listings.');
-            return;
-        }
-
-        $tableName = $this->tablename('m2epro_product_change');
-
-        $existedChanges = array();
-        foreach (array_chunk($this->changes, 500, true) as $productChangesPart) {
-
-            if (count($productChangesPart) <= 0) {
-                continue;
-            }
-
-            $stmt = $this->select(
-                "SELECT `product_id`
-                 FROM `{$tableName}`
-                 WHERE `attribute` = '" .self::CHANGE_UPDATE_ATTRIBUTE_CODE. "'
-                 AND `product_id` IN (" .implode(',', array_keys($productChangesPart)). ")
-                 GROUP BY `product_id`"
-             );
+SELECT DISTINCT `lpv`.`listing_product_id`, `lpv`.`component_mode` FROM `{$variationOptionTable}` AS `lpvo`
+INNER JOIN `{$variationTable}` AS `lpv` ON `lpv`.`id` = `lpvo`.`listing_product_variation_id`
+WHERE `lpvo`.`product_id` IN ({$productsIds})
+SQL
+            );
 
             while ($row = $stmt->fetch()) {
-                $existedChanges[] = $row['product_id'];
+
+                $listingProductId = (int)$row['listing_product_id'];
+
+                $listingsProductsData[$listingProductId] = array(
+                    'listing_product_id' => $listingProductId,
+                    'component'          => $row['component_mode'],
+                );
             }
         }
 
-        $insertSql = "INSERT INTO `{$tableName}`
-                      (`product_id`,`action`,`attribute`,`initiators`,`update_date`,`create_date`)
+        return $listingsProductsData;
+    }
+
+    private function filterAlreadyProcessedListingsProducts(array $listingsProductsData)
+    {
+        $instructionTable = $this->tableName('m2epro_listing_product_instruction');
+
+        foreach (array_chunk(array_keys($listingsProductsData), 1000) as $listingsProductsIdsPart) {
+
+            $productsIds = implode(',', $listingsProductsIdsPart);
+            $stmt = $this->select(<<<SQL
+SELECT DISTINCT `listing_product_id` FROM `{$instructionTable}`
+WHERE `listing_product_id` IN ($productsIds) AND `type` = ?
+SQL
+                , array(self::INSTRUCTION_TYPE_PRODUCT_CHANGED)
+            );
+
+            while ($row = $stmt->fetch()) {
+                $lpId = (int)$row['listing_product_id'];
+                unset($listingsProductsData[$lpId]);
+            }
+        }
+
+        return $listingsProductsData;
+    }
+
+    private function processChanges()
+    {
+        $this->statistics['total_magento_products'] = count($this->changedMagentoProductsIds);
+        if (count($this->changedMagentoProductsIds) == 0) {
+            return true;
+        }
+
+        $listingsProductsData = $this->getChangedListingsProductsData();
+        $this->statistics['total_listings_products'] = count($listingsProductsData);
+
+        if (empty($listingsProductsData)) {
+            return true;
+        }
+
+        $notProcessedListingsProductsData = $this->filterAlreadyProcessedListingsProducts($listingsProductsData);
+        $this->statistics['processed_listings_products'] = count($notProcessedListingsProductsData);
+
+        if (empty($notProcessedListingsProductsData)) {
+            return true;
+        }
+
+        $currentDateTime = new DateTime('now', new DateTimeZone('UTC'));
+        $instructionTable = $this->tablename('m2epro_listing_product_instruction');
+
+        $insertSql = "INSERT INTO `{$instructionTable}`
+                      (`listing_product_id`,`component`,`type`,`initiator`,`priority`,`create_date`)
                       VALUES (?,?,?,?,?,?)";
 
-        foreach ($this->changes as $productId => $change) {
+        foreach ($notProcessedListingsProductsData as $listingProductData) {
+            $instructionData = array(
+                'listing_product_id' => $listingProductData['listing_product_id'],
+                'component'          => $listingProductData['component'],
+                'type'               => self::INSTRUCTION_TYPE_PRODUCT_CHANGED,
+                'initiator'          => self::INSTRUCTION_INITIATOR,
+                'priority'           => 50,
+                'create_date'        => $currentDateTime->format('Y-m-d H:i:s'),
+            );
 
-            if (in_array($change['product_id'], $existedChanges)) {
-                $this->statistics['existed']++;
-                continue;
-            }
-
-            $this->statistics['inserted']++;
-            $this->insert($insertSql, array($change['product_id'],
-                                            self::CHANGE_UPDATE_ACTION,
-                                            self::CHANGE_UPDATE_ATTRIBUTE_CODE,
-                                            self::CHANGE_INITIATOR_DEVELOPER,
-                                            date('Y-m-d H:i:s'),
-                                            date('Y-m-d H:i:s')));
+            $this->insert($insertSql, array_values($instructionData));
         }
-
-        $this->saveStatistics();
     }
 
     //########################################
@@ -153,20 +171,21 @@ class M2eProChangesCatcher extends Magmi_ItemProcessor
     protected function resetStatistics()
     {
         $this->statistics = array(
-            'not_presented' => 0,
-            'existed'       => 0,
-            'inserted'      => 0
+            'total_magento_products'      => 0,
+            'total_listings_products'     => 0,
+            'processed_listings_products' => 0,
         );
     }
 
     protected function saveStatistics()
     {
-        $message  = "Not presented (skipped): {$this->statistics['not_presented']} ## ";
-        $message .= "Existed (skipped): {$this->statistics['existed']} ## ";
-        $message .= "Processed: {$this->statistics['inserted']}.";
+        $messages = array();
 
-        $this->log($message);
-        $this->resetStatistics();
+        $messages[] = "Total Magento Products: {$this->statistics['total_magento_products']}.";
+        $messages[] = "Total Listings Products: {$this->statistics['total_listings_products']}.";
+        $messages[] = "Processed Listings Products: {$this->statistics['processed_listings_products']}.";
+
+        $this->log(implode(' ## ', $messages));
     }
 
     //########################################

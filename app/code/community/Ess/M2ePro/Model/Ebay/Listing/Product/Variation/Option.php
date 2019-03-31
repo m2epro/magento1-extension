@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -17,6 +17,32 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option extends Ess_M2ePro_
     {
         parent::_construct();
         $this->_init('M2ePro/Ebay_Listing_Product_Variation_Option');
+    }
+
+    //########################################
+
+    protected function _afterSave()
+    {
+        $listingProductId = $this->getListingProduct()->getId();
+        $variationId      = $this->getListingProductVariation()->getId();
+
+        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+            "listing_product_{$listingProductId}_variation_{$variationId}_options"
+        );
+
+        return parent::_afterSave();
+    }
+
+    protected function _beforeDelete()
+    {
+        $listingProductId = $this->getListingProduct()->getId();
+        $variationId      = $this->getListingProductVariation()->getId();
+
+        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+            "listing_product_{$listingProductId}_variation_{$variationId}_options"
+        );
+
+        return parent::_beforeDelete();
     }
 
     //########################################
@@ -221,26 +247,37 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option extends Ess_M2ePro_
                 continue;
             }
 
-            $attribute = strtolower($this->getParentObject()->getAttribute());
+            $attributeName = strtolower($this->getParentObject()->getAttribute());
 
-            if (strtolower($tempAttribute->getData('default_title')) != $attribute &&
-                strtolower($tempAttribute->getData('store_title')) != $attribute &&
-                strtolower($tempAttribute->getData('title')) != $attribute) {
+            $tempAttributeTitles = array(
+                $tempAttribute->getData('default_title'),
+                $tempAttribute->getData('store_title'),
+                $tempAttribute->getData('title')
+            );
+            $tempAttributeTitles = array_map('strtolower', array_filter($tempAttributeTitles));
+            $tempAttributeTitles = $this->prepareAttributeTitles($tempAttributeTitles);
+
+            if (!in_array($attributeName, $tempAttributeTitles)) {
                 continue;
             }
 
             foreach ($tempAttribute->getValues() as $tempOption) {
 
-                $option = strtolower($this->getParentObject()->getOption());
+                $optionName = strtolower($this->getParentObject()->getOption());
 
-                if (strtolower($tempOption->getData('default_title')) != $option &&
-                    strtolower($tempOption->getData('store_title')) != $option &&
-                    strtolower($tempOption->getData('title')) != $option) {
+                $tempOptionTitles = array(
+                    $tempOption->getData('default_title'),
+                    $tempOption->getData('store_title'),
+                    $tempOption->getData('title')
+                );
+                $tempOptionTitles = array_map('strtolower', array_filter($tempOptionTitles));
+                $tempOptionTitles = $this->prepareOptionTitles($tempOptionTitles);
+
+                if (!in_array($optionName, $tempOptionTitles)) {
                     continue;
                 }
 
-                if (!is_null($tempOption->getData('sku')) &&
-                    $tempOption->getData('sku') !== false) {
+                if (!is_null($tempOption->getData('sku')) && $tempOption->getData('sku') !== false) {
                     $tempSku = $tempOption->getData('sku');
                 }
 
@@ -249,6 +286,28 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option extends Ess_M2ePro_
         }
 
         return trim($tempSku);
+    }
+
+    //########################################
+
+    protected function prepareOptionTitles($optionTitles)
+    {
+        foreach ($optionTitles as &$optionTitle) {
+            $optionTitle = trim(Mage::helper('M2ePro')->reduceWordsInString(
+                $optionTitle, Ess_M2ePro_Helper_Component_Ebay::VARIATION_OPTION_LABEL_MAX_LENGTH
+            ));
+        }
+
+        return $optionTitles;
+    }
+
+    protected function prepareAttributeTitles($attributeTitles)
+    {
+        foreach ($attributeTitles as &$attributeTitle) {
+            $attributeTitle = trim($attributeTitle);
+        }
+
+        return $attributeTitles;
     }
 
     //########################################

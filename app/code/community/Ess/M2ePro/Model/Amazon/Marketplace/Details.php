@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -75,7 +75,8 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Details
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $table    = Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_dictionary_marketplace');
+        $table    = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_amazon_dictionary_marketplace');
 
         $data = $connRead->select()
             ->from($table)
@@ -87,7 +88,7 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Details
             throw new Ess_M2ePro_Model_Exception('Marketplace not found or not synchronized');
         }
 
-        $this->productData    = json_decode($data['product_data'], true);
+        $this->productData    = Mage::helper('M2ePro')->jsonDecode($data['product_data']);
     }
 
     //########################################

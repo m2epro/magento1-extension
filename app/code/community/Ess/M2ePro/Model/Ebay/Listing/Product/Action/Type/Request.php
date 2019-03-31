@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -12,20 +12,26 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
     /**
      * @var array
      */
-    private $requestsTypes = array(
-        'selling',
+    private $dataTypes = array(
+        'general',
+        'qty',
+        'price',
+        'title',
+        'subtitle',
         'description',
-        'categories',
+        'images',
         'variations',
+        'categories',
         'shipping',
         'payment',
-        'return'
+        'return',
+        'other',
     );
 
     /**
-     * @var array[Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract]
+     * @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract[]
      */
-    private $requests = array();
+    private $dataBuilders = array();
 
     //########################################
 
@@ -38,11 +44,21 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         $this->beforeBuildDataEvent();
 
         $data = $this->getActionData();
+        $this->collectMetadata();
 
         $data = $this->prepareFinalData($data);
-        $this->collectRequestsWarningMessages();
+
+        $this->afterBuildDataEvent($data);
+        $this->collectDataBuildersWarningMessages();
 
         return $data;
+    }
+
+    protected function collectMetadata()
+    {
+        foreach ($this->dataBuilders as $dataBuilder) {
+            $this->metaData = array_merge($this->metaData, $dataBuilder->getMetaData());
+        }
     }
 
     // ---------------------------------------
@@ -53,30 +69,32 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
     protected function initializeVariations()
     {
-        /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater $variationUpdater */
-        $variationUpdater = Mage::getModel('M2ePro/Ebay_Listing_Product_Variation_Updater');
-        $variationUpdater->process($this->getListingProduct());
-        $variationUpdater->afterMassProcessEvent();
-
-        $isVariationItem = $this->getEbayListingProduct()->isVariationsReady();
-
-        $this->setIsVariationItem($isVariationItem);
-
-        $validateVariationsKey = Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater::VALIDATE_MESSAGE_DATA_KEY;
-
-        if ($this->getListingProduct()->hasData($validateVariationsKey)) {
-
-            $this->addWarningMessage(
-                Mage::helper('M2ePro')->__(
-                    $this->getListingProduct()->getData($validateVariationsKey)
-                )
-            );
-
-            $this->getListingProduct()->unsetData($validateVariationsKey);
-        }
+        $this->setIsVariationItem($this->getEbayListingProduct()->isVariationsReady());
     }
 
     protected function beforeBuildDataEvent() {}
+
+    protected function afterBuildDataEvent(array $data)
+    {
+        if ($this->getIsVariationItem() || isset($data['price_fixed'])) {
+
+            $isListingTypeFixed = true;
+
+        } elseif (isset($data['price_start'])) {
+
+            $isListingTypeFixed = false;
+
+        } elseif (!is_null($this->getEbayListingProduct()->isOnlineAuctionType())) {
+
+            $isListingTypeFixed = !$this->getEbayListingProduct()->isOnlineAuctionType();
+
+        } else {
+
+            $isListingTypeFixed = $this->getEbayListingProduct()->isListingTypeFixed();
+        }
+
+        $this->addMetaData('is_listing_type_fixed', $isListingTypeFixed);
+    }
 
     // ---------------------------------------
 
@@ -87,16 +105,22 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
             '/ebay/description/', 'upload_images_mode'
         );
 
-        if (!isset($data['out_of_stock_control'])) {
-            $data['out_of_stock_control'] = $this->getOutOfStockControlMode();
-        }
-
+        $data = $this->insertOutOfStockControl($data);
         $data = $this->replaceVariationSpecificsNames($data);
-        $data = $this->replaceHttpsToHttpOfImagesUrls($data);
         $data = $this->resolveVariationAndItemSpecificsConflict($data);
         $data = $this->removeVariationsInstances($data);
         $data = $this->resolveVariationMpnIssue($data);
 
+        return $data;
+    }
+
+    protected function insertOutOfStockControl(array $data)
+    {
+        $data['out_of_stock_control'] = $this->getEbayListingProduct()
+                                             ->getEbaySellingFormatTemplate()
+                                             ->getOutOfStockControl();
+        $data['out_of_stock_control_result'] = $data['out_of_stock_control'] || $this->getEbayAccount()
+                                                                                     ->getOutOfStockControl();
         return $data;
     }
 
@@ -108,40 +132,14 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
             return $data;
         }
 
-        $additionalData = $this->getListingProduct()->getAdditionalData();
+        $specificsReplacements = $this->getEbayListingProduct()->getVariationSpecificsReplacements();
 
-        if (empty($additionalData['variations_specifics_replacements'])) {
+        if (empty($specificsReplacements)) {
             return $data;
         }
 
-        $data = $this->doReplaceVariationSpecifics($data, $additionalData['variations_specifics_replacements']);
-        $data['variations_specifics_replacements'] = $additionalData['variations_specifics_replacements'];
-
-        return $data;
-    }
-
-    protected function replaceHttpsToHttpOfImagesUrls(array $data)
-    {
-        if ($data['is_eps_ebay_images_mode'] === false ||
-            (is_null($data['is_eps_ebay_images_mode']) &&
-                $data['upload_images_mode'] ==
-                    Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::UPLOAD_IMAGES_MODE_SELF)) {
-            return $data;
-        }
-
-        if (isset($data['images']['images'])) {
-            foreach ($data['images']['images'] as &$imageUrl) {
-                $imageUrl = str_replace('https://', 'http://', $imageUrl);
-            }
-        }
-
-        if (isset($data['variation_image']['images'])) {
-            foreach ($data['variation_image']['images'] as $attribute => &$imagesUrls) {
-                foreach ($imagesUrls as &$imageUrl) {
-                    $imageUrl = str_replace('https://', 'http://', $imageUrl);
-                }
-            }
-        }
+        $data = $this->doReplaceVariationSpecifics($data, $specificsReplacements);
+        $this->addMetaData('variations_specifics_replacements', $specificsReplacements);
 
         return $data;
     }
@@ -188,37 +186,110 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $data;
     }
 
+    protected function removePriceFromVariationsIfNotAllowed(array $data)
+    {
+        if ($this->getConfigurator()->isPriceAllowed()) {
+            return $data;
+        }
+
+        if (isset($data['variation']) && is_array($data['variation'])) {
+            foreach ($data['variation'] as &$variation) {
+                if ($variation['add']) {
+                    continue;
+                }
+
+                unset($variation['price']);
+                unset($variation['price_discount_stp']);
+                unset($variation['price_discount_map']);
+            }
+        }
+
+        return $data;
+    }
+
     /**
      * In M2e Pro version <= 6.4.1 value MPN - 'Does Not Apply' was sent for variations always
      * (even if Brand was Unbranded). Due to eBay specific we can not stop sending it. So, for "old" items we need
      * set 'Does Not Apply', if real MPN is empty. New items has 'without_mpn_variation_issue' in additional data
      * (set by list response), it means that item was listed after fixing this issue.
      *
+     * 1) form variation MPN value (from additional only for list action)
+     *
+     *       TRY TO RETRIEVE FROM ADDITIONAL DATA OF EACH VARIATION
+     *       IF EMPTY: TRY TO RETRIEVE FROM DESCRIPTION POLICY SETTINGS
+     *
+     * 2) prepare variation MPN value (skip this for list action)
+     *
+     *   - item variations MPN flag == unknown (variation MPN value only from settings)
+     *     [-> item variations MPN flag == without MPN, item variations MPN flag == with MPN]
+     *     - without_mpn_variation_issue == NULL
+     *        empty variation MPN value -> set "Does Not Apply"
+     *        filled variation MPN value -> do nothing
+     *     - without_mpn_variation_issue == true
+     *        empty variation MPN value -> do nothing
+     *        filled variation MPN value -> do nothing
+     *
+     *   - item variations MPN flag == without MPN (variation MPN value only from settings)
+     *      [-> item variations MPN flag == with MPN]
+     *      - without_mpn_variation_issue == NULL / without_mpn_variation_issue == true
+     *         empty variation MPN value -> do nothing
+     *         filled variation MPNvalue  -> do nothing
+     *
+     *   - item variations MPN flag == with MPN (variation MPN value from additional or settings) [->]
+     *     - without_mpn_variation_issue == NULL
+     *        empty variation MPN value -> set "Does Not Apply"
+     *        filled variation MPN value -> do nothing
+     *   - without_mpn_variation_issue == true
+     *        empty variation MPN value -> do nothing
+     *        filled variation MPN value -> do nothing
+     *
+     * 3) after revise/relist error use getItem (skip this for list action)
+     *
+     *       CONDITIONS:
+     *       VARIATIONAL PRODUCT == true
+     *       VARIATIONS WERE SENT == true
+     *       ANY ERROR FROM LIST [in_array]
+     *       item variations MPN flag == unknown
+     *
+     *       ACTIONS:
+     *       set item variations MPN flag according to the request
+     *       set variations additional MPN values if need
+     *
      * @param array $data
      * @return array
      */
+    // todo PHPdoc should be changed
     protected function resolveVariationMpnIssue(array $data)
     {
-        if (!$this->getIsVariationItem()) {
+        if (!$this->getIsVariationItem() || !$this->getConfigurator()->isVariationsAllowed()) {
             return $data;
         }
 
-        $additionalData = $this->getListingProduct()->getAdditionalData();
-        if (!empty($additionalData['without_mpn_variation_issue'])) {
+        $withoutMpnIssue = $this->getListingProduct()->getSetting('additional_data', 'without_mpn_variation_issue');
+        $isMpnOnChannel  = $this->getListingProduct()->getSetting('additional_data', 'is_variation_mpn_filled');
+
+        if ($withoutMpnIssue === true) {
             $data['without_mpn_variation_issue'] = true;
-            return $data;
         }
 
-        foreach ($data['variation'] as &$variationData) {
-            if (!empty($variationData['details']['mpn'])) {
-                continue;
-            }
+        if (isset($data['variation']) && is_array($data['variation'])) {
 
-            if (!isset($additionalData['is_variation_mpn_filled']) ||
-                $additionalData['is_variation_mpn_filled'] === true
-            ) {
-                $variationData['details']['mpn'] = Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description::
-                PRODUCT_DETAILS_DOES_NOT_APPLY;
+            foreach ($data['variation'] as &$variationData) {
+
+                /**
+                 * Item was listed without MPN, but then the Description Policy setting was changed and
+                 * MPN values are being send to eBay
+                 */
+                if (isset($variationData['details']['mpn']) && $isMpnOnChannel === false) {
+                    unset($variationData['details']['mpn']);
+                }
+
+                if (!isset($variationData['details']['mpn']) &&
+                    ($isMpnOnChannel === true || (is_null($isMpnOnChannel) && !$withoutMpnIssue))
+                ) {
+                    $variationData['details']['mpn']
+                    = Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General::PRODUCT_DETAILS_DOES_NOT_APPLY;
+                }
             }
         }
 
@@ -237,39 +308,43 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
             }
         }
 
-        foreach ($data['variation'] as &$variationItem) {
+        if (isset($data['variation']) && is_array($data['variation'])) {
+
+            foreach ($data['variation'] as &$variationItem) {
+                foreach ($replacements as $findIt => $replaceBy) {
+
+                    if (!isset($variationItem['specifics'][$findIt])) {
+                        continue;
+                    }
+
+                    $variationItem['specifics'][$replaceBy] = $variationItem['specifics'][$findIt];
+                    unset($variationItem['specifics'][$findIt]);
+                }
+            }
+            unset($variationItem);
+
             foreach ($replacements as $findIt => $replaceBy) {
 
-                if (!isset($variationItem['specifics'][$findIt])) {
-                   continue;
+                if (!isset($data['variations_sets'][$findIt])) {
+                    continue;
                 }
 
-                $variationItem['specifics'][$replaceBy] = $variationItem['specifics'][$findIt];
-                unset($variationItem['specifics'][$findIt]);
+                $data['variations_sets'][$replaceBy] = $data['variations_sets'][$findIt];
+                unset($data['variations_sets'][$findIt]);
+
+                // M2ePro_TRANSLATIONS
+                // The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item Specific "%replaced_by%" you select an Attribute by which your Variational Item varies. As it is impossible to send a correct Value for this Item Specific, it’s Label will be used as Variational Attribute Label instead of "%replaced_it%". This replacement cannot be edit in future by Relist/Revise Actions.
+                $this->addWarningMessage(
+                    Mage::helper('M2ePro')->__(
+                        'The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item
+                        Specific "%replaced_by%" you select an Attribute by which your Variational Item varies.
+                        As it is impossible to send a correct Value for this Item Specific, it’s Label will be used
+                        as Variational Attribute Label instead of "%replaced_it%".
+                        This replacement cannot be edit in future by Relist/Revise Actions.',
+                        $findIt, $replaceBy
+                    )
+                );
             }
-        }
-
-        foreach ($replacements as $findIt => $replaceBy) {
-
-            if (!isset($data['variations_sets'][$findIt])) {
-                continue;
-            }
-
-            $data['variations_sets'][$replaceBy] = $data['variations_sets'][$findIt];
-            unset($data['variations_sets'][$findIt]);
-
-            // M2ePro_TRANSLATIONS
-            // The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item Specific "%replaced_by%" you select an Attribute by which your Variational Item varies. As it is impossible to send a correct Value for this Item Specific, it’s Label will be used as Variational Attribute Label instead of "%replaced_it%". This replacement cannot be edit in future by Relist/Revise Actions.
-            $this->addWarningMessage(
-                Mage::helper('M2ePro')->__(
-                    'The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item Specific
-                    "%replaced_by%" you select an Attribute by which your Variational Item varies. As it is impossible
-                    to send a correct Value for this Item Specific, it’s Label will be used as Variational Attribute
-                    Label instead of "%replaced_it%". This replacement cannot be edit in future by
-                    Relist/Revise Actions.',
-                    $findIt, $replaceBy
-                )
-            );
         }
 
         return $data;
@@ -277,11 +352,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
     // ---------------------------------------
 
-    protected function collectRequestsWarningMessages()
+    protected function collectDataBuildersWarningMessages()
     {
-        foreach ($this->requestsTypes as $requestType) {
+        foreach ($this->dataTypes as $requestType) {
 
-            $messages = $this->getRequest($requestType)->getWarningMessages();
+            $messages = $this->getDataBuilder($requestType)->getWarningMessages();
 
             foreach ($messages as $message) {
                 $this->addWarningMessage($message);
@@ -302,101 +377,238 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         return $additionalData['is_eps_ebay_images_mode'];
     }
 
-    protected function getOutOfStockControlMode()
-    {
-        $additionalData = $this->getListingProduct()->getAdditionalData();
-
-        if (!isset($additionalData['out_of_stock_control'])) {
-            return NULL;
-        }
-
-        return $additionalData['out_of_stock_control'];
-    }
-
     //########################################
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Selling
+     * @return string
      */
-    public function getRequestSelling()
+    public function getSku()
     {
-        return $this->getRequest('selling');
+        $sku = $this->getEbayListingProduct()->getSku();
+
+        if (strlen($sku) > Ess_M2ePro_Helper_Component_Ebay::ITEM_SKU_MAX_LENGTH) {
+            $sku = Mage::helper('M2ePro')->hashString($sku, 'sha1', 'RANDOM_');
+        }
+
+        return $sku;
     }
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
+     * @return array
      */
-    public function getRequestDescription()
+    public function getGeneralData()
     {
-        return $this->getRequest('description');
-    }
+        if (!$this->getConfigurator()->isGeneralAllowed()) {
+            return array();
+        }
 
-    // ---------------------------------------
-
-    /**
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Variations
-     */
-    public function getRequestVariations()
-    {
-        return $this->getRequest('variations');
+        $dataBuilder = $this->getDataBuilder('general');
+        return $dataBuilder->getData();
     }
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Categories
+     * @return array
      */
-    public function getRequestCategories()
+    public function getQtyData()
     {
-        return $this->getRequest('categories');
-    }
+        if (!$this->getConfigurator()->isQtyAllowed()) {
+            return array();
+        }
 
-    // ---------------------------------------
-
-    /**
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Payment
-     */
-    public function getRequestPayment()
-    {
-        return $this->getRequest('payment');
+        $dataBuilder = $this->getDataBuilder('qty');
+        return $dataBuilder->getData();
     }
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Shipping
+     * @return array
      */
-    public function getRequestShipping()
+    public function getPriceData()
     {
-        return $this->getRequest('shipping');
+        if (!$this->getConfigurator()->isPriceAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('price');
+        return $dataBuilder->getData();
     }
 
     /**
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Return
+     * @return array
      */
-    public function getRequestReturn()
+    public function getTitleData()
     {
-        return $this->getRequest('return');
+        if (!$this->getConfigurator()->isTitleAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('title');
+        return $dataBuilder->getData();
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubtitleData()
+    {
+        if (!$this->getConfigurator()->isSubtitleAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('subtitle');
+        return $dataBuilder->getData();
+    }
+
+    /**
+     * @return array
+     */
+    public function getDescriptionData()
+    {
+        if (!$this->getConfigurator()->isDescriptionAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('description');
+        return $dataBuilder->getData();
+    }
+
+    /**
+     * @return array
+     */
+    public function getImagesData()
+    {
+        if (!$this->getConfigurator()->isImagesAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('images');
+        $data = $dataBuilder->getData();
+
+        $this->addMetaData('images_data', $data);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategoriesData()
+    {
+        if (!$this->getConfigurator()->isCategoriesAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('categories');
+        $data = $dataBuilder->getData();
+
+        $this->addMetaData('categories_data', $data);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentData()
+    {
+        if (!$this->getConfigurator()->isPaymentAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('payment');
+        $data = $dataBuilder->getData();
+
+        $this->addMetaData('payment_data', $data);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShippingData()
+    {
+        if (!$this->getConfigurator()->isShippingAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('shipping');
+        $data = $dataBuilder->getData();
+
+        $this->addMetaData('shipping_data', $data);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReturnData()
+    {
+        if (!$this->getConfigurator()->isReturnAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('return');
+        $data = $dataBuilder->getData();
+
+        $this->addMetaData('return_data', $data);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVariationsData()
+    {
+        if (!$this->getConfigurator()->isVariationsAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('variations');
+        return $dataBuilder->getData();
+    }
+
+    /**
+     * @return array
+     */
+    public function getOtherData()
+    {
+        if (!$this->getConfigurator()->isOtherAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('other');
+        $data = $dataBuilder->getData();
+
+        $this->addMetaData('other_data', $data);
+
+        return $data;
     }
 
     //########################################
 
     /**
      * @param $type
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract
+     * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
      */
-    private function getRequest($type)
+    private function getDataBuilder($type)
     {
-        if (!isset($this->requests[$type])) {
+        if (!isset($this->dataBuilders[$type])) {
 
-            /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract $request */
-            $request = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Request_'.ucfirst($type));
+            /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract $dataBuilder */
+            $dataBuilder = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_DataBuilder_'.ucfirst($type));
 
-            $request->setParams($this->getParams());
-            $request->setListingProduct($this->getListingProduct());
-            $request->setIsVariationItem($this->getIsVariationItem());
-            $request->setConfigurator($this->getConfigurator());
+            $dataBuilder->setParams($this->getParams());
+            $dataBuilder->setListingProduct($this->getListingProduct());
+            $dataBuilder->setCachedData($this->getCachedData());
 
-            $this->requests[$type] = $request;
+            $dataBuilder->setIsVariationItem($this->getIsVariationItem());
+
+            $this->dataBuilders[$type] = $dataBuilder;
         }
 
-        return $this->requests[$type];
+        return $this->dataBuilders[$type];
     }
 
     //########################################

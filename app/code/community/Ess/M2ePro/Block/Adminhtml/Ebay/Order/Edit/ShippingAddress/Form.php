@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -51,6 +51,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Edit_ShippingAddress_Form extends Ma
             $regionCode = $this->order->getShippingAddress()->getRegionCode();
         } catch (Exception $e) {
             $regionCode = null;
+        }
+
+        $state = $this->order->getShippingAddress()->getState();
+
+        if (empty($regionCode) && !empty($state)) {
+            $regionCode = $this->order->getShippingAddress()->getState();
         }
 
         $this->setData('countries', Mage::helper('M2ePro/Magento')->getCountries());

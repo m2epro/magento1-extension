@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -23,6 +23,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
             $info = $this->getExceptionInfo($exception, $type);
             $info .= $this->getExceptionStackTraceInfo($exception);
             $info .= $this->getCurrentUserActionInfo();
+            $info .= $this->getAdditionalActionInfo();
             $info .= Mage::helper('M2ePro/Module_Support_Form')->getSummaryInfo();
 
             $this->log($info, $type);
@@ -57,6 +58,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
             $info = $this->getFatalInfo($error, $type);
             $info .= $traceInfo;
             $info .= $this->getCurrentUserActionInfo();
+            $info .= $this->getAdditionalActionInfo();
             $info .= Mage::helper('M2ePro/Module_Support_Form')->getSummaryInfo();
 
             $this->log($info, $type);
@@ -92,22 +94,22 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
         Mage::helper('M2ePro/Data_Global')->setValue('set_fatal_error_handler', true);
 
-        $functionCode = '$error = error_get_last();
+        register_shutdown_function(function(){
 
-                         if (is_null($error)) {
-                             return;
-                         }
+            $error = error_get_last();
+            if (is_null($error)) {
+                return;
+            }
 
-                         $fatalErrors = array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
+            if (!in_array((int)$error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
+                return;
+            }
 
-                         if (in_array((int)$error[\'type\'], $fatalErrors)) {
-                             $trace = @debug_backtrace(false);
-                             $traceInfo = Mage::helper(\'M2ePro/Module_Exception\')->getFatalStackTraceInfo($trace);
-                             Mage::helper(\'M2ePro/Module_Exception\')->processFatal($error,$traceInfo);
-                         }';
+            $trace = @debug_backtrace(false);
+            $traceInfo = Mage::helper('M2ePro/Module_Exception')->getFatalStackTraceInfo($trace);
 
-        $shutdownFunction = create_function('', $functionCode);
-        register_shutdown_function($shutdownFunction);
+            Mage::helper('M2ePro/Module_Exception')->processFatal($error, $traceInfo);
+        });
     }
 
     public function getUserMessage(Exception $exception)
@@ -124,6 +126,15 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
         $log->setType($type);
         $log->setDescription($message);
+
+        $trace = debug_backtrace();
+        $file = isset($trace[1]['file']) ? $trace[1]['file'] : 'not set';;
+        $line = isset($trace[1]['line']) ? $trace[1]['line'] : 'not set';
+
+        $additionalData = array(
+            'called-from' => $file .' : '. $line
+        );
+        $log->setData('additional_data', print_r($additionalData, true));
 
         $log->save();
     }
@@ -242,11 +253,24 @@ ACTION;
         return $actionInfo;
     }
 
+    private function getAdditionalActionInfo()
+    {
+        $currentStoreId = Mage::app()->getStore()->getId();
+
+        $actionInfo = <<<ACTION
+-------------------------------- ADDITIONAL INFO -------------------------------------
+Current Store: {$currentStoreId}
+
+ACTION;
+
+        return $actionInfo;
+    }
+
     //########################################
 
     private function send($info, $message, $type)
     {
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector('exception','add','entity',
                                                                array('info'    => $info,
                                                                      'message' => $message,

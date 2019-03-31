@@ -1,11 +1,46 @@
-<div id="ebayVariationsProductManageVariationsGrid" style="height: 550px; margin-top: 10px;">
-    <?php
-    $url = $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/viewVariationsGrid',
-        array(
-            'product_id' => $this->getListingProductId(),
-            'filter' => $this->getRequest()->getParam('filter')
-        )
-    );
-    ?>
-    <input type="hidden" id="ebayVariationsProductManageVariationsGridIframeUrl" value="<?php echo $url ?>">
+<?php /**@var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View $this */ ?>
+
+<div style="min-height: 535px;">
+    <div id="ebayVariationsProductManageVariationsGrid" style="margin-top: 10px;">
+        <?php
+        $url = $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/viewVariationsGrid',
+            array(
+                'product_id' => $this->getListingProductId(),
+                'filter' => $this->getRequest()->getParam('filter')
+            )
+        );
+        ?>
+        <input type="hidden" id="ebayVariationsProductManageVariationsGridIframeUrl" value="<?php echo $url ?>">
+    </div>
+
+    <?php if ($this->getDeletedVariations()) : ?>
+
+        <div style="text-align: right; margin: 5px;">
+            <a href="javascript:void(0);" id="deleted_magento_variations_show" onclick="EbayListingEbayGridHandlerObj.variationProductManageHandler.showDeletedMagentoVariations();" style="display: none;">
+                <?php echo Mage::helper('M2ePro')->__('Show Old Inactive Variations'); ?>
+            </a>
+            <a href="javascript:void(0);" id="deleted_magento_variations_hide" onclick="EbayListingEbayGridHandlerObj.variationProductManageHandler.hideDeletedMagentoVariations();" style="display: none">
+                <?php echo Mage::helper('M2ePro')->__('Hide Old Inactive Variations'); ?>
+            </a>
+        </div>
+
+    <?php endif; ?>
+
+    <div id="ebayDeletedVariationsProductManageVariationsGrid" style="padding-top: 10px; display: none;">
+        <?php
+        $url = $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/viewDeletedVariationsGrid',
+            array(
+                'product_id' => $this->getListingProductId(),
+            )
+        );
+        ?>
+        <input type="hidden" id="ebayDeletedVariationsProductManageVariationsGridIframeUrl" value="<?php echo $url ?>">
+    </div>
+
+</div>
+
+<div style="float: right; margin-bottom: 20px; margin-top: 10px;">
+    <button type="button" style="min-width: 55px; margin-left: 10px;" onclick="EbayListingEbayGridHandlerObj.variationProductManageHandler.closeManageVariationsPopup();">
+        <?php echo Mage::helper('M2ePro')->__('Close'); ?>
+    </button>
 </div>

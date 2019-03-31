@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -510,7 +510,7 @@ SQL
 
     protected function getTableName($table)
     {
-        return Mage::getSingleton('core/resource')->getTableName($table);
+        return Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table);
     }
 
     protected function isTableExists($table)

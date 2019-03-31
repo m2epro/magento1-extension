@@ -2,10 +2,13 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Amazon_Marketplace|Ess_M2ePro_Model_Ebay_Marketplace|Ess_M2ePro_Model_Walmart_Marketplace getChildObject()
+ */
 class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
     const STATUS_DISABLE = 0;

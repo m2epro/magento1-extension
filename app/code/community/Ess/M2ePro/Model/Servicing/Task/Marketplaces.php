@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -54,7 +54,8 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
             ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
 
         $writeConn = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $dictionaryTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_marketplace');
+        $dictionaryTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_dictionary_marketplace');
 
         /* @var $marketplace Ess_M2ePro_Model_Marketplace */
         foreach ($enabledMarketplaces as $marketplace) {
@@ -98,7 +99,8 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
             ->getMarketplacesAvailableForApiCreation();
 
         $writeConn = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $dictionaryTable = Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_dictionary_marketplace');
+        $dictionaryTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_amazon_dictionary_marketplace');
 
         /* @var $marketplace Ess_M2ePro_Model_Marketplace */
         foreach ($enabledMarketplaces as $marketplace) {

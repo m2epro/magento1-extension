@@ -154,9 +154,11 @@
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Buyer Information');?></h4>
+            <?php if (!$this->order->getChildObject()->isUseClickAndCollect() && !$this->order->getChildObject()->isUseInStorePickup()): ?>
             <div style="float: right;">
                 <a href="<?php echo $this->getUrl('*/*/editShippingAddress', array('id' => $this->order->getId())) ?>"><?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
             </div>
+            <?php endif; ?>
         </div>
 
         <div class="fieldset">
@@ -213,8 +215,9 @@
                             </td>
                         </tr>
 
+                        <?php if (!$this->order->getChildObject()->isUseClickAndCollect() && !$this->order->getChildObject()->isUseInStorePickup()): ?>
                         <tr>
-                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Shipping Address'); ?>:</td>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Address'); ?>:</td>
                             <td class="value">
                                 <strong>
 
@@ -231,7 +234,14 @@
                                         <?php endif; ?>
 
                                         <?php if (!empty($this->shippingAddress['city'])): ?>
-                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml(implode(', ', array($this->shippingAddress['city'], $this->shippingAddress['state'], $this->shippingAddress['postal_code']))) ?>
+                                            <?php
+                                                $addressData = array_filter(array(
+                                                    $this->shippingAddress['city'],
+                                                    $this->shippingAddress['state'],
+                                                    $this->shippingAddress['postal_code'],
+                                                ));
+                                            ?>
+                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml(implode(', ', $addressData)) ?>
                                         <?php endif; ?>
 
                                         <?php if (!empty($this->shippingAddress['country_name'])): ?>
@@ -254,6 +264,7 @@
                                 </strong>
                             </td>
                         </tr>
+                        <?php endif; ?>
 
                     </tbody>
                 </table>
@@ -315,7 +326,7 @@
                                     <?php if ($this->order->getChildObject()->getFinalFee() <= 0) { ?>
                                         <?php echo Mage::helper('M2ePro')->__('N/A'); ?>
                                     <?php } else { ?>
-                                        <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getCurrency(), round($this->order->getChildObject()->getFinalFee(), 2)); ?>
+                                        <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getChildObject()->getCurrency(), round($this->order->getChildObject()->getFinalFee(), 2)); ?>
                                     <?php } ?>
                                 </strong>
                             </td>
@@ -326,7 +337,7 @@
                                 <td class="label"><?php echo Mage::helper('M2ePro')->__('Cash On Delivery Cost');?>:</td>
                                 <td class="value">
                                     <strong>
-                                        <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getCurrency(), round($this->order->getChildObject()->getCashOnDeliveryCost(), 2)); ?>
+                                        <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getChildObject()->getCurrency(), round($this->order->getChildObject()->getCashOnDeliveryCost(), 2)); ?>
                                     </strong>
                                 </td>
                             </tr>
@@ -369,6 +380,21 @@
                 <table class="form-list" cellspacing="0">
                     <tbody>
 
+                        <?php if ($this->order->getChildObject()->isUseClickAndCollect() || $this->order->getChildObject()->isUseInStorePickup()): ?>
+                            <tr>
+                                <td class="label"><?php echo Mage::helper('M2ePro')->__('Shipping Method');?>:</td>
+                                <td class="value">
+                                    <strong>
+                                        <?php if ($this->order->getChildObject()->isUseClickAndCollect()) { ?>
+                                            <?php echo Mage::helper('M2ePro')->__('Click And Collect'); ?>
+                                        <?php } else { ?>
+                                            <?php echo Mage::helper('M2ePro')->__('In Store Pickup'); ?>
+                                        <?php } ?>
+                                    </strong>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+
                         <tr>
                             <td class="label"><?php echo Mage::helper('M2ePro')->__('Shipping Service');?>:</td>
                             <td class="value">
@@ -393,7 +419,7 @@
                                         <?php if ($this->order->getChildObject()->getShippingPrice() <= 0) { ?>
                                             <?php echo 0; ?>
                                         <?php } else { ?>
-                                            <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getCurrency(), $this->order->getChildObject()->getShippingPrice()); ?>
+                                            <?php echo Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getChildObject()->getCurrency(), $this->order->getChildObject()->getShippingPrice()); ?>
                                         <?php } ?>
                                     </strong>
                                 </td>
@@ -406,6 +432,48 @@
                                 <td class="value"><strong><?php echo Mage::helper('core')->formatDate($this->order->getChildObject()->getShippingDate(), 'medium', true); ?></strong></td>
                             </tr>
                         <?php } ?>
+
+                        <tr>
+                            <td class="label"><?php echo Mage::helper('M2ePro')->__('Shipping Address'); ?>:</td>
+                            <td class="value">
+                                <strong>
+
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($this->order->getChildObject()->getBuyerName()) ?>
+
+                                    <?php if (!empty($this->shippingAddress)): ?>
+
+                                        <?php if (!empty($this->shippingAddress['street'][0])): ?>
+                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['street'][0]); ?>
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($this->shippingAddress['street'][1])): ?>
+                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['street'][1]); ?>
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($this->shippingAddress['city'])): ?>
+                                            <br/><?php echo Mage::helper('M2ePro')->escapeHtml(implode(', ', array($this->shippingAddress['city'], $this->shippingAddress['state'], $this->shippingAddress['postal_code']))) ?>
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($this->shippingAddress['country_name'])): ?>
+                                            <br/>
+                                            <?php
+                                            if (!empty($this->shippingAddress['country_name'])) {
+                                                echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['country_name']);
+                                            } else {
+                                                echo Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['country_code']);
+                                            }
+                                            ?>
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($this->shippingAddress['phone']) && stripos($this->shippingAddress['phone'], 'Invalid Request') === false): ?>
+                                            <br/><?php echo 'T: ' . Mage::helper('M2ePro')->escapeHtml($this->shippingAddress['phone']); ?>
+                                        <?php endif; ?>
+
+                                    <?php endif; ?>
+
+                                </strong>
+                            </td>
+                        </tr>
 
                         <?php if (count($this->order->getChildObject()->getShippingTrackingDetails())) { ?>
 

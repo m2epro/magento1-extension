@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -176,19 +176,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         foreach ($specifics as $specific) {
 
             if ($specific['mode'] == Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_CUSTOM_ITEM_SPECIFICS) {
-                $specific['value_custom_value'] = json_decode($specific['value_custom_value'],true);
+                $specific['value_custom_value'] = Mage::helper('M2ePro')->jsonDecode($specific['value_custom_value']);
                 $this->_selectedSpecifics[] = $specific;
                 continue;
             }
 
             $temp = Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_EBAY_RECOMMENDED;
             if ($specific['value_mode'] == $temp) {
-                $specific['value_data'] = json_decode($specific['value_ebay_recommended'],true);
+                $specific['value_data'] = Mage::helper('M2ePro')->jsonDecode($specific['value_ebay_recommended']);
             }
             unset($specific['value_ebay_recommended']);
 
             if ($specific['value_mode'] == Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_VALUE) {
-                $specific['value_data'] = json_decode($specific['value_custom_value'],true);
+                $specific['value_data'] = Mage::helper('M2ePro')->jsonDecode($specific['value_custom_value']);
             }
             unset($specific['value_custom_value']);
 

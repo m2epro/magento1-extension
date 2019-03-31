@@ -49,7 +49,6 @@ $translations = json_encode($translations);
         'logViewUrl' => $this->getUrl('M2ePro/adminhtml_ebay_log/synchronization',array('back'=>Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))),
 
         'runReviseAll'        => $this->getUrl('M2ePro/adminhtml_ebay_synchronization/runReviseAll'),
-        'runAllEnabledNow'    => $this->getUrl('M2ePro/adminhtml_ebay_synchronization/runAllEnabledNow'),
 
         'synchCheckProcessingNow' => $this->getUrl('M2ePro/adminhtml_ebay_synchronization/synchCheckProcessingNow')
     )); ?>);
@@ -60,7 +59,6 @@ $translations = json_encode($translations);
         setTimeout(function() {
             SynchronizationProgressHandlerObj = new SynchProgressHandler(SynchProgressBarObj, SynchWrapperObj );
             SynchronizationHandlerObj = new SynchronizationHandler(SynchronizationProgressHandlerObj);
-            SynchronizationProgressHandlerObj.initPageCheckState();
 
             editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
 
@@ -104,16 +102,16 @@ $translations = json_encode($translations);
 
                     <tr>
                         <td class="label">
-                            <label for="ebay_templates_mode"><?php echo Mage::helper('M2ePro')->__('Enabled'); ?>: </label>
+                            <label for="ebay_instructions_mode"><?php echo Mage::helper('M2ePro')->__('Enabled'); ?>: </label>
                         </td>
                         <td class="value">
-                            <?php $templates_mode = $this->templates['mode'] ? $this->templates['mode'] : 0; ?>
-                            <select id="ebay_templates_mode" name="ebay_templates_mode">
-                                <option value="0"<?php if ($templates_mode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                <option value="1"<?php if ($templates_mode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <?php $instructions_mode = $this->instructionsMode ? $this->instructionsMode : 0; ?>
+                            <select id="ebay_instructions_mode" name="ebay_instructions_mode">
+                                <option value="0"<?php if ($instructions_mode == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                <option value="1"<?php if ($instructions_mode == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                             </select>
                             <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__("Updates and synchronizes eBay Listings according to Synchronization Policies' Rules."); ?></span>
+                                <span><?php echo Mage::helper('M2ePro')->__('Enable to automatically update eBay Listings based on Synchronization Rules'); ?></span>
                             </p>
                         </td>
                     </tr>
@@ -122,7 +120,7 @@ $translations = json_encode($translations);
                 <div style="padding: 12px"></div>
 
                 <?php if ($this->isShowReviseAll()) { ?>
-                    <div id="block_notice_ebay_synchronization_revise_all" style="<?php if (!$templates_mode) echo 'display: none'; ?>" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                    <div id="block_notice_ebay_synchronization_revise_all" style="<?php if (!$instructions_mode) echo 'display: none'; ?>" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
 
                         <?php echo Mage::helper('M2ePro')->__(
     'If your eBay Listings for some reason were asynchronized with the Products in Magento, <a href="javascript:" onclick="%script_code%">turn on</a> the Revise All Action to catch data up.
@@ -177,34 +175,34 @@ $translations = json_encode($translations);
 
                 <div class="block_notices_module" style="border: 0 !important; margin-bottom: 0 !important;" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                     <?php echo Mage::helper('M2ePro')->__('
-                    If you update Magento Product Information <strong>not</strong> via <strong>Magento back-end</strong> and <strong>Standard Magento Models</strong>
-                    functionality (e.g. using direct SQL injections or Custom Code that does not use a Magento Core Models),
-                    you can use <strong>predefined M2E Pro Models</strong> to notify Extension about Product changes.<br/>
+                    If you update Magento Product Information not via Magento backend and Standard Magento Model functionality
+                    (e.g. direct SQL injections or Custom Code that does not support a Magento Core Models), you can use
+                    predefined <strong>M2E Pro Models</strong> to notify Extension about Product changes.<br/>
                     More detailed information you can find <a href="%url1%" target="_blank">here</a><br/><br/>
 
-                    In case you are using <strong>Magmi Import Tool</strong> to update Magento Product Information you can use a <strong>predefined
-                    M2E Pro Plugin</strong> for Magmi Import Tool to notify Extension about Product Changes.<br/>
+                    If you use Magmi Import Tool to update Magento Product Information, it is required to set up a predefined
+                    <strong>M2E Pro Plug-in for Magmi Import Tool</strong> to notify Extension about Product Changes.<br/>
                     More detailed information you can find <a href="%url2%" target="_blank">here</a><br/><br/>
 
-                    It is <strong>strongly recommended</strong> to use on these two options described above to decrease the impact on M2E Pro Performance.',
+                    It is <strong>highly recommended</strong> to use one of the options above to decrease the impact on M2E Pro performance.',
                         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/xYQVAQ'),
-                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/yIQVAQ')
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/CQ1PAQ')
                     ); ?>
                 </div>
 
                 <div id="block_notice_ebay_synchronization_stock_level" class="block_notices_module" style="border: 0 !important; margin-bottom: 0 !important;" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
                     <?php $inspectorMode = ($this->inspectorMode == 1) ? '<span style="color: green"> ('. Mage::helper('M2ePro')->__('enabled') .') </span>' : ''; ?>
                     <?php echo Mage::helper('M2ePro')->__('
-                        In case you do not use Plugin for Magmi Import Tool or you cannot use predefined M2E Pro Models,
-                        you can use an <strong>additional feature</strong>
-                        <a target="_blank" href="%url%#magento_block_configuration_settings_advanced">"Track Direct Database Changes"</a>
+                        Alternatively, you can enable
+                        <a target="_blank" href="%url%#magento_block_configuration_settings_advanced">\'Track Direct Database Changes\'</a>
                         %mode_status% to detect Product changes.<br/><br/>
 
-                        <strong>Warning:</strong> Tracking direct Database changes is resource-intensive and may affect the Performance of
-                        your Magento Site and Synchronization with Channels. Choose \'Yes\' only  if you cannot use another
-                        predefined M2E Pro Models and you are totally sure that you need this functionality.',
+                        <strong>Important note:</strong> the tracking of direct Database changes is resource-consuming and
+                        may affect the performance of your Magento Site and Synchronization with Channels. Set \'Yes\'
+                        only in case of extreme necessity when the use of other predefined M2E Pro Models is impossible for some reasons.',
                         Mage::helper('M2ePro/View_Configuration')->getSettingsUrl(),
-                        $inspectorMode) ?>
+                        $inspectorMode
+                    ) ?>
                 </div>
 
             </div>

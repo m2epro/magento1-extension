@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -26,9 +26,9 @@ class Ess_M2ePro_Model_Ebay_Motor_Filter extends Ess_M2ePro_Model_Component_Abst
 
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $coreResourceModel = Mage::getSingleton('core/resource');
 
-        $filterGroupRelation = $coreResourceModel->getTableName('m2epro_ebay_motor_filter_to_group');
+        $filterGroupRelation = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_motor_filter_to_group');
 
         $connWrite->delete($filterGroupRelation, array('filter_id = ?' => $this->getId()));
 
@@ -62,7 +62,11 @@ class Ess_M2ePro_Model_Ebay_Motor_Filter extends Ess_M2ePro_Model_Component_Abst
      */
     public function isTypeEpid()
     {
-        return $this->getType() == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID;
+        return in_array($this->getType(), array(
+            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR,
+            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK,
+            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE,
+        ));
     }
 
     /**

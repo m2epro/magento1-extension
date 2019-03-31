@@ -3,7 +3,14 @@ ConfigurationSettingsHandler.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    initialize: function() {},
+    templateEditHandlerObj: null,
+
+    // ---------------------------------------
+
+    initialize: function()
+    {
+        this.templateEditHandlerObj = new TemplateEditHandler();
+    },
 
     // ---------------------------------------
 
@@ -16,13 +23,28 @@ ConfigurationSettingsHandler.prototype = Object.extend(new CommonHandler(), {
         }
     },
 
-    changeBlockNoticesShow: function()
+    restoreAllHelpsAndRememberedChoices: function ()
     {
-        if ($('block_notices_show').value == 1) {
-            $('restore_block_notices_tr').show();
-        } else {
-            $('restore_block_notices_tr').hide();
+        var self = this;
+
+        if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
+            return;
         }
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_configuration_settings/restoreBlockNotices'), {
+            method: 'post',
+            asynchronous: false,
+            onSuccess: function(transport) {
+
+                ModuleNoticeObj.deleteAllHashedStorage();
+                MagentoBlockObj.deleteAllHashedStorage();
+                self.templateEditHandlerObj.forgetSkipSaveConfirmation();
+
+                MagentoMessageObj.addSuccess(
+                    M2ePro.translator.translate('Help Blocks have been successfully restored.')
+                );
+            }
+        });
     }
 
     // ---------------------------------------

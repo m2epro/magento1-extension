@@ -2,12 +2,14 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Adminhtml_Listing_Grid
 {
+    const MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY = 'editPartsCompatibilityMode';
+
     //########################################
 
     public function __construct()
@@ -215,25 +217,52 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
                         'back' => $backUrl
                     )
                 )
-            )
+            ),
+
+            'editPartsCompatibilityMode' => array(
+                'caption'        => $helper->__('Parts Compatibility Mode'),
+                'group'          => 'edit_actions',
+                'field'          => 'id',
+                'onclick_action' => 'EditCompatibilityModeObj.openPopup',
+                'action_id'      => self::MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY
+            ),
         );
 
         if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
             unset($actions['autoActions']);
             unset($actions['editSynchronization']);
+            unset($actions[self::MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY]);
         }
 
         return $actions;
+    }
+
+    /**
+     * editPartsCompatibilityMode has to be not accessible for not Multi Motors marketplaces
+     * @return $this
+     */
+    protected function _prepareColumns()
+    {
+        $result = parent::_prepareColumns();
+
+        $this->getColumn('actions')->setData(
+            'renderer', 'M2ePro/adminhtml_ebay_listing_grid_column_renderer_action'
+        );
+
+        return $result;
     }
 
     //########################################
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        $value = '<span id="listing_title_'.$row->getId().'">' .
-                    Mage::helper('M2ePro')->escapeHtml($value) .
-                 '</span>';
+        $title = Mage::helper('M2ePro')->escapeHtml($value);
+        $compatibilityMode = $row->getData('parts_compatibility_mode');
 
+        $value = <<<HTML
+<span id="listing_title_{$row->getId()}">{$title}</span>
+<span id="listing_compatibility_mode_{$row->getId()}" style="display: none;">{$compatibilityMode}</span>
+HTML;
         /* @var $row Ess_M2ePro_Model_Listing */
         $accountTitle = $row->getData('account_title');
         $marketplaceTitle = $row->getData('marketplace_title');
@@ -305,20 +334,20 @@ HTML;
             return parent::_toHtml();
         }
 
-        $urls = json_encode(array_merge(
+        $urls = Mage::helper('M2ePro')->jsonEncode(array_merge(
             Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_listing'),
             Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_listing_productAdd'),
             Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_log'),
             Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_template'),
             array(
-                'adminhtml_common_listing/saveTitle' => Mage::helper('adminhtml')
-                    ->getUrl('M2ePro/adminhtml_common_listing/saveTitle')
+                'adminhtml_listing/saveTitle' => Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_listing/saveTitle')
             )
         ));
 
-        $translations = json_encode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(array(
             'Cancel' => Mage::helper('M2ePro')->__('Cancel'),
             'Save' => Mage::helper('M2ePro')->__('Save'),
+            'Edit Parts Compatibility Mode' => Mage::helper('M2ePro')->__('Edit Parts Compatibility Mode'),
             'Edit Listing Title' => Mage::helper('M2ePro')->__('Edit Listing Title'),
         ));
 
@@ -345,6 +374,7 @@ HTML;
 
         EbayListingGridHandlerObj = new EbayListingGridHandler('{$this->getId()}');
         EditListingTitleObj = new ListingEditListingTitle('{$this->getId()}');
+        EditCompatibilityModeObj = new EditCompatibilityMode('{$this->getId()}');
     });
 
 </script>

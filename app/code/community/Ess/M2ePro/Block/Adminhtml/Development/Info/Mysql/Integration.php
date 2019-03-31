@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -28,7 +28,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
     {
         $tablesData = array_merge($this->getGeneralTables(),
                                   $this->getEbayTables(),
-                                  $this->getAmazonTables());
+                                  $this->getAmazonTables(),
+                                  $this->getWalmartTables());
 
         $helper = Mage::helper('M2ePro/Module_Database_Structure');
 
@@ -60,8 +61,10 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
     {
         return array(
             'General' => array(
+                'm2epro_account',
                 'm2epro_listing',
                 'm2epro_listing_product',
+                'm2epro_listing_other'
             )
         );
     }
@@ -74,6 +77,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
                 'm2epro_amazon_item',
                 'm2epro_amazon_listing',
                 'm2epro_amazon_listing_product',
+                'm2epro_amazon_listing_other'
             )
         );
     }
@@ -86,6 +90,20 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
                 'm2epro_ebay_item',
                 'm2epro_ebay_listing',
                 'm2epro_ebay_listing_product',
+                'm2epro_ebay_listing_other'
+            )
+        );
+    }
+
+    private function getWalmartTables()
+    {
+        return array(
+            'Walmart' => array(
+                'm2epro_walmart_account',
+                'm2epro_walmart_item',
+                'm2epro_walmart_listing',
+                'm2epro_walmart_listing_product',
+                'm2epro_walmart_listing_other'
             )
         );
     }

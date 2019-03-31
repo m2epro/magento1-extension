@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -169,13 +169,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
 
         /** @var Varien_Db_Adapter_Pdo_Mysql $connRead*/
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableDictMarketplace = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_marketplace');
+        $tableDictMarketplace = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_dictionary_marketplace');
 
         $dbSelect = $connRead->select()
             ->from($tableDictMarketplace, 'charities')
             ->where('`marketplace_id` = ?', (int)$marketplaceId);
 
-        $src = json_decode($connRead->fetchOne($dbSelect),true);
+        $src = Mage::helper('M2ePro')->jsonDecode($connRead->fetchOne($dbSelect));
 
         if (!is_null($src)) {
             $charities = array();
@@ -245,37 +246,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         }
 
         return false;
-    }
-
-    //########################################
-
-    public function isShowMultiCurrencyNotification()
-    {
-        $marketplace = $this->getMarketplace();
-
-        if (is_null($marketplace)) {
-           return false;
-        }
-
-        if (!$marketplace->getChildObject()->isMultiCurrencyEnabled()) {
-            return false;
-        }
-
-        $marketplaceId = $marketplace->getId();
-
-        $configValue = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            "/view/ebay/multi_currency_marketplace_{$marketplaceId}/", 'notification_shown'
-        );
-
-        if ($configValue) {
-            return false;
-        }
-
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            "/view/ebay/multi_currency_marketplace_{$marketplaceId}/", 'notification_shown', 1
-        );
-
-        return true;
     }
 
     //########################################

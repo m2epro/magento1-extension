@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -10,9 +10,11 @@ class Ess_M2ePro_Model_Magento_Payment extends Mage_Payment_Model_Method_Abstrac
 {
     protected $_code = 'm2epropayment';
 
-    protected $_canUseCheckout = false;
-    protected $_canUseInternal = false;
-    protected $_canUseForMultishipping = false;
+    protected $_canUseCheckout          = false;
+    protected $_canUseInternal          = false;
+    protected $_canUseForMultishipping  = false;
+    protected $_canRefund               = true;
+    protected $_canRefundInvoicePartial = true;
 
     protected $_infoBlockType = 'M2ePro/adminhtml_magento_payment_info';
 

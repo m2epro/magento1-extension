@@ -2,17 +2,17 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 final class Ess_M2ePro_Model_Servicing_Dispatcher
 {
     const DEFAULT_INTERVAL = 3600;
-    const MAX_MEMORY_LIMIT = 256;
 
     private $params = array();
     private $forceTasksRunning = false;
+    private $initiator;
 
     //########################################
 
@@ -24,6 +24,19 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
     public function setForceTasksRunning($value)
     {
         $this->forceTasksRunning = (bool)$value;
+    }
+
+    // ---------------------------------------
+
+    public function setInitiator($initiator)
+    {
+        $this->initiator = $initiator;
+        return $this;
+    }
+
+    public function getInitiator()
+    {
+        return $this->initiator;
     }
 
     // ---------------------------------------
@@ -50,7 +63,8 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
     {
         $timeLastUpdate = $this->getLastUpdateTimestamp();
 
-        if (!is_null($minInterval) &&
+        if ($this->getInitiator() !== Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER &&
+            !is_null($minInterval) &&
             $timeLastUpdate + (int)$minInterval > Mage::helper('M2ePro')->getCurrentGmtDate(true)) {
             return false;
         }
@@ -70,14 +84,14 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 
     public function processTasks(array $taskCodes)
     {
-        Mage::helper('M2ePro/Client')->setMemoryLimit(self::MAX_MEMORY_LIMIT);
         Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
 
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector('servicing','update','data',
                                                                $this->getRequestData($taskCodes));
 
-        $responseData = $dispatcherObject->process($connectorObj);
+        $dispatcherObject->process($connectorObj);
+        $responseData = $connectorObj->getResponseData();
 
         if (!is_array($responseData)) {
             return false;
@@ -100,9 +114,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
                 continue;
             }
 
-            /** @var $taskModel Ess_M2ePro_Model_Servicing_Task */
-            $taskModel = Mage::getModel('M2ePro/Servicing_Task_'.ucfirst($taskName));
-            $taskModel->setParams($this->getParams());
+            $taskModel = $this->getTaskModel($taskName);
 
             if (!$this->getForceTasksRunning() && !$taskModel->isAllowed()) {
                 continue;
@@ -122,9 +134,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
                 continue;
             }
 
-            /** @var $taskModel Ess_M2ePro_Model_Servicing_Task */
-            $taskModel = Mage::getModel('M2ePro/Servicing_Task_'.ucfirst($taskName));
-            $taskModel->setParams($this->getParams());
+            $taskModel = $this->getTaskModel($taskName);
 
             if (!isset($responseData[$taskModel->getPublicNick()]) ||
                 !is_array($responseData[$taskModel->getPublicNick()])) {
@@ -133,6 +143,22 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 
             $taskModel->processResponseData($responseData[$taskModel->getPublicNick()]);
         }
+    }
+
+    //########################################
+
+    private function getTaskModel($taskName)
+    {
+        $taskName = preg_replace_callback('/_([a-z])/i', function($matches) {
+            return ucfirst($matches[1]);
+        }, $taskName);
+
+        /** @var $taskModel Ess_M2ePro_Model_Servicing_Task */
+        $taskModel = Mage::getModel('M2ePro/Servicing_Task_'.ucfirst($taskName));
+        $taskModel->setParams($this->getParams());
+        $taskModel->setInitiator($this->getInitiator());
+
+        return $taskModel;
     }
 
     //########################################
@@ -146,11 +172,13 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
             'license',
             'messages',
             'settings',
-            'backups',
             'exceptions',
             'marketplaces',
             'cron',
-            'statistic'
+            'statistic',
+            'analytics',
+            'maintenance_schedule',
+            'product_variation_vocabulary'
         );
     }
 
@@ -160,9 +188,9 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
     public function getSlowTasks()
     {
         return array(
-            'backups',
             'exceptions',
-            'statistic'
+            'statistic',
+            'analytics'
         );
     }
 

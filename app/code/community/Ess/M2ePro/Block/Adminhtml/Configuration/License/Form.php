@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -23,7 +23,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
 
         // ---------------------------------------
 
-        $this->setPageHelpLink('Global+Settings#GlobalSettings-License');
+        $this->setPageHelpLink("x/CwAJAQ");
     }
 
     //########################################
@@ -47,6 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
     {
         parent::_prepareLayout();
         $this->getLayout()->getBlock('head')->addJs('M2ePro/Configuration/LicenseHandler.js');
+        $this->initPopUp();
     }
 
     protected function _beforeToHtml()
@@ -63,18 +64,17 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         // Set data for form
         // ---------------------------------------
         $this->key = Mage::helper('M2ePro')->escapeHtml($licenseHelper->getKey());
+        $this->status = $licenseHelper->getStatus();
 
         $this->licenseData = array(
             'domain' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getDomain()),
             'ip' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getIp()),
-            'directory' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getDirectory()),
             'info' => array(
                 'email' => Mage::helper('M2ePro')->escapeHtml($licenseHelper->getEmail()),
             ),
             'valid' => array(
                 'domain' => $licenseHelper->isValidDomain(),
-                'ip' => $licenseHelper->isValidIp(),
-                'directory' => $licenseHelper->isValidDirectory()
+                'ip' => $licenseHelper->isValidIp()
             ),
             'connection' => array(
                 'domain' => $cacheConfig->getGroupValue('/license/connection/', 'domain'),
@@ -83,7 +83,24 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
             )
         );
 
+        $defaultStoreId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
+
         // ---------------------------------------
+        $userId = Mage::getSingleton('admin/session')->getUser()->getId();
+        $userInfo = Mage::getModel('admin/user')->load($userId)->getData();
+
+        $tempPath = defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY')
+            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_CITY : 'shipping/origin/city';
+        $userInfo['city'] = Mage::getStoreConfig($tempPath, $defaultStoreId);
+
+        $tempPath = defined('Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE')
+            ? Mage_Shipping_Model_Config::XML_PATH_ORIGIN_POSTCODE : 'shipping/origin/postcode';
+        $userInfo['postal_code'] = Mage::getStoreConfig($tempPath, $defaultStoreId);
+
+        $userInfo['country'] = Mage::getStoreConfig('general/country/default', $defaultStoreId);
+        // ---------------------------------------
+
+        $this->licenseFormData = $userInfo;
 
         // ---------------------------------------
         $data = array(
@@ -97,25 +114,13 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
 
         // ---------------------------------------
         $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Enter'),
-            'onclick' => 'LicenseHandlerObj.changeLicenseKey();',
-            'class'   => 'enter_key'
+            'label'   => Mage::helper('M2ePro')->__('Use Another Key'),
+            'onclick' => 'LicenseHandlerObj.changeLicenseKeyPopup();',
+            'class'   => 'change_license'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('enter_key',$buttonBlock);
-        // ---------------------------------------
+        $this->setChild('change_license',$buttonBlock);
 
-        // ---------------------------------------
-        $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Change'),
-            'onclick' => 'LicenseHandlerObj.changeLicenseKey();',
-            'class'   => 'change_key'
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('change_key',$buttonBlock);
-        // ---------------------------------------
-
-        // ---------------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
             'onclick' => 'LicenseHandlerObj.confirmLicenseKey();',
@@ -126,6 +131,42 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         // ---------------------------------------
 
         return parent::_beforeToHtml();
+    }
+
+    //########################################
+
+    protected function initPopUp()
+    {
+        $themeFileName = 'prototype/windows/themes/magento.css';
+        $themeLibFileName = 'lib/'.$themeFileName;
+        $themeFileFound = false;
+        $skinBaseDir = Mage::getDesign()->getSkinBaseDir(
+            array(
+                '_package' => Mage_Core_Model_Design_Package::DEFAULT_PACKAGE,
+                '_theme' => Mage_Core_Model_Design_Package::DEFAULT_THEME,
+            )
+        );
+
+        if (!$themeFileFound && is_file($skinBaseDir .'/'.$themeLibFileName)) {
+            $themeFileFound = true;
+            $this->getLayout()->getBlock('head')->addCss($themeLibFileName);
+        }
+
+        if (!$themeFileFound && is_file(Mage::getBaseDir().'/js/'.$themeFileName)) {
+            $themeFileFound = true;
+            $this->getLayout()->getBlock('head')->addItem('js_css', $themeFileName);
+        }
+
+        if (!$themeFileFound) {
+            $this->getLayout()->getBlock('head')->addCss($themeLibFileName);
+            $this->getLayout()->getBlock('head')->addItem('js_css', $themeFileName);
+        }
+
+        $this->getLayout()->getBlock('head')
+            ->addJs('prototype/window.js')
+            ->addItem('js_css', 'prototype/windows/themes/default.css');
+
+        return $this;
     }
 
     //########################################

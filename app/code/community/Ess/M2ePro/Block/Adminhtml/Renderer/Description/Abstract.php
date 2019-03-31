@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -10,10 +10,20 @@ class Ess_M2ePro_Block_Adminhtml_Renderer_Description_Abstract extends Mage_Admi
 {
     //########################################
 
-    protected function _construct()
+    protected function _toHtml()
     {
-        parent::_construct();
-        $this->setData('area', 'adminhtml');
+        // Start store emulation process
+        $appEmulation = Mage::getSingleton('core/app_emulation');
+        $initialEnvironmentInfo = $appEmulation->startEnvironmentEmulation(
+            Mage_Core_Model_App::ADMIN_STORE_ID, Mage_Core_Model_App_Area::AREA_ADMINHTML
+        );
+
+        $html = parent::_toHtml();
+
+        // Stop store emulation process
+        $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
+
+        return $html;
     }
 
     //########################################

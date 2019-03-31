@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -121,9 +121,10 @@ abstract class Ess_M2ePro_Model_Mysql4_Component_Parent_Abstract
         $childData[$this->getChildPrimary()] = (int)$object->getData('id');
         unset($childData['id'],$childData['create_date'],$childData['update_date']);
 
-        Mage::getModel($this->getChildModel())
-                ->addData($childData)
-                ->save();
+        $childObject = Mage::getModel($this->getChildModel());
+        $childObject->setParentObject($object);
+        $childObject->addData($childData)
+                    ->save();
 
         return $result;
     }

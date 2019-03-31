@@ -2,10 +2,13 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
+/**
+ * @method Ess_M2ePro_Model_Amazon_Listing_Product|Ess_M2ePro_Model_Ebay_Listing_Product|Ess_M2ePro_Model_Walmart_Listing_Product getChildObject()
+ */
 class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
     const ACTION_LIST    = 1;
@@ -29,9 +32,15 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     const STATUS_CHANGER_COMPONENT = 3;
     const STATUS_CHANGER_OBSERVER = 4;
 
-    const SYNCH_STATUS_OK    = 0;
-    const SYNCH_STATUS_NEED  = 1;
-    const SYNCH_STATUS_SKIP  = 2;
+    const MOVING_LISTING_OTHER_SOURCE_KEY = 'moved_from_listing_other_id';
+
+    /**
+     * It allows to delete an object without checking if it is isLocked()
+     * @var bool
+     */
+    protected $_canBeForceDeleted = false;
+
+    protected $_eventPrefix = 'm2epro_listing_product';
 
     //########################################
 
@@ -55,18 +64,45 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
     //########################################
 
+    public function delete()
+    {
+        $temp = parent::delete();
+
+        $scheduledActions = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
+        $scheduledActions->addFieldToFilter('listing_product_id', $this->getId());
+        foreach ($scheduledActions->getItems() as $item) {
+            /**@var Ess_M2ePro_Model_Listing_Product_ScheduledAction $item */
+            $item->delete();
+        }
+
+        $instructionCollection = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection');
+        $instructionCollection->addFieldToFilter('listing_product_id', $this->getId());
+        foreach ($instructionCollection->getItems() as $item) {
+            /**@var Ess_M2ePro_Model_Listing_Product_Instruction $item */
+            $item->delete();
+        }
+
+        return $temp;
+    }
+
+    //########################################
+
     /**
      * @return bool
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function isLocked()
     {
-        if (parent::isLocked()) {
-            return true;
+        if ($this->canBeForceDeleted()) {
+            return false;
         }
 
         if ($this->isComponentModeEbay() && $this->getAccount()->getChildObject()->isModeSandbox()) {
             return false;
+        }
+
+        if (parent::isLocked()) {
+            return true;
         }
 
         if ($this->getStatus() == self::STATUS_LISTED) {
@@ -85,6 +121,22 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         $variations = $this->getVariations(true);
         foreach ($variations as $variation) {
             $variation->deleteInstance();
+        }
+
+        /** @var Ess_M2ePro_Model_Listing_Product_Instruction[] $instructions */
+        $instructions = $this->getRelatedSimpleItems(
+            'Listing_Product_Instruction', 'listing_product_id', true
+        );
+        foreach ($instructions as $instruction) {
+            $instruction->deleteInstance();
+        }
+
+        /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction[] $scheduledActions */
+        $scheduledActions = $this->getRelatedSimpleItems(
+            'Listing_Product_ScheduledAction', 'listing_product_id', true
+        );
+        foreach ($scheduledActions as $scheduledAction) {
+            $scheduledAction->deleteInstance();
         }
 
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
@@ -189,8 +241,21 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
     //########################################
 
-    public function getVariations($asObjects = false, array $filters = array())
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @param bool $tryToGetFromStorage
+     * @return Ess_M2ePro_Model_Listing_Product_Variation[]
+     */
+    public function getVariations($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
     {
+        $storageKey = "listing_product_{$this->getId()}_variations_" .
+                      md5((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
+
+        if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Session')->getValue($storageKey))) {
+            return $cacheData;
+        }
+
         $variations = $this->getRelatedComponentItems(
             'Listing_Product_Variation','listing_product_id',$asObjects,$filters
         );
@@ -201,6 +266,12 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
                 $variation->setListingProduct($this);
             }
         }
+
+        Mage::helper('M2ePro/Data_Cache_Session')->setValue($storageKey, $variations, array(
+            'listing_product',
+            "listing_product_{$this->getId()}",
+            "listing_product_{$this->getId()}_variations"
+        ));
 
         return $variations;
     }
@@ -221,14 +292,6 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     public function getProductId()
     {
         return (int)$this->getData('product_id');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTriedToList()
-    {
-        return (bool)$this->getData('tried_to_list');
     }
 
     // ---------------------------------------
@@ -258,53 +321,6 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     public function getAdditionalData()
     {
         return $this->getSettings('additional_data');
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return int
-     */
-    public function getSynchStatus()
-    {
-        return (int)$this->getData('synch_status');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSynchStatusOk()
-    {
-        return $this->getSynchStatus() == self::SYNCH_STATUS_OK;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSynchStatusNeed()
-    {
-        return $this->getSynchStatus() == self::SYNCH_STATUS_NEED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSynchStatusSkip()
-    {
-        return $this->getSynchStatus() == self::SYNCH_STATUS_SKIP;
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return array
-     */
-    public function getSynchReasons()
-    {
-        $reasons = $this->getData('synch_reasons');
-        $reasons = explode(',',$reasons);
-
-        return array_unique(array_filter($reasons));
     }
 
     //########################################
@@ -384,7 +400,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
     {
         return ($this->isNotListed() || $this->isSold() ||
                 $this->isStopped() || $this->isFinished() ||
-                $this->isUnknown()) &&
+                $this->isHidden() || $this->isUnknown()) &&
                 !$this->isBlocked();
     }
 
@@ -462,9 +478,14 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
     //########################################
 
-    public function getTrackingAttributes()
+    public function canBeForceDeleted($value = NULL)
     {
-        return $this->getChildObject()->getTrackingAttributes();
+        if (is_null($value)) {
+            return $this->_canBeForceDeleted;
+        }
+
+        $this->_canBeForceDeleted = $value;
+        return $this;
     }
 
     //########################################

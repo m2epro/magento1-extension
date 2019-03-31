@@ -1,0 +1,94 @@
+<?php
+    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_ItemDuplicate $this */
+
+    $duplicateMark = $this->listingProduct->getSetting('additional_data', 'item_duplicate_action_required');
+    $itemId = isset($duplicateMark['item_id']) ? $duplicateMark['item_id'] : null;
+?>
+
+<style type="text/css">
+    .styled-ul {
+        margin: 10px 0px;
+        padding-left: 30px;
+        list-style-type: disc;
+    }
+</style>
+
+<div class="entry-edit" style="padding-top: 10px;">
+
+    <div id="ebay_listing_view_ebay_item_duplicate_messages_block" class="error-msg" style="display: none; margin-bottom: 12px;">
+        <div style="margin: 10px 0 10px 35px">
+            <div class="error_message" style="font-weight:bold"></div>
+        </div>
+    </div>
+
+    <p><?php echo Mage::helper('M2ePro')->__(
+        '<p>During the last action running (list/relist action) there was a notification returned from eBay that the Item you are trying to update is a duplicate <br> of the already presented Item %s%.</p>
+
+        <p>It might be caused by several possible reasons:</p>
+        <ul class="styled-ul">
+            <li>Temporary network-related issues;</li>
+            <li>Restoring of the database from the backup, etc.</li>
+        </ul>
+
+        <p>The duplicated Items are not allowed to be presented on eBay according to the eBay <a href="http://pages.ebay.com/help/policies/listing-multi.html">Duplicate Listings Policy</a> terms.
+        That is why, you should apply one of the solutions provided below to solve this issue:</p>
+        <ul class="styled-ul">
+            <li>Ignore this message for the Item %s% <br>
+            It means that during the next attempt to list/relist your Item, the data will be sent to eBay to check whether the issue is still persist.</li>
+            <li>Stop Item %s% on eBay <br>
+            It means that the Item will be automatically Stopped on eBay and you will be able to list your current Item without the further issues.</li>
+            <li>Stop Item %s% on eBay and list/relist the current Item <br>
+            It means that the Item will be automatically Stopped on eBay and the new one will be listed/relisted.</li>
+        </ul>',
+        $itemId
+    ); ?></p>
+
+    <?php if ($itemId) : ?>
+
+        <?php
+            $url = $this->getUrl(
+                '*/adminhtml_ebay_listing/gotoEbay/',
+                array(
+                    'item_id'        => $itemId,
+                    'account_id'     => $this->listingProduct->getAccount()->getId(),
+                    'marketplace_id' => $this->listingProduct->getMarketplace()->getId()
+                )
+            );
+        ?>
+        <p>
+            <span><?php echo Mage::helper('M2ePro')->__('View this item on eBay'); ?></span>:&nbsp;
+            <a href="<?php echo $url; ?>" target="_blank"><?php echo $itemId; ?></a>
+        </p>
+
+    <?php endif; ?>
+
+    <a href="javascript:();" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, false, false);">
+        <span>
+            <?php echo Mage::helper('M2ePro')->__('Ignore this problem for the Item %s%', $itemId); ?>
+        </span>
+    </a>
+    <br>
+
+    <?php if ($itemId) : ?>
+
+        <a href="javascript:();" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, false);">
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('Stop Item %s% on eBay', $itemId); ?>
+            </span>
+        </a>
+
+        <br>
+
+        <a href="javascript:();" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, true);">
+        <span>
+            <?php echo Mage::helper('M2ePro')->__('Stop Item %s% on eBay and list/relist the current Item.', $itemId); ?>
+        </span>
+        </a>
+
+    <?php endif; ?>
+
+</div>
+
+<div id="buttons" style="padding-bottom: 10px; padding-top: 10px; text-align: right;">
+    <?php echo $this->getChildHtml('close_button') ?>
+</div>

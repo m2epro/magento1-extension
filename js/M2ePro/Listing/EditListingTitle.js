@@ -6,9 +6,9 @@ ListingEditListingTitle.prototype = {
     initialize: function(gridId) {
         this.gridId = gridId;
         CommonHandlerObj.setValidationCheckRepetitionValue('M2ePro-listing-title',
-            M2ePro.text.title_not_unique_error,
-            'Listing', 'title', 'id', null,
-            M2ePro.php.constant('Ess_M2ePro_Helper_Component::NICK'));
+                                                            M2ePro.text.title_not_unique_error,
+                                                            'Listing', 'title', 'id', null,
+                                                            M2ePro.php.constant('Ess_M2ePro_Helper_Component::NICK'));
     },
 
     openPopup: function(id)
@@ -73,7 +73,7 @@ ListingEditListingTitle.prototype = {
             return;
         }
 
-        new Ajax.Request(M2ePro.url.get('adminhtml_common_listing/saveTitle'), {
+        new Ajax.Request(M2ePro.url.get('adminhtml_listing/saveTitle'), {
             parameters: {
                 id: listingId,
                 title: newTitle

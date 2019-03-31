@@ -1,0 +1,16 @@
+<div id="block_notice_amazon_marketplaces_choose" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Marketplaces'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('This Section allows you to set up the Marketplaces you will work with.<br/><br/>
+
+    Enable certain Marketplaces and press the <i class="underline">Save</i> Button in the top right corner, all necessary Marketplace data will be downloaded and synchronized with M2E Pro Settings.<br/>
+    It is recommended to Update Marketplaces when any Marketplace changes are announced by clicking <i class="underline">Update All Now</i> Button. <br/><br/>
+    <b>Note:</b> Installation and Update Processes might be time-consuming, depending on the number of enabled Marketplaces and your Server Environment.
+    ');
+
+    $url = Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/6YIVAQ");
+
+    echo Mage::helper('M2ePro')->__('
+            <br/><br/>More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        $url
+    );
+?>
+</div>

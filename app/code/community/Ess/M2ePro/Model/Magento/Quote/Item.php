@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
             $this->product = $this->getAssociatedGroupedProduct();
 
             if (is_null($this->product)) {
-                throw new Ess_M2ePro_Model_Exception('There is no associated Products found for Grouped Product.');
+                throw new Ess_M2ePro_Model_Exception('There are no associated Products found for Grouped Product.');
             }
         } else {
             $this->product = $this->proxyItem->getProduct();
@@ -107,7 +107,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         // ---------------------------------------
         /** @var $taxRuleBuilder Ess_M2ePro_Model_Magento_Tax_Rule_Builder */
         $taxRuleBuilder = Mage::getModel('M2ePro/Magento_Tax_Rule_Builder');
-        $taxRuleBuilder->buildTaxRule(
+        $taxRuleBuilder->buildProductTaxRule(
             $itemTaxRate,
             $this->quote->getShippingAddress()->getCountryId(),
             $this->quote->getCustomerTaxClassId()
@@ -143,9 +143,8 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $request = new Varien_Object();
         $request->setQty($this->proxyItem->getQty());
 
-        // grouped and downloadable products doesn't have options
-        if ($this->proxyItem->getProduct()->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_GROUPED ||
-            $this->proxyItem->getProduct()->getTypeId() == Mage_Downloadable_Model_Product_Type::TYPE_DOWNLOADABLE) {
+        // grouped product doesn't have options
+        if ($this->proxyItem->getProduct()->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_GROUPED) {
             return $request;
         }
 
@@ -163,6 +162,8 @@ class Ess_M2ePro_Model_Magento_Quote_Item
             $request->setBundleOption($options);
         } else if ($magentoProduct->isConfigurableType()) {
             $request->setSuperAttribute($options);
+        } else if ($magentoProduct->isDownloadableType()) {
+            $request->setLinks($options);
         }
 
         return $request;

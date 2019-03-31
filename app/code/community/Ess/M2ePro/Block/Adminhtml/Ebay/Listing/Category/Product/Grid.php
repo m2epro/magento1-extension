@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -54,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product_Grid
 
         if ($store->getId()) {
             $collection->joinAttribute(
-                'custom_name',
+                'name',
                 'catalog_product/name',
                 'entity_id',
                 NULL,
@@ -75,7 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product_Grid
         // ---------------------------------------
 
         // ---------------------------------------
-        $productAddIds = (array)json_decode($this->listing->getData('product_add_ids'), true);
+        $productAddIds = (array)Mage::helper('M2ePro')->jsonDecode($this->listing->getData('product_add_ids'));
 
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
@@ -252,7 +252,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product_Grid
         $magentoProduct->setProductId($productId);
         $magentoProduct->setStoreId($storeId);
 
-        $thumbnail = $magentoProduct->getThumbnailImageLink();
+        $thumbnail = $magentoProduct->getThumbnailImage();
         if (is_null($thumbnail)) {
             return $htmlWithoutThumbnail;
         }
@@ -261,7 +261,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product_Grid
 <a href="{$url}" target="_blank">
     {$productId}
     <hr style="border: 1px solid silver; border-bottom: none;">
-    <img src="{$thumbnail}" />
+    <img style="max-width: 100px; max-height: 100px;" src="{$thumbnail->getUrl()}" />
 </a>
 HTML;
     }
@@ -602,7 +602,7 @@ HTML;
             )
         );
 
-        $urls = json_encode($urls);
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
 
         // ---------------------------------------
@@ -636,19 +636,43 @@ HTML;
         $text = 'Set eBay Primary Category for Product(s)';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
 
-        $translations = json_encode($translations);
+        $translations = Mage::helper('M2ePro')->jsonEncode($translations);
         // ---------------------------------------
 
         // ---------------------------------------
         $constants = Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Category');
         // ---------------------------------------
 
-        $getSuggested = json_encode((bool)Mage::helper('M2ePro/Data_Global')->getValue('get_suggested'));
+        $getSuggested = Mage::helper('M2ePro')->jsonEncode(
+            (bool)Mage::helper('M2ePro/Data_Global')->getValue('get_suggested')
+        );
+
+        $errorMessage = Mage::helper('M2ePro')
+            ->__("To proceed, the category data must be specified.
+                  Please select a relevant Primary eBay Category for at least one product.");
+
+        $categoriesData = Mage::helper('M2ePro/Data_Session')->getValue('ebay_listing_category_settings/mode_product');
+        $isAlLeasOneCategorySelected = (int)!$this->isAlLeasOneCategorySelected($categoriesData);
+        $showErrorMessage = (int)!empty($categoriesData);
 
         $commonJs = <<<HTML
 <script type="text/javascript">
     EbayListingCategoryProductGridHandlerObj.afterInitPage();
     EbayListingCategoryProductGridHandlerObj.getGridMassActionObj().setGridIds('{$this->getGridIdsJson()}');
+
+    var button = $('ebay_listing_category_continue_btn');
+    if ({$isAlLeasOneCategorySelected}) {
+        button.addClassName('disabled');
+        button.disable();
+        if ({$showErrorMessage}) {
+            MagentoMessageObj.removeError('category-data-must-be-specified');
+            MagentoMessageObj.addError(`{$errorMessage}`, 'category-data-must-be-specified');
+        }
+    } else {
+        button.removeClassName('disabled');
+        button.enable();
+        MagentoMessageObj.clear('error');
+    }
 </script>
 HTML;
 
@@ -695,6 +719,23 @@ HTML;
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         return implode(',',$connRead->fetchCol($select));
+    }
+
+    //########################################
+
+    private function isAlLeasOneCategorySelected($categoriesData)
+    {
+        if (empty($categoriesData)) {
+            return false;
+        }
+
+        foreach ($categoriesData as $productId => $categoryData) {
+            if ($categoryData['category_main_mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //########################################

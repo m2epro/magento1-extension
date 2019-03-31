@@ -1,0 +1,62 @@
+<style>
+    #items_count_alert_popup ul {
+        list-style-type: disc;
+        margin-left: 35px;
+        padding-top: 10px;
+    }
+</style>
+
+<div id="items_count_alert_popup">
+
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+
+        <div style="min-height: 300px;">
+            <span>
+                <?php echo Mage::helper('M2ePro')->__(
+                    'It is impossible to select such a large number of items due to technical reasons.
+                    You can add up to <b>%limitation%</b> Compatible Vehicles at once.<br/><br/>
+                    Select <b>%limitation%</b> or fewer records and submit the <i>Select</i> action.
+                    Then <i>Add</i> or <i>Override</i> selected items according to your needs.',
+                    Ess_M2ePro_Helper_Component_Ebay_Motors::MAX_ITEMS_COUNT_FOR_ATTRIBUTE
+                ); ?>
+            </span>
+
+            <br/><br/>
+
+            <span>
+                <?php echo Mage::helper('M2ePro')->__(
+                    'You are able to add more than <b>%limitation%</b> Compatible Vehicles at once by the following methods:',
+                    Ess_M2ePro_Helper_Component_Ebay_Motors::MAX_ITEMS_COUNT_FOR_ATTRIBUTE
+                ); ?>
+            </span>
+
+            <ul>
+                <li>
+                    <?php echo Mage::helper('M2ePro')->__(
+                        '<b>use saved Filter</b> - filter the records by required parameters and click on <i>Save Filter</i> button.
+                        On the <i>Filters</i> tab, choose appropriate saved Filter, submit the <i>Select</i> action,
+                        then <i>Add/Override</i> all the Compatible Vehicles that suit your filtering settings at once.'
+                    ); ?>
+                </li>
+                <br/>
+                <li>
+                    <?php echo Mage::helper('M2ePro')->__(
+                        '<b>use saved Group</b> - select <b>%limitation%</b> or fewer records and submit the <i>Save as Group</i> action.
+                        Create as many Groups as you need. On the <i>Group</i> tab, choose appropriate saved Groups,
+                        submit the <i>Select</i> action, then <i>Add/Override</i> all the Compatible Vehicles belonged to
+                        these Groups at once.',
+                        Ess_M2ePro_Helper_Component_Ebay_Motors::MAX_ITEMS_COUNT_FOR_ATTRIBUTE
+                    ); ?>
+                </li>
+            </ul>
+        </div>
+
+        <div style="float: right;">
+            <a href="javascript:void(0);" onclick="Windows.getFocusedWindow().close();"><?php echo Mage::helper('M2ePro')->__('Close'); ?></a>
+        </div>
+
+        <div class="clear"></div>
+
+    </div>
+
+</div>

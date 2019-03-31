@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -127,7 +127,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
     {
         $productOptions = $this->getListingProduct()->getSetting('additional_data', 'variation_product_options', null);
         if (empty($productOptions)) {
-            return NULL;
+            return array();
         }
 
         return $productOptions;
@@ -262,7 +262,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
             'sku' => $this->getAmazonListingProduct()->getSku(),
             'product_id' => (int)$this->getListingProduct()->getProductId(),
             'store_id' => (int)$this->getListing()->getStoreId(),
-            'variation_product_options' => json_encode($options),
+            'variation_product_options' => Mage::helper('M2ePro')->jsonEncode($options),
         );
 
         Mage::getModel('M2ePro/Amazon_Item')->setData($data)->save();

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -14,7 +14,7 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
     const NICK  = 'ebay';
 
     const WIZARD_INSTALLATION_NICK = 'installationEbay';
-    const MENU_ROOT_NODE_NICK = 'm2epro_ebay';
+    const MENU_ROOT_NODE_NICK = 'm2epro/ebay';
 
     const MODE_SIMPLE = 'simple';
     const MODE_ADVANCED = 'advanced';
@@ -23,7 +23,7 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 
     public function getTitle()
     {
-        return Mage::helper('M2ePro')->__('Sell On eBay');
+        return Mage::helper('M2ePro')->__('eBay');
     }
 
     //########################################
@@ -37,26 +37,9 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 
     public function getPageNavigationPath($pathNick, $tabName = NULL, $additionalEnd = NULL)
     {
-        $resultPath = array();
-
-        $rootMenuNode = Mage::getConfig()->getNode('adminhtml/menu/m2epro_ebay');
-        $menuLabel = Mage::helper('M2ePro/View')->getMenuPath($rootMenuNode, $pathNick, $this->getMenuRootNodeLabel());
-
-        if (!$menuLabel) {
-            return '';
-        }
-
-        $resultPath['menu'] = $menuLabel;
-
-        if ($tabName) {
-            $resultPath['tab'] = Mage::helper('M2ePro')->__($tabName) . ' ' . Mage::helper('M2ePro')->__('Tab');
-        }
-
-        if ($additionalEnd) {
-            $resultPath['additional'] = Mage::helper('M2ePro')->__($additionalEnd);
-        }
-
-        return join($resultPath, ' > ');
+        return Mage::helper('M2ePro/View')->getPageNavigationPath(
+            self::NICK .'/'. $pathNick, $tabName, $additionalEnd
+        );
     }
 
     //########################################
@@ -99,44 +82,6 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
     public function isAdvancedMode()
     {
         return $this->getMode() == self::MODE_ADVANCED;
-    }
-
-    //########################################
-
-    public function prepareMenu(array $menuArray)
-    {
-        if (!Mage::getSingleton('admin/session')->isAllowed(self::MENU_ROOT_NODE_NICK)) {
-            return $menuArray;
-        }
-
-        if (count(Mage::helper('M2ePro/View_Ebay_Component')->getActiveComponents()) <= 0) {
-            unset($menuArray[self::MENU_ROOT_NODE_NICK]);
-            return $menuArray;
-        }
-
-        $tempTitle = $this->getMenuRootNodeLabel();
-        !empty($tempTitle) && $menuArray[self::MENU_ROOT_NODE_NICK]['label'] = $tempTitle;
-
-        // Add wizard menu item
-        // ---------------------------------------
-        /* @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
-        $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
-
-        $activeBlocker = $wizardHelper->getActiveBlockerWizard(Ess_M2ePro_Helper_View_Ebay::NICK);
-
-        if (!$activeBlocker) {
-            return $menuArray;
-        }
-
-        unset($menuArray[self::MENU_ROOT_NODE_NICK]['children']);
-        unset($menuArray[self::MENU_ROOT_NODE_NICK]['click']);
-
-        $menuArray[self::MENU_ROOT_NODE_NICK]['url'] = Mage::helper('adminhtml')->getUrl(
-            'M2ePro/adminhtml_wizard_'.$wizardHelper->getNick($activeBlocker).'/index'
-        );
-        $menuArray[self::MENU_ROOT_NODE_NICK]['last'] = true;
-
-        return $menuArray;
     }
 
     //########################################
@@ -189,6 +134,26 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
         }
 
         $sessionCache->setValue('is_3rd_party_should_be_shown', $result);
+
+        return $result;
+    }
+
+    //----------------------------------------
+
+    public function isDuplicatesFilterShouldBeShown($listingId = null)
+    {
+        $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
+
+        if (!is_null($sessionCache->getValue('is_duplicates_filter_should_be_shown'))) {
+            return $sessionCache->getValue('is_duplicates_filter_should_be_shown');
+        }
+
+        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+        $collection->addFieldToFilter('is_duplicate', 1);
+        $listingId && $collection->addFieldToFilter('listing_id', (int)$listingId);
+
+        $result = (bool)$collection->getSize();
+        $sessionCache->setValue('is_duplicates_filter_should_be_shown', $result);
 
         return $result;
     }

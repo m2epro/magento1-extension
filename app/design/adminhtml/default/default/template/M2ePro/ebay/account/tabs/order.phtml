@@ -1,10 +1,10 @@
 <div id="block_notice_ebay_accounts_orders" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Orders'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
-        'Choose how M2E Pro deals with Orders received on eBay Listings created using M2E Pro or other tools.<br/><br/>
-        <b>Note:</b> If an eBay Order is received, Product Stock QTY only reduces if a Magento Order is created.<br/>
-        <b>Note:</b> Settings made here only take effect if <b>Orders Synchronization</b> is enabled in %menu_path%.<br/><br/>
-        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'Synchronization'),
+        'Specify how M2E Pro should manage the Orders imported from eBay.<br/><br/>
+        You are able to configure the different rules of <strong>Magento Order Creation</strong> considering whether the Item was listed via M2E Pro or by some other software.<br/><br/>
+        Once eBay Order is imported, the <strong>Reserve Quantity</strong> feature will hold the Stock if Magento Order could not be created immediately in accordance with provided settings.<br/><br/>
+        Besides, you can configure the <strong>Tax, Order Number</strong> and <strong>Order Status Mapping</strong> Settings for your Magento Orders as well as specify the automatic creation of invoices and shipment notifications.<br/><br/>
+        More detailed information you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/NwAJAQ'));
     ?>
 </div>
@@ -51,6 +51,11 @@
             ),
             'tax' => array(
                 'mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_TAX_MODE_MIXED
+            ),
+            'in_store_pickup_statuses' => array(
+                'mode' => 0,
+                'ready_for_pickup' => '',
+                'picked_up' => '',
             ),
             'status_mapping' => array(
                 'mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT,
@@ -103,6 +108,9 @@
             EbayAccountHandlerObj.renderOrderNumberExample();
 
             $('magento_orders_customer_mode').observe('change', EbayAccountHandlerObj.magentoOrdersCustomerModeChange);
+            <?php if ($this->isStorePickupEnabled): ?>
+                $('magento_orders_in_store_pickup_statuses_mode').observe('change', EbayAccountHandlerObj.magentoOrdersInStorePickupStatusesModeChange);
+            <?php endif; ?>
             $('magento_orders_status_mapping_mode').observe('change', EbayAccountHandlerObj.magentoOrdersStatusMappingModeChange);
 
             $('magento_orders_creation_mode').observe('change', EbayAccountHandlerObj.magentoOrdersCreationModeChange);
@@ -461,6 +469,24 @@
                 ); ?>
             </div>
 
+            <?php $canShowBlock = $formData['magento_orders_settings']['creation']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CREATE_IMMEDIATELY ?>
+            <div id="magento_orders_creation_mode_immediately_warning_container" <?php if (!$canShowBlock): ?> style="display: none;"<?php endif; ?>>
+                <ul class="messages">
+                    <li class="warning-msg">
+                        <ul>
+                            <li>
+                                <span>
+                                    <?php echo Mage::helper('M2ePro')->__(
+                                        'Please note that Immediate Magento order creation sets certain limits to the update of the later order changes.
+                                        If the shipping or tax details are modified after checkout is completed, these changes will not be reflected in Magento order.'
+                                    ); ?>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
             <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
@@ -567,6 +593,68 @@
 </div>
 
 <?php $statusList = $this->getMagentoOrderStatusList(); ?>
+
+<?php if ($this->isStorePickupEnabled): ?>
+
+    <div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_in_store_pickup_statuses" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('In Store Pickup Notification Status Mapping'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label for="magento_orders_in_store_pickup_statuses_mode"><?php echo Mage::helper('M2ePro')->__('Notify eBay'); ?>: </label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <select id="magento_orders_in_store_pickup_statuses_mode" name="magento_orders_settings[in_store_pickup_statuses][mode]" class="M2ePro-required-when-visible">
+                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 0) echo "selected='selected'"; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 1) echo "selected='selected'"; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr id="magento_orders_in_store_pickup_statuses_ready_for_pickup_tr" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 0): ?> style="display: none;" <?php endif; ?>>
+                        <td class="label">
+                            <label for="magento_orders_in_store_pickup_statuses_ready_for_pickup"><?php echo Mage::helper('M2ePro')->__('Ready For Pickup'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <select id="magento_orders_in_store_pickup_statuses_ready_for_pickup" name="magento_orders_settings[in_store_pickup_statuses][ready_for_pickup]" class="M2ePro-required-when-visible">
+                                <option value=""></option>
+                                <?php foreach ($statusList as $statusKey => $statusValue) { ?>
+                                    <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['ready_for_pickup'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
+                                <?php } ?>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr id="magento_orders_in_store_pickup_statuses_picked_up_tr" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['mode'] == 0): ?> style="display: none;" <?php endif; ?>>
+                        <td class="label">
+                            <label for="magento_orders_in_store_pickup_statuses_picked_up"><?php echo Mage::helper('M2ePro')->__('Picked Up'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <select id="magento_orders_in_store_pickup_statuses_picked_up" name="magento_orders_settings[in_store_pickup_statuses][picked_up]" class="M2ePro-required-when-visible">
+                                <option value=""></option>
+                                <?php foreach ($statusList as $statusKey => $statusValue) { ?>
+                                    <option value="<?php echo $statusKey; ?>" <?php if ($formData['magento_orders_settings']['in_store_pickup_statuses']['picked_up'] == $statusKey) echo 'selected="selected"'; ?>><?php echo $statusValue; ?></option>
+                                <?php } ?>
+                            </select>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_status_mapping" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
 

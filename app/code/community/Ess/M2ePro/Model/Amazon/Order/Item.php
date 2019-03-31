@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -234,14 +234,41 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
     //########################################
 
+    public function canCreateMagentoOrder()
+    {
+        return $this->isOrdersCreationEnabled();
+    }
+
+    public function isReservable()
+    {
+        return $this->isOrdersCreationEnabled();
+    }
+
+    // ---------------------------------------
+
+    private function isOrdersCreationEnabled()
+    {
+        $channelItem = $this->getChannelItem();
+
+        if (!is_null($channelItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsModeEnabled()) {
+            return false;
+        }
+
+        if (is_null($channelItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsOtherModeEnabled()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //########################################
+
     /**
      * @return int|mixed
      * @throws Ess_M2ePro_Model_Exception
      */
     public function getAssociatedProductId()
     {
-        $this->validate();
-
         // Item was listed by M2E
         // ---------------------------------------
         if (!is_null($this->getChannelItem())) {
@@ -279,26 +306,6 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
         ));
 
         return $product->getId();
-    }
-
-    /**
-     * @throws Ess_M2ePro_Model_Exception
-     */
-    private function validate()
-    {
-        $channelItem = $this->getChannelItem();
-
-        if (!is_null($channelItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsModeEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(
-                'Magento Order Creation for Items Listed by M2E Pro is disabled in Account Settings.'
-            );
-        }
-
-        if (is_null($channelItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsOtherModeEnabled()) {
-            throw new Ess_M2ePro_Model_Exception(
-                'Magento Order Creation for Items Listed by 3rd party software is disabled in Account Settings.'
-            );
-        }
     }
 
     /**

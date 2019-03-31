@@ -1,0 +1,462 @@
+<?php
+    /**
+     * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
+     */
+
+    $fulfillmentData = $this->getData('fulfillment_details');
+?>
+
+<style>
+    #fulfillment_order_items th, #fulfillment_order_items td {
+        padding: 2px 4px 2px 4px !important;
+    }
+    .control {
+        text-align: right;
+        margin-bottom: 15px;
+        margin-top: 10px;
+    }
+    .status-control {
+        display: inline;
+        margin-left: 40px;
+    }
+    #fulfillment_form_container {
+        height: 320px;
+        overflow: auto;
+        padding-right: 10px;
+    }
+    .try-again-block {
+        padding: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+        background: none repeat scroll 0 0 #EAEAEA;
+        border: 1px solid #D6D6D6;
+    }
+</style>
+
+<br/>
+<div class="preview_header block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Amazon\'s Shipping Services'); ?>">
+<?php echo Mage::helper('M2ePro')->__('
+    Below you can find Amazon’s Shipping Service information, such as e.g. Status, Carrier, Package Information,
+    Product Information, Ship to Address, and Shipping Origin.<br/>
+    Press \'<strong>Cancel</strong>\' button or \'<strong>Refund</strong>\' to annul the Shipping Settings.<br/>
+    Please, note you can repeat the action again after the Shipping Settings are canceled.<br/>
+    To <strong>update</strong> the Status you should press \'<strong>Refresh</strong>\' button.<br/>
+    Also, you can <strong>print the label</strong> by pressing \'<strong>Print</strong>\' button.
+    '); ?>
+</div>
+
+<?php if(is_null($this->getData('fulfillment_not_wizard'))): ?>
+    <?php echo $this->getChildHtml('breadcrumb'); ?>
+<?php endif; ?>
+
+<div id="fulfillment_form_container">
+
+    <?php if(!is_null($this->getData('error_message'))): ?>
+        <div>
+            <ul class="messages">
+                <li class="warning-msg">
+                    <ul>
+                        <li>
+                            <?php echo $this->getData('error_message'); ?>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    <?php else: ?>
+
+    <?php if($fulfillmentData['status'] != Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_PURCHASED): ?>
+        <div class="try-again-block">
+            <div class="fieldset">
+                <?php echo $this->getChildHtml('try_again_button'); ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div class="entry-edit" id="magento_block_amazon_order_fulfillment_information_general">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+        </div>
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <table class="form-list" cellspacing="0" cellpadding="0" style="width: 100%;">
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Status'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <strong>
+                                <?php if($fulfillmentData['status'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_PURCHASED): ?><span style="color: green;"><?php echo Mage::helper('M2ePro')->__('Purchased'); ?></span><?php endif; ?>
+                                <?php if($fulfillmentData['status'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_REFUND_APPLIED): ?><?php echo Mage::helper('M2ePro')->__('Refund Applied'); ?><?php endif; ?>
+                                <?php if($fulfillmentData['status'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_REFUND_PENDING): ?><?php echo Mage::helper('M2ePro')->__('Refund Pending'); ?><?php endif; ?>
+                                <?php if($fulfillmentData['status'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_REFUND_REJECTED): ?><?php echo Mage::helper('M2ePro')->__('Refund Rejected'); ?><?php endif; ?>
+                            </strong>
+                            <div class="status-control">
+                                <?php if($fulfillmentData['status'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::STATUS_PURCHASED): ?>
+                                    <?php echo $this->getChildHtml('cancel_button'); ?>
+                                <?php endif; ?>
+
+                                <?php if(!is_null($this->getData('fulfillment_not_wizard'))): ?>
+                                    <?php echo $this->getChildHtml('refresh_button'); ?>
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Carrier'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['shipping_service']['carrier_name']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Service'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['shipping_service']['name']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Tracking Number'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['tracking_id']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Rate'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo Mage::app()->getLocale()->currency($fulfillmentData['shipping_service']['rate']['currency_code'])->toCurrency($fulfillmentData['shipping_service']['rate']['amount']); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Ship Date'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo Mage::helper('core')->formatDate($fulfillmentData['shipping_service']['date']['ship'], 'medium', true); ?>
+                        </td>
+                    </tr>
+                    <?php if($fulfillmentData['shipping_service']['date']['estimated_delivery']['latest']):?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Estimate Delivery Date'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo Mage::helper('core')->formatDate($fulfillmentData['shipping_service']['date']['estimated_delivery']['latest'], 'medium', true); ?>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Insurance'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo Mage::app()->getLocale()->currency($fulfillmentData['insurance']['currency_code'])->toCurrency($fulfillmentData['insurance']['amount']); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Creation Date'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo Mage::helper('core')->formatDate($fulfillmentData['date']['created'], 'medium', true); ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="entry-edit" id="magento_block_amazon_order_fulfillment_information_package">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Package'); ?></h4>
+        </div>
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <table class="form-list" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Dimension'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php if($fulfillmentData['package']['predefined_dimensions']):?>
+                                <?php
+                                $predefinedPackageDimensions = Mage::helper('M2ePro/Component_Amazon_MerchantFulfillment')->getPredefinedPackageDimensions();
+                                foreach ($predefinedPackageDimensions as $predefinedPackageDimensionGroup): ?>
+                                    <?php foreach ($predefinedPackageDimensionGroup as $predefinedPackageDimensionCode => $predefinedPackageDimensionTitle): ?>
+                                        <?php if ($fulfillmentData['package']['predefined_dimensions'] == $predefinedPackageDimensionCode) echo $predefinedPackageDimensionTitle; ?>
+                                    <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <?php echo (float)$fulfillmentData['package']['dimensions']['length']; ?> x
+                                <?php echo (float)$fulfillmentData['package']['dimensions']['width']; ?> x
+                                <?php echo (float)$fulfillmentData['package']['dimensions']['height']; ?>
+                                <?php if($fulfillmentData['package']['dimensions']['unit_of_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES): ?><?php echo Mage::helper('M2ePro')->__('in'); ?>
+                                    <?php elseif($fulfillmentData['package']['dimensions']['unit_of_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_CENTIMETERS): ?><?php echo Mage::helper('M2ePro')->__('cm'); ?>
+                                    <?php else: echo $fulfillmentData['package']['dimensions']['unit_of_measure']; ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Weight'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['package']['weight']['value']; ?>
+                            <?php if($fulfillmentData['package']['weight']['unit_of_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES): ?><?php echo Mage::helper('M2ePro')->__('oz'); ?>
+                                <?php elseif($fulfillmentData['package']['weight']['unit_of_measure'] == Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_GRAMS): ?><?php echo Mage::helper('M2ePro')->__('g'); ?>
+                                <?php else: echo $fulfillmentData['package']['weight']['unit_of_measure']; ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Label'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php if (!empty($fulfillmentData['label'])): ?>
+                                <?php echo $this->getChildHtml('print_button'); ?>
+                            <?php else: ?>
+                                <?php echo Mage::helper('M2ePro')->__('Label is Not Available'); ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="entry-edit" id="magento_block_amazon_order_fulfillment_information_products">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Products'); ?></h4>
+        </div>
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <table class="form-list" cellspacing="0" cellpadding="0" style="width: 100%;">
+                    <tr>
+                        <td class="grid">
+                            <table id="fulfillment_order_items" class="border" cellpadding="0" cellspacing="0">
+                                <thead>
+                                <tr class="headings">
+                                    <th><?php echo Mage::helper('M2ePro')->__('Title'); ?></th>
+                                    <th style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('SKU'); ?></th>
+                                    <th style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('ASIN'); ?></th>
+                                    <th style="width: 50px;"><?php echo Mage::helper('M2ePro')->__('Quantity'); ?></th>
+                                    <th><?php echo Mage::helper('M2ePro')->__('Price'); ?></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach($this->getOrderItems() as $orderItem): ?>
+                                    <tr>
+                                        <td>
+                                            <?php echo $orderItem['title']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $orderItem['sku']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $orderItem['asin']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $orderItem['qty']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo Mage::app()->getLocale()->currency($orderItem['currency'])->toCurrency($orderItem['price']); ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="entry-edit" id="magento_block_amazon_order_fulfillment_information_ship_to_address">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Ship To Address'); ?></h4>
+        </div>
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Name'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['to']['info']['name']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Country'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo Mage::helper('M2ePro/Magento')->getTranslatedCountryName($fulfillmentData['address']['to']['physical']['country']); ?>
+                        </td>
+                    </tr>
+                    <?php if(!is_null($fulfillmentData['address']['to']['physical']['state'])
+                        || !is_null($fulfillmentData['address']['to']['physical']['region'])
+                    ):?>
+                        <tr>
+                            <td class="label">
+                                <?php echo Mage::helper('M2ePro')->__('Region/State'); ?>:
+                            </td>
+                            <td class="value" style="width: auto;">
+                                <?php if(!is_null($fulfillmentData['address']['to']['physical']['state'])):?>
+                                    <?php echo $fulfillmentData['address']['to']['physical']['state']; ?>
+                                <?php elseif(!is_null($fulfillmentData['address']['to']['physical']['region'])): ?>
+                                    <?php echo $fulfillmentData['address']['to']['physical']['region']; ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('City'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['to']['physical']['city']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Street Address'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['to']['physical']['address_1']; ?>
+                        </td>
+                    </tr>
+                    <?php if($fulfillmentData['address']['to']['physical']['address_2']):?>
+                        <tr>
+                            <td class="label">
+                            </td>
+                            <td class="value" style="width: auto;">
+                                <?php echo $fulfillmentData['address']['to']['physical']['address_2']; ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Postal Code'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['to']['physical']['postal_code']; ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="entry-edit" id="magento_block_amazon_order_fulfillment_information_ship_from_address">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Shipping Origin'); ?></h4>
+        </div>
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Name'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['from']['info']['name']; ?>
+                        </td>
+                    </tr>
+                    <?php if(!is_null($fulfillmentData['address']['from']['info']['email'])):?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Email'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['from']['info']['email']; ?>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Phone'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['from']['info']['phone']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Country'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo Mage::helper('M2ePro/Magento')->getTranslatedCountryName($fulfillmentData['address']['from']['physical']['country']); ?>
+                        </td>
+                    </tr>
+                    <?php if(!is_null($fulfillmentData['address']['from']['physical']['state'])
+                            || !is_null($fulfillmentData['address']['from']['physical']['region'])
+                    ):?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Region/State'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php if(!is_null($fulfillmentData['address']['from']['physical']['state'])):?>
+                                <?php echo $fulfillmentData['address']['from']['physical']['state']; ?>
+                            <?php elseif(!is_null($fulfillmentData['address']['from']['physical']['region'])): ?>
+                                <?php echo $fulfillmentData['address']['from']['physical']['region']; ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('City'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['from']['physical']['city']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Street Address'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['from']['physical']['address_1']; ?>
+                        </td>
+                    </tr>
+                    <?php if($fulfillmentData['address']['from']['physical']['address_2']):?>
+                    <tr>
+                        <td class="label">
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['from']['physical']['address_2']; ?>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="label">
+                            <?php echo Mage::helper('M2ePro')->__('Postal Code'); ?>:
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php echo $fulfillmentData['address']['from']['physical']['postal_code']; ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+
+<div class="control">
+    <?php echo $this->getChildHtml('close_button'); ?>
+</div>

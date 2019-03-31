@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -17,6 +17,24 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
     {
         parent::_construct();
         $this->_init('M2ePro/Amazon_Listing_Product_Variation');
+    }
+
+    //########################################
+
+    protected function _afterSave()
+    {
+        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+            "listing_product_{$this->getListingProduct()->getId()}_variations"
+        );
+        return parent::_afterSave();
+    }
+
+    protected function _beforeDelete()
+    {
+        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+            "listing_product_{$this->getListingProduct()->getId()}_variations"
+        );
+        return parent::_beforeDelete();
     }
 
     //########################################
@@ -151,9 +169,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
 
     //########################################
 
-    public function getOptions($asObjects = false, array $filters = array())
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @param bool $tryToGetFromStorage
+     * @return array
+     */
+    public function getOptions($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
     {
-        return $this->getParentObject()->getOptions($asObjects,$filters);
+        return $this->getParentObject()->getOptions($asObjects,$filters,$tryToGetFromStorage);
     }
 
     //########################################
@@ -206,6 +230,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
                     $sku .= $tempSku;
                 }
             }
+
+        // Downloadable with separated links product
+        } else if ($this->getListingProduct()->getMagentoProduct()->isDownloadableTypeWithSeparatedLinks()) {
+
+            /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
+
+            $option = reset($options);
+            $sku = $option->getMagentoProduct()->getSku().'-'
+                .Mage::helper('M2ePro')->convertStringToSku($option->getOption());
         }
 
         if (!empty($sku)) {
@@ -248,45 +281,158 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
         return $calculator->getVariationValue($this->getParentObject());
     }
 
-    public function getPrice()
+    // ---------------------------------------
+
+    public function getRegularPrice()
     {
-        $src = $this->getAmazonSellingFormatTemplate()->getPriceSource();
+        if (!$this->getAmazonListingProduct()->isAllowedForRegularCustomers()) {
+            return NULL;
+        }
+
+        $src = $this->getAmazonSellingFormatTemplate()->getRegularPriceSource();
 
         /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
         $calculator->setSource($src)->setProduct($this->getListingProduct());
-        $calculator->setModifyByCoefficient(true)
-                   ->setIsIncreaseByVatPercent(true);
-        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getPriceVariationMode());
+        $calculator->setCoefficient($this->getAmazonSellingFormatTemplate()->getRegularPriceCoefficient());
+        $calculator->setVatPercent($this->getAmazonSellingFormatTemplate()->getRegularPriceVatPercent());
+        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getRegularPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());
     }
 
-    public function getMapPrice()
+    public function getRegularMapPrice()
     {
-        $src = $this->getAmazonSellingFormatTemplate()->getMapPriceSource();
+        if (!$this->getAmazonListingProduct()->isAllowedForRegularCustomers()) {
+            return NULL;
+        }
+
+        $src = $this->getAmazonSellingFormatTemplate()->getRegularMapPriceSource();
 
         /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
         $calculator->setSource($src)->setProduct($this->getListingProduct());
-        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getPriceVariationMode());
+        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getRegularPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());
     }
 
-    public function getSalePrice()
+    public function getRegularSalePrice()
     {
-        $src = $this->getAmazonSellingFormatTemplate()->getSalePriceSource();
+        if (!$this->getAmazonListingProduct()->isAllowedForRegularCustomers()) {
+            return NULL;
+        }
+
+        $src = $this->getAmazonSellingFormatTemplate()->getRegularSalePriceSource();
 
         /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
         $calculator->setSource($src)->setProduct($this->getListingProduct());
-        $calculator->setIsSalePrice(true)
-                   ->setModifyByCoefficient(true)
-                   ->setIsIncreaseByVatPercent(true);
-        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getPriceVariationMode());
+        $calculator->setIsSalePrice(true);
+        $calculator->setCoefficient($this->getAmazonSellingFormatTemplate()->getRegularSalePriceCoefficient());
+        $calculator->setVatPercent($this->getAmazonSellingFormatTemplate()->getRegularPriceVatPercent());
+        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getRegularPriceVariationMode());
 
         return $calculator->getVariationValue($this->getParentObject());
+    }
+
+    // ---------------------------------------
+
+    public function getBusinessPrice()
+    {
+        if (!$this->getAmazonListingProduct()->isAllowedForBusinessCustomers()) {
+            return NULL;
+        }
+
+        $src = $this->getAmazonSellingFormatTemplate()->getBusinessPriceSource();
+
+        /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
+        $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
+        $calculator->setSource($src)->setProduct($this->getListingProduct());
+        $calculator->setCoefficient($this->getAmazonSellingFormatTemplate()->getBusinessPriceCoefficient());
+        $calculator->setVatPercent($this->getAmazonSellingFormatTemplate()->getBusinessPriceVatPercent());
+        $calculator->setPriceVariationMode($this->getAmazonSellingFormatTemplate()->getBusinessPriceVariationMode());
+
+        return $calculator->getVariationValue($this->getParentObject());
+    }
+
+    /**
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getBusinessDiscounts()
+    {
+        if (!$this->getAmazonListingProduct()->isAllowedForBusinessCustomers()) {
+            return NULL;
+        }
+
+        if ($this->getAmazonSellingFormatTemplate()->isBusinessDiscountsModeNone()) {
+            return array();
+        }
+
+        if ($this->getAmazonSellingFormatTemplate()->isBusinessDiscountsModeTier()) {
+            $src = $this->getAmazonSellingFormatTemplate()->getBusinessDiscountsSource();
+
+            $storeId = $this->getListing()->getStoreId();
+            $src['tier_website_id'] = Mage::helper('M2ePro/Magento_Store')->getWebsite($storeId)->getId();
+
+            /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
+            $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
+            $calculator->setSource($src)->setProduct($this->getListingProduct());
+            $calculator->setSourceModeMapping(array(
+                Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_TIER
+                    => Ess_M2ePro_Model_Amazon_Template_SellingFormat::BUSINESS_DISCOUNTS_MODE_TIER,
+            ));
+            $calculator->setCoefficient($this->getAmazonSellingFormatTemplate()->getBusinessDiscountsTierCoefficient());
+            $calculator->setVatPercent($this->getAmazonSellingFormatTemplate()->getBusinessPriceVatPercent());
+            $calculator->setPriceVariationMode(
+                $this->getAmazonSellingFormatTemplate()->getBusinessPriceVariationMode()
+            );
+
+            return array_slice(
+                $calculator->getVariationValue($this->getParentObject()), 0,
+                Ess_M2ePro_Model_Amazon_Listing_Product::BUSINESS_DISCOUNTS_MAX_RULES_COUNT_ALLOWED,
+                true
+            );
+        }
+
+        /** @var Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount[] $businessDiscounts */
+        $businessDiscounts = $this->getAmazonSellingFormatTemplate()->getBusinessDiscounts(true);
+        if (empty($businessDiscounts)) {
+            return array();
+        }
+
+        $resultValue = array();
+
+        foreach ($businessDiscounts as $businessDiscount) {
+            /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
+            $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
+            $calculator->setSource($businessDiscount->getSource())->setProduct($this->getListingProduct());
+            $calculator->setSourceModeMapping(array(
+                Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_PRODUCT
+                    => Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount::MODE_PRODUCT,
+                Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_SPECIAL
+                    => Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount::MODE_SPECIAL,
+                Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_ATTRIBUTE
+                    => Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount::MODE_ATTRIBUTE,
+            ));
+            $calculator->setCoefficient($businessDiscount->getCoefficient());
+            $calculator->setVatPercent($this->getAmazonSellingFormatTemplate()->getBusinessPriceVatPercent());
+            $calculator->setPriceVariationMode(
+                $this->getAmazonSellingFormatTemplate()->getBusinessPriceVariationMode()
+            );
+
+            $resultValue[$businessDiscount->getQty()] = $calculator->getVariationValue($this->getParentObject());
+
+            $rulesMaxCount = Ess_M2ePro_Model_Amazon_Listing_Product::BUSINESS_DISCOUNTS_MAX_RULES_COUNT_ALLOWED;
+
+            if (count($resultValue) >= $rulesMaxCount) {
+                break;
+            }
+        }
+
+        return $resultValue;
     }
 
     //########################################

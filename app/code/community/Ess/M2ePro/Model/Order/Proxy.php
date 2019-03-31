@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -11,7 +11,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
     const CHECKOUT_GUEST    = 'guest';
     const CHECKOUT_REGISTER = 'register';
 
-    /** @var $order Ess_M2ePro_Model_Ebay_Order|Ess_M2ePro_Model_Amazon_Order|Ess_M2ePro_Model_Buy_Order */
+    /** @var $order Ess_M2ePro_Model_Ebay_Order|Ess_M2ePro_Model_Amazon_Order */
     protected $order = NULL;
 
     protected $items = NULL;
@@ -140,10 +140,6 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
     //########################################
 
-    abstract public function getBuyerEmail();
-
-    //########################################
-
     /**
      * @return Mage_Customer_Model_Customer
      */
@@ -163,6 +159,16 @@ abstract class Ess_M2ePro_Model_Order_Proxy
         return $addressData['lastname'];
     }
 
+    /**
+     * @return string
+     */
+    public function getBuyerEmail()
+    {
+        $addressData = $this->getAddressData();
+
+        return $addressData['email'];
+    }
+
     //########################################
 
     /**
@@ -176,10 +182,12 @@ abstract class Ess_M2ePro_Model_Order_Proxy
             $recipientNameParts = $this->getNameParts($rawAddressData['recipient_name']);
             $this->addressData['firstname'] = $recipientNameParts['firstname'];
             $this->addressData['lastname'] = $recipientNameParts['lastname'];
+            $this->addressData['middlename'] = $recipientNameParts['middlename'];
 
             $customerNameParts = $this->getNameParts($rawAddressData['buyer_name']);
             $this->addressData['customer_firstname'] = $customerNameParts['firstname'];
             $this->addressData['customer_lastname'] = $customerNameParts['lastname'];
+            $this->addressData['customer_middlename'] = $customerNameParts['middlename'];
 
             $this->addressData['email'] = $rawAddressData['email'];
             $this->addressData['country_id'] = $rawAddressData['country_id'];
@@ -218,15 +226,27 @@ abstract class Ess_M2ePro_Model_Order_Proxy
     {
         $fullName = trim($fullName);
 
-        $spacePosition = strpos($fullName, ' ');
-        $spacePosition === false && $spacePosition = strlen($fullName);
+        $parts      = explode(' ', $fullName);
+        $partsCount = count($parts);
 
-        $firstName = trim(substr($fullName, 0, $spacePosition));
-        $lastName = trim(substr($fullName, $spacePosition + 1));
+        $firstName  = '';
+        $middleName = '';
+        $lastName   = '';
+
+        if ($partsCount > 1) {
+            $firstName = array_shift($parts);
+            $lastName  = array_pop($parts);
+            if (!empty($parts)) {
+                $middleName = implode(' ', $parts);
+            }
+        } else {
+            $firstName = $fullName;
+        }
 
         return array(
-            'firstname' => $firstName ? $firstName : 'N/A',
-            'lastname'  => $lastName ? $lastName : 'N/A'
+            'firstname'  => $firstName ? $firstName : 'N/A',
+            'middlename' => $middleName ? trim($middleName) : '',
+            'lastname'   => $lastName ? $lastName : 'N/A'
         );
     }
 

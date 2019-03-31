@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -132,6 +132,21 @@ class Ess_M2ePro_Helper_Magento_Store extends Mage_Core_Helper_Abstract
         $website = $this->getWebsite($storeId);
 
         return $website ? $website->getName() : '';
+    }
+
+    //########################################
+
+    /**
+     * Multi Stock is not supported by core Magento functionality.
+     * app/code/core/Mage/CatalogInventory/Model/Stock/Item.php::getStockId()
+     * But by changing this method the M2e Pro can be made compatible with a custom solution
+     *
+     * @param null|string|bool|int|Mage_Core_Model_Store $store
+     * @return int
+     */
+    public function getStockId($store)
+    {
+        return Mage_CatalogInventory_Model_Stock::DEFAULT_STOCK_ID;
     }
 
     //########################################

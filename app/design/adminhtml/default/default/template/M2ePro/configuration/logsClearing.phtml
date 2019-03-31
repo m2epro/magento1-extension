@@ -7,7 +7,7 @@
         'Set preferences for automatic clearing of Log data then click <b>Save Config</b>.<br/><br/>
         To clear a Log completely, click <b>Clear All</b>. To clear a Log of data more than a certain number of days old, choose the number of days then click <b>Run Now</b>.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($componentForUrl, 'Global+Settings#GlobalSettings-LogsClearing')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, "x/CwAJAQ#GlobalSettings-LogsClearing")
     ); ?>
 </div>
 
@@ -32,6 +32,10 @@
         LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_OTHER_LISTINGS; ?>');
         LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS; ?>');
         LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>');
+
+        <?php if ($this->isPickupStoreFeatureEnabled): ?>
+            LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>');
+        <?php endif; ?>
 
         ControlPanelHandlerObj = new DevelopmentControlPanelHandler();
 
@@ -267,44 +271,44 @@
 
                     <tbody>
 
-                    <tr id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode_container">
-                        <td class="label">
-                            <label for="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode"><?php echo Mage::helper('M2ePro')->__('Enabled'); ?>: </label>
-                        </td>
-                        <td class="value">
-                            <?php $mode = isset($this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS]) ? $this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS] : 1; ?>
-                            <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" onchange="LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>');">
-                                <option value="0"<?php if (0 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                                <option value="1"<?php if (1 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                            </select>
-                            <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('Enables automatic clearing of Log data. Can help reduce Database size.'); ?></span>
-                            </p>
-                        </td>
-                        <td id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_button_run_now_container" class="value">
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <?php echo $this->getChildHtml('run_now_'.Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS); ?>
-                        </td>
-                        <td id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_button_clear_all_container" class="value">
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <?php echo $this->getChildHtml('clear_all_'.Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS); ?>
-                        </td>
-                    </tr>
+                        <tr id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode_container">
+                            <td class="label">
+                                <label for="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode"><?php echo Mage::helper('M2ePro')->__('Enabled'); ?>: </label>
+                            </td>
+                            <td class="value">
+                                <?php $mode = isset($this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS]) ? $this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS] : 1; ?>
+                                <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_mode" onchange="LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>');">
+                                    <option value="0"<?php if (0 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                    <option value="1"<?php if (1 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                </select>
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__('Enables automatic clearing of Log data. Can help reduce Database size.'); ?></span>
+                                </p>
+                            </td>
+                            <td id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_button_run_now_container" class="value">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <?php echo $this->getChildHtml('run_now_'.Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS); ?>
+                            </td>
+                            <td id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_button_clear_all_container" class="value">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <?php echo $this->getChildHtml('clear_all_'.Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS); ?>
+                            </td>
+                        </tr>
 
-                    <tr id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days_container">
-                        <td class="label">
-                            <label for="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days"><?php echo Mage::helper('M2ePro')->__('Keep For (days)'); ?>: <span class="required">*</span></label>
-                        </td>
-                        <td class="value">
-                            <input id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days" value="<?php echo $this->days[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS]; ?>" type="text" disabled="disabled" class="M2ePro-required-when-visible M2ePro-logs-clearing-interval input-text" />
-                            <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('Specify for how long you want to keep Log data before it is automatically cleared.'); ?></span>
-                            </p>
-                        </td>
-                        <td colspan="2">
+                        <tr id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days_container">
+                            <td class="label">
+                                <label for="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days"><?php echo Mage::helper('M2ePro')->__('Keep For (days)'); ?>: <span class="required">*</span></label>
+                            </td>
+                            <td class="value">
+                                <input id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS; ?>_log_days" value="<?php echo $this->days[Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS]; ?>" type="text" disabled="disabled" class="M2ePro-required-when-visible M2ePro-logs-clearing-interval input-text" />
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__('Specify for how long you want to keep Log data before it is automatically cleared.'); ?></span>
+                                </p>
+                            </td>
+                            <td colspan="2">
 
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
 
                     </tbody>
 
@@ -314,5 +318,73 @@
         </div>
 
     </div>
+
+    <?php if ($this->isPickupStoreFeatureEnabled): ?>
+
+        <div class="entry-edit" id="magento_block_logs_configuration_clearing_store_pickup">
+
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('In-Store Pickup Log Clearing'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+
+                        <colgroup class="label"></colgroup>
+                        <colgroup class="value"></colgroup>
+
+                        <tbody>
+
+                            <tr id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode_container">
+                                <td class="label">
+                                    <label for="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode"><?php echo Mage::helper('M2ePro')->__('Enabled'); ?>: </label>
+                                </td>
+                                <td class="value">
+                                    <?php $mode = isset($this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE]) ? $this->modes[Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE] : 1; ?>
+                                    <select id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_mode" onchange="LogClearingHandlerObj.changeModeLog('<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>');">
+                                        <option value="0"<?php if (0 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                                        <option value="1"<?php if (1 == $mode) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                    </select>
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__('Enables automatic clearing of Log data. Can help reduce Database size.'); ?></span>
+                                    </p>
+                                </td>
+                                <td id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_button_run_now_container" class="value">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <?php echo $this->getChildHtml('run_now_'.Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE); ?>
+                                </td>
+                                <td id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_button_clear_all_container" class="value">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <?php echo $this->getChildHtml('clear_all_'.Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE); ?>
+                                </td>
+                            </tr>
+
+                            <tr id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_days_container">
+                                <td class="label">
+                                    <label for="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_days"><?php echo Mage::helper('M2ePro')->__('Keep For (days)'); ?>: <span class="required">*</span></label>
+                                </td>
+                                <td class="value">
+                                    <input id="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_days" name="<?php echo Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE; ?>_log_days" value="<?php echo $this->days[Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE]; ?>" type="text" class="M2ePro-required-when-visible M2ePro-logs-clearing-interval input-text" />
+                                    <p class="note">
+                                        <span><?php echo Mage::helper('M2ePro')->__('Specify for how long you want to keep Log data before it is automatically cleared.'); ?></span>
+                                    </p>
+                                </td>
+                                <td colspan="2">
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    <?php endif; ?>
 
 </form>

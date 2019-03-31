@@ -1,0 +1,131 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_Variations_Child_Form */
+
+    $matchedAttributes = $this->getMatchedAttributes();
+
+    $virtualProductAttributes = $this->getVirtualProductAttributes();
+    $virtualChannelAttributes = $this->getVirtualChannelAttributes();
+?>
+
+<div class="entry-edit" id="new_variation_child_form_block" style="display: none;" collapseable="no">
+
+    <div class="entry-edit-head" style="height: 20px">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Add New Child Product'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <div id="block_notice_walmart_product_manage_new_child" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Add New Child Product'); ?>">
+                <?php echo Mage::helper('M2ePro')->__('To sell Walmart Child Products it is necessary to set correspondence between Magento Variations and Walmart Variations. <br/><br/>
+
+                For that you should select available unused Options of Attributes of Magento Product and available unused Options of Walmart Parent Product. After clicking of <i class="underline">"Confirm"</i> Button, Child Product will be added to the Grid and ready for List Action. <br/><br/>
+
+                In case you are the Creator of Walmart Parent Product, you will be able to create New Child Product Type for this Parent Product. To do this it is just enough to select available Options of Magento Product Attributes, New Child Product Type will be created for. <br/><br/>
+
+                <b>Note:</b> You can set matching of Magento Product Attributes and Walmart Parent Product Attributes in Settings Tab\'s Block Variation Attributes.'); ?>
+            </div>
+
+<form id="variation_manager_product_options_form" action="javascript:void(0);">
+    <input type="hidden" value="<?php echo $this->getListingProductId() ?>" name="product_id">
+
+    <table id="manage_variations_new_child_product_variation" class="form-list" style="float: left; padding-right: 25px; border-right: 1px solid #D6D6D6 !important;" cellspacing="0" cellpadding="0">
+        <tr>
+            <td class="label" colspan="2" style="border-bottom: 1px solid #D6D6D6 !important;">
+                <b><?php echo Mage::helper('M2ePro')->__('Magento Variation') ?></b>
+            </td>
+        </tr>
+
+        <?php
+        $i = 0;
+        foreach ($matchedAttributes as $magentoAttr => $walmartAttr) {
+            ?>
+
+            <tr>
+                <td class="label" style="width: auto; min-width: 148px;">
+                    <label style="width: auto; max-width: 148px;">
+                        <span style="<?php echo array_key_exists($magentoAttr, $virtualProductAttributes) ? 'border-bottom: 2px dotted grey;' : ''?>"><?php echo $magentoAttr ?></span>: <span class="required">*</span>
+                    </label>
+                </td>
+                <td class="value">
+                    <input type="hidden" value="<?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttr) ?>" name="new_child_product[product][attributes][]" class="new-child-product-attribute">
+                    <select name="new_child_product[product][options][]"
+                            class="new-child-product-option"
+                            disabled="disabled"
+                            onchange="ListingGridHandlerObj.validateNewChildAttributeOptions('product')">
+                        <option value=""></option>
+                    </select>
+                </td>
+            </tr>
+
+        <?php
+            $i++;
+        } ?>
+
+        <tr id="new_child_product_product_options_error_row">
+            <td class="label" style="width: auto; min-width: 75px;"></td>
+            <td class="value">
+                <div id="new_child_product_product_options_error" class="validation-advice" style="display: none">
+                    <?php echo Mage::helper('M2ePro')->__('Please select Magento Variation'); ?>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+    <div id="variation_manager_unused_product_variations_tree" style="display: none;"><?php echo json_encode($this->getProductVariationsTree()) ?></div>
+
+    <table id="manage_variations_new_child_channel_variation" class="manage-variations form-list" style="padding-left: 25px;" cellspacing="0" cellpadding="0">
+        <tr>
+            <td class="label manage-variations-new-child-channel-options" colspan="2" style="border-bottom: 1px solid #D6D6D6 !important;">
+                <b><?php echo Mage::helper('M2ePro')->__('Walmart Variation') ?></b>&nbsp;
+                <span id="manage_variations_create_new_product_title" style="display: none; color: #808080">(<?php echo Mage::helper('M2ePro')->__('New Product Type will be created')?>)</span>
+            </td>
+        </tr>
+
+        <?php
+        $i = 0;
+        foreach ($matchedAttributes as $magentoAttr => $walmartAttr) { ?>
+
+            <tr class="manage-variations-new-child-channel-options">
+                <td class="label" style="width: auto; min-width: 148px;">
+                    <label style="width: auto; max-width: 148px;">
+                        <span style="<?php echo array_key_exists($walmartAttr, $virtualChannelAttributes) ? 'border-bottom: 2px dotted grey;' : ''?>"><?php echo $walmartAttr ?></span>: <span class="required">*</span>
+                    </label>
+                </td>
+                <td class="value">
+                    <input type="hidden" value="<?php echo Mage::helper('M2ePro')->escapeHtml($walmartAttr) ?>" name="new_child_product[channel][attributes][]" class="new-child-channel-attribute">
+                    <select id="new_child_product_channel_option_<?php echo $i ?>"
+                            name="new_child_product[channel][options][]"
+                            class="new-child-channel-option"
+                            disabled="disabled"
+                            onchange="ListingGridHandlerObj.validateNewChildAttributeOptions('channel')">
+                        <option value=""></option>
+                    </select>
+                </td>
+            </tr>
+
+        <?php
+            $i++;
+        } ?>
+
+        <tr id="new_child_product_channel_options_error_row">
+            <td class="label" style="width: auto; min-width: 75px;"></td>
+            <td class="value">
+                <div id="new_child_product_channel_options_error" class="validation-advice" style="display: none">
+                    <?php echo Mage::helper('M2ePro')->__('Please select Walmart Variation'); ?>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+    <div style="text-align: right; padding-top: 5px; clear: both;">
+        <a href="javascript:void(0);" onclick="ListingGridHandlerObj.closeNewChildForm(this);" ><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>&nbsp;&nbsp;
+        <button id="variation_manager_product_options_form_submit_btn" onclick="ListingGridHandlerObj.addNewChildProduct()"><?php echo Mage::helper('M2ePro')->__('Confirm'); ?></button>
+    </div>
+</form>
+
+        </div>
+    </div>
+
+</div>

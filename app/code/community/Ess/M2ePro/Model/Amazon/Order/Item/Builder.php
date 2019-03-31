@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -29,10 +29,10 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
         $this->setData('price', (float)$data['price']);
         $this->setData('gift_price', (float)$data['gift_price']);
         $this->setData('currency', trim($data['currency']));
-        $this->setData('discount_details', json_encode($data['discount_details']));
+        $this->setData('discount_details', Mage::helper('M2ePro')->jsonEncode($data['discount_details']));
         $this->setData('qty_purchased', (int)$data['qty_purchased']);
         $this->setData('qty_shipped', (int)$data['qty_shipped']);
-        $this->setData('tax_details', json_encode($data['tax_details']));
+        $this->setData('tax_details', Mage::helper('M2ePro')->jsonEncode($data['tax_details']));
         // ---------------------------------------
     }
 

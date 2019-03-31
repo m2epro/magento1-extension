@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -96,16 +96,6 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     //########################################
 
     /**
-     * @return mixed
-     */
-    public function getBuyerEmail()
-    {
-        return $this->order->getBuyerEmail();
-    }
-
-    //########################################
-
-    /**
      * @return false|Mage_Core_Model_Abstract|Mage_Customer_Model_Customer
      * @throws Ess_M2ePro_Model_Exception
      */
@@ -164,6 +154,7 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
         return array(
             'firstname'  => $customerNameParts['firstname'],
+            'middlename' => $customerNameParts['middlename'],
             'lastname'   => $customerNameParts['lastname'],
             'country_id' => '',
             'region'     => '',
@@ -235,6 +226,10 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             $shippingData['shipping_method'] .= ' | Is Prime';
         }
 
+        if ($this->order->isBusiness()) {
+            $shippingData['shipping_method'] .= ' | Is Business';
+        }
+
         if ($this->order->isMerchantFulfillmentApplied()) {
             $merchantFulfillmentInfo = $this->order->getMerchantFulfillmentData();
 
@@ -290,7 +285,6 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
                 '%value% promotion discount amount was subtracted from the total amount.',
                 $discount
             );
-            $comment .= '<br/>';
 
             $comments[] = $comment;
         }
@@ -303,7 +297,6 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
                 '%value% discount amount was subtracted from the shipping Price.',
                 $discount
             );
-            $comment .= '<br/>';
 
             $comments[] = $comment;
         }

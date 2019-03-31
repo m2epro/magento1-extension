@@ -3,7 +3,9 @@
     M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_support')) ?>);
 
     M2ePro.url.add(<?php echo json_encode(array(
-        'formSubmit' => $this->getUrl('M2ePro/adminhtml_support/save')
+        'formSubmit' => $this->getUrl('M2ePro/adminhtml_support/save', array(
+            'referrer' => $this->getRequest()->getParam('referrer', NULl)
+        ))
     )); ?>);
 
     Event.observe(window, 'load', function() {
@@ -80,20 +82,16 @@
 
 <div style="clear: both;"></div>
 
-<div id="block_notice_support" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Search the M2E Pro Knowledgebase'); ?>">
+<div id="block_notice_support" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Getting Help and contacting M2E support engineers'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
-        'For immediate help with something on M2E Pro, search the Knowledgebase and Documentation to see if the answer to your query has already been answered.
-        If you still can\'t find the help you need after searching, get in touch with our Customer Support Team using the <b>Contact Support</b> form.'
+        'Finding a help with your M2E extension is easy! Please use some keywords describing your issue in the form below and see if our Knowledgebase or Documentation can help.
+        If your search did not provide you with a resolution, you would have the option to submit a support ticket via the "Contact Support" form which is displayed right after you have searched in the box below.'
     ); ?>
 </div>
 
 <div id="support_input_query_container">
     <input onkeypress="SupportHandlerObj.keyPressQuery(event)" type="text" placeholder="<?php echo Mage::helper('M2ePro')->__('Enter keywords to search'); ?>" name="query" id="query">
     <?php echo $this->getChildHtml('user_voice_search'); ?>
-    <?php if (Mage::helper('M2ePro/Module_Support')->isTypePremium()) : ?>
-        <span style="font-weight: bold; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('or'); ?></span>
-        <?php echo $this->getChildHtml('force_show_contact_support_button'); ?>
-    <?php endif; ?>
 </div>
 
 <div id="support_other_container" <?php if (!$this->isFromError): echo 'style="display: none;"'; endif; ?>>

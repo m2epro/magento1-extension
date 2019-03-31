@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,7 +21,8 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Motor_Ktypes_Collection
             $this->_idFieldName = $idFieldName;
         }
 
-        $table = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_motor_ktype');
+        $table = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_dictionary_motor_ktype');
 
         $this->getSelect()->reset()->from(
             array('main_table' => $table)
@@ -38,7 +39,7 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Motor_Ktypes_Collection
         $idsSelect->reset(Zend_Db_Select::COLUMNS);
 
         $idsSelect->columns($this->_idFieldName, 'main_table');
-        $idsSelect->limit(1000);
+        $idsSelect->limit(Ess_M2ePro_Helper_Component_Ebay_Motors::MAX_ITEMS_COUNT_FOR_ATTRIBUTE);
 
         return $this->getConnection()->fetchCol($idsSelect);
     }

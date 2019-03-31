@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -114,9 +114,9 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         return $this->getComponentMode() == Ess_M2ePro_Helper_Component_Amazon::NICK;
     }
 
-    public function isComponentModeBuy()
+    public function isComponentModeWalmart()
     {
-        return $this->getComponentMode() == Ess_M2ePro_Helper_Component_Buy::NICK;
+        return $this->getComponentMode() == Ess_M2ePro_Helper_Component_Walmart::NICK;
     }
 
     // ---------------------------------------
@@ -129,10 +129,6 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
 
         if ($this->isComponentModeAmazon()) {
             return Mage::helper('M2ePro/Component_Amazon')->getTitle();
-        }
-
-        if ($this->isComponentModeBuy()) {
-            return Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return '';

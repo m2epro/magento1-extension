@@ -1,0 +1,88 @@
+<!-- MODULE NOTICE CALL -->
+<!-- ################################################################################ -->
+<!-- id not required, recommended -->
+<!-- class "block_notices_module" required -->
+<!-- title not required -->
+<!-- subtitle not required, default "[Help]" -->
+<!-- collapseable not required, default "yes" -->
+<!-- hideblock not required, default "yes" -->
+<!-- always_show not required, default "no" -->
+<div id="block_notice_1" class="block_notices_module" title="Test Title" subtitle="help" collapseable="no" hideblock="no" always_show="yes">
+    <!-- required content -->
+    <p>There is an Option to import data from the eBay Store, eBay Listings or both.</p>
+    <p>If you need to import only from the eBay Listings, then keep <strong>No</strong>
+        in <strong>Import From eBay Store</strong> box and press <strong>Next</strong> to go to the following Tab.
+        But if you need to import from the eBay Store &ndash; choose <strong>Yes</strong>. New Settings will appear.</p>
+        <p><b>Note:</b> The uniqueness of the Product is determined by the SKU value.
+       If SKU value is not registered, then the eBay Title is transformed into SKU.
+    </p>
+</div>
+<!-- ################################################################################ -->
+
+<!-- COLLAPSE AND TIPS DISABLE CALL -->
+<!-- ################################################################################ -->
+<!-- id not required, recommended -->
+<!-- class "entry-edit" required -->
+<!-- collapseable not required, default "yes" -->
+<!-- magento_block not required, default "yes" -->
+<!-- for not collapse tips into icon add class to <p> .note-no-tool-tip -->
+<!-- for show tool tip in left side of icon add class to <p> .show-left -->
+<div class="entry-edit" id="magento_block_1" collapseable="no" magento_block="no">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend">Test Title</h4>
+    </div>
+    <div class="fieldset">
+        <div class="hor-scroll">
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- ################################################################################ -->
+
+<!-- Automatically Add Option "Create Custom Attribute" to the select obj -->
+<!-- ################################################################################ -->
+<!-- class "M2ePro-custom-attribute-can-be-created" required -->
+<!-- "allowed_attribute_types" not required, default "all", -->
+<!-- "apply_to_all_attribute_sets" not required, default "1" -->
+<!-- "new_option_value" not required, default will be taken from first option -->
+<select class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price,textarea" apply_to_all_attribute_sets="1">
+    <option value="0"><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+    <option value="1"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+    <optgroup class="simple_mode_disallowed M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="5">
+        <?php foreach ($this->attributes as $attribute) : ?>
+            <option class="simple_mode_disallowed" attribute_code="<?php echo $attribute['code']; ?>" value="2">
+                <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+            </option>
+        <?php endforeach; ?>
+    </optgroup>
+
+</select>
+<!-- ################################################################################ -->
+
+<script>
+
+    $('select').observe(function(event) {
+        // 'this' is equal to  $('select')
+        HandlerObj.method(this);
+    });
+
+    var callback = function (transport) {
+        console.log(this,transport);
+    };
+
+    new Ajax.Request(M2ePro.url.get('controller/method', {param1 : 'value1'}), {
+        method: 'post',
+        parameters: {},
+        onSuccess: (function (transport) {
+            callback.call(this,transport);
+        }).bind(this)
+    });
+
+</script>
+
+<!-- ################################################################################ -->

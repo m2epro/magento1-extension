@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -98,9 +98,10 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
         $path .= '%data%';
         $path .= str_repeat('}',substr_count($path,'{'));
 
+        $encodedValue = Mage::helper('M2ePro')->jsonEncode($this->getValue());
         $path = str_replace(
             '%data%',
-            '{"value": ' .json_encode($this->getValue()). ',"attributes": ' .$this->getValueAttributes(). '}',
+            '{"value": ' .$encodedValue. ',"attributes": ' .$this->getValueAttributes(). '}',
             $path
         );
 
@@ -150,7 +151,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source
             );
         }
 
-        return json_encode($attributes);
+        return Mage::helper('M2ePro')->jsonEncode($attributes);
     }
 
     //########################################

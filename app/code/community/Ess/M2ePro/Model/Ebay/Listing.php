@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -12,6 +12,9 @@
 class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
     const ADDING_MODE_ADD_AND_ASSIGN_CATEGORY = 2;
+
+    const PARTS_COMPATIBILITY_MODE_EPIDS  = 'epids';
+    const PARTS_COMPATIBILITY_MODE_KTYPES = 'ktypes';
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Category
@@ -489,23 +492,42 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
 
     //########################################
 
-    public function convertPriceFromStoreToMarketplace($price)
+    public function gePartsCompatibilityMode()
     {
-        return Mage::getSingleton('M2ePro/Currency')->convertPrice(
-            $price,
-            $this->getEbayMarketplace()->getCurrency(),
-            $this->getParentObject()->getStoreId()
-        );
+        return $this->getData('parts_compatibility_mode');
     }
+
+    public function isPartsCompatibilityModeKtypes()
+    {
+        if ($this->getEbayMarketplace()->isMultiMotorsEnabled()) {
+            return $this->gePartsCompatibilityMode() == self::PARTS_COMPATIBILITY_MODE_KTYPES ||
+                   is_null($this->gePartsCompatibilityMode());
+        }
+
+        return $this->getEbayMarketplace()->isKtypeEnabled();
+    }
+
+    public function isPartsCompatibilityModeEpids()
+    {
+        if ($this->getEbayMarketplace()->isMultiMotorsEnabled()) {
+            return $this->gePartsCompatibilityMode() == self::PARTS_COMPATIBILITY_MODE_EPIDS;
+        }
+
+        return $this->getEbayMarketplace()->isEpidEnabled();
+    }
+
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Other $listingOtherProduct
+     * @param int $initiator
      * @param bool $checkingMode
      * @param bool $checkHasProduct
      * @return bool|Ess_M2ePro_Model_Listing_Product
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function addProductFromOther(Ess_M2ePro_Model_Listing_Other $listingOtherProduct,
+                                        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                         $checkingMode = false,
                                         $checkHasProduct = true)
     {
@@ -514,7 +536,7 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
         }
 
         $productId = $listingOtherProduct->getProductId();
-        $result = $this->getParentObject()->addProduct($productId, $checkingMode, true);
+        $result = $this->getParentObject()->addProduct($productId, $initiator, $checkingMode, true);
 
         if ($checkingMode) {
             return $result;
@@ -531,7 +553,7 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
             ->addFieldToFilter('account_id', $listingOtherProduct->getAccount()->getId())
             ->addFieldToFilter('item_id', $listingOtherProduct->getChildObject()->getItemId());
 
-        $ebayItem = $collection->getFirstItem();
+        $ebayItem = $collection->getLastItem();
         if (!$ebayItem->getId()) {
 
             $ebayItem->setData(array(
@@ -544,18 +566,24 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
         $ebayItem->setData('store_id',$this->getParentObject()->getStoreId())
                  ->save();
 
+        /** @var Ess_M2ePro_Model_Ebay_Listing_Other $ebayListingProduct */
+        $ebayListingProduct = $listingOtherProduct->getChildObject();
+
         $dataForUpdate = array(
-            'ebay_item_id' => $ebayItem->getId(),
-            'online_sku' => $listingOtherProduct->getChildObject()->getSku(),
-            'online_title' => $listingOtherProduct->getChildObject()->getTitle(),
-            'online_current_price' => $listingOtherProduct->getChildObject()->getOnlinePrice(),
-            'online_qty' => $listingOtherProduct->getChildObject()->getOnlineQty(),
-            'online_qty_sold' => $listingOtherProduct->getChildObject()->getOnlineQtySold(),
-            'online_bids' => $listingOtherProduct->getChildObject()->getOnlineBids(),
-            'start_date' => $listingOtherProduct->getChildObject()->getStartDate(),
-            'end_date' => $listingOtherProduct->getChildObject()->getEndDate(),
-            'status' => $listingOtherProduct->getStatus(),
-            'status_changer' => $listingOtherProduct->getStatusChanger()
+            'ebay_item_id'         => $ebayItem->getId(),
+
+            'online_sku'           => $ebayListingProduct->getSku(),
+            'online_title'         => $ebayListingProduct->getTitle(),
+            'online_duration'      => $ebayListingProduct->getOnlineDuration(),
+            'online_current_price' => $ebayListingProduct->getOnlinePrice(),
+            'online_qty'           => $ebayListingProduct->getOnlineQty(),
+            'online_qty_sold'      => $ebayListingProduct->getOnlineQtySold(),
+            'online_bids'          => $ebayListingProduct->getOnlineBids(),
+            'start_date'           => $ebayListingProduct->getStartDate(),
+            'end_date'             => $ebayListingProduct->getEndDate(),
+
+            'status'               => $listingOtherProduct->getStatus(),
+            'status_changer'       => $listingOtherProduct->getStatusChanger()
         );
 
         $listingOtherAdditionalData = $listingOtherProduct->getAdditionalData();
@@ -565,12 +593,99 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
             $additionalDataForUpdate = array_merge(
                 $listingProductAdditionalData, array('out_of_stock_control' => true)
             );
-            $dataForUpdate['additional_data'] = json_encode($additionalDataForUpdate);
+            $dataForUpdate['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalDataForUpdate);
         }
 
-        $listingProduct->addData($dataForUpdate)->save();
+        $listingProduct->addData($dataForUpdate);
+        $listingProduct->setSetting(
+            'additional_data', $listingProduct::MOVING_LISTING_OTHER_SOURCE_KEY, $listingOtherProduct->getId()
+        );
+        $listingProduct->save();
+
+        $listingOtherProduct->setSetting(
+            'additional_data', $listingOtherProduct::MOVING_LISTING_PRODUCT_DESTINATION_KEY, $listingProduct->getId()
+        );
+        $listingOtherProduct->save();
+
+        $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
+        $instruction->setData(array(
+            'listing_product_id' => $listingProduct->getId(),
+            'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
+            'type'               => Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,
+            'initiator'          => Ess_M2ePro_Model_Listing::INSTRUCTION_INITIATOR_MOVING_PRODUCT_FROM_OTHER,
+            'priority'           => 20,
+        ));
+        $instruction->save();
 
         return $listingProduct;
+    }
+
+    public function addProductFromAnotherEbaySite(Ess_M2ePro_Model_Listing_Product $sourceListingProduct,
+                                                  Ess_M2ePro_Model_Listing $sourceListing
+    ){
+        /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+        $listingProduct = $this->getParentObject()->addProduct(
+            $sourceListingProduct->getProductId(),
+            Ess_M2ePro_Helper_Data::INITIATOR_USER
+        );
+
+        $logModel = Mage::getModel('M2ePro/Listing_Log');
+        $logModel->setComponentMode($this->getComponentMode());
+
+        if ($listingProduct instanceof Ess_M2ePro_Model_Listing_Product) {
+
+            $logModel->addProductMessage(
+                $sourceListing->getId(),
+                $sourceListingProduct->getProductId(),
+                $sourceListingProduct->getId(),
+                Ess_M2ePro_Helper_Data::INITIATOR_USER,
+                NULL,
+                Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_EBAY_SITE,
+                // M2ePro_TRANSLATIONS
+                // Item was successfully Added into Destination Listing
+                'Item was successfully Added into Destination Listing',
+                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+            );
+
+            return $listingProduct;
+        }
+
+        $logModel->addProductMessage(
+            $sourceListing->getId(),
+            $sourceListingProduct->getProductId(),
+            $sourceListingProduct->getId(),
+            Ess_M2ePro_Helper_Data::INITIATOR_USER,
+            NULL,
+            Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_EBAY_SITE,
+            // M2ePro_TRANSLATIONS
+            // Product already exists in the selected Listing
+            'Product already exists in the selected Listing',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+        );
+
+        return false;
+    }
+
+    public function addProductFromListing(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        Ess_M2ePro_Model_Listing $sourceListing
+    ){
+        if (!$this->getParentObject()->addProductFromListing($listingProduct, $sourceListing, true)) {
+            return false;
+        }
+
+        if ($this->getParentObject()->getStoreId() != $sourceListing->getStoreId()) {
+            if (!$listingProduct->isNotListed()) {
+                if ($item = $listingProduct->getChildObject()->getEbayItem()) {
+                    $item->setData('store_id', $this->getParentObject()->getStoreId());
+                    $item->save();
+                }
+            }
+        }
+
+        return true;
     }
 
     //########################################
@@ -660,69 +775,8 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
     public function getAddedListingProductsIds()
     {
         $ids = $this->getData('product_add_ids');
-        $ids = array_filter((array)json_decode($ids, true));
+        $ids = array_filter((array)Mage::helper('M2ePro')->jsonDecode($ids));
         return array_values(array_unique($ids));
-    }
-
-    //########################################
-
-    /**
-     * @return array
-     */
-    public function getTrackingAttributes()
-    {
-        return array();
-    }
-
-    //########################################
-
-    /**
-     * @param string $template
-     * @param bool $asArrays
-     * @param string|array $columns
-     * @return array
-     */
-    public function getAffectedListingsProductsByTemplate($template, $asArrays = true, $columns = '*')
-    {
-        $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
-        $templateManager->setTemplate($template);
-
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
-        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $collection->addFieldToFilter('listing_id', $this->getId());
-        $collection->addFieldToFilter(
-            $templateManager->getModeColumnName(), Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT
-        );
-
-        if (is_array($columns) && !empty($columns)) {
-            $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-            $collection->getSelect()->columns($columns);
-        }
-
-        return $asArrays ? (array)$collection->getData() : (array)$collection->getItems();
-    }
-
-    public function setSynchStatusNeed($newData, $oldData)
-    {
-        $templateManager = Mage::getSingleton('M2ePro/Ebay_Template_Manager');
-
-        $newTemplates = $templateManager->getTemplatesFromData($newData);
-        $oldTemplates = $templateManager->getTemplatesFromData($oldData);
-
-        foreach ($templateManager->getAllTemplates() as $template) {
-
-            $templateManager->setTemplate($template);
-
-            $templateManager->getTemplateModel(true)->getResource()->setSynchStatusNeed(
-                $newTemplates[$template]->getDataSnapshot(),
-                $oldTemplates[$template]->getDataSnapshot(),
-                $this->getAffectedListingsProductsByTemplate(
-                    $template, true,
-                    $template == Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION ?
-                        array('id', 'synch_status', 'synch_reasons') : array('id')
-                )
-            );
-        }
     }
 
     //########################################

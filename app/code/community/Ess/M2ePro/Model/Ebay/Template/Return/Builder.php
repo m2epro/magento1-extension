@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -57,37 +57,21 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
 
         $prepared['marketplace_id'] = (int)$data['marketplace_id'];
 
-        if (isset($data['accepted'])) {
-            $prepared['accepted'] = $data['accepted'];
+        $domesticKeys = array(
+            'accepted', 'option', 'within', 'shipping_cost'
+        );
+        foreach ($domesticKeys as $keyName) {
+            isset($data[$keyName]) && $prepared[$keyName] = $data[$keyName];
         }
 
-        if (isset($data['option'])) {
-            $prepared['option'] = $data['option'];
+        $internationalKeys = array(
+            'international_accepted', 'international_option', 'international_within', 'international_shipping_cost'
+        );
+        foreach ($internationalKeys as $keyName) {
+            isset($data[$keyName]) && $prepared[$keyName] = $data[$keyName];
         }
 
-        if (isset($data['within'])) {
-            $prepared['within'] = $data['within'];
-        }
-
-        if (isset($data['holiday_mode'])) {
-            $prepared['holiday_mode'] = $data['holiday_mode'];
-        }
-
-        if (isset($data['shipping_cost'])) {
-            $prepared['shipping_cost'] = $data['shipping_cost'];
-        }
-
-        if (isset($data['restocking_fee'])) {
-            $prepared['restocking_fee'] = $data['restocking_fee'];
-        }
-
-        if (isset($data['description'])) {
-            $prepared['description'] = $data['description'];
-        }
-
-        if ($prepared['accepted'] != 'ReturnsAccepted') {
-            $prepared['holiday_mode'] = 0;
-        }
+        isset($data['description']) && $prepared['description'] = $data['description'];
 
         return $prepared;
     }

@@ -1,0 +1,64 @@
+<script type="text/javascript" src="<?php echo $this->getJsUrl('M2ePro/VideoTutorialHandler.js'); ?>"></script>
+
+<script type="text/javascript">
+
+    M2eProAmazonCongratulationTutorialHandlerObj = new VideoTutorialHandler(
+        'amazon_congratulation_video_tutorial_pop_up',
+        '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('M2E Pro - Amazon/Magento Integration : Listings')); ?>',
+        function() {}
+    );
+
+</script>
+
+<?php
+$synchronizationTemplatesUrl = $this->getUrl('*/adminhtml_template_synchronization/index');
+$sellingFormatTemplatesUrl = $this->getUrl('*/adminhtml_template_sellingFormat/index');
+
+$newListingsUrl = $this->getUrl('*/adminhtml_amazon_listing_create/index', array(
+    'step' => '1',
+    'clear' => 'yes',
+    'component' => Ess_M2ePro_Helper_Component_Amazon::NICK
+));
+$docsLink = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl();
+
+$componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
+
+?>
+
+<div id="block_notice_wizard_congratulation" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <h3><?php echo Mage::helper('M2ePro')->__('With M2E Pro, Listing your Magento Inventory on Amazon couldn\'t be easier.'); ?></h3>
+    <br/>
+    <p>
+        <?php
+            echo Mage::helper('M2ePro')->__(
+                '<strong>The main Settings were successfully set.</strong> <br/><br/>
+                Now you can continue working with Extension.
+                <br/>
+                The more detailed information can be found in the <a href="%url%" target="_blank">Documentation</a>.<br/><br/>',
+                $docsLink
+            );
+        ?>
+    </p>
+
+    <div style="margin-top: 5px">
+        <?php
+            echo Mage::helper('M2ePro')->__(
+                'On the next step you should create the first M2E Pro %amazon% Listing (group of Magento Products). <br/><br/>
+
+                During Listing creation you will have a possibility to specify main Settings for Products such as Price, Condition, Quantity, Automatic Synchronization Rules etc.
+
+                <br/><br/><a class="custom-button" href="%new_listing_url%"><span><span><span>Start to create first M2E Pro Listing</span></span></span></a>',
+                $componentName,
+                $newListingsUrl
+            );
+        ?>
+    </div>
+
+</div>
+
+<div id="amazon_congratulation_video_tutorial_pop_up" style="display: none;">
+    <div class="player_container" style="margin: 20px 5px; ">
+       <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/odyMO2KABcs?version=3&amp;hl=ru_RU&amp;rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/odyMO2KABcs?version=3&amp;hl=ru_RU&amp;rel=0" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
+    </div>
+</div>

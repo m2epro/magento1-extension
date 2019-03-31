@@ -1,0 +1,208 @@
+<?php
+
+$formData = $this->getFormData();
+
+?>
+
+<style>
+    #get_geocord {
+        margin: 5px 0;
+    }
+
+    #advice-M2ePro-check-location- {
+        background: #faebe7 url("<?php echo $this->getSkinUrl('images/error_msg_icon.gif')?>") no-repeat 10px 10px;
+        margin: 10px 0;
+        padding: 8px 8px 8px 32px;
+        font-size: 1em;
+        border: 1px solid #f16048;
+        line-height: 20px;
+    }
+</style>
+
+<div id="block_notice_ebay_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Location'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        On this Tab, you should provide the <strong>full address of your Store</strong> including all possible
+        details. eBay will analyze this information when deciding if this Store fits the In-Store Pickup
+        Service conditions for a particular buyer.<br/>
+        Based on the general address data you provided (i.e. Country, Region, City, etc), Longitude and
+        Latitude values will be <strong>automatically offered</strong> by pressing the <strong>Get Latitude
+        and Longitude</strong> button.
+        You can also press <strong>Show on Google Map</strong> link to check the generated Longitute and Latitude values.
+    '); ?>
+</div>
+
+<div>
+    <input type="hidden" class="M2ePro-check-location"/>
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_account_pickup_store_form_data_location_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <input type="hidden" name="marketplace_id" id="marketplace_id"/>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Country'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <select name="country" id="country" class="M2ePro-pickup-store-dropdown">
+                            <option value=""></option>
+                            <?php foreach($this->getData('marketplaces') as $marketplace) : ?>
+                                <?php
+                                $tmpCountry = Mage::helper('M2ePro/Component_Ebay_PickupStore')->convertMarketplaceToCountry($marketplace);
+
+                                if (!$tmpCountry) {
+                                    continue;
+                                }
+                                ?>
+                                <option value="<?php echo $tmpCountry['country_id']?>" <?php echo $tmpCountry['country_id'] == $formData['country'] ? 'selected="select"' : '' ?> attribute_code="<?php echo strtoupper($marketplace['id']);?>"><?php echo $tmpCountry['name']?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Select the Country where your Store is located. <strong>Please note</strong>, currently 3 countries are available for selection — Australia, United States and United Kingdom.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Region'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" name="region_hidden" id="region_hidden" value="<?php echo $formData['region']; ?>" class="input-text"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('City'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="city" id="city" value="<?php echo $formData['city']; ?>" class="input-text M2ePro-required-when-visible"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Address 1'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="address_1" id="address_1" value="<?php echo $formData['address_1']; ?>" class="input-text M2ePro-required-when-visible M2ePro-validate-max-length-128"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Address 2'); ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="address_2" id="address_2" value="<?php echo $formData['address_2']; ?>" class="input-text M2ePro-validate-max-length-128"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Postal Code'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="postal_code" id="postal_code" value="<?php echo $formData['postal_code']; ?>" class="input-text M2ePro-required-when-visible"/>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_account_pickup_store_form_data_location_additional">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Additional'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Latitude'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="latitude" id="latitude" value="<?php echo $formData['latitude']; ?>" class="input-text M2ePro-required-when-visible validate-number"/>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify the Latitude and Longitude of your Store. Please, be attentive and provide the accurate values as it will determine the Store location.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Longitude'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="longitude" id="longitude" value="<?php echo $formData['longitude']; ?>" class="input-text M2ePro-required-when-visible validate-number"/>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify the Latitude and Longitude of your Store. Please, be attentive and provide the accurate values as it will determine the Store location.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="label"></td>
+                    <td class="value">
+                        <button class="scalable save" id="get_geocord">
+                            <span><span><span>
+                                <?php echo Mage::helper('M2ePro')->__('Get Latitude & Longitude'); ?>
+                            </span></span></span>
+                        </button>
+                        <?php
+                            $googleMapHref = '#empty';
+                            if (!empty($formData['latitude']) && !empty($formData['longitude'])) {
+                                $googleMapHref = 'https://www.google.com/maps/place/'.$formData['latitude'].','.$formData['longitude'];
+                            }
+                        ?>
+                        <a href="<?php echo $googleMapHref;?>" target="_blank" id="google_map" style="padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Show On Google Map');?></a>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('UTC Offset'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <select name="utc_offset" id="utc_offset" class="M2ePro-pickup-store-dropdown">
+                            <option value=""></option>
+                            <?php for ($i = -12; $i <= 12; $i++): ?>
+                                <?php
+                                $sign = $i == 0 ? "+" : ($i > 0 ? '+' : '-');
+                                $value = $i < 0 ? $i * -1: $i;
+                                $offsetValue = $sign .($value < 10 ? '0'. $value : $value).':00';
+                                var_dump($offsetValue);
+                                ?>
+                                <option value="<?php echo $offsetValue;?>" <?php echo $formData['utc_offset'] == $offsetValue ? 'selected="selected"' : '';?>><?php echo $offsetValue;?></option>
+                            <?php endfor; ?>
+                        </select>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

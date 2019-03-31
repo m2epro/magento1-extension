@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -133,12 +133,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid extends Mage_Adminhtm
         if ($row->isModeItem()) {
             $itemsCount = count($row->getItems());
             $title = Mage::helper('M2ePro')->escapeHtml(
-                Mage::helper('M2ePro')->__('Vew Group '.$this->getItemsColumnTitle())
+                Mage::helper('M2ePro')->__('View Group '.$this->getItemsColumnTitle())
             );
         } else {
             $itemsCount = count($row->getFiltersIds());
             $title = Mage::helper('M2ePro')->escapeHtml(
-                Mage::helper('M2ePro')->__('Vew Group Filters')
+                Mage::helper('M2ePro')->__('View Group Filters')
             );
         }
 
@@ -216,7 +216,7 @@ JS;
 
     public function getItemsColumnTitle()
     {
-        if ($this->getMotorsType() == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID) {
+        if (Mage::helper('M2ePro/Component_Ebay_Motors')->isTypeBasedOnEpids($this->getMotorsType())) {
             return Mage::helper('M2ePro')->__('ePID(s)');
         }
 

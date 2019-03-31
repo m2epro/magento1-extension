@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -87,7 +87,7 @@ final class Ess_M2ePro_Model_Cron_Runner_Magento extends Ess_M2ePro_Model_Cron_R
 
     private function distributeLoadIfNeed()
     {
-        if (Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
+        if (!Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
             return;
         }
 

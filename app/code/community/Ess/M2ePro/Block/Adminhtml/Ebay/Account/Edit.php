@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -24,7 +24,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
 
         // Set header text
         // ---------------------------------------
-        if (!Mage::helper('M2ePro/View_Ebay_Component')->isSingleActiveComponent()) {
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
             $headerTextEdit = Mage::helper('M2ePro')->__("Edit %component_name% Account", $componentName);
             $headerTextAdd = Mage::helper('M2ePro')->__("Add %component_name% Account", $componentName);
@@ -79,9 +79,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit extends Mage_Adminhtml_Block_
         if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
             Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()) {
 
+            $accountId = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId();
             $this->_addButton('delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
-                'onclick'   => 'EbayAccountHandlerObj.delete_click()',
+                'onclick'   => "EbayAccountHandlerObj.delete_click({$accountId})",
                 'class'     => 'delete M2ePro_delete_button'
              ));
 

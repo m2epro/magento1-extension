@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -13,16 +13,14 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
 
     public function run($skus = NULL)
     {
-        $existedSkus = array_unique(array_merge(
-            Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getAllSkus($this->getAccount(), true),
-            Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getAllRepricingSkus($this->getAccount(), true)
+        $requestSkus = array_unique(array_merge(
+            Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getSkus(
+                $this->getAccount(), $skus, false
+            ),
+            Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getRepricingSkus(
+                $this->getAccount(), $skus, false
+            )
         ));
-
-        if (is_null($skus)) {
-            $requestSkus = $existedSkus;
-        } else {
-            $requestSkus = array_intersect($skus, $existedSkus);
-        }
 
         if (empty($requestSkus)) {
             return false;
@@ -47,7 +45,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
         }
 
         if (empty($offersProductPrices)) {
-            return false;
+            return true;
         }
 
         $this->updateListingsProductsPrices($offersProductPrices);
@@ -93,7 +91,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
                 'main_table.product_id',
                 'second_table.listing_product_id',
                 'second_table.sku',
-                'second_table.online_price',
+                'second_table.online_regular_price',
             )
         );
 
@@ -108,11 +106,12 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
             $offerProductPrice = $offersProductPrices[strtolower($listingProductData['sku'])];
 
             if (!is_null($offerProductPrice) &&
-                $listingProductData['online_price'] != $offerProductPrice
+                $listingProductData['online_regular_price'] != $offerProductPrice
             ) {
                 $connWrite->update(
-                    $resource->getTableName('m2epro_amazon_listing_product'),
-                    array('online_price' => $offerProductPrice),
+                    Mage::helper('M2ePro/Module_Database_Structure')
+                        ->getTableNameWithPrefix('m2epro_amazon_listing_product'),
+                    array('online_regular_price' => $offerProductPrice),
                     array('listing_product_id = ?' => $listingProductId)
                 );
             }
@@ -156,7 +155,8 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
                 $offerProductPrice != $listingOtherData['online_price']
             ) {
                 $connWrite->update(
-                    $resource->getTableName('m2epro_amazon_listing_other'),
+                    Mage::helper('M2ePro/Module_Database_Structure')
+                        ->getTableNameWithPrefix('m2epro_amazon_listing_other'),
                     array(
                         'online_price' => $offerProductPrice,
                     ),

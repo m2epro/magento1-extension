@@ -1,0 +1,164 @@
+<?php
+$formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
+$defaults = array('title' => '');
+$formData = array_merge($defaults, $formData);
+
+$isEdit = (bool)$this->getRequest()->getParam('id');
+?>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    // ----------------------------------------
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Template_Synchronization'); ?>,
+        'Ess_M2ePro_Model_Amazon_Template_Synchronization'
+    );
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,
+        'Ess_M2ePro_Helper_Component_Amazon'
+    );
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit'    => $this->getUrl('M2ePro/adminhtml_amazon_template_synchronization/save', array('id' => $this->getRequest()->getParam('id'))),
+        'formSubmitNew' => $this->getUrl('M2ePro/adminhtml_amazon_template_synchronization/save'),
+        'deleteAction'  => $this->getUrl('M2ePro/adminhtml_amazon_template_synchronization/delete', array('id' => $this->getRequest()->getParam('id')))
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Add Synchronization Policy' => Mage::helper('M2ePro')->__('Add Synchronization Policy'),
+        'Wrong time format string.' => Mage::helper('M2ePro')->__('Wrong time format string.'),
+
+        'Must be greater than "Min".' => Mage::helper('M2ePro')->__('Must be greater than "Min".'),
+        'Inconsistent Settings in Relist and Stop Rules.' => Mage::helper('M2ePro')->__('Inconsistent Settings in Relist and Stop Rules.'),
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.')
+    )); ?>);
+
+    M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
+    M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
+
+    Event.observe(window, 'load', function() {
+
+        AmazonTemplateSynchronizationHandlerObj = new AmazonTemplateSynchronizationHandler();
+        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+
+        $$('.navigation_bar').each(function(el) {
+            el.observe('click', AmazonTemplateSynchronizationHandlerObj.setVirtualTabAsActive);
+        });
+
+        setTimeout(function() {
+            $$('#amazon_template_synchronization_edit_form_container select').each(function(el) {
+                el.observe('change', AmazonTemplateSynchronizationHandlerObj.setVirtualTabAsChanged);
+            });
+        }, 350);
+
+        <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
+            AmazonTemplateSynchronizationHandlerObj.initialize();
+        <?php else: ?>
+            Event.observe(window, 'load', AmazonTemplateSynchronizationHandlerObj.initialize);
+        <?php endif; ?>
+
+    });
+
+    // ----------------------------------------
+
+</script>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+<div class="entry-edit" id="magento_block_amazon_template_synchronization_general_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-synchronization-tpl-title" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Short meaningful Policy Title for your internal use.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div id="amazon_template_synchronization_edit_form_container" class="columns" style="margin-bottom: 10px;">
+
+    <div id="amazon_template_synchronization_edit_form_navigation_bar_container" class="side-col">
+        <ul id="amazon_template_synchronization_edit_form_navigation_bar" class="tabs">
+            <li>
+                <a href="javascript:void(0);" id="amazon_template_synchronization_edit_form_navigation_bar_list" name="list" class="navigation_bar tab-item-link active">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('List Rules'); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="amazon_template_synchronization_edit_form_navigation_bar_revise" name="revise" class="navigation_bar tab-item-link">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('Revise Rules'); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="amazon_template_synchronization_edit_form_navigation_bar_relist" name="relist" class="navigation_bar tab-item-link">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('Relist Rules'); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" id="amazon_template_synchronization_edit_form_navigation_bar_stop" name="stop" class="navigation_bar tab-item-link">
+                    <span>
+                        <span class="changed" title="The information in this Tab has been changed."></span>
+                        <span class="error" title="This Tab contains invalid data. Please solve the problem before saving."></span>
+                        <?php echo Mage::helper('M2ePro')->__('Stop Rules'); ?>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="amazon_template_synchronization_edit_form_content" class="main-col" style="padding-bottom: 0;">
+        <div class="main-col-inner">
+            <div id="amazon_template_synchronization_edit_form_content_list" class="form_content">
+                <?php echo $this->getChildHtml('amazon_template_synchronization_edit_form_tabs_list'); ?>
+            </div>
+            <div id="amazon_template_synchronization_edit_form_content_revise" class="form_content" style="display: none;">
+                <?php echo $this->getChildHtml('amazon_template_synchronization_edit_form_tabs_revise'); ?>
+            </div>
+            <div id="amazon_template_synchronization_edit_form_content_relist" class="form_content" style="display: none;">
+                <?php echo $this->getChildHtml('amazon_template_synchronization_edit_form_tabs_relist'); ?>
+            </div>
+            <div id="amazon_template_synchronization_edit_form_content_stop" class="form_content" style="display: none;">
+                <?php echo $this->getChildHtml('amazon_template_synchronization_edit_form_tabs_stop'); ?>
+            </div>
+        </div>
+    </div>
+
+</div>

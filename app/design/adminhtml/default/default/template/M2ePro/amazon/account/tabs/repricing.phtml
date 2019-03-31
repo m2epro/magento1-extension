@@ -1,0 +1,594 @@
+<?php
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing */
+
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+$generalAttributes = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets();
+
+$attributesByInputTypes = array(
+    'text_price' => $magentoAttributeHelper->filterByInputTypes($generalAttributes, array('text', 'price')),
+    'boolean' => $magentoAttributeHelper->filterByInputTypes($generalAttributes, array('boolean')),
+);
+
+?>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    if (typeof M2ePro == 'undefined') {
+        M2ePro = {};
+        M2ePro.url = {};
+        M2ePro.formData = {};
+        M2ePro.customData = {};
+        M2ePro.text = {};
+    }
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Account_Repricing'); ?>,
+        'Ess_M2ePro_Model_Amazon_Account_Repricing'
+    );
+
+    M2ePro.url.add(<?php echo json_encode(array_merge(
+        Mage::helper('M2ePro')->getControllerActions(
+            'adminhtml_amazon_account_repricing',
+            array(
+                'id' => $this->getRequest()->getParam('id')
+            )
+        )
+    ))?>);
+    //-----------------------------
+
+    <?php if ($this->isRepricingLinked): ?>
+        Event.observe(window, 'load', function() {
+
+            $('regular_price_mode')
+                .observe('change', AmazonAccountHandlerObj.regular_price_mode_change)
+                .simulate('change');
+
+            $('min_price_mode')
+                .observe('change', AmazonAccountHandlerObj.min_price_mode_change)
+                .simulate('change');
+
+            $('max_price_mode')
+                .observe('change', AmazonAccountHandlerObj.max_price_mode_change)
+                .simulate('change');
+
+            $('disable_mode')
+                .observe('change', AmazonAccountHandlerObj.disable_mode_change)
+                .simulate('change');
+
+        });
+    <?php endif; ?>
+
+</script>
+
+<style type="text/css">
+    .coef {
+        padding-left: 5px !important;
+        padding-top: 5px !important;
+    }
+    .coef input {
+        text-align: right;
+        width: 27px;
+    }
+    .form-list td.label {
+        width: 275px;
+    }
+</style>
+
+<div id="block_notice_amazon_accounts_repricing" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Repricing Tool'); ?>">
+    <?php
+    echo Mage::helper('M2ePro')->__('
+        Use the <strong>Repricing Tool</strong> to improve your Offer position on Amazon Channel.
+        Repricing functionality provides you with the constant edge over your Competitors.<br/><br/>
+
+        Click <strong>Link Now</strong> to add your M2E Pro Amazon Account to Amazon Repricing Service.
+        Follow the Configuration Wizard steps to set up all necessary data.<br/><br/>
+
+        After your Account is successfully linked, the <strong>statistic information</strong> about
+        the Products managed by Repricing Tool becomes available.<br/><br/>
+
+        Provide the <strong>Additional settings</strong> if you want to to update the min, max,
+        and regular prices, etc. based on Magento Product data.<br/><br/>
+
+        You can <strong>Add/Remove Items</strong> to/from the Repricing Service via M2E Pro.
+        Select an appropriate action in Seller Central View Mode of M2E Pro Listing.<br/><br/>
+
+        To stop using the Repricing Tool, click <strong>Unlink</strong>. The repricing process will be stopped for
+        Products of this M2E Pro Amazon Account. Product Prices will be updated via M2E Pro again.<br/><br/>
+
+        More details on how to use the Repricing Tool can be found <a href="%url%" target="_blank">here</a>.
+    ', Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YAE0AQ'));
+    ?>
+</div>
+
+<div class="entry-edit" id="magento_block_amazon_accounts_repricing_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+                <?php if (!$this->isRepricingLinked) { ?>
+                <tr>
+                    <td class="value" style="width: auto;">
+                        <?php echo Mage::helper('M2ePro')->__('First, you have to link this Amazon Account with Amazon Repricing Tool'); ?>&nbsp;
+                        <button type="button" onclick="AmazonAccountHandlerObj.linkOrRegisterRepricing()"><?php echo Mage::helper('M2ePro')->__('Link Now'); ?></button>
+                    </td>
+                </tr>
+                <?php } else { ?>
+                <tr>
+                    <td class="label" colspan="2" style="width: 100%;">
+                        <?php echo Mage::helper('M2ePro')->__('This Amazon Account is successfully linked with Amazon Repricing Tool'); ?>&nbsp;
+                        <button type="button" onclick="AmazonAccountHandlerObj.unlinkRepricing()"><?php echo Mage::helper('M2ePro')->__('Unlink'); ?></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Customer'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <span id="repricing_email"><?php echo $this->repricingObj->getEmail(); ?></span>&nbsp;
+                        <br/>
+                        <a href="javascript:void(0)" onclick="AmazonAccountHandlerObj.openManagement()"><?php echo Mage::helper('M2ePro')->__('Go to Amazon Repricing Tool'); ?></a>
+                    </td>
+                </tr>
+                <?php } ?>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<?php if (!$this->isRepricingLinked) { ?>
+<div id="account_repricing_linked_data_container" style="position: relative;">
+    <div id="account_repricing_linked_data_container_wrapper" class="area_wrapper">&nbsp;</div>
+<?php } ?>
+    <div class="entry-edit" id="magento_block_amazon_accounts_repricing_statistic">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Statistic'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Repricing Products'); ?>:</label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <span id="repricing_total_products"><?php echo ($this->isRepricingLinked) ? $this->repricingObj->getTotalProducts() : 0 ?></span>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('This is a total number of Products managed by the Repricing Tool Linked to your M2E Pro Amazon Account.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('M2E Pro Products'); ?>:</label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <span id="m2epro_repricing_total_products"><?php echo ($this->isRepricingLinked) ? $this->m2eProRepricingProducts : 0 ?></span>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('This is a number of Products managed by the Repricing Tool in your M2E Pro.'); ?></span>
+                            </p>
+                        </td>
+                        <td class="value">
+                            <?php echo $this->getChildHtml('repricing_refresh_button'); ?>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="entry-edit" id="magento_block_amazon_accounts_repricing_additional_settings">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Additional Settings'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label for="regular_price_mode"><?php echo Mage::helper('M2ePro')->__('Update Regular Price'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input type="hidden" id="regular_price_attribute" name="repricing[regular_price_attribute]" value="<?php echo $this->repricingObj->getData('regular_price_attribute'); ?>"/>
+                            <?php } ?>
+
+                            <select id="regular_price_mode" name="repricing[regular_price_mode]" class="select-main M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <?php if ($this->isRepricingLinked) { ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL; ?>" <?php if ($this->repricingObj->getRegularPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Manually'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::REGULAR_PRICE_MODE_PRODUCT_POLICY; ?>" <?php if ($this->repricingObj->getRegularPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::REGULAR_PRICE_MODE_PRODUCT_POLICY) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('According to Selling Policy'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_PRODUCT; ?>" <?php if ($this->repricingObj->getRegularPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_PRODUCT) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('From Product Price'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_SPECIAL; ?>" <?php if ($this->repricingObj->getRegularPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_SPECIAL) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('From Special Price'); ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="From Magento Attribute">
+                                    <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getRegularPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('regular_price_attribute')) echo 'selected="selected"';?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                                <?php } ?>
+                            </select>
+                            <p class="note">
+                                <span id="regular_price_note"><?php echo Mage::helper('M2ePro')->__('
+                                    <strong>Regular Price</strong> is a common Price without any changes. This value is used for Repricing Rules configuration
+                                    and plays the role of the roll-back Price in case the Rules cannot be applied or the Goals provided
+                                    in the Repricing Rules cannot be achieved. <a href="%url1%" target="_blank">Learn more</a>
+                                    about using the Regular Price in Repricing Service.<br/><br/>
+
+                                    Specify the settings for automatic update of the Regular Price:<br/><br/>
+
+                                    <strong>Manually</strong> - means that the Product Price value will be provided manually;<br/>
+                                    <strong>According to Selling Policy settings</strong> - means that the Price value will be set based on the Selling Policy settings;<br/>
+                                    <strong>From Product Price</strong> - means that the Price value will be taken from Magento Product Price Attribute;<br/>
+                                    <strong>From Special Price</strong> - means that the Price value will be taken from Magento Special Price Attribute;<br/>
+                                    <strong>From Magento Attribute</strong> - means that the Price value will be taken from the selected Magento Attribute.<br/><br/>
+
+                                    Please note, only common (available in all Attribute sets in your Magento) Text or
+                                    Price field Attributes are available for the selection.<br/><br/>
+
+                                    More detailed information on how to work with this option can be found <a href="%url2%" target="_blank">here</a>.
+                                ', Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/aAAkAQ'), Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YAE0AQ')); ?></span>
+                            </p>
+                        </td>
+                        <td id="regular_price_coefficient_td" class="coef">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <div style="font-size: 11px; float: right; padding-left: 10px;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/note_cell_bg.gif'); ?>" />
+                                <span style="padding-left: 5px;"><?php echo Mage::helper('M2ePro')->__('Absolute figure (+8,-3), percentage (+15%, -20%) or Currency rate (1.44)'); ?>.</span>
+                            </div>
+                            <input id="regular_price_coefficient" name="repricing[regular_price_coefficient]" value="<?php echo $this->escapeHtml($this->repricingObj->getData('regular_price_coefficient')); ?>" type="text" class="M2ePro-validate-price-coefficient input-text" />
+                            <?php } ?>
+                        </td>
+                    </tr>
+
+                    <tr id="regular_price_variation_mode_tr" style="display: none;">
+                        <td class="label">
+                            <label for="regular_price_variation_mode"><?php echo Mage::helper('M2ePro')->__('Regular Variation Price Source'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select id="regular_price_variation_mode" name="repricing[regular_price_variation_mode]" class="select-main">
+                                <?php if ($this->isRepricingLinked) { ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_PARENT; ?>" <?php if (Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_PARENT == $this->repricingObj->getRegularPriceVariationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Main Product'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN; ?>" <?php if (Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN == $this->repricingObj->getRegularPriceVariationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Associated Products'); ?></option>
+                                <?php } ?>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Determines where the Price for Configurable and Bundle Products Options should be taken from.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="min_price_mode"><?php echo Mage::helper('M2ePro')->__('Update Min Price'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input type="hidden" id="min_price_attribute" name="repricing[min_price_attribute]" value="<?php echo $this->repricingObj->getData('min_price_attribute'); ?>"/>
+                            <?php } ?>
+
+                            <select id="min_price_mode" name="repricing[min_price_mode]" class="select-main M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <?php if ($this->isRepricingLinked) { ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Manually'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_VALUE) echo 'selected="selected"'; ?> class="repricing-min-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('Less than Regular Price by Value'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MIN_PRICE_MODE_REGULAR_PERCENT) echo 'selected="selected"'; ?> class="repricing-min-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('Less than Regular Price by Percent'); ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="From Magento Attribute">
+                                    <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getMinPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('min_price_attribute')) echo 'selected="selected"';?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                                <?php } ?>
+                            </select>
+                            <p class="note">
+                                <span id="min_price_note"><?php echo Mage::helper('M2ePro')->__('
+                                    <strong>Min Price</strong> is the lowest Price which you could sell your Item at. <a href="%url1%" target="_blank">Learn more</a>
+                                    about using the Max Price in Repricing Service.<br/><br/>
+
+                                    Specify the settings for automatic update of the Min Price:<br/><br/>
+
+                                    <strong>Manually</strong> - means that the Product Price value will be provided manually;<br/>
+                                    <strong>Less than Regular Price by Value</strong> - means that the Min Price value will be taken as a Regular Price
+                                    decreased by the value you set.<br/>
+                                    For example, you set the Value 5. Your Regular price is 17. So the Min Price will be 12.<br/>
+                                    <strong>Less than Regular Price by Percent</strong> - means that the Min Price value will be taken as a Regular Price
+                                    decreased by the percent you set.<br/>
+                                    For example, you set 50%. Your regular price is 10. So the Min Price will be 5.<br/>
+                                    <strong>From Magento Attribute</strong> - means that the Price value will be taken from the selected Magento Attribute.<br/><br/>
+
+                                    Please note, only common (available in all Attribute sets in your Magento) Text or Price field Attributes are available for the selection.<br/><br/>
+
+                                    More detailed information on how to work with this option can be found <a href="%url2%" target="_blank">here</a>.
+                                ', Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/aAAkAQ'), Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YAE0AQ')); ?></span>
+                            </p>
+                        </td>
+                        <td id="min_price_coefficient_td" class="coef">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <div style="font-size: 11px; float: right; padding-left: 10px;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/note_cell_bg.gif'); ?>" />
+                                <span style="padding-left: 5px;"><?php echo Mage::helper('M2ePro')->__('Absolute figure (+8,-3), percentage (+15%, -20%) or Currency rate (1.44)'); ?>.</span>
+                            </div>
+                            <input id="min_price_coefficient" name="repricing[min_price_coefficient]" value="<?php echo $this->escapeHtml($this->repricingObj->getData('min_price_coefficient')); ?>" type="text" class="M2ePro-validate-price-coefficient input-text" />
+                            <?php } ?>
+                        </td>
+                    </tr>
+
+                    <tr id="min_price_value_tr" style="display: none;">
+                        <td class="label">
+                            <label for="min_price_value"><?php echo Mage::helper('M2ePro')->__('Min Price Value'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td id="min_price_value_td" class="value" style="width: auto;">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input id="min_price_value" name="repricing[min_price_value]" value="<?php echo $this->escapeHtml($this->repricingObj->getData('min_price_value')); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-float" />
+                            <?php } ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Provide the Value which you would like to decrease the Regular Price by.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="min_price_percent_tr" style="display: none;">
+                        <td class="label">
+                            <label for="min_price_percent"><?php echo Mage::helper('M2ePro')->__('Min Price Percent'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td id="min_price_percent_td" class="value" style="width: auto;">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input id="min_price_percent" name="repricing[min_price_percent]" value="<?php echo $this->escapeHtml($this->repricingObj->getData('min_price_percent')); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-account-repricing-price-percent" />
+                            <?php } ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Provide the Percent Value which you would like to decrease the Regular Price by.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="min_price_variation_mode_tr" style="display: none;">
+                        <td class="label">
+                            <label for="min_price_variation_mode"><?php echo Mage::helper('M2ePro')->__('Min Variation Price Source'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select id="min_price_variation_mode" name="repricing[min_price_variation_mode]" class="select-main">
+                                <?php if ($this->isRepricingLinked) { ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_PARENT; ?>" <?php if (Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_PARENT == $this->repricingObj->getMinPriceVariationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Main Product'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN; ?>" <?php if (Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN == $this->repricingObj->getMinPriceVariationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Associated Products'); ?></option>
+                                <?php } ?>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Determines where the Price for Configurable and Bundle Products Options should be taken from.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="min_price_warning_tr" style="display: none;">
+                        <td class="label" colspan="2">
+                            <div style="margin-right: 5px;">
+                                <ul class="messages">
+                                    <li class="warning-msg">
+                                        <ul>
+                                            <li>
+                                                <span>
+                                                    <?php echo Mage::helper('M2ePro')->__('
+                                                        Min Price value is required to be specified to guarantee that M2E
+                                                        Amazon Repricing Service will never set the Price of your Offer
+                                                        lower than Min allowed Price. It allows Sellers to automatically
+                                                        prevent any incorrect Price values to be set for their Items.<br/><br/>
+                                                        The dynamic updating of the Min Price value cannot give the 100%
+                                                        assurance that all the data will be properly set and the correct
+                                                        Price will be used for the Item. Thus, more preferable and reliable
+                                                        option is Manual updating of the Min Price value.
+                                                    '); ?>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="max_price_mode"><?php echo Mage::helper('M2ePro')->__('Update Max Price'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input type="hidden" id="max_price_attribute" name="repricing[max_price_attribute]" value="<?php echo $this->repricingObj->getData('max_price_attribute'); ?>"/>
+                            <?php } ?>
+
+                            <select id="max_price_mode" name="repricing[max_price_mode]" class="select-main M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                                <?php if ($this->isRepricingLinked) { ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Manually'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_VALUE) echo 'selected="selected"'; ?> class="repricing-max-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('More than Regular Price by Value'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::MAX_PRICE_MODE_REGULAR_PERCENT) echo 'selected="selected"'; ?> class="repricing-max-price-mode-regular-depended"><?php echo Mage::helper('M2ePro')->__('More than Regular Price by Percent'); ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="From Magento Attribute">
+                                    <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getMaxPriceMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('max_price_attribute')) echo 'selected="selected"';?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                                <?php } ?>
+                            </select>
+                            <p class="note">
+                                <span id="max_price_note"><?php echo Mage::helper('M2ePro')->__('
+                                    <strong>Max Price</strong> is the highest Price which you could sell your Item at.
+                                    <a href="%url1%" target="_blank">Learn more</a> about using the Min Price in Repricing Service.<br/><br/>
+
+                                    Specify the settings for automatic update of the Max Price:<br/><br/>
+
+                                    <strong>Manually</strong> - means that the Product Price value will be provided manually;<br/>
+                                    <strong>More than Regular Price by Value</strong> - means that the Max Price value will be taken as a Regular
+                                    Price increased by the value you set.<br/>
+                                    For example, you set the Value 5. Your Regular price is 17. So the Max Price will be 22.<br/>
+                                    <strong>More than Regular Price by Percent</strong> - means that the Max Price value will be taken as a Regular
+                                    Price increased by the percent you set.<br/>
+                                    For example, you set 50 Percent. Your regular price is 10. So the Max Price will be 15.<br/>
+                                    <strong>From Magento Attribute</strong> - means that the Max Price value will be taken from the selected Attribute.<br/><br/>
+
+                                    Please note, only common (available in all Attribute sets in your Magento) Text or Price field Attributes are
+                                    available for the selection.<br/><br/>
+
+                                    More detailed information on how to work with this option can be found <a href="%url2%" target="_blank">here</a>.
+                                ', Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/aAAkAQ'), Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YAE0AQ')); ?></span>
+                            </p>
+                        </td>
+                        <td id="max_price_coefficient_td" class="coef">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <div style="font-size: 11px; float: right; padding-left: 10px;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/note_cell_bg.gif'); ?>" />
+                                <span style="padding-left: 5px;"><?php echo Mage::helper('M2ePro')->__('Absolute figure (+8,-3), percentage (+15%, -20%) or Currency rate (1.44)'); ?>.</span>
+                            </div>
+                            <input id="max_price_coefficient" name="repricing[max_price_coefficient]" value="<?php echo $this->escapeHtml($this->repricingObj->getData('max_price_coefficient')); ?>" type="text" class="M2ePro-validate-price-coefficient input-text" />
+                            <?php } ?>
+                        </td>
+                    </tr>
+
+                    <tr id="max_price_value_tr" style="display: none;">
+                        <td class="label">
+                            <label for="max_price_value"><?php echo Mage::helper('M2ePro')->__('Max Price Value'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td id="max_price_value_td" class="value" style="width: auto;">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input id="max_price_value" name="repricing[max_price_value]" value="<?php echo $this->escapeHtml($this->repricingObj->getData('max_price_value')); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-float" />
+                            <?php } ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Provide the Value which you would like to increase the Regular Price by.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="max_price_percent_tr" style="display: none;">
+                        <td class="label">
+                            <label for="max_price_percent"><?php echo Mage::helper('M2ePro')->__('Max Price Percent'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td id="max_price_percent_td" class="value" style="width: auto;">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input id="max_price_percent" name="repricing[max_price_percent]" value="<?php echo $this->escapeHtml($this->repricingObj->getData('max_price_percent')); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-account-repricing-price-percent" />
+                            <?php } ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Provide the Percent Value which you would like to decrease the Regular Price by.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="max_price_variation_mode_tr" style="display: none;">
+                        <td class="label">
+                            <label for="max_price_variation_mode"><?php echo Mage::helper('M2ePro')->__('Max Variation Price Source'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select id="max_price_variation_mode" name="repricing[max_price_variation_mode]" class="select-main">
+                                <?php if ($this->isRepricingLinked) { ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_PARENT; ?>" <?php if (Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_PARENT == $this->repricingObj->getMaxPriceVariationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Main Product'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN; ?>" <?php if (Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN == $this->repricingObj->getMaxPriceVariationMode()): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Associated Products'); ?></option>
+                                <?php } ?>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Determines where the Price for Configurable and Bundle Products Options should be taken from.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="max_price_warning_tr" style="display: none;">
+                        <td class="label" colspan="2">
+                            <div style="margin-right: 5px;">
+                                <ul class="messages">
+                                    <li class="warning-msg">
+                                        <ul>
+                                            <li>
+                                                <span>
+                                                    <?php echo Mage::helper('M2ePro')->__('
+                                                        Max Price value is required to be specified to guarantee that M2E
+                                                        Amazon Repricing Service will never set the Price of your Offer
+                                                        higher than Max allowed Price. It allows Sellers to automatically
+                                                        prevent any incorrect Price values to be set for their Items.<br/><br/>
+                                                        The dynamic updating of the Max Price value cannot give the 100%
+                                                        assurance that all the data will be properly set and the correct
+                                                        Price will be used for the Item. Thus, more preferable and reliable
+                                                        option is Manual updating of the Max Price value.
+                                                    '); ?>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="disable_mode"><?php echo Mage::helper('M2ePro')->__('Disable Repricing'); ?>:</label>
+                        </td>
+                        <td class="value">
+                            <?php if ($this->isRepricingLinked) { ?>
+                            <input type="hidden" id="disable_mode_attribute" name="repricing[disable_mode_attribute]" value="<?php echo $this->repricingObj->getData('disable_mode_attribute') ; ?>"/>
+                            <?php } ?>
+
+                            <select id="disable_mode" name="repricing[disable_mode]" class="select-main M2ePro-custom-attribute-can-be-created" allowed_attribute_types="boolean">
+                                <?php if ($this->isRepricingLinked) { ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_MANUAL; ?>" <?php if ($this->repricingObj->getDisableMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_MANUAL) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Manually'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_PRODUCT_STATUS; ?>" <?php if ($this->repricingObj->getDisableMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_PRODUCT_STATUS) echo 'selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('When Status is Disabled'); ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="From Magento Attribute">
+                                    <?php foreach($attributesByInputTypes['boolean'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_ATTRIBUTE; ?>" <?php if ($this->repricingObj->getDisableMode() == Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_ATTRIBUTE && $attribute['code'] == $this->repricingObj->getData('disable_mode_attribute')): ?>selected="selected"<?php endif; ?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                                <?php } ?>
+                            </select>
+                            <p class="note">
+                                <span id="disable_note"><?php echo Mage::helper('M2ePro')->__('
+                                    Specify when you would like to disable the dynamic repricing for your M2E Pro Items.
+                                    <a href="%url1%" target="_blank">Learn more</a> about the Product Disabling feature.<br/><br/>
+
+                                    <strong>Manually</strong> - means that the dynamic repricing can be disabled only manually;<br/>
+                                    <strong>When Status is Disabled</strong> - means that the dynamic repricing will be automatically paused for
+                                    the Product which has Disabled status in Magento;<br/>
+                                    <strong>From Magento Attribute</strong> - means that the dynamic repricing will be automatically paused for
+                                    the Product if \'Yes\' value is provided in specified Attribute.<br/><br/>
+
+                                    Please note, only common (available in all Attribute sets in your Magento) Text or Price field Attributes are
+                                    available for the selection.<br/><br/>
+
+                                    More detailed information on how to work with this option can be found <a href="%url2%" target="_blank">here</a>.
+                                ', Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/aAAkAQ'), Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YAE0AQ')); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+<?php if (!$this->isRepricingLinked) { ?>
+</div>
+<?php } ?>

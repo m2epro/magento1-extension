@@ -157,6 +157,10 @@ GridHandler = Class.create(CommonHandler, {
                 selectAction = false;
                 return;
             }
+
+            if (o.selected && o.value != '') {
+                GridHandler.currentAction = o.value;
+            }
         });
 
         if (!selectAction) {
@@ -165,7 +169,7 @@ GridHandler = Class.create(CommonHandler, {
 
         this.scroll_page_to_top();
 
-        if (!this.confirm()) {
+        if (!this.confirm.call(this)) {
             return;
         }
 

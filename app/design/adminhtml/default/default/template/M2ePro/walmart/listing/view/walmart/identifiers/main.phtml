@@ -1,0 +1,40 @@
+<div id="edit-identifiers-popup">
+    <div id="block_notice_edit_sku" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Edit Product ID'); ?>" style="margin-top: 10px;">
+        <?php echo Mage::helper('M2ePro')->__(
+            'If you need to link your listed Item to a different product in Walmart catalog, you may edit its Product ID.<br>
+            Select a Product ID Type, enter a new Product ID value and click Submit. M2E Pro will automatically submit the new Product ID to Walmart.'
+        ); ?>
+    </div>
+    <form  id="popup-edit-form">
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <table class="form-list" cellspacing="0" cellpadding="0" style="width: 100%; margin: auto;">
+                    <tr>
+                        <td class="value"><?php echo Mage::helper('M2ePro')->__('Product ID Type'); ?>:</td>
+                        <td class="value">
+                            <select name="identifier" id="identifier" style="width: 99.5%;">
+                                <option value="gtin"><?php echo Mage::helper('M2ePro')->__('GTIN');?></option>
+                                <option value="upc"><?php echo Mage::helper('M2ePro')->__('UPC');?></option>
+                                <option value="ean"><?php echo Mage::helper('M2ePro')->__('EAN');?></option>
+                                <option value="isbn"><?php echo Mage::helper('M2ePro')->__('ISBN');?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="value"><?php echo Mage::helper('M2ePro')->__('New Product ID'); ?>:<span class="required">*</span></td>
+                        <td class="value">
+                            <input type="text" class="input-text required-entry" id="new-identifier-value" value="" style="width: 97.5%;"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+<div style="float: right; margin: 0 0 1em;">
+    <a href="#" onclick="ListingGridHandlerObj.editChannelDataHandler.cancelEditIdentifier();">Close</a>
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    <?php echo $this->getChildHtml('submit_button');?>
+</div>

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -208,13 +208,17 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
      */
     public function renameIndex($from, $to, $autoCommit = true)
     {
+        if (!$this->isIndexExists($from)) {
+            return $this;
+        }
+
         return $this->dropIndex($from, $autoCommit)->addIndex($to, $autoCommit);
     }
 
     // ---------------------------------------
 
     /**
-     * @param string name
+     * @param string $name
      * @param bool $autoCommit
      * @return $this
      * @throws Ess_M2ePro_Model_Exception_Setup
@@ -306,7 +310,8 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
         $columnInfo = $tableColumns[$name];
 
-        $type = $columnInfo['DATA_TYPE'];
+        // In some cases Magento does not cut "UNSIGNED" modifier out of column data type info
+        $type = trim(str_replace('UNSIGNED', '', strtoupper($columnInfo['DATA_TYPE'])));
         if (is_numeric($columnInfo['LENGTH']) && $columnInfo['LENGTH'] > 0) {
             $type .= '('.$columnInfo['LENGTH'].')';
         } elseif (is_numeric($columnInfo['PRECISION']) && is_numeric($columnInfo['SCALE'])) {
@@ -314,16 +319,16 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         }
 
         $default = '';
-        if ($columnInfo['DEFAULT'] !== false) {
-            $this->getConnection()->quoteInto('DEFAULT ?', $columnInfo['DEFAULT']);
+        if ($columnInfo['DEFAULT']) {
+            $default = $this->getConnection()->quoteInto('DEFAULT ?', $columnInfo['DEFAULT']);
         }
 
         return sprintf('%s %s %s %s %s',
             $type,
-            $columnInfo['UNSIGNED'] ? 'UNSIGNED' : '',
-            $columnInfo['NULLABLE'] ? 'NULL' : 'NOT NULL',
+            $columnInfo['UNSIGNED']  ? 'UNSIGNED' : '',
+            !$columnInfo['NULLABLE'] ? 'NOT NULL' : 'DEFAULT NULL',
             $default,
-            $columnInfo['IDENTITY'] ? 'AUTO_INCREMENT' : ''
+            $columnInfo['IDENTITY']  ? 'AUTO_INCREMENT' : ''
         );
     }
 

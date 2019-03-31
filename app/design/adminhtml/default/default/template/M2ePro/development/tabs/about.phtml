@@ -37,7 +37,7 @@
     <div class="entry-edit" id="magento_block_development_info_license_information">
 
        <div class="development_head_container">
-            <h4><?php echo Mage::helper('M2ePro')->__('License'); ?></h4>
+            <h4><?php echo Mage::helper('M2ePro')->__('Billing Info'); ?></h4>
        </div>
 
        <div class="fieldset">
@@ -49,24 +49,6 @@
        </div>
 
     </div>
-
-    <?php foreach ($this->components as $component => $title) : ?>
-        <div class="entry-edit" id="magento_block_development_info_license_component_<?php echo $component; ?>">
-
-            <div class="development_head_container">
-                <h4><?php echo Mage::helper('M2ePro')->__($title . ' Access'); ?></h4>
-            </div>
-
-            <div class="fieldset">
-                <div class="hor-scroll">
-
-                    <?php echo $this->getChildHtml('license_component_' . $component) ?>
-
-                </div>
-            </div>
-
-        </div>
-    <?php endforeach; ?>
 
 </div>
 

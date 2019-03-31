@@ -2,13 +2,17 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
     extends Mage_Adminhtml_Block_Widget_Form_Container
 {
+    const SOURCE_LIST = 'products';
+    const SOURCE_CATEGORIES = 'categories';
+    const SOURCE_OTHER = 'other';
+
     //########################################
 
     public function __construct()
@@ -25,7 +29,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
 
         // Set header text
         // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__('Add Products');
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Add Products', $componentName);
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__('Add Products');
+        }
         // ---------------------------------------
 
         // Set buttons actions
@@ -38,19 +47,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
         $this->removeButton('edit');
         // ---------------------------------------
 
-        if (!$this->getRequest()->getParam('listing_creation', false)) {
-            $url = $this->getUrl('*/adminhtml_ebay_listing/view',array(
-                'id' => $this->getRequest()->getParam('listing_id')
-            ));
-            $this->_addButton('back', array(
-                'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'setLocation(\''.$url.'\')',
-                'class'     => 'back'
-            ));
-        }
-
         // ---------------------------------------
-        $url = $this->getUrl('*/*/*',array('_current' => true));
+        $url = $this->getUrl('*/*/index',array('_current' => true, 'step' => 1));
         $this->_addButton('next', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'onclick'   => 'CommonHandlerObj.submitForm(\''.$url.'\');',

@@ -1,0 +1,49 @@
+<?php
+    /**@var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid_Motor_EditMode $this */
+?>
+
+<form id="listing_part_compatibility_mode_form" style="margin-top: 20px; display: inline-block;" method="post" action="<?php echo $this->getUrl('*/adminhtml_adminhtml_ebay_listing/savePartsCompatibilityMode'); ?>">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <div style="min-height: 100px; min-width: 365px;">
+
+        <div id="block_notice_ebay_listing_view_settings_grid_motor_editMode" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility Mode'); ?>">
+            <?php echo Mage::helper('M2ePro')->__('
+                You are able to select one of the available modes:<br>
+                <ul>
+                    <li>
+                        <strong>ePIDS</strong> - is based on the Product Reference IDs of compatible vehicles for this eBay Site.
+                    </li>
+                    <li>
+                        <strong>kTypes</strong> - is based on the common kType data, provided by eBay for all Sites.
+                    </li>
+                </ul>
+            '); ?>
+        </div>
+
+        <div style="margin-top: 10px; margin-bottom: 15px;">
+
+            <select id="listing_compatibility_mode_select" style="width: 100%;" class="required-entry">
+                <option style="display: none;" value=""></option>
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing::PARTS_COMPATIBILITY_MODE_EPIDS; ?>" <?php if ($this->getListing()->getChildObject()->isPartsCompatibilityModeEpids()) : echo ' selected="selected" '; endif; ?>>
+                    <?php echo Mage::helper('M2ePro')->__('ePIDs'); ?>
+                </option>
+                <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing::PARTS_COMPATIBILITY_MODE_KTYPES; ?>" <?php if ($this->getListing()->getChildObject()->isPartsCompatibilityModeKtypes()) : echo ' selected="selected" '; endif; ?>>
+                    <?php echo Mage::helper('M2ePro')->__('kTypes'); ?>
+                </option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <div style="float: right; margin-bottom: 10px;">
+        <a id="cancel_button" href="javascript: void(0);" onclick="EditCompatibilityModeObj.closePopup();"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <?php echo $this->getChildHtml('save'); ?>
+    </div>
+
+    <div style="clear: both"></div>
+
+</form>

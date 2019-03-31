@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -132,13 +132,16 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
             return $this->process();
         }
 
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
-        $connectorObj = $dispatcherObject->getConnector('settings', $this->getSearchMethod(), 'requester',
-                                                        $this->getConnectorParams(),
-                                                        $this->getListingProduct()->getAccount(),
-                                                        'Ess_M2ePro_Model_Amazon_Search');
+        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+        $connectorObj = $dispatcherObject->getCustomConnector(
+            'Amazon_Search_Settings_'.ucfirst($this->getSearchMethod()).'_Requester',
+            $this->getConnectorParams(),
+            $this->getListingProduct()->getAccount()
+        );
 
-        return $dispatcherObject->process($connectorObj);
+        $dispatcherObject->process($connectorObj);
+
+        return $connectorObj->getPreparedResponseData();
     }
 
     //########################################
@@ -203,7 +206,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
 
         $dataForUpdate = array(
             'general_id' => $generalId,
-            'general_id_search_info' => json_encode($generalIdSearchInfo),
+            'general_id_search_info' => Mage::helper('M2ePro')->jsonEncode($generalIdSearchInfo),
             'is_isbn_general_id' => Mage::helper('M2ePro')->isISBN($generalId),
             'search_settings_status' => null,
             'search_settings_data'   => null,
@@ -238,7 +241,11 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
 
         $this->getListingProduct()->save();
 
-        $typeModel->getProcessor()->process();
+        try {
+            $typeModel->getProcessor()->process();
+        } catch (\Exception $exception) {
+            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+        }
     }
 
     //########################################
@@ -251,7 +258,8 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
 
         if ($this->getVariationManager()->isIndividualType()) {
             if ($this->getListingProduct()->getMagentoProduct()->isBundleType() ||
-                $this->getListingProduct()->getMagentoProduct()->isSimpleTypeWithCustomOptions()
+                $this->getListingProduct()->getMagentoProduct()->isSimpleTypeWithCustomOptions() ||
+                $this->getListingProduct()->getMagentoProduct()->isDownloadableTypeWithSeparatedLinks()
             ) {
                 return false;
             }

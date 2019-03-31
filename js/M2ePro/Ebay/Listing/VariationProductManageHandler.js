@@ -75,6 +75,8 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
         variationProductManagePopup.close();
     },
 
+    // ---------------------------------------
+
     loadVariationsGrid: function(showMask)
     {
         var self = this;
@@ -91,13 +93,17 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
             src: $('ebayVariationsProductManageVariationsGridIframeUrl').value,
             width: '100%',
             height: '100%',
-            style: 'border: none;'
+            style: 'border: none;',
+            'parent-container': 'ebayVariationsProductManageVariationsGrid'
         });
 
         $('ebayVariationsProductManageVariationsGrid').insert(iframe);
 
         Event.observe($('ebayVariationsProductManageVariationsGridIframe'), 'load', function() {
             $('loading-mask').hide();
+            FrameHandlerObj.autoHeightFrameByContent(
+                $('ebayVariationsProductManageVariationsGrid'), this
+            );
         });
     },
 
@@ -109,6 +115,57 @@ EbayListingVariationProductManageHandler = Class.create(ActionHandler,{
             return;
         }
         gridIframe.contentWindow.EbayListingEbayGridHandlerObj.actionHandler.gridHandler.unselectAllAndReload();
+    },
+
+    // ---------------------------------------
+
+    loadDeletedVariationsGrid: function(showMask)
+    {
+        var self = this;
+        showMask && $('loading-mask').show();
+
+        var gridIframe = $('ebayDeletedVariationsProductManageVariationsGridIframe');
+
+        if(gridIframe) {
+            gridIframe.remove();
+        }
+
+        var iframe = new Element('iframe', {
+            id: 'ebayDeletedVariationsProductManageVariationsGridIframe',
+            src: $('ebayDeletedVariationsProductManageVariationsGridIframeUrl').value,
+            width: '100%',
+            height: '100%',
+            style: 'border: none;',
+            'parent-container': 'ebayDeletedVariationsProductManageVariationsGrid'
+        });
+
+        $('ebayDeletedVariationsProductManageVariationsGrid').insert(iframe);
+
+        Event.observe($('ebayDeletedVariationsProductManageVariationsGridIframe'), 'load', function() {
+            $('loading-mask').hide();
+            FrameHandlerObj.autoHeightFrameByContent(
+                $('ebayDeletedVariationsProductManageVariationsGrid'), this
+            );
+            $('deleted_magento_variations_show') && $('deleted_magento_variations_show').show();
+        });
+    },
+
+    // ---------------------------------------
+
+    showDeletedMagentoVariations: function()
+    {
+        $('deleted_magento_variations_show').hide();
+        $('deleted_magento_variations_hide').show();
+
+        $('ebayDeletedVariationsProductManageVariationsGrid').show();
+    },
+
+    hideDeletedMagentoVariations: function()
+    {
+        $('deleted_magento_variations_show').show();
+        $('deleted_magento_variations_hide').hide();
+
+        $('ebayDeletedVariationsProductManageVariationsGrid').hide();
     }
 
     // ---------------------------------------

@@ -2,7 +2,7 @@
 
     <tr>
         <td class="label">
-            <label><?php echo Mage::helper('M2ePro')->__('License Key'); ?>: </label>
+            <label><?php echo Mage::helper('M2ePro')->__('Extension Key'); ?>: </label>
         </td>
         <td class="value">
             <?php echo $this->licenseKey; ?>
@@ -30,19 +30,6 @@
             <td class="value">
                 <span <?php echo $this->licenseData['valid']['ip'] ? '' : 'style="color:red;"' ?>>
                     <?php echo $this->licenseData['ip']; ?>
-                </span>
-            </td>
-        </tr>
-    <?php endif; ?>
-
-    <?php if ($this->licenseData['directory'] != ''): ?>
-        <tr>
-            <td class="label">
-                <label><?php echo Mage::helper('M2ePro')->__('Valid Directory'); ?>: </label>
-            </td>
-            <td class="value">
-                <span <?php echo $this->licenseData['valid']['directory'] ? '' : 'style="color:red;"' ?>>
-                    <?php echo $this->licenseData['directory']; ?>
                 </span>
             </td>
         </tr>

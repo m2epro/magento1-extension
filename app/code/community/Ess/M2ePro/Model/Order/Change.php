@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -12,8 +12,6 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
     const ACTION_UPDATE_SHIPPING = 'update_shipping';
     const ACTION_CANCEL          = 'cancel';
     const ACTION_REFUND          = 'refund';
-
-    const CREATOR_TYPE_OBSERVER = 1;
 
     const MAX_ALLOWED_PROCESSING_ATTEMPTS = 3;
 
@@ -58,7 +56,7 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
      */
     public function getParams()
     {
-        $params = json_decode($this->getData('params'), true);
+        $params = Mage::helper('M2ePro')->jsonDecode($this->getData('params'));
 
         return is_array($params) ? $params : array();
     }
@@ -129,10 +127,6 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
             throw new InvalidArgumentException('Action is invalid.');
         }
 
-        if (!in_array($creatorType, array(self::CREATOR_TYPE_OBSERVER))) {
-            throw new InvalidArgumentException('Creator is invalid.');
-        }
-
         $hash = self::generateHash($orderId, $action, $params);
 
         /** @var Ess_M2ePro_Model_Order_Change $change */
@@ -151,7 +145,7 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         $change->addData(array(
             'order_id'     => $orderId,
             'action'       => $action,
-            'params'       => json_encode($params),
+            'params'       => Mage::helper('M2ePro')->jsonEncode($params),
             'creator_type' => $creatorType,
             'component'    => $component,
             'hash'         => $hash

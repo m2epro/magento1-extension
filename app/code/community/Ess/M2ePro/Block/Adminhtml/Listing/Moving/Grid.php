@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -151,7 +151,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
     {
         $confirmMessage = Mage::helper('M2ePro')->__('Are you sure?');
         $actions = '&nbsp;<a href="javascript:void(0);" onclick="confirm(\''.$confirmMessage.'\') && ';
-        $actions .= $this->getMovingHandlerJs() . '.tryToSubmit('.$row->getData('listing_id').');">';
+        $actions .= $this->getMovingHandlerJs() . '.gridHandler.tryToMove('.$row->getData('listing_id').');">';
         $actions .= Mage::helper('M2ePro')->__('Move To This Listing') . '</a>';
         return $actions;
     }
@@ -212,7 +212,7 @@ HTML;
         $componentMode = Mage::helper('M2ePro/Data_Global')->getValue('componentMode');
 
         // ---------------------------------------
-        $newListingUrl = $this->getUrl('*/adminhtml_common_listing_create/index', array(
+        $newListingUrl = $this->getUrl('*/adminhtml_'.strtolower($componentMode).'_listing_create/index', array(
             'step' => 1,
             'clear' => 1,
             'account_id' => Mage::helper('M2ePro/Data_Global')->getValue('accountId'),

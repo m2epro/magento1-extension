@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -60,6 +60,7 @@ class Ess_M2ePro_Model_Upgrade_Tables
             'amazon_template_new_product',
             'amazon_template_new_product_description',
             'amazon_template_new_product_specific',
+            'amazon_template_shipping',
             'ebay_dictionary_shipping_category',
             'ebay_message',
             'ebay_motor_specific',
@@ -69,6 +70,19 @@ class Ess_M2ePro_Model_Upgrade_Tables
             'ebay_template_general_payment',
             'ebay_template_general_shipping',
             'ebay_template_general_specific',
+            'buy_account',
+            'buy_item',
+            'buy_listing',
+            'buy_listing_auto_category_group',
+            'buy_listing_other',
+            'buy_listing_product',
+            'buy_listing_product_variation',
+            'buy_listing_product_variation_option',
+            'buy_marketplace',
+            'buy_order',
+            'buy_order_item',
+            'buy_template_selling_format',
+            'buy_template_synchronization',
             'buy_template_description',
             'buy_template_general',
             'play_account',
@@ -89,9 +103,28 @@ class Ess_M2ePro_Model_Upgrade_Tables
             'amazon_category',
             'amazon_category_description',
             'amazon_category_specific',
-            'primary_config',
-            'cache_config',
-            'synchronization_config'
+            'amazon_processed_inventory',
+            'processing_request',
+            'locked_object',
+            'buy_dictionary_category',
+            'buy_template_new_product',
+            'buy_template_new_product_core',
+            'buy_template_new_product_attribute',
+            'ebay_processing_action_item',
+            'amazon_processing_action_item',
+            'indexer_listing_product_parent',
+            'amazon_dictionary_shipping_override',
+            'amazon_template_shipping_override',
+            'amazon_template_shipping_override_service',
+            'amazon_template_shipping_template',
+            'product_change',
+            'synchronization_config',
+            'ebay_processing_action',
+            'amazon_processing_action',
+            'connector_pending_requester_single',
+            'connector_pending_requester_partial',
+            'amazon_processing_action_list_sku',
+            'listing_product_synchronization_instruction'
         );
 
         $currentTables = array();

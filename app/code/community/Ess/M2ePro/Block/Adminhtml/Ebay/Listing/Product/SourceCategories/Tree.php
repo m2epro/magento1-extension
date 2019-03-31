@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -200,8 +200,11 @@ HTML;
 
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                              ->select()
-                             ->from(Mage::getSingleton('core/resource')->getTableName('catalog/category_product'),
-                                    'category_id')
+                             ->from(
+                                 Mage::helper('M2ePro/Module_Database_Structure')
+                                     ->getTableNameWithPrefix('catalog/category_product'),
+                                 'category_id'
+                             )
                              ->where('`product_id` IN(?)',$this->getSelectedIds());
 
         $affectedCategoriesCount = Mage::getModel('catalog/category')->getCollection()
@@ -230,7 +233,7 @@ HTML;
         /* @var $select Varien_Db_Select */
         $select = Mage::getModel('catalog/category')->getCollection()->getSelect();
         $select->joinLeft(
-            Mage::getSingleton('core/resource')->getTableName('catalog/category_product'),
+            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('catalog/category_product'),
             "entity_id = category_id AND product_id IN ({$ids})",
             array('product_id')
         );
@@ -266,7 +269,7 @@ HTML;
 
     public function getInfoJson()
     {
-        return json_encode(array(
+        return Mage::helper('M2ePro')->jsonEncode(array(
             'category_products' => $this->getProductsCountForEachCategory(),
             'total_products_count' => count($this->getSelectedIds()),
             'total_categories_count' => $this->getAffectedCategoriesCount()

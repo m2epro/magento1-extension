@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -22,10 +22,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Header extends Ess_M2ePro_Block_Ad
             return Mage::helper('M2ePro')->__('Amazon');
         }
 
-        if ($this->getListing()->isComponentModeBuy()) {
-            return Mage::helper('M2ePro')->__('Rakuten');
-        }
-
         return '';
     }
 
@@ -36,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Header extends Ess_M2ePro_Block_Ad
 
     public function getAccountTitle()
     {
-        return $this->cutLongLines($this->getListing()->getAccount()->getTitle());
+        return $this->cutLongLines($this->getAccount()->getTitle());
     }
 
     public function getMarketplaceTitle()
@@ -67,9 +63,17 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Header extends Ess_M2ePro_Block_Ad
     /**
      * @return Ess_M2ePro_Model_Listing
      */
-    private function getListing()
+    public function getListing()
     {
         return $this->getData('listing');
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Account
+     */
+    public function getAccount()
+    {
+        return $this->getListing()->getAccount();
     }
 
     //########################################

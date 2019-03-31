@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -38,26 +38,17 @@ class Ess_M2ePro_Model_Servicing_Task_Messages extends Ess_M2ePro_Model_Servicin
 
     private function updateMagentoMessages(array $messages)
     {
-        $messages = array_filter($messages,array($this,'updateMagentoMessagesFilterMagentoMessages'));
+        $messages = array_filter($messages, array($this, 'updateMagentoMessagesFilterMagentoMessages'));
         !is_array($messages) && $messages = array();
 
-        $magentoTypes = array(
-            Ess_M2ePro_Helper_Module::SERVER_MESSAGE_TYPE_NOTICE =>
-                Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE,
-            Ess_M2ePro_Helper_Module::SERVER_MESSAGE_TYPE_SUCCESS =>
-                Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE,
-            Ess_M2ePro_Helper_Module::SERVER_MESSAGE_TYPE_WARNING =>
-                Mage_AdminNotification_Model_Inbox::SEVERITY_MINOR,
-            Ess_M2ePro_Helper_Module::SERVER_MESSAGE_TYPE_ERROR =>
-                Mage_AdminNotification_Model_Inbox::SEVERITY_CRITICAL
-        );
+        /** @var Ess_M2ePro_Model_Issue_Notification_Channel_Magento_GlobalMessage $notificationChannel */
+        $notificationChannel = Mage::getModel('M2ePro/Issue_Notification_Channel_Magento_GlobalMessage');
 
-        foreach ($messages as $message) {
-            Mage::helper('M2ePro/Magento')->addGlobalNotification(
-                $message['title'],
-                $message['text'],
-                $magentoTypes[$message['type']]
-            );
+        foreach ($messages as $messageData) {
+
+            /** @var Ess_M2ePro_Model_Issue_Object $issue */
+            $issue = Mage::getModel('M2ePro/Issue_Object', $messageData);
+            $notificationChannel->addMessage($issue);
         }
     }
 
@@ -78,11 +69,13 @@ class Ess_M2ePro_Model_Servicing_Task_Messages extends Ess_M2ePro_Model_Servicin
 
     private function updateModuleMessages(array $messages)
     {
-        $messages = array_filter($messages,array($this,'updateModuleMessagesFilterModuleMessages'));
+        $messages = array_filter($messages, array($this, 'updateModuleMessagesFilterModuleMessages'));
         !is_array($messages) && $messages = array();
 
         Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/server/','messages',json_encode($messages)
+            '/'.Mage::helper('M2ePro/Module')->getName().'/server/',
+            'messages',
+            Mage::helper('M2ePro')->jsonEncode($messages)
         );
     }
 

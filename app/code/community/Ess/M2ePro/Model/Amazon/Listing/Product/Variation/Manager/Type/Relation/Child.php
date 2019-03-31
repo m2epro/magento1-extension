@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -79,7 +79,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
      */
     public function isVariationChannelMatched()
     {
-        return (bool)$this->getListingProduct()->getData('is_variation_channel_matched');
+        return (bool)$this->getAmazonListingProduct()->getData('is_variation_channel_matched');
     }
 
     //########################################

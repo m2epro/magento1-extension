@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -28,6 +28,10 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Summary extends Mage_Adminhtml
     {
         $this->setChild('actual_info', $this->getLayout()->createBlock(
             'M2ePro/adminhtml_development_info_actual'
+        ));
+
+        $this->setChild('inspection', $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_development_info_inspection'
         ));
 
         $this->setChild('database_module', $this->getLayout()->createBlock(

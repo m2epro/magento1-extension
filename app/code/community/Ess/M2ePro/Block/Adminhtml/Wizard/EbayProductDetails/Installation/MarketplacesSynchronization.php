@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -34,12 +34,12 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_EbayProductDetails_Installation_Marketpl
                                               ->setOrder('group_title', 'ASC')
                                               ->setOrder('sorder','ASC')
                                               ->setOrder('title','ASC');
-
         $marketplaces = array();
         $marketplacesMovedForSort = array();
 
         foreach ($collectionMarketplaces as $marketplace) {
             if ($marketplace->getGroupTitle() == 'Asia / Pacific' ||
+                $marketplace->getGroupTitle() == 'Australia Region' ||
                 $marketplace->getGroupTitle() == 'Other') {
 
                 $marketplacesMovedForSort[] = $marketplace->getData();

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -35,9 +35,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Synchronization_Edit_Form_Data ex
         ));
         $this->setChild('ebay_template_synchronization_edit_form_tabs_stop', $this->getLayout()->createBlock(
             'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_stop'
-        ));
-        $this->setChild('ebay_template_synchronization_edit_form_tabs_schedule', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_schedule'
         ));
 
         return parent::_beforeToHtml();

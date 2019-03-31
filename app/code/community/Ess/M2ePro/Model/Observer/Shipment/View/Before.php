@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Observer_Shipment_View_Before extends Ess_M2ePro_Model_Ob
             ->addJs('M2ePro/General/PhpHandler.js')
             ->addJs('M2ePro/General/TranslatorHandler.js')
             ->addJs('M2ePro/General/UrlHandler.js')
-            ->addJs('M2ePro/Common/Amazon/Order/MerchantFulfillment/MagentoHandler.js')
+            ->addJs('M2ePro/Amazon/Order/MerchantFulfillment/MagentoHandler.js')
             ->addItem('js_css', 'prototype/windows/themes/default.css');
     }
 
@@ -120,7 +120,7 @@ class Ess_M2ePro_Model_Observer_Shipment_View_Before extends Ess_M2ePro_Model_Ob
         }
 
         $getLabelUrl = $block->getUrl(
-            'M2ePro/adminhtml_common_amazon_order_merchantFulfillment/getLabel',
+            'M2ePro/adminhtml_amazon_order_merchantFulfillment/getLabel',
             array('order_id' => $order->getId())
         );
 

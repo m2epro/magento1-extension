@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -62,8 +62,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
 
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                              ->select()
-                             ->from(Mage::getSingleton('core/resource')->getTableName('catalog/category_product'),
-                                    'category_id')
+                             ->from(
+                                 Mage::helper('M2ePro/Module_Database_Structure')
+                                     ->getTableNameWithPrefix('catalog/category_product'),
+                                 'category_id'
+                             )
                              ->where('`product_id` IN(?)',$this->getProductsIds());
 
         $collection->getSelect()->where('entity_id IN ('.$dbSelect->__toString().')');
@@ -208,7 +211,7 @@ HTML;
         $path = 'adminhtml_ebay_listing_productAdd/removeSessionProductsByCategory';
         $urls[$path] = $this->getUrl('*/' . $path);
 
-        $urls = json_encode($urls);
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
         $js = '';
         if (!$this->getRequest()->getParam('grid')) {

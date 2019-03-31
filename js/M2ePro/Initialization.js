@@ -5,6 +5,7 @@ CommonHandlerObj = new CommonHandler();
 MagentoMessageObj = new MagentoMessage();
 MagentoBlockObj = new MagentoBlock();
 
+LocalStorageObj = new LocalStorage();
 ModuleNoticeObj = new BlockNotice('Module');
 ServerNoticeObj = new BlockNotice('Server');
 
@@ -70,7 +71,7 @@ function initializationMagentoBlocks()
             '<div class="entry-edit-head-right" style="float: right; width: 20%;"></div>';
         MagentoBlockObj.observePrepareStart(blockObj);
 
-        if (!IS_VIEW_EBAY && !IS_VIEW_COMMON && !IS_VIEW_CONFIGURATION) {
+        if (!IS_VIEW_INTEGRATION && !IS_VIEW_WIZARD && !IS_VIEW_CONFIGURATION) {
             return;
         }
 
@@ -145,6 +146,10 @@ function prepareFloatingToolbarContent()
 // Set main observers
 // ---------------------------------------
 Event.observe(window, 'load', function() {
+
+    if (typeof M2ePro === 'undefined') {
+        return;
+    }
 
     initializationMagentoBlocks();
     initializationCustomAttributeInputs();

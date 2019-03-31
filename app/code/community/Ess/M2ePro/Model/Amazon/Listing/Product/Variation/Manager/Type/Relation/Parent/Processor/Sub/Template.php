@@ -2,11 +2,11 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_Template
+class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_Template
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_Abstract
 {
     //########################################
@@ -15,8 +15,9 @@ class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     protected function execute()
     {
-        $descriptionTemplateId = $this->getProcessor()->getAmazonListingProduct()->getTemplateDescriptionId();
-        $shippingOverrideTemplateId = $this->getProcessor()->getAmazonListingProduct()->getTemplateShippingOverrideId();
+        $descriptionTemplateId    = $this->getProcessor()->getAmazonListingProduct()->getTemplateDescriptionId();
+        $shippingTemplateId       = $this->getProcessor()->getAmazonListingProduct()->getTemplateShippingId();
+        $productTaxCodeTemplateId = $this->getProcessor()->getAmazonListingProduct()->getTemplateProductTaxCodeId();
 
         foreach ($this->getProcessor()->getTypeModel()->getChildListingsProducts() as $listingProduct) {
 
@@ -30,8 +31,13 @@ class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
                 $needSave = true;
             }
 
-            if ($amazonListingProduct->getTemplateShippingOverrideId() != $shippingOverrideTemplateId) {
-                $listingProduct->setData('template_shipping_override_id', $shippingOverrideTemplateId);
+            if ($amazonListingProduct->getTemplateShippingId() != $shippingTemplateId) {
+                $listingProduct->setData('template_shipping_id', $shippingTemplateId);
+                $needSave = true;
+            }
+
+            if ($amazonListingProduct->getTemplateProductTaxCodeId() != $productTaxCodeTemplateId) {
+                $listingProduct->setData('template_product_tax_code_id', $productTaxCodeTemplateId);
                 $needSave = true;
             }
 

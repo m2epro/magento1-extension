@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -83,7 +83,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Template_Edit
 
         // initiate template switcher url
         // ---------------------------------------
-        $html .= Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher::getSwitcherUrlHtml();
+        $html .= Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher::getSwitcherUrlHtml(
+            Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher::MODE_COMMON
+        );
         // ---------------------------------------
 
         // ---------------------------------------

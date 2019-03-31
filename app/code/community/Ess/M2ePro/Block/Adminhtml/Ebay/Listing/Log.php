@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -92,7 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_W
 
     protected function _toHtml()
     {
-        $translations = json_encode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(array(
             'Description' => Mage::helper('M2ePro')->__('Description')
         ));
 

@@ -28,7 +28,7 @@
 <div class="entry-edit" style="padding-top: 10px;">
 
     <?php if ($this->hasProductName()): ?>
-        <div style="padding: 10px 0;"><?php echo Mage::helper('M2ePro')->__('Based on Product') ?>&nbsp;<span style="color: gray;"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getProductName()) ?></span></div>
+        <div style="padding: 10px 0;"><?php echo Mage::helper('M2ePro')->__('Based on Product:') ?>&nbsp;<span style="color: gray; text-decoration: underline;"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getProductName()) ?></span></div>
     <?php endif; ?>
 
     <div id="fees-table" cellspacing="0" class="form-list" style="width: 100%;">

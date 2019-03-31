@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -141,12 +141,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific_Wrapper
             'skip_get_suggested' => true
         ));
 
-        $path = 'adminhtml_ebay_listing/review';
+        $path = 'adminhtml_ebay_listing_categorySettings/review';
         $urls[$path] = $this->getUrl('*/' . $path, array(
-            '_current' => true,
+            '_current' => true
         ));
 
-        $urls = json_encode($urls);
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
 
         // M2ePro_TRANSLATIONS
@@ -154,7 +154,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific_Wrapper
         $text = 'Loading. Please wait';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
 
-        $translations = json_encode($translations);
+        $translations = Mage::helper('M2ePro')->jsonEncode($translations);
         // ---------------------------------------
 
         $javascript = <<<HTML

@@ -1,0 +1,24 @@
+<style>
+    #taxCodesGrid {
+        padding-top: 10px;
+    }
+    #taxCodesGrid_table .a-left, #taxCodesGrid_table .no-link {
+        padding: 5px;
+    }
+    #taxCodesGrid .filter-actions.a-right {
+        padding-right: 10px
+    }
+    .dialog.popup-window {
+        width: 950px;
+    }
+</style>
+
+<div class="hor-scroll" style="height: 450px">
+    <div id="tax_codes" >
+        <?php echo $this->getChildHtml('tax_codes_grid'); ?>
+    </div>
+</div>
+
+<div style="float: right; margin-top: 20px; margin-bottom: 12px;">
+    <?php echo $this->getChildHtml('tax_codes_close_btn'); ?>
+</div>

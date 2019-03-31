@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -35,6 +35,57 @@ class Ess_M2ePro_Helper_Magento_Product extends Mage_Core_Helper_Abstract
         $product->load($productId);
 
         return $this->cacheLoadedProducts[$cacheKey] = $product;
+    }
+
+    /**
+     * @param array $associatedProducts
+     * @param Ess_M2ePro_Model_Magento_Product $product
+     * @return array|mixed
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function prepareAssociatedProducts(array $associatedProducts, Ess_M2ePro_Model_Magento_Product $product)
+    {
+        $productId   = $product->getProductId();
+
+        if ($product->isSimpleType() ||
+            $product->isDownloadableType()) {
+            return array($productId);
+        }
+
+        if ($product->isBundleType()) {
+            $bundleAssociatedProducts = array();
+
+            foreach ($associatedProducts as $key => $productIds) {
+                $bundleAssociatedProducts[$key] = reset($productIds);
+            }
+
+            return $bundleAssociatedProducts;
+        }
+
+        if ($product->isConfigurableType()) {
+            $configurableAssociatedProducts = array();
+
+            foreach ($associatedProducts as $productIds) {
+                if (count($configurableAssociatedProducts) == 0) {
+                    $configurableAssociatedProducts = $productIds;
+                } else {
+                    $configurableAssociatedProducts = array_intersect($configurableAssociatedProducts, $productIds);
+                }
+            }
+
+            if (count($configurableAssociatedProducts) != 1) {
+                throw new Ess_M2ePro_Model_Exception_Logic('There is no associated Product found for
+                    Configurable Product.');
+            }
+
+            return $configurableAssociatedProducts;
+        }
+
+        if ($product->isGroupedType()) {
+            return array_values($associatedProducts);
+        }
+
+        return array();
     }
 
     //########################################

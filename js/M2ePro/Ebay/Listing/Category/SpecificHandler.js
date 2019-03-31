@@ -541,19 +541,92 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
 
         this.checkSpecificsCounter(select);
         select.up('td').next('td').select('.validation-advice').each(Element.hide);
+        this.hideValidateCustomSpecificsAdvices();
     },
 
     // ---------------------------------------
 
     validate: function()
     {
-        if ($$('.'+this.uniqId+'not-none').length > this.maxSelectedSpecifics) {
-            $(this.uniqId+'maximum_specifics_error').show();
+        if (!this.validateMaximumSpecifics()) {
+            return false;
+        }
+
+        if (!this.validateCustomSpecificsLabels()) {
             return false;
         }
 
         return window['specificForm'+this.uniqId].validate();
     },
+
+    validateMaximumSpecifics: function()
+    {
+        if ($$('.'+this.uniqId+'not-none').length > this.maxSelectedSpecifics) {
+            $(this.uniqId+'maximum_specifics_error').show();
+            return false;
+        }
+
+        return true;
+    },
+
+    validateCustomSpecificsLabels: function()
+    {
+        var self = this;
+
+        self.hideValidateCustomSpecificsAdvices();
+
+        var isValid = true;
+
+        var usedSpecificsTitles = [];
+        self.dictionarySpecifics.each(function(specific, specificIndex) {
+            usedSpecificsTitles[specific.title] = [specificIndex];
+        });
+
+        $$('.M2ePro-validate-custom-specific-label-'+self.uniqId).each(function(element) {
+
+            if (!element.visible()) {
+                return;
+            }
+
+            if (!element.value) {
+                return;
+            }
+
+            var rowId = element.up('tr').getAttribute('row_id');
+
+            var elemValue = trim(element.value);
+            if (usedSpecificsTitles[elemValue] === undefined) {
+                usedSpecificsTitles[elemValue] = [rowId];
+            } else {
+                usedSpecificsTitles[elemValue].push(rowId);
+            }
+        });
+
+        for (var rowName in usedSpecificsTitles) {
+            if (usedSpecificsTitles.hasOwnProperty(rowName)) {
+                if (usedSpecificsTitles[rowName].length > 1) {
+
+                    isValid = false;
+                    usedSpecificsTitles[rowName].each(function (rowNumber) {
+                        var advice = $('advice-' + self.uniqId + 'custom_specifics_label_' + rowNumber);
+                        advice && advice.show();
+                    });
+                }
+            }
+        };
+
+        return isValid;
+    },
+
+    hideValidateCustomSpecificsAdvices: function()
+    {
+        var advices = $$('.'+this.uniqId+'advice-custom_specifics_label');
+        advices.each(function(element){
+            element.hide();
+        });
+    },
+
+    // ---------------------------------------
 
     checkAttributesSelect: function(id, value)
     {

@@ -227,39 +227,6 @@ MarketplaceHandler.prototype = Object.extend(new CommonHandler(), {
             $('synch_info_wait_'+self.marketplacesForUpdate[self.marketplacesForUpdateCurrentIndex-1]).hide();
             $('synch_info_process_'+self.marketplacesForUpdate[self.marketplacesForUpdateCurrentIndex-1]).hide();
             $('synch_info_complete_'+self.marketplacesForUpdate[self.marketplacesForUpdateCurrentIndex-1]).show();
-
-            var tempEndFlag = 0;
-            if (self.marketplacesForUpdateCurrentIndex >= self.marketplacesForUpdate.length) {
-                tempEndFlag = 1;
-            }
-
-            new Ajax.Request(M2ePro.url.get('adminhtml_general/synchGetLastResult'), {
-                method:'get',
-                asynchronous: true,
-                onSuccess: function(transport) {
-
-                    if (transport.responseText == self.synchProgressObj.resultTypeError) {
-                        self.synchErrors++;
-                    } else if (transport.responseText == self.synchProgressObj.resultTypeWarning) {
-                        self.synchWarnings++;
-                    } else {
-                        self.synchSuccess++;
-                    }
-
-                    if (tempEndFlag == 1) {
-                        if (self.synchErrors > 0) {
-                            self.synchProgressObj.printFinalMessage(self.synchProgressObj.resultTypeError);
-                        } else if (self.synchWarnings > 0) {
-                            self.synchProgressObj.printFinalMessage(self.synchProgressObj.resultTypeWarning);
-                        } else {
-                            self.synchProgressObj.printFinalMessage(self.synchProgressObj.resultTypeSuccess);
-                        }
-                        self.synchErrors = 0;
-                        self.synchWarnings = 0;
-                        self.synchSuccess = 0;
-                    }
-                }
-            });
         }
 
         if (self.marketplacesForUpdateCurrentIndex >= self.marketplacesForUpdate.length) {
@@ -269,6 +236,10 @@ MarketplaceHandler.prototype = Object.extend(new CommonHandler(), {
             self.marketplacesUpdateFinished = true;
 
             self.synchProgressObj.end();
+
+            self.synchSuccess++;
+
+            self.synchProgressObj.printFinalMessage(self.synchProgressObj.resultTypeSuccess);
 
             return;
         }

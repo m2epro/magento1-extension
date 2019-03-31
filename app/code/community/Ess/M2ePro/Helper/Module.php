@@ -2,15 +2,12 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 {
-    const SERVER_LOCK_NO  = 0;
-    const SERVER_LOCK_YES = 1;
-
     const SERVER_MESSAGE_TYPE_NOTICE  = 0;
     const SERVER_MESSAGE_TYPE_ERROR   = 1;
     const SERVER_MESSAGE_TYPE_WARNING = 2;
@@ -21,6 +18,8 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     const ENVIRONMENT_TESTING     = 'testing';
 
     const DEVELOPMENT_MODE_COOKIE_KEY = 'm2epro_development_mode';
+
+    const IDENTIFIER = 'Ess_M2ePro';
 
     //########################################
 
@@ -38,14 +37,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     public function getCacheConfig()
     {
         return Mage::getSingleton('M2ePro/Config_Cache');
-    }
-
-    /**
-     * @return Ess_M2ePro_Model_Config_Synchronization
-     */
-    public function getSynchronizationConfig()
-    {
-        return Mage::getSingleton('M2ePro/Config_Synchronization');
     }
 
     //########################################
@@ -72,15 +63,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getRevision()
     {
-        $revision = '12591';
-
-        if ($revision == str_replace('|','#','|REVISION|')) {
-            $revision = (int)exec('svnversion');
-            $revision == 0 && $revision = 'N/A';
-            $revision .= '-dev';
-        }
-
-        return $revision;
+        return '13755';
     }
 
     // ---------------------------------------
@@ -101,23 +84,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function isLockedByServer()
-    {
-        $lock = (int)Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.$this->getName().'/server/', 'lock'
-        );
-
-        $validValues = array(self::SERVER_LOCK_NO, self::SERVER_LOCK_YES);
-
-        if (in_array($lock,$validValues)) {
-            return $lock;
-        }
-
-        return self::SERVER_LOCK_NO;
-    }
-
-    // ---------------------------------------
-
     public function getServerMessages()
     {
         $messages = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
@@ -125,7 +91,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         );
 
         $messages = (!is_null($messages) && $messages != '') ?
-                    (array)json_decode((string)$messages,true) :
+                    (array)Mage::helper('M2ePro')->jsonDecode((string)$messages) :
                     array();
 
         $messages = array_filter($messages,array($this,'getServerMessagesFilterModuleMessages'));
@@ -145,14 +111,18 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function isDisabled()
+    {
+        return (bool)$this->getConfig()->getGroupValue(NULL, 'is_disabled');
+    }
+
+    //########################################
+
     public function isReadyToWork()
     {
-        if (!Mage::helper('M2ePro/Module_Wizard')->isFinished('migrationToV6')) {
-            return false;
-        }
-
         if (!Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished() &&
-            !Mage::helper('M2ePro/View_Common')->isInstallationWizardFinished()) {
+            !Mage::helper('M2ePro/View_Amazon')->isInstallationWizardFinished() &&
+            !Mage::helper('M2ePro/View_Walmart')->isInstallationWizardFinished()) {
 
             return false;
         }
@@ -179,81 +149,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         );
 
         return $paths;
-    }
-
-    public function getRequirementsInfo()
-    {
-        $clientPhpData = Mage::helper('M2ePro/Client')->getPhpSettings();
-
-        $requirements = array (
-
-            'php_version' => array(
-                'title' => Mage::helper('M2ePro')->__('PHP Version'),
-                'condition' => array(
-                    'sign' => '>=',
-                    'value' => '5.3.0'
-                ),
-                'current' => array(
-                    'value' => Mage::helper('M2ePro/Client')->getPhpVersion(),
-                    'status' => true
-                )
-            ),
-
-            'memory_limit' => array(
-                'title' => Mage::helper('M2ePro')->__('Memory Limit'),
-                'condition' => array(
-                    'sign' => '>=',
-                    'value' => '256 MB'
-                ),
-                'current' => array(
-                    'value' => (int)$clientPhpData['memory_limit'] . ' MB',
-                    'status' => true
-                )
-            ),
-
-            'magento_version' => array(
-                'title' => Mage::helper('M2ePro')->__('Magento Version'),
-                'condition' => array(
-                    'sign' => '>=',
-                    'value' => Mage::helper('M2ePro/Magento')->isEnterpriseEdition()   ? '1.7.0.0' :
-                               (Mage::helper('M2ePro/Magento')->isProfessionalEdition() ? '1.7.0.0' : '1.4.1.0')
-                ),
-                'current' => array(
-                    'value' => Mage::helper('M2ePro/Magento')->getVersion(false),
-                    'status' => true
-                )
-            ),
-
-            'max_execution_time' => array(
-                'title' => Mage::helper('M2ePro')->__('Max Execution Time'),
-                'condition' => array(
-                    'sign' => '>=',
-                    'value' => '360 sec'
-                ),
-                'current' => array(
-                    'value' => is_null($clientPhpData['max_execution_time'])
-                               ? 'unknown' : $clientPhpData['max_execution_time'] . ' sec',
-                    'status' => true
-                )
-            )
-        );
-
-        foreach ($requirements as $key => &$requirement) {
-
-            // max execution time is unlimited or fcgi handler
-            if ($key == 'max_execution_time' &&
-                ($clientPhpData['max_execution_time'] == 0 || is_null($clientPhpData['max_execution_time']))) {
-                continue;
-            }
-
-            $requirement['current']['status'] = version_compare(
-                $requirement['current']['value'],
-                $requirement['condition']['value'],
-                $requirement['condition']['sign']
-            );
-        }
-
-        return $requirements;
     }
 
     //########################################
@@ -318,18 +213,18 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function isProductionEnvironment()
     {
-        return (string)getenv('M2EPRO_ENV') == self::ENVIRONMENT_PRODUCTION ||
+        return (string)$this->getConfig()->getGroupValue(NULL, 'environment') === self::ENVIRONMENT_PRODUCTION ||
                (!$this->isDevelopmentEnvironment() && !$this->isTestingEnvironment());
     }
 
     public function isDevelopmentEnvironment()
     {
-        return (string)getenv('M2EPRO_ENV') == self::ENVIRONMENT_DEVELOPMENT;
+        return (string)$this->getConfig()->getGroupValue(NULL, 'environment') === self::ENVIRONMENT_DEVELOPMENT;
     }
 
     public function isTestingEnvironment()
     {
-        return (string)getenv('M2EPRO_ENV') == self::ENVIRONMENT_TESTING;
+        return (string)$this->getConfig()->getGroupValue(NULL, 'environment') === self::ENVIRONMENT_TESTING;
     }
 
     //########################################

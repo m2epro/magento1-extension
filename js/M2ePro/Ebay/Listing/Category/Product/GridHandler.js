@@ -178,52 +178,6 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
 
     // ---------------------------------------
 
-    nextStep: function()
-    {
-        MagentoMessageObj.clearAll();
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_categorySettings/stepTwoModeProductValidate'), {
-            method: 'get',
-            asynchronous: true,
-            parameters: {},
-            onSuccess: function(transport) {
-
-                var response = transport.responseText.evalJSON();
-
-                if (response['validation']) {
-                    return setLocation(M2ePro.url.get('adminhtml_ebay_listing_categorySettings'));
-                }
-
-                if (response['message']) {
-                    return MagentoMessageObj.addError(response['message']);
-                }
-
-                this.nextStepWarningPopup = Dialog.info(null, {
-                    draggable: true,
-                    resizable: true,
-                    closable: true,
-                    className: "magento",
-                    windowClassName: "popup-window",
-                    title: M2ePro.translator.translate('Set eBay Category'),
-                    width: 430,
-                    height: 200,
-                    zIndex: 100,
-                    hideEffect: Element.hide,
-                    showEffect: Element.show
-                });
-
-                this.nextStepWarningPopup.options.destroyOnClose = false;
-                $('modal_dialog_message').insert($('next_step_warning_popup_content').show());
-
-                $('total_count').update(response['total_count']);
-                $('failed_count').update(response['failed_count']);
-
-            }.bind(this)
-        });
-    },
-
-    // ---------------------------------------
-
     removeItems: function(ids)
     {
         if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
@@ -273,16 +227,40 @@ EbayListingCategoryProductGridHandler = Class.create(EbayListingCategoryGridHand
 
     validate: function()
     {
-        if($$('.main-store-empty-advice').length <= 0) {
+        return this.validateMainCategory() && this.validateStoreCategory();
+    },
+
+    validateMainCategory: function()
+    {
+        if ($$('.main-empty-advice').length <= 0) {
+            return true;
+        }
+
+        $$('.main-empty-advice')[0].hide();
+
+        var primary   = $('magento_block_ebay_listing_category_chooser_main_primary_not_selected') == null;
+        var secondary = $('magento_block_ebay_listing_category_chooser_main_secondary_not_selected') == null;
+
+        if (primary == false) {
+            $$('.main-empty-advice')[0].show();
+            return false;
+        }
+
+        return true;
+    },
+
+    validateStoreCategory: function()
+    {
+        if ($$('.main-store-empty-advice').length <= 0) {
             return true;
         }
 
         $$('.main-store-empty-advice')[0].hide();
 
-        var primary = $('magento_block_ebay_listing_category_chooser_store_primary_not_selected')==null;
-        var secondary = $('magento_block_ebay_listing_category_chooser_store_secondary_not_selected')==null;
+        var primary   = $('magento_block_ebay_listing_category_chooser_store_primary_not_selected') == null;
+        var secondary = $('magento_block_ebay_listing_category_chooser_store_secondary_not_selected') == null;
 
-        if(primary==false && secondary==true) {
+        if (primary == false && secondary == true) {
             $$('.main-store-empty-advice')[0].show();
             return false;
         }

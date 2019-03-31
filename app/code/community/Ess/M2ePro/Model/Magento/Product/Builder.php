@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -72,8 +72,8 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
             $this->product->setData('small_image', $firstImage);
 
             $this->product->setData('media_gallery', array(
-                'images' => json_encode($gallery),
-                'values' => json_encode(array(
+                'images' => Mage::helper('M2ePro')->jsonEncode($gallery),
+                'values' => Mage::helper('M2ePro')->jsonEncode(array(
                     'main'        => $firstImage,
                     'image'       => $firstImage,
                     'small_image' => $firstImage,
@@ -95,6 +95,9 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
     {
         /** @var $stockItem Mage_CatalogInventory_Model_Stock_Item */
         $stockItem = Mage::getModel('cataloginventory/stock_item');
+        $stockItem->setStockId(
+            Mage::helper('M2ePro/Magento_Store')->getStockId($this->getData('store_id'))
+        );
         $stockItem->assignProduct($this->product);
 
         $stockItem->addData(array(

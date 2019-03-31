@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -80,7 +80,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
 
         $registryModel->addData(array(
             'key'   => $key,
-            'value' => json_encode($allRecentCategories)
+            'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
         ))->save();
     }
 
@@ -104,7 +104,10 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
 
         $select = Mage::getSingleton('core/resource')->getConnection('core_read')
             ->select()
-            ->from(Mage::getSingleton('core/resource')->getTableName('m2epro_amazon_dictionary_category'))
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix('m2epro_amazon_dictionary_category')
+            )
             ->where('marketplace_id = ?', $marketplaceId)
             ->where('browsenode_id IN (?)', array_unique($nodeIdsForCheck));
 
@@ -147,7 +150,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Category extends Mage_Core_Helper_Abstr
 
         $registryModel->addData(array(
             'key' => $this->getConfigGroup(),
-            'value' => json_encode($allRecentCategories)
+            'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
         ))->save();
     }
 

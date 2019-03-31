@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -22,7 +22,9 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/listings');
+        return Mage::getSingleton('admin/session')->isAllowed(
+            Ess_M2ePro_Helper_View_Ebay::MENU_ROOT_NODE_NICK . '/listings'
+        );
     }
 
     //########################################
@@ -62,7 +64,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             );
         }
 
-        $this->getResponse()->setBody(json_encode($accounts));
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($accounts));
     }
 
     //########################################
@@ -95,7 +97,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             );
         }
 
-        $this->getResponse()->setBody(json_encode(array(
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
             'listings'                     => $listings,
             'is_allowed_migration_service' => $this->isAllowedMigrationService() ? '1' : '0',
         )));
@@ -155,7 +157,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
     public function createTranslationAccountAction()
     {
         if (!$post = $this->getRequest()->getPost()) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         if (empty($post['account_id']) ||
@@ -164,15 +166,15 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             empty($post['last_name'])  ||
             empty($post['company'])    ||
             empty($post['country'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account',(int)$post['account_id'])
             ->getChildObject();
-        $ebayInfo = json_decode($account['info'], true);
+        $ebayInfo = Mage::helper('M2ePro')->jsonDecode($account['info']);
 
         if (empty($ebayInfo['UserID'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         $params = array(
@@ -188,24 +190,25 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
         try {
 
-            $dispatcherObject = Mage::getModel('M2ePro/Connector_Translation_Dispatcher');
+            $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector('account', 'add', 'entity', $params);
-            $response = $dispatcherObject->process($connectorObj);
+            $dispatcherObject->process($connectorObj);
+            $response = $connectorObj->getResponseData();
 
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
 
         if (!isset($response['hash'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         $account->addData(array(
             'translation_hash' => $response['hash'],
-            'translation_info' => json_encode($response['info']),
+            'translation_info' => Mage::helper('M2ePro')->jsonEncode($response['info']),
         ))->save();
 
-        return $this->getResponse()->setBody(json_encode(array(
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
             'result' => 'success',
             'hash'   => $response['hash'],
             'info'   => $response['info'],
@@ -222,23 +225,24 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
         try {
 
-            $dispatcherObject = Mage::getModel('M2ePro/Connector_Translation_Dispatcher');
+            $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector('account', 'get', 'info',
                                                                    array(), NULL, $account);
 
-            $response = $dispatcherObject->process($connectorObj);
+            $dispatcherObject->process($connectorObj);
+            $response = $connectorObj->getResponseData();
 
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
 
         if (count($response) <= 0) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
-        $account->getChildObject()->setData('translation_info', json_encode($response))->save();
+        $account->getChildObject()->setData('translation_info', Mage::helper('M2ePro')->jsonEncode($response))->save();
 
-        return $this->getResponse()->setBody(json_encode(array(
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
             'result' => 'success',
             'info'   => $response
         )));
@@ -249,14 +253,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
     public function createListingAction()
     {
         if (!$post = $this->getRequest()->getPost()) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         if (empty($post['title'])          ||
             empty($post['account_id'])     ||
             empty($post['marketplace_id']) ||
             !isset($post['store_id'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         $listing = $this->getSourceListingFromRequest();
@@ -287,7 +291,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         $this->setAutoActionData($model, $listing, $isDifferentMarketplace);
         // ---------------------------------------
 
-        $this->getResponse()->setBody(json_encode(array(
+        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
             'result'     => 'success',
             'listing_id' => $model->getId(),
         )));
@@ -298,7 +302,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
     public function addProductsAction()
     {
         $targetListingId = $this->getRequest()->getParam('target_listing_id');
-        $targetListing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',(int)$targetListingId);
+        /** @var Ess_M2ePro_Model_Listing $targetListing */
+        $targetListing = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', (int)$targetListingId);
 
         $isDifferentMarketplace =
             ($targetListing->getMarketplace()->getId() !=
@@ -313,9 +318,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             ->addFieldToFilter('id', array('in' => ($productsIds)));
 
         $ids = array();
-        $failedProducts = array();
+        $errorsCount = null;
         foreach ($collection->getItems() as $sourceListingProduct) {
-            $listingProduct = $targetListing->addProduct($sourceListingProduct->getProductId());
+
+            $listingProduct = $targetListing->getChildObject()->addProductFromAnotherEbaySite(
+                $sourceListingProduct, $this->getSourceListingFromRequest()
+            );
             if ($listingProduct instanceof Ess_M2ePro_Model_Listing_Product) {
                 $ids[] = $listingProduct->getId();
 
@@ -325,8 +333,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
                 if (!$isDifferentMarketplace) {
                     $listingProduct
-                        ->setData('template_category_id',$sourceListingProduct->getTemplateCategoryId())
-                        ->setData('template_other_category_id',$sourceListingProduct->getTemplateOtherCategoryId());
+                        ->setData('template_category_id', $sourceListingProduct->getTemplateCategoryId())
+                        ->setData('template_other_category_id', $sourceListingProduct->getTemplateOtherCategoryId());
                 } else {
                     $matchingListingProducts = $this->getSessionValue('matching_listing_products');
                     $matchingListingProducts[$listingProduct->getId()] = $sourceListingProduct->getId();
@@ -335,22 +343,55 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
                 $listingProduct->save();
             } else {
-                $failedProducts[] = $sourceListingProduct->getProductId();
+                $errorsCount++;
             }
         }
 
         // ---------------------------------------
-        if ($this->getRequest()->getParam('is_need_to_set_catalog_policy') == 'true') {
-            $existingIds = $targetListing->getChildObject()->getAddedListingProductsIds();
-            $existingIds = array_values(array_unique(array_merge($existingIds,$ids)));
-            $targetListing->setData('product_add_ids',json_encode($existingIds))->save();
-        }
+        $existingIds = $targetListing->getChildObject()->getAddedListingProductsIds();
+        $existingIds = array_values(array_unique(array_merge($existingIds, $ids)));
+        $targetListing->setData('product_add_ids', Mage::helper('M2ePro')->jsonEncode($existingIds))->save();
         // ---------------------------------------
 
-        $this->getResponse()->setBody(json_encode(array(
+        if ($this->getRequest()->getParam('is_last_part')) {
+
+            $errorsCount = $errorsCount + $this->getRequest()->getParam('total_errors_count');
+
+            if ($errorsCount) {
+
+                $logViewUrl = $this->getUrl('*/adminhtml_ebay_log/listing',array(
+                    'id' => $this->getSourceListingFromRequest()->getId()
+                ));
+
+                if (count($productsIds) == $errorsCount) {
+                    $this->getSession()->addError(Mage::helper('M2ePro')->__(
+                        'The Products have not been added into Destination Listing. Please
+                        <a target="_blank" href="%url%">view Log</a> for the details.',
+                        $logViewUrl
+                    ));
+
+                    return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
+                        'result' => 'error'
+                    )));
+                }
+
+                $this->getSession()->addError(Mage::helper('M2ePro')->__(
+                    '%errors_count% product(s) have not been added into Destination Listing. Please
+                    <a target="_blank" href="%url%">view Log</a> for the details.',
+                    $errorsCount, $logViewUrl
+                ));
+
+            } else {
+                $this->getSession()->addSuccess(Mage::helper('M2ePro')->__(
+                    'The Products have been successfully added into Destination Listing'
+                ));
+            }
+        }
+
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
             'result' => 'success',
             'success_products' => $ids,
-            'failed_products'  => $failedProducts,
+            'errors_count'  => $errorsCount,
         )));
     }
 
@@ -358,17 +399,21 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
     public function autoMigrationAction()
     {
+        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
+        }
+
         if (!$post = $this->getRequest()->getPost()) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         if (empty($post['target_listing_id']) || empty($post['products'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         if (!empty($post['translation_service']) &&
             !Mage::helper('M2ePro/Component_Ebay')->isAllowedTranslationService($post['translation_service'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         $matchingListingProducts = $this->getSessionValue('matching_listing_products');
@@ -403,7 +448,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         /** @var  $logModel Ess_M2ePro_Model_Listing_Log */
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
-        $logsActionId = $logModel->getNextActionId();
+        $logsActionId = $logModel->getResource()->getNextActionId();
 
         foreach ($collection->getItems() as $targetListingProduct) {
 
@@ -515,7 +560,9 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             $data = $this->getSynchronizationTemplateDataFromSource($sourceListingProduct->getChildObject());
             $targetListingProduct->addData($data)->save();
 
-            $targetListingProduct->setData('additional_data', json_encode($additionalData))->save();
+            $targetListingProduct->setData('additional_data',
+                Mage::helper('M2ePro')->jsonEncode($additionalData)
+            )->save();
             $targetListingProduct->getChildObject()->addData(array(
                 'translation_status'  => Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_PENDING,
                 'translation_service' => $translationService
@@ -526,33 +573,33 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
         $params = array('status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER);
 
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_Translation_Product_Add_Dispatcher');
+        $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Product_Add_Dispatcher');
         $result = (int)$dispatcherObject->process($productsIds, $params);
 
         if ($result == Ess_M2ePro_Helper_Data::STATUS_SUCCESS) {
-            return $this->getResponse()->setBody(json_encode(array(
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
                 'result'           => 'success',
                 'success_products' => $ids,
                 'failed_products'  => $failedProducts,
             )));
         }
 
-        return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
     }
 
     public function updateTranslationServiceAction()
     {
         if (!$post = $this->getRequest()->getPost()) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         if (empty($post['products_ids'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
         if (empty($post['translation_service']) ||
             !Mage::helper('M2ePro/Component_Ebay')->isAllowedTranslationService($post['translation_service'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'success')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
         }
 
         $productsIds = $post['products_ids'];
@@ -574,20 +621,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             }
         }
 
-        return $this->getResponse()->setBody(json_encode(array('result' => 'success')));
-    }
-
-    //########################################
-
-    public function getFailedProductsGridAction()
-    {
-        $block = $this->loadLayout()->getLayout()->createBlock(
-            'M2ePro/adminhtml_ebay_listing_transferring_failedProducts','',
-            array(
-                'grid_url' => $this->getUrl('*/adminhtml_listing_moving/failedProductsGrid', array('_current'=>true))
-            )
-        );
-        $this->getResponse()->setBody($block->toHtml());
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
     }
 
     //########################################
@@ -607,21 +641,22 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
         try {
 
-            $dispatcherObject = Mage::getModel('M2ePro/Connector_Translation_Dispatcher');
+            $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector('account', 'add', 'balance',
                                                                    $params, NULL, $account);
 
-            $response = $dispatcherObject->process($connectorObj);
+            $dispatcherObject->process($connectorObj);
+            $response = $connectorObj->getResponseData();
 
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
 
         if (!isset($response['payment_url'])) {
-            return $this->getResponse()->setBody(json_encode(array('result' => 'error')));
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
         }
 
-        return $this->getResponse()->setBody(json_encode(array(
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
             'result'      => 'success',
             'payment_url' => $response['payment_url'],
         )));
@@ -815,7 +850,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
                 continue;
             }
 
-            $templateData = json_decode(base64_decode($post["template_{$nick}"]), true);
+            $templateData = Mage::helper('M2ePro')->jsonDecode(base64_decode($post["template_{$nick}"]));
 
             $templateId = $templateData['id'];
             $templateMode = $templateData['mode'];
@@ -865,13 +900,13 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
         if ($isDifferentMarketplace) {
             if ($sourceEbayListing->isAutoGlobalAddingModeAddAndAssignCategory()) {
-                $listingData['auto_global_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_ADD;
+                $listingData['auto_global_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_NONE;
                 $listingData['auto_global_adding_template_category_id']       = NULL;
                 $listingData['auto_global_adding_template_other_category_id'] = NULL;
             }
 
             if ($sourceEbayListing->isAutoWebsiteAddingModeAddAndAssignCategory()) {
-                $listingData['auto_website_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_ADD;
+                $listingData['auto_website_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_NONE;
                 $listingData['auto_website_adding_template_category_id']       = NULL;
                 $listingData['auto_website_adding_template_other_category_id'] = NULL;
             }
@@ -903,7 +938,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             $ebaySourceGroup = $sourceGroup->getChildObject();
 
             if ($isDifferentMarketplace && $ebaySourceGroup->isAddingModeAddAndAssignCategory()) {
-                $group->setData('adding_mode', Ess_M2ePro_Model_Listing::ADDING_MODE_ADD);
+                $group->setData('adding_mode', Ess_M2ePro_Model_Listing::ADDING_MODE_NONE);
                 $group->setData('adding_template_category_id', NULL);
                 $group->setData('adding_template_other_category_id', NULL);
             }

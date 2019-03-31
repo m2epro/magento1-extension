@@ -4,6 +4,9 @@ ListingMovingHandler = Class.create(ActionHandler, {
 
     options: {},
 
+    accountId: null,
+    marketplaceId: null,
+
     setOptions: function(options)
     {
         this.options = Object.extend(this.options,options);
@@ -46,121 +49,134 @@ ListingMovingHandler = Class.create(ActionHandler, {
     {
         var self = this;
 
-        MagentoMessageObj.clearAll();
-
         self.selectedProducts = selectedProducts;
         self.gridHandler.unselectAll();
+        MagentoMessageObj.clearAll();
+        $('listing_container_errors_summary').hide();
 
-        var callback = function(response) {
-            new Ajax.Request(self.options.url.getGridHtml, {
-                method: 'get',
-                parameters: {
-                    componentMode: self.options.customData.componentMode,
-                    accountId: response.accountId,
-                    marketplaceId: response.marketplaceId,
-                    ignoreListings: self.options.customData.ignoreListings
-                },
-                onSuccess: function(transport) {
-                    var title = selectedProducts.length == 1 ?
-                        self.options.text.popup_title_single + '&nbsp;"' + self.gridHandler.getProductNameByRowId(selectedProducts[0]) + '"' :
-                        self.options.text.popup_title;
-                    self.openPopUp(transport.responseText,title);
-                }
-            });
-        };
+        ListingProgressBarObj.reset();
+        ListingProgressBarObj.setTitle('Preparing for Product Moving');
+        ListingProgressBarObj.setStatus('Products are being prepared for Moving. Please wait…');
+        ListingProgressBarObj.show();
+        self.scroll_page_to_top();
+
+        $('loading-mask').setStyle({visibility: 'hidden'});
+        GridWrapperObj.lock();
+
+        var productsByParts = self.makeProductsParts();
+        self.prepareData(productsByParts, productsByParts.length, 1);
+    },
+
+    makeProductsParts: function()
+    {
+        var self = this;
+
+        var productsInPart = 500;
+        var parts = [];
+
+        if (self.selectedProducts.length < productsInPart) {
+            var part = [];
+            part[0] = self.selectedProducts;
+            return parts[0] = part;
+        }
+
+        var result = [];
+        for (var i = 0; i < self.selectedProducts.length; i++) {
+            if (result.length === 0 || result[result.length-1].length === productsInPart) {
+                result[result.length] = [];
+            }
+            result[result.length-1][result[result.length-1].length] = self.selectedProducts[i];
+        }
+
+        return result;
+    },
+
+    prepareData: function(parts, partsCount, isFirstPart)
+    {
+        var self = this;
+
+        if (parts.length === 0) {
+            return;
+        }
+
+        var isLastPart  = parts.length === 1 ? 1 : 0;
+        var part = parts.splice(0, 1);
+        var currentPart = part[0];
 
         new Ajax.Request(self.options.url.prepareData, {
             method: 'post',
             parameters: {
                 componentMode: self.options.customData.componentMode,
-                selectedProducts: Object.toJSON(self.selectedProducts)
+                is_first_part: isFirstPart,
+                is_last_part : isLastPart,
+                products_part: implode(',', currentPart)
             },
             onSuccess: function(transport) {
 
-                if (transport.responseText == 1) {
-                    alert(self.options.text.select_only_mapped_products);
-                } else if (transport.responseText == 2) {
-                    alert(self.options.text.select_the_same_type_products);
+                var percents = (100 / partsCount) * (partsCount - parts.length);
+
+                if (percents <= 0) {
+                    ListingProgressBarObj.setPercents(0, 0);
+                } else if (percents >= 100) {
+                    ListingProgressBarObj.setPercents(100, 0);
+                    ListingProgressBarObj.setStatus('Products are almost prepared for Moving...');
                 } else {
-                    var response = transport.responseText.evalJSON();
-
-                    if (response.offerListingCreation) {
-                        return self.offerListingCreation(
-                            response.accountId,
-                            response.marketplaceId,
-                            function() {
-                                callback.call(self,response);
-                            }
-                        );
-                    }
-
-                    callback.call(self,response);
+                    ListingProgressBarObj.setPercents(percents, 1);
                 }
+
+                var response = transport.responseText.evalJSON();
+                if (!response.result) {
+
+                    self.completeProgressBar();
+                    if (typeof response.message !== 'undefined') {
+                        MagentoMessageObj.addError(response.message);
+                    }
+                    return;
+                }
+
+                if (isLastPart) {
+
+                    self.accountId = response.accountId;
+                    self.marketplaceId = response.marketplaceId;
+
+                    self.moveToListingGrid();
+                    return;
+                }
+
+                setTimeout(function() {
+                    self.prepareData(parts, partsCount, 0);
+                }, 500);
             }
         });
     },
 
-    // ---------------------------------------
-
-    tryToSubmit: function(listingId)
+    moveToListingGrid: function()
     {
-        new Ajax.Request(this.options.url.tryToMoveToListing, {
-            method: 'post',
+        var self = this;
+
+        new Ajax.Request(self.options.url.getGridHtml, {
+            method: 'get',
             parameters: {
-                componentMode: this.options.customData.componentMode,
-                selectedProducts: Object.toJSON(this.selectedProducts),
-                listingId: listingId
+                componentMode : self.options.customData.componentMode,
+                accountId     : self.accountId,
+                marketplaceId : self.marketplaceId,
+                ignoreListings: self.options.customData.ignoreListings
             },
-            onSuccess: (function(transport) {
-
-                var response = transport.responseText.evalJSON();
-
-                if (response.result == 'success') {
-                    return this.submit(listingId);
-                }
-
-                new Ajax.Request(this.options.url.getFailedProductsGridHtml, {
-                    method: 'get',
-                    parameters: {
-                        componentMode: this.options.customData.componentMode,
-                        failed_products: Object.toJSON(response.failed_products)
-                    },
-                    onSuccess: (function(transport) {
-
-                        this.popUp.close();
-                        this.openPopUp(transport.responseText,this.options.text.failed_products_popup_title);
-
-                        $('modal_dialog_message').down('div[class=grid]').setStyle({
-                            maxHeight: '300px',
-                            overflow: 'auto'
-                        });
-
-                        $('failedProducts_back_button').observe('click',(function() {
-                            this.popUp.close();
-                            this.getGridHtml(this.selectedProducts);
-                        }).bind(this));
-
-                        $('failedProducts_continue_button').observe('click',(function() {
-                            this.submit(listingId);
-                        }).bind(this));
-
-                    }).bind(this)
-                });
-
-            }).bind(this)
+            onSuccess: function(transport) {
+                self.completeProgressBar();
+                self.openPopUp(transport.responseText, self.options.text.popup_title);
+            }
         });
     },
 
-    // ---------------------------------------
-
-    submit: function(listingId)
+    submit: function(listingId, onSuccess)
     {
         var self = this;
+
         new Ajax.Request(self.options.url.moveToListing, {
             method: 'post',
             parameters: {
                 componentMode: self.options.customData.componentMode,
-                selectedProducts: Object.toJSON(self.selectedProducts),
                 listingId: listingId
             },
             onSuccess: function(transport) {
@@ -170,43 +186,13 @@ ListingMovingHandler = Class.create(ActionHandler, {
 
                 var response = transport.responseText.evalJSON();
 
-                if (response.result == 'success') {
-                    self.gridHandler.unselectAllAndReload();
-                    MagentoMessageObj.addSuccess(self.options.text.successfully_moved);
+                if (response.result) {
+                    onSuccess.bind(self.gridHandler)(listingId);
                     return;
                 }
 
-                var message = '';
-                if (response.errors == self.selectedProducts.length) { // all items failed
-                    message = self.options.text.products_were_not_moved;
-                } else {
-                    message = self.options.text.some_products_were_not_moved;
-                    self.gridHandler.unselectAllAndReload();
-                }
-
-                MagentoMessageObj.addError(str_replace('%url%', self.options.url.logViewUrl, message));
+                self.gridHandler.unselectAllAndReload();
             }
-        });
-    },
-
-    // ---------------------------------------
-
-    offerListingCreation: function(accountId,marketplaceId,callback) {
-
-        if (!confirm(this.options.text.create_listing)) {
-            return callback.call(this);
-        }
-
-        new Ajax.Request(this.options.url.createDefaultListing, {
-            method: 'post',
-            parameters: {
-                componentMode: this.options.customData.componentMode,
-                accountId: accountId,
-                marketplaceId: marketplaceId
-            },
-            onSuccess: (function(transport) {
-                callback.call(this);
-            }).bind(this)
         });
     },
 
@@ -225,6 +211,15 @@ ListingMovingHandler = Class.create(ActionHandler, {
 
             listingMovingGridJsObject.reload();
         }, 1000);
+    },
+
+    // ---------------------------------------
+
+    completeProgressBar: function () {
+        ListingProgressBarObj.hide();
+        ListingProgressBarObj.reset();
+        GridWrapperObj.unlock();
+        $('loading-mask').setStyle({visibility: 'visible'});
     }
 
     // ---------------------------------------

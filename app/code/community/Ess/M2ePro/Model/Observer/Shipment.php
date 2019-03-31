@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,10 +21,22 @@ class Ess_M2ePro_Model_Observer_Shipment extends Ess_M2ePro_Model_Observer_Abstr
         $shipment = $this->getEvent()->getShipment();
         $magentoOrderId = $shipment->getOrderId();
 
+        /**
+         * We can catch two the same events: save of Mage_Sales_Model_Order_Shipment and
+         * Mage_Sales_Model_Order_Shipment_Track. So we must skip a duplicated one.
+         */
+        $eventKey = 'skip_' . $shipment->getId() .'##'. $shipment->getTracksCollection()->getLastItem()->getId();
+        if (Mage::helper('M2ePro/Data_Global')->getValue($eventKey)) {
+            Mage::helper('M2ePro/Data_Global')->unsetValue($eventKey);
+            return;
+        }
+        Mage::helper('M2ePro/Data_Global')->setValue($eventKey, true);
+
         try {
             /** @var $order Ess_M2ePro_Model_Order */
-            $order = Mage::helper('M2ePro/Component')
-                            ->getUnknownObject('Order', $magentoOrderId, 'magento_order_id');
+            $order = Mage::helper('M2ePro/Component')->getUnknownObject(
+                'Order', $magentoOrderId, 'magento_order_id'
+            );
         } catch (Exception $e) {
             return;
         }
@@ -39,64 +51,9 @@ class Ess_M2ePro_Model_Observer_Shipment extends Ess_M2ePro_Model_Observer_Abstr
 
         $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
-        /** @var $shipmentHandler Ess_M2ePro_Model_Order_Shipment_Handler */
-        $shipmentHandler = Mage::getModel('M2ePro/Order_Shipment_Handler')->factory($order->getComponentMode());
-        $result = $shipmentHandler->handle($order, $shipment);
-
-        switch ($result) {
-            case Ess_M2ePro_Model_Order_Shipment_Handler::HANDLE_RESULT_SUCCEEDED:
-                $this->addSessionSuccessMessage($order);
-                break;
-            case Ess_M2ePro_Model_Order_Shipment_Handler::HANDLE_RESULT_FAILED:
-                $this->addSessionErrorMessage($order);
-                break;
-        }
-    }
-
-    //########################################
-
-    private function addSessionSuccessMessage(Ess_M2ePro_Model_Order $order)
-    {
-        $message = '';
-
-        switch ($order->getComponentMode()) {
-            case Ess_M2ePro_Helper_Component_Ebay::NICK:
-                $message = Mage::helper('M2ePro')->__('Shipping Status for eBay Order was updated.');
-                break;
-            case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                $message = Mage::helper('M2ePro')->__('Updating Amazon Order Status to Shipped in Progress...');
-                break;
-            case Ess_M2ePro_Helper_Component_Buy::NICK:
-                $message = Mage::helper('M2ePro')->__('Updating Rakuten.com Order Status to Shipped in Progress...');
-                break;
-        }
-
-        if ($message) {
-            Mage::getSingleton('adminhtml/session')->addSuccess($message);
-        }
-    }
-
-    private function addSessionErrorMessage(Ess_M2ePro_Model_Order $order)
-    {
-        if ($order->isComponentModeEbay()) {
-            $url = Mage::helper('adminhtml')
-                ->getUrl('M2ePro/adminhtml_ebay_log/order', array('order_id' => $order->getId()));
-        } else {
-            $url = Mage::helper('adminhtml')
-                ->getUrl('M2ePro/adminhtml_common_log/order', array('order_id' => $order->getId()));
-        }
-
-        $chanelTitle = $order->getComponentTitle();
-        // M2ePro_TRANSLATIONS
-        // Shipping Status for %chanel_title% Order was not updated. View <a href="%url%" target="_blank" >Order Log</a> for more details.
-        $message = Mage::helper('M2ePro')->__(
-            'Shipping Status for %chanel_title% Order was not updated.'.
-            ' View <a href="%url% target="_blank" >Order Log</a>'.
-            ' for more details.',
-            $chanelTitle, $url
-        );
-
-        Mage::getSingleton('adminhtml/session')->addError($message);
+        /** @var Ess_M2ePro_Model_Order_Shipment_Handler $handler */
+        $handler = Ess_M2ePro_Model_Order_Shipment_Handler::factory($order->getComponentMode());
+        $handler->handle($order, $shipment);
     }
 
     //########################################

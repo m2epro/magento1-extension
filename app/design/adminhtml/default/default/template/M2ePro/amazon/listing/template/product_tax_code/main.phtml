@@ -1,0 +1,20 @@
+<div id="template_productTaxCode_pop_up_content">
+    <div style="padding: 5px 0px;">
+
+        <?php if(count($this->getMessages()) > 0) : ?>
+            <div id="template_productTaxCode_error_block">
+                <?php echo $this->getWarnings(); ?>
+            </div>
+        <?php endif; ?>
+
+        <div id="block_notice_amazon_listing_template_productTaxCode_popup_help" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Assign Product Tax Code Policy'); ?>">
+            <?php echo Mage::helper('M2ePro')->__(
+                'The Product Tax Code Policy is using to apply the VAT Calculation Service settings, provided in Amazon Seller Central, to your Products managed via M2E Pro. You can select the already created Policy or add a new one by pressing the <strong>Add New Product Tax Code Policy</strong> button.'
+            ); ?>
+        </div>
+
+        <div id="template_productTaxCode_grid" style="margin: 10px auto; height: 380px !important; overflow-y: auto; overflow-x: hidden;">
+        </div>
+
+    </div>
+</div>

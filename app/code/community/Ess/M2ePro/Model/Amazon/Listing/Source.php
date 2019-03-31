@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -248,26 +248,27 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
     // ---------------------------------------
 
     /**
-     * @return string
+     * @return Ess_M2ePro_Model_Magento_Product_Image|null
      */
-    public function getMainImageLink()
+    public function getMainImage()
     {
-        $imageLink = '';
+        $image = null;
 
         if ($this->getAmazonListing()->isImageMainModeProduct()) {
-            $imageLink = $this->getMagentoProduct()->getImageLink('image');
+            $image = $this->getMagentoProduct()->getImage('image');
         }
 
         if ($this->getAmazonListing()->isImageMainModeAttribute()) {
+
             $src = $this->getAmazonListing()->getImageMainSource();
-            $imageLink = $this->getMagentoProduct()->getImageLink($src['attribute']);
+            $image = $this->getMagentoProduct()->getImage($src['attribute']);
         }
 
-        return $imageLink;
+        return $image;
     }
 
     /**
-     * @return array|string
+     * @return Ess_M2ePro_Model_Magento_Product_Image[]
      */
     public function getGalleryImages()
     {
@@ -290,6 +291,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
 
         if ($this->getAmazonListing()->isConditionDefaultMode() &&
             !in_array($conditionData['value'], $allowedConditionValues)) {
+
             return array();
         }
 
@@ -301,16 +303,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
             }
         }
 
-        $mainImage = $this->getMainImageLink();
-
-        if ($mainImage == '') {
+        if (!$mainImage = $this->getMainImage()) {
             return array();
         }
 
-        $mainImage = array($mainImage);
-
         if ($this->getAmazonListing()->isGalleryImagesModeNone()) {
-            return $mainImage;
+            return array($mainImage);
         }
 
         $galleryImages = array();
@@ -320,37 +318,53 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         if ($this->getAmazonListing()->isGalleryImagesModeProduct()) {
 
             $limitGalleryImages = (int)$gallerySource['limit'];
-            $galleryImages = $this->getMagentoProduct()->getGalleryImagesLinks($limitGalleryImages + 1);
+            $galleryImagesTemp = $this->getMagentoProduct()->getGalleryImages($limitGalleryImages + 1);
+
+            foreach ($galleryImagesTemp as $image) {
+
+                if (array_key_exists($image->getHash(), $galleryImages)) {
+                    continue;
+                }
+
+                $galleryImages[$image->getHash()] = $image;
+            }
         }
 
         if ($this->getAmazonListing()->isGalleryImagesModeAttribute()) {
 
             $limitGalleryImages = Ess_M2ePro_Model_Amazon_Listing::GALLERY_IMAGES_COUNT_MAX;
-            $galleryImagesTemp = $this->getMagentoProduct()->getAttributeValue($gallerySource['attribute']);
 
+            $galleryImagesTemp = $this->getMagentoProduct()->getAttributeValue($gallerySource['attribute']);
             $galleryImagesTemp = (array)explode(',', $galleryImagesTemp);
+
             foreach ($galleryImagesTemp as $tempImageLink) {
 
                 $tempImageLink = trim($tempImageLink);
-                if (!empty($tempImageLink)) {
-                    $galleryImages[] = $tempImageLink;
+                if (empty($tempImageLink)) {
+                    continue;
                 }
+
+                $image = new Ess_M2ePro_Model_Magento_Product_Image($tempImageLink);
+                $image->setStoreId($this->getMagentoProduct()->getStoreId());
+
+                if (array_key_exists($image->getHash(), $galleryImages)) {
+                    continue;
+                }
+
+                $galleryImages[$image->getHash()] = $image;
             }
         }
 
-        $galleryImages = array_unique($galleryImages);
+        unset($galleryImages[$mainImage->getHash()]);
 
         if (count($galleryImages) <= 0) {
-            return $mainImage;
+            return array($mainImage);
         }
 
-        $mainImagePosition = array_search($mainImage[0], $galleryImages);
-        if ($mainImagePosition !== false) {
-            unset($galleryImages[$mainImagePosition]);
-        }
+        $galleryImages = array_slice($galleryImages, 0, $limitGalleryImages);
+        array_unshift($galleryImages, $mainImage);
 
-        $galleryImages = array_slice($galleryImages,0,$limitGalleryImages);
-        return array_merge($mainImage, $galleryImages);
+        return $galleryImages;
     }
 
     // ---------------------------------------

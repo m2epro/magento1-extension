@@ -160,7 +160,7 @@ EbayConfigurationCategoryHandler.prototype = Object.extend(new CommonHandler(), 
     {
         var self = EbayConfigurationCategoryHandlerObj;
 
-        var skipConfirmation = getCookie('ebay_configuration_category_skip_save_confirmation');
+        var skipConfirmation = LocalStorageObj.get('ebay_configuration_category_skip_save_confirmation');
         var confirmText = M2ePro.translator.translate('<b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Category is used.');
 
         if (skipConfirmation) {
@@ -196,7 +196,7 @@ EbayConfigurationCategoryHandler.prototype = Object.extend(new CommonHandler(), 
                 buttonClass: "form-button button",
                 ok: function() {
                     if ($('do_not_show_again').checked) {
-                        setCookie('ebay_configuration_category_skip_save_confirmation', 1, 3*365, '/');
+                        LocalStorageObj.set('ebay_configuration_category_skip_save_confirmation', 1);
                     }
 
                     okCallback(type, isEdit);

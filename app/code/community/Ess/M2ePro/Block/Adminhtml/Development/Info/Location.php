@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -29,6 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Location extends Mage_Adminhtm
         $this->locationHost = Mage::helper('M2ePro/Client')->getHost();
         $this->locationDomain = Mage::helper('M2ePro/Client')->getDomain();
         $this->locationIp = Mage::helper('M2ePro/Client')->getIp();
+        $this->locationDirectory = Mage::helper('M2ePro/Client')->getBaseDirectory();
 
         return parent::_beforeToHtml();
     }

@@ -1,3 +1,5 @@
+<?php /** @var $this Ess_M2ePro_Block_Adminhtml_StoreSwitcher */ ?>
+
 <?php if ($websites = $this->getWebsites()): ?>
 
     <p class="switcher">
@@ -11,7 +13,7 @@
             <?php endif; ?>
 
             <?php if ($this->hasDefaultOption() && $this->isDisplayDefaultStoreModeUp()): ?>
-                <option value=""><?php echo $this->getDefaultStoreName(); ?></option>
+                <option value="<?php echo Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID; ?>"><?php echo $this->getDefaultStoreName(); ?></option>
             <?php endif; ?>
 
             <?php foreach ($websites as $website): ?>
@@ -36,7 +38,7 @@
             <?php endforeach; ?>
 
             <?php if ($this->hasDefaultOption() && $this->isDisplayDefaultStoreModeDown()): ?>
-                <option value=""><?php echo $this->getDefaultStoreName(); ?></option>
+                <option value="<?php echo Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID; ?>"><?php echo $this->getDefaultStoreName(); ?></option>
             <?php endif; ?>
 
         </select>

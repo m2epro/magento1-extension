@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -39,10 +39,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
         $idGroup = 1;
 
         $groupOrder = array(
-            'america' => 'America',
-            'europe' => 'Europe',
+            'america'      => 'America',
+            'europe'       => 'Europe',
+            'australia'    => 'Australia Region',
             'asia_pacific' => 'Asia / Pacific',
-            'other' => 'Other'
+            'other'        => 'Other'
         );
 
         foreach ($groupOrder as $key => $groupOrderTitle) {
@@ -62,6 +63,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
                     ->addFieldToFilter('marketplace_id', $tempMarketplace->getId())
                     ->getSize();
 
+                $isLockedByPickupStore = false;
+
+                if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
+                    $isLockedByPickupStore = (bool)Mage::getModel('M2ePro/Ebay_Account_PickupStore')->getCollection()
+                        ->addFieldToFilter('marketplace_id', $tempMarketplace->getId())
+                        ->getSize();
+                }
+
                 $storedStatuses[] = array(
                     'marketplace_id' => $tempMarketplace->getMarketplaceId(),
                     'status'         => $tempMarketplace->getStatus()
@@ -70,7 +79,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
                 /* @var $tempMarketplace Ess_M2ePro_Model_Marketplace */
                 $marketplace = array(
                     'instance' => $tempMarketplace,
-                    'params'   => array('locked' => $isLocked)
+                    'params'   => array(
+                        'locked' => $isLocked,
+                        'lockedByPickupStore' => $isLockedByPickupStore
+                    )
                 );
 
                 $groups[$key]['marketplaces'][] = $marketplace;

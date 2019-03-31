@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -30,7 +30,7 @@ class Ess_M2ePro_Helper_Magento_AttributeSet extends Ess_M2ePro_Helper_Magento_A
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableName = Mage::getSingleton('core/resource')->getTableName('catalog/product');
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('catalog/product');
 
         $dbSelect = $connRead->select()
             ->from($tableName, 'attribute_set_id')
@@ -96,7 +96,9 @@ class Ess_M2ePro_Helper_Magento_AttributeSet extends Ess_M2ePro_Helper_Magento_A
             return array();
         }
 
-        $productsCollection = Mage::getModel('catalog/product')->getCollection();
+        /* @var $productsCollection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
+        $productsCollection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
+                                                                  Mage::getModel('catalog/product')->getResource());
         $productsCollection->addFieldToFilter('attribute_set_id', array('in' => $attributeSetIds));
 
         return $this->_convertCollectionToReturnType($productsCollection, $returnType);
@@ -140,7 +142,7 @@ class Ess_M2ePro_Helper_Magento_AttributeSet extends Ess_M2ePro_Helper_Magento_A
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableName = Mage::getSingleton('core/resource')->getTableName('eav/entity_attribute');
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('eav/entity_attribute');
 
         $dbSelect = $connRead->select()
             ->from($tableName, 'attribute_set_id')

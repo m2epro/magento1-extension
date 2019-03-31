@@ -1,0 +1,12 @@
+<div id="ebayPickupStoreVariationsGrid" style="height: 450px; margin-top: 10px;">
+    <?php
+    $url = $this->getUrl('*/adminhtml_ebay_listing_pickupStore_variation_product_show/variationsGrid',
+        array(
+            'product_id' => $this->getListingProductId(),
+            'pickup_store_id' => $this->getPickupStoreId(),
+            'filter' => $this->getRequest()->getParam('filter')
+        )
+    );
+    ?>
+    <input type="hidden" id="ebayPickupStoreVariationsGridIframeUrl" value="<?php echo $url ?>">
+</div>

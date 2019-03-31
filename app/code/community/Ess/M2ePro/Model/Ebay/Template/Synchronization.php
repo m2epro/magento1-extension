@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -54,26 +54,23 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     const REVISE_UPDATE_IMAGES_NONE = 0;
     const REVISE_UPDATE_IMAGES_YES  = 1;
 
-    const REVISE_CHANGE_PAYMENT_TEMPLATE_NONE = 0;
-    const REVISE_CHANGE_PAYMENT_TEMPLATE_YES  = 1;
+    const REVISE_UPDATE_CATEGORIES_NONE = 0;
+    const REVISE_UPDATE_CATEGORIES_YES  = 1;
 
-    const REVISE_CHANGE_SHIPPING_TEMPLATE_NONE = 0;
-    const REVISE_CHANGE_SHIPPING_TEMPLATE_YES  = 1;
+    const REVISE_UPDATE_SHIPPING_NONE = 0;
+    const REVISE_UPDATE_SHIPPING_YES  = 1;
 
-    const REVISE_CHANGE_RETURN_TEMPLATE_NONE = 0;
-    const REVISE_CHANGE_RETURN_TEMPLATE_YES  = 1;
+    const REVISE_UPDATE_PAYMENT_NONE = 0;
+    const REVISE_UPDATE_PAYMENT_YES  = 1;
 
-    const REVISE_CHANGE_DESCRIPTION_TEMPLATE_NONE = 0;
-    const REVISE_CHANGE_DESCRIPTION_TEMPLATE_YES  = 1;
+    const REVISE_UPDATE_RETURN_NONE = 0;
+    const REVISE_UPDATE_RETURN_YES  = 1;
 
-    const REVISE_CHANGE_CATEGORY_TEMPLATE_NONE = 0;
-    const REVISE_CHANGE_CATEGORY_TEMPLATE_YES  = 1;
+    const REVISE_UPDATE_OTHER_NONE = 0;
+    const REVISE_UPDATE_OTHER_YES  = 1;
 
     const RELIST_FILTER_USER_LOCK_NONE = 0;
     const RELIST_FILTER_USER_LOCK_YES  = 1;
-
-    const RELIST_SEND_DATA_NONE = 0;
-    const RELIST_SEND_DATA_YES  = 1;
 
     const RELIST_MODE_NONE = 0;
     const RELIST_MODE_YES  = 1;
@@ -88,6 +85,9 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     const RELIST_QTY_LESS    = 1;
     const RELIST_QTY_BETWEEN = 2;
     const RELIST_QTY_MORE    = 3;
+
+    const STOP_MODE_NONE = 0;
+    const STOP_MODE_YES  = 1;
 
     const STOP_STATUS_DISABLED_NONE = 0;
     const STOP_STATUS_DISABLED_YES  = 1;
@@ -259,52 +259,23 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
 
     // ---------------------------------------
 
-    /**
-     * @return bool
-     */
-    public function isReviseWhenChangeQty()
+    public function isPriceChangedOverAllowedDeviation($onlinePrice, $currentPrice)
     {
-        return $this->getData('revise_update_qty') != self::REVISE_UPDATE_QTY_NONE;
-    }
+        if ((float)$onlinePrice == (float)$currentPrice) {
+            return false;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isReviseWhenChangePrice()
-    {
-        return $this->getData('revise_update_price') != self::REVISE_UPDATE_PRICE_NONE;
-    }
+        if ((float)$onlinePrice <= 0) {
+            return true;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isReviseWhenChangeTitle()
-    {
-        return $this->getData('revise_update_title') != self::REVISE_UPDATE_TITLE_NONE;
-    }
+        if ($this->isReviseUpdatePriceMaxAllowedDeviationModeOff()) {
+            return true;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isReviseWhenChangeSubTitle()
-    {
-        return $this->getData('revise_update_sub_title') != self::REVISE_UPDATE_SUB_TITLE_NONE;
-    }
+        $deviation = round(abs($onlinePrice - $currentPrice) / $onlinePrice * 100, 2);
 
-    /**
-     * @return bool
-     */
-    public function isReviseWhenChangeDescription()
-    {
-        return $this->getData('revise_update_description') != self::REVISE_UPDATE_DESCRIPTION_NONE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isReviseWhenChangeImages()
-    {
-        return $this->getData('revise_update_images') != self::REVISE_UPDATE_IMAGES_NONE;
+        return $deviation > $this->getReviseUpdatePriceMaxAllowedDeviation();
     }
 
     // ---------------------------------------
@@ -312,46 +283,89 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     /**
      * @return bool
      */
-    public function isReviseCategoryTemplate()
+    public function isReviseUpdateQty()
     {
-        return (int)$this->getData('revise_change_category_template') !=
-            self::REVISE_CHANGE_CATEGORY_TEMPLATE_NONE;
+        return $this->getData('revise_update_qty') != self::REVISE_UPDATE_QTY_NONE;
     }
 
     /**
      * @return bool
      */
-    public function isRevisePaymentTemplate()
+    public function isReviseUpdatePrice()
     {
-        return (int)$this->getData('revise_change_payment_template') !=
-            self::REVISE_CHANGE_PAYMENT_TEMPLATE_NONE;
+        return $this->getData('revise_update_price') != self::REVISE_UPDATE_PRICE_NONE;
     }
 
     /**
      * @return bool
      */
-    public function isReviseReturnTemplate()
+    public function isReviseUpdateTitle()
     {
-        return (int)$this->getData('revise_change_return_template') !=
-            self::REVISE_CHANGE_RETURN_TEMPLATE_NONE;
+        return $this->getData('revise_update_title') != self::REVISE_UPDATE_TITLE_NONE;
     }
 
     /**
      * @return bool
      */
-    public function isReviseShippingTemplate()
+    public function isReviseUpdateSubtitle()
     {
-        return (int)$this->getData('revise_change_shipping_template') !=
-            self::REVISE_CHANGE_SHIPPING_TEMPLATE_NONE;
+        return $this->getData('revise_update_sub_title') != self::REVISE_UPDATE_SUB_TITLE_NONE;
     }
 
     /**
      * @return bool
      */
-    public function isReviseDescriptionTemplate()
+    public function isReviseUpdateDescription()
     {
-        return (int)$this->getData('revise_change_description_template') !=
-            self::REVISE_CHANGE_DESCRIPTION_TEMPLATE_NONE;
+        return $this->getData('revise_update_description') != self::REVISE_UPDATE_DESCRIPTION_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviseUpdateImages()
+    {
+        return $this->getData('revise_update_images') != self::REVISE_UPDATE_IMAGES_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviseUpdateCategories()
+    {
+        return $this->getData('revise_update_categories') != self::REVISE_UPDATE_CATEGORIES_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviseUpdateShipping()
+    {
+        return $this->getData('revise_update_shipping') != self::REVISE_UPDATE_SHIPPING_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviseUpdatePayment()
+    {
+        return $this->getData('revise_update_payment') != self::REVISE_UPDATE_PAYMENT_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviseUpdateReturn()
+    {
+        return $this->getData('revise_update_return') != self::REVISE_UPDATE_RETURN_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviseUpdateOther()
+    {
+        return $this->getData('revise_update_other') != self::REVISE_UPDATE_OTHER_NONE;
     }
 
     // ---------------------------------------
@@ -370,14 +384,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     public function isRelistFilterUserLock()
     {
         return $this->getData('relist_filter_user_lock') != self::RELIST_FILTER_USER_LOCK_NONE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRelistSendData()
-    {
-        return $this->getData('relist_send_data') != self::RELIST_SEND_DATA_NONE;
     }
 
     /**
@@ -413,6 +419,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     }
 
     // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isStopMode()
+    {
+        return $this->getData('stop_mode') != self::STOP_MODE_NONE;
+    }
 
     /**
      * @return bool
@@ -548,77 +562,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
         return $this->getData('stop_qty_calculated_value_max');
     }
 
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isScheduleEnabled()
-    {
-        return (int)$this->getData('schedule_mode') == 1;
-    }
-
-    /**
-     * @return bool
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function isScheduleIntervalNow()
-    {
-        $intervalSettings = $this->getSettings('schedule_interval_settings');
-
-        if (empty($intervalSettings)) {
-            return true;
-        }
-
-        if (!isset($intervalSettings['mode'], $intervalSettings['date_from'], $intervalSettings['date_to'])) {
-            return true;
-        }
-
-        if ($intervalSettings['mode'] == 0) {
-            return true;
-        }
-
-        $from = strtotime($intervalSettings['date_from']);
-        $to   = strtotime($intervalSettings['date_to']);
-        $now  = Mage::helper('M2ePro')->getCurrentGmtDate(true);
-
-        return $now >= $from && $now <= $to;
-    }
-
-    /**
-     * @return bool
-     * @throws Ess_M2ePro_Model_Exception_Logic
-     */
-    public function isScheduleWeekNow()
-    {
-        $weekSettings = $this->getSettings('schedule_week_settings');
-
-        if (empty($weekSettings)) {
-            return false;
-        }
-
-        $todayDayOfWeek = getdate(Mage::helper('M2ePro')->getCurrentTimezoneDate(true));
-        $todayDayOfWeek = strtolower($todayDayOfWeek['weekday']);
-
-        if (!isset($weekSettings[$todayDayOfWeek])) {
-            return false;
-        }
-
-        if (!isset($weekSettings[$todayDayOfWeek]['time_from'], $weekSettings[$todayDayOfWeek]['time_to'])) {
-            return false;
-        }
-
-        $now = Mage::helper('M2ePro')->getCurrentTimezoneDate(true);
-
-        list($fromHour,$fromMinute,$fromSecond) = explode(':',$weekSettings[$todayDayOfWeek]['time_from']);
-        $from = mktime($fromHour,$fromMinute,$fromSecond, date('m',$now),date('d',$now),date('Y',$now));
-
-        list($toHour,$toMinute,$toSecond) = explode(':',$weekSettings[$todayDayOfWeek]['time_to']);
-        $to = mktime($toHour,$toMinute,$toSecond, date('m',$now),date('d',$now),date('Y',$now));
-
-        return $now >= $from && $now <= $to;
-    }
-
     //########################################
 
     /**
@@ -630,8 +573,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
             $this->getListDefaultSettingsSimpleMode(),
             $this->getReviseDefaultSettingsSimpleMode(),
             $this->getRelistDefaultSettingsSimpleMode(),
-            $this->getStopDefaultSettingsSimpleMode(),
-            $this->getScheduleDefaultSettingsSimpleMode()
+            $this->getStopDefaultSettingsSimpleMode()
         );
     }
 
@@ -644,8 +586,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
             $this->getListDefaultSettingsAdvancedMode(),
             $this->getReviseDefaultSettingsAdvancedMode(),
             $this->getRelistDefaultSettingsAdvancedMode(),
-            $this->getStopDefaultSettingsAdvancedMode(),
-            $this->getScheduleDefaultSettingsAdvancedMode()
+            $this->getStopDefaultSettingsAdvancedMode()
         );
     }
 
@@ -687,14 +628,11 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
             'revise_update_sub_title'                        => self::REVISE_UPDATE_SUB_TITLE_NONE,
             'revise_update_description'                      => self::REVISE_UPDATE_DESCRIPTION_NONE,
             'revise_update_images'                           => self::REVISE_UPDATE_IMAGES_NONE,
-
-            'revise_change_selling_format_template'          =>
-                    Ess_M2ePro_Model_Template_Synchronization::REVISE_CHANGE_SELLING_FORMAT_TEMPLATE_YES,
-            'revise_change_description_template'             => self::REVISE_CHANGE_DESCRIPTION_TEMPLATE_NONE,
-            'revise_change_category_template'                => self::REVISE_CHANGE_CATEGORY_TEMPLATE_YES,
-            'revise_change_payment_template'                 => self::REVISE_CHANGE_PAYMENT_TEMPLATE_YES,
-            'revise_change_shipping_template'                => self::REVISE_CHANGE_SHIPPING_TEMPLATE_YES,
-            'revise_change_return_template'                  => self::REVISE_CHANGE_RETURN_TEMPLATE_YES
+            'revise_update_categories'                       => self::REVISE_UPDATE_CATEGORIES_NONE,
+            'revise_update_shipping'                         => self::REVISE_UPDATE_SHIPPING_NONE,
+            'revise_update_payment'                          => self::REVISE_UPDATE_PAYMENT_NONE,
+            'revise_update_return'                           => self::REVISE_UPDATE_RETURN_NONE,
+            'revise_update_other'                           => self::REVISE_UPDATE_OTHER_NONE,
         );
     }
 
@@ -706,7 +644,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
         return array(
             'relist_mode'             => self::RELIST_MODE_YES,
             'relist_filter_user_lock' => self::RELIST_FILTER_USER_LOCK_YES,
-            'relist_send_data'        => self::RELIST_SEND_DATA_NONE,
             'relist_status_enabled'   => self::RELIST_STATUS_ENABLED_YES,
             'relist_is_in_stock'      => self::RELIST_IS_IN_STOCK_YES,
 
@@ -726,6 +663,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     public function getStopDefaultSettingsSimpleMode()
     {
         return array(
+            'stop_mode' => self::STOP_MODE_YES,
+
             'stop_status_disabled' => self::STOP_STATUS_DISABLED_YES,
             'stop_out_off_stock'   => self::STOP_OUT_OFF_STOCK_YES,
 
@@ -736,24 +675,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
             'stop_qty_calculated'           => self::STOP_QTY_NONE,
             'stop_qty_calculated_value'     => '0',
             'stop_qty_calculated_value_max' => '10'
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getScheduleDefaultSettingsSimpleMode()
-    {
-        return array(
-            'schedule_mode'              => 0,
-
-            'schedule_interval_settings' => json_encode(array(
-                'mode'      => 0,
-                'date_from' => Mage::helper('M2ePro')->getCurrentTimezoneDate(false,'Y-m-d'),
-                'date_to'   => Mage::helper('M2ePro')->getCurrentTimezoneDate(false,'Y-m-d')
-            )),
-
-            'schedule_week_settings'     => json_encode(array())
         );
     }
 
@@ -800,62 +721,6 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     public function getStopDefaultSettingsAdvancedMode()
     {
         return $this->getStopDefaultSettingsSimpleMode();
-    }
-
-    /**
-     * @return array
-     */
-    public function getScheduleDefaultSettingsAdvancedMode()
-    {
-        return $this->getScheduleDefaultSettingsSimpleMode();
-    }
-
-    //########################################
-
-    /**
-     * @param bool $asArrays
-     * @param string|array $columns
-     * @return array
-     */
-    public function getAffectedListingsProducts($asArrays = true, $columns = '*')
-    {
-        $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
-        $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION);
-
-        $listingsProducts = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->getId(), $asArrays, $columns
-        );
-
-        $listings = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->getId(), false
-        );
-
-        foreach ($listings as $listing) {
-
-            $tempListingsProducts = $listing->getChildObject()
-                                            ->getAffectedListingsProductsByTemplate(
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION,
-                                                $asArrays, $columns
-                                            );
-
-            foreach ($tempListingsProducts as $listingProduct) {
-                if (!isset($listingsProducts[$listingProduct['id']])) {
-                    $listingsProducts[$listingProduct['id']] = $listingProduct;
-                }
-            }
-        }
-
-        return $listingsProducts;
-    }
-
-    public function setSynchStatusNeed($newData, $oldData)
-    {
-        $listingsProducts = $this->getAffectedListingsProducts(true, array('id', 'synch_status', 'synch_reasons'));
-        if (empty($listingsProducts)) {
-            return;
-        }
-
-        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     //########################################

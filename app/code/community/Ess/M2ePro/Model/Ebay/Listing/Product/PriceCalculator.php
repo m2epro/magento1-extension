@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -14,11 +14,6 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator
     extends Ess_M2ePro_Model_Listing_Product_PriceCalculator
 {
-    /**
-     * @var bool
-     */
-    private $isIncreaseByVatPercent = false;
-
     //########################################
 
     protected function isPriceVariationModeParent()
@@ -35,26 +30,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator
 
     //########################################
 
-    /**
-     * @param bool $value
-     * @return Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator
-     */
-    public function setIsIncreaseByVatPercent($value)
-    {
-        $this->isIncreaseByVatPercent = (bool)$value;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function getIsIncreaseByVatPercent()
-    {
-        return $this->isIncreaseByVatPercent;
-    }
-
-    //########################################
-
     public function getVariationValue(Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
         if ($variation->getChildObject()->isDelete()) {
@@ -66,34 +41,31 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator
 
     //########################################
 
-    protected function prepareFinalValue($value)
+    protected function prepareOptionTitles($optionTitles)
     {
-        if ($this->getIsIncreaseByVatPercent() &&
-            $this->getComponentSellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
-
-            $value = $this->increaseValueByVatPercent($value);
+        foreach ($optionTitles as &$optionTitle) {
+            $optionTitle = trim(Mage::helper('M2ePro')->reduceWordsInString(
+                $optionTitle, Ess_M2ePro_Helper_Component_Ebay::VARIATION_OPTION_LABEL_MAX_LENGTH
+            ));
         }
 
-        return parent::prepareFinalValue($value);
+        return $optionTitles;
     }
 
-    protected function increaseValueByVatPercent($value)
+    protected function prepareAttributeTitles($attributeTitles)
     {
-        $vatPercent = $this->getComponentSellingFormatTemplate()->getVatPercent();
-        return $value + (($vatPercent*$value) / 100);
+        foreach ($attributeTitles as &$attributeTitle) {
+            $attributeTitle = trim($attributeTitle);
+        }
+
+        return $attributeTitles;
     }
 
     //########################################
 
-    protected function prepareOptionTitles($optionTitles)
+    protected function getCurrencyForPriceConvert()
     {
-        foreach ($optionTitles as &$optionTitle) {
-            $optionTitle = Mage::helper('M2ePro')->reduceWordsInString(
-                $optionTitle, Ess_M2ePro_Helper_Component_Ebay::MAX_LENGTH_FOR_OPTION_VALUE
-            );
-        }
-
-        return $optionTitles;
+        return $this->getComponentListing()->getEbayMarketplace()->getCurrency();
     }
 
     //########################################

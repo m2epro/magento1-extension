@@ -1,3 +1,5 @@
+<?php /**@var $this Ess_M2ePro_Block_Adminhtml_Listing_Other_View_Header */ ?>
+
 <style type="text/css">
 
     div.listing-view-header {
@@ -47,9 +49,13 @@
                 <span class="label">
                     <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Account')); ?>:&nbsp;
                 </span>
-                <span class="value">
+                <?php $accountUrl = $this->getUrl(
+                    'M2ePro/adminhtml_' .$this->getAccount()->getComponentMode(). '_account/edit/',
+                    array('id' => $this->getAccount()->getId())
+                ); ?>
+                <a href="<?php echo $accountUrl; ?>" target="_blank">
                     <?php echo Mage::helper('M2ePro')->escapeHtml($this->getAccountTitle()); ?>
-                </span>
+                </a>
             </label>
         </li>
         <li>

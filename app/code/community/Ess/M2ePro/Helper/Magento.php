@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -30,9 +30,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
     public function getEditionName()
     {
-        if ($this->isProfessionalEdition()) {
-            return 'professional';
-        }
         if ($this->isEnterpriseEdition()) {
             return 'enterprise';
         }
@@ -45,14 +42,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    public function isProfessionalEdition()
-    {
-        return Mage::getConfig()->getModuleConfig('Enterprise_Enterprise') &&
-               !Mage::getConfig()->getModuleConfig('Enterprise_AdminGws') &&
-               !Mage::getConfig()->getModuleConfig('Enterprise_Checkout') &&
-               !Mage::getConfig()->getModuleConfig('Enterprise_Customer');
-    }
-
     public function isEnterpriseEdition()
     {
         return Mage::getConfig()->getModuleConfig('Enterprise_Enterprise') &&
@@ -63,8 +52,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
     public function isCommunityEdition()
     {
-        return !$this->isProfessionalEdition() &&
-               !$this->isEnterpriseEdition();
+        return !$this->isEnterpriseEdition();
     }
 
     //########################################
@@ -236,20 +224,50 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return $sortedCountries;
     }
 
-    public function addGlobalNotification($title,
-                                          $description,
-                                          $type = Mage_AdminNotification_Model_Inbox::SEVERITY_CRITICAL,
-                                          $url = NULL)
+    public function getRegionsByCountryCode($countryCode)
     {
-        $dataForAdd = array(
-            'title' => $title,
-            'description' => $description,
-            'url' => !is_null($url) ? $url : 'http://m2epro.com/?'.sha1($title),
-            'severity' => $type,
-            'date_added' => now()
-        );
+        $result = array();
 
-        Mage::getModel('adminnotification/inbox')->parse(array($dataForAdd));
+        try {
+            $country = Mage::getModel('directory/country')->loadByCode($countryCode);
+        } catch (Mage_Core_Exception $e) {
+            return $result;
+        }
+
+        if (!$country->getId()) {
+            return $result;
+        }
+
+        $result = array();
+        foreach ($country->getRegions() as $region) {
+            $region->setName($region->getName());
+            $result[] = $region->toArray(array('region_id', 'code', 'name'));
+        }
+
+        if (empty($result) && $countryCode == 'AU') {
+            $result = array(
+                array('region_id' => '','code' => 'NSW','name' => 'New South Wales'),
+                array('region_id' => '','code' => 'QLD','name' => 'Queensland'),
+                array('region_id' => '','code' => 'SA','name' => 'South Australia'),
+                array('region_id' => '','code' => 'TAS','name' => 'Tasmania'),
+                array('region_id' => '','code' => 'VIC','name' => 'Victoria'),
+                array('region_id' => '','code' => 'WA','name' => 'Western Australia'),
+            );
+        } else if (empty($result) && $countryCode == 'GB') {
+            $result = array(
+                array('region_id' => '','code' => 'UKH','name' => 'East of England'),
+                array('region_id' => '','code' => 'UKF','name' => 'East Midlands'),
+                array('region_id' => '','code' => 'UKI','name' => 'London'),
+                array('region_id' => '','code' => 'UKC','name' => 'North East'),
+                array('region_id' => '','code' => 'UKD','name' => 'North West'),
+                array('region_id' => '','code' => 'UKJ','name' => 'South East'),
+                array('region_id' => '','code' => 'UKK','name' => 'South West'),
+                array('region_id' => '','code' => 'UKG','name' => 'West Midlands'),
+                array('region_id' => '','code' => 'UKE','name' => 'Yorkshire and the Humber'),
+            );
+        }
+
+        return $result;
     }
 
     //########################################
@@ -445,20 +463,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
     public function clearCache()
     {
         Mage::app()->getCache()->clean(Zend_Cache::CLEANING_MODE_ALL);
-    }
-
-    //########################################
-
-    public function shouldBeSecure($store = NULL, $area = Mage_Core_Model_App_Area::AREA_FRONTEND)
-    {
-        if (($area == Mage_Core_Model_App_Area::AREA_FRONTEND && !Mage::app()->getStore($store)->isFrontUrlSecure()) ||
-            ($area == Mage_Core_Model_App_Area::AREA_ADMIN    && !Mage::app()->getStore($store)->isAdminUrlSecure()) ||
-            !Mage::getStoreConfigFlag(Mage_Core_Model_Store::XML_PATH_SECURE_BASE_URL, $store))
-        {
-            return false;
-        }
-
-        return true;
     }
 
     //########################################

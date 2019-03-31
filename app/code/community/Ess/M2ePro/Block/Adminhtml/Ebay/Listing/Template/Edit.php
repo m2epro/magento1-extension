@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -30,11 +30,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
 
         // Set header text
         // ---------------------------------------
-        if ($listing) {
-            $this->_headerText = Mage::helper('M2ePro')->__('Edit Listing Settings "%listing_title%"',
-                                                            $listing->getTitle());
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+
+            if ($listing) {
+                $this->_headerText = Mage::helper('M2ePro')->__(
+                    'Edit %component_name% Listing Settings "%listing_title%"', $componentName,
+                    $listing->getTitle()
+                );
+
+            } else {
+                $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Creating A New M2E Pro Listing',
+                    $componentName
+                );
+            }
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('Creating A New M2E Pro Listing');
+            if ($listing) {
+                $this->_headerText = Mage::helper('M2ePro')->__('Edit Listing Settings "%listing_title%"',
+                    $listing->getTitle()
+                );
+
+            } else {
+                $this->_headerText = Mage::helper('M2ePro')->__('Creating A New M2E Pro Listing');
+            }
         }
         // ---------------------------------------
 
@@ -187,7 +205,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
 
         // initiate template switcher url
         // ---------------------------------------
-        $html .= Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher::getSwitcherUrlHtml();
+        $html .= Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher::getSwitcherUrlHtml(
+            Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher::MODE_COMMON
+        );
         // ---------------------------------------
 
         // ---------------------------------------

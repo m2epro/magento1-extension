@@ -2,13 +2,16 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
+    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+    protected $listingProduct;
+
     protected $listingProductId;
 
     //########################################
@@ -31,32 +34,49 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View
         return $this->listingProductId;
     }
 
+    // ---------------------------------------
+
+    protected function getListingProduct()
+    {
+        if (empty($this->listingProduct)) {
+            $this->listingProduct = Mage::helper('M2ePro/Component_Ebay')
+                ->getObject('Listing_Product', $this->getListingProductId());
+        }
+
+        return $this->listingProduct;
+    }
+
+    //########################################
+
     public function __construct()
     {
         parent::__construct();
-
         $this->setTemplate('M2ePro/ebay/listing/variation/product/manage/view.phtml');
-
-        return $this;
     }
+
+    //########################################
 
     protected function _toHtml()
     {
-        $data = array(
-            'style' => 'float: right; margin-top: 7px; ',
-            'label'   => Mage::helper('M2ePro')->__('Close'),
-            'onclick' => 'EbayListingEbayGridHandlerObj.variationProductManageHandler.closeManageVariationsPopup()'
-        );
-        $closeBtn = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-
-        $additionalJavascript = <<<HTML
+        $javascriptMain = <<<HTML
 <script type="text/javascript">
+    FrameHandlerObj = new FrameHandler();
+
     EbayListingEbayGridHandlerObj.variationProductManageHandler.loadVariationsGrid(true);
+    EbayListingEbayGridHandlerObj.variationProductManageHandler.loadDeletedVariationsGrid(true);
 </script>
 HTML;
-
-        return parent::_toHtml() .
-        $additionalJavascript .
-        $closeBtn->toHtml();
+        return $javascriptMain . parent::_toHtml();
     }
+
+    //########################################
+
+    public function getDeletedVariations()
+    {
+        return $this->getListingProduct()->getSetting(
+            'additional_data', 'variations_that_can_not_be_deleted'
+        );
+    }
+
+    //########################################
 }

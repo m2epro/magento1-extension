@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -33,7 +33,13 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
      */
     public function getWizard($nick)
     {
-        return Mage::getSingleton('M2ePro/Wizard_'.ucfirst($nick));
+        try {
+            $model = Mage::getSingleton('M2ePro/Wizard_'.ucfirst($nick));
+        } catch (Exception $e) {
+           return false;
+        }
+
+        return $model;
     }
 
     //########################################
@@ -76,7 +82,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         }
 
         if (($this->cache = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue('wizard')) !== false) {
-            $this->cache = json_decode($this->cache, true);
+            $this->cache = Mage::helper('M2ePro')->jsonDecode($this->cache);
             return $this->cache[$nick][$key];
         }
 
@@ -92,13 +98,13 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         $this->cache[$nick][$key] = $value;
 
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue('wizard',
-                                                    json_encode($this->cache),
+                                                    Mage::helper('M2ePro')->jsonEncode($this->cache),
                                                     array('wizard'),
                                                     60*60);
 
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $tableName = Mage::getSingleton('core/resource')->getTableName('m2epro_wizard');
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_wizard');
 
         $connWrite->update(
             $tableName,
@@ -178,7 +184,8 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
                 continue;
             }
 
-            $wizards[] = $this->getWizard($nick);
+            $wizardModel = $this->getWizard($nick);
+            $wizardModel && $wizards[] = $wizardModel;
         }
 
         return $wizards;
@@ -226,27 +233,24 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
     {
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableName = Mage::getSingleton('core/resource')->getTableName('m2epro_wizard');
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_wizard');
 
         $this->cache = $connRead->fetchAll(
             $connRead->select()->from($tableName,'*')
         );
 
-        $sortFunction = <<<FUNCTION
-if (\$a['type'] != \$b['type']) {
-    return \$a['type'] == Ess_M2ePro_Helper_Module_Wizard::TYPE_BLOCKER ? - 1 : 1;
-}
+        usort($this->cache, function ($a, $b) {
 
-if (\$a['priority'] == \$b['priority']) {
-    return 0;
-}
+            if ($a['type'] != $b['type']) {
+                return $a['type'] == Ess_M2ePro_Helper_Module_Wizard::TYPE_BLOCKER ? - 1 : 1;
+            }
 
-return \$a['priority'] > \$b['priority'] ? 1 : -1;
-FUNCTION;
+            if ($a['priority'] == $b['priority']) {
+                return 0;
+            }
 
-        $sortFunction = create_function('$a,$b',$sortFunction);
-
-        usort($this->cache, $sortFunction);
+            return $a['priority'] > $b['priority'] ? 1 : -1;
+        });
 
         foreach ($this->cache as $id => $wizard) {
             $this->cache[$wizard['nick']] = $wizard;
@@ -254,7 +258,7 @@ FUNCTION;
         }
 
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue('wizard',
-                                                    json_encode($this->cache),
+                                                    Mage::helper('M2ePro')->jsonEncode($this->cache),
                                                     array('wizard'),
                                                     60*60);
     }

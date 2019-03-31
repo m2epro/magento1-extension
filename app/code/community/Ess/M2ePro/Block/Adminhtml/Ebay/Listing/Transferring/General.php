@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -63,13 +63,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_General extends Mage_
             ->createBlock('M2ePro/adminhtml_ebay_listing_transferring_step_translation')
             ->setData('is_allowed', false);
         $this->setChild('translation', $translation);
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $categories = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_Ebay_Listing_Transferring_step_categories')
-            ->setData('is_allowed', true);
-        $this->setChild('categories', $categories);
         // ---------------------------------------
     }
 

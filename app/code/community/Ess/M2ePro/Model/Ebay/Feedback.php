@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -104,14 +104,33 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
 
         try {
 
-            $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
+            /** @var Ess_M2ePro_Model_Connector_Command_RealTime_Virtual $connectorObj */
+            $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObj->getVirtualConnector('feedback', 'add', 'entity',
                                                                 $paramsConnector, NULL, NULL,
                                                                 $this->getAccount());
 
-            $response = $dispatcherObj->process($connectorObj);
+            $dispatcherObj->process($connectorObj);
+            $response = $connectorObj->getResponseData();
+
+            if ($connectorObj->getResponse()->getMessages()->hasErrorEntities()) {
+                throw new Ess_M2ePro_Model_Exception(
+                    $connectorObj->getResponse()->getMessages()->getCombinedErrorsString()
+                );
+            }
 
         } catch (Exception $e) {
+
+            $synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+            $synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+            $synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER);
+
+            $synchronizationLog->addMessage(
+                Mage::helper('M2ePro')->__($e->getMessage()),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+
             Mage::helper('M2ePro/Module_Exception')->process($e);
             return false;
         }

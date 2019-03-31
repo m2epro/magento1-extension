@@ -2,11 +2,12 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 /**
+ * @method Ess_M2ePro_Model_Amazon_Order_Item|Ess_M2ePro_Model_Ebay_Order_Item|Ess_M2ePro_Model_Walmart_Order_Item getChildObject()
  */
 class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -234,6 +235,24 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
     //########################################
 
     /**
+     * @return bool
+     */
+    public function canCreateMagentoOrder()
+    {
+        return $this->getChildObject()->canCreateMagentoOrder();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReservable()
+    {
+        return $this->getChildObject()->isReservable();
+    }
+
+    //########################################
+
+    /**
      * Associate order item with product in magento
      *
      * @throws Ess_M2ePro_Model_Exception
@@ -245,7 +264,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         }
 
         if (!in_array($this->getMagentoProduct()->getTypeId(), self::$supportedProductTypes)) {
-            $message = Mage::getSingleton('M2ePro/Log_Abstract')->encodeDescription(
+            $message = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                 'Order Import does not support Product type: %type%.', array(
                     'type' => $this->getMagentoProduct()->getTypeId()
                 )
@@ -274,19 +293,13 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $variationChannelOptions = $this->getChildObject()->getVariationChannelOptions();
         $magentoProduct   = $this->getMagentoProduct();
 
-        // do nothing for amazon & buy order item, if it is mapped to product with required options,
-        // but there is no information available about sold variation
-        if (empty($variationChannelOptions) && $this->isComponentModeBuy() &&
-            ($magentoProduct->isStrictVariationProduct() || $magentoProduct->isProductWithVariations())
-        ) {
-            return;
-        }
-
         $existOptions  = $this->getAssociatedOptions();
         $existProducts = $this->getAssociatedProducts();
 
         if (count($existProducts) == 1
-            && ($magentoProduct->isGroupedType() || $magentoProduct->isConfigurableType())
+            && ($magentoProduct->isDownloadableType() ||
+                $magentoProduct->isGroupedType() ||
+                $magentoProduct->isConfigurableType())
         ) {
             // grouped and configurable products can have only one associated product mapped with sold variation
             // so if count($existProducts) == 1 - there is no need for further actions
@@ -316,18 +329,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             }
         }
 
-        $magentoOptions = $this->prepareMagentoOptions($magentoProduct->getVariationInstance()->getVariationsTypeRaw());
-
-        $variationProductOptions = $this->getChildObject()->getVariationProductOptions();
-
-        /** @var $optionsFinder Ess_M2ePro_Model_Order_Item_OptionsFinder */
-        $optionsFinder = Mage::getModel('M2ePro/Order_Item_OptionsFinder');
-        $optionsFinder->setProductId($magentoProduct->getProductId());
-        $optionsFinder->setProductType($magentoProduct->getTypeId());
-        $optionsFinder->setChannelOptions($variationProductOptions);
-        $optionsFinder->setMagentoOptions($magentoOptions);
-
-        $productDetails = $optionsFinder->getProductDetails();
+        $productDetails = $this->getAssociatedProductDetails($magentoProduct);
 
         if (!isset($productDetails['associated_options'])) {
             return;
@@ -344,12 +346,6 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
                 $this->setAssociatedProducts($productDetails['associated_products']);
             }
 
-            if ($optionsFinder->hasFailedOptions()) {
-                throw new Ess_M2ePro_Model_Exception_Logic(
-                    sprintf('Product Option(s) "%s" not found.', implode(', ', $optionsFinder->getFailedOptions()))
-                );
-            }
-
             $this->save();
 
             return;
@@ -359,6 +355,41 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             // options were already mapped, but not all of them
             throw new Ess_M2ePro_Model_Exception_Logic('Selected Options do not match the Product Options.');
         }
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @return array
+     * @throws Ess_M2ePro_Model_Exception
+     */
+    private function getAssociatedProductDetails(Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    {
+        if (!$magentoProduct->getTypeId()) {
+            return array();
+        }
+
+        $magentoOptions = $this->prepareMagentoOptions($magentoProduct->getVariationInstance()->getVariationsTypeRaw());
+
+        $storedItemOptions = (array)$this->getChildObject()->getVariationProductOptions();
+        $orderItemOptions  = (array)$this->getChildObject()->getVariationOptions();
+
+        /** @var $optionsFinder Ess_M2ePro_Model_Order_Item_OptionsFinder */
+        $optionsFinder = Mage::getModel('M2ePro/Order_Item_OptionsFinder');
+        $optionsFinder->setProduct($magentoProduct)
+                      ->setMagentoOptions($magentoOptions)
+                      ->addChannelOptions($storedItemOptions);
+
+        if ($orderItemOptions !== $storedItemOptions) {
+            $optionsFinder->addChannelOptions($orderItemOptions);
+        }
+
+        $optionsFinder->find();
+
+        if (!$optionsFinder->hasFailedOptions()) {
+            return $optionsFinder->getOptionsData();
+        }
+
+        throw new Ess_M2ePro_Model_Exception($optionsFinder->getOptionsNotFoundMessage());
     }
 
     public function prepareMagentoOptions($options)
@@ -415,15 +446,10 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             $associatedProducts = reset($associatedProducts);
         }
 
-        $magentoOptions = $this->prepareMagentoOptions($magentoProduct->getVariationInstance()->getVariationsTypeRaw());
-
-        /** @var $optionsFinder Ess_M2ePro_Model_Order_Item_OptionsFinder */
-        $optionsFinder = Mage::getModel('M2ePro/Order_Item_OptionsFinder');
-        $optionsFinder->setProductId($magentoProduct->getProductId());
-        $optionsFinder->setProductType($magentoProduct->getTypeId());
-        $optionsFinder->setMagentoOptions($magentoOptions);
-
-        $associatedProducts = $optionsFinder->prepareAssociatedProducts($associatedProducts);
+        $associatedProducts = Mage::helper('M2ePro/Magento_Product')->prepareAssociatedProducts(
+            $associatedProducts,
+            $magentoProduct
+        );
 
         $this->setAssociatedProducts($associatedProducts);
         $this->setAssociatedOptions($associatedOptions);

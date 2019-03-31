@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -82,10 +82,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Translation_Grid
         // ---------------------------------------
         // Get collection
         // ---------------------------------------
-        /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
-        $collection = Mage::getModel('catalog/product')->getCollection();
-        $collection->addAttributeToSelect('sku');
-        $collection->addAttributeToSelect('name');
+        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
+                                                          Mage::getModel('catalog/product')->getResource());
+
+        $collection
+            ->setListing($listingData['id'])
+            ->setStoreId($listingData['store_id'])
+            ->addAttributeToSelect('name')
+            ->addAttributeToSelect('sku');
         // ---------------------------------------
 
         // Join listing product tables
@@ -144,7 +149,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Translation_Grid
             'width'     => '100px',
             'type'      => 'number',
             'index'     => 'entity_id',
-            'frame_callback' => array($this, 'callbackColumnProductId'),
+            'frame_callback' => array($this, 'callbackColumnListingProductId'),
         ));
 
         $this->addColumn('name', array(
@@ -290,7 +295,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Translation_Grid
 
     public function callbackColumnSourceLanguage($value, $row, $column, $isExport)
     {
-        $additionalData = json_decode($row->getData('additional_data'), true);
+        $additionalData = Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
         if (empty($additionalData['translation_service'])) {
             return 'N/A';
         }
@@ -384,7 +389,7 @@ HTML;
         foreach ($logRows as $row) {
 
             $row['description'] = Mage::helper('M2ePro')->escapeHtml($row['description']);
-            $row['description'] = Mage::getModel('M2ePro/Log_Abstract')->decodeDescription($row['description']);
+            $row['description'] = Mage::helper('M2ePro/Module_Log')->decodeDescription($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
                 if (count($tempActionRows) > 0) {
@@ -543,10 +548,10 @@ HTML;
                 'listing_id' => $listingData['id']
             ));
 
-        $urls = json_encode($urls);
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
         $gridId = $component . 'ListingViewGrid' . $listingData['id'];
-        $ignoreListings = json_encode(array($listingData['id']));
+        $ignoreListings = Mage::helper('M2ePro')->jsonEncode(array($listingData['id']));
 
         $logViewUrl = $this->getUrl('*/adminhtml_ebay_log/listing',array(
             'id'=>$listingData['id'],
@@ -558,19 +563,23 @@ HTML;
         $runStopTranslateProducts = $this->getUrl('*/adminhtml_ebay_listing/runStopTranslateProducts');
 
         $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
-        $taskCompletedSuccessMessage =
-            $helper->escapeJs($helper->__('"%task_title%" Task has successfully completed.'));
+        $taskCompletedSuccessMessage = $helper->escapeJs(
+            $helper->__('"%task_title%" Task was successfully submitted to be processed.')
+        );
+        $taskRealtimeCompletedSuccessMessage = $helper->escapeJs(
+            $helper->__('"%task_title%" Task was completed successfully.')
+        );
 
         // M2ePro_TRANSLATIONS
-        // %task_title%" Task has completed with warnings. <a target="_blank" href="%url%">View Log</a> for details.
-        $tempString = '"%task_title%" Task has completed with warnings.'
-                     .' <a target="_blank" href="%url%">View Log</a> for details.';
+        // %task_title%" Task was completed with warnings. <a target="_blank" href="%url%">View Log</a> for the details.
+        $tempString = '"%task_title%" Task was completed with warnings.'
+                     .' <a target="_blank" href="%url%">View Log</a> for the details.';
         $taskCompletedWarningMessage = $helper->escapeJs($helper->__($tempString));
 
         // M2ePro_TRANSLATIONS
-        // "%task_title%" Task has completed with errors. <a target="_blank" href="%url%">View Log</a> for details.
-        $tempString = '"%task_title%" Task has completed with errors.'
-                     .' <a target="_blank" href="%url%">View Log</a> for details.';
+        // "%task_title%" Task was completed with errors. <a target="_blank" href="%url%">View Log</a> for the details..
+        $tempString = '"%task_title%" Task was completed with errors.'
+                     .' <a target="_blank" href="%url%">View Log</a> for the details.';
         $taskCompletedErrorMessage = $helper->escapeJs($helper->__($tempString));
 
         $sendingDataToEbayMessage = $helper->escapeJs($helper->__('Sending %product_title% Product(s) data on eBay.'));
@@ -599,7 +608,7 @@ HTML;
         $errorWord = $helper->escapeJs($helper->__('Error'));
         $closeWord = $helper->escapeJs($helper->__('Close'));
 
-        $translations = json_encode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(array(
             'Payment for Translation Service' => $helper->__('Payment for Translation Service'),
             'Payment for Translation Service. Help' => $helper->__('Payment for Translation Service'),
             'Specify a sum to be credited to an Account.' =>
@@ -630,6 +639,7 @@ HTML;
 
     M2ePro.text.task_completed_message = '{$taskCompletedMessage}';
     M2ePro.text.task_completed_success_message = '{$taskCompletedSuccessMessage}';
+    M2ePro.text.task_realtime_completed_success_message = '{$taskRealtimeCompletedSuccessMessage}';
     M2ePro.text.task_completed_warning_message = '{$taskCompletedWarningMessage}';
     M2ePro.text.task_completed_error_message = '{$taskCompletedErrorMessage}';
 

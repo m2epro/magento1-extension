@@ -311,6 +311,12 @@ a.wizard-close:hover {
     word-wrap: normal;
     font-weight: normal;
 }
+.tool-tip-message strong {
+    color: black !important;
+}
+.tool-tip-message a {
+    color: orange !important;
+}
 
 .tip-right {
     margin-left: 17px;
@@ -550,6 +556,58 @@ a.hover-underline:hover {
 .m2ePro-variation-attributes a:hover
 {
     text-decoration: underline;
+}
+
+/* ================================================ */
+
+/* Walmart Syles */
+/* ================================================ */
+table.walmart-identifiers-table,
+table.walmart-identifiers-table tr,
+table.walmart-identifiers-table td {
+    border: none;
+}
+
+.walmart-identifiers-table td {
+    min-width: 70px;
+    background-color: #D7E5EF;
+}
+
+.walmart-sku {
+    word-break: break-all;
+    width: calc(100% - 20px);
+}
+
+.walmart-identifiers-gtin {
+    width: calc(100% - 40px);
+    padding-right: 15px;
+}
+
+.walmart-identifiers-gtin,
+.walmart-sku{
+    float: left;
+    display: inline-block;
+}
+
+.walmart-identifiers-gtin-edit,
+.walmart-sku-edit{
+    display: none;
+}
+
+.walmart-identifiers-gtin:hover > .walmart-identifiers-gtin-edit,
+.walmart-sku:hover > .walmart-sku-edit{
+    display: inline-block;
+}
+
+.walmart-identifiers > .separator-line {
+    border-top: 1px solid #999;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+/* ================================================ */
+
+option.empty {
+    display: none;
 }
 
 /* ================================================ */

@@ -1,0 +1,16 @@
+<div id="block_notice_amazon_listings_grid" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('M2E Pro Listings'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        This Page shows the <strong>M2E Pro Listings</strong> you\'ve set up.<br/><br/>
+        Click a line in the Table below to manage the Products currently Listed using that M2E Pro Listing.
+        Otherwise use the Dropdown Menu in the Actions Column for more Options.<br/>
+        To Clear the Logs or Delete more than one M2E Pro Listing at a time, use the Actions Dropdown at the very top of the Table.
+    ');
+
+    $url = Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/b4IVAQ");
+
+    echo Mage::helper('M2ePro')->__('
+        <br/><br/>More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        $url
+    );
+    ?>
+</div>

@@ -2,12 +2,14 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 {
+    const INSTRUCTION_INITIATOR = 'order_builder';
+
     const STATUS_NOT_MODIFIED = 0;
     const STATUS_NEW          = 1;
     const STATUS_UPDATED      = 2;
@@ -60,11 +62,13 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         // ---------------------------------------
         $this->setData('account_id', $this->account->getId());
         $this->setData('amazon_order_id', $data['amazon_order_id']);
+        $this->setData('seller_order_id', $data['seller_order_id']);
         $this->setData('marketplace_id', $data['marketplace_id']);
 
         $this->setData('status', $this->helper->getStatus($data['status']));
         $this->setData('is_afn_channel', $data['is_afn_channel']);
         $this->setData('is_prime', $data['is_prime']);
+        $this->setData('is_business', $data['is_business']);
 
         $this->setData('purchase_update_date', $data['purchase_update_date']);
         $this->setData('purchase_create_date', $data['purchase_create_date']);
@@ -73,8 +77,8 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         // Init sale data
         // ---------------------------------------
         $this->setData('paid_amount', (float)$data['paid_amount']);
-        $this->setData('tax_details', json_encode($data['tax_details']));
-        $this->setData('discount_details', json_encode($data['discount_details']));
+        $this->setData('tax_details', Mage::helper('M2ePro')->jsonEncode($data['tax_details']));
+        $this->setData('discount_details', Mage::helper('M2ePro')->jsonEncode($data['discount_details']));
         $this->setData('currency', $data['currency']);
         $this->setData('qty_shipped', $data['qty_shipped']);
         $this->setData('qty_unshipped', $data['qty_unshipped']);
@@ -87,7 +91,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         $this->setData('shipping_service', $data['shipping_service']);
         $this->setData('shipping_address', $data['shipping_address']);
         $this->setData('shipping_price', (float)$data['shipping_price']);
-        $this->setData('shipping_dates', json_encode($data['shipping_dates']));
+        $this->setData('shipping_dates', Mage::helper('M2ePro')->jsonEncode($data['shipping_dates']));
         // ---------------------------------------
 
         $this->items = $data['items'];
@@ -232,7 +236,10 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             $this->order->setData('status', Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED);
             $this->order->setData('purchase_update_date', $this->getData('purchase_update_date'));
         } else {
-            $this->setData('shipping_address', json_encode($this->getData('shipping_address')));
+            $this->setData(
+                'shipping_address',
+                Mage::helper('M2ePro')->jsonEncode($this->getData('shipping_address'))
+            );
             $this->order->addData($this->getData());
         }
 
@@ -355,7 +362,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         $logger = Mage::getModel('M2ePro/Listing_Log');
         $logger->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
 
-        $logsActionId = Mage::getModel('M2ePro/Listing_Log')->getNextActionId();
+        $logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
 
         $parentsForProcessing = array();
 
@@ -389,6 +396,13 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                     continue;
                 }
 
+                $currentOnlineQty = $listingProduct->getData('online_qty');
+
+                // if product was linked by sku during list action
+                if ($listingProduct->isStopped() && is_null($currentOnlineQty)) {
+                    continue;
+                }
+
                 $variationManager = $amazonListingProduct->getVariationManager();
 
                 if ($variationManager->isRelationChildType()) {
@@ -396,11 +410,16 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                     $parentsForProcessing[$parentListingProduct->getId()] = $parentListingProduct;
                 }
 
-                Mage::getModel('M2ePro/ProductChange')->addUpdateAction(
-                    $listingProduct->getProductId(), Ess_M2ePro_Model_ProductChange::INITIATOR_SYNCHRONIZATION
-                );
-
-                $currentOnlineQty = $listingProduct->getData('online_qty');
+                $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
+                $instruction->setData(array(
+                    'listing_product_id' => $listingProduct->getId(),
+                    'component'          => Ess_M2ePro_Helper_Component_Amazon::NICK,
+                    'type'               =>
+                        Ess_M2ePro_Model_Amazon_Listing_Product::INSTRUCTION_TYPE_CHANNEL_QTY_CHANGED,
+                    'initiator'          => self::INSTRUCTION_INITIATOR,
+                    'priority'           => 80,
+                ));
+                $instruction->save();
 
                 if ($currentOnlineQty > $orderItem['qty_purchased']) {
                     $listingProduct->setData('online_qty', $currentOnlineQty - $orderItem['qty_purchased']);
@@ -453,6 +472,9 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                         );
                     }
 
+                    $listingProduct->setData(
+                        'status_changer', Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT
+                    );
                     $listingProduct->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
                 }
 
@@ -474,15 +496,13 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
             }
         }
 
-        if (empty($parentsForProcessing)) {
-            return;
+        if (!empty($parentsForProcessing)) {
+            $massProcessor = Mage::getModel(
+                'M2ePro/Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Mass'
+            );
+            $massProcessor->setListingsProducts($parentsForProcessing);
+            $massProcessor->execute();
         }
-
-        $massProcessor = Mage::getModel(
-            'M2ePro/Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Mass'
-        );
-        $massProcessor->setListingsProducts($parentsForProcessing);
-        $massProcessor->execute();
     }
 
     private function processOtherListingsUpdates()
@@ -490,7 +510,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         $logger = Mage::getModel('M2ePro/Listing_Other_Log');
         $logger->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
 
-        $logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getNextActionId();
+        $logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
 
         foreach ($this->items as $orderItem) {
             /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingOtherCollection */
@@ -567,6 +587,9 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                         );
                     }
 
+                    $otherListing->setData(
+                        'status_changer', Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT
+                    );
                     $otherListing->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
                 }
 

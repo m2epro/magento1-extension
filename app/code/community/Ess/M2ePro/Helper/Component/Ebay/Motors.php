@@ -2,65 +2,50 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
 {
-    const TYPE_EPID = 1;
-    const TYPE_KTYPE = 2;
+    const TYPE_EPID_MOTOR = 1;
+    const TYPE_KTYPE      = 2;
+    const TYPE_EPID_UK    = 3;
+    const TYPE_EPID_DE    = 4;
+
+    const EPID_SCOPE_MOTORS = 1;
+    const EPID_SCOPE_UK     = 2;
+    const EPID_SCOPE_DE     = 3;
 
     const PRODUCT_TYPE_VEHICLE    = 0;
     const PRODUCT_TYPE_MOTORCYCLE = 1;
     const PRODUCT_TYPE_ATV        = 2;
 
-    //########################################
-
-    public function getEpidSupportedMarketplaces()
-    {
-        return array(
-            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_MOTORS,
-        );
-    }
-
-    public function isMarketplaceSupportsEpid($marketplaceId)
-    {
-        return in_array((int)$marketplaceId, $this->getEpidSupportedMarketplaces());
-    }
-
-    // ---------------------------------------
-
-    public function getKtypeSupportedMarketplaces()
-    {
-        return array(
-            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU,
-            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_UK,
-            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_DE,
-            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_IT,
-            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_FR,
-            Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_ES,
-        );
-    }
-
-    public function isMarketplaceSupportsKtype($marketplaceId)
-    {
-        return in_array((int)$marketplaceId, $this->getKtypeSupportedMarketplaces());
-    }
+    const MAX_ITEMS_COUNT_FOR_ATTRIBUTE = 3000;
 
     //########################################
 
     public function getAttribute($type)
     {
         switch ($type) {
-            case self::TYPE_EPID:
+            case self::TYPE_EPID_MOTOR:
                 return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/','epids_attribute'
+                    '/ebay/motors/','epids_motor_attribute'
                 );
 
             case self::TYPE_KTYPE:
                 return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
                     '/ebay/motors/','ktypes_attribute'
+                );
+
+            case self::TYPE_EPID_UK:
+                return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+                    '/ebay/motors/','epids_uk_attribute'
+                );
+
+            case self::TYPE_EPID_DE:
+                return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+                    '/ebay/motors/','epids_de_attribute'
                 );
         }
 
@@ -222,18 +207,38 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function isTypeBasedOnEpids($type)
+    {
+        if (in_array($type, array(
+            self::TYPE_EPID_MOTOR,
+            self::TYPE_EPID_UK,
+            self::TYPE_EPID_DE))
+        ){
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isTypeBasedOnKtypes($type)
+    {
+        return $type == self::TYPE_KTYPE;
+    }
+
+    //########################################
+
     public function getDictionaryTable($type)
     {
-        switch ($type) {
-            case self::TYPE_EPID:
-                return Mage::getSingleton('core/resource')->getTableName(
-                    'm2epro_ebay_dictionary_motor_epid'
-                );
+        if ($this->isTypeBasedOnEpids($type)) {
+            return Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix(
+                'm2epro_ebay_dictionary_motor_epid'
+            );
+        }
 
-            case self::TYPE_KTYPE:
-                return Mage::getSingleton('core/resource')->getTableName(
-                    'm2epro_ebay_dictionary_motor_ktype'
-                );
+        if ($this->isTypeBasedOnKtypes($type)) {
+            return Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix(
+                'm2epro_ebay_dictionary_motor_ktype'
+            );
         }
 
         return '';
@@ -241,15 +246,52 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
 
     public function getIdentifierKey($type)
     {
-        switch ($type) {
-            case self::TYPE_EPID:
-                return 'epid';
+        if ($this->isTypeBasedOnEpids($type)) {
+            return 'epid';
+        }
 
-            case self::TYPE_KTYPE:
-                return 'ktype';
+        if ($this->isTypeBasedOnKtypes($type)) {
+            return 'ktype';
         }
 
         return '';
+    }
+
+    //########################################
+
+    public function getEpidsScopeByType($type)
+    {
+        switch ($type) {
+            case self::TYPE_EPID_MOTOR:
+                return self::EPID_SCOPE_MOTORS;
+
+            case self::TYPE_EPID_UK:
+                return self::EPID_SCOPE_UK;
+
+            case self::TYPE_EPID_DE:
+                return self::EPID_SCOPE_DE;
+
+            default:
+                return NULL;
+        }
+    }
+
+    public function getEpidsTypeByMarketplace($marketplaceId)
+    {
+        switch ((int)$marketplaceId) {
+
+            case Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_MOTORS:
+                return self::TYPE_EPID_MOTOR;
+
+            case Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_UK:
+                return self::TYPE_EPID_UK;
+
+            case Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_DE:
+                return self::TYPE_EPID_DE;
+
+            default:
+                return null;
+        }
     }
 
     //########################################

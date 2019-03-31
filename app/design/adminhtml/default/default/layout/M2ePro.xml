@@ -13,17 +13,24 @@
             <action method="addJs"><script>M2ePro/Plugin/Magento/FieldTip.js</script></action>
             <action method="addJs"><script>M2ePro/Plugin/Magento/AttributeCreator.js</script></action>
             <action method="addJs"><script>M2ePro/Plugin/BlockNotice.js</script></action>
+            <action method="addJs"><script>M2ePro/Plugin/Storage.js</script></action>
             <action method="addJs"><script>M2ePro/Initialization.js</script></action>
             <action method="addCss"><stylesheet>M2ePro/css/main.css</stylesheet></action>
             <action method="addCss"><stylesheet>M2ePro/css/Plugin/BlockNotice.css</stylesheet></action>
         </reference>
     </m2epro>
-    <m2epro_adminhtml_common_amazon_listing_variation_product_manage_viewvariationsgrid>
+    <m2epro_adminhtml_amazon_listing_variation_product_manage_viewvariationsgrid>
         <remove name="footer"/>
         <remove name="header"/>
         <remove name="menu"/>
         <remove name="notifications"/>
-    </m2epro_adminhtml_common_amazon_listing_variation_product_manage_viewvariationsgrid>
+    </m2epro_adminhtml_amazon_listing_variation_product_manage_viewvariationsgrid>
+    <m2epro_adminhtml_walmart_listing_variation_product_manage_viewvariationsgrid>
+        <remove name="footer"/>
+        <remove name="header"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+    </m2epro_adminhtml_walmart_listing_variation_product_manage_viewvariationsgrid>
     <m2epro_adminhtml_ebay_listing_motorviewgrid>
         <remove name="footer"/>
         <remove name="header"/>
@@ -36,6 +43,18 @@
         <remove name="menu"/>
         <remove name="notifications"/>
     </m2epro_adminhtml_ebay_listing_variation_product_manage_viewvariationsgrid>
+    <m2epro_adminhtml_ebay_listing_pickupstore_variation_product_show_variationsgrid>
+        <remove name="footer"/>
+        <remove name="header"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+    </m2epro_adminhtml_ebay_listing_pickupstore_variation_product_show_variationsgrid>
+    <m2epro_adminhtml_ebay_listing_variation_product_manage_viewdeletedvariationsgrid>
+        <remove name="footer"/>
+        <remove name="header"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+    </m2epro_adminhtml_ebay_listing_variation_product_manage_viewdeletedvariationsgrid>
     <m2epro_adminhtml_ebay_listing_previewitems>
         <remove name="footer"/>
         <remove name="header"/>

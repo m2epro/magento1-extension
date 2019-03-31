@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -44,7 +44,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__('View Listing');
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $this->_headerText = Mage::helper('M2ePro')->__('View %component_name% Listing', $componentName);
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__('View Listing');
+        }
         // ---------------------------------------
 
         // ---------------------------------------
@@ -59,6 +64,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
             'onclick' => 'window.open(\'' . $url . '\',\'_blank\')',
             'class'   => 'button_link'
         ));
+        // ---------------------------------------
+
+        // ---------------------------------------
+        if ($this->listing->getAccount()->getChildObject()->isPickupStoreEnabled() &&
+            Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
+            $pickupStoreUrl = $this->getUrl('*/adminhtml_ebay_listing_pickupStore/index', array(
+                'id'   => $this->listing->getId()
+            ));
+            $this->_addButton('pickup_store_management', array(
+                'label' => Mage::helper('M2ePro')->__('In-Store Pickup Management'),
+                'onclick' => 'window.open(\'' . $pickupStoreUrl . '\',\'_blank\')',
+                'class' => 'success'
+            ));
+        }
         // ---------------------------------------
 
         // ---------------------------------------
@@ -256,7 +275,7 @@ HTML;
         $helper = Mage::helper('M2ePro');
 
         // ---------------------------------------
-        $urls = json_encode(array_merge(
+        $urls = Mage::helper('M2ePro')->jsonEncode(array_merge(
             $helper->getControllerActions(
                 'adminhtml_ebay_listing', array('_current' => true)
             ),
@@ -272,12 +291,12 @@ HTML;
             array('adminhtml_system_store/index' =>
                 Mage::helper('adminhtml')->getUrl('adminhtml/system_store/')),
             array('logViewUrl' =>
-                $this->getUrl('M2ePro/adminhtml_common_log/synchronization',
-                    array('back'=>$helper->makeBackUrlParam('*/adminhtml_common_synchronization/index')))),
+                $this->getUrl('M2ePro/adminhtml_ebay_log/synchronization',
+                    array('back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index')))),
             array('runSynchNow' =>
-                $this->getUrl('M2ePro/adminhtml_common_marketplace/runSynchNow')),
+                $this->getUrl('M2ePro/adminhtml_ebay_marketplace/runSynchNow')),
             array('synchCheckProcessingNow' =>
-                $this->getUrl('M2ePro/adminhtml_common_synchronization/synchCheckProcessingNow')),
+                $this->getUrl('M2ePro/adminhtml_ebay_synchronization/synchCheckProcessingNow')),
             array('variationProductManage' =>
                 $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/index')),
             array('getListingProductBids' =>
@@ -286,7 +305,7 @@ HTML;
         // ---------------------------------------
 
         // ---------------------------------------
-        $translations = json_encode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(array(
             'Auto Add/Remove Rules' => $helper->__('Auto Add/Remove Rules'),
             'Based on Magento Categories' => $helper->__('Based on Magento Categories'),
             'You must select at least 1 Category.' => $helper->__('You must select at least 1 Category.'),
@@ -329,6 +348,9 @@ HTML;
 <script type="text/javascript">
     M2ePro.url.add({$urls});
     M2ePro.translator.add({$translations});
+
+    ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
+    GridWrapperObj = new AreaWrapper('listing_view_content_container');
 </script>
 HTML;
 
@@ -421,26 +443,32 @@ HTML;
     {
         $items = array();
 
+        $backUrl = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_listing/view', array(
+            'id' => $this->listing->getId()
+        ));
+
         // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd',array(
-            'source' => 'products',
-            'clear' => true,
-            'listing_id' => $this->listing->getId()
+            'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_LIST,
+            'clear'      => 1,
+            'listing_id' => $this->listing->getId(),
+            'back'       => $backUrl
         ));
         $items[] = array(
-            'url' => $url,
+            'url'   => $url,
             'label' => Mage::helper('M2ePro')->__('From Products List')
         );
         // ---------------------------------------
 
         // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd',array(
-            'source' => 'categories',
-            'clear' => true,
-            'listing_id' => $this->listing->getId()
+            'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_CATEGORIES,
+            'clear'      => 1,
+            'listing_id' => $this->listing->getId(),
+            'back'       => $backUrl
         ));
         $items[] = array(
-            'url' => $url,
+            'url'   => $url,
             'label' => Mage::helper('M2ePro')->__('From Categories')
         );
         // ---------------------------------------

@@ -1,0 +1,26 @@
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+    <?php echo $this->getChildHtml('content'); ?>
+
+</form>
+
+<?php echo $this->getChildHtml('save_search_settings'); ?>
+<a id="close_search_settings" style="float: right; margin: 0 5px 7px 5px;" href="javascript:void(0)" onclick="ListingGridHandlerObj.closeSearchSettings()"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+
+<script type="text/javascript">
+    // Data for current tab
+    // ----------------------------
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,
+        'Ess_M2ePro_Helper_Component_Amazon'
+    );
+
+    AmazonListingChannelSettingsHandlerObj = new AmazonListingChannelSettingsHandler();
+    AmazonListingChannelSettingsHandlerObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Listing'); ?>');
+
+    $('general_id_mode').observe('change', AmazonListingChannelSettingsHandlerObj.general_id_mode_change);
+    $('worldwide_id_mode').observe('change', AmazonListingChannelSettingsHandlerObj.worldwide_id_mode_change);
+
+</script>

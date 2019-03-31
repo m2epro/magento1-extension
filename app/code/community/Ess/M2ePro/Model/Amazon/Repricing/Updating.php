@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -16,19 +16,25 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
      */
     public function process(array $listingsProductsRepricing)
     {
-        $changesData = array();
-        $updatedSkus = array();
+        $changesData                      = array();
+        $updatedListingProductsRepricing  = array();
+        $updatedSkus                      = array();
 
         foreach ($listingsProductsRepricing as $listingProductRepricing) {
-            if ($changeData = $this->getChangeData($listingProductRepricing)) {
+
+            $changeData = $this->getChangeData($listingProductRepricing);
+            if ($changeData && !in_array($changeData['sku'], $updatedSkus, true)) {
                 $changesData[] = $changeData;
                 $updatedSkus[] = $changeData['sku'];
+                $updatedListingProductsRepricing[] = $listingProductRepricing;
             }
         }
 
         if (!$this->sendData($changesData)) {
             return false;
         }
+
+        $this->updateListingsProductsRepricing($updatedListingProductsRepricing);
 
         return $updatedSkus;
     }
@@ -39,7 +45,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
     {
         $isDisabled = $listingProductRepricing->isDisabled();
 
-        if ($isDisabled && $listingProductRepricing->isOnlineDisabled()) {
+        if ($isDisabled && !$listingProductRepricing->isOnlineManaged()) {
             return false;
         }
 
@@ -47,10 +53,10 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         $minPrice     = $listingProductRepricing->getMinPrice();
         $maxPrice     = $listingProductRepricing->getMaxPrice();
 
-        if ($regularPrice == $listingProductRepricing->getOnlineRegularPrice() &&
-            $minPrice     == $listingProductRepricing->getOnlineMinPrice() &&
-            $maxPrice     == $listingProductRepricing->getOnlineMaxPrice() &&
-            $isDisabled   == $listingProductRepricing->isOnlineDisabled()
+        if ($isDisabled   == $listingProductRepricing->getLastUpdatedIsDisabled() &&
+            $regularPrice == $listingProductRepricing->getLastUpdatedRegularPrice() &&
+            $minPrice     == $listingProductRepricing->getLastUpdatedMinPrice() &&
+            $maxPrice     == $listingProductRepricing->getLastUpdatedMaxPrice()
         ) {
             return false;
         }
@@ -67,19 +73,49 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
     private function sendData(array $changesData)
     {
         try {
-            $this->getHelper()->sendRequest(
+            $result = $this->getHelper()->sendRequest(
                 Ess_M2ePro_Helper_Component_Amazon_Repricing::COMMAND_SYNCHRONIZE_USER_CHANGES,
                 array(
                     'account_token' => $this->getAmazonAccountRepricing()->getToken(),
-                    'offers'        => json_encode($changesData),
+                    'offers'        => Mage::helper('M2ePro')->jsonEncode($changesData),
                 )
             );
         } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
+
+            $this->getSynchronizationLog()->addMessage(
+                Mage::helper('M2ePro')->__($exception->getMessage()),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+
+            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
             return false;
         }
 
+        $this->processErrorMessages($result['response']);
         return true;
+    }
+
+    private function updateListingsProductsRepricing(array $updatedProducts)
+    {
+        $resource  = Mage::getSingleton('core/resource');
+        $connWrite = $resource->getConnection('core_write');
+
+        /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $updatedProduct */
+        foreach ($updatedProducts as $updatedProduct) {
+            $connWrite->update(
+                Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix('m2epro_amazon_listing_product_repricing'),
+                array(
+                    'last_updated_regular_price'      => $updatedProduct->getRegularPrice(),
+                    'last_updated_min_price'          => $updatedProduct->getMinPrice(),
+                    'last_updated_max_price'          => $updatedProduct->getMaxPrice(),
+                    'last_updated_is_disabled'        => $updatedProduct->isDisabled(),
+                    'update_date'                     => Mage::helper('M2ePro')->getCurrentGmtDate(),
+                ),
+                array('listing_product_id = ?' => $updatedProduct->getListingProductId())
+            );
+        }
     }
 
     //########################################

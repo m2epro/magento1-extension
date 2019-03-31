@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,12 +21,16 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other
 
     //########################################
 
-    public function getAllRepricingSkus(Ess_M2ePro_Model_Account $account, $repricingDisabled = null)
+    public function getRepricingSkus(Ess_M2ePro_Model_Account $account, $filterSkus = NULL, $repricingDisabled = NULL)
     {
         /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other_Collection $listingOtherCollection */
         $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
         $listingOtherCollection->addFieldToFilter('is_repricing', 1);
         $listingOtherCollection->addFieldToFilter('account_id', $account->getId());
+
+        if (!empty($filterSkus)) {
+            $listingOtherCollection->addFieldToFilter('sku', array('in' => $filterSkus));
+        }
 
         if (!is_null($repricingDisabled)) {
             $listingOtherCollection->addFieldToFilter('is_repricing_disabled', (int)$repricingDisabled);

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator
     protected function isPriceVariationModeChildren()
     {
         return $this->getPriceVariationMode()
-                            == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN;
+            == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_VARIATION_MODE_CHILDREN;
     }
 
     //########################################
@@ -49,24 +49,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator
 
     //########################################
 
-    protected function isSourceModeNone()
+    protected function getCurrencyForPriceConvert()
     {
-        return $this->getSource('mode') == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_MANUAL;
-    }
-
-    protected function isSourceModeProduct()
-    {
-        return $this->getSource('mode') == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_PRODUCT;
-    }
-
-    protected function isSourceModeSpecial()
-    {
-        return $this->getSource('mode') == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_SPECIAL;
-    }
-
-    protected function isSourceModeAttribute()
-    {
-        return $this->getSource('mode') == Ess_M2ePro_Model_Amazon_Account_Repricing::PRICE_MODE_ATTRIBUTE;
+        return $this->getComponentListing()->getAmazonMarketplace()->getDefaultCurrency();
     }
 
     //########################################

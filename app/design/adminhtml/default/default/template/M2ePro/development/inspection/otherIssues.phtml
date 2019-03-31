@@ -4,17 +4,6 @@
 
 <table class="form-list" cellspacing="0" cellpadding="0">
 
-    <?php if ($this->isMagicQuotesEnabled()) : ?>
-        <tr>
-            <td class="label">
-                <label><?php echo Mage::helper('M2ePro')->__('PHP Magic Quotes'); ?>: </label>
-            </td>
-            <td class="value">
-                <span style="color: red"><b>Enabled</b></span>
-            </td>
-        </tr>
-    <?php endif; ?>
-
     <?php if ($this->isGdLibraryUnAvailable()) : ?>
         <tr>
             <td class="label">

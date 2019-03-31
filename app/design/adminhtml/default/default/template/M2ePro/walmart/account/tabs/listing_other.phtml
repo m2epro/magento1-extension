@@ -1,0 +1,324 @@
+<?php
+    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
+
+    if (isset($formData['other_listings_mapping_settings'])) {
+        $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
+    }
+
+    $defaults = array(
+        'related_store_id' => 0,
+
+        'other_listings_synchronization' => Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES,
+        'other_listings_mapping_mode' => Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_YES,
+        'other_listings_mapping_settings' => array(),
+    );
+
+    $formData = array_merge($defaults, $formData);
+    $isEdit = !!$this->getRequest()->getParam('id');
+?>
+
+<script type="text/javascript">
+
+    // Data for current tab
+    //-----------------------------
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'If Yes is chosen, you must select at least one Attribute for Product Mapping.' => Mage::helper('M2ePro')->__('If Yes is chosen, you must select at least one Attribute for Product Mapping.')
+    )); ?>);
+    //-----------------------------
+
+    Event.observe(window, 'load', function() {
+        setTimeout(function() {
+
+            $('other_listings_synchronization')
+                .observe('change', WalmartAccountHandlerObj.other_listings_synchronization_change)
+                .simulate('change');
+            $('other_listings_mapping_mode')
+                .observe('change', WalmartAccountHandlerObj.other_listings_mapping_mode_change)
+                .simulate('change');
+
+            $('mapping_sku_mode')
+                .observe('change', WalmartAccountHandlerObj.mapping_sku_mode_change)
+                .simulate('change');
+            $('mapping_upc_mode')
+                .observe('change', WalmartAccountHandlerObj.mapping_upc_mode_change)
+                .simulate('change');
+            $('mapping_gtin_mode')
+                .observe('change', WalmartAccountHandlerObj.mapping_gtin_mode_change)
+                .simulate('change');
+            $('mapping_wpid_mode')
+                .observe('change', WalmartAccountHandlerObj.mapping_wpid_mode_change)
+                .simulate('change');
+            $('mapping_title_mode')
+                .observe('change', WalmartAccountHandlerObj.mapping_title_mode_change)
+                .simulate('change');
+
+            $('walmartAccountEditTabs_listingOther').removeClassName('changed');
+        }, 350);
+    });
+
+</script>
+
+<div id="block_notice_walmart_accounts_other_listings" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('3rd Party Listings'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        The 3rd Party Listings include Items which were listed on Walmart without using M2E Pro Extension.<br/><br/>
+
+        To allow the 3rd Party Listing importing for the current Walmart Account, enable the Import 3rd Party Listings option.
+        The imported 3rd Party Items can be found under the <i>%menu_other_listings_path%</i>.<br/><br/>
+
+        The 3rd Party Items can be automatically mapped to the related Magento Product by SKU, UPC, GTIN, Walmart ID or Title values.
+        To do this, enable the Product Mapping option and select appropriate Attribute.<br/><br/>
+        
+        <strong>Note:</strong> Automatic mapping of the 3rd Party Item is performed only during the initial 3rd Party Listing importing.
+        Afterward, you can map and move the 3rd Party Items manually under <i>%menu_other_listings_path%</i>.<br/><br/>
+        
+        The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+
+        Mage::helper('M2ePro/View_Walmart')->getPageNavigationPath('listings', '3rd Party'),
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
+    ); ?>
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_accounts_other_listings_synchronization">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="other_listings_synchronization"><?php echo Mage::helper('M2ePro')->__('Import 3rd Party Listings'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="other_listings_synchronization" name="other_listings_synchronization">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES; ?>" <?php if ($formData['other_listings_synchronization'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_SYNCHRONIZATION_NO; ?>" <?php if ($formData['other_listings_synchronization'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_SYNCHRONIZATION_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enable to automatically import the 3rd Party Items.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tbody id="other_listings_store_view_tr">
+                    <tr id="marketplaces_related_store_id_container" <?php if (!$isEdit) echo ' style="display:none;"'; ?>>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Related Store View'); ?>:</label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <?php
+                            $tempStoreBlock = $this->getLayout()->createBlock(
+                                'M2ePro/adminhtml_storeSwitcher',
+                                '',
+                                array(
+                                    'id'=>'related_store_id',
+                                    'name' => 'related_store_id',
+                                    'selected' => $formData['related_store_id']
+                                )
+                            );
+                            echo $tempStoreBlock->toHtml();
+
+                            ?>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Select Magento Store View that will be associated with Marketplace set for the current Account.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tr id="other_listings_mapping_mode_tr">
+                    <td class="label">
+                        <label for="other_listings_mapping_mode"><?php echo Mage::helper('M2ePro')->__('Product Mapping'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="other_listings_mapping_mode" name="other_listings_mapping_mode" class="M2ePro-require-select-attribute">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_YES ?>" <?php if ($formData['other_listings_mapping_mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_NO ?>" <?php if ($formData['other_listings_mapping_mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enable to automatically map your 3rd Party Items to Magento Products based on the mapping Attribute settings.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_accounts_other_listings_product_mapping" <?php if ($formData['other_listings_mapping_mode'] == 0) echo 'style="display:none"'; ?>>
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Attributes Of Mapping Walmart Items To Magento Products'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <?php $mappingSettings = $formData['other_listings_mapping_settings']; ?>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="label">
+                        <label for="mapping_sku_mode"><?php echo Mage::helper('M2ePro')->__('SKU') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <?php $tempAttributeValue = isset($mappingSettings['sku']['attribute']) ? $mappingSettings['sku']['attribute'] : ''; ?>
+                        <input type="hidden" name="mapping_sku_attribute" id="mapping_sku_attribute" value="<?php echo $tempAttributeValue; ?>"/>
+
+                        <select id="mapping_sku_mode" name="mapping_sku_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product SKU') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product ID') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
+                                <?php foreach ($this->attributes as $attribute) { ?>
+                                    <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php } ?>
+                            </optgroup>
+                        </select>
+                    </td>
+                    <td id="mapping_sku_priority_td" class="value" <?php if (!isset($mappingSettings['sku']['mode']) || $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE) echo 'style="display: none;"' ?>>
+                        <?php echo Mage::helper('M2ePro')->__('Priority') ?>: <input name="mapping_sku_priority" type="text" value="<?php echo isset($mappingSettings['sku']['priority']) ? (int)$mappingSettings['sku']['priority'] : Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_DEFAULT_PRIORITY; ?>" class="input-text" style="width: 30px;" />
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="value" colspan="2" style="width: auto;">
+                        <hr style="border: 1px solid silver; border-bottom: none;"/>
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="label">
+                        <label for="mapping_upc_mode"><?php echo Mage::helper('M2ePro')->__('UPC') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <?php $tempAttributeValue = isset($mappingSettings['upc']['attribute']) ? $mappingSettings['upc']['attribute'] : ''; ?>
+                        <input type="hidden" name="mapping_upc_attribute" id="mapping_upc_attribute" value="<?php echo $tempAttributeValue; ?>"/>
+
+                        <select id="mapping_upc_mode" name="mapping_upc_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_MODE_NONE ?>" <?php if (isset($mappingSettings['upc']['mode']) && $mappingSettings['upc']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
+                                <?php foreach ($this->attributes as $attribute) { ?>
+                                    <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php } ?>
+                            </optgroup>
+                        </select>
+                    </td>
+                    <td id="mapping_upc_priority_td" class="value" <?php if (!isset($mappingSettings['upc']['mode']) || $mappingSettings['upc']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_MODE_NONE) echo 'style="display: none;"' ?>>
+                        <?php echo Mage::helper('M2ePro')->__('Priority') ?>: <input name="mapping_upc_priority" type="text" value="<?php echo isset($mappingSettings['upc']['priority']) ? (int)$mappingSettings['upc']['priority'] : Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_DEFAULT_PRIORITY; ?>" class="input-text" style="width: 30px;" />
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="value" colspan="2" style="width: auto;">
+                        <hr style="border: 1px solid silver; border-bottom: none;"/>
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="label">
+                        <label for="mapping_gtin_mode"><?php echo Mage::helper('M2ePro')->__('GTIN') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <?php $tempAttributeValue = isset($mappingSettings['gtin']['attribute']) ? $mappingSettings['gtin']['attribute'] : ''; ?>
+                        <input type="hidden" name="mapping_gtin_attribute" id="mapping_gtin_attribute" value="<?php echo $tempAttributeValue; ?>"/>
+
+                        <select id="mapping_gtin_mode" name="mapping_gtin_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_NONE ?>" <?php if (isset($mappingSettings['gtin']['mode']) && $mappingSettings['gtin']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
+                                <?php foreach ($this->attributes as $attribute) { ?>
+                                    <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php } ?>
+                            </optgroup>
+                        </select>
+                    </td>
+                    <td id="mapping_gtin_priority_td" class="value" <?php if (!isset($mappingSettings['gtin']['mode']) || $mappingSettings['gtin']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_NONE) echo 'style="display: none;"' ?>>
+                        <?php echo Mage::helper('M2ePro')->__('Priority') ?>: <input name="mapping_gtin_priority" type="text" value="<?php echo isset($mappingSettings['gtin']['priority']) ? (int)$mappingSettings['gtin']['priority'] : Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_DEFAULT_PRIORITY; ?>" class="input-text" style="width: 30px;" />
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="value" colspan="2" style="width: auto;">
+                        <hr style="border: 1px solid silver; border-bottom: none;"/>
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="label">
+                        <label for="mapping_wpid_mode"><?php echo Mage::helper('M2ePro')->__('Walmart ID') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <?php $tempAttributeValue = isset($mappingSettings['wpid']['attribute']) ? $mappingSettings['wpid']['attribute'] : ''; ?>
+                        <input type="hidden" name="mapping_wpid_attribute" id="mapping_wpid_attribute" value="<?php echo $tempAttributeValue; ?>"/>
+
+                        <select id="mapping_wpid_mode" name="mapping_wpid_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_MODE_NONE ?>" <?php if (isset($mappingSettings['wpid']['mode']) && $mappingSettings['wpid']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
+                                <?php foreach ($this->attributes as $attribute) { ?>
+                                    <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php } ?>
+                            </optgroup>
+                        </select>
+                    </td>
+                    <td id="mapping_wpid_priority_td" class="value" <?php if (!isset($mappingSettings['wpid']['mode']) || $mappingSettings['wpid']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_MODE_NONE) echo 'style="display: none;"' ?>>
+                        <?php echo Mage::helper('M2ePro')->__('Priority') ?>: <input name="mapping_wpid_priority" type="text" value="<?php echo isset($mappingSettings['wpid']['priority']) ? (int)$mappingSettings['wpid']['priority'] : Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_DEFAULT_PRIORITY; ?>" class="input-text" style="width: 30px;" />
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="value" colspan="2" style="width: auto;">
+                        <hr style="border: 1px solid silver; border-bottom: none;"/>
+                    </td>
+                </tr>
+
+                <tr class="walmart-listings-mapping-settings">
+                    <td class="label">
+                        <label for="mapping_title_mode"><?php echo Mage::helper('M2ePro')->__('Title') ?>:</label>
+                    </td>
+                    <td class="value">
+                        <?php $tempAttributeValue = isset($mappingSettings['title']['attribute']) ? $mappingSettings['title']['attribute'] : ''; ?>
+                        <input type="hidden" name="mapping_title_attribute" id="mapping_title_attribute" value="<?php echo $tempAttributeValue; ?>"/>
+
+                        <select id="mapping_title_mode" name="mapping_title_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE ?>" <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ?>" <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product Name') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php foreach ($this->attributes as $attribute) { ?>
+                                        <option attribute_code="<?php echo $attribute['code'] ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE?>" <?php if ($tempAttributeValue == $attribute['code']) echo 'selected="selected"' ?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php } ?>
+                            </optgroup>
+                        </select>
+                    </td>
+                    <td id="mapping_title_priority_td" class="value" <?php if (!isset($mappingSettings['title']['mode']) || $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE) echo 'style="display: none;"' ?>>
+                        <?php echo Mage::helper('M2ePro')->__('Priority') ?>: <input name="mapping_title_priority" type="text" value="<?php echo isset($mappingSettings['title']['priority']) ? (int)$mappingSettings['title']['priority'] : Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY; ?>" class="input-text" style="width: 30px;" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,344 @@
+<?php
+/** @var Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form $this */
+$formData = $this->getFormData();
+?>
+
+<style type="text/css">
+    td.value {
+        vertical-align: middle !important;
+    }
+
+</style>
+
+<div id="block_notice_walmart_listing_add_general_settings" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Listing Settings'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'On this page, you can assign the Policy Templates to the current Listing. M2E Pro will manage the Listing Products based on the selected Policy settings.<br/><br/>
+
+        The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
+    ); ?>
+</div>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    if (typeof M2ePro == 'undefined') {
+        M2ePro = {};
+        M2ePro.url = {};
+        M2ePro.formData = {};
+        M2ePro.customData = {};
+        M2ePro.text = {};
+    }
+
+    M2ePro.url.formSubmit = '<?php echo $this->getUrl('*/*/save', array('id' => $this->getRequest()->getParam('id'))); ?>';
+    M2ePro.url.deleteAction = '<?php echo $this->getUrl('*/adminhtml_walmart_listing/delete', array('id' => $this->getRequest()->getParam('id'))); ?>';
+    M2ePro.url.add(<?php echo json_encode(array(
+        'adminhtml_walmart_account/edit' => $this->getUrl('M2ePro/adminhtml_walmart_account/edit/')
+    )); ?>);
+    //-----------------------------
+
+    M2ePro.text.condition_note_length_error = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('Must be not more than 2000 characters long.')); ?>';
+    M2ePro.text.sku_modification_custom_value_error = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('%value% placeholder should be specified')); ?>';
+
+    M2ePro.text.sku_modification_custom_value_max_length_error = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->__('The SKU length must be less than %value%.',
+        Ess_M2ePro_Helper_Component_Walmart::SKU_MAX_LENGTH)); ?>';
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart'); ?>,
+        'Ess_M2ePro_Helper_Component'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Listing'); ?>,
+        'Ess_M2ePro_Model_Walmart_Listing'
+    );
+
+    M2ePro.url.templateCheckMessages = '<?php echo $this->getUrl('*/adminhtml_template/checkMessages', array('component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK)); ?>';
+
+    M2ePro.url.addNewSellingFormatTemplate = '<?php echo $this->getUrl(
+        '*/adminhtml_walmart_template_sellingFormat/new', array('marketplace_id' => isset($formData['marketplace_id']) ? $formData['marketplace_id'] : '')
+    ); ?>';
+    M2ePro.url.editSellingFormatTemplate = '<?php echo $this->getUrl(
+        '*/adminhtml_walmart_template_sellingFormat/edit'
+    ); ?>' + 'id/';
+    M2ePro.url.getSellingFormatTemplates = '<?php echo $this->getUrl(
+        '*/adminhtml_general/modelGetAll',
+        array(
+            'model' => 'Template_SellingFormat',
+            'id_field' => 'id',
+            'data_field' => 'title',
+            'sort_field' => 'title',
+            'sort_dir' => 'ASC',
+            'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK,
+            'marketplace_id' => isset($formData['marketplace_id']) ? $formData['marketplace_id'] : ''
+        )
+    ); ?>';
+
+    M2ePro.url.addNewDescriptionTemplate = '<?php echo $this->getUrl('*/adminhtml_walmart_template_description/new'); ?>';
+    M2ePro.url.editDescriptionTemplate = '<?php echo $this->getUrl('*/adminhtml_walmart_template_description/edit'); ?>' + 'id/';
+    M2ePro.url.getDescriptionTemplates = '<?php echo $this->getUrl('*/adminhtml_general/modelGetAll',array('model'=>'Template_Description','id_field'=>'id','data_field'=>'title','sort_field'=>'title','sort_dir'=>'ASC','component_mode'=>Ess_M2ePro_Helper_Component_Walmart::NICK)); ?>';
+
+    M2ePro.url.addNewSynchronizationTemplate = '<?php echo $this->getUrl('*/adminhtml_walmart_template_synchronization/new'); ?>';
+    M2ePro.url.editSynchronizationTemplate = '<?php echo $this->getUrl('*/adminhtml_walmart_template_synchronization/edit'); ?>' + 'id/';
+    M2ePro.url.getSynchronizationTemplates = '<?php echo $this->getUrl('*/adminhtml_general/modelGetAll',array('model'=>'Template_Synchronization','id_field'=>'id','data_field'=>'title','sort_field'=>'title','sort_dir'=>'ASC','component_mode'=>Ess_M2ePro_Helper_Component_Walmart::NICK)); ?>';
+
+    M2ePro.autoCompleteData = {
+        url : {}
+    };
+    M2ePro.autoCompleteData.flags = {
+        sellingFormatTemplatesDropDown    : <?php echo $this->sellingFormatTemplatesDropDown    ? 'true' : 'false'; ?>,
+        descriptionsTemplatesDropDown     : <?php echo $this->descriptionsTemplatesDropDown     ? 'true' : 'false'; ?>,
+        synchronizationsTemplatesDropDown : <?php echo $this->synchronizationsTemplatesDropDown ? 'true' : 'false'; ?>
+    };
+    M2ePro.autoCompleteData.url.getSellingFormatTemplates = '<?php echo $this->getUrl(
+        '*/adminhtml_general/searchAutocomplete',
+        array(
+            'model' => 'Template_SellingFormat',
+            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
+            'marketplace_id' => isset($formData['marketplace_id']) ? $formData['marketplace_id'] : ''
+        )
+    ); ?>';
+
+    M2ePro.autoCompleteData.url.getDescriptionTemplates = '<?php echo $this->getUrl(
+        '*/adminhtml_general/searchAutocomplete',
+        array(
+            'model' => 'Template_Description',
+            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK
+        )
+    ); ?>';
+
+    M2ePro.autoCompleteData.url.getSynchronizationTemplates = '<?php echo $this->getUrl(
+        '*/adminhtml_general/searchAutocomplete',
+        array(
+            'model' => 'Template_Synchronization',
+            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK
+        )
+    ); ?>';
+
+</script>
+
+<script type="text/javascript">
+
+    //-----------------------------
+    M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart'); ?>,
+        'Ess_M2ePro_Helper_Component'
+    );
+
+    Event.observe(window, 'load', function() {
+
+        TemplateHandlerObj = new TemplateHandler();
+
+        WalmartListingSettingsHandlerObj = new WalmartListingSettingsHandler();
+        WalmartListingSettingsHandlerObj.setConstants('<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Listing'); ?>');
+
+        $('template_selling_format_id').observe('change', function() {
+            if ($('template_selling_format_id').value) {
+                $('edit_selling_format_template_link').show();
+            } else {
+                $('edit_selling_format_template_link').hide();
+            }
+        });
+        $('template_selling_format_id').simulate('change');
+
+        $('template_description_id').observe('change', function() {
+            if ($('template_description_id').value) {
+                $('edit_description_template_link').show();
+            } else {
+                $('edit_description_template_link').hide();
+            }
+        });
+        $('template_description_id').simulate('change');
+
+        $('template_synchronization_id').observe('change', function() {
+            if ($('template_synchronization_id').value) {
+                $('edit_synchronization_template_link').show();
+            } else {
+                $('edit_synchronization_template_link').hide();
+            }
+        });
+        $('template_synchronization_id').simulate('change');
+
+        AutoCompleteHandler = new AutoComplete();
+
+        if (M2ePro.autoCompleteData.flags.sellingFormatTemplatesDropDown) {
+            $('template_selling_format_id').observe('change', WalmartListingSettingsHandlerObj.selling_format_template_id_change)
+            if ($('template_selling_format_id').value) {
+                $('template_selling_format_id').simulate('change');
+            }
+        } else {
+            AutoCompleteHandler.bind('template_selling_format_autocomplete',
+                M2ePro.autoCompleteData.url.getSellingFormatTemplates,
+                M2ePro.formData.template_selling_format_id > 0 ? M2ePro.formData.template_selling_format_id : '',
+                M2ePro.formData.template_selling_format_title,
+                function (id) { $('template_selling_format_id').value = id; $('template_selling_format_id').simulate('change'); }
+            );
+            $('template_selling_format_id').value = $('template_selling_format_autocomplete').readAttribute('selected_id');
+            M2ePro.formData.template_selling_format_id > 0 && $('template_selling_format_autocomplete').setStyle({color: 'initial'});
+        }
+
+        if (M2ePro.autoCompleteData.flags.descriptionsTemplatesDropDown) {
+            $('template_description_id').observe('change', WalmartListingSettingsHandlerObj.description_template_id_change)
+            if ($('template_description_id').value) {
+                $('template_description_id').simulate('change');
+            }
+        } else {
+            AutoCompleteHandler.bind('template_description_autocomplete',
+                M2ePro.autoCompleteData.url.getDescriptionTemplates,
+                M2ePro.formData.template_description_id > 0 ? M2ePro.formData.template_description_id : '',
+                M2ePro.formData.template_description_title,
+                function (id) { $('template_description_id').value = id; $('template_description_id').simulate('change'); }
+            );
+            $('template_description_id').value = $('template_description_autocomplete').readAttribute('selected_id');
+            M2ePro.formData.template_description_id > 0 && $('template_description_autocomplete').setStyle({color: 'initial'});
+        }
+
+        if (M2ePro.autoCompleteData.flags.synchronizationsTemplatesDropDown) {
+            $('template_synchronization_id').observe('change', WalmartListingSettingsHandlerObj.synchronization_template_id_change)
+            if ($('template_synchronization_id').value) {
+                $('template_synchronization_id').simulate('change');
+            }
+        } else {
+            AutoCompleteHandler.bind('template_synchronization_autocomplete',
+                M2ePro.autoCompleteData.url.getSynchronizationTemplates,
+                M2ePro.formData.template_synchronization_id > 0 ? M2ePro.formData.template_synchronization_id : '',
+                M2ePro.formData.template_synchronization_title,
+                function (id) { $('template_synchronization_id').value = id; $('template_synchronization_id').simulate('change'); }
+            );
+            $('template_synchronization_id').value = $('template_synchronization_autocomplete').readAttribute('selected_id');
+            M2ePro.formData.template_synchronization_id > 0 && $('template_synchronization_autocomplete').setStyle({color: 'initial'});
+        }
+
+        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+    });
+    //-----------------------------
+
+</script>
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+    <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+    <input type="hidden" id="store_id" value="<?php echo isset($formData['store_id']) ? $formData['store_id'] : ''?>">
+    <input type="hidden" id="marketplace_id" value="<?php echo isset($formData['marketplace_id']) ? $formData['marketplace_id'] : ''?>">
+
+    <div class="entry-edit" id="magento_block_walmart_listing_add_templates">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Policies Settings'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table class="form-list" cellspacing="0" cellpadding="0">
+
+                    <tr>
+                        <td class="label">
+                            <label for="template_selling_format_id"><?php echo Mage::helper('M2ePro')->__('Selling Policy'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td id="template_selling_format_cell" class="value">
+                            <?php if ($this->sellingFormatTemplatesDropDown): ?>
+                                <select id="template_selling_format_id" name="template_selling_format_id" <?php if (!count($this->sellingFormatTemplates)) echo 'style="display: none;"';?> class="required-entry">
+                                    <?php if (!$formData['template_selling_format_id']): ?>
+                                        <option class="empty"></option>
+                                    <?php endif ?>
+                                    <?php foreach ($this->sellingFormatTemplates as $item) { ?>
+                                        <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_selling_format_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <span id="template_selling_format_label" <?php if (count($this->sellingFormatTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
+                            <?php else: ?>
+                                <input type="text" id="template_selling_format_autocomplete" class="input-text"
+                                       selected_id="<?php echo $formData['template_selling_format_id']; ?>" style="width: 275px;"
+                                       placeholder="<?php echo Mage::helper('M2ePro')->__('Type Policy Name Here...'); ?>"
+                                       value="<?php echo $this->getSellingFormatTemplateTitleById($formData['template_selling_format_id']); ?>"
+                                >
+                                <input type="hidden" name="template_selling_format_id" id="template_selling_format_id" class="required-entry" value="<?php echo $formData['template_selling_format_id']; ?>" />
+                            <?php endif; ?>
+                        </td>
+                        <td class="value">
+                        <span id="edit_selling_format_template_link">
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.openWindow(M2ePro.url.editSellingFormatTemplate+$('template_selling_format_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                            <?php echo Mage::helper('M2ePro')->__('or') ?>
+                        </span>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.addNewTemplate(M2ePro.url.addNewSellingFormatTemplate, WalmartListingSettingsHandlerObj.newSellingFormatTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td id="template_selling_format_messages" colspan="3"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="template_description_id"><?php echo Mage::helper('M2ePro')->__('Description Policy'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <?php if ($this->descriptionsTemplatesDropDown): ?>
+                                <select id="template_description_id" name="template_description_id" <?php if (!count($this->descriptionsTemplates)) echo 'style="display: none;"';?> class="required-entry">
+                                    <?php if (!$formData['template_description_id']): ?>
+                                        <option class="empty"></option>
+                                    <?php endif ?>
+                                    <?php foreach ($this->descriptionsTemplates as $item){ ?>
+                                        <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_description_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <span id="template_description_label" <?php if (count($this->descriptionsTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
+                            <?php else:?>
+                                <input type="text" id="template_description_autocomplete" class="input-text" selected_id="<?php echo $formData['template_description_id']; ?>" style="width: 275px;"
+                                       placeholder="<?php echo Mage::helper('M2ePro')->__('Type Policy Name Here...'); ?>"
+                                       value="<?php echo $this->getDescriptionTemplateTitleById($formData['template_description_id']); ?>"
+                                >
+                                <input type="hidden" name="template_description_id" id="template_description_id" class="required-entry" value="<?php echo $formData['template_description_id']; ?>" />
+                            <?php endif; ?>
+                        </td>
+                        <td class="value">
+                        <span id="edit_description_template_link">
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.openWindow(M2ePro.url.editDescriptionTemplate+$('template_description_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                            <?php echo Mage::helper('M2ePro')->__('or') ?>
+                        </span>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.addNewTemplate(M2ePro.url.addNewDescriptionTemplate, WalmartListingSettingsHandlerObj.newDescriptionTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="template_synchronization_id"><?php echo Mage::helper('M2ePro')->__('Synchronization Policy'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <?php if ($this->synchronizationsTemplatesDropDown): ?>
+                                <select id="template_synchronization_id" name="template_synchronization_id" <?php if (!count($this->synchronizationsTemplates)) echo 'style="display: none;"';?> class="required-entry">
+                                    <?php if (!$formData['template_synchronization_id']): ?>
+                                        <option class="empty"></option>
+                                    <?php endif ?>
+                                    <?php foreach ($this->synchronizationsTemplates as $item){ ?>
+                                        <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_synchronization_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <span id="template_synchronization_label" <?php if (count($this->synchronizationsTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
+                            <?php else:?>
+                                <input type="text" id="template_synchronization_autocomplete" class="input-text" selected_id="<?php echo $formData['template_synchronization_id']; ?>" style="width: 275px;"
+                                       placeholder="<?php echo Mage::helper('M2ePro')->__('Type Policy Name Here...'); ?>"
+                                       value="<?php echo $this->getSynchronizationTemplateTitleById($formData['template_synchronization_id']); ?>"
+                                >
+                                <input type="hidden" name="template_synchronization_id" id="template_synchronization_id" class="required-entry" value="<?php echo $formData['template_synchronization_id']; ?>" />
+                            <?php endif; ?>
+                        </td>
+                        <td class="value">
+                        <span id="edit_synchronization_template_link">
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.openWindow(M2ePro.url.editSynchronizationTemplate+$('template_synchronization_id').value);"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                            <?php echo Mage::helper('M2ePro')->__('or') ?>
+                        </span>
+                            <a href="javascript: void(0);" onclick="WalmartListingSettingsHandlerObj.addNewTemplate(M2ePro.url.addNewSynchronizationTemplate, WalmartListingSettingsHandlerObj.newSynchronizationTemplateCallback);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+</form>

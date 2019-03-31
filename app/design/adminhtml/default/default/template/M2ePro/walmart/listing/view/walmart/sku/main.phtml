@@ -1,0 +1,29 @@
+<div id="edit-sku-popup">
+    <div id="block_notice_edit_sku" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Edit SKU'); ?>" style="margin-top: 10px;">
+        <?php echo Mage::helper('M2ePro')->__(
+            'You may edit SKU of the already listed Item. Enter a new SKU value and click Submit. M2E Pro will automatically submit the new Item SKU to Walmart.<br><br>
+            <strong>Note:</strong> a new SKU value must be unique.'
+        ); ?>
+    </div>
+    <form  id="popup-edit-form">
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <table class="form-list" cellspacing="0" cellpadding="0" style="width: 100%; margin: auto;">
+                    <tr>
+                        <td class="value"><?php echo Mage::helper('M2ePro')->__('New SKU'); ?>: <span class="required">*</span></td>
+                        <td class="value">
+                            <input type="text" class="input-text required-entry M2ePro-validate-walmart-sku" id="new-sku-value" value="" style="width: 97.5%;"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+<div style="float: right; margin: 0 0 1em;">
+    <a href="#" onclick="ListingGridHandlerObj.editChannelDataHandler.cancelEditSku();">Close</a>
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    <?php echo $this->getChildHtml('submit_button');?>
+</div>

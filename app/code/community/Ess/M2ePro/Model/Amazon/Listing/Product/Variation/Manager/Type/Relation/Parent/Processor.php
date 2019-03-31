@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
     /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent $typeModel */
     private $typeModel = null;
 
-    /** @var Ess_M2ePro_Model_Amazon_Template_Description $descriptionTemplate */
+    /** @var Ess_M2ePro_Model_Template_Description $descriptionTemplate */
     private $descriptionTemplate = null;
 
     private $possibleThemes = null;
@@ -53,6 +53,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     //########################################
 
+    /**
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function process()
     {
         if (is_null($this->listingProduct)) {

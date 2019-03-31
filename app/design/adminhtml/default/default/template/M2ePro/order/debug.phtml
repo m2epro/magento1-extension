@@ -9,10 +9,12 @@
         <table cellspacing="0" width="100%" class="form-list">
             <tbody>
 
-                <tr>
-                    <td class="label">Tax Calculation Method Based On:</td>
-                    <td class="value"><?php echo $this->getData('store_tax_calculation_algorithm') ?></td>
-                </tr>
+                <?php if (!is_null($this->getData('store_tax_calculation_algorithm'))) : ?>
+                    <tr>
+                        <td class="label">Tax Calculation Method Based On:</td>
+                        <td class="value"><?php echo $this->getData('store_tax_calculation_algorithm') ?></td>
+                    </tr>
+                <?php endif; ?>
 
                 <tr>
                     <td class="label">Tax Calculation Based On:</td>
@@ -21,12 +23,12 @@
 
                 <tr>
                     <td class="label">Catalog Prices:</td>
-                    <td class="value"><?php echo $this->getData('store_price_includes_tax') == 1 ? 'Including Tax' : 'Excluding Tax' ?></td>
+                    <td class="value"><?php echo $this->getData('product_price_includes_tax') ? 'Including Tax' : 'Excluding Tax' ?></td>
                 </tr>
 
                 <tr>
                     <td class="label">Shipping Prices:</td>
-                    <td class="value"><?php echo $this->getData('store_shipping_price_includes_tax') == 1 ? 'Including Tax' : 'Excluding Tax' ?></td>
+                    <td class="value"><?php echo $this->getData('shipping_price_includes_tax') ? 'Including Tax' : 'Excluding Tax' ?></td>
                 </tr>
 
                 <tr>
@@ -34,13 +36,22 @@
                     <td class="value"><?php echo $this->getData('store_shipping_tax_class') != '' ? $this->getData('store_shipping_tax_class') : 'None' ?></td>
                 </tr>
 
-                <tr>
-                    <td class="label">Store Shipping Tax Rate:</td>
-                    <td class="value"><?php echo $this->getData('store_shipping_tax_rate') ?>%</td>
-                </tr>
+                <?php if (!is_null($this->getData('store_shipping_tax_rate'))) : ?>
+                    <tr>
+                        <td class="label">Store Shipping Tax Rate:</td>
+                        <td class="value"><?php echo $this->getData('store_shipping_tax_rate'); ?>%</td>
+                    </tr>
+                <?php endif; ?>
 
                 <tr>
                     <td class="label">Actions:</td>
+                    <td class="value">
+                        <?php $url = $this->getUrl('*/adminhtml_development_module_integration/getPrintOrderQuoteData', array(
+                            'print' => '1',
+                            'order_id' => $this->getRequest()->getParam('id')
+                        )); ?>
+                        <a href="<?php echo $url; ?>" target="_blank">Build Quote</a>
+                    </td>
                     <td class="value">
                         <?php $deleteUrl = $this->getUrl('*/*/delete', array('id' => $this->getRequest()->getParam('id'))); ?>
                         <a href="javascript:void(0);" onclick="if (!confirm('Are you sure?')) return; setLocation('<?php echo $deleteUrl; ?>')">Delete Order</a>

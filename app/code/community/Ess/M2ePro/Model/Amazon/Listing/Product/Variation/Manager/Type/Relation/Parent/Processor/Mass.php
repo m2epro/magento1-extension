@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -51,8 +51,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             if (!$this->forceExecuting && count($alreadyProcessed) >= self::MAX_PROCESSORS_COUNT_PER_ONE_TIME) {
                 break;
             }
-
-            $processor->process();
+            try {
+                $processor->process();
+            } catch (\Exception $exception) {
+                Mage::helper('M2ePro/Module_Exception')->process($exception, false);
+                continue;
+            }
 
             $alreadyProcessed[] = $listingProductId;
         }
@@ -67,7 +71,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         $connWrite = $resource->getConnection('core_write');
 
         $connWrite->update(
-            $resource->getTableName('m2epro_amazon_listing_product'),
+            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_amazon_listing_product'),
             array('variation_parent_need_processor' => 1),
             array(
                 'is_variation_parent = ?'   => 1,

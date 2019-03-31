@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -75,7 +75,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Other_Log_Grid extends Ess_M2e
         // prepare components
         // ---------------------------------------
         $channel = $this->getRequest()->getParam('channel');
-        if (!empty($channel) && $channel != Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::CHANNEL_ID_ALL) {
+        if (!empty($channel)) {
             $collection->getSelect()->where('main_table.component_mode = ?', $channel);
         } else {
             $components = $this->viewComponentHelper->getActiveComponents();
@@ -209,9 +209,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Other_Log_Grid extends Ess_M2e
                 $identifier = '<a href="' . $url . '" target="_blank">' . $value . '</a>';
                 break;
 
-            case Ess_M2ePro_Helper_Component_Buy::NICK:
-                $url = Mage::helper('M2ePro/Component_Buy')->getItemUrl($value);
-                $identifier = '<a href="' . $url . '" target="_blank">' . $value . '</a>';
+            case Ess_M2ePro_Helper_Component_Walmart::NICK:
+                $identifier = $value;
+                if ($channelUrl = $row->getSetting('additional_data', 'channel_url', null)) {
+                    $identifier = '<a href="' . $channelUrl . '" target="_blank">' . $value . '</a>';
+                }
                 break;
         }
 
@@ -248,7 +250,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Other_Log_Grid extends Ess_M2e
 
     //########################################
 
-    abstract protected function getActionTitles();
+    protected function getActionTitles()
+    {
+        return Mage::helper('M2ePro/Module_Log')->getActionsTitlesByClass('Listing_Other_Log');
+    }
 
     //########################################
 }

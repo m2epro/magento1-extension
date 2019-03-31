@@ -2,23 +2,26 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstract
 {
-    const TABLE_GROUP_CONFIGS        = 'configs';
-    const TABLE_GROUP_ACCOUNTS       = 'accounts';
-    const TABLE_GROUP_MARKETPLACES   = 'marketplaces';
-    const TABLE_GROUP_LISTINGS       = 'listings';
-    const TABLE_GROUP_LISTINGS_OTHER = 'listings_other';
-    const TABLE_GROUP_LOGS           = 'logs';
-    const TABLE_GROUP_ITEMS          = 'items';
-    const TABLE_GROUP_DICTIONARY     = 'dictionary';
-    const TABLE_GROUP_ORDERS         = 'orders';
-    const TABLE_GROUP_TEMPLATES      = 'templates';
-    const TABLE_GROUP_OTHER          = 'other';
+    const TABLE_GROUP_CONFIGS           = 'configs';
+    const TABLE_GROUP_ACCOUNTS          = 'accounts';
+    const TABLE_GROUP_MARKETPLACES      = 'marketplaces';
+    const TABLE_GROUP_LISTINGS          = 'listings';
+    const TABLE_GROUP_LISTINGS_PRODUCTS = 'listings_products';
+    const TABLE_GROUP_LISTINGS_OTHER    = 'listings_other';
+    const TABLE_GROUP_LOGS              = 'logs';
+    const TABLE_GROUP_ITEMS             = 'items';
+    const TABLE_GROUP_PROCESSING        = 'processing';
+    const TABLE_GROUP_CONNECTORS        = 'connectors';
+    const TABLE_GROUP_DICTIONARY        = 'dictionary';
+    const TABLE_GROUP_ORDERS            = 'orders';
+    const TABLE_GROUP_TEMPLATES         = 'templates';
+    const TABLE_GROUP_OTHER             = 'other';
 
     //########################################
 
@@ -28,19 +31,25 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_primary_config',
             'm2epro_config',
             'm2epro_cache_config',
-            'm2epro_synchronization_config',
 
             'm2epro_system_log',
 
             'm2epro_registry',
+            'm2epro_archived_entity',
 
             'm2epro_lock_item',
             'm2epro_lock_transactional',
-            'm2epro_locked_object',
-            'm2epro_product_change',
+
             'm2epro_operation_history',
-            'm2epro_processing_request',
+            'm2epro_processing',
+            'm2epro_processing_lock',
+            'm2epro_connector_command_pending_processing_single',
+            'm2epro_connector_command_pending_processing_partial',
             'm2epro_synchronization_log',
+
+            'm2epro_request_pending_single',
+            'm2epro_request_pending_partial',
+            'm2epro_request_pending_partial_data',
 
             'm2epro_stop_queue',
             'm2epro_migration_v6',
@@ -48,6 +57,8 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
             'm2epro_account',
             'm2epro_marketplace',
+
+            'm2epro_magento_product_websites_update',
 
             'm2epro_template_description',
             'm2epro_template_selling_format',
@@ -62,6 +73,8 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_listing_product',
             'm2epro_listing_product_variation',
             'm2epro_listing_product_variation_option',
+            'm2epro_listing_product_instruction',
+            'm2epro_listing_product_scheduled_action',
 
             'm2epro_order',
             'm2epro_order_change',
@@ -71,6 +84,9 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
             'm2epro_ebay_account',
             'm2epro_ebay_account_store_category',
+            'm2epro_ebay_account_pickup_store',
+            'm2epro_ebay_account_pickup_store_state',
+            'm2epro_ebay_account_pickup_store_log',
             'm2epro_ebay_dictionary_category',
             'm2epro_ebay_dictionary_marketplace',
             'm2epro_ebay_dictionary_motor_epid',
@@ -83,8 +99,11 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_ebay_listing_auto_category_group',
             'm2epro_ebay_listing_other',
             'm2epro_ebay_listing_product',
+            'm2epro_ebay_listing_product_pickup_store',
             'm2epro_ebay_listing_product_variation',
             'm2epro_ebay_listing_product_variation_option',
+            'm2epro_ebay_listing_product_action_processing',
+            'm2epro_ebay_indexer_listing_product_parent',
             'm2epro_ebay_marketplace',
             'm2epro_ebay_motor_filter',
             'm2epro_ebay_motor_group',
@@ -119,41 +138,59 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_amazon_listing_product_repricing',
             'm2epro_amazon_listing_product_variation',
             'm2epro_amazon_listing_product_variation_option',
+            'm2epro_amazon_listing_product_action_processing',
+            'm2epro_amazon_listing_product_action_processing_list_sku',
+            'm2epro_amazon_indexer_listing_product_parent',
             'm2epro_amazon_marketplace',
             'm2epro_amazon_order',
             'm2epro_amazon_order_item',
-            'm2epro_amazon_processed_inventory',
+            'm2epro_amazon_order_action_processing',
             'm2epro_amazon_template_description',
             'm2epro_amazon_template_description_definition',
             'm2epro_amazon_template_description_specific',
             'm2epro_amazon_template_selling_format',
+            'm2epro_amazon_template_selling_format_business_discount',
             'm2epro_amazon_template_synchronization',
-            'm2epro_amazon_dictionary_shipping_override',
-            'm2epro_amazon_template_shipping_override',
-            'm2epro_amazon_template_shipping_override_service',
+            'm2epro_amazon_template_shipping',
+            'm2epro_amazon_template_product_tax_code',
 
-            'm2epro_buy_account',
-            'm2epro_buy_dictionary_category',
-            'm2epro_buy_item',
-            'm2epro_buy_listing',
-            'm2epro_buy_listing_auto_category_group',
-            'm2epro_buy_listing_other',
-            'm2epro_buy_listing_product',
-            'm2epro_buy_listing_product_variation',
-            'm2epro_buy_listing_product_variation_option',
-            'm2epro_buy_marketplace',
-            'm2epro_buy_order',
-            'm2epro_buy_order_item',
-            'm2epro_buy_template_new_product',
-            'm2epro_buy_template_new_product_core',
-            'm2epro_buy_template_new_product_attribute',
-            'm2epro_buy_template_selling_format',
-            'm2epro_buy_template_synchronization'
+            'm2epro_walmart_account',
+            'm2epro_walmart_dictionary_category',
+            'm2epro_walmart_dictionary_marketplace',
+            'm2epro_walmart_dictionary_specific',
+            'm2epro_walmart_item',
+            'm2epro_walmart_listing',
+            'm2epro_walmart_listing_auto_category_group',
+            'm2epro_walmart_listing_other',
+            'm2epro_walmart_listing_product',
+            'm2epro_walmart_listing_product_variation',
+            'm2epro_walmart_listing_product_variation_option',
+            'm2epro_walmart_listing_product_action_processing',
+            'm2epro_walmart_listing_product_action_processing_list',
+            'm2epro_walmart_indexer_listing_product_parent',
+            'm2epro_walmart_marketplace',
+            'm2epro_walmart_order',
+            'm2epro_walmart_order_item',
+            'm2epro_walmart_order_action_processing',
+            'm2epro_walmart_template_category',
+            'm2epro_walmart_template_category_specific',
+            'm2epro_walmart_template_description',
+            'm2epro_walmart_template_selling_format',
+            'm2epro_walmart_template_selling_format_promotion',
+            'm2epro_walmart_template_selling_format_shipping_override_service',
+            'm2epro_walmart_template_synchronization',
         );
     }
 
     public function getHorizontalTables()
     {
+        $cacheKey = 'horizontal_tables';
+        $cacheHelper = Mage::helper('M2ePro/Data_Cache_Session');
+
+        if ($cacheData = $cacheHelper->getValue($cacheKey)) {
+            return $cacheData;
+        }
+
         $components = Mage::helper('M2ePro/Component')->getComponents();
         $mySqlTables = $this->getMySqlTables();
 
@@ -182,6 +219,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             }
         }
 
+        $cacheHelper->setValue($cacheKey, $result);
         return $result;
     }
 
@@ -202,16 +240,19 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
     public function getTableGroup($tableName)
     {
         $mySqlGroups = array(
-            self::TABLE_GROUP_CONFIGS        => '/_config$/',
-            self::TABLE_GROUP_ACCOUNTS       => '/_account/',
-            self::TABLE_GROUP_MARKETPLACES   => '/(?<!dictionary)_marketplace$/',
-            self::TABLE_GROUP_LISTINGS       => '/_listing$/',
-            self::TABLE_GROUP_LISTINGS_OTHER => '/_listing_other$/',
-            self::TABLE_GROUP_LOGS           => '/_log$/',
-            self::TABLE_GROUP_ITEMS          => '/(?<!lock)(?<!order)_item$/',
-            self::TABLE_GROUP_DICTIONARY     => '/_dictionary_/',
-            self::TABLE_GROUP_ORDERS         => '/_order/',
-            self::TABLE_GROUP_TEMPLATES      => '/_template_/',
+            self::TABLE_GROUP_CONFIGS           => '/_config$/',
+            self::TABLE_GROUP_ACCOUNTS          => '/_account/',
+            self::TABLE_GROUP_MARKETPLACES      => '/(?<!dictionary)_marketplace$/',
+            self::TABLE_GROUP_LISTINGS          => '/_listing$/',
+            self::TABLE_GROUP_LISTINGS_PRODUCTS => '/_listing_product$/',
+            self::TABLE_GROUP_LISTINGS_OTHER    => '/_listing_other$/',
+            self::TABLE_GROUP_LOGS              => '/_log$/',
+            self::TABLE_GROUP_ITEMS             => '/(?<!lock)(?<!order)(?<!action)_item$/',
+            self::TABLE_GROUP_PROCESSING        => '/_processing/',
+            self::TABLE_GROUP_CONNECTORS        => '/_connector/',
+            self::TABLE_GROUP_DICTIONARY        => '/_dictionary_/',
+            self::TABLE_GROUP_ORDERS            => '/_order/',
+            self::TABLE_GROUP_TEMPLATES         => '/_template_/',
         );
 
         foreach ($mySqlGroups as $group => $expression) {
@@ -260,7 +301,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $databaseName = Mage::helper('M2ePro/Magento')->getDatabaseName();
-        $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         $result = $connRead->query("SHOW TABLE STATUS FROM `{$databaseName}` WHERE `name` = '{$tableName}'")
                            ->fetch() ;
@@ -281,7 +322,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
         try {
 
-            $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+            $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
             $connRead->select()->from($tableName, new Zend_Db_Expr('1'))
                      ->limit(1)
                      ->query();
@@ -304,7 +345,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
     {
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         $count = $connRead->select()->from($tableName, new Zend_Db_Expr('COUNT(*)'))
                           ->query()
@@ -319,13 +360,14 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $databaseName = Mage::helper('M2ePro/Magento')->getDatabaseName();
-        $tableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
-        $dataLength = $connRead->select()->from('information_schema.tables', array('data_length'))
-                               ->where('`table_name` = ?', $tableName)
-                               ->where('`table_schema` = ?', $databaseName)
-                               ->query()
-                               ->fetchColumn();
+        $dataLength = $connRead->select()
+            ->from('information_schema.tables', array(new Zend_Db_Expr('data_length + index_length')))
+            ->where('`table_name` = ?', $tableName)
+            ->where('`table_schema` = ?', $databaseName)
+            ->query()
+            ->fetchColumn();
 
         return round($dataLength / 1024 / 1024, 2);
     }
@@ -345,13 +387,13 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
     public function getTableInfo($tableName)
     {
-        $tableName = str_replace(Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix(), '', $tableName);
+        $tableName = $this->getTableNameWithoutPrefix($tableName);
 
         if (!$this->isTableExists($tableName)) {
             return false;
         }
 
-        $moduleTableName = Mage::getSingleton('core/resource')->getTableName($tableName);
+        $moduleTableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         $stmtQuery = Mage::getResourceModel('core/config')->getReadConnection()->query(
             "SHOW COLUMNS FROM {$moduleTableName}"
@@ -462,6 +504,23 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         }
 
         return $result;
+    }
+
+    public function getTableNameWithPrefix($tableName)
+    {
+        return Mage::getSingleton('core/resource')->getTableName($tableName);
+    }
+
+    public function getTableNameWithoutPrefix($tableName)
+    {
+        $replacePattern = '/^' . Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix() . '/';
+
+        $tableName = preg_match($replacePattern, $tableName) ? $tableName : $this->getTableNameWithPrefix($tableName);
+        return preg_replace(
+            $replacePattern,
+            '',
+            $tableName
+        );
     }
 
     //########################################

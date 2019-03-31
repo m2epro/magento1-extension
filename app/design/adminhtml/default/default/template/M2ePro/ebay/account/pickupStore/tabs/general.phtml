@@ -1,0 +1,180 @@
+<?php
+
+$formData = $this->getFormData();
+$id = !empty($formData['id']) ? $formData['id'] : 0;
+
+?>
+<style>
+    #auto-generate {
+        padding: 10px 10px 10px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #auto-generate label {
+        display: block;
+        position: absolute;
+        top: 11px;
+        left: 67px;
+        color: #3d6611;
+    }
+
+    #pickup_instruction {
+        width: 500px;
+        height: 100px;
+    }
+</style>
+<script>
+
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Ebay_Account_PickupStore'); ?>,'Ess_M2ePro_Model_Ebay_Account_PickupStore');
+
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit' => $this->getUrl('M2ePro/adminhtml_ebay_accountPickupStore/save'),
+        'deleteAction' => $this->getUrl('M2ePro/adminhtml_ebay_accountPickupStore/delete',
+         $id ? array('id' => $id) : array()),
+         'getRegions' => $this->getUrl('M2ePro/adminhtml_ebay_accountPickupStore/getRegions'),
+         'validateLocation' => $this->getUrl('M2ePro/adminhtml_ebay_accountPickupStore/validateLocation'),
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Max length 32 character.' => Mage::helper('M2ePro')->__('Max length 32 character.'),
+        'Max length 128 character.' => Mage::helper('M2ePro')->__('Max length 128 character'),
+        'Must be greater than "Open Time".' => Mage::helper('M2ePro')->__('Must be greater than "Open Time".'),
+        'Select value.' => Mage::helper('M2ePro')->__('Select value.'),
+        'Please enter a valid date.' => Mage::helper('M2ePro')->__('Please enter a valid date.'),
+        'You need to choose at set at least one time.' => Mage::helper('M2ePro')->__('You need to choose at set at least one time.'),
+        'You should specify time.' => Mage::helper('M2ePro')->__('You should specify time.'),
+        'The specified Title is already used for another In-Store Pickup. In-Store Pickup Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for another In-Store Pickup. In-Store Pickup Title must be unique.'),
+        'Same Location is already exists.' => Mage::helper('M2ePro')->__('The same Location already exists.')
+    )); ?>);
+
+    M2ePro.formData.id = <?php echo Mage::helper('M2ePro')->escapeJs($id); ?>;
+
+    var EbayPickupStoreHandlerObj = new EbayPickupStoreHandler();
+
+    <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
+        EbayPickupStoreHandlerObj.init();
+    <?php else: ?>
+        Event.observe(window, 'load', EbayPickupStoreHandlerObj.init.bind(EbayPickupStoreHandlerObj));
+    <?php endif; ?>
+</script>
+
+<div id="block_notice_ebay_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        In this section you can add the <strong>basic Store setting</strong> such as its Name, Location ID, Phone Number etc.<br/>
+        Please note, the Location ID <strong>should be unique</strong> for each Store.<br/>
+        The accuracy of the provided data will affect work of the In-Store Pickup Service in general.
+        So, please, <strong>be attentive</strong> providing information.
+    '); ?>
+</div>
+
+<input type="hidden" id="pickupStore_id" name="id" value="<?php echo $id;?>"/>
+
+<div class="entry-edit" id="magento_block_ebay_account_pickup_store_form_data_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Name'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="name" id="name" value="<?php echo $formData['name'];?>" class="input-text M2ePro-required-when-visible M2ePro-validate-max-length-128"/>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enter the Store Title which will be displayed to you and your Buyers.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Location ID'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <?php if ($id): ?>
+                            <strong id="location_text_id"><?php echo $formData['location_id'];?></strong>
+                            <input type="hidden" name="location_id" id="location_id" value="<?php echo $formData['location_id'];?>"/>
+                        <?php else: ?>
+                            <input type="text" name="location_id" id="location_id" value="<?php echo $formData['location_id'];?>" class="input-text M2ePro-required-when-visible M2ePro-pickup-store-location-id M2ePro-pickup-store-location-id-length"/>
+                        <?php endif;?>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Enter the unique location identifier which will be used for the selected Store.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="auto_generate_field" style="<?php echo ($id ? 'display: none;' : '')?>">
+                    <td class="label"></td>
+                    <td class="value">
+                        <div class="notice-msg" id="auto-generate">
+                            <input type="checkbox" name="auto_generate" id="auto_generate" checked/>
+                            <label for="auto_generate">Auto-generate Location ID</label>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_account_pickup_store_form_data_ebay_details">
+    <input type="hidden" id="account_id" name="account_id" value="<?php echo $formData['account_id']; ?>"/>
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_account_pickup_store_form_data_other">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Other'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Phone'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="phone" id="phone" value="<?php echo $formData['phone']; ?>" class="input-text M2ePro-required-when-visible validate-phoneLax"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('URL'); ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input type="text" name="url" id="url" class="input-text validate-url" value="<?php echo $formData['url']; ?>"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Pickup Instructions'); ?>: </label>
+                    </td>
+                    <td class="value">
+                        <textarea name="pickup_instruction" id="pickup_instruction" cols="50" rows="5"><?php echo $formData['pickup_instruction']; ?></textarea>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Using this Option, you can add the Pickup Instruction which will provide your Buyers with helpful details about the Store.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

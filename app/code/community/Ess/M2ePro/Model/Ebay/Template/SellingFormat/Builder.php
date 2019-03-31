@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -97,6 +97,18 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
 
         if (isset($data['qty_max_posted_value'])) {
             $prepared['qty_max_posted_value'] = (int)$data['qty_max_posted_value'];
+        }
+
+        if (isset($data['lot_size_mode'])) {
+            $prepared['lot_size_mode'] = (int)$data['lot_size_mode'];
+        }
+
+        if (isset($data['lot_size_custom_value'])) {
+            $prepared['lot_size_custom_value'] = (int)$data['lot_size_custom_value'];
+        }
+
+        if (isset($data['lot_size_attribute'])) {
+            $prepared['lot_size_attribute'] = $data['lot_size_attribute'];
         }
 
         if (isset($data['vat_percent'])) {
@@ -265,7 +277,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
                 'percentage'    => (int)$data['charity_percentage'],
             );
 
-            $prepared['charity'] = json_encode($src);
+            $prepared['charity'] = Mage::helper('M2ePro')->jsonEncode($src);
         }
 
         if (isset($data['ignore_variations'])) {

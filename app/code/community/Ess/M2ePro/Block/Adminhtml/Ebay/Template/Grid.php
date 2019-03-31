@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -174,7 +174,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING => Mage::helper('M2ePro')->__('Shipping'),
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN => Mage::helper('M2ePro')->__('Return'),
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT
-                => Mage::helper('M2ePro')->__('Price, Quantity and Format'),
+                => Mage::helper('M2ePro')->__('Selling'),
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION
                 => Mage::helper('M2ePro')->__('Description'),
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION
@@ -231,24 +231,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             'index'     => 'actions',
             'filter'    => false,
             'sortable'  => false,
+            'renderer'  => 'M2ePro/adminhtml_grid_column_renderer_action',
             'getter'    => 'getTemplateId',
             'actions'   => array(
                 array(
                     'caption'   => Mage::helper('M2ePro')->__('Edit'),
                     'url'       => array(
                         'base' => '*/adminhtml_ebay_template/edit',
-                        'params' => array('nick' => '$nick')
+                        'params' => array(
+                            'nick' => '$nick'
+                        )
                     ),
-                    'field'     => 'id'
+                    'field' => 'id'
                 ),
                 array(
                     'caption'   => Mage::helper('M2ePro')->__('Delete'),
                     'url'       => array(
                         'base' => '*/adminhtml_ebay_template/delete',
-                        'params' => array('nick' => '$nick')
+                        'params' => array(
+                            'nick' => '$nick'
+                        )
                     ),
-                    'field'     => 'id',
-                    'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+                    'field'   => 'id',
+                    'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
                 )
             )
         ));

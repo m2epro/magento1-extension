@@ -190,8 +190,10 @@ OrderHandler.prototype = Object.extend(new CommonHandler(), {
         var url = '';
         if (gridId.match(/ebay/i)) {
             url = M2ePro.url.get('adminhtml_ebay_log/order', {order_id: rowId});
+        } else if (gridId.match(/amazon/i)) {
+            url = M2ePro.url.get('adminhtml_amazon_log/order', {order_id: rowId});
         } else {
-            url = M2ePro.url.get('adminhtml_common_log/order', {order_id: rowId});
+            url = M2ePro.url.get('adminhtml_walmart_log/order', {order_id: rowId});
         }
 
         return '<div class="hl_footer"><a target="_blank" href="'+url+'">'+ M2ePro.translator.translate('View All Order Logs.')+'</a></div>';

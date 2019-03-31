@@ -96,7 +96,7 @@
                                 <span><?php echo Mage::helper('M2ePro')->__('Translation Account'); ?>:</span>
                             </td>
                             <td class="value">
-                                <span id="translation_account_ebay_id"><?php echo Mage::helper('M2ePro')->__($this->getData('ebay_user_id')); ?></span>
+                                <span id="translation_account_ebay_id"><?php echo Mage::helper('M2ePro')->__($this->getData('ebay_user_title')); ?></span>
                             </td>
                         </tr>
                         <tr id="translation_total_credit_row">
@@ -169,7 +169,7 @@
                                         <?php echo Mage::helper('M2ePro')->__('Email') ?>: <span class="required">*</span>
                                     </td>
                                     <td class="value">
-                                        <input id="transferring_email" type="text" name="transferring_email" class="input-text required-entry validate-email" value="<?php echo Mage::helper('M2ePro')->__($this->getData('email')); ?>">
+                                        <input id="transferring_email" type="text" name="transferring_email" class="input-text required-entry validate-email" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('email')); ?>">
                                     </td>
                                     <td class="label">&nbsp;</td>
                                     <td class="value">&nbsp;</td>
@@ -180,13 +180,13 @@
                                         <?php echo Mage::helper('M2ePro')->__('First Name') ?>: <span class="required">*</span>
                                     </td>
                                     <td class="value">
-                                        <input id="transferring_firstname" type="text" name="firstname" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->__($this->getData('firstname')); ?>" />
+                                        <input id="transferring_firstname" type="text" name="firstname" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('firstname')); ?>" />
                                     </td>
                                     <td class="label">
                                         <?php echo Mage::helper('M2ePro')->__('Last Name') ?>: <span class="required">*</span>
                                     </td>
                                     <td class="value">
-                                        <input id="transferring_lastname" type="text" name="lastname" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->__($this->getData('lastname')); ?>" />
+                                        <input id="transferring_lastname" type="text" name="lastname" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('lastname')); ?>" />
                                     </td>
                                 </tr>
 
@@ -195,7 +195,7 @@
                                         <?php echo Mage::helper('M2ePro')->__('Company') ?>: <span class="required">*</span>
                                     </td>
                                     <td class="value">
-                                        <input id="transferring_company" type="text" name="company" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->__($this->getData('company')); ?>" />
+                                        <input id="transferring_company" type="text" name="company" class="input-text required-entry" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getData('company')); ?>" />
                                     </td>
                                     <td class="label">
                                         <?php echo Mage::helper('M2ePro')->__('Country') ?>: <span class="required">*</span>

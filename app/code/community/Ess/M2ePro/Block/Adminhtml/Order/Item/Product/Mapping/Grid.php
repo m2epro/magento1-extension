@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -30,26 +30,25 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Mapping_Grid extends Mage_Ad
 
     protected function _prepareCollection()
     {
-        $collection = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToSelect('sku')
+        /** @var Ess_M2ePro_Model_Order_Item $orderItem */
+        $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
+        if ($orderItem = Mage::helper('M2ePro/Data_Global')->getValue('order_item')) {
+            $storeId = $orderItem->getStoreId();
+        }
+
+        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
+                                                          Mage::getModel('catalog/product')->getResource());
+
+        $collection->setStoreId($storeId)
             ->addAttributeToSelect('name')
-            ->addAttributeToSelect('type_id')
-            ->joinField(
-                'qty',
-                'cataloginventory/stock_item',
-                'qty',
-                'product_id=entity_id',
-                '{{table}}.stock_id=1',
-                'left'
-            )
-            ->joinField(
-                'is_in_stock',
-                'cataloginventory/stock_item',
-                'is_in_stock',
-                'product_id=entity_id',
-                '{{table}}.stock_id=1',
-                'left'
-            );
+            ->addAttributeToSelect('sku')
+            ->addAttributeToSelect('type_id');
+
+        $collection->joinStockItem(array(
+            'qty' => 'qty',
+            'is_in_stock' => 'is_in_stock'
+        ));
 
         $this->setCollection($collection);
 
@@ -131,12 +130,13 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Mapping_Grid extends Mage_Ad
         $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
         $magentoProduct->setProduct($product);
 
-        $imageUrlResized = $magentoProduct->getThumbnailImageLink();
-        if (is_null($imageUrlResized)) {
+        $imageResized = $magentoProduct->getThumbnailImage();
+        if (is_null($imageResized)) {
             return $withoutImageHtml;
         }
 
-        $imageHtml = $productId.'<hr /><img src="'.$imageUrlResized.'" />';
+        $imageHtml = $productId.'<hr /><img style="max-width: 100px; max-height: 100px;" src="'.
+            $imageResized->getUrl().'" />';
         $withImageHtml = str_replace('>'.$productId.'<','>'.$imageHtml.'<',$withoutImageHtml);
 
         return $withImageHtml;

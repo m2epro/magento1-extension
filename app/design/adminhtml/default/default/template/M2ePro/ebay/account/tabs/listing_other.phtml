@@ -37,6 +37,9 @@
             $('mapping_title_mode')
                 .observe('change', EbayAccountHandlerObj.mapping_title_mode_change)
                 .simulate('change');
+            $('mapping_item_id_mode')
+                .observe('change', EbayAccountHandlerObj.mapping_item_id_mode_change)
+                .simulate('change');
 
             $('ebayAccountEditTabs_listingOther').removeClassName('changed');
         }, 350);
@@ -48,9 +51,7 @@
     <?php echo Mage::helper('M2ePro')->__(
         'Edit the Import, Mapping and Synchronization Settings for <b>3rd Party Listings</b> here.<br/>
         3rd Party Listings are Items that have been Listed on eBay either directly or with a tool other than M2E Pro.<br/><br/>
-        <b>Note:</b> Settings made here only take effect if <b>3rd Party Listings Synchronization</b> is enabled in %menu_path%.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'Synchronization'),
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LQAJAQ')); ?>
 </div>
 
@@ -129,7 +130,7 @@
                         <?php $tempAttributeValue = isset($mappingSettings['sku']['attribute']) ? $mappingSettings['sku']['attribute'] : ''; ?>
                         <input type="hidden" name="mapping_sku_attribute" id="mapping_sku_attribute" value="<?php echo $tempAttributeValue; ?>"/>
 
-                        <select id="mapping_sku_mode" name="mapping_sku_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created">
+                        <select id="mapping_sku_mode" name="mapping_sku_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product SKU') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID ?>" <?php if (isset($mappingSettings['sku']['mode']) && $mappingSettings['sku']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product ID') ?></option>
@@ -166,7 +167,7 @@
                         <?php $tempAttributeValue = isset($mappingSettings['title']['attribute']) ? $mappingSettings['title']['attribute'] : ''; ?>
                         <input type="hidden" name="mapping_title_attribute" id="mapping_title_attribute" value="<?php echo $tempAttributeValue; ?>"/>
 
-                        <select id="mapping_title_mode" name="mapping_title_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created">
+                        <select id="mapping_title_mode" name="mapping_title_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE ?>" <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ?>" <?php if (isset($mappingSettings['title']['mode']) && $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product Name') ?></option>
 
@@ -184,6 +185,40 @@
                     </td>
                     <td id="mapping_title_priority_td" class="value" <?php if (!isset($mappingSettings['title']['mode']) || $mappingSettings['title']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE) echo 'style="display: none;"' ?>>
                         <?php echo Mage::helper('M2ePro')->__('Priority') ?>: <input name="mapping_title_priority" type="text" value="<?php echo isset($mappingSettings['title']['priority']) ? (int)$mappingSettings['title']['priority'] : Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY; ?>" class="input-text" style="width: 30px;" />
+                    </td>
+                </tr>
+
+                <tr class="ebay-listings-mapping-settings">
+                    <td class="value" colspan="2" style="width: auto;">
+                        <hr style="border: 1px solid silver; border-bottom: none;"/>
+                    </td>
+                </tr>
+
+                <tr class="ebay-listings-mapping-settings">
+                    <td class="label">
+                        <label for="mapping_item_id_mode"><?php echo Mage::helper('M2ePro')->__('eBay Item ID') ?>:</label>
+                    </td>
+                    <td class="value">
+
+                        <?php $tempAttributeValue = isset($mappingSettings['item_id']['attribute']) ? $mappingSettings['item_id']['attribute'] : ''; ?>
+                        <input type="hidden" name="mapping_item_id_attribute" id="mapping_item_id_attribute" value="<?php echo $tempAttributeValue; ?>"/>
+
+                        <select id="mapping_item_id_mode" name="mapping_item_id_mode" class="attribute-mode-select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_NONE ?>" <?php if (isset($mappingSettings['item_id']['mode']) && $mappingSettings['item_id']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attributes">
+                                <?php foreach ($this->attributes as $attribute): ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>"
+                                            value="<?php echo Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_CUSTOM_ATTRIBUTE; ?>"
+                                        <?php if (isset($mappingSettings['item_id']['mode']) && $mappingSettings['item_id']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_CUSTOM_ATTRIBUTE && $tempAttributeValue == $attribute['code']) : echo 'selected="selected"'; endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+
+                        </select>
+                    </td>
+                    <td id="mapping_item_id_priority_td" class="value" <?php if (!isset($mappingSettings['item_id']['mode']) || $mappingSettings['item_id']['mode'] == Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_CUSTOM_ATTRIBUTE) echo 'style="display: none;"' ?>>
+                        <?php echo Mage::helper('M2ePro')->__('Priority') ?>: <input name="mapping_item_id_priority" type="text" value="<?php echo isset($mappingSettings['item_id']['priority']) ? (int)$mappingSettings['item_id']['priority'] : Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_ITEM_ID_DEFAULT_PRIORITY; ?>" class="input-text" style="width: 30px;" />
                     </td>
                 </tr>
 

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -36,10 +36,8 @@ class Ess_M2ePro_Model_Mysql4_Amazon_Account_Repricing
             return;
         }
 
-        $this->_getWriteAdapter()->update(
-            Mage::getSingleton('core/resource')->getTableName('M2ePro/Amazon_Listing_Product_Repricing'),
-            array('is_process_required' => 1),
-            array('listing_product_id IN ('.implode(',', $listingsProductsIds).')')
+        Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->markAsProcessRequired(
+            $listingsProductsIds
         );
     }
 

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -37,15 +37,35 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
 
         // Set header text
         // ---------------------------------------
-        if ($template->getId()) {
-            $this->_headerText =
-                Mage::helper('M2ePro')->__('Edit "%template_title%" %template_name% Policy',
-                $this->escapeHtml($template->getTitle()),
-                $this->getTemplateName()
-            );
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+
+            if ($template->getId()) {
+                $this->_headerText =
+                    Mage::helper('M2ePro')->__('Edit %component_name% %template_name% Policy "%template_title%"',
+                        $componentName,
+                        $this->escapeHtml($template->getTitle()),
+                        $this->getTemplateName()
+                    );
+            } else {
+                $this->_headerText = Mage::helper('M2ePro')->__('Add %component_name% %template_name% Policy',
+                    $componentName,
+                    $this->getTemplateName()
+                );
+            }
+
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('Add %template_name% Policy',
-                $this->getTemplateName());
+            if ($template->getId()) {
+                $this->_headerText =
+                    Mage::helper('M2ePro')->__('Edit %template_name% Policy "%template_title%"',
+                        $this->escapeHtml($template->getTitle()),
+                        $this->getTemplateName()
+                    );
+            } else {
+                $this->_headerText = Mage::helper('M2ePro')->__('Add %template_name% Policy',
+                    $this->getTemplateName()
+                );
+            }
         }
         // ---------------------------------------
 
@@ -76,13 +96,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
                 Mage::helper('M2ePro')->__('Add %template_name% Policy', $this->getTemplateName())
             );
 
-            $onclickHandler = $nick == Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION
-                ? 'EbayTemplateDescriptionHandlerObj'
-                : 'EbayTemplateEditHandlerObj';
-
             $this->_addButton('duplicate', array(
                 'label'     => Mage::helper('M2ePro')->__('Duplicate'),
-                'onclick'   => $onclickHandler.'.duplicate_click(
+                'onclick'   => 'EbayTemplateEditHandlerObj.duplicate_click(
                     \'ebay-template\', \''.$duplicateHeaderText.'\', \''.$nick.'\'
                 )',
                 'class'     => 'add M2ePro_duplicate_button'
@@ -175,7 +191,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
                 $title = Mage::helper('M2ePro')->__('Return');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:
-                $title = Mage::helper('M2ePro')->__('Price, Quantity and Format');
+                $title = Mage::helper('M2ePro')->__('Selling');
                 break;
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION:
                 $title = Mage::helper('M2ePro')->__('Description');

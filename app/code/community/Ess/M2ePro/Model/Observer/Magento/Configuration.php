@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -38,6 +38,11 @@ class Ess_M2ePro_Model_Observer_Magento_Configuration extends Ess_M2ePro_Model_O
             case Ess_M2ePro_Helper_View_Configuration::CONFIG_SECTION_LICENSE;
                 $controllerName = 'adminhtml_configuration_license';
                 $action = 'confirmKey';
+                break;
+
+            case Ess_M2ePro_Helper_View_Configuration::CONFIG_SECTION_ADVANCED;
+                $controllerName = 'adminhtml_configuration_advanced';
+                $action = 'save';
                 break;
 
             default:

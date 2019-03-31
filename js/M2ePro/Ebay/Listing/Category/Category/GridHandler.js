@@ -80,28 +80,6 @@ EbayListingCategoryCategoryGridHandler = Class.create(EbayListingCategoryGridHan
 
     // ---------------------------------------
 
-    validate: function()
-    {
-        MagentoMessageObj.clearAll();
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_categorySettings/stepTwoModeCategoryValidate'), {
-            method: 'post',
-            onSuccess: function(transport) {
-
-                var response = transport.responseText.evalJSON();
-
-                if (response.validation == true) {
-                    setLocation(M2ePro.url.get('adminhtml_ebay_listing_categorySettings'));
-                } else {
-                    MagentoMessageObj.addError(response.message);
-                }
-
-            }.bind(this)
-        });
-    },
-
-    // ---------------------------------------
-
     confirm: function()
     {
         return true;

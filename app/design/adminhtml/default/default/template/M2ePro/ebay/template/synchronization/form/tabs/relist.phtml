@@ -77,26 +77,6 @@
                     </td>
                 </tr>
 
-                <tr id="relist_send_data_tr_container" <?php if ($formData['relist_mode'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_MODE_NONE): echo ' style="display:none;"'; endif; ?>>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Synchronize Data'); ?>:</label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <select id="relist_send_data" name="synchronization[relist_send_data]" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_SEND_DATA_NONE; ?>" <?php if ($formData['relist_send_data'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_SEND_DATA_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_SEND_DATA_YES; ?>" <?php if ($formData['relist_send_data'] == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_SEND_DATA_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                        </select>
-                        <p class="note">
-                            <span>
-                                <?php echo Mage::helper('M2ePro')->__(
-                                    '<b>No:</b> Items are Relisted on eBay as per previously Listed Information and Settings, ignoring any changes that have been made on Magento.<br/>
-                                    <b>Yes:</b> Any changes that have been made in Magento to Items that are being Relisted will be Reflected on the eBay Listing.'
-                                ); ?>
-                            </span>
-                        </p>
-                    </td>
-                </tr>
-
            </table>
 
        </div>
@@ -112,6 +92,17 @@
 
     <div class="fieldset">
         <div class="hor-scroll">
+
+            <div id="messages">
+                <ul class="messages">
+                    <li class="notice-msg"><ul><li><span>
+                        <?php echo Mage::helper('M2ePro')->__('
+                            If <strong>Out of Stock</strong> Control option is enabled, the <strong>Good Till Cancelled</strong> Items
+                            will be <strong>Revised instead of  being Relisted</strong> based on the Relist Conditions specifed below.
+                        '); ?>
+                    </span></li></ul></li>
+                </ul>
+            </div>
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
@@ -207,8 +198,8 @@
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__(
                                     '<b>Any:</b> Relist Items automatically with any Quantity available.<br/>
-                                    <b>More or Equal: </b> Relist Items automatically if the Quantity according to the Price, Quantity and Format Policy is at least equal to the number you set.<br/>
-                                    <b>Between:</b> Relist Items automatically if the Quantity according to the Price, Quantity and Format Policy is between the minimum and maximum numbers you set.'
+                                    <b>More or Equal: </b> Relist Items automatically if the Quantity according to the Selling Policy is at least equal to the number you set.<br/>
+                                    <b>Between:</b> Relist Items automatically if the Quantity according to the Selling Policy is between the minimum and maximum numbers you set.'
                                 ); ?></span>
                         </p>
                     </td>

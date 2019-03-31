@@ -1,0 +1,214 @@
+<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Global */ ?>
+
+<?php
+    $formData = $this->getFormData();
+    $default  = $this->getDefault();
+    $formData = array_merge($default, $formData);
+
+    /** @var Ess_M2ePro_Model_Mysql4_Amazon_Template_Description_Collection $collection */
+    $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Template_Description');
+    $collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+
+    $showCreateNewAsin = 0;
+    $descriptionTemplates = $collection->getData();
+
+    if (count($descriptionTemplates) > 0) {
+        $showCreateNewAsin = 1;
+    }
+
+    usort($descriptionTemplates, function($a, $b)
+    {
+        return $a["is_new_asin_accepted"] < $b["is_new_asin_accepted"];
+    });
+
+?>
+
+<script type="text/javascript">
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Listing'); ?>, 'Ess_M2ePro_Model_Listing');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Listing'); ?>, 'Ess_M2ePro_Model_Amazon_Listing');
+</script>
+
+<script type="text/javascript">
+
+    M2ePro.url.addNewDescriptionTemplate = '<?php echo $this->getUrl('*/adminhtml_amazon_template_description/new', array(
+        'is_new_asin_accepted'  => 1,
+        'marketplace_id'        => $this->getListing()->getMarketplaceId()
+    )); ?>';
+    M2ePro.url.getDescriptionTemplates = '<?php echo $this->getUrl('*/adminhtml_amazon_listing/getDescriptionTemplatesList', array(
+        'is_new_asin_accepted'      => 1,
+        'marketplace_id'            => $this->getListing()->getMarketplaceId()
+    )); ?>';
+
+    ListingAutoActionHandlerObj.showCreateNewAsin = <?php echo $showCreateNewAsin ?>;
+
+    $('auto_global_adding_mode')
+        .observe('change', ListingAutoActionHandlerObj.addingModeChange)
+        .simulate('change');
+
+    $('continue_button')
+        .stopObserving('click')
+        .observe('click', ListingAutoActionHandlerObj.globalStepTwo);
+
+    $('reset_button')
+        .observe('click', function() {
+            ListingAutoActionHandlerObj.reset(false);
+        });
+
+    $('auto_action_create_asin')
+        .observe('change', ListingAutoActionHandlerObj.createAsinChange)
+        .simulate('change');
+
+    $('adding_description_template_id').observe('change', function(el) {
+        var options = $(el.target).select('.empty');
+        options.length > 0 && options[0].hide();
+    });
+
+</script>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3><?php echo Mage::helper('M2ePro')->__('Global (all Products)'); ?></h3></td>
+        </tr>
+    </table>
+</div>
+
+<div id="data_container" style="padding-bottom: 10px;">
+
+    <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+        <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+        <input name="auto_mode" value="<?php echo Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL ?>" type="hidden" id="auto_mode" />
+
+        <table class="form-list">
+            <tr>
+                <td class="label" style="width: 200px;">
+                    <label for="auto_global_adding_mode"><?php echo Mage::helper('M2ePro')->__('New Product Added to Magento') ?>:</label>
+                </td>
+                <td class="value">
+                    <select name="auto_global_adding_mode" id="auto_global_adding_mode" style="width: 275px;">
+                        <option value="<?php echo Ess_M2ePro_Model_Listing::ADDING_MODE_NONE ?>" <?php if ($formData['auto_global_adding_mode'] == Ess_M2ePro_Model_Listing::ADDING_MODE_NONE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No Action') ?></option>
+                        <option value="<?php echo Ess_M2ePro_Model_Listing::ADDING_MODE_ADD ?>" <?php if ($formData['auto_global_adding_mode'] == Ess_M2ePro_Model_Listing::ADDING_MODE_ADD): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Add to the Listing') ?></option>
+                    </select>
+                </td>
+                <td class="value">
+                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                    <span class="tool-tip-message" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                        <span><?php echo Mage::helper('M2ePro')->__('Action which will be applied automatically.'); ?></span>
+                    </span>
+                </td>
+            </tr>
+
+            <tr id="auto_global_adding_add_not_visible_field">
+                <td class="label" style="width: 200px;">
+                    <label for="auto_global_adding_add_not_visible"><?php echo Mage::helper('M2ePro')->__('Add not Visible Individually Products') ?>:</label>
+                </td>
+                <td class="value">
+                    <select name="auto_global_adding_add_not_visible" id="auto_global_adding_add_not_visible" style="width: 275px;">
+                        <option value="<?php echo Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_NO ?>" <?php if ($formData['auto_global_adding_add_not_visible'] == Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_NO): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                        <option value="<?php echo Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES ?>" <?php if ($formData['auto_global_adding_add_not_visible'] == Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                    </select>
+                </td>
+                <td class="value">
+                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                    <span class="tool-tip-message" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                        <span><?php echo Mage::helper('M2ePro')->__('
+                            Set to <strong>Yes</strong> if you want the Magento Products with
+                            Visibility \'Not visible Individually\' to be added to the Listing
+                            Automatically.<br/>
+                            If set to <strong>No</strong>, only Variation (i.e.
+                            Parent) Magento Products will be added to the Listing Automatically,
+                            excluding Child Products.
+                        '); ?></span>
+                    </span>
+                </td>
+            </tr>
+
+            <tr id="auto_action_amazon_add_and_create_asin" <?php if ($formData['auto_global_adding_mode'] != Ess_M2ePro_Model_Listing::ADDING_MODE_ADD) echo 'style="display: none;"' ?>>
+                <td class="label" style="width: 200px;">
+                    <label for="auto_action_create_asin"><?php echo Mage::helper('M2ePro')->__('Create New ASIN / ISBN if not found') ?>:</label>
+                </td>
+                <td class="value">
+                    <select name="auto_action_create_asin" id="auto_action_create_asin" style="width: 275px;">
+                        <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::ADDING_MODE_ADD_AND_CREATE_NEW_ASIN_NO ?>" <?php if (empty($formData['auto_global_adding_description_template_id'])) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('No') ?></option>
+                        <option value="<?php echo Ess_M2ePro_Model_Amazon_Listing::ADDING_MODE_ADD_AND_CREATE_NEW_ASIN_YES ?>" <?php if (!empty($formData['auto_global_adding_description_template_id'])) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Yes') ?></option>
+                    </select>
+                </td>
+                <td class="value">
+                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                    <span class="tool-tip-message" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                        <span><?php echo Mage::helper('M2ePro')->__('Should M2E Pro try to create new ASIN/ISBN in case Search Settings are not set or contain the incorrect values?'); ?></span>
+                    </span>
+                </td>
+            </tr>
+
+            <tr id="auto_action_amazon_add_and_assign_description_template" <?php if (empty($formData['auto_global_adding_description_template_id'])) echo 'style="display: none;"' ?>>
+                <td class="label" style="width: 200px;">
+                    <label for="adding_description_template_id"><?php echo Mage::helper('M2ePro')->__('Description Policy') ?>: <span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <select name="adding_description_template_id" id="adding_description_template_id" style="width: 275px;" class="M2ePro-required-when-visible">
+                        <option class="empty"></option>
+                        <?php foreach($descriptionTemplates as $template) { ?>
+                            <option value="<?php echo $template['id']; ?>" <?php if (!$template['is_new_asin_accepted']) echo 'disabled="disabled"' ?> <?php echo $template['id'] == $formData['auto_global_adding_description_template_id'] ? 'selected="selected"' : '' ?> ><?php echo $this->escapeHtml($template['title']); ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+                <td class="value">
+                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                    <span class="tool-tip-message" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                        <span><?php echo Mage::helper('M2ePro')->__('Creation of new ASIN/ISBN will be performed based on specified Description Policy. Only the Description Policies set for new ASIN/ISBN creation are available for choosing.
+                                <br/><br/><b>Note:</b> If chosen Description Policy doesn’t meet all the Conditions for new ASIN/ISBN creation, the Products will still be added to M2E Pro Listings but will not be Listed on Amazon.'); ?></span>
+                    </span>
+                    <a href="javascript: void(0);" style="vertical-align: inherit;" onclick="ListingAutoActionHandlerObj.addNewTemplate(M2ePro.url.addNewDescriptionTemplate, ListingAutoActionHandlerObj.reloadDescriptionTemplates);"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                </td>
+            </tr>
+
+        </table>
+
+        <div style="padding-top: 20px;"></div>
+
+        <table class="form-list">
+            <tr>
+                <td class="label" style="width: 200px;">
+                    <label for=""><?php echo Mage::helper('M2ePro')->__('Product Deleted from Magento') ?>:</label>
+                </td>
+                <td class="value">
+                    <select name="auto_global_deleting_mode" id="auto_global_deleting_mode" style="width: 275px;" disabled="disabled">
+                        <option value="<?php echo Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE ?>"><?php echo Mage::helper('M2ePro')->__('Stop on Channel and Delete from Listing') ?></option>
+                    </select>
+                </td>
+                <td class="value">
+                    <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                    <span class="tool-tip-message" style="display: none;">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                        <span><?php echo Mage::helper('M2ePro')->__('Action which will be applied automatically.'); ?></span>
+                    </span>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+
+</div>
+
+<?php if ($this->hasFormData()): ?>
+<div style="float: left; margin: 10px 5px 0;">
+    <a id="reset_button" href="javascript: void(0);" onclick=""><?php echo Mage::helper('M2ePro')->__('Reset Automatic Action Rule'); ?></a>
+</div>
+<?php endif; ?>
+<div style="float: right; margin: 10px 0;">
+    <?php if (!$this->hasFormData()): ?>
+        <a id="reset_button" href="" style="display: none;"></a>
+        <a id="close_button" href="javascript: void(0);" onclick="ListingAutoActionHandlerObj.loadAutoActionHtml();"><?php echo Mage::helper('M2ePro')->__('Cancel') ?></a>
+    <?php endif; ?>
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    <?php echo $this->getChildHtml('confirm_button'); ?>
+    <?php echo $this->getChildHtml('continue_button'); ?>
+</div>

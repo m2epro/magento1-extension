@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -99,16 +99,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
                 ->getLastItem();
 
             if ($account) {
-                $ebayInfo = json_decode($account->getEbayInfo(), true);
+                $ebayInfo = Mage::helper('M2ePro')->jsonDecode($account->getInfo());
                 $ebayInfo['Email']  && $info['email']        = $ebayInfo['Email'];
-                $ebayInfo['UserID'] && $info['ebay_user_id'] = $ebayInfo['UserID'];
-
+                $info['ebay_user_title'] = $account->getTitle();
                 $info['translation_hash'] = (bool)$account->getTranslationHash() ? '1' : '0';
 
-                $translationInfo = json_decode($account->getTranslationInfo(), true);
+                $translationInfo = Mage::helper('M2ePro')->jsonDecode($account->getTranslationInfo());
                 isset($translationInfo['currency']) && $info['translation_currency'] = $translationInfo['currency'];
-                isset($translationInfo['credit']['prepaid']) &&
-                    $info['translation_balance'] = $translationInfo['credit']['prepaid'];
+                $info['translation_balance'] = isset($translationInfo['credit']['prepaid']) ?
+                                               $translationInfo['credit']['prepaid'] : 'N/A';
                 isset($translationInfo['credit']['translation']) && isset($translationInfo['credit']['used']) &&
                     $info['translation_total_credits'] =
                     $translationInfo['credit']['translation']- $translationInfo['credit']['used'];

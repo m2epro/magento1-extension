@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -47,7 +47,7 @@ class Ess_M2ePro_Model_Log_System extends Ess_M2ePro_Model_Abstract
      */
     public function setAdditionalData(array $data = array())
     {
-        $this->setData('additional_data', json_encode($data));
+        $this->setData('additional_data', Mage::helper('M2ePro')->jsonEncode($data));
     }
 
     /**
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Log_System extends Ess_M2ePro_Model_Abstract
      */
     public function getAdditionalData()
     {
-        return (array)json_decode($this->getData('additional_data'), true);
+        return (array)Mage::helper('M2ePro')->jsonDecode($this->getData('additional_data'));
     }
 
     //########################################

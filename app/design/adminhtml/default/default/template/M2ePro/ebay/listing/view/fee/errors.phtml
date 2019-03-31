@@ -1,20 +1,15 @@
 <?php
-    $errors = $this->getErrors();
+$errors = $this->getErrors();
+
+$showWarnings = false;
+foreach ($errors as $error) {
+    if ($error['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
+        $showWarnings = true;
+        break;
+    }
+}
 ?>
 <style type="text/css">
-    #errors-table {
-        background-color: #FFF7EA !important;
-        border: 1px dashed #FF7A7A !important;
-    }
-    #errors-table th, #errors-table td {
-        padding: 10px !important;
-    }
-    #errors-table th {
-        border-bottom: 1px solid #D6D6D6 !important;
-    }
-    #errors-table td.total {
-        font-weight: bold;
-    }
     #errors-buttons {
         padding: 10px 0 !important;
         text-align: right;
@@ -25,15 +20,36 @@
     <div><?php echo Mage::helper('M2ePro')->__('Fee cannot be estimated because of next error(s)') ?>:</div>
 
     <div class="hor-scroll" style="padding-top: 10px;">
-        <table id="errors-table" cellspacing="0" class="form-list" style="width: 100%;">
-            <tbody>
-                <?php foreach ($errors as $error): ?>
-                    <tr>
-                        <td class="value"><?php echo Mage::helper('M2ePro')->escapeHtml($error['text']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <ul class="messages">
+            <li class="error-msg">
+                <ul>
+                    <?php foreach ($errors as $error): ?>
+                        <?php if ($error['type'] != Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR) continue; ?>
+                        <li>
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->escapeHtml($error['text']) ?>
+                            </span>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+        </ul>
+        <?php if ($showWarnings) {?>
+        <ul class="messages">
+            <li class="warning-msg">
+                <ul>
+                    <?php foreach ($errors as $error): ?>
+                        <?php if ($error['type'] != Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) continue; ?>
+                        <li>
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->escapeHtml($error['text']) ?>
+                            </span>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+        </ul>
+        <?php } ?>
     </div>
 </div>
 <div id="errors-buttons">

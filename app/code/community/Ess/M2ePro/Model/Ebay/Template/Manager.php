@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -175,30 +175,6 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
             self::TEMPLATE_PAYMENT,
             self::TEMPLATE_SHIPPING,
             self::TEMPLATE_RETURN,
-        );
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isTrackingAttributesTemplate()
-    {
-        return in_array($this->getTemplate(),$this->getTrackingAttributesTemplates());
-    }
-
-    /**
-     * @return array
-     */
-    public function getTrackingAttributesTemplates()
-    {
-        return array(
-            self::TEMPLATE_RETURN,
-            self::TEMPLATE_SHIPPING,
-            self::TEMPLATE_PAYMENT,
-            self::TEMPLATE_DESCRIPTION,
-            self::TEMPLATE_SELLING_FORMAT
         );
     }
 

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -30,10 +30,12 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
             return;
         }
 
-        $collection = Mage::getModel('catalog/product')->getCollection();
+        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
+                                                           Mage::getModel('catalog/product')->getResource());
 
         $productId && $collection->addFieldToFilter('entity_id', $productId);
-        $sku && $collection->addFieldToFilter('sku', $sku);
+        $sku       && $collection->addFieldToFilter('sku', $sku);
 
         $tempData = $collection->getSelect()->query()->fetch();
         if (!$tempData) {

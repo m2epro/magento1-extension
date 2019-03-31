@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -106,8 +106,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_DatabaseBrokenTables
             'm2epro_wizard',
             'm2epro_marketplace',
             'm2epro_amazon_marketplace',
-            'm2epro_ebay_marketplace',
-            'm2epro_buy_marketplace'
+            'm2epro_ebay_marketplace'
         );
     }
 

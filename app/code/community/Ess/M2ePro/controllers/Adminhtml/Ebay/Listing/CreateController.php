@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -33,13 +33,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             ->addJs('M2ePro/Ebay/Template/PaymentHandler.js')
             ->addJs('M2ePro/Ebay/Template/ReturnHandler.js')
             ->addJs('M2ePro/Ebay/Template/ShippingHandler.js')
+            ->addJs('M2ePro/Ebay/Template/Shipping/ExcludedLocationsHandler.js')
             ->addJs('M2ePro/Ebay/Template/SellingFormatHandler.js')
             ->addJs('M2ePro/Ebay/Template/DescriptionHandler.js')
             ->addJs('M2ePro/Ebay/Template/SynchronizationHandler.js');
 
         $this->_initPopUp();
 
-        $this->setComponentPageHelpLink('Creation+of+new+M2E+Pro+Listing');
+        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
 
         if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()) {
             $this->getLayout()->getBlock('head')->setCanLoadTinyMce(true);
@@ -50,7 +51,9 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/listings');
+        return Mage::getSingleton('admin/session')->isAllowed(
+            Ess_M2ePro_Helper_View_Ebay::MENU_ROOT_NODE_NICK . '/listings'
+        );
     }
 
     //########################################
@@ -126,7 +129,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         Mage::helper('M2ePro/Data_Global')->setValue('ebay_marketplace_id', $this->getSessionValue('marketplace_id'));
 
         $this->_initAction();
-        $this->setComponentPageHelpLink('Step+1%3A+General+Settings');
+        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_accountMarketplace'));
         $this->renderLayout();
@@ -164,7 +167,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $post = $this->getRequest()->getPost();
 
             foreach ($templateNicks as $nick) {
-                $templateData = json_decode(base64_decode($post["template_{$nick}"]), true);
+                $templateData = Mage::helper('M2ePro')->jsonDecode(base64_decode($post["template_{$nick}"]));
 
                 $this->setSessionValue("template_id_{$nick}", $templateData['id']);
                 $this->setSessionValue("template_mode_{$nick}", $templateData['mode']);
@@ -188,7 +191,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setComponentPageHelpLink('Step+2%3A+Payment+and+Shipping+Settings');
+        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
 
         $this->_addContent($content);
         $this->renderLayout();
@@ -226,7 +229,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
             foreach ($templateNicks as $nick) {
                 // ---------------------------------------
-                $templateData = json_decode(base64_decode($post["template_{$nick}"]), true);
+                $templateData = Mage::helper('M2ePro')->jsonDecode(base64_decode($post["template_{$nick}"]));
                 // ---------------------------------------
 
                 $this->setSessionValue("template_id_{$nick}", $templateData['id']);
@@ -251,7 +254,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setComponentPageHelpLink('Step+3%3A+Selling+Settings');
+        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
 
         $this->_addContent($content);
         $this->renderLayout();
@@ -287,7 +290,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $post = $this->getRequest()->getPost();
 
             foreach ($templateNicks as $nick) {
-                $templateData = json_decode(base64_decode($post["template_{$nick}"]), true);
+                $templateData = Mage::helper('M2ePro')->jsonDecode(base64_decode($post["template_{$nick}"]));
 
                 $this->setSessionValue("template_id_{$nick}", $templateData['id']);
                 $this->setSessionValue("template_mode_{$nick}", $templateData['mode']);
@@ -367,7 +370,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367081');
+        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
 
         $this->_addContent($content);
         $this->renderLayout();
@@ -399,6 +402,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         $data['marketplace_id'] = $this->getSessionValue('marketplace_id');
         $data['store_id'] = $this->getSessionValue('store_id');
 
+        /** @var Ess_M2ePro_Model_Marketplace $marketplace */
+        $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', $data['marketplace_id']);
+
+        $data['parts_compatibility_mode'] = null;
+        if ($marketplace->getChildObject()->isMultiMotorsEnabled()) {
+            $data['parts_compatibility_mode'] = Ess_M2ePro_Model_Ebay_Listing::PARTS_COMPATIBILITY_MODE_KTYPES;
+        }
+
         foreach (Mage::getSingleton('M2ePro/Ebay_Template_Manager')->getAllTemplates() as $nick) {
             $manager = Mage::getModel('M2ePro/Ebay_Template_Manager')
                 ->setTemplate($nick);
@@ -416,6 +427,23 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         $model = Mage::helper('M2ePro/Component_Ebay')->getModel('Listing');
         $model->addData($data);
         $model->save();
+
+        // Set message to log
+        // ---------------------------------------
+        $tempLog = Mage::getModel('M2ePro/Listing_Log');
+        $tempLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+        $tempLog->addListingMessage(
+            $model->getId(),
+            Ess_M2ePro_Helper_Data::INITIATOR_USER,
+            NULL,
+            Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
+            // M2ePro_TRANSLATIONS
+            // Listing was successfully Added
+            'Listing was successfully Added',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
+            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+        );
+        // ---------------------------------------
 
         return $model;
     }

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -29,9 +29,11 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
 
     //########################################
 
-    protected function setPageHelpLink($component = NULL, $article = NULL)
+    protected function setPageHelpLink($component = NULL, $article = NULL, $tinyLink = NULL)
     {
-        $this->pageHelpLink = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl($component, $article);
+        $this->pageHelpLink = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+            $component, $article, $tinyLink
+        );
     }
 
     protected function getPageHelpLink()
@@ -87,7 +89,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
             Mage::helper('M2ePro/Data_Global')->setValue('is_base_controller_loaded',true);
         }
 
-        $this->__preDispatch();
+        $this->_preDispatch();
 
         return $this;
     }
@@ -147,14 +149,14 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
             return;
         }
 
-        $this->__postDispatch();
+        $this->_postDispatch();
     }
 
     //########################################
 
-    protected function __preDispatch() {}
+    protected function _preDispatch() {}
 
-    protected function __postDispatch()
+    protected function _postDispatch()
     {
         // Removes garbage from the response's body
         ob_get_clean();

@@ -1,0 +1,108 @@
+<?php
+
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Mass
+{
+    const MAX_PROCESSORS_COUNT_PER_ONE_TIME = 1000;
+
+    //########################################
+
+    /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
+    private $listingsProducts = array();
+
+    private $forceExecuting = true;
+
+    //########################################
+
+    /**
+     * @param array $listingsProducts
+     * @return $this
+     */
+    public function setListingsProducts(array $listingsProducts)
+    {
+        $this->listingsProducts = $listingsProducts;
+        return $this;
+    }
+
+    /**
+     * @param bool $forceExecuting
+     * @return $this
+     */
+    public function setForceExecuting($forceExecuting = true)
+    {
+        $this->forceExecuting = $forceExecuting;
+        return $this;
+    }
+
+    //########################################
+
+    public function execute()
+    {
+        $uniqueProcessors = $this->getUniqueProcessors();
+
+        $alreadyProcessed = array();
+
+        foreach ($uniqueProcessors as $listingProductId => $processor) {
+            if (!$this->forceExecuting && count($alreadyProcessed) >= self::MAX_PROCESSORS_COUNT_PER_ONE_TIME) {
+                break;
+            }
+
+            $processor->process();
+
+            $alreadyProcessed[] = $listingProductId;
+        }
+
+        if ($this->forceExecuting || count($uniqueProcessors) <= count($alreadyProcessed)) {
+            return;
+        }
+
+        $notProcessedListingProductIds = array_unique(array_diff(array_keys($uniqueProcessors), $alreadyProcessed));
+
+        $resource  = Mage::getSingleton('core/resource');
+        $connWrite = $resource->getConnection('core_write');
+
+        $connWrite->update(
+            Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_walmart_listing_product'),
+            array('variation_parent_need_processor' => 1),
+            array(
+                'is_variation_parent = ?'   => 1,
+                'listing_product_id IN (?)' => $notProcessedListingProductIds,
+            )
+        );
+    }
+
+    //########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor[]
+     */
+    private function getUniqueProcessors()
+    {
+        $processors = array();
+
+        foreach ($this->listingsProducts as $listingProduct) {
+            if (isset($processors[$listingProduct->getId()])) {
+                continue;
+            }
+
+            /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
+            $walmartListingProduct = $listingProduct->getChildObject();
+            $variationManager = $walmartListingProduct->getVariationManager();
+
+            if (!$variationManager->isRelationParentType()) {
+                continue;
+            }
+
+            $processors[$listingProduct->getId()] = $variationManager->getTypeModel()->getProcessor();
+        }
+
+        return $processors;
+    }
+
+    //########################################
+}

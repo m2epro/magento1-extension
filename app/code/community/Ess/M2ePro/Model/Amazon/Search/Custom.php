@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -39,14 +39,14 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
 
     public function process()
     {
-        $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
-        $connectorObj = $dispatcherObject->getConnector('custom', $this->getSearchMethod(), 'requester',
-                                                        $this->getConnectorParams(),
-                                                        $this->listingProduct->getAccount(),
-                                                        'Ess_M2ePro_Model_Amazon_Search');
+        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+        $connectorObj = $dispatcherObject->getCustomConnector(
+            'Amazon_Search_Custom_'.ucfirst($this->getSearchMethod()).'_Requester',
+            $this->getConnectorParams(), $this->listingProduct->getAccount()
+        );
 
-        $searchData = $dispatcherObject->process($connectorObj);
-        return $this->prepareResult($searchData);
+        $dispatcherObject->process($connectorObj);
+        return $this->prepareResult($connectorObj->getPreparedResponseData());
     }
 
     //########################################
@@ -119,10 +119,10 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         }
 
         if ($searchData !== false && $this->getSearchMethod() == 'byAsin') {
-            if (is_null($searchData)) {
-                $searchData = array();
-            } else {
+            if (is_array($searchData) && !empty($searchData)) {
                 $searchData = array($searchData);
+            } else if (is_null($searchData)) {
+                $searchData = array();
             }
         }
 

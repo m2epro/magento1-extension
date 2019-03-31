@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -23,7 +23,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Components_Form extends Ess_M2ePr
 
         // ---------------------------------------
 
-        $this->setPageHelpLink('Global+Settings#GlobalSettings-Channels');
+        $this->setPageHelpLink("x/CwAJAQ");
     }
 
     //########################################
@@ -55,15 +55,12 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Components_Form extends Ess_M2ePr
         // ---------------------------------------
         $this->component_ebay_mode = Mage::helper('M2ePro/Component_Ebay')->isActive();
         $this->component_amazon_mode = Mage::helper('M2ePro/Component_Amazon')->isActive();
-        $this->component_buy_mode = Mage::helper('M2ePro/Component_Buy')->isActive();
+        $this->component_walmart_mode = Mage::helper('M2ePro/Component_Walmart')->isActive();
 
         $this->component_ebay_allowed = Mage::helper('M2ePro/Component_Ebay')->isAllowed();
         $this->component_amazon_allowed = Mage::helper('M2ePro/Component_Amazon')->isAllowed();
-        $this->component_buy_allowed = Mage::helper('M2ePro/Component_Buy')->isAllowed();
+        $this->component_walmart_allowed = Mage::helper('M2ePro/Component_Walmart')->isAllowed();
 
-        $this->component_group_rakuten_allowed = Mage::helper('M2ePro/Component')->isRakutenAllowed();
-
-        $this->view_common_component_default = Mage::helper('M2ePro/View_Common_Component')->getDefaultComponent();
         // ---------------------------------------
 
         return parent::_beforeToHtml();
@@ -73,7 +70,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Components_Form extends Ess_M2ePr
 
     public function getComponentsTitles()
     {
-        return json_encode(Mage::helper('M2ePro/View_Common_Component')->getComponentsTitles());
+        return Mage::helper('M2ePro')->jsonEncode(Mage::helper('M2ePro/Component')->getComponentsTitles());
     }
 
     //########################################

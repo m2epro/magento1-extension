@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,13 +21,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Log_Grid extends Ess_M2ePro_
             'initiator' => Mage::helper('M2ePro')->__('Run Mode'),
             'type' => Mage::helper('M2ePro')->__('Type'),
         );
-    }
-
-    //########################################
-
-    protected function getActionTitles()
-    {
-        return Mage::getModel('M2ePro/Listing_Other_Log')->getActionsTitles();
     }
 
     //########################################

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -149,8 +149,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
 
         // Join dictionary tables
         // ---------------------------------------
-        $edcTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_dictionary_category');
-        $eascTable = Mage::getSingleton('core/resource')->getTableName('m2epro_ebay_account_store_category');
+        $edcTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_dictionary_category');
+        $eascTable = Mage::helper('M2ePro/Module_Database_Structure')
+            ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
 
         $resultCollection->getSelect()->joinLeft(
             array('edc' => $edcTable),
@@ -265,6 +267,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             'index'     => 'actions',
             'filter'    => false,
             'sortable'  => false,
+            'renderer'  => 'M2ePro/adminhtml_grid_column_renderer_action',
             'getter'    => 'getTemplateId',
             'actions'   => array(
                 array(
@@ -272,14 +275,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
                     'url'       => array(
                         'base' => '*/adminhtml_ebay_category/edit',
                         'params' => array(
-                            'mode' => '$mode',
-                            'value' => '$value',
-                            'type' => '$type',
+                            'mode'        => '$mode',
+                            'value'       => '$value',
+                            'type'        => '$type',
                             'marketplace' => '$marketplace',
-                            'account' => '$account'
+                            'account'     => '$account'
                         )
                     ),
-                    'field'     => 'id'
+                    'field' => 'id'
                 ),
             )
         ));

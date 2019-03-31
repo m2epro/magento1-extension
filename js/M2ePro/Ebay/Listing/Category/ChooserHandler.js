@@ -489,26 +489,6 @@ EbayListingCategoryChooserHandler.prototype = Object.extend(new CommonHandler(),
             return;
         }
 
-        var totalHtml = '',
-            rowHtml   = '';
-
-        self.attributes.each(function(attribute, index) {
-
-            rowHtml += '<td>'+attribute.label+'</td>' +
-                '<td style="padding-left: 55px"><a href="javascript:void(0)" ' +
-                'onclick="EbayListingCategoryChooserHandlerObj.selectCategory('+M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE')+', \''+attribute.code+'\')">' +
-                M2ePro.translator.translate('Select') + '</a></td>';
-
-            if (((index + 1) % 2 == 0) ||
-                (index + 1) == self.attributes.length) {
-
-                totalHtml += '<tr>' + rowHtml + '</tr>';
-                rowHtml = '';
-            }
-        });
-
-        $$('#chooser_attributes_table tbody').first().insert(totalHtml);
-
         var handlerObj = new AttributeCreator('category_chooser_' + this.marketplaceId +'_'+ this.accountId +'_'+ this.divId);
         handlerObj.setOnSuccessCallback(function(attributeParams, result) {
 
@@ -526,16 +506,37 @@ EbayListingCategoryChooserHandler.prototype = Object.extend(new CommonHandler(),
             alert(result['error']);
         });
 
-        var trElem = new Element('tr', {class: 'add-new-one-attribute-tr'});
-        trElem.appendChild(new Element('td', {style: 'color: brown;'})).update(M2ePro.translator.translate('Create a New One...'));
-        trElem.appendChild(new Element('td', {style: 'padding-left: 55px;'}))
-              .appendChild(new Element('a', {
-                  href:    'javascript:void(0);',
-                  onclick: handlerObj.id + '.showPopup({\'allowed_attribute_types\':\'text,select\'});'
-              }))
-              .update(M2ePro.translator.translate('Select'));
+        var totalHtml = '',
+            rowHtml   = '',
+            newAttrHtml = '<td style="color: brown">'+M2ePro.translator.translate('Create a New One...')+'</td>' +
+                '<td style="padding-left: 55px"><a href="javascript:void(0)" ' +
+                'onclick="' + handlerObj.id + '.showPopup({\'allowed_attribute_types\':\'text,select\'});">' +
+                M2ePro.translator.translate('Select') + '</a></td>';
 
-        $$('#chooser_attributes_table tbody').first().appendChild(trElem);
+        self.attributes.each(function(attribute, index) {
+
+            rowHtml += '<td>'+attribute.label+'</td>' +
+                '<td style="padding-left: 55px"><a href="javascript:void(0)" ' +
+                'onclick="EbayListingCategoryChooserHandlerObj.selectCategory('+M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE')+', \''+attribute.code+'\')">' +
+                M2ePro.translator.translate('Select') + '</a></td>';
+
+            if ((index + 1) == self.attributes.length && (index + 1) % 2 != 0) {
+                rowHtml += newAttrHtml;
+            }
+
+            if (((index + 1) % 2 == 0) ||
+                (index + 1) == self.attributes.length) {
+
+                totalHtml += '<tr>' + rowHtml + '</tr>';
+                rowHtml = '';
+            }
+
+            if ((index + 1) == self.attributes.length && (index + 1) % 2 == 0) {
+                totalHtml += '<tr>' + newAttrHtml + '</tr>';
+            }
+        });
+
+        $$('#chooser_attributes_table tbody').first().insert(totalHtml);
     },
 
     renderRecent: function()

@@ -1,0 +1,391 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit_Form */
+?>
+
+<?php
+    /** @var Ess_M2ePro_Model_Walmart_Template_Category $model */
+
+    $isEdit = !!$this->getRequest()->getParam('id');
+
+    $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+    $formData = $model ? $model->toArray() : array();
+    $isEdit && $formData['specifics'] = $model->getSpecifics();
+
+    $default = array(
+        'id'                => '',
+        'title'             => '',
+        'marketplace_id'    => $this->getRequest()->getParam('marketplace_id', ''),
+        'category_path'     => '',
+        'browsenode_id'     => '',
+        'product_data_nick' => '',
+        'specifics'         => array()
+    );
+
+    $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
+    
+    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+    
+    $generalAttributesByInputTypes = array(
+        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text', 'select')),
+    );
+?>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Template_Category'); ?>,
+        'Ess_M2ePro_Model_Walmart_Template_Category'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart'); ?>,
+        'Ess_M2ePro_Helper_Component_Walmart'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit_Form'); ?>,
+        'Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit_Form'
+    );
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_walmart_template_category')); ?>);
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit'    => $this->getUrl('M2ePro/adminhtml_walmart_template_category/save', array('id' => $this->getRequest()->getParam('id'))),
+        'formSubmitNew' => $this->getUrl('M2ePro/adminhtml_walmart_template_category/save'),
+        'deleteAction'  => $this->getUrl('M2ePro/adminhtml_walmart_template_category/delete', array('id' => $this->getRequest()->getParam('id'))),
+
+        'adminhtml_walmart_marketplace/index' => $this->getUrl('M2ePro/adminhtml_walmart_marketplace/index')
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Add Category Policy' => Mage::helper('M2ePro')->__('Add Category Policy'),
+
+        'Change Category' => Mage::helper('M2ePro')->__('Change Category'),
+        'Not Selected'    => Mage::helper('M2ePro')->__('Not Selected'),
+        'Select'          => Mage::helper('M2ePro')->__('Select'),
+
+        'The specified Title is already used for another Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for another Policy. Policy Title must be unique.'),
+        'You should select Marketplace first.' => Mage::helper('M2ePro')->__('You should select Marketplace first.'),
+        'You should select Category and Product Type first' => Mage::helper('M2ePro')->__('You should select Category and Product Type first'),
+
+        'Recommended' => Mage::helper('M2ePro')->__('Recommended'),
+        'Recent'      => Mage::helper('M2ePro')->__('Recent'),
+
+        'Add Specifics'        => Mage::helper('M2ePro')->__('Add Specifics'),
+        'Remove this specific' => Mage::helper('M2ePro')->__('Remove this specific'),
+
+        'Total digits (not more):' => Mage::helper('M2ePro')->__('Total digits (not more):'),
+        'Type: Numeric.' => Mage::helper('M2ePro')->__('Type: Numeric.'),
+        'Min:'           => Mage::helper('M2ePro')->__('Min:'),
+        'Max:'           => Mage::helper('M2ePro')->__('Max:'),
+
+        'Can take any value.' => Mage::helper('M2ePro')->__('Can take any value.'),
+        'Two uppercase letters or "unknown".' => Mage::helper('M2ePro')->__('Two uppercase letters or "unknown".'),
+        'The value is incorrect.' => Mage::helper('M2ePro')->__('The value is incorrect.'),
+        'Type: String.'   => Mage::helper('M2ePro')->__('Type: String.'),
+        'Min length:'     => Mage::helper('M2ePro')->__('Min length:'),
+        'Max length:'     => Mage::helper('M2ePro')->__('Max length:'),
+
+        'Type: Date time. Format: YYYY-MM-DD hh:mm:ss' => Mage::helper('M2ePro')->__('Type: Date time. Format: YYYY-MM-DD hh:mm:ss'),
+        'Type: Numeric floating point.'                => Mage::helper('M2ePro')->__('Type: Numeric floating point.'),
+        'Decimal places (not more):'                   => Mage::helper('M2ePro')->__('Decimal places (not more):'),
+
+        'Recommended Values' => Mage::helper('M2ePro')->__('Recommended Values'),
+        'Allowed Values'     => Mage::helper('M2ePro')->__('Allowed Values'),
+        'Custom Attribute'   => Mage::helper('M2ePro')->__('Custom Attribute'),
+        'Custom Value'       => Mage::helper('M2ePro')->__('Custom Value'),
+        'None'               => Mage::helper('M2ePro')->__('None'),
+
+        'Definition:'    => Mage::helper('M2ePro')->__('Definition:'),
+        'Tips:'          => Mage::helper('M2ePro')->__('Tips:'),
+        'Examples:'      => Mage::helper('M2ePro')->__('Examples:'),
+        'Desired'        => Mage::helper('M2ePro')->__('Desired'),
+
+        'Duplicate specific' => Mage::helper('M2ePro')->__('Duplicate specific'),
+        'Delete specific'    => Mage::helper('M2ePro')->__('Delete specific'),
+        'Add Specific into current container' => Mage::helper('M2ePro')->__('Add Specific into current container'),
+
+        'Value of this Specific can be automatically overwritten by M2E Pro.' => Mage::helper('M2ePro')->__(
+            'If you select this Item Specific as Walmart Variant Attribute in the Manage Variation pop-up, its current value will be automatically overwritten with the related Attribute values of Magento Child Products. Below you can see the Walmart Variant Attribute(s) that will be used instead of this Item Specific:'
+        ),
+        'Walmart Parentage Specific will be overridden notice.' => Mage::helper('M2ePro')->__(
+            'The Value of this Specific can be necessary due to technical reasons, so there is no ability to Edit the Attribute parentage and also it has no semantic load. In case this Description Policy uses for creation of new Walmart Parent-Child Product, this Value will be overwritten and the Value you selected will not be/cannot be used.'
+        )
+    )); ?>);
+
+    M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
+    M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
+    M2ePro.formData.browsenode_id = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['browsenode_id'])); ?>';
+    M2ePro.formData.category_path = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['category_path'])); ?>';
+    M2ePro.formData.product_data_nick = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['product_data_nick'])); ?>';
+
+    M2ePro.customData.is_edit = <?php echo json_encode($isEdit); ?>;
+
+    M2ePro.customData.category_locked             = <?php echo json_encode($this->getData('category_locked')); ?>;
+    M2ePro.customData.marketplace_locked          = <?php echo json_encode($this->getData('marketplace_locked')); ?>;
+    M2ePro.customData.marketplace_force_set       = <?php echo json_encode((bool)(int)$this->getRequest()->getParam('marketplace_id')); ?>;
+
+    Event.observe(window, 'load', function() {
+        AttributeHandlerObj = new AttributeHandler();
+        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($this->getData('all_attributes')); ?>);
+
+        WalmartTemplateCategoryHandlerObj                   = new WalmartTemplateCategoryHandler();
+        WalmartTemplateCategoryCategoriesChooserHandlerObj  = new WalmartTemplateCategoryCategoriesChooserHandler();
+        WalmartTemplateCategoryCategoriesSpecificHandlerObj = new WalmartTemplateCategoryCategoriesSpecificHandler();
+
+        WalmartTemplateCategoryHandlerObj.setSpecificHandler(WalmartTemplateCategoryCategoriesSpecificHandlerObj);
+        WalmartTemplateCategoryCategoriesChooserHandlerObj.setSpecificHandler(WalmartTemplateCategoryCategoriesSpecificHandlerObj);
+
+        $('marketplace_id').observe('change', WalmartTemplateCategoryHandlerObj.onChangeMarketplace);
+
+        $('edit_category_link').observe('click', WalmartTemplateCategoryHandlerObj.onClickEditCategory);
+
+        WalmartTemplateCategoryCategoriesSpecificHandlerObj.setFormDataSpecifics(<?php echo json_encode($formData['specifics']); ?>);
+
+        <?php if ($isEdit) { ?>
+            WalmartTemplateCategoryHandlerObj.prepareEditMode();
+        <?php } ?>
+
+        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+    });
+    //-----------------------------
+
+</script>
+
+<style>
+
+    a.specific-remove-button, a.specific-clone-button, a.specific-add-button {
+        display: inline-block;
+        width: 20px;
+        height: 16px;
+        background: no-repeat center;
+    }
+    a.specific-remove-button {
+        background-image: url("<?php echo $this->getSkinUrl('M2ePro/images/delete.png'); ?>");
+    }
+    a.specific-clone-button {
+        background-image: url("<?php echo $this->getSkinUrl('M2ePro/images/duplicate.png'); ?>");
+    }
+    a.specific-add-button {
+        background-image: url("<?php echo $this->getSkinUrl('M2ePro/images/add.png'); ?>");
+    }
+
+    table.specifics-block + table.specifics-block {
+        margin-top: 5px;
+    }
+
+</style>
+
+<div id="block_notice_walmart_template_category" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Category Policy'); ?>">
+    <?php echo Mage::helper('M2ePro')->__(
+        'In Category Policy, select Walmart Category/Subcategory for your offer and complete the Item Specifics.<br><br>
+
+        <strong>Note:</strong> Item Specifics vary by Category/Subcategory. Choose correctly to complete the relevant Specifics for your Item.<br><br>
+
+        To start configuring Item Specifics, press Add Specifics. Click Plus icon at the top right corner of Specifics group to add another Specifics to that group. You can use search and filter tools to narrow your search results. Item Specifics have a nested structure so the same Specific can be used in different groups.<br><br>
+
+        Insert a custom value or select the relevant Magento Attribute. Duplicate Item Specific if you need to provide several values for that Specific. You can delete the records that no longer needed.<br><br>
+
+        <strong>Note:</strong> Category Policy is created per marketplace that cannot be changed after the Policy is assigned to the Listing Products.<br><br>
+
+        <strong>Note:</strong> Category Policy is required when you create a new offer on Walmart.<br><br>
+
+        The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+
+        Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/L4taAQ")
+    ); ?>
+</div>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+<div class="entry-edit" id="magento_block_template_category_edit_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-category-template-title"/>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Policy Title for your internal use.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Marketplace'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+
+                        <select id="marketplace_id" name="marketplace_id" <?php if ($this->getData('marketplace_locked') || $this->getRequest()->getParam('marketplace_id')) { ?>disabled="disabled"<?php } ?> class="required-entry">
+                            <option style="display:none;"></option>
+                            <?php foreach ($this->getData('marketplaces') as $marketplaceRow) { ?>
+                                <option value="<?php echo $marketplaceRow['id']; ?>" <?php if ($formData['marketplace_id'] == $marketplaceRow['id']) { ?>selected="selected"<?php } ?>>
+                                    <?php echo Mage::helper('M2ePro')->__($marketplaceRow['title']); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+
+                        <?php if ($this->getData('marketplace_locked') || $this->getRequest()->getParam('marketplace_id')) : ?>
+                            <input id="marketplace_hidden_input" type="hidden" name="marketplace_id" value="<?php echo $formData['marketplace_id']; ?>" />
+                        <?php endif; ?>
+                    </td>
+
+                    <td class="value">
+
+                        <?php if($this->getData('marketplace_locked')) : ?>
+                            <span id="marketplace_locked_warning_message">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
+                            <span class="tool-tip-message" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/i_notice.gif'); ?>" style="margin-top: -21px;">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'Selected Marketplace cannot be changed after the Category Policy is assigned to the Listing Item(s).'
+                                ); ?></span>
+                            </span>
+                        </span>
+                        <?php endif; ?>
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Category'); ?>: <span class="required">*</span></label>
+                    </td>
+
+                    <td class="value" style="min-width: 280px;">
+                        <span id="category_path_span">
+                            <?php if (!empty($formData['category_path']) && !empty($formData['browsenode_id'])) { ?>
+                                <span><?php echo Mage::helper('M2ePro')->escapeHtml("{$formData['category_path']} ({$formData['browsenode_id']})"); ?></span>
+                            <?php } else { ?>
+                                <span style="font-style: italic; color: grey;"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                            <?php } ?>
+                        </span>
+
+                        <input type="hidden" name="category_path" id="category_path" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['category_path']); ?>" />
+                        <input type="hidden" name="browsenode_id" id="browsenode_id" value="<?php echo $formData['browsenode_id']; ?>" />
+                        <input type="hidden" name="product_data_nick" id="product_data_nick" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['product_data_nick']); ?>" class="required-entry" />
+                    </td>
+
+                    <td class="value" style="min-width: 80px;">
+                        <span id="category_warning_messages" style="display: none; float: left;">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/warning.png'); ?>" class="tool-tip-image">
+                            <span class="tool-tip-message tip-left" style="font-size: 12px; display: none; border-color: #ffd967; background-color: #fffbf0;">
+                                <img src="<?php echo $this->getSkinUrl('M2ePro/images/i_notice.gif'); ?>" style="margin-top: -21px;">
+
+                                <span id="category_locked_warning_message" class="category-warning-item" style="display: none;"><?php echo Mage::helper('M2ePro')->__(
+                                        'You cannot edit existing Category because currently the new Product Type is being created based on this Policy or there is possibility of
+                                     creating new Child Products based for the Parent Product with this Description Policy. <br/><br/>
+                                     It is done to make sure that Parent and Child Products will be Listed to the same Category.'
+                                    ); ?></span>
+                                <span class="additional-br" style="display: none;"><br/><br/></span>
+                                <span id="category_is_not_accessible_message" class="category-warning-item" style="display: none;"><?php echo Mage::helper('M2ePro')->__(
+                                        'It is impossible to use the Category, you have chosen before. <br/> You should select new Category which mostly suits to that you used earlier. Also you need to set Specifics Values on Specifics Tab.'
+                                    ); ?></span>
+                                <span class="additional-br" style="display: none;"><br/><br/></span>
+                                <span id="category_variation_warning_message" class="category-warning-item" style="display: none;"><?php echo Mage::helper('M2ePro')->__(
+                                        'You have chosen Category in which Walmart Parent/Child Products are not allowed.'
+                                    ); ?></span>
+                            </span>
+                        </span>
+
+                        <a id="edit_category_link" href="#" style="margin-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Edit'); ?></a>
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit m2epro-category-depended-block" id="magento_block_template_category_edit_specifics" style="display: none;">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Specifics'); ?></h4>
+    </div>
+
+    <input id="encoded_specifics_data" type="hidden" name="encoded_data" value="">
+
+    <div class="fieldset">
+        <div class="hor-scroll" style="padding-bottom: 10px;">
+            <div id="specifics_container">
+                <span style="font-style: italic; color: grey;">Select Category First</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- specifics grid template start -->
+    <!-- ########################################################## -->
+    <div id="specifics_list_grid_template" style="display: none;">
+
+        <table class="form-list entry-edit" cellspacing="0" cellpadding="0" style="width: 100%;">
+
+            <tr class="item-specifics-tr">
+                <td class="grid" colspan="2">
+
+                    <table class="border" cellpadding="0" cellspacing="0">
+                        <thead>
+                        <tr class="headings">
+                            <th style="width: 37%;"><?php echo Mage::helper('M2ePro')->__('Name'); ?></th>
+                            <th style="width: 25%;"><?php echo Mage::helper('M2ePro')->__('Mode'); ?></th>
+                            <th style="width: 30%;"><?php echo Mage::helper('M2ePro')->__('Value'); ?></th>
+                            <th style="width: 6%; text-align: center;">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- #specific_table_row_template inserts here -->
+                        </tbody>
+                    </table>
+
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    <!-- ########################################################## -->
+
+    <!-- specifics add ror start -->
+    <!-- ########################################################## -->
+    <div id="specifics_add_row_template" style="display: none;">
+
+        <table style="width: 100%; margin-bottom: 10px; background-color: #e5ecf2;" cellpadding="0" cellspacing="0">
+            <tfoot>
+            <tr>
+                <td valign="middle" align="right" style="vertical-align: middle; border: 1px solid #cbd3d4; height: 40px; text-align: center;">
+                    <button title="Add Specifics" type="button" class="scalable add add_custom_specific_button" style="margin-right: 15px;">
+                        <span><span><span><?php echo Mage::helper('M2ePro')->__('Add Specifics'); ?></span></span></span>
+                    </button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+
+    </div>
+    <!-- ########################################################## -->
+
+</div>
+</form>

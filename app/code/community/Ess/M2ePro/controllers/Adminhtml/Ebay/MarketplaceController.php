@@ -2,12 +2,14 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
+    const SYNCHRONIZATION_LOCK_ITEM_NICK = 'ebay_marketplace_synchronization';
+
     //########################################
 
     protected function _initAction()
@@ -21,17 +23,20 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
             ->addJs('M2ePro/Ebay/MarketplaceSynchProgressHandler.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addJs('M2ePro/MarketplaceHandler.js')
+            ->addJs('M2ePro/Ebay/Marketplace/SynchProgressHandler.js')
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css');
 
-        $this->setComponentPageHelpLink('eBay+Sites');
+        $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
 
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/configuration');
+        return Mage::getSingleton('admin/session')->isAllowed(
+            Ess_M2ePro_Helper_View_Ebay::MENU_ROOT_NODE_NICK . '/configuration'
+        );
     }
 
     //########################################
@@ -71,18 +76,58 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
         session_write_close();
 
         $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id');
-        $marketplaceObj = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace',$marketplaceId);
 
-        /** @var $dispatcher Ess_M2ePro_Model_Synchronization_Dispatcher */
-        $dispatcher = Mage::getModel('M2ePro/Synchronization_Dispatcher');
+        /** @var Ess_M2ePro_Model_Marketplace $marketplace */
+        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace',$marketplaceId);
 
-        $dispatcher->setAllowedComponents(array($marketplaceObj->getComponentMode()));
-        $dispatcher->setAllowedTasksTypes(array(Ess_M2ePro_Model_Synchronization_Task::MARKETPLACES));
+        $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
+            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
+        ));
 
-        $dispatcher->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
-        $dispatcher->setParams(array('marketplace_id' => $marketplaceId));
+        if ($lockItemManager->isExist()) {
+            return;
+        }
 
-        $dispatcher->process();
+        $lockItemManager->create();
+
+        $progressManager = Mage::getModel('M2ePro/Lock_Item_Progress', array(
+            'lock_item_manager' => $lockItemManager,
+            'progress_nick'     => $marketplace->getTitle() . ' eBay Site',
+        ));
+
+        $synchronization = Mage::getModel('M2ePro/Ebay_Marketplace_Synchronization');
+        $synchronization->setMarketplace($marketplace);
+        $synchronization->setProgressManager($progressManager);
+
+        $synchronization->process();
+
+        $lockItemManager->remove();
+    }
+
+    public function synchGetExecutingInfoAction()
+    {
+        $response = array();
+
+        $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
+            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
+        ));
+
+        if (!$lockItemManager->isExist()) {
+            $response['mode'] = 'inactive';
+        } else {
+            $response['mode'] = 'executing';
+
+            $contentData = $lockItemManager->getContentData();
+            $progressData = $contentData[Ess_M2ePro_Model_Lock_Item_Progress::CONTENT_DATA_KEY];
+
+            if (!empty($progressData)) {
+                $response['title'] = 'eBay Sites Synchronization';
+                $response['percents'] = $progressData[key($progressData)]['percentage'];
+                $response['status'] = key($progressData);
+            }
+        }
+
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
     }
 
     public function isExistDeletedCategoriesAction()

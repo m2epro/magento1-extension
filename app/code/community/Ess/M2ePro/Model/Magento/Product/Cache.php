@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -14,13 +14,15 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
 
     public function getCacheValue($key)
     {
-        $key = sha1('magento_product_'.$this->getProductId().'_'.$this->getStoreId().'_'.json_encode($key));
+        $key = Mage::helper('M2ePro')->jsonEncode($key);
+        $key = sha1('magento_product_'.$this->getProductId().'_'.$this->getStoreId().'_'.$key);
         return Mage::helper('M2ePro/Data_Cache_Session')->getValue($key);
     }
 
     public function setCacheValue($key, $value)
     {
-        $key = sha1('magento_product_'.$this->getProductId().'_'.$this->getStoreId().'_'.json_encode($key));
+        $key = Mage::helper('M2ePro')->jsonEncode($key);
+        $key = sha1('magento_product_'.$this->getProductId().'_'.$this->getStoreId().'_'.$key);
         $tags = array(
             'magento_product',
             'magento_product_'.$this->getProductId().'_'.$this->getStoreId()
@@ -165,31 +167,24 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
 
     //########################################
 
-    public function getThumbnailImageLink()
+    public function getThumbnailImage()
     {
         return $this->getMethodData(__FUNCTION__);
     }
 
-    public function getImageLink($attribute = 'image')
+    public function getImage($attribute = 'image')
     {
         $args = func_get_args();
         return $this->getMethodData(__FUNCTION__, $args);
     }
 
-    public function getGalleryImagesLinks($limitImages = 0)
+    public function getGalleryImages($limitImages = 0)
     {
         $args = func_get_args();
         return $this->getMethodData(__FUNCTION__, $args);
     }
 
     //########################################
-
-    public function hasRequiredOptions()
-    {
-        return $this->getMethodData(__FUNCTION__);
-    }
-
-    // ---------------------------------------
 
     public function getVariationInstance()
     {

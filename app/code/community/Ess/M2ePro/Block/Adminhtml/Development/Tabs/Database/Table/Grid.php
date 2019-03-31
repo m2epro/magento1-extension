@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -10,6 +10,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
     const MERGE_MODE_COOKIE_KEY = 'database_tables_merge_mode_cookie_key';
+    const MAX_COLUMN_VALUE_LENGTH = 255;
 
     public $tableName;
     public $modelName;
@@ -57,7 +58,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
             return;
         }
 
-        preg_match('/(ebay|amazon|buy)_/i', $this->modelName, $matches);
+        $components = implode('|', Mage::helper('M2ePro/Component')->getComponents());
+        preg_match("/({$components})_/i", $this->modelName, $matches);
         if (!$this->component && !empty($matches[1])) {
             $this->modelName = str_replace($matches[1].'_', '', $this->modelName);
             $this->component = strtolower($matches[1]);
@@ -87,7 +89,16 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
 
     protected function _prepareCollection()
     {
-        $this->setCollection($this->getModel()->getCollection());
+        /** @var Ess_M2ePro_Model_Mysql4_Collection_Abstract $collection */
+        $collection = $this->getModel()->getCollection();
+
+        if ($this->tableName == 'm2epro_operation_history'){
+            $collection->getSelect()->columns(array(
+                'total_run_time' => new \Zend_Db_Expr("TIME_TO_SEC(TIMEDIFF(`end_date`, `start_date`))")
+            ));
+        }
+
+        $this->setCollection($collection);
         return parent::_prepareCollection();
     }
 
@@ -129,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
                 'header'         => $header,
                 'align'          => 'left',
                 'type'           => $this->getColumnType($column),
-                'string_limit'   => 10000,
+                'string_limit'   => 65000,
                 'index'          => strtolower($column['name']),
                 'filter_index'   => $filterIndex,
                 'frame_callback' => array($this, 'callbackColumnData'),
@@ -144,8 +155,24 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
                 $params['filter']   = 'M2ePro/adminhtml_development_tabs_database_table_grid_column_filter_datetime';
             }
 
-            if ($this->tableName == 'm2epro_operation_history' && $column['name'] == 'nick') {
-                $params['filter'] = 'M2ePro/adminhtml_development_tabs_database_table_grid_column_filter_select';
+            if ($this->tableName == 'm2epro_operation_history') {
+                if ($column['name'] == 'nick') {
+                    $params['filter'] = 'M2ePro/adminhtml_development_tabs_database_table_grid_column_filter_select';
+                } elseif ($column['name'] == 'data') {
+                    $columnData = array(
+                        'header'                    => '&nbsp;'.Mage::helper('M2ePro')->__('Total Run Time'),
+                        'align'                     => 'right',
+                        'width'                     => '70px',
+                        'type'                      => 'text',
+                        'index'                     => 'total_run_time',
+                        'filter'                    => 'adminhtml/widget_grid_column_filter_range',
+                        'sortable'                  => true,
+                        'frame_callback'            => array($this, 'callbackColumnTotalRunTime'),
+                        'filter_condition_callback' => array($this, 'callbackTotalRunTimeFilter')
+                    );
+
+                    $this->addColumn('total_time', $columnData);
+                }
             }
 
             $this->addColumn($column['name'], $params);
@@ -175,7 +202,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid
         );
 
         $root = 'adminhtml_development_database';
-        $urls = json_encode(array(
+        $urls = Mage::helper('M2ePro')->jsonEncode(array(
             $root.'/deleteTableRows'        => $this->getUrl('*/*/deleteTableRows', $urlParams),
             $root.'/updateTableCells'       => $this->getUrl('*/*/updateTableCells', $urlParams),
             $root.'/addTableRow'            => $this->getUrl('*/*/addTableRow', $urlParams),
@@ -241,16 +268,18 @@ HTML;
 
         $tempValue = '<span style="color:silver;"><small>NULL</small></span>';
         if (!is_null($value)) {
-            $tempValue = strlen($value) > 255 ? substr($value,0,255).' ...' : $value;
+            $tempValue = $this->isColumnValueShouldBeCut($value) ? $this->cutColumnValue($value) : $value;
             $tempValue = Mage::helper('M2ePro')->escapeHtml($tempValue);
         }
 
         $inputValue = 'NULL';
-        !is_null($value) && $inputValue = Mage::helper('M2ePro')->escapeHtml($value);
+        if (!is_null($value)) {
+            $inputValue = Mage::helper('M2ePro')->escapeHtml($value);
+        }
 
         $divMouseActions = '';
+        if (!$column->getData('is_auto_increment') && strlen($inputValue) < $column->getData('string_limit')) {
 
-        if (!$column->getData('is_auto_increment')) {
             $divMouseActions = <<<HTML
 onmouseover="DevelopmentDatabaseGridHandlerObj.mouseOverCell('{$cellId}');"
 onmouseout="DevelopmentDatabaseGridHandlerObj.mouseOutCell('{$cellId}');"
@@ -291,6 +320,26 @@ HTML;
     <span>delete</span>
 </a>
 HTML;
+        if ($this->tableName == 'm2epro_operation_history') {
+
+            $urlUp = $this->getUrl(
+                '*/*/showOperationHistoryExecutionTreeUp', array('operation_history_id' => $row->getId())
+            );
+            $urlDown = $this->getUrl(
+                '*/*/showOperationHistoryExecutionTreeDown', array('operation_history_id' => $row->getId())
+            );
+            $html .= <<<HTML
+<br/>
+<a style="color: green;" href="{$urlUp}" target="_blank">
+    <span>exec.&nbsp;tree&nbsp;&uarr;</span>
+</a>
+<br/>
+<a style="color: green;" href="{$urlDown}" target="_blank">
+    <span>exec.&nbsp;tree&nbsp;&darr;</span>
+</a>
+HTML;
+        }
+
         $componentMode = $row->getData('component_mode');
         if (Mage::helper('M2ePro/Module_Database_Structure')->isTableHorizontalParent($this->tableName) &&
             $componentMode && !$this->mergeMode) {
@@ -309,24 +358,110 @@ HTML;
 
     //########################################
 
+    public function callbackColumnTotalRunTime($value, $row, $column, $isExport)
+    {
+        if (is_null($value)) {
+            return '<span style="color:silver;"><small>NULL</small></span>';
+        }
+        $color = $value > 1800 ? 'red' : 'green';
+        $value = Mage::helper('M2ePro')->escapeHtml($this->getTotalRunTimeForDisplay($value));
+
+        return "<span style='color:$color;'>{$value}</span>";
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Mysql4_OperationHistory_Collection $collection
+     * @param \Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @return $this
+     */
+    public function callbackTotalRunTimeFilter($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+
+        if ($value === null || !$value = preg_grep('/^\d+:\d{2}$/', $value)) {
+            return $this;
+        }
+
+        $value = array_map(function($item) {
+            list($minutes, $seconds) = explode(':', $item);
+            return (int) $minutes * 60 + $seconds;
+        }, $value);
+
+        if (isset($value['from'])) {
+            $collection->getSelect()
+                       ->where("TIME_TO_SEC(TIMEDIFF(`end_date`, `start_date`)) >= {$value['from']}");
+        }
+
+        if (isset($value['to'])) {
+            $collection->getSelect()
+                       ->where("TIME_TO_SEC(TIMEDIFF(`end_date`, `start_date`)) <= {$value['to']}");
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $totalRunTime
+     * @return null|string
+     */
+    protected function getTotalRunTimeForDisplay($totalRunTime)
+    {
+        $minutes = (int)($totalRunTime / 60);
+        $minutes < 10 && $minutes = '0'.$minutes;
+
+        $seconds = $totalRunTime - $minutes * 60;
+        $seconds < 10 && $seconds = '0'.$seconds;
+
+        return "{$minutes}:{$seconds}";
+    }
+
+    //########################################
+
+    protected function isColumnValueShouldBeCut($originalValue)
+    {
+        if (is_null($originalValue)) {
+            return false;
+        }
+
+        return strlen($originalValue) > self::MAX_COLUMN_VALUE_LENGTH;
+    }
+
+    protected function cutColumnValue($originalValue)
+    {
+        if (is_null($originalValue)) {
+            return $originalValue;
+        }
+
+        return substr($originalValue, 0, self::MAX_COLUMN_VALUE_LENGTH) . ' ...';
+    }
+
+    //########################################
+
     protected function _addColumnFilterToCollection($column)
     {
         if (!$this->getCollection()) {
             return $this;
         }
 
-        $value = $column->getFilter()->getValue();
-        $field = ( $column->getFilterIndex() ) ? $column->getFilterIndex()
-                                               : $column->getIndex();
+        if (!$column->getFilterConditionCallback()) {
+            $value = $column->getFilter()->getValue();
+            $field = ( $column->getFilterIndex() ) ? $column->getFilterIndex()
+                : $column->getIndex();
 
-        if ($this->isNullFilter($value)) {
-            $this->getCollection()->addFieldToFilter($field, array('null' => true));
-            return $this;
-        }
+            if ($this->isNullFilter($value)) {
+                $this->getCollection()->addFieldToFilter($field, array('null' => true));
+                return $this;
+            }
 
-        if ($this->isNotIsNullFilter($value)) {
-            $this->getCollection()->addFieldToFilter($field, array('notnull' => true));
-            return $this;
+            if ($this->isNotIsNullFilter($value)) {
+                $this->getCollection()->addFieldToFilter($field, array('notnull' => true));
+                return $this;
+            }
+
+            if ($this->isUnEqualFilter($value)) {
+                $this->getCollection()->addFieldToFilter($field, array('neq' => preg_replace('/^!=/', '', $value)));
+                return $this;
+            }
         }
 
         return parent::_addColumnFilterToCollection($column);
@@ -334,7 +469,7 @@ HTML;
 
     private function isNullFilter($value)
     {
-        if ($value === 'isnull') {
+        if (is_string($value) && $value === 'isnull') {
             return true;
         }
 
@@ -347,11 +482,20 @@ HTML;
 
     private function isNotIsNullFilter($value)
     {
-        if ($value === '!isnull') {
+        if (is_string($value) && $value === '!isnull') {
             return true;
         }
 
         if (isset($value['from'] ,$value['to']) && $value['from'] === '!isnull' && $value['to'] === '!isnull') {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isUnEqualFilter($value)
+    {
+        if (is_string($value) && strpos($value, '!=') === 0) {
             return true;
         }
 

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -37,8 +37,16 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
             Mage::getModel('M2ePro/Log_Clearing')->saveSettings(
                 Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS,
                 $post['orders_log_mode'],
-                0
+                90
             );
+
+            if (Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
+                Mage::getModel('M2ePro/Log_Clearing')->saveSettings(
+                    Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE,
+                    $post['ebay_pickup_store_log_mode'],
+                    $post['ebay_pickup_store_log_days']
+                );
+            }
 
             $this->_getSession()->addSuccess(
                 Mage::helper('M2ePro')->__('The clearing Settings has been successfully saved.')
@@ -53,12 +61,16 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
 
         if (!is_null($task)) {
 
+            $title = ucwords(str_replace('_', ' ', $log));
+            if ($log == Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE) {
+                $title = 'eBay In-Store Pickup';
+            }
+
             switch ($task) {
                 case 'run_now':
                     Mage::getModel('M2ePro/Log_Clearing')->clearOldRecords($log);
                     $tempString = Mage::helper('M2ePro')->__(
-                        'Log for %title% has been successfully cleared.',
-                         str_replace('_',' ',$log)
+                        'Log for %title% has been successfully cleared.', $title
                     );
                     $this->_getSession()->addSuccess($tempString);
                     break;
@@ -66,8 +78,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                 case 'clear_all':
                     Mage::getModel('M2ePro/Log_Clearing')->clearAllLog($log);
                     $tempString = Mage::helper('M2ePro')->__(
-                        'All Log for %title% has been successfully cleared.',
-                         str_replace('_',' ',$log)
+                        'All Log for %title% has been successfully cleared.', $title
                     );
                     $this->_getSession()->addSuccess($tempString);
                     break;

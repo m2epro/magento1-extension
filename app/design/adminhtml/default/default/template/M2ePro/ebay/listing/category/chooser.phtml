@@ -95,7 +95,7 @@
                                           && $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
                                     <?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['path']; ?>
                                 <?php else: ?>
-                                    <span style="font-style: italic; color: grey"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                                    <span style="font-style: italic; color: grey" id="magento_block_ebay_listing_category_chooser_main_primary_not_selected"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
                                     <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['message'])): ?>
                                         <div class="validation-advice default-value-message"><?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN]['message']; ?></div>
                                     <?php endif; ?>
@@ -124,7 +124,7 @@
                                     && $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['mode'] != Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE): ?>
                                     <?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['path']; ?>
                                 <?php else: ?>
-                                    <span style="font-style: italic; color: grey"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
+                                    <span style="font-style: italic; color: grey" id="magento_block_ebay_listing_category_chooser_main_secondary_not_selected"><?php echo Mage::helper('M2ePro')->__('Not Selected'); ?></span>
                                     <?php if (isset($internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['message'])): ?>
                                         <div class="validation-advice default-value-message"><?php echo $internalData[Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY]['message']; ?></div>
                                     <?php endif; ?>

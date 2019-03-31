@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -77,7 +77,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         // prepare components
         // ---------------------------------------
         $channel = $this->getRequest()->getParam('channel');
-        if (!empty($channel) && $channel != Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::CHANNEL_ID_ALL) {
+        if (!empty($channel)) {
             $collection->getSelect()->where('component_mode = ?', $channel);
         } else {
             $components = $this->viewComponentHelper->getActiveComponents();
@@ -243,7 +243,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
                      Mage::helper('M2ePro')->escapeHtml($value).
                  '</a><br/>ID: '.$row->getData('product_id');
 
-        $additionalData = json_decode($row->getData('additional_data'), true);
+        $additionalData = Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
         if (empty($additionalData['variation_options'])) {
             return $value;
         }
@@ -263,7 +263,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
 
     public function callbackColumnAttributes($value, $row, $column, $isExport)
     {
-        $additionalData = json_decode($row->getData('additional_data'), true);
+        $additionalData = Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
         if (empty($additionalData['variation_options'])) {
             return '';
         }
@@ -336,10 +336,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
     {
         return false;
     }
-
-    //########################################
-
-    abstract protected function getActionTitles();
 
     //########################################
 }

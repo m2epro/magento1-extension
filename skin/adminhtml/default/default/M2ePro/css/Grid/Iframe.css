@@ -1,0 +1,25 @@
+body {
+    background: none;
+}
+
+.wrapper {
+    min-width: inherit;
+}
+
+.footer {
+    display: none;
+}
+
+.middle {
+    padding: 0;
+    background: none;
+    min-height: unset;
+}
+
+td.help_line .hl_close {
+    margin-top: -6px;
+}
+
+td.help_line .hl_header {
+    padding: 0 0 10px !important;
+}

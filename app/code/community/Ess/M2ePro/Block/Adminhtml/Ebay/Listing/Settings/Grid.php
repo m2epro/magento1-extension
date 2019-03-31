@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -69,14 +69,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
     protected function _prepareCollection()
     {
         $listingProductIds = $this->getListing()->getData('product_add_ids');
-        $listingProductIds = array_filter((array)json_decode($listingProductIds));
+        $listingProductIds = array_filter((array)Mage::helper('M2ePro')->jsonDecode($listingProductIds));
         $listingProductIds = empty($listingProductIds) ? 0 : implode(',',$listingProductIds);
 
         // ---------------------------------------
         // Get collection
         // ---------------------------------------
-        /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
-        $collection = Mage::getModel('catalog/product')->getCollection();
+        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
+                                                          Mage::getModel('catalog/product')->getResource());
+
+        $collection->setListingProductModeOn();
+        $collection->setListing($this->getListing());
+        $collection->setStoreId($this->getListing()->getStoreId());
+
         $collection->addAttributeToSelect('sku');
         $collection->addAttributeToSelect('name');
         // ---------------------------------------
@@ -191,12 +197,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
         $path = 'adminhtml_ebay_listing_productAdd/validate';
         $urls[$path] = $this->getUrl('*/' . $path, array('_current' => true));
 
-        $urls = json_encode($urls);
+        $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
 
         $helper = Mage::helper('M2ePro');
         // ---------------------------------------
-        $translations = json_encode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(array(
             'Auto Add/Remove Rules'                    => $helper->__('Auto Add/Remove Rules'),
             'Based on Magento Categories'              => $helper->__('Based on Magento Categories'),
             'You must select at least 1 Category.'     => $helper->__('You must select at least 1 Category.'),

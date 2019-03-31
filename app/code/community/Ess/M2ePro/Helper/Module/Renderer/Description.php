@@ -2,13 +2,16 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abstract
 {
     const IMAGES_MODE_DEFAULT    = 0;
+    /**
+     * Is not supported more. Links to non eBay resources are not allowed due to eBay regulations.
+     */
     const IMAGES_MODE_NEW_WINDOW = 1;
     const IMAGES_MODE_GALLERY    = 2;
 
@@ -21,29 +24,26 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
 
     public function parseTemplate($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $design = Mage::getDesign();
-
-        $oldArea = $design->getArea();
-        $oldStore = Mage::app()->getStore();
-        $oldPackageName = $design->getPackageName();
-
-        $design->setArea('adminhtml');
-        Mage::app()->setCurrentStore(Mage::app()->getStore($magentoProduct->getStoreId()));
-        $design->setPackageName(Mage::getStoreConfig('design/package/name', Mage::app()->getStore()->getId()));
+        //-- Start store emulation process
+        $appEmulation = Mage::getSingleton('core/app_emulation');
+        $initialEnvironmentInfo = $appEmulation->startEnvironmentEmulation(
+            $magentoProduct->getStoreId(), Mage_Core_Model_App_Area::AREA_FRONTEND
+        );
+        //--
 
         $text = $this->insertAttributes($text, $magentoProduct);
         $text = $this->insertImages($text, $magentoProduct);
         $text = $this->insertMediaGalleries($text, $magentoProduct);
 
-        //  the CMS static block replacement i.e. {{media url=’image.jpg’}}
+        // the CMS static block replacement i.e. {{media url=’image.jpg’}}
         $filter = new Mage_Core_Model_Email_Template_Filter();
         $filter->setVariables(array('product'=>$magentoProduct->getProduct()));
 
         $text = $filter->filter($text);
 
-        $design->setArea($oldArea);
-        Mage::app()->setCurrentStore($oldStore);
-        $design->setPackageName($oldPackageName);
+        //-- Stop store emulation process
+        $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
+        //--
 
         return $text;
     }
@@ -52,7 +52,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
 
     private function insertAttributes($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        preg_match_all("/#([a-zA-Z_0-9]+?)#/", $text, $matches);
+        preg_match_all("/#([a-z_0-9]+?)#/", $text, $matches);
 
         if (!count($matches[0])) {
             return $text;
@@ -96,7 +96,8 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
             return $text;
         }
 
-        $imageLink = $magentoProduct->getImageLink('image');
+        $mainImage     = $magentoProduct->getImage('image');
+        $mainImageLink = $mainImage ? $mainImage->getUrl() : '';
 
         $search = array();
         $replace = array();
@@ -113,13 +114,19 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
                 }
             }
 
-            $tempImageLink = $realImageAttributes[5] == 0
-                ? $imageLink
-                : $magentoProduct->getGalleryImageLink($realImageAttributes[5]);
+            $tempImageLink = $mainImageLink;
+            if ($realImageAttributes[5] != 0) {
+                $tempImage = $magentoProduct->getGalleryImageByPosition($realImageAttributes[5]);
+                $tempImageLink = empty($tempImage) ? '' : $tempImage->getUrl();
+            }
 
             $blockObj = Mage::getSingleton('core/layout')->createBlock(
                 'M2ePro/adminhtml_renderer_description_image'
             );
+
+            if (!in_array($realImageAttributes[3], array(self::IMAGES_MODE_DEFAULT))) {
+                $realImageAttributes[3] = self::IMAGES_MODE_DEFAULT;
+            }
 
             $data = array(
                 'width'        => $realImageAttributes[0],
@@ -168,8 +175,18 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
                 $imagesQty = $realMediaGalleryAttributes[3] == self::IMAGES_MODE_GALLERY ? 100 : 25;
             }
 
-            $galleryImagesLinks = $magentoProduct->getGalleryImagesLinks($imagesQty);
+            $galleryImagesLinks = array();
+            foreach ($magentoProduct->getGalleryImages($imagesQty) as $image) {
+
+                if (!$image->getUrl()) {
+                    continue;
+                }
+
+                $galleryImagesLinks[] = $image->getUrl();
+            }
+
             if (!count($galleryImagesLinks)) {
+
                 $search = $matches[0];
                 $replace = '';
                 break;
@@ -177,6 +194,10 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
 
             if (!in_array($realMediaGalleryAttributes[4], array(self::LAYOUT_MODE_ROW, self::LAYOUT_MODE_COLUMN))) {
                 $realMediaGalleryAttributes[4] = self::LAYOUT_MODE_ROW;
+            }
+
+            if (!in_array($realMediaGalleryAttributes[3], array(self::IMAGES_MODE_DEFAULT, self::IMAGES_MODE_GALLERY))){
+                $realMediaGalleryAttributes[3] = self::IMAGES_MODE_GALLERY;
             }
 
             $data = array(

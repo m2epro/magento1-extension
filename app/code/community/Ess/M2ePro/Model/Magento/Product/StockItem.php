@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -36,8 +36,18 @@ class Ess_M2ePro_Model_Magento_Product_StockItem
         return $this->stockItem;
     }
 
+    /**
+     * @param $qty
+     * @param bool $save
+     * @return bool
+     * @throws Ess_M2ePro_Model_Exception
+     */
     public function subtractQty($qty, $save = true)
     {
+        if (!$this->canChangeQty()) {
+            return false;
+        }
+
         $stockItem = $this->getStockItem();
 
         if ($stockItem->getQty() - $stockItem->getMinQty() - $qty < 0) {
@@ -56,10 +66,21 @@ class Ess_M2ePro_Model_Magento_Product_StockItem
         if ($save) {
             $stockItem->save();
         }
+
+        return true;
     }
 
+    /**
+     * @param $qty
+     * @param bool $save
+     * @return bool
+     */
     public function addQty($qty, $save = true)
     {
+        if (!$this->canChangeQty()) {
+            return false;
+        }
+
         $stockItem = $this->getStockItem();
         $stockItem->addQty($qty);
 
@@ -70,6 +91,16 @@ class Ess_M2ePro_Model_Magento_Product_StockItem
         if ($save) {
             $stockItem->save();
         }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canChangeQty()
+    {
+        return Mage::helper('M2ePro/Magento_Stock')->canSubtractQty() && $this->getStockItem()->getManageStock();
     }
 
     //########################################

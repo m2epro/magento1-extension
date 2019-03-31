@@ -46,7 +46,7 @@ MigrationNewAmazonHandler = Class.create(WizardAmazonCustomHandler, {
                     );
                 }
 
-                return flase;
+                return false;
             }).bind(this)
         })
     }

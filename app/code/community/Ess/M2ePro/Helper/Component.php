@@ -2,12 +2,14 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 {
+    const MENU_ROOT_NODE = 'm2epro';
+
     //########################################
 
     public function getComponents()
@@ -15,14 +17,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return array(
             Ess_M2ePro_Helper_Component_Ebay::NICK,
             Ess_M2ePro_Helper_Component_Amazon::NICK,
-            Ess_M2ePro_Helper_Component_Buy::NICK
-        );
-    }
-
-    public function getRakutenComponents()
-    {
-        return array(
-            Ess_M2ePro_Helper_Component_Buy::NICK
+            Ess_M2ePro_Helper_Component_Walmart::NICK,
         );
     }
 
@@ -33,14 +28,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return array(
             Ess_M2ePro_Helper_Component_Ebay::NICK   => Mage::helper('M2ePro/Component_Ebay')->getTitle(),
             Ess_M2ePro_Helper_Component_Amazon::NICK => Mage::helper('M2ePro/Component_Amazon')->getTitle(),
-            Ess_M2ePro_Helper_Component_Buy::NICK    => Mage::helper('M2ePro/Component_Buy')->getTitle()
-        );
-    }
-
-    public function getRakutenComponentsTitles()
-    {
-        return array(
-            Ess_M2ePro_Helper_Component_Buy::NICK  => Mage::helper('M2ePro/Component_Buy')->getTitle()
+            Ess_M2ePro_Helper_Component_Walmart::NICK => Mage::helper('M2ePro/Component_Walmart')->getTitle(),
         );
     }
 
@@ -56,19 +44,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
         }
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-
-        return $components;
-    }
-
-    public function getRakutenEnabledComponents()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
+        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
         }
 
         return $components;
@@ -81,24 +58,16 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Ebay')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
+                Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
+                Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-        }
-
-        return $components;
-    }
-
-    public function getRakutenEnabledComponentsTitles()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
+        if (Mage::helper('M2ePro/Component_Walmart')->isEnabled()) {
+            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
+                Mage::helper('M2ePro/Component_Walmart')->getTitle();
         }
 
         return $components;
@@ -116,19 +85,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (!Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
             $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
         }
-        if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-
-        return $components;
-    }
-
-    public function getRakutenDisabledComponents()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
+        if (!Mage::helper('M2ePro/Component_Walmart')->isEnabled()) {
+            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
         }
 
         return $components;
@@ -141,24 +99,16 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Ebay')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
+                Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
+                Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
-        if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-        }
-
-        return $components;
-    }
-
-    public function getRakutenDisabledComponentsTitles()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
+        if (!Mage::helper('M2ePro/Component_Walmart')->isEnabled()) {
+            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
+                Mage::helper('M2ePro/Component_Walmart')->getTitle();
         }
 
         return $components;
@@ -176,19 +126,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
             $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
         }
-        if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-
-        return $components;
-    }
-
-    public function getRakutenAllowedComponents()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
+        if (Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
+            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
         }
 
         return $components;
@@ -201,24 +140,16 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
+                Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
+                Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
-        if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-        }
-
-        return $components;
-    }
-
-    public function getRakutenAllowedComponentsTitles()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
+        if (Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
+            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
+                Mage::helper('M2ePro/Component_Walmart')->getTitle();
         }
 
         return $components;
@@ -236,19 +167,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (!Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
             $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
         }
-        if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-
-        return $components;
-    }
-
-    public function getRakutenForbiddenComponents()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
+        if (!Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
+            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
         }
 
         return $components;
@@ -261,24 +181,16 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
+                Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
+                Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
-        if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-        }
-
-        return $components;
-    }
-
-    public function getRakutenForbiddenComponentsTitles()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
+        if (!Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
+            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
+                Mage::helper('M2ePro/Component_Walmart')->getTitle();
         }
 
         return $components;
@@ -296,19 +208,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
         }
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-
-        return $components;
-    }
-
-    public function getRakutenActiveComponents()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
+        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
         }
 
         return $components;
@@ -321,24 +222,16 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
+                Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
+                Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-        }
-
-        return $components;
-    }
-
-    public function getRakutenActiveComponentsTitles()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
+        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
+                Mage::helper('M2ePro/Component_Walmart')->getTitle();
         }
 
         return $components;
@@ -356,19 +249,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (!Mage::helper('M2ePro/Component_Amazon')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
         }
-        if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-
-        return $components;
-    }
-
-    public function getRakutenInactiveComponents()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
+        if (!Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
         }
 
         return $components;
@@ -381,44 +263,19 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
+                Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
+                Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
-        if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
-        }
-
-        return $components;
-    }
-
-    public function getRakutenInactiveComponentsTitles()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
+        if (!Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
+                Mage::helper('M2ePro/Component_Walmart')->getTitle();
         }
 
         return $components;
-    }
-
-    //########################################
-
-    public function isRakutenEnabled()
-    {
-        return count($this->getRakutenEnabledComponents()) > 0;
-    }
-
-    public function isRakutenAllowed()
-    {
-        return count($this->getRakutenAllowedComponents()) > 0;
-    }
-
-    public function isRakutenActive()
-    {
-        return $this->isRakutenEnabled() && $this->isRakutenAllowed();
     }
 
     //########################################
@@ -441,8 +298,8 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
             case Ess_M2ePro_Helper_Component_Amazon::NICK:
                 $title = Mage::helper('M2ePro/Component_Amazon')->getTitle();
                 break;
-            case Ess_M2ePro_Helper_Component_Buy::NICK:
-                $title = Mage::helper('M2ePro/Component_Buy')->getTitle();
+            case Ess_M2ePro_Helper_Component_Walmart::NICK:
+                $title = Mage::helper('M2ePro/Component_Walmart')->getTitle();
                 break;
         }
 
@@ -556,6 +413,73 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         }
 
         return $cacheData;
+    }
+
+    //########################################
+
+    public function prepareMenu(array $menuArray)
+    {
+        if (!Mage::getSingleton('admin/session')->isAllowed(self::MENU_ROOT_NODE)) {
+            return $menuArray;
+        }
+
+        /* @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
+        $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
+        $activeComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+
+        $menuArray[self::MENU_ROOT_NODE]['label'] = implode(', ', $this->getActiveComponentsTitles());
+
+        foreach ($menuArray[self::MENU_ROOT_NODE]['children'] as $component => $componentNode) {
+
+            if (empty($componentNode['children'])) {
+                continue;
+            }
+
+            if (!in_array($component, $activeComponents)) {
+                unset($menuArray[self::MENU_ROOT_NODE]['children'][$component]);
+                continue;
+            }
+
+            if ($activeBlocker = $wizardHelper->getActiveBlockerWizard($component)) {
+
+                $wizardUrl = Mage::helper('adminhtml')->getUrl(
+                    'M2ePro/adminhtml_wizard_'.$wizardHelper->getNick($activeBlocker).'/index'
+                );
+
+                $menuArray[self::MENU_ROOT_NODE]['children'][$component]['children'] = array();
+                $menuArray[self::MENU_ROOT_NODE]['children'][$component]['click'] = true;
+                $menuArray[self::MENU_ROOT_NODE]['children'][$component]['url'] = $wizardUrl;
+            }
+        }
+
+        if (count($activeComponents) == 1) {
+
+            $activeComponent = reset($activeComponents);
+            $activeComponentBlocker = $wizardHelper->getActiveBlockerWizard($activeComponent);
+
+            if (!$activeComponentBlocker) {
+
+                $activeComponentNodes = $menuArray[self::MENU_ROOT_NODE]['children'][$activeComponent]['children'];
+                foreach ($activeComponentNodes as &$activeComponentNodeData) {
+                    $activeComponentNodeData['last']  = false;
+                    $activeComponentNodeData['level'] = $activeComponentNodeData['level'] - 1;
+                }
+                unset($activeComponentNodeData);
+
+                $menuArray[self::MENU_ROOT_NODE]['children'] = array_merge(
+                    $activeComponentNodes, $menuArray[self::MENU_ROOT_NODE]['children']
+                );
+                unset($menuArray[self::MENU_ROOT_NODE]['children'][$activeComponent]);
+            } else {
+
+                $menuArray[self::MENU_ROOT_NODE]['click'] = true;
+                $menuArray[self::MENU_ROOT_NODE]['url'] =
+                    $menuArray[self::MENU_ROOT_NODE]['children'][$activeComponent]['url'];
+                $menuArray[self::MENU_ROOT_NODE]['children'] = array();
+            }
+        }
+
+        return $menuArray;
     }
 
     //########################################

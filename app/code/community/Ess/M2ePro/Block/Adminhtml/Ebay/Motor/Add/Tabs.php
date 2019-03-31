@@ -2,12 +2,12 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Tabs
-    extends Mage_Adminhtml_Block_Widget_Tabs
+    extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
     protected $motorsType;
 
@@ -34,8 +34,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Tabs
         $motorsType = $this->getMotorsType();
         $motorsType = Mage::helper('M2ePro/Component_Ebay_Motors')->getIdentifierKey($motorsType);
 
-        $itemsGrid = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_motor_add_item_'.$motorsType.'_grid');
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Filter_Grid $itemsGrid */
+        $itemsGrid = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_add_item_'.$motorsType.'_grid');
         $itemsGrid->setMotorsType($this->getMotorsType());
         $title = $this->getItemsTabTitle();
 
@@ -47,8 +47,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Tabs
         //------------------------------
 
         //------------------------------
-        $filtersGrid = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_motor_add_filter_grid');
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Filter_Grid $filtersGrid */
+        $filtersGrid = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_add_filter_grid');
         $filtersGrid->setMotorsType($this->getMotorsType());
 
         $this->addTab('filters', array(
@@ -59,8 +59,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Tabs
         //------------------------------
 
         //------------------------------
-        $groupsGrid = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_motor_add_group_grid');
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid $groupsGrid */
+        $groupsGrid = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_motor_add_group_grid');
         $groupsGrid->setMotorsType($this->getMotorsType());
 
         $this->addTab('groups', array(
@@ -119,7 +119,7 @@ HTML;
 
     public function getItemsTabTitle()
     {
-        if ($this->getMotorsType() == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID) {
+        if (Mage::helper('M2ePro/Component_Ebay_Motors')->isTypeBasedOnEpids($this->getMotorsType())){
             return Mage::helper('M2ePro')->__('ePID(s)');
         }
 

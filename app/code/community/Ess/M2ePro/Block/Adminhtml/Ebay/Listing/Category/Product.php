@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -49,12 +49,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product
 
         // ---------------------------------------
         $this->_addButton('next', array(
-            'class' => 'next',
-            'label' => Mage::helper('M2ePro')->__('Continue'),
-            'onclick' => 'EbayListingCategoryProductGridHandlerObj.nextStep();'
+            'id'      => 'ebay_listing_category_continue_btn',
+            'class'   => 'next',
+            'label'   => Mage::helper('M2ePro')->__('Continue'),
+            'onclick' => 'EbayListingCategoryProductGridHandlerObj.completeCategoriesDataStep();'
         ));
         // ---------------------------------------
     }
+
+    //########################################
 
     public function getGridHtml()
     {
@@ -74,7 +77,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product
     protected function _toHtml()
     {
         $parentHtml = parent::_toHtml();
-
         $popupsHtml = $this->getPopupsHtml();
 
         return <<<HTML
@@ -88,13 +90,11 @@ HTML;
 
     private function getPopupsHtml()
     {
-        $html = '';
+        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_WarningPopup $block */
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_warningPopup');
+        $block->setCategoryGridJsHandler('EbayListingCategoryProductGridHandlerObj');
 
-        $html .= $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_listing_category_product_warningPopup')
-            ->toHtml();
-
-        return $html;
+        return $block->toHtml();
     }
 
     //########################################

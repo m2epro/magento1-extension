@@ -63,7 +63,6 @@
                 <td class="value">
                     <select name="auto_global_adding_mode" id="auto_global_adding_mode" style="width: 275px;">
                         <option value="<?php echo Ess_M2ePro_Model_Listing::ADDING_MODE_NONE ?>" <?php if ($formData['auto_global_adding_mode'] == Ess_M2ePro_Model_Listing::ADDING_MODE_NONE): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('No Action') ?></option>
-                        <option value="<?php echo Ess_M2ePro_Model_Listing::ADDING_MODE_ADD ?>" <?php if ($formData['auto_global_adding_mode'] == Ess_M2ePro_Model_Listing::ADDING_MODE_ADD): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Add to the Listing') ?></option>
                         <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing::ADDING_MODE_ADD_AND_ASSIGN_CATEGORY ?>" <?php if ($formData['auto_global_adding_mode'] == Ess_M2ePro_Model_Ebay_Listing::ADDING_MODE_ADD_AND_ASSIGN_CATEGORY): ?>selected="selected"<?php endif; ?> ><?php echo Mage::helper('M2ePro')->__('Add to the Listing and Assign eBay Category') ?></option>
                     </select>
                 </td>

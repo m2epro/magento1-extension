@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -21,8 +21,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Grid
             return $ids;
         }
 
+        /* We use the default store view due to this
+         * app/code/community/Ess/M2ePro/Block/Adminhtml/Ebay/Listing/Product/Grid.php
+         * $collection->setStoreId(Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID);
+         */
         $ids = Mage::helper('M2ePro/Magento_Category')->getProductsFromCategories(
-            array($this->getCurrentCategoryId()), $this->_getStore()->getId()
+            array($this->getCurrentCategoryId()), Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID
         );
 
         $this->setData('collection_ids',$ids);
@@ -106,7 +110,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Grid
                 method: 'get',
                 onSuccess: function(transport) {
                     var massGridObj = {$this->getMassactionBlock()->getJsObjectName()};
-
                     massGridObj.initialCheckedString = massGridObj.checkedString;
 
                     var response = transport.responseText.evalJSON();
@@ -128,20 +131,21 @@ JS;
     protected function _toHtml()
     {
         $html = parent::_toHtml();
-
         $js = '';
 
-        if ($this->getRequest()->getParam('category_change')) {
+        if (!$this->getRequest()->isXmlHttpRequest() || $this->getRequest()->getParam('category_change')) {
+
+            $jsObjectName = $this->getMassactionBlock()->getJsObjectName();
             $checkedString = implode(',', array_intersect($this->getCollectionIds(), $this->selectedIds));
+
             $js .= <<<HTML
 <script type="text/javascript">
-    {$this->getMassactionBlock()->getJsObjectName()}.checkedString = '{$checkedString}';
-    {$this->getMassactionBlock()->getJsObjectName()}.initCheckboxes();
-    {$this->getMassactionBlock()->getJsObjectName()}.checkCheckboxes();
-    {$this->getMassactionBlock()->getJsObjectName()}.updateCount();
+    {$jsObjectName}.checkedString = '{$checkedString}';
+    {$jsObjectName}.initCheckboxes();
+    {$jsObjectName}.checkCheckboxes();
+    {$jsObjectName}.updateCount();
 
-    {$this->getMassactionBlock()->getJsObjectName()}.initialCheckedString =
-        {$this->getMassactionBlock()->getJsObjectName()}.checkedString;
+    {$jsObjectName}.initialCheckedString = {$jsObjectName}.checkedString;
 </script>
 HTML;
         }

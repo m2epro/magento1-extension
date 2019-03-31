@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -58,11 +58,19 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
                 )
             );
         } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
+
+            $this->getSynchronizationLog()->addMessage(
+                Mage::helper('M2ePro')->__($exception->getMessage()),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+
+            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
             return false;
         }
 
-        return json_decode($result['response'], true);
+        $this->processErrorMessages($result['response']);
+        return $result['response'];
     }
 
     //########################################
@@ -85,17 +93,25 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
                             'params' => array()
                         )
                     ),
-                    'data' => json_encode(array(
+                    'data' => Mage::helper('M2ePro')->jsonEncode(array(
                         'offers' => $offersData,
                     ))
                 )
             );
         } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
+
+            $this->getSynchronizationLog()->addMessage(
+                Mage::helper('M2ePro')->__($exception->getMessage()),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+
+            Mage::helper('M2ePro/Module_Exception')->process($exception, false);
             return false;
         }
 
-        $response = json_decode($result['response'], true);
+        $response = $result['response'];
+        $this->processErrorMessages($response);
 
         return !empty($response['request_token']) ? $response['request_token'] : false;
     }
@@ -122,7 +138,8 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
         $storeIdSelect = Mage::getResourceModel('core/config')->getReadConnection()
             ->select()
             ->from(
-                Mage::getSingleton('core/resource')->getTableName('catalog_product_entity_varchar'),
+                Mage::helper('M2ePro/Module_Database_Structure')
+                    ->getTableNameWithPrefix('catalog_product_entity_varchar'),
                 new Zend_Db_Expr('MAX(`store_id`)')
             )
             ->where("`entity_id` = `main_table`.`product_id`")
@@ -131,12 +148,15 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
 
         $listingProductCollection->getSelect()
             ->join(
-                array('cpev' => Mage::getSingleton('core/resource')->getTableName('catalog_product_entity_varchar')),
+                array(
+                    'cpev' => Mage::helper('M2ePro/Module_Database_Structure')
+                        ->getTableNameWithPrefix('catalog_product_entity_varchar')
+                ),
                 "cpev.entity_id = main_table.product_id",
                 array('product_title' => 'value')
             )
             ->join(
-                array('ea'=>Mage::getSingleton('core/resource')->getTableName('eav_attribute')),
+                array('ea'=>Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('eav_attribute')),
                 'cpev.attribute_id = ea.attribute_id AND ea.attribute_code = \'name\'',
                 array()
             )
@@ -151,6 +171,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
         $listingProductCollection->addFieldToFilter('main_table.id', array('in' => $listingProductIds));
         $listingProductCollection->addFieldToFilter('second_table.is_variation_parent', 0);
         $listingProductCollection->addFieldToFilter('second_table.sku', array('notnull' => true));
+        $listingProductCollection->addFieldToFilter('second_table.online_regular_price', array('notnull' => true));
 
         if ($listingProductCollection->getSize() <= 0) {
             return array();
@@ -188,7 +209,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
                 'name'  => $listingProduct->getData('product_title'),
                 'asin'  => $amazonListingProduct->getGeneralId(),
                 'sku'   => $amazonListingProduct->getSku(),
-                'price' => $amazonListingProduct->getOnlinePrice(),
+                'price' => $amazonListingProduct->getOnlineRegularPrice(),
                 'regular_product_price'   => $regularPrice,
                 'minimal_product_price'   => $minPrice,
                 'maximal_product_price'   => $maxPrice,

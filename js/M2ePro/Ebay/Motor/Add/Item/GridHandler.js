@@ -56,6 +56,12 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
             }
         });
 
+        // Replace default selectAll() functionality
+        var selectAllLink =  $$('#' + self.getGridMassActionObj().containerId + ' a')[0];
+        selectAllLink.setAttribute('onclick', '');
+        selectAllLink.on('click', function (e) {
+            self.selectAll();
+        });
     },
 
     checkFilterValues: function()
@@ -134,7 +140,7 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
 
             note = note.trim();
 
-            self.getGridObj().massaction.getCheckedValues().split(',').each(function(id) {
+            self.getGridMassActionObj().getCheckedValues().split(',').each(function(id) {
 
                 self.savedNotes[id] = note;
 
@@ -150,7 +156,7 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
                 }
             });
 
-            $(self.getGridObj().massaction.select).value = '';
+            $(self.getGridMassActionObj().select).value = '';
             self.notePopup.close();
         });
 
@@ -164,7 +170,7 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
     {
         var self = this;
 
-        self.getGridObj().massaction.getCheckedValues().split(',').each(function(id) {
+        self.getGridMassActionObj().getCheckedValues().split(',').each(function(id) {
 
             self.savedNotes[id] = '';
 
@@ -176,7 +182,7 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
             }
         });
 
-        $(self.getGridObj().massaction.select).value = '';
+        $(self.getGridMassActionObj().select).value = '';
         self.unselectAll();
     },
 
@@ -225,13 +231,13 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
             data.items = Object.toQueryString(items);
 
             new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/saveAsGroup'), {
-                postmethod: 'post',
+                method: 'post',
                 parameters: data,
                 onSuccess: function(transport) {
 
                     if (transport.responseText == '0') {
                         self.unselectAll();
-                        $(self.getGridObj().massaction.select).value = '';
+                        $(self.getGridMassActionObj().select).value = '';
 
                         EbayMotorAddGroupGridHandlerObj.unselectAllAndReload();
                     }
@@ -336,12 +342,12 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
             data.type = EbayMotorsHandlerObj.motorsType;
 
             new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/saveFilter'), {
-             postmethod: 'post',
+                method: 'post',
                 parameters: data,
                 onSuccess: function(transport) {
 
                     if (transport.responseText == '0') {
-                        $(self.getGridObj().massaction.select).value = '';
+                        $(self.getGridMassActionObj().select).value = '';
 
                         EbayMotorAddFilterGridHandlerObj.unselectAllAndReload();
                     }
@@ -404,6 +410,46 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
         });
 
         self.getGridObj().doFilter();
+    },
+
+    //##################################
+
+    selectAll: function()
+    {
+        var self = this;
+
+        var gridIds = this.getGridMassActionObj().getGridIds().split(',');
+        if (gridIds.length >= M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::MAX_ITEMS_COUNT_FOR_ATTRIBUTE')) {
+
+            new Ajax.Request(M2ePro.url.get('adminhtml_ebay_motor/getItemsCountAlertPopupContent'), {
+                method: 'post',
+                parameters: {},
+                onSuccess: function (transport) {
+
+                    self.itemCountPopup = Dialog.info(null, {
+                        draggable: true,
+                        resizable: true,
+                        closable: true,
+                        className: "magento",
+                        windowClassName: "popup-window",
+                        title: M2ePro.translator.translate('Attention'),
+                        top: 70,
+                        width: 550,
+                        height: 350,
+                        zIndex: 100,
+                        hideEffect: Element.hide,
+                        showEffect: Element.show
+                    });
+                    self.itemCountPopup.options.destroyOnClose = true;
+
+                    $('modal_dialog_message').update(transport.responseText);
+                }
+            });
+
+            return;
+        }
+
+        this.getGridMassActionObj().selectAll();
     }
 
     //##################################

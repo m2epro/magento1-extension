@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -92,11 +92,10 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
 
         switch ($this->getAdditionalData('component_mode')) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
-            case Ess_M2ePro_Helper_Component_Buy::NICK:
                 break;
             case Ess_M2ePro_Helper_Component_Amazon::NICK:
                 if ($this->getOrder()) {
-                    $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_common_amazon_order/goToAmazon', array(
+                    $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_amazon_order/goToAmazon', array(
                         'magento_order_id' => $this->getOrder()->getId()
                     ));
                 }
@@ -137,26 +136,20 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         return $this->toHtml();
     }
 
-    /**
-     * Render block
-     * @return string
-     */
-    public function renderView()
+    protected function _toHtml()
     {
-        $design = Mage::getDesign();
+        // Start store emulation process
+        $appEmulation = Mage::getSingleton('core/app_emulation');
+        $initialEnvironmentInfo = $appEmulation->startEnvironmentEmulation(
+            Mage_Core_Model_App::ADMIN_STORE_ID, Mage_Core_Model_App_Area::AREA_ADMINHTML
+        );
 
-        $oldArea = $design->getArea();
-        $oldPackageName = $design->getPackageName();
+        $html = parent::_toHtml();
 
-        $design->setArea('adminhtml');
-        $design->setPackageName(Mage::getStoreConfig('design/package/name', Mage::app()->getStore()->getId()));
+        // Stop store emulation process
+        $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
 
-        $result = parent::renderView();
-
-        $design->setArea($oldArea);
-        $design->setPackageName($oldPackageName);
-
-        return $result;
+        return $html;
     }
 
     //########################################

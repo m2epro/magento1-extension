@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -24,7 +24,9 @@ class Ess_M2ePro_Adminhtml_Development_InspectionController
     public function resourcesSettingsAction()
     {
         $resourcesConfig = Mage::getConfig()->getNode('global/resources');
-        $resourcesConfig = json_decode(json_encode((array)$resourcesConfig), true);
+        $resourcesConfig = Mage::helper('M2ePro')->jsonDecode(
+            Mage::helper('M2ePro')->jsonEncode((array)$resourcesConfig)
+        );
 
         $secureKeys = array('host', 'username', 'password');
         foreach ($resourcesConfig as &$configItem) {
@@ -80,11 +82,19 @@ class Ess_M2ePro_Adminhtml_Development_InspectionController
             return $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageInspectionTabUrl());
         }
 
-        $resultMessage = Mage::helper('M2ePro/Module_Database_Repair')->repairCrashedTable($tableName);
-        $resultMessage == 'OK' ? $this->_getSession()->addSuccess('Successfully repaired.')
-                               : $this->_getSession()->addError($resultMessage);
+        Mage::helper('M2ePro/Module_Database_Repair')->repairCrashedTable($tableName)
+            ? $this->_getSession()->addSuccess('Successfully repaired.')
+            : $this->_getSession()->addError('Error.');
 
         return $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageInspectionTabUrl());
+    }
+
+    //########################################
+
+    public function mainChecksAction()
+    {
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_development_inspection_mainChecks');
+        return $this->getResponse()->setBody($block->toHtml());
     }
 
     //########################################

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -27,6 +27,11 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      * @var array
      */
     private $warningMessages = array();
+
+    /**
+     * @var array
+     */
+    protected $metaData = array();
 
     //########################################
 
@@ -93,7 +98,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     protected function getMarketplace()
     {
-        $this->getAmazonAccount()->getMarketplace();
+        return $this->getAmazonAccount()->getMarketplace();
     }
 
     /**
@@ -172,7 +177,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
 
     protected function addWarningMessage($message)
     {
-        $this->warningMessages[] = $message;
+        $this->warningMessages[md5($message)] = $message;
     }
 
     /**
@@ -181,6 +186,24 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
     public function getWarningMessages()
     {
         return $this->warningMessages;
+    }
+
+    //########################################
+
+    protected function addMetaData($key, $value)
+    {
+        $this->metaData[$key] = $value;
+    }
+
+    public function getMetaData()
+    {
+        return $this->metaData;
+    }
+
+    public function setMetaData($value)
+    {
+        $this->metaData = $value;
+        return $this;
     }
 
     //########################################

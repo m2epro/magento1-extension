@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -27,7 +27,9 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/logs');
+        return Mage::getSingleton('admin/session')->isAllowed(
+            Ess_M2ePro_Helper_View_Ebay::MENU_ROOT_NODE_NICK . '/logs'
+        );
     }
 
     //########################################
@@ -53,7 +55,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367088#Logs.-ListingsLog');
+        $this->setPageHelpLink(NULL, NULL, "x/MAAJAQ");
 
         if (!empty($id)) {
             $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log');
@@ -134,8 +136,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL,
-            'pages/viewpage.action?pageId=17367088#Logs.-3rdPartyListingsLog(advancedmodeonly)');
+        $this->setPageHelpLink(NULL, NULL, "x/MAAJAQ");
 
         if (!empty($id)) {
             $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_other_log');
@@ -171,7 +172,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367088#Logs.-SynchronizationLog');
+        $this->setPageHelpLink(NULL, NULL, "x/MAAJAQ");
 
         $this->_addContent(
                  $this->getLayout()->createBlock(

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -96,10 +96,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             'header' => Mage::helper('M2ePro')->__('Product ID'),
             'align' => 'left',
             'type' => 'number',
-            'width' => '80px',
+            'width' => '20px',
             'index' => 'product_id',
             'filter_index' => 'main_table.product_id',
-            'frame_callback' => array($this, 'callbackColumnProductId')
+            'frame_callback' => array($this, 'callbackColumnProductId'),
+            'filter'   => 'M2ePro/adminhtml_grid_column_filter_productId',
+            'filter_condition_callback' => array($this, 'callbackFilterProductId')
         ));
 
         $this->addColumn('title', array(
@@ -115,7 +117,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $this->addColumn('item_id', array(
             'header' => Mage::helper('M2ePro')->__('Item ID'),
             'align' => 'left',
-            'width' => '100px',
+            'width' => '120px',
             'type' => 'text',
             'index' => 'item_id',
             'filter_index' => 'second_table.item_id',
@@ -184,7 +186,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $this->addColumn('end_date', array(
            'header' => Mage::helper('M2ePro')->__('End Date'),
            'align' => 'right',
-           'width' => '150px',
+           'width' => '160px',
            'type' => 'datetime',
            'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
            'index' => 'end_date',
@@ -235,31 +237,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         // ---------------------------------------
 
         $this->getMassactionBlock()->setGroups(array(
-            'actions'            => Mage::helper('M2ePro')->__('Actions'),
             'mapping' => Mage::helper('M2ePro')->__('Mapping'),
-            'other'                    => Mage::helper('M2ePro')->__('Other')
+            'other'   => Mage::helper('M2ePro')->__('Other')
         ));
 
         // Set mass-action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('revise', array(
-            'label'   => Mage::helper('M2ePro')->__('Revise Item(s)'),
-            'url'     => '',
-            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
-
-        $this->getMassactionBlock()->addItem('relist', array(
-            'label'   => Mage::helper('M2ePro')->__('Relist Item(s)'),
-            'url'     => '',
-            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
-
-        $this->getMassactionBlock()->addItem('stop', array(
-            'label'   => Mage::helper('M2ePro')->__('Stop Item(s)'),
-            'url'     => '',
-            'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
-
         $this->getMassactionBlock()->addItem('autoMapping', array(
             'label'   => Mage::helper('M2ePro')->__('Map Item(s) Automatically'),
             'url'     => '',
@@ -319,7 +302,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
         $htmlValue .= '&nbsp&nbsp&nbsp<a href="javascript:void(0);"'
             .' onclick="EbayListingOtherGridHandlerObj.movingHandler.getGridHtml('
-            .json_encode(array((int)$row->getData('id')))
+            .Mage::helper('M2ePro')->jsonEncode(array((int)$row->getData('id')))
             .')">'
             .Mage::helper('M2ePro')->__('Move')
             .'</a>';
@@ -463,6 +446,41 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         return $value;
     }
 
+    protected function callbackFilterProductId($collection, $column)
+    {
+        $value = $column->getFilter()->getValue();
+
+        if (empty($value)) {
+            return;
+        }
+
+        $where = '';
+
+        if (isset($value['from']) && $value['from'] != '') {
+            $where .= 'product_id >= ' . (int)$value['from'];
+        }
+
+        if (isset($value['to']) && $value['to'] != '') {
+            if (isset($value['from']) && $value['from'] != '') {
+                $where .= ' AND ';
+            }
+            $where .= 'product_id <= ' . (int)$value['to'];
+        }
+
+        if (isset($value['is_mapped']) && $value['is_mapped'] !== '') {
+            if (!empty($where)) {
+                $where = '(' . $where . ') AND ';
+            }
+            if ($value['is_mapped']) {
+                $where .= 'product_id IS NOT NULL';
+            } else {
+                $where .= 'product_id IS NULL';
+            }
+        }
+
+        $collection->getSelect()->where($where);
+    }
+
     protected function callbackFilterTitle($collection, $column)
     {
         $value = $column->getFilter()->getValue();
@@ -564,15 +582,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         $string = '';
 
         switch ((int)$actionRows['action']) {
-            case Ess_M2ePro_Model_Listing_Other_Log::ACTION_REVISE_PRODUCT:
-                $string = Mage::helper('M2ePro')->__('Revise');
-                break;
-            case Ess_M2ePro_Model_Listing_Other_Log::ACTION_RELIST_PRODUCT:
-                $string = Mage::helper('M2ePro')->__('Relist');
-                break;
-            case Ess_M2ePro_Model_Listing_Other_Log::ACTION_STOP_PRODUCT:
-                $string = Mage::helper('M2ePro')->__('Stop');
-                break;
             case Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE:
                 $string = Mage::helper('M2ePro')->__('Channel Change');
                 break;

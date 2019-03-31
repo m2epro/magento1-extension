@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -17,6 +17,7 @@ class Ess_M2ePro_Helper_View_Configuration extends Mage_Core_Helper_Abstract
     const CONFIG_SECTION_SETTINGS       = 'm2epro_settings';
     const CONFIG_SECTION_LOGS_CLEARING  = 'm2epro_logs_clearing';
     const CONFIG_SECTION_LICENSE        = 'm2epro_license';
+    const CONFIG_SECTION_ADVANCED       = 'm2epro_advanced';
 
     //########################################
 

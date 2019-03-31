@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -10,9 +10,14 @@ class Ess_M2ePro_Helper_View_Development_Command extends Mage_Core_Helper_Abstra
 {
     //########################################
 
-    const CONTROLLER_MODULE_MODULE          = 'adminhtml_development_module_module';
-    const CONTROLLER_MODULE_SYNCHRONIZATION = 'adminhtml_development_module_synchronization';
-    const CONTROLLER_MODULE_INTEGRATION     = 'adminhtml_development_module_integration';
+    const CONTROLLER_CRON_SYSTEM  = 'adminhtml_development_cron_system';
+    const CONTROLLER_CRON_AMAZON  = 'adminhtml_development_cron_amazon';
+    const CONTROLLER_CRON_EBAY    = 'adminhtml_development_cron_ebay';
+    const CONTROLLER_CRON_WALMART = 'adminhtml_development_cron_walmart';
+
+    const CONTROLLER_MODULE_INTEGRATION        = 'adminhtml_development_module_integration';
+    const CONTROLLER_MODULE_INTEGRATION_EBAY   = 'adminhtml_development_module_integration_ebay';
+    const CONTROLLER_MODULE_INTEGRATION_AMAZON = 'adminhtml_development_module_integration_amazon';
 
     const CONTROLLER_TOOLS_M2EPRO_GENERAL   = 'adminhtml_development_tools_m2ePro_general';
     const CONTROLLER_TOOLS_M2EPRO_INSTALL   = 'adminhtml_development_tools_m2ePro_install';
@@ -20,8 +25,6 @@ class Ess_M2ePro_Helper_View_Development_Command extends Mage_Core_Helper_Abstra
     const CONTROLLER_TOOLS_ADDITIONAL       = 'adminhtml_development_tools_additional';
 
     const CONTROLLER_DEBUG                  = 'adminhtml_development';
-
-    const CONTROLLER_BUILD                  = 'adminhtml_development_build';
 
     //########################################
 
@@ -110,11 +113,6 @@ class Ess_M2ePro_Helper_View_Development_Command extends Mage_Core_Helper_Abstra
             preg_match('/@prompt_var[\s]*\"(.*)\"/', $commentsString, $matches);
             isset($matches[1]) && $methodPromptVar = $matches[1];
 
-            $methodComponents = false;
-            preg_match('/@components[ ]*(.*)/', $commentsString, $matches);
-            isset($matches[0]) && $methodComponents = true;
-            !empty($matches[1]) && $methodComponents = explode(',', $matches[1]);
-
             $methodNewWindow = false;
             preg_match('/new_window/', $commentsString, $matches);
             isset($matches[0]) && $methodNewWindow = true;
@@ -132,7 +130,6 @@ class Ess_M2ePro_Helper_View_Development_Command extends Mage_Core_Helper_Abstra
                     'text' => $methodPrompt,
                     'var'  => $methodPromptVar
                 ),
-                'components'  => $methodComponents,
                 'new_window'  => $methodNewWindow
             );
         }

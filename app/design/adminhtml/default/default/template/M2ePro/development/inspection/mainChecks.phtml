@@ -1,0 +1,83 @@
+<style type="text/css">
+
+    table.grid {
+        border-color: black;
+        border-style: solid;
+        border-width: 1px 0 0 1px;
+    }
+    table.grid th {
+        padding: 5px 20px;
+        border-color: black;
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+        background-color: silver;
+        color: white;
+        font-weight: bold;
+    }
+    table.grid td {
+        padding: 3px 10px;
+        border-color: black;
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+    }
+
+    .error {
+        color: red;
+    }
+
+    .success {
+        color: green;
+    }
+
+</style>
+
+<h2>Check Files</h2>
+
+<table class="grid" cellpadding="0" cellspacing="0">
+    <tr>
+        <th style="width: 250px">Name</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Files Validity</td>
+        <td><?php echo ($this->filesValidityData['status'] ? '<span class="error">Error (<a href="'.$this->filesValidityData['url'].'" target="_blank">Show</a>)</span>' : '<span class="success">Success</span>'); ?></td>
+    </tr>
+
+    <tr>
+        <td>Unwritable Directories</td>
+        <td><?php echo ($this->unwritableDirData['status'] ? '<span class="error">Error (<a href="'.$this->unwritableDirData['url'].'" target="_blank">Show</a>)</span>' : '<span class="success">Success</span>'); ?></td>
+    </tr>
+</table>
+<br/>
+
+<h2>Check Databases</h2>
+
+<table class="grid" cellpadding="0" cellspacing="0">
+    <tr>
+        <th style="width: 250px">Name</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Tables Structure Validity</td>
+        <td><?php echo ($this->tablesStructureValidityData['status'] ? '<span class="error">Error (<a href="'.$this->tablesStructureValidityData['url'].'" target="_blank">Show</a>)</span>' : '<span class="success">Success</span>'); ?></td>
+    </tr>
+
+    <tr>
+        <td>Configs Validity</td>
+        <td><?php echo ($this->configsValidityData['status'] ? '<span class="error">Error (<a href="'.$this->configsValidityData['url'].'" target="_blank">Show</a>)</span>' : '<span class="success">Success</span>'); ?></td>
+    </tr>
+</table>
+<br/>
+
+<h2>Logical</h2>
+
+<table class="grid" cellpadding="0" cellspacing="0">
+    <tr>
+        <th style="width: 250px">Name</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Local Pool Overwrites</td>
+        <td><?php echo ($this->localPoolOverwrites['status'] ? '<span class="error">Error (<a href="'.$this->localPoolOverwrites['url'].'" target="_blank">Show</a>)</span>' : '<span class="success">Success</span>'); ?></td>
+    </tr>
+</table>

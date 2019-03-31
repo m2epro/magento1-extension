@@ -2,11 +2,11 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_Status
+class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_Status
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_Abstract
 {
     //########################################
@@ -73,7 +73,7 @@ class Ess_M2EPro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
         $this->getProcessor()->getListingProduct()->addData(array(
             'status'                   => $resultStatus,
-            'variation_child_statuses' => json_encode($childStatuses),
+            'variation_child_statuses' => Mage::helper('M2ePro')->jsonEncode($childStatuses),
         ));
     }
 

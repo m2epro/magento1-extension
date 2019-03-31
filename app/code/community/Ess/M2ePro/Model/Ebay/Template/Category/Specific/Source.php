@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -89,11 +89,15 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
         }
 
         if ($this->getCategorySpecificTemplate()->isEbayRecommendedValueMode()) {
-            $valueData = json_decode($this->getCategorySpecificTemplate()->getData('value_ebay_recommended'),true);
+            $valueData = Mage::helper('M2ePro')->jsonDecode(
+                $this->getCategorySpecificTemplate()->getData('value_ebay_recommended')
+            );
         }
 
         if ($this->getCategorySpecificTemplate()->isCustomValueValueMode()) {
-            $valueData = json_decode($this->getCategorySpecificTemplate()->getData('value_custom_value'),true);
+            $valueData = Mage::helper('M2ePro')->jsonDecode(
+                $this->getCategorySpecificTemplate()->getData('value_custom_value')
+            );
         }
 
         if (!$this->getCategorySpecificTemplate()->isCustomAttributeValueMode() &&

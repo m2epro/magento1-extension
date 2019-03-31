@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -85,7 +85,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                             'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT
                         )
                     ),
-                    'label' => Mage::helper('M2ePro')->__('Price, Quantity and Format')
+                    'label' => Mage::helper('M2ePro')->__('Selling')
                 ),
                 array(
                     'url'   => $this->getUrl(

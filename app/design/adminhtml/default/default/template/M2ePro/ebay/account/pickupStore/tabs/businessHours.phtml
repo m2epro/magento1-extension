@@ -1,0 +1,335 @@
+<?php
+
+$formData = $this->getFormData();
+
+?>
+
+<style>
+    .week_time_select, .date_time_select {
+        width: 45%;
+        display: inline-block;
+    }
+
+    #special_hours_wrapper {
+        background-color: #e5ecf2;
+        width: 500px;
+        overflow: hidden;
+        border: 1px solid #cbd3d4;
+    }
+
+    #special_hours_grid .bBottom {
+        border: none;
+        border-bottom: 1px solid #cbd3d4;
+    }
+
+    .add_btn_wrapper {
+        padding: 0 2px 2px 0;
+        overflow: hidden;
+        float: right;
+    }
+
+    .add_btn_wrapper_center {
+        padding: 10px;
+        overflow: hidden;
+    }
+
+    #add_date {
+        margin: auto;
+        display: block;
+    }
+
+    .remove_date {
+        display: block;
+        margin: auto;
+    }
+</style>
+
+<div id="block_notice_ebay_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Business Hours'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        On this Tab, you can <strong>specify the Work Hours</strong> as well as the Special Work Hours of
+        your Store.<br/>
+        So, you can set up a common working schedule and select the days and the timestamp when your Store
+        is available for Buyers.<br/>
+        In the Special Work Hours section you can specify the <strong>working time</strong> on a particular special date.
+    '); ?>
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_account_pickup_store_form_data_business_hours_work_hours">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Work Hours'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr style="margin-top: 10px;">
+
+                    <td class="grid" colspan="2">
+
+                        <table class="border" cellpadding="0" cellspacing="0" style="width: 500px;">
+
+                            <thead>
+                            <tr class="headings">
+                                <th style="width: 30px"></th>
+                                <th style="width: 150px"><?php echo Mage::helper('M2ePro')->__('Day of Week'); ?></th>
+                                <th style="width: 160px"><?php echo Mage::helper('M2ePro')->__('Open'); ?>: <span class="required">*</span></th>
+                                <th style="width: 160px"><?php echo Mage::helper('M2ePro')->__('Close'); ?>: <span class="required">*</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <?php
+
+                            $weekDays = array(
+                                'monday'    => Mage::helper('M2ePro')->__('Monday'),
+                                'tuesday'   => Mage::helper('M2ePro')->__('Tuesday'),
+                                'wednesday' => Mage::helper('M2ePro')->__('Wednesday'),
+                                'thursday'  => Mage::helper('M2ePro')->__('Thursday'),
+                                'friday'    => Mage::helper('M2ePro')->__('Friday'),
+                                'saturday'  => Mage::helper('M2ePro')->__('Saturday'),
+                                'sunday'    => Mage::helper('M2ePro')->__('Sunday')
+                            );
+
+                            foreach ($weekDays as $weekDay => $weekDayTitle) : ?>
+                                <tr>
+
+                                    <td class="table_td" style="text-align: center;">
+                                        <input id="week_day_<?php echo $weekDay; ?>_from" name="business_hours[week_settings][<?php echo $weekDay; ?>][open]" type="hidden">
+                                        <input id="week_day_<?php echo $weekDay; ?>_to" name="business_hours[week_settings][<?php echo $weekDay; ?>][close]" type="hidden">
+
+                                        <input id="week_day_<?php echo $weekDay; ?>_mode" name="business_hours[week_days][]" value="<?php echo $weekDay; ?>" type="checkbox" <?php if ($isDayExist = $this->isDayExistInWeekSettingsArray($weekDay,$formData['business_hours']['week_days'])): ?>checked="checked"<?php endif; ?> class="week_day_mode"/>
+                                    </td>
+
+                                    <td class="table_td">
+                                        <label><?php echo Mage::helper('M2ePro')->__($weekDayTitle); ?></label>
+                                    </td>
+
+                                    <td class="table_td">
+                                        <div id="week_day_<?php echo $weekDay; ?>_container_from">
+
+                                            <select id="week_day_<?php echo $weekDay; ?>_from_hours" class="week_time_select">
+                                                <option style="display: none;"></option>
+                                                <?php for($i = 1; $i < 25; $i++) { ?>
+                                                    <option value="<?php echo ($i < 10) ? '0' . $i : $i;?>" <?php if ($isDayExist && $formData['business_hours']['week_settings'][$weekDay]['from_hours'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i;?></option>
+                                                <?php } ?>
+                                            </select>
+                                            <span style="display: inline-block; width: 4px; text-align: center;">:</span>
+                                            <select id="week_day_<?php echo $weekDay; ?>_from_minutes" class="week_time_select">
+                                                <option style="display: none;"></option>
+                                                <?php for($i = 0; $i < 60; $i+=15) { ?>
+                                                    <option value="<?php echo ($i < 10) ? '0' . $i : $i;?>" <?php if ($isDayExist && $formData['business_hours']['week_settings'][$weekDay]['from_minutes'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i;?></option>
+                                                <?php } ?>
+                                            </select>
+
+                                            <br/>
+
+                                            <input id="week_day_<?php echo $weekDay; ?>_validator_from" type="hidden" class="M2ePro-validate-selected-schedule-time">
+
+                                        </div>
+                                    </td>
+
+                                    <td class="table_td">
+                                        <div id="week_day_<?php echo $weekDay; ?>_container_to">
+
+                                            <select id="week_day_<?php echo $weekDay; ?>_to_hours" class="week_time_select">
+                                                <option style="display: none;"></option>
+                                                <?php for($i = 1; $i < 25; $i++) { ?>
+                                                    <option value="<?php echo ($i < 10) ? '0' . $i : $i;?>" <?php if ($isDayExist && $formData['business_hours']['week_settings'][$weekDay]['to_hours'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i;?></option>
+                                                <?php } ?>
+                                            </select>
+                                            <span style="display: inline-block; width: 4px; text-align: center;">:</span>
+                                            <select id="week_day_<?php echo $weekDay; ?>_to_minutes" class="week_time_select">
+                                                <option style="display: none;"></option>
+                                                <?php for($i = 0; $i < 60; $i+=15) { ?>
+                                                    <option value="<?php echo ($i < 10) ? '0' . $i : $i;?>" <?php if ($isDayExist && $formData['business_hours']['week_settings'][$weekDay]['to_minutes'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i;?></option>
+                                                <?php } ?>
+                                            </select>
+
+                                            <br/>
+
+                                            <input id="week_day_<?php echo $weekDay; ?>_validator_to" type="hidden" class="M2ePro-validate-selected-schedule-time M2ePro-validate-schedule-wrong-interval-time">
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            <?php endforeach; ?>
+
+                            </tbody>
+
+                            <tfoot>
+                            </tfoot>
+
+                        </table>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <input id="schedule_week_days_validator" type="hidden" class="M2ePro-validate-schedule-week-days">
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_ebay_account_pickup_store_form_data_business_hours_special_hours">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Special Work Hours'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <div id="special_hours_wrapper">
+                <table class="border" id="special_hours_grid" cellpadding="0" cellspacing="0" style="width: 500px;">
+
+                    <tr style="margin-top: 10px;">
+
+                        <td class="grid" colspan="2">
+
+                            <table class="border bBottom" cellpadding="0" cellspacing="0" style="width: 500px;">
+
+                                <thead>
+                                <tr class="headings">
+                                    <th style="width: 120px"><?php echo Mage::helper('M2ePro')->__('Date'); ?>: <span class="required">*</span></th>
+                                    <th style="width: 160px"><?php echo Mage::helper('M2ePro')->__('Open'); ?>: </th>
+                                    <th><?php echo Mage::helper('M2ePro')->__('Close'); ?>: </th>
+                                    <th style="width: 30px"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                if (!empty($formData['special_hours']['date_settings'])) {
+                                    $dateSetting = $formData['special_hours']['date_settings'];
+                                } else {
+                                    $dateSetting = array('0000-00-00' => array());
+                                }
+
+                                $index = 0;
+                                ?>
+
+                                <?php foreach ($dateSetting as $date => $time) : ?>
+
+                                    <tr>
+                                        <td class="table_td">
+                                            <input id="date<?php echo $index == 0 ? '' : '-' . $index; ?>"
+                                                   value="<?php echo $date == '0000-00-00' ? '' : $date; ?>" type="text"
+                                                   class="input-text date-field M2ePro-required-when-visible M2ePro-validate-must-arrive-date" style="width: 105px;"/>
+                                            <script type="text/javascript">
+                                                //<![CDATA[
+                                                Calendar.setup({
+                                                    inputField: "date<?php echo $index == 0 ? '' : '-' . $index;?>",
+                                                    ifFormat: "%Y-%m-%d",
+                                                    showsTime: false,
+                                                    align: "Bl",
+                                                    singleClick: true,
+                                                    onClose: function (calendarObj) {
+                                                        var dateContainer = $('date<?php echo $index == 0 ? '' : '-' . $index;?>'),
+                                                            dateStr = dateContainer.value,
+                                                            dateFrom = dateContainer.up('tr').down('#date_from'),
+                                                            dateTo = dateContainer.up('tr').down('#date_to');
+
+                                                        dateFrom.name = 'special_hours[date_settings][' + dateStr + '][open]';
+                                                        dateTo.name = 'special_hours[date_settings][' + dateStr + '][close]';
+
+                                                        calendarObj.hide();
+                                                    }
+                                                });
+                                                //]]>
+                                            </script>
+                                        </td>
+
+                                        <td class="table_td">
+                                            <div id="date_container_from">
+
+                                                <select id="date_from_hours" class="date_time_select">
+                                                    <option style="display: none;"></option>
+                                                    <?php for ($i = 1; $i < 25; $i++) { ?>
+                                                        <option value="<?php echo ($i < 10) ? '0' . $i : $i; ?>" <?php if (isset($time['from_hours']) && $time['from_hours'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                                <span style="display: inline-block; width: 4px; text-align: center;">:</span>
+                                                <select id="date_from_minutes" class="date_time_select">
+                                                    <option style="display: none;"></option>
+                                                    <?php for ($i = 0; $i < 60; $i += 15) { ?>
+                                                        <option value="<?php echo ($i < 10) ? '0' . $i : $i; ?>" <?php if (isset($time['from_minutes']) && $time['from_minutes'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i; ?></option>
+                                                    <?php } ?>
+                                                </select>
+
+                                                <br/>
+
+                                                <input id="date_validator_from" type="hidden" class="M2ePro-validate-selected-schedule-time">
+
+                                            </div>
+                                        </td>
+
+                                        <td class="table_td">
+                                            <div id="date_container_to">
+
+                                                <select id="date_to_hours" class="date_time_select">
+                                                    <option style="display: none;"></option>
+                                                    <?php for ($i = 1; $i < 25; $i++) { ?>
+                                                        <option value="<?php echo ($i < 10) ? '0' . $i : $i; ?>" <?php if (isset($time['to_hours']) && $time['to_hours'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                                <span style="display: inline-block; width: 4px; text-align: center;">:</span>
+                                                <select id="date_to_minutes" class="date_time_select">
+                                                    <option style="display: none;"></option>
+                                                    <?php for ($i = 0; $i < 60; $i += 15) { ?>
+                                                        <option value="<?php echo ($i < 10) ? '0' . $i : $i; ?>" <?php if (isset($time['to_minutes']) && $time['to_minutes'] == $i): echo ' selected="selected"'; endif; ?>><?php echo ($i < 10) ? '0' . $i : $i; ?></option>
+                                                    <?php } ?>
+                                                </select>
+
+                                                <br/>
+
+                                                <input id="date_validator_to" type="hidden" class="M2ePro-validate-selected-schedule-time M2ePro-validate-schedule-wrong-interval-time">
+
+                                            </div>
+                                        </td>
+
+                                        <td class="table_td table_td_last">
+                                            <input id="date_from" name="special_hours[date_settings][<?php echo $date; ?>][open]" type="hidden">
+                                            <input id="date_to" name="special_hours[date_settings][<?php echo $date; ?>][close]" type="hidden">
+
+                                            <button class="scalable delete icon-btn remove_date" type="button" title="Remove">
+                                                <span><span><span>Remove</span></span></span>
+                                            </button>
+                                        </td>
+
+                                    </tr>
+
+                                    <?php $index++; ?>
+                                <?php endforeach; ?>
+                                <script>EbayPickupStoreHandlerObj.specialHoursFieldsCount = <?php echo $index; ?>; </script>
+
+                                </tbody>
+
+                                <tfoot>
+                                </tfoot>
+
+                            </table>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <div class="add_btn_wrapper">
+                    <button type="button" class="scalable add" title="Add Method" id="add_date">
+                        <span><span><span><?php echo Mage::helper('M2ePro')->__('Add New'); ?></span></span></span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -8,21 +8,30 @@ EbayTemplateReturnHandler = Class.create(CommonHandler, {
 
     acceptedChange: function()
     {
-        if (this.value == 'ReturnsAccepted') {
+        var descriptionTr = $('magento_block_ebay_template_return_form_data_policy_general');
+
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Return::RETURNS_ACCEPTED')) {
             $('return_option_tr')[$$('#return_option option').length ? 'show' : 'hide']();
             $('return_within_tr')[$$('#return_within option').length ? 'show' : 'hide']();
             $('return_shipping_cost_tr')[$$('#return_shipping_cost option').length ? 'show' : 'hide']();
-            $('return_restocking_fee_tr')[$$('#return_restocking_fee option').length ? 'show' : 'hide']();
-            $('return_description_tr').show();
 
-            if ($('return_holiday_tr')) {
-                $('return_holiday_tr').show();
-            }
+            $('magento_block_ebay_template_return_form_data_policy_international').show();
+            descriptionTr && descriptionTr.show();
         } else {
             $$('.return-accepted').invoke('hide');
+        }
 
-            $('return_holiday_mode').selectedIndex = 0;
-            $('return_holiday_mode').simulate('change');
+        $('return_international_accepted').simulate('change');
+    },
+
+    internationalAcceptedChange: function()
+    {
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Return::RETURNS_ACCEPTED')) {
+            $('return_international_option_tr')[$$('#return_international_option option').length ? 'show' : 'hide']();
+            $('return_international_within_tr')[$$('#return_international_within option').length ? 'show' : 'hide']();
+            $('return_international_shipping_cost_tr')[$$('#return_international_shipping_cost option').length ? 'show' : 'hide']();
+        } else {
+            $$('.return-international-accepted').invoke('hide');
         }
     }
 

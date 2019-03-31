@@ -16,7 +16,7 @@ ListingActionHandler = Class.create(ActionHandler, {
 
     // ---------------------------------------
 
-    startActions: function(title,url,selectedProductsParts)
+    startActions: function(title,url,selectedProductsParts,requestParams)
     {
         MagentoMessageObj.clearAll();
         $('listing_container_errors_summary').hide();
@@ -28,10 +28,10 @@ ListingActionHandler = Class.create(ActionHandler, {
         GridWrapperObj.lock();
         $('loading-mask').setStyle({visibility: 'hidden'});
 
-        self.sendPartsOfProducts(selectedProductsParts,selectedProductsParts.length,url);
+        self.sendPartsOfProducts(selectedProductsParts,selectedProductsParts.length,url,requestParams);
     },
 
-    sendPartsOfProducts: function(parts,totalPartsCount,url)
+    sendPartsOfProducts: function(parts,totalPartsCount,url,requestParams)
     {
         var self = this;
 
@@ -45,25 +45,35 @@ ListingActionHandler = Class.create(ActionHandler, {
             ListingProgressBarObj.setStatus(self.options.text.task_completed_message);
 
             var combineResult = 'success';
-            for (var i=0;i<self.sendPartsResponses.length;i++) {
-                if (self.sendPartsResponses[i].result != 'success' && self.sendPartsResponses[i].result != 'warning') {
+            var actionIds = [];
+
+            for (var i = 0; i< self.sendPartsResponses.length; i++) {
+
+                if (self.sendPartsResponses[i].result !== 'success' &&
+                    self.sendPartsResponses[i].result !== 'warning')
+                {
                     combineResult = 'error';
-                    break;
                 }
-                if (self.sendPartsResponses[i].result == 'warning') {
+                if (self.sendPartsResponses[i].result === 'warning') {
                     combineResult = 'warning';
+                }
+
+                if (typeof self.sendPartsResponses[i].action_id !== 'undefined') {
+                    actionIds.push(self.sendPartsResponses[i].action_id);
                 }
             }
 
-            for (var i=0;i<self.sendPartsResponses.length;i++) {
-                if (typeof self.sendPartsResponses[i].is_processing_items != 'undefined' &&
-                    self.sendPartsResponses[i].is_processing_items == true) {
+            for (var i = 0; i< self.sendPartsResponses.length; i++) {
+
+                if (typeof self.sendPartsResponses[i].is_processing_items !== 'undefined' &&
+                    self.sendPartsResponses[i].is_processing_items === true)
+                {
                     MagentoMessageObj.addNotice(self.options.text.locked_obj_notice);
                     break;
                 }
             }
 
-            if (combineResult == 'error') {
+            if (combineResult === 'error') {
 
                 var message = self.options.text.task_completed_error_message;
                 message = message.replace('%task_title%', ListingProgressBarObj.getTitle());
@@ -71,30 +81,33 @@ ListingActionHandler = Class.create(ActionHandler, {
 
                 MagentoMessageObj.addError(message);
 
-                var actionIds = '';
-                for (var i=0;i<self.sendPartsResponses.length;i++) {
-                    if (actionIds != '') {
-                        actionIds += ',';
-                    }
-                    actionIds += self.sendPartsResponses[i].action_id;
-                }
-
-                new Ajax.Request(self.options.url.getErrorsSummary + 'action_ids/' + actionIds + '/' , {
+                new Ajax.Request(self.options.url.getErrorsSummary + 'action_ids/' + actionIds.join(',') + '/' , {
                     method:'get',
                     onSuccess: function(transportSummary) {
-                        $('listing_container_errors_summary').innerHTML = transportSummary.responseText;
-                        $('listing_container_errors_summary').show();
+                        if (transportSummary.responseText.isJSON()) {
+
+                            var response = transportSummary.responseText.evalJSON(true);
+
+                            $('listing_container_errors_summary').innerHTML = response.html;
+                            $('listing_container_errors_summary').show();
+                        }
                     }
                 });
 
-            } else if (combineResult == 'warning') {
+            } else if (combineResult === 'warning') {
+
                 var message = self.options.text.task_completed_warning_message;
                 message = message.replace('%task_title%', ListingProgressBarObj.getTitle());
                 message = message.replace('%url%', self.options.url.logViewUrl);
 
                 MagentoMessageObj.addWarning(message);
             } else {
-                var message = self.options.text.task_completed_success_message;
+
+                if (requestParams['is_realtime']) {
+                    var message = self.options.text.task_realtime_completed_success_message;
+                } else {
+                    var message = self.options.text.task_completed_success_message;
+                }
                 message = message.replace('%task_title%', ListingProgressBarObj.getTitle());
 
                 MagentoMessageObj.addSuccess(message);
@@ -147,11 +160,15 @@ ListingActionHandler = Class.create(ActionHandler, {
 
         ListingProgressBarObj.setStatus(str_replace('%product_title%', partExecuteString, self.options.text.sending_data_message));
 
+        if (typeof requestParams == 'undefined') {
+            requestParams = {}
+        }
+
+        requestParams['selected_products'] = partString;
+
         new Ajax.Request(url + 'id/' + self.gridHandler.listingId, {
             method: 'post',
-            parameters: {
-                selected_products: partString
-            },
+            parameters: requestParams,
             onSuccess: function(transport) {
 
                 if (!transport.responseText.isJSON()) {
@@ -200,7 +217,7 @@ ListingActionHandler = Class.create(ActionHandler, {
                 }
 
                 setTimeout(function() {
-                    self.sendPartsOfProducts(parts,totalPartsCount,url);
+                    self.sendPartsOfProducts(parts,totalPartsCount,url,requestParams);
                 },500);
             }
         });

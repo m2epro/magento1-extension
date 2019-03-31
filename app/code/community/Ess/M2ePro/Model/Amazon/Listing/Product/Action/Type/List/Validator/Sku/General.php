@@ -2,15 +2,13 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_General
     extends Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 {
-    const SKU_MAX_LENGTH = 40;
-
     //########################################
 
     /**
@@ -29,7 +27,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Gen
             return false;
         }
 
-        if (strlen($sku) > self::SKU_MAX_LENGTH) {
+        if (strlen($sku) > Ess_M2ePro_Helper_Component_Amazon::SKU_MAX_LENGTH) {
 
             // M2ePro_TRANSLATIONS
             // The length of SKU must be less than 40 characters.
@@ -60,9 +58,22 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Gen
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()
         ) {
             $variations = $this->getListingProduct()->getVariations(true);
+            if (count($variations) <= 0) {
+                throw new Ess_M2ePro_Model_Exception_Logic('There are no variations for a variation product.',
+                                                     array(
+                                                         'listing_product_id' => $this->getListingProduct()->getId()
+                                                     ));
+            }
+
             /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
             $variation = reset($variations);
-            return $variation->getChildObject()->getSku();
+            $sku = $variation->getChildObject()->getSku();
+
+            if (strlen($sku) >= Ess_M2ePro_Helper_Component_Amazon::SKU_MAX_LENGTH) {
+                $sku = Mage::helper('M2ePro')->hashString($sku, 'md5', 'RANDOM_');
+            }
+
+            return $sku;
         }
 
         return $this->getAmazonListingProduct()->getListingSource()->getSku();

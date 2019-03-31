@@ -1,0 +1,40 @@
+<style type="text/css">
+    .massaction-checkbox {
+        display: block;
+        margin: 5px auto 0;
+    }
+
+    .massaction td {
+        padding: 1px 8px !important;
+    }
+
+    .grid th, .grid td {
+        padding: 2px 4px!important;
+    }
+
+    #pickupStore-grid-popup-products {
+        padding: 15px 0 0;
+        height: 380px;
+        overflow-y: auto;
+    }
+
+    .button-area {
+        float: right;
+        padding: 10px 0;
+    }
+</style>
+<div id="pickupStore-grid-popup-products">
+    <?php echo $this->getChildHtml('products'); ?>
+
+</div>
+
+<script type="M2ePro/template" id="button-template">
+    <div class="button-area">
+        <a id="cancel_button" href="javascript: void(0);"><?php echo Mage::helper('M2ePro')->__('Cancel'); ?></a>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <?php echo $this->getChildHtml('done'); ?>
+    </div>
+    <div style="clear: both"></div>
+</script>

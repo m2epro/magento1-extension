@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -20,6 +20,10 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
 
     const PRICE_VARIATION_MODE_PARENT   = 1;
     const PRICE_VARIATION_MODE_CHILDREN = 2;
+
+    const BUSINESS_DISCOUNTS_MODE_NONE          = 0;
+    const BUSINESS_DISCOUNTS_MODE_TIER          = 1;
+    const BUSINESS_DISCOUNTS_MODE_CUSTOM_VALUE  = 2;
 
     const DATE_VALUE      = 0;
     const DATE_ATTRIBUTE  = 1;
@@ -50,6 +54,21 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
                             ->getSize();
     }
 
+    public function deleteInstance()
+    {
+        if ($this->isLocked()) {
+            return false;
+        }
+
+        $businessDiscounts = $this->getBusinessDiscounts(true);
+        foreach ($businessDiscounts as $businessDiscount) {
+            $businessDiscount->deleteInstance();
+        }
+
+        $this->delete();
+        return true;
+    }
+
     //########################################
 
     /**
@@ -61,6 +80,31 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     public function getListings($asObjects = false, array $filters = array())
     {
         return $this->getRelatedComponentItems('Listing','template_selling_format_id',$asObjects,$filters);
+    }
+
+    //########################################
+
+    /**
+     * @param bool $asObjects
+     * @param array $filters
+     * @return array|Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount[]
+     * @throws Ess_M2ePro_Model_Exception_Logic
+     */
+    public function getBusinessDiscounts($asObjects = false, array $filters = array())
+    {
+        $businessDiscounts = $this->getRelatedSimpleItems(
+            'Amazon_Template_SellingFormat_BusinessDiscount',
+            'template_selling_format_id', $asObjects, $filters
+        );
+
+        if ($asObjects) {
+            /** @var $businessDiscount Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount */
+            foreach ($businessDiscounts as $businessDiscount) {
+                $businessDiscount->setSellingFormatTemplate($this->getParentObject());
+            }
+        }
+
+        return $businessDiscounts;
     }
 
     //########################################
@@ -207,63 +251,81 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     // ---------------------------------------
 
     /**
+     * @return bool
+     */
+    public function isRegularCustomerAllowed()
+    {
+        return (bool)$this->getData('is_regular_customer_allowed');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessCustomerAllowed()
+    {
+        return (bool)$this->getData('is_business_customer_allowed');
+    }
+
+    // ---------------------------------------
+
+    /**
      * @return int
      */
-    public function getPriceMode()
+    public function getRegularPriceMode()
     {
-        return (int)$this->getData('price_mode');
+        return (int)$this->getData('regular_price_mode');
     }
 
     /**
      * @return bool
      */
-    public function isPriceModeProduct()
+    public function isRegularPriceModeProduct()
     {
-        return $this->getPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT;
+        return $this->getRegularPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT;
     }
 
     /**
      * @return bool
      */
-    public function isPriceModeSpecial()
+    public function isRegularPriceModeSpecial()
     {
-        return $this->getPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL;
+        return $this->getRegularPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL;
     }
 
     /**
      * @return bool
      */
-    public function isPriceModeAttribute()
+    public function isRegularPriceModeAttribute()
     {
-        return $this->getPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE;
+        return $this->getRegularPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE;
     }
 
-    public function getPriceCoefficient()
+    public function getRegularPriceCoefficient()
     {
-        return $this->getData('price_coefficient');
+        return $this->getData('regular_price_coefficient');
     }
 
     /**
      * @return array
      */
-    public function getPriceSource()
+    public function getRegularPriceSource()
     {
         return array(
-            'mode'        => $this->getPriceMode(),
-            'coefficient' => $this->getPriceCoefficient(),
-            'attribute'   => $this->getData('price_custom_attribute')
+            'mode'        => $this->getRegularPriceMode(),
+            'coefficient' => $this->getRegularPriceCoefficient(),
+            'attribute'   => $this->getData('regular_price_custom_attribute')
         );
     }
 
     /**
      * @return array
      */
-    public function getPriceAttributes()
+    public function getRegularPriceAttributes()
     {
         $attributes = array();
-        $src = $this->getPriceSource();
+        $src = $this->getRegularPriceSource();
 
-        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE) {
+        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -275,63 +337,63 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     /**
      * @return int
      */
-    public function getMapPriceMode()
+    public function getRegularMapPriceMode()
     {
-        return (int)$this->getData('map_price_mode');
+        return (int)$this->getData('regular_map_price_mode');
     }
 
     /**
      * @return bool
      */
-    public function isMapPriceModeNone()
+    public function isRegularMapPriceModeNone()
     {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE;
+        return $this->getRegularMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE;
     }
 
     /**
      * @return bool
      */
-    public function isMapPriceModeProduct()
+    public function isRegularMapPriceModeProduct()
     {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT;
+        return $this->getRegularMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT;
     }
 
     /**
      * @return bool
      */
-    public function isMapPriceModeSpecial()
+    public function isRegularMapPriceModeSpecial()
     {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL;
+        return $this->getRegularMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL;
     }
 
     /**
      * @return bool
      */
-    public function isMapPriceModeAttribute()
+    public function isRegularMapPriceModeAttribute()
     {
-        return $this->getMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE;
+        return $this->getRegularMapPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE;
     }
 
     /**
      * @return array
      */
-    public function getMapPriceSource()
+    public function getRegularMapPriceSource()
     {
         return array(
-            'mode'        => $this->getMapPriceMode(),
-            'attribute'   => $this->getData('map_price_custom_attribute')
+            'mode'        => $this->getRegularMapPriceMode(),
+            'attribute'   => $this->getData('regular_map_price_custom_attribute')
         );
     }
 
     /**
      * @return array
      */
-    public function getMapPriceAttributes()
+    public function getRegularMapPriceAttributes()
     {
         $attributes = array();
-        $src = $this->getMapPriceSource();
+        $src = $this->getRegularMapPriceSource();
 
-        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE) {
+        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -343,69 +405,69 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     /**
      * @return int
      */
-    public function getSalePriceMode()
+    public function getRegularSalePriceMode()
     {
-        return (int)$this->getData('sale_price_mode');
+        return (int)$this->getData('regular_sale_price_mode');
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceModeNone()
+    public function isRegularSalePriceModeNone()
     {
-        return $this->getSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE;
+        return $this->getRegularSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE;
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceModeProduct()
+    public function isRegularSalePriceModeProduct()
     {
-        return $this->getSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT;
+        return $this->getRegularSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT;
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceModeSpecial()
+    public function isRegularSalePriceModeSpecial()
     {
-        return $this->getSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL;
+        return $this->getRegularSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL;
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceModeAttribute()
+    public function isRegularSalePriceModeAttribute()
     {
-        return $this->getSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE;
+        return $this->getRegularSalePriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE;
     }
 
-    public function getSalePriceCoefficient()
+    public function getRegularSalePriceCoefficient()
     {
-        return $this->getData('sale_price_coefficient');
+        return $this->getData('regular_sale_price_coefficient');
     }
 
     /**
      * @return array
      */
-    public function getSalePriceSource()
+    public function getRegularSalePriceSource()
     {
         return array(
-            'mode'        => $this->getSalePriceMode(),
-            'coefficient' => $this->getSalePriceCoefficient(),
-            'attribute'   => $this->getData('sale_price_custom_attribute')
+            'mode'        => $this->getRegularSalePriceMode(),
+            'coefficient' => $this->getRegularSalePriceCoefficient(),
+            'attribute'   => $this->getData('regular_sale_price_custom_attribute')
         );
     }
 
     /**
      * @return array
      */
-    public function getSalePriceAttributes()
+    public function getRegularSalePriceAttributes()
     {
         $attributes = array();
-        $src = $this->getSalePriceSource();
+        $src = $this->getRegularSalePriceSource();
 
-        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_ATTRIBUTE) {
+        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
         }
 
@@ -417,51 +479,51 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     /**
      * @return int
      */
-    public function getSalePriceStartDateMode()
+    public function getRegularSalePriceStartDateMode()
     {
-        return (int)$this->getData('sale_price_start_date_mode');
+        return (int)$this->getData('regular_sale_price_start_date_mode');
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceStartDateModeValue()
+    public function isRegularSalePriceStartDateModeValue()
     {
-        return $this->getSalePriceStartDateMode() == self::DATE_VALUE;
+        return $this->getRegularSalePriceStartDateMode() == self::DATE_VALUE;
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceStartDateModeAttribute()
+    public function isRegularSalePriceStartDateModeAttribute()
     {
-        return $this->getSalePriceStartDateMode() == self::DATE_ATTRIBUTE;
+        return $this->getRegularSalePriceStartDateMode() == self::DATE_ATTRIBUTE;
     }
 
-    public function getSalePriceStartDateValue()
+    public function getRegularSalePriceStartDateValue()
     {
-        return $this->getData('sale_price_start_date_value');
+        return $this->getData('regular_sale_price_start_date_value');
     }
 
     /**
      * @return array
      */
-    public function getSalePriceStartDateSource()
+    public function getRegularSalePriceStartDateSource()
     {
         return array(
-            'mode'        => $this->getSalePriceStartDateMode(),
-            'value'       => $this->getSalePriceStartDateValue(),
-            'attribute'   => $this->getData('sale_price_start_date_custom_attribute')
+            'mode'        => $this->getRegularSalePriceStartDateMode(),
+            'value'       => $this->getRegularSalePriceStartDateValue(),
+            'attribute'   => $this->getData('regular_sale_price_start_date_custom_attribute')
         );
     }
 
     /**
      * @return array
      */
-    public function getSalePriceStartDateAttributes()
+    public function getRegularSalePriceStartDateAttributes()
     {
         $attributes = array();
-        $src = $this->getSalePriceStartDateSource();
+        $src = $this->getRegularSalePriceStartDateSource();
 
         if ($src['mode'] == self::DATE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
@@ -475,51 +537,51 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     /**
      * @return int
      */
-    public function getSalePriceEndDateMode()
+    public function getRegularSalePriceEndDateMode()
     {
-        return (int)$this->getData('sale_price_end_date_mode');
+        return (int)$this->getData('regular_sale_price_end_date_mode');
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceEndDateModeValue()
+    public function isRegularSalePriceEndDateModeValue()
     {
-        return $this->getSalePriceEndDateMode() == self::DATE_VALUE;
+        return $this->getRegularSalePriceEndDateMode() == self::DATE_VALUE;
     }
 
     /**
      * @return bool
      */
-    public function isSalePriceEndDateModeAttribute()
+    public function isRegularSalePriceEndDateModeAttribute()
     {
-        return $this->getSalePriceEndDateMode() == self::DATE_ATTRIBUTE;
+        return $this->getRegularSalePriceEndDateMode() == self::DATE_ATTRIBUTE;
     }
 
-    public function getSalePriceEndDateValue()
+    public function getRegularSalePriceEndDateValue()
     {
-        return $this->getData('sale_price_end_date_value');
+        return $this->getData('regular_sale_price_end_date_value');
     }
 
     /**
      * @return array
      */
-    public function getSalePriceEndDateSource()
+    public function getRegularSalePriceEndDateSource()
     {
         return array(
-            'mode'        => $this->getSalePriceEndDateMode(),
-            'value'       => $this->getSalePriceEndDateValue(),
-            'attribute'   => $this->getData('sale_price_end_date_custom_attribute')
+            'mode'        => $this->getRegularSalePriceEndDateMode(),
+            'value'       => $this->getRegularSalePriceEndDateValue(),
+            'attribute'   => $this->getData('regular_sale_price_end_date_custom_attribute')
         );
     }
 
     /**
      * @return array
      */
-    public function getSalePriceEndDateAttributes()
+    public function getRegularSalePriceEndDateAttributes()
     {
         $attributes = array();
-        $src = $this->getSalePriceEndDateSource();
+        $src = $this->getRegularSalePriceEndDateSource();
 
         if ($src['mode'] == self::DATE_ATTRIBUTE) {
             $attributes[] = $src['attribute'];
@@ -531,122 +593,273 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
     // ---------------------------------------
 
     /**
-     * @return bool
-     */
-    public function usesProductOrSpecialPrice()
-    {
-        if ($this->isPriceModeProduct() || $this->isPriceModeSpecial()) {
-            return true;
-        }
-
-        if ($this->isSalePriceModeProduct() || $this->isSalePriceModeSpecial()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    //########################################
-
-    /**
      * @return int
      */
-    public function getPriceVariationMode()
+    public function getRegularPriceVariationMode()
     {
-        return (int)$this->getData('price_variation_mode');
+        return (int)$this->getData('regular_price_variation_mode');
     }
 
     /**
      * @return bool
      */
-    public function isPriceVariationModeParent()
+    public function isRegularPriceVariationModeParent()
     {
-        return $this->getPriceVariationMode() == self::PRICE_VARIATION_MODE_PARENT;
+        return $this->getRegularPriceVariationMode() == self::PRICE_VARIATION_MODE_PARENT;
     }
 
     /**
      * @return bool
      */
-    public function isPriceVariationModeChildren()
+    public function isRegularPriceVariationModeChildren()
     {
-        return $this->getPriceVariationMode() == self::PRICE_VARIATION_MODE_CHILDREN;
+        return $this->getRegularPriceVariationMode() == self::PRICE_VARIATION_MODE_CHILDREN;
     }
 
-    //########################################
+    // ---------------------------------------
 
     /**
      * @return float
      */
-    public function getPriceVatPercent()
+    public function getRegularPriceVatPercent()
     {
-        return (float)$this->getData('price_vat_percent');
+        return (float)$this->getData('regular_price_vat_percent');
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getBusinessPriceMode()
+    {
+        return (int)$this->getData('business_price_mode');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessPriceModeProduct()
+    {
+        return $this->getBusinessPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessPriceModeSpecial()
+    {
+        return $this->getBusinessPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessPriceModeAttribute()
+    {
+        return $this->getRegularPriceMode() == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE;
+    }
+
+    public function getBusinessPriceCoefficient()
+    {
+        return $this->getData('business_price_coefficient');
+    }
+
+    /**
+     * @return array
+     */
+    public function getBusinessPriceSource()
+    {
+        return array(
+            'mode'        => $this->getBusinessPriceMode(),
+            'coefficient' => $this->getBusinessPriceCoefficient(),
+            'attribute'   => $this->getData('business_price_custom_attribute')
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getBusinessPriceAttributes()
+    {
+        $attributes = array();
+        $src = $this->getBusinessPriceSource();
+
+        if ($src['mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE) {
+            $attributes[] = $src['attribute'];
+        }
+
+        return $attributes;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getBusinessPriceVariationMode()
+    {
+        return (int)$this->getData('business_price_variation_mode');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessPriceVariationModeParent()
+    {
+        return $this->getBusinessPriceVariationMode() == self::PRICE_VARIATION_MODE_PARENT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessPriceVariationModeChildren()
+    {
+        return $this->getBusinessPriceVariationMode() == self::PRICE_VARIATION_MODE_CHILDREN;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return float
+     */
+    public function getBusinessPriceVatPercent()
+    {
+        return (float)$this->getData('business_price_vat_percent');
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getBusinessDiscountsMode()
+    {
+        return (int)$this->getData('business_discounts_mode');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessDiscountsModeNone()
+    {
+        return $this->getBusinessDiscountsMode() == self::BUSINESS_DISCOUNTS_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessDiscountsModeTier()
+    {
+        return $this->getBusinessDiscountsMode() == self::BUSINESS_DISCOUNTS_MODE_TIER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusinessDiscountsModeCustomValue()
+    {
+        return $this->getBusinessDiscountsMode() == self::BUSINESS_DISCOUNTS_MODE_CUSTOM_VALUE;
+    }
+
+    // ---------------------------------------
+
+    public function getBusinessDiscountsTierCoefficient()
+    {
+        return $this->getData('business_discounts_tier_coefficient');
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getBusinessDiscountsTierCustomerGroupId()
+    {
+        return $this->getData('business_discounts_tier_customer_group_id');
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return array
+     */
+    public function getBusinessDiscountsSource()
+    {
+        return array(
+            'mode'                   => $this->getBusinessDiscountsMode(),
+            'tier_customer_group_id' => $this->getBusinessDiscountsTierCustomerGroupId(),
+        );
     }
 
     //########################################
 
     /**
-     * @return array
+     * @return bool
      */
-    public function getTrackingAttributes()
+    public function usesConvertiblePrices()
     {
-        return $this->getUsedAttributes();
-    }
+        $attributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-    /**
-     * @return array
-     */
-    public function getUsedAttributes()
-    {
-        return array_unique(array_merge(
-            $this->getQtyAttributes(),
-            $this->getPriceAttributes(),
-            $this->getMapPriceAttributes(),
-            $this->getSalePriceAttributes(),
-            $this->getSalePriceStartDateAttributes(),
-            $this->getSalePriceEndDateAttributes()
-        ));
-    }
+        $isPriceConvertEnabled = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+            '/magento/attribute/', 'price_type_converting'
+        );
 
-    //########################################
+        if ($this->isRegularCustomerAllowed()) {
+            if ($this->isRegularPriceModeProduct() || $this->isRegularPriceModeSpecial()) {
+                return true;
+            }
 
-    /**
-     * @param bool $asArrays
-     * @param string|array $columns
-     * @param bool $onlyPhysicalUnits
-     * @return array
-     */
-    public function getAffectedListingsProducts($asArrays = true, $columns = '*', $onlyPhysicalUnits = false)
-    {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Collection $listingCollection */
-        $listingCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing');
-        $listingCollection->addFieldToFilter('template_selling_format_id', $this->getId());
-        $listingCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $listingCollection->getSelect()->columns('id');
+            if ($this->isRegularSalePriceModeProduct() || $this->isRegularSalePriceModeSpecial()) {
+                return true;
+            }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
-        $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
-        $listingProductCollection->addFieldToFilter('listing_id',array('in' => $listingCollection->getSelect()));
+            if ($this->isRegularMapPriceModeProduct() || $this->isRegularMapPriceModeSpecial()) {
+                return true;
+            }
 
-        if ($onlyPhysicalUnits) {
-            $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
+            if ($isPriceConvertEnabled) {
+                if ($this->isRegularPriceModeAttribute() &&
+                    $attributeHelper->isAttributeInputTypePrice($this->getData('regular_price_custom_attribute'))) {
+                    return true;
+                }
+
+                if ($this->isRegularSalePriceModeAttribute() &&
+                    $attributeHelper->isAttributeInputTypePrice($this->getData('regular_sale_price_custom_attribute'))
+                ) {
+                    return true;
+                }
+
+                if ($this->isRegularMapPriceModeAttribute() &&
+                    $attributeHelper->isAttributeInputTypePrice($this->getData('regular_map_price_custom_attribute'))) {
+                    return true;
+                }
+            }
         }
 
-        if (is_array($columns) && !empty($columns)) {
-            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-            $listingProductCollection->getSelect()->columns($columns);
+        if ($this->isBusinessCustomerAllowed()) {
+            if ($this->isBusinessPriceModeProduct() || $this->isBusinessPriceModeSpecial()) {
+                return true;
+            }
+
+            if ($isPriceConvertEnabled) {
+                if ($this->isBusinessPriceModeAttribute() &&
+                    $attributeHelper->isAttributeInputTypePrice($this->getData('business_price_custom_attribute'))) {
+                    return true;
+                }
+            }
+
+            foreach ($this->getBusinessDiscounts(true) as $businessDiscount) {
+                if ($businessDiscount->isModeProduct() || $businessDiscount->isModeSpecial()) {
+                    return true;
+                }
+
+                if ($isPriceConvertEnabled && $businessDiscount->isModeAttribute() &&
+                    $attributeHelper->isAttributeInputTypePrice($businessDiscount->getAttribute())) {
+                    return true;
+                }
+            }
         }
 
-        return $asArrays ? (array)$listingProductCollection->getData() : (array)$listingProductCollection->getItems();
-    }
-
-    public function setSynchStatusNeed($newData, $oldData)
-    {
-        $listingsProducts = $this->getAffectedListingsProducts(true, array('id'), true);
-        if (empty($listingsProducts)) {
-            return;
-        }
-
-        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
+        return false;
     }
 
     //########################################

@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -52,7 +52,10 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
 
         $dbSelect1 = $connRead
             ->select()
-            ->from(Mage::getSingleton('core/resource')->getTableName($tableName), new Zend_Db_Expr('MAX(`store_id`)'))
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName),
+                new Zend_Db_Expr('MAX(`store_id`)')
+            )
             ->where("`entity_id` = `ccev`.`entity_id`")
             ->where("`attribute_id` = `ccev`.`attribute_id`")
             ->where("`store_id` = 0 OR `store_id` = ?",$this->getStoreId());
@@ -60,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
         $dbSelect2 = $connRead
             ->select()
             ->from(
-                array('ccev' => Mage::getSingleton('core/resource')->getTableName($tableName)),
+                array('ccev' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName)),
                 array('name' => 'value','category_id' => 'entity_id')
             )
             ->where('ccev.entity_id IN ('.implode(',',$ids).')')

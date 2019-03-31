@@ -1,0 +1,1510 @@
+<?php
+    /** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form */
+?>
+
+<style>
+    ul.list {
+        margin: 10px 0px !important;
+        padding-left: 30px !important;
+    }
+    ul.list li {
+        list-style: disc !important;
+    }
+</style>
+
+<div id="block_notice_walmart_template_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selling Policy'); ?>">
+    <?php echo Mage::helper('M2ePro')->__('
+        Selling Policy contains conditions based on which you are going to sell your Item on the Channel, e.g. Item Price, Quantity, Shipping and Product Tax Code settings, etc.<br/><br/>
+
+        Take Magento Price and Quantity values as they are or use the Price Change box and Conditional/Percentage Quantity options to modify the related Magento data.<br/><br/>
+
+        By creating Promotion rules, you can price your Items at reduced values during the specified period.<br/><br/>
+        
+        Use the Shipping Overrides option when you need to override the global shipping setting.<br/><br/>
+        
+        If you would like to limit your Item availability on Walmart to the certain period, define Start/End Dates.<br/><br/>
+        
+        <strong>Note:</strong> Selling Policy is created per marketplace that cannot be changed after the Policy is assigned to M2E Pro Listing.<br/>
+        <strong>Note:</strong> Selling Policy is required when you create a new offer on Walmart.<br/><br/>
+
+        The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+
+        Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/L4taAQ")
+    ); ?>
+</div>
+
+<?php
+    /** @var Ess_M2ePro_Model_Template_SellingFormat $model */
+
+    $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+    $formData = $model ? $model->toArray() : array();
+
+    if (!empty($formData)) {
+        $formData['shipping_override_rule'] = $model->getChildObject()->getShippingOverrideServices();
+        $formData['promotions'] = $model->getChildObject()->getPromotions();
+    }
+
+    $default = array(
+        'title' => '',
+        'marketplace_id' => $this->getRequest()->getParam('marketplace_id', ''),
+
+        'qty_mode' => Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT,
+        'qty_custom_value' => 1,
+        'qty_custom_attribute' => '',
+        'qty_percentage' => 100,
+        'qty_modification_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MODIFICATION_MODE_OFF,
+        'qty_min_posted_value' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MIN_POSTED_DEFAULT_VALUE,
+        'qty_max_posted_value' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MAX_POSTED_DEFAULT_VALUE,
+
+        'price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT,
+        'price_coefficient' => '',
+        'price_custom_attribute' => '',
+
+        'map_price_mode' => Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE,
+        'map_price_custom_attribute' => '',
+
+        'price_variation_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRICE_VARIATION_MODE_PARENT,
+
+        'promotions_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::PROMOTIONS_MODE_NO,
+        'promotions' => array(),
+
+        'sale_time_start_date_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE,
+        'sale_time_end_date_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE,
+
+        'sale_time_start_date_custom_attribute' => '',
+        'sale_time_end_date_custom_attribute' => '',
+
+        'sale_time_start_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
+        'sale_time_end_date_value' => Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d'),
+
+        'item_weight_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::WEIGHT_MODE_CUSTOM_VALUE,
+        'item_weight_custom_value' => '',
+        'item_weight_custom_attribute' => '',
+
+        'price_vat_percent' => 0,
+
+        'lag_time_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::LAG_TIME_MODE_RECOMMENDED,
+        'lag_time_value' => '',
+        'lag_time_custom_attribute' => '',
+
+        'product_tax_code_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_VALUE,
+        'product_tax_code_custom_value' => '',
+        'product_tax_code_custom_attribute' => '',
+
+        'must_ship_alone_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_NONE,
+        'must_ship_alone_value' => '',
+        'must_ship_alone_custom_attribute' => '',
+
+        'ships_in_original_packaging_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_NONE,
+        'ships_in_original_packaging_value' => '',
+        'ships_in_original_packaging_custom_attribute' => '',
+
+        'attributes_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::ATTRIBUTES_MODE_NONE,
+        'attributes' => '',
+
+        'shipping_override_rule_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPPING_OVERRIDE_RULE_MODE_NO,
+        'shipping_override_rule' => array()
+    );
+
+    $formData = array_merge($default, $formData);
+
+    if ($formData['sale_time_start_date_value'] != '') {
+        $formData['sale_time_start_date_value'] = Mage::helper('M2ePro')->getDate(
+            $formData['sale_time_start_date_value'], false, 'Y-m-d'
+        );
+    }
+
+    if ($formData['sale_time_end_date_value'] != '') {
+        $formData['sale_time_end_date_value'] = Mage::helper('M2ePro')->getDate(
+            $formData['sale_time_end_date_value'], false, 'Y-m-d'
+        );
+    }
+
+    if (!empty($formData['promotions'])) {
+        foreach ($formData['promotions'] as &$promotion) {
+
+            if ($promotion['start_date_value'] != '') {
+                $promotion['start_date_value'] = Mage::helper('M2ePro')->getDate(
+                    $promotion['start_date_value'], false, 'Y-m-d H:i'
+                );
+            }
+
+            if ($promotion['end_date_value'] != '') {
+                $promotion['end_date_value'] = Mage::helper('M2ePro')->getDate(
+                    $promotion['end_date_value'], false, 'Y-m-d H:i'
+                );
+            }
+        }
+        unset($promotion);
+    }
+
+    if (!empty($formData['attributes'])) {
+        $formData['attributes'] = Mage::helper('M2ePro')->jsonDecode($formData['attributes']);
+    }
+
+    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+    $generalFromAllAttributeSets = Mage::helper('M2ePro/Magento_Attribute')->getGeneralFromAllAttributeSets();
+    $attributesByInputTypes = array(
+        'text' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text')),
+        'text_select' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'select')),
+        'text_price' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'price')),
+        'text_date' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'date')),
+        'text_weight' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('text', 'weight')),
+        'boolean' => $magentoAttributeHelper->filterByInputTypes($generalFromAllAttributeSets, array('boolean')),
+    );
+
+    $groups = Mage::getModel('customer/group')->getCollection()->toArray();
+
+    $isEdit = !!$this->getRequest()->getParam('id');
+?>
+
+<script type="text/javascript">
+
+    // General for all tabs
+    //-----------------------------
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Template_SellingFormat'); ?>,
+        'Ess_M2ePro_Model_Template_SellingFormat'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion'); ?>,
+        'Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Template_SellingFormat'); ?>,
+        'Ess_M2ePro_Model_Walmart_Template_SellingFormat'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart'); ?>,
+        'Ess_M2ePro_Helper_Component_Walmart'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form'); ?>,
+        'Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_Edit_Form'
+    );
+
+    M2ePro.php.setConstants(
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService'); ?>,
+        'Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService'
+    );
+
+    M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_walmart_template_sellingFormat')); ?>);
+    M2ePro.url.add(<?php echo json_encode(array(
+        'formSubmit'    => $this->getUrl('M2ePro/adminhtml_walmart_template_sellingFormat/save', array('id' => $this->getRequest()->getParam('id'))),
+        'formSubmitNew' => $this->getUrl('M2ePro/adminhtml_walmart_template_sellingFormat/save'),
+        'deleteAction'  => $this->getUrl('M2ePro/adminhtml_walmart_template_sellingFormat/delete', array('id' => $this->getRequest()->getParam('id')))
+    )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'QTY' => Mage::helper('M2ePro')->__('QTY'),
+        'Price' => Mage::helper('M2ePro')->__('Price'),
+
+        'The Price, at which you want to sell your Product(s) at specific time.' => Mage::helper('M2ePro')->__('The Price, at which you want to sell your Product(s) at specific time.'),
+        'The Price, at which you want to sell your Product(s) at specific time.<br/><b>Note:</b> The Final Price is only used for Simple Products.' => Mage::helper('M2ePro')->__('The Price, at which you want to sell your Product(s) at specific time.<br/><b>Note:</b> The Final Price is only used for Simple Products.'),
+
+        'Add Selling Policy' => Mage::helper('M2ePro')->__('Add Selling Policy'),
+        'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
+        'You should select Attribute Sets first and press Confirm Button.' => Mage::helper('M2ePro')->__('You should select Attribute Sets first and press Confirm Button.'),
+        'Coefficient is not valid.' => Mage::helper('M2ePro')->__('Coefficient is not valid.'),
+        'Date range is not valid.' => Mage::helper('M2ePro')->__('Incorrect Promotion Dates.'),
+
+        'Wrong value. Only integer numbers.' => Mage::helper('M2ePro')->__('Wrong value. Only integer numbers.'),
+        'Wrong value. Must be no more than 30. Max applicable length is 6 characters, including the decimal (e.g., 12.345).' => Mage::helper('M2ePro')->__('Wrong value. Must be no more than 30. Max applicable length is 6 characters, including the decimal (e.g., 12.345).'),
+        'At least one Selling Type should be enabled.' => Mage::helper('M2ePro')->__('At least one Selling Type should be enabled.'),
+        'The Quantity value should be unique.' => Mage::helper('M2ePro')->__('The Quantity value should be unique.'),
+        'You should specify a unique pair of Magento Attribute and Price Change value for each Discount Rule.' => Mage::helper('M2ePro')->__('You should specify a unique pair of Magento Attribute and Price Change value for each Discount Rule.'),
+        'You should add at least one Discount Rule.' => Mage::helper('M2ePro')->__('You should add at least one Discount Rule.'),
+        'Any' => Mage::helper('M2ePro')->__('Any'),
+        'Add Shipping Override Policy.' => Mage::helper('M2ePro')->__('Add Shipping Override Policy.'),
+        'You should specify at least one Promotion.' => Mage::helper('M2ePro')->__('You should specify at least one Promotion.'),
+        'You should specify at least one Override Rule.' => Mage::helper('M2ePro')->__('You should specify at least one Override Rule.'),
+        'Must be a 7-digit code assigned to the taxable Items.' => Mage::helper('M2ePro')->__('Must be a 7-digit code assigned to the taxable Items.'),
+        'Sales Tax Codes' => Mage::helper('M2ePro')->__('Sales Tax Codes'),
+    )); ?>);
+
+    M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
+    M2ePro.formData.title = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['title'])); ?>';
+    M2ePro.formData.marketplace_id = '<?php echo Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml($formData['marketplace_id'])); ?>';
+
+    M2ePro.formData.qty_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['qty_mode']); ?>';
+    M2ePro.formData.qty_modification_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['qty_modification_mode']); ?>';
+    M2ePro.formData.qty_custom_attribute = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['qty_custom_attribute']); ?>';
+    M2ePro.formData.price_custom_attribute = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['price_custom_attribute']); ?>';
+    M2ePro.formData.map_price_custom_attribute = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['map_price_custom_attribute']); ?>';
+    M2ePro.formData.sale_time_start_date_custom_attribute = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['sale_time_start_date_custom_attribute']); ?>';
+    M2ePro.formData.sale_time_end_date_custom_attribute = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['sale_time_end_date_custom_attribute']); ?>';
+
+    M2ePro.customData.marketplaces_with_tax_codes_dictionary = <?php echo json_encode($this->getMarketplacesWithTaxCodesDictionary()); ?>;
+
+    Event.observe(window, 'load', function() {
+
+        AttributeHandlerObj = new AttributeHandler();
+        AttributeHandlerObj.setAvailableAttributes(<?php echo json_encode($generalFromAllAttributeSets); ?>);
+        WalmartTemplateSellingFormatHandlerObj = new WalmartTemplateSellingFormatHandler();
+
+        $('marketplace_id')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.marketplaceIdOnChange)
+            .simulate('change');
+
+        $('qty_mode')
+             .observe('change', WalmartTemplateSellingFormatHandlerObj.qty_mode_change)
+             .simulate('change');
+
+        $('qty_modification_mode')
+             .observe('change', WalmartTemplateSellingFormatHandlerObj.qtyPostedMode_change)
+             .simulate('change');
+
+        if ($('price_mode')) {
+            $('price_mode')
+                .observe('change', WalmartTemplateSellingFormatHandlerObj.price_mode_change)
+                .simulate('change');
+        }
+
+        if ($('map_price_mode')) {
+            $('map_price_mode')
+                .observe('change', WalmartTemplateSellingFormatHandlerObj.map_price_mode_change)
+                .simulate('change');
+        }
+
+        if ($('sale_time_start_date_mode')) {
+            $('sale_time_start_date_mode')
+                .observe('change', WalmartTemplateSellingFormatHandlerObj.sale_time_start_date_mode_change)
+                .simulate('change');
+        }
+
+        if ($('sale_time_end_date_mode')) {
+            $('sale_time_end_date_mode')
+                .observe('change', WalmartTemplateSellingFormatHandlerObj.sale_time_end_date_mode_change)
+                .simulate('change');
+        }
+
+        if ($('price_increase_vat_percent')) {
+            $('price_increase_vat_percent')
+                .observe('change', WalmartTemplateSellingFormatHandlerObj.price_increase_vat_percent_mode_change)
+                .simulate('change');
+        }
+
+        $('promotions_mode')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.promotions_mode_change)
+            .simulate('change');
+
+        $('shipping_override_rule_mode')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.shipping_override_rule_mode_change)
+            .simulate('change');
+
+        $('item_weight_mode')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.item_weight_mode_change)
+            .simulate('change');
+
+        $('must_ship_alone_mode')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.must_ship_alone_mode_change)
+            .simulate('change');
+
+        $('ships_in_original_packaging_mode')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.ships_in_original_packaging_mode_change)
+            .simulate('change');
+
+        $('attributes_mode')
+            .observe('change', function () {
+                WalmartTemplateSellingFormatHandlerObj.multi_element_mode_change.call(this,'attributes',10);
+            })
+            .simulate('change');
+
+        $('lag_time_mode')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.lag_time_mode_change)
+            .simulate('change');
+
+        $('product_tax_code_mode')
+            .observe('change', WalmartTemplateSellingFormatHandlerObj.product_tax_code_mode_change)
+            .simulate('change');
+
+        <?php if ($this->getRequest()->getParam('id')) { ?>
+            WalmartTemplateSellingFormatHandlerObj.renderPromotions(<?php echo json_encode($formData['promotions']); ?>);
+            WalmartTemplateSellingFormatHandlerObj.renderRules(<?php echo json_encode($formData['shipping_override_rule']); ?>);
+        <?php }?>
+
+        editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
+    });
+    //-----------------------------
+
+</script>
+
+<style type="text/css">
+    .coef {
+        padding-left: 5px !important;
+        padding-top: 5px !important;
+    }
+    .coef input {
+        text-align: right;
+        width: 36px;
+    }
+    .form-list td.label {
+        width: 275px;
+    }
+    .select-wrapper {
+        margin-left: 15px;
+    }
+    a.action-disabled {
+        color: gray !important;
+        text-decoration: none !important;
+    }
+    a.action-disabled:hover {
+        color: gray !important;
+        text-decoration: none !important;
+    }
+
+    .promotions_price_mode_block,
+    .promotions_price_coefficient_block {
+        display: inline-block;
+    }
+    .promotions_price_coefficient_block span.tool-tip-container {
+        vertical-align: middle;
+        display: inline-block;
+    }
+    .promotions_price_coefficient_block span.tool-tip-container img {
+        padding-top: 4px;
+    }
+
+    .promotions_price_mode_block {
+        width: 170px;
+        margin-top: 3px;
+    }
+
+    .promotions_price_mode_block > select,
+    .promotions_date_mode > select {
+        width: 100%;
+        padding: 1px;
+    }
+
+    .promotions_date_mode > select,
+    .promotions_date_value > input,
+    .promotions_type > select {
+        margin-top: 3px;
+    }
+
+    table#promotions_table .promotions_price_coefficient_block > input {
+        width: 36px;
+        text-align: right;
+    }
+
+    .promotions_date_mode,
+    .promotions_date_value {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .promotions_date_mode {
+        width: 105px;
+    }
+    .promotions_date_value {
+        width: 105px;
+    }
+    .grid td input.input-text {
+        width: 95%;
+    }
+
+    .promotions_price_coefficient_block {
+        width: 75px;
+    }
+
+    table#promotions_table_main_screen,
+    table#shipping_override_rule_table_main_screen {
+        border: none;
+        width: 1000px;
+    }
+
+    table#promotions_table_main_screen tfoot td,
+    table#shipping_override_rule_table_main_screen tfoot td {
+        border: none;
+    }
+
+    #promotions_table_main_screen_button,
+    #shipping_override_rule_table_main_screen_button {
+        margin: 10px;
+    }
+</style>
+
+<form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
+
+<input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
+
+<div class="entry-edit" id="magento_block_walmart_template_selling_format_general">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Title'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="title" name="title" value="<?php echo $this->escapeHtml($formData['title']); ?>" type="text" class="input-text required-entry M2ePro-price-tpl-title"/>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Policy Title for your internal use.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="title"><?php echo Mage::helper('M2ePro')->__('Marketplace'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+
+                        <select id="marketplace_id" name="marketplace_id" <?php if ($this->getData('marketplace_locked') || $this->getRequest()->getParam('marketplace_id')) { ?>disabled="disabled"<?php } ?> class="required-entry">
+                            <option style="display:none;"></option>
+                            <?php foreach ($this->getData('marketplaces') as $marketplaceRow) { ?>
+                                <option value="<?php echo $marketplaceRow['id']; ?>" <?php if ($formData['marketplace_id'] == $marketplaceRow['id']) { ?>selected="selected"<?php } ?>>
+                                    <?php echo Mage::helper('M2ePro')->__($marketplaceRow['title']); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+
+                        <?php if ($this->getData('marketplace_locked') || $this->getRequest()->getParam('marketplace_id')) : ?>
+                            <input id="marketplace_hidden_input" type="hidden" name="marketplace_id" value="<?php echo $formData['marketplace_id']; ?>" />
+                            <input type="hidden" name="marketplace_locked" value="1" />
+                        <?php endif; ?>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit m2epro-marketplace-depended-block" id="magento_block_walmart_template_selling_format_qty" style="display: none;">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Quantity'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="qty_mode"><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="qty_custom_attribute" name="qty_custom_attribute" value="<?php echo $formData['qty_custom_attribute']; ?>"/>
+
+                        <select id="qty_mode" name="qty_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
+                            <option id="qty_mode_product" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Product Quantity'); ?></option>
+                            <option id="qty_mode_single" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Single Item'); ?></option>
+                            <option id="qty_mode_cv" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
+                                <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>>QTY</option>
+                                <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && !$magentoAttributeHelper->isExistInAttributesArray($formData['qty_custom_attribute'], $generalFromAllAttributeSets) && $formData['qty_custom_attribute'] != ''): ?>
+                                    <option attribute_code="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['qty_custom_attribute']) ?>" selected="selected" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($magentoAttributeHelper->getAttributeLabel($formData['qty_custom_attribute'])) ?>
+                                    </option>
+                                <?php endif; ?>
+                                <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>" <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && $attribute['code'] == $formData['qty_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Item Quantity available on Walmart.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="qty_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label for="qty_custom_value"><?php echo Mage::helper('M2ePro')->__('Quantity Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="qty_custom_value" name="qty_custom_value" value="<?php echo $this->escapeHtml($formData['qty_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible validate-digits" />
+                    </td>
+                </tr>
+
+                <tr id="qty_percentage_tr" style="display: none;">
+                    <td class="label">
+                        <label for="qty_percentage"><?php echo Mage::helper('M2ePro')->__('Quantity Percentage'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="qty_percentage" name="qty_percentage" class="required-entry">
+                            <?php for ($i = 100; $i >= 5; $i -= 5) : ?>
+                                <option value="<?php echo $i; ?>" <?php if ($formData['qty_percentage'] == $i) : echo ' selected="selected"'; endif; ?>><?php echo $i; ?> %</option>
+                            <?php endfor; ?>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'Specify what percentage of Magento Product Quantity has to be submitted to Walmart.<br>
+                                <strong>For example</strong>, if QTY Percentage is set to 10% and Magento Product Quantity is 100,<br>
+                                the Item Quantity available on Walmart will be calculated as 100 * 10% = 10.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- Max Posted QTY-->
+                <tr id="qty_modification_mode_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Conditional Quantity'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="qty_modification_mode" name="qty_modification_mode" class="required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MODIFICATION_MODE_OFF; ?>" <?php if ($formData['qty_modification_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MODIFICATION_MODE_OFF): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MODIFICATION_MODE_ON; ?>" <?php if ($formData['qty_modification_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::QTY_MODIFICATION_MODE_ON): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                        </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Enable to set the minimum and maximum Item Quantity values that will be submitted to Walmart.'); ?></span>
+                            </p>
+                    </td>
+                </tr>
+
+                <tr id="qty_min_posted_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Minimum Quantity to Be Listed'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td id="qty_min_posted_value_td" class="value" style="width: auto;">
+                        <input id="qty_min_posted_value" name="qty_min_posted_value" value="<?php echo $this->escapeHtml($formData['qty_min_posted_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-int" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'If Magento Product QTY is 2 and you set the Minimum Quantity to Be Listed of 5, the Item will not be listed on Walmart.<br>
+                                To be submitted, Magento Product QTY has to be equal or more than the value set for Minimum Quantity to Be Listed.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="qty_max_posted_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Maximum Quantity to Be Listed'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td id="qty_max_posted_value_td" class="value" style="width: auto;">
+                        <input id="qty_max_posted_value" name="qty_max_posted_value" value="<?php echo $this->escapeHtml($formData['qty_max_posted_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-int" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'If Magento Product QTY is 5 and you set the Maximum Quantity to Be Listed of 2, the listed Item will have maximum Quantity of 2.<br>
+                                If Magento Product QTY is 1 and you set the Maximum Quantity to Be Listed of 3, the listed Item will have maximum Quantity of 1.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit m2epro-marketplace-depended-block" id="magento_block_walmart_template_selling_format_prices" style="display: none;">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Price'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <div id="magento_block_walmart_template_selling_format_prices_help" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Price'); ?>">
+                <?php echo Mage::helper('M2ePro')->__(
+                    'You can modify the Item Price using the Price Change box. For example:<br>
+                    <ul class="list">
+                        <li>If you want the Price on Walmart to be greater by 15% than the Price in Magento, you should set +15%. Walmart Price = Magento Price + Magento Price * 0.15
+                        </li>
+                        <li>If you want the Price on Walmart to be less by 10 currency units than the Price in Magento, you should set -10. Walmart Price = Magento Price - 10
+                        </li>
+                        <li>If you want the Price on Walmart to be multiplied by coefficient 1.2, you should set 1.2. Walmart Price = Magento Price * 1.2
+                        </li>
+                    </ul>
+                    Please be advised if the Special Price is selected, but its value is not set in Magento Product settings or its terms have already expired, the Product Price will be used instead.<br><br>
+
+                    <strong>Note:</strong> Selected Attributes must contain only numeric values.'
+                ); ?>
+            </div>
+
+            <table id="price_table" cellspacing="0" class="form-list">
+
+                <tr>
+                    <td class="label">
+                        <label for="price_mode"><?php echo Mage::helper('M2ePro')->__('Price'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="price_custom_attribute" name="price_custom_attribute" value="<?php echo $formData['price_custom_attribute']; ?>"/>
+
+                        <select id="price_mode" name="price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                            <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT == $formData['price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span>
+                                <span><?php echo Mage::helper('M2ePro')->__('Item Price displayed on Walmart.'); ?></span>
+                            </span>
+                        </p>
+                    </td>
+                    <td id="price_coefficient_td" class="coef">
+                        <div style="font-size: 11px; float: right; padding-left: 10px;">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/note_cell_bg.gif'); ?>" />
+                            <span style="padding-left: 5px;"><?php echo Mage::helper('M2ePro')->__('Absolute figure (+8,-3), percentage (+15%, -20%) or Currency rate (1.44)'); ?>.</span>
+                        </div>
+                        <input id="price_coefficient" name="price_coefficient" value="<?php echo $this->escapeHtml($formData['price_coefficient']); ?>" type="text" class="M2ePro-validate-price-coefficient input-text" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="price_variation_mode"><?php echo Mage::helper('M2ePro')->__('Variation Price Source'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="price_variation_mode" name="price_variation_mode" class="select-main">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRICE_VARIATION_MODE_PARENT; ?>" <?php if (Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRICE_VARIATION_MODE_PARENT == $formData['price_variation_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Main Product'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRICE_VARIATION_MODE_CHILDREN; ?>" <?php if (Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRICE_VARIATION_MODE_CHILDREN == $formData['price_variation_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Associated Products'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Select where the Price for Configurable and Bundle Product Options should be taken from.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="map_price_mode"><?php echo Mage::helper('M2ePro')->__('Minimum Advertised Price'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="map_price_custom_attribute" name="map_price_custom_attribute" value="<?php echo $formData['map_price_custom_attribute']; ?>"/>
+
+                        <select id="map_price_mode" name="map_price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                            <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_PRODUCT == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_SPECIAL == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE; ?>" <?php if ($formData['map_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_ATTRIBUTE && $attribute['code'] == $formData['map_price_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                'It is the lowest Price that retailer can advertise the Product for sale.<br>
+                                <strong>Note:</strong> If your Item Price is below the manufacturer\'s Minimum Advertised Price, it will not be displayed on the Walmart Item page.<br>
+                                Buyers will see your retail Price only after they add the Item to the cart.'
+                            ); ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="promotions_mode"><?php echo Mage::helper('M2ePro')->__('Promotions'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="promotions_mode" name="promotions_mode" class="select-main required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::PROMOTIONS_MODE_NO; ?>" <?php if (Ess_M2ePro_Model_Walmart_Template_SellingFormat::PROMOTIONS_MODE_NO == $formData['promotions_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::PROMOTIONS_MODE_YES; ?>" <?php if (Ess_M2ePro_Model_Walmart_Template_SellingFormat::PROMOTIONS_MODE_YES == $formData['promotions_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                'Enable to add up to 10 Promotion rules. Price your Items at reduced values during the specified period.<br>
+                                Comparison Price is used to calculate savings on Items. Remain the current Item Prices or submit a new values.<br>
+                                <strong>Note:</strong> Make sure that your Promotion dates do not overlap.'
+                            ) ?>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+            <table cellspacing="0" class="form-list">
+
+                <tr id="promotions_tr">
+                    <td class="grid" colspan="3">
+
+                        <div style="margin: 10px 0"></div>
+
+                        <table id="promotions_table" class="border" cellpadding="0" cellspacing="0" style="max-width: 1100px; width: auto;">
+                            <thead>
+                            <tr class="headings">
+                                <th>
+                                    <?php echo Mage::helper('M2ePro')->__('From Date'); ?>
+                                    <span class="required">*</span>
+                                </th>
+                                <th>
+                                    <?php echo Mage::helper('M2ePro')->__('To Date'); ?>
+                                    <span class="required">*</span>
+                                </th>
+                                <th><?php echo Mage::helper('M2ePro')->__('Price'); ?></th>
+                                <th><?php echo Mage::helper('M2ePro')->__('Comparison Price'); ?></th>
+                                <th><?php echo Mage::helper('M2ePro')->__('Type'); ?></th>
+                                <th style="width: 35px;" class="type-butt last">&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody id="promotions_table_tbody"></tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="20" class="a-right"><?php echo $this->getChild('add_promotion_price_button')->setData('label', Mage::helper('M2ePro')->__('Add'))->toHtml(); ?></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                        <table id="promotions_table_main_screen" class="border" cellpadding="0" cellspacing="0" style="width: 1000px;">
+                            <thead></thead><tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="20" class="a-center"><?php echo $this->getChild('add_promotion_price_button')
+                                        ->setData('label', Mage::helper('M2ePro')->__('Add Promotions'))
+                                        ->setData('id', 'promotions_table_main_screen_button')
+                                        ->toHtml(); ?>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                        <input type="text" id="promotions_validator" class="M2ePro-validate-promotions" style="display: none;" />
+
+                    </td>
+                </tr>
+
+            </table>
+
+            <table cellspacing="0" class="form-list">
+
+                <tr>
+                    <td class="label">
+                        <label for="price_increase_vat_percent"><?php echo Mage::helper('M2ePro')->__('Add VAT Percentage'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="price_increase_vat_percent" name="price_increase_vat_percent" class="select-main required-entry">
+                            <option value="0" <?php if (!$formData['price_vat_percent']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['price_vat_percent'] > 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__('
+                                Enable to add a specified VAT value to the Item Price when it is listed on Walmart.<br/><br/>
+
+                                <strong>For example</strong>, if Magento Product Price = £10 and VAT rate = 15%, i.e. £10 * 15% = £1.50,<br>
+                                the final Item Price on Walmart will be calculated as Magento Price + VAT, i.e. £10 + £1.50 = £11.50.<br/><br/>
+
+                                <strong>Note:</strong> No VAT Rate value will be sent on Walmart. Instead, the Walmart Item Price will be increased by specified VAT %.
+                            ') ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="price_vat_percent_tr">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('VAT Rate, %'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input id="price_vat_percent" name="price_vat_percent" value="<?php echo $formData['price_vat_percent']; ?>" type="text" class="M2ePro-validate-vat-percent input-text" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit m2epro-marketplace-depended-block" id="magento_block_walmart_template_selling_format_details" style="display: none;">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Details'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table cellspacing="0" class="form-list">
+
+                    <tr>
+                        <td class="label">
+                            <label for="lag_time_mode"><?php echo Mage::helper('M2ePro')->__('Lag Time'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="lag_time_custom_attribute" name="lag_time_custom_attribute" value="<?php echo $formData['lag_time_custom_attribute']; ?>" />
+                            <input type="hidden" id="lag_time_value" name="lag_time_value" value="<?php echo $formData['lag_time_value']; ?>" />
+
+                            <select id="lag_time_mode" class="M2ePro-custom-attribute-can-be-created required-entry" allowed_attribute_types="text,select" name="lag_time_mode">
+                                <option value="" style="display: none;"></option>
+
+                                <optgroup label="Recommended Value">
+                                    <?php for ($i=1;$i<=30;$i++) { ?>
+                                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::LAG_TIME_MODE_RECOMMENDED ?>" attribute_code="<?php echo $i; ?>" <?php if ($formData['lag_time_value'] == $i) { ?>selected="selected"<?php } ?>><?php echo $i; ?> day(s)</option>
+                                    <?php } ?>
+                                </optgroup>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php foreach ($attributesByInputTypes['text_select'] as $attribute): ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::LAG_TIME_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($formData['lag_time_custom_attribute'] == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                    <?php endforeach ?>
+                                </optgroup>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__(
+                                    'The number of days it takes to prepare the Item for shipment.<br><br>
+
+                                    <strong>Note:</strong> Sellers are required to provide up to 1 day Lag Time. Otherwise, the Lag Time Exception must be requested.<br>
+                                    The details can be found <a href="%url%" target="_blank">here</a>.<br><br>
+                                    
+                                    <strong>Note:</strong> any changes to the Lag Time value may take up to 24 hours to be reflected on the Channel due to the Walmart limitations.',
+                                    'https://sellerhelp.walmart.com/seller/s/guide?article=000005986'
+                                ); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">
+                            <label for="product_tax_code_attribute"><?php echo Mage::helper('M2ePro')->__('Product Tax Code'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="product_tax_code_custom_attribute" name="product_tax_code_custom_attribute" value="<?php echo $formData['product_tax_code_custom_attribute']; ?>"/>
+
+                            <select id="product_tax_code_mode" name="product_tax_code_mode" class="required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select">
+                                <option id="product_tax_code_mode_cv" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_VALUE; ?>" <?php if (Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_VALUE == $formData['product_tax_code_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_ATTRIBUTE; ?>">
+                                    <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_ATTRIBUTE; ?>" <?php if ($formData['product_tax_code_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_ATTRIBUTE && $attribute['code'] == $formData['product_tax_code_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                            </select>
+                            <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('
+                                A tax code assigned to the taxable Item. The PTC is used by Walmart to automatically<br>
+                                calculate the taxes on each sale based on the Item sold and delivery location.<br><br>
+                                <strong>Note:</strong> The current Sales Tax Codes can be found
+                                 <a href="javascript:void(0)" onclick="%onclick%">here</a>.',
+                                'WalmartTemplateSellingFormatHandlerObj.openTaxCodePopup(true);'
+                                ); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="product_tax_code_custom_value_tr" style="display: none;">
+                        <td class="label">
+                            <label for="product_tax_code_custom_value"><?php echo Mage::helper('M2ePro')->__('Product Tax Code Value'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value" style="width: auto;">
+                            <input id="product_tax_code_custom_value" name="product_tax_code_custom_value" value="<?php echo $this->escapeHtml($formData['product_tax_code_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-int M2ePro-validation-walmart-tax-code" />
+                        </td>
+                        <td id="tax_codes" class="value" style="display: none;">
+                            <?php echo $this->getChildHtml('tax_codes_button'); ?>
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+<div class="entry-edit m2epro-marketplace-depended-block" id="magento_block_walmart_template_selling_format_shipping" style="display: none;">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Shipping'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <table cellspacing="0" class="form-list">
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Weight'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="item_weight_custom_attribute" name="item_weight_custom_attribute" value="<?php echo $formData['item_weight_custom_attribute']; ?>" />
+
+                        <select id="item_weight_mode" name="item_weight_mode" class="required-entry select M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::WEIGHT_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['item_weight_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::WEIGHT_MODE_CUSTOM_VALUE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php foreach($attributesByInputTypes['text_weight'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::WEIGHT_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['item_weight_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'The weight of the Item when it is packaged to ship.<br>
+                                <strong>Note:</strong> The Shipping Weight is set in pounds by default.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="item_weight_custom_value_tr" style="display: none;">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Weight Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="item_weight_custom_value" name="item_weight_custom_value" value="<?php echo Mage::helper('M2ePro')->escapeHtml($formData['item_weight_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validation-float" />
+                    </td>
+                </tr>
+
+                <tr id="must_ship_alone_mode_tr">
+                    <td class="label">
+                        <label for="must_ship_alone_mode"><?php echo Mage::helper('M2ePro')->__('Must Ship Alone'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="must_ship_alone_custom_attribute" name="must_ship_alone_custom_attribute" value="<?php echo $formData['must_ship_alone_custom_attribute']; ?>" />
+
+                        <select id="must_ship_alone_mode" name="must_ship_alone_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="boolean">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_NONE; ?>" <?php if ($formData['must_ship_alone_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+
+                            <optgroup label="Custom Value">
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_YES; ?>" <?php if ($formData['must_ship_alone_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_NO; ?>" <?php if ($formData['must_ship_alone_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_NO): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            </optgroup>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php foreach($attributesByInputTypes['boolean'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::MUST_SHIP_ALONE_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['must_ship_alone_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('Specify whether the Item must be shipped alone or not.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="ships_in_original_packaging_mode_tr">
+                    <td class="label">
+                        <label for="ships_in_original_packaging_mode"><?php echo Mage::helper('M2ePro')->__('Ships In Original Packaging'); ?>:</label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <input type="hidden" id="ships_in_original_packaging_custom_attribute" name="ships_in_original_packaging_custom_attribute" value="<?php echo $formData['ships_in_original_packaging_custom_attribute']; ?>" />
+
+                        <select id="ships_in_original_packaging_mode" name="ships_in_original_packaging_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="boolean">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_NONE; ?>" <?php if ($formData['ships_in_original_packaging_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+
+                            <optgroup label="Custom Value">
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_YES; ?>" <?php if ($formData['ships_in_original_packaging_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_NO; ?>" <?php if ($formData['ships_in_original_packaging_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_NO): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            </optgroup>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php foreach($attributesByInputTypes['boolean'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_CUSTOM_ATTRIBUTE; ?>" <?php if ($attribute['code'] == $formData['ships_in_original_packaging_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'Specify whether the Item can be shipped in original packaging without being put in an outer box or not.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label for="shipping_override_rule_mode"><?php echo Mage::helper('M2ePro')->__('Override Mode'); ?>:</label>
+                    </td>
+                    <td class="value">
+                        <select id="shipping_override_rule_mode" name="shipping_override_rule_mode" class="select-main required-entry">
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPPING_OVERRIDE_RULE_MODE_NO; ?>" <?php if (Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPPING_OVERRIDE_RULE_MODE_NO == $formData['shipping_override_rule_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPPING_OVERRIDE_RULE_MODE_YES; ?>" <?php if (Ess_M2ePro_Model_Walmart_Template_SellingFormat::SHIPPING_OVERRIDE_RULE_MODE_YES == $formData['shipping_override_rule_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                    'Enable to add Shipping Overrides.<br>
+                                    <strong>Note:</strong> When you set an override for one shipping method, the other shipping methods will<br>
+                                    still be taken from the global shipping settings in your Seller Center.'
+                            ) ?>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+            <table cellspacing="0" class="form-list">
+
+                <tr id="shipping_override_rule_tr">
+                    <td class="grid" colspan="3">
+
+                        <div style="margin: 10px 0"></div>
+
+                        <table id="shipping_override_rule_table" class="border" cellpadding="0" cellspacing="0" style="max-width: 1100px; width: auto;">
+                            <thead>
+                            <tr class="headings">
+                                <th style="width: 120px">
+                                    <?php echo Mage::helper('M2ePro')->__('Service'); ?>
+                                    <span class="required">*</span>
+                                </th>
+                                <th style="width: 220px">
+                                    <?php echo Mage::helper('M2ePro')->__('Locale'); ?>
+                                    <span class="required">*</span>
+                                </th>
+                                <th style="width: 120px">
+                                    <?php echo Mage::helper('M2ePro')->__('Mode'); ?>
+                                    <span class="required">*</span>
+                                </th>
+                                <th style="width: 160px">
+                                    <?php echo Mage::helper('M2ePro')->__('Cost'); ?>
+                                    <span class="required">*</span>
+                                </th>
+                                <th style="width: 35px;" class="type-butt last">&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody id="shipping_override_rules_table_tbody">
+                            <!-- #shipping_override_rule_table_row_template inserts here -->
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="20" class="a-right"><?php echo $this->getChild('add_shipping_override_rule_button')->setData('label', Mage::helper('M2ePro')->__('Add'))->toHtml(); ?></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                        <table id="shipping_override_rule_table_main_screen" class="border" cellpadding="0" cellspacing="0" style="width: 1000px;">
+                            <thead></thead><tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="20" class="a-center"><?php echo $this->getChild('add_shipping_override_rule_button')
+                                        ->setData('label', Mage::helper('M2ePro')->__('Add Shipping Override Service'))
+                                        ->setData('id', 'shipping_override_rule_table_main_screen_button')
+                                        ->toHtml(); ?>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                        <input type="text" id="shipping_override_rule_validator" class="M2ePro-validate-shipping-override-rules" style="display: none;" />
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit m2epro-marketplace-depended-block" id="magento_block_walmart_template_selling_format_sale_time" style="display: none;">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Offer Start/End Date'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <div id="magento_block_walmart_template_selling_format_sale_time_help" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Offer Start/End Date'); ?>">
+                    <?php echo Mage::helper('M2ePro')->__(
+                        'It is highly recommended to keep the default Offer Start/End Date values, i.e. Immediate and Endless.
+                        Your offer will become visible on Walmart as soon as it is in stock.<br>
+                        Defining an offer start/end date may only be reasonable if you plan to sell an Item during a certain period, e.g. start selling on 20th November and stop selling on 30th November.<br><br>
+
+                        Read more details <a href="%url%" target="_blank">here</a>.',
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LY1aAQ')
+                    ); ?>
+                </div>
+
+                <table cellspacing="0" class="form-list">
+
+                    <tr id="sale_time_start_date_mode_tr">
+                        <td class="label">
+                            <label for="sale_time_start_date_mode"><?php echo Mage::helper('M2ePro')->__('Start Date'); ?>: </label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="sale_time_start_date_custom_attribute" name="sale_time_start_date_custom_attribute" value="<?php echo $formData['sale_time_start_date_custom_attribute'];?>"/>
+
+                            <select id="sale_time_start_date_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,date" name="sale_time_start_date_mode">
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE; ?>" <?php if ($formData['sale_time_start_date_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Immediate'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_VALUE; ?>" <?php if ($formData['sale_time_start_date_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_VALUE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php foreach($attributesByInputTypes['text_date'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_ATTRIBUTE; ?>" <?php if ($formData['sale_time_start_date_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_ATTRIBUTE && $attribute['code'] == $formData['sale_time_start_date_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr id="sale_time_start_date_value_tr" style="display: none;">
+                        <td class="label">
+                            <label for="sale_time_start_date_value"><?php echo Mage::helper('M2ePro')->__('Start Date Value'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input id="sale_time_start_date_value" name="sale_time_start_date_value" value="<?php echo $formData['sale_time_start_date_value']; ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-input-date" />
+                            <script type="text/javascript">
+                                //<![CDATA[
+                                Calendar.setup({
+                                    inputField: "sale_time_start_date_value",
+                                    ifFormat: "%Y-%m-%d",
+                                    showsTime: false,
+                                    button: "sale_time_start_date",
+                                    align: "Bl",
+                                    singleClick : true
+                                });
+                                //]]>
+                            </script>
+                        </td>
+                    </tr>
+
+                    <tr id="sale_time_end_date_mode_tr">
+                        <td class="label">
+                            <label for="sale_time_end_date_mode"><?php echo Mage::helper('M2ePro')->__('End Date'); ?>: </label>
+                        </td>
+                        <td class="value">
+                            <input type="hidden" id="sale_time_end_date_custom_attribute" name="sale_time_end_date_custom_attribute" value="<?php echo $formData['sale_time_end_date_custom_attribute'];?>"/>
+
+                            <select id="sale_time_end_date_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,date" name="sale_time_end_date_mode">
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE; ?>" <?php if ($formData['sale_time_end_date_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_NONE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Endless'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_VALUE; ?>" <?php if ($formData['sale_time_end_date_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_VALUE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                                <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                    <?php foreach($attributesByInputTypes['text_date'] as $attribute) : ?>
+                                        <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_ATTRIBUTE; ?>" <?php if ($formData['sale_time_end_date_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::DATE_ATTRIBUTE && $attribute['code'] == $formData['sale_time_end_date_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                            <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr id="sale_time_end_date_value_tr" style="display: none;">
+                        <td class="label">
+                            <label for="sale_time_end_date_value"><?php echo Mage::helper('M2ePro')->__('End Date Value'); ?>: <span class="required">*</span></label>
+                        </td>
+                        <td class="value">
+                            <input id="sale_time_end_date_value" name="sale_time_end_date_value" value="<?php echo $formData['sale_time_end_date_value']; ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-input-date" />
+                            <script type="text/javascript">
+                                //<![CDATA[
+                                Calendar.setup({
+                                    inputField: "sale_time_end_date_value",
+                                    ifFormat: "%Y-%m-%d",
+                                    showsTime: false,
+                                    button: "sale_time_end_date",
+                                    align: "Bl",
+                                    singleClick : true
+                                });
+                                //]]>
+                            </script>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+<div class="entry-edit m2epro-marketplace-depended-block" id="magento_block_walmart_template_selling_format_attributes" style="display: none;">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Attributes'); ?></h4>
+        </div>
+
+        <div class="fieldset">
+            <div class="hor-scroll">
+
+                <table cellspacing="0" class="form-list">
+
+                    <tr>
+                        <td class="label">
+                            <label><?php echo Mage::helper('M2ePro')->__('Attributes') ?>:</label>
+                        </td>
+                        <td class="value">
+                            <select id="attributes_mode" name="attributes_mode" class="select">
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::ATTRIBUTES_MODE_NONE; ?>" <?php if ($formData['attributes_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::ATTRIBUTES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::ATTRIBUTES_MODE_CUSTOM; ?>" <?php if ($formData['attributes_mode'] == Ess_M2ePro_Model_Walmart_Template_SellingFormat::ATTRIBUTES_MODE_CUSTOM): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                            </select>
+                            <p class="note">
+                                <span><?php echo Mage::helper('M2ePro')->__('Add custom attributes that describe your selling conditions.'); ?></span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <?php for ($i = 0; $i < 10; $i++): ?>
+                        <tr class="attributes_tr" style="display: none;">
+                            <td class="label">
+                                <label><?php echo Mage::helper('M2ePro')->__('Attributes (name / value) #%s', $i + 1); ?>: <span class="required">*</span></label>
+                            </td>
+                            <td class="value">
+                                <input id="attributes_name_<?php echo $i; ?>" onkeyup="WalmartTemplateSellingFormatHandlerObj.multi_element_keyup('attributes',this)"
+                                       name="attributes_name[]" type="text" class="input-text M2ePro-required-when-visible"
+                                       value="<?php echo !empty($formData['attributes'][$i]['name']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['name']) : ''; ?>">
+                            </td>
+                            <td class="value">&nbsp;/</td>
+                            <td class="value">
+                                <input id="attributes_value_<?php echo $i; ?>" onkeyup="WalmartTemplateSellingFormatHandlerObj.multi_element_keyup('attributes',this)"
+                                       name="attributes_value[]" type="text" class="input-text M2ePro-required-when-visible"
+                                       value="<?php echo !empty($formData['attributes'][$i]['value']) ? Mage::helper('M2ePro')->escapeHtml($formData['attributes'][$i]['value']) : ''; ?>">
+                                <p class="note">
+                                    <span><?php echo Mage::helper('M2ePro')->__('Max. 100 characters.'); ?></span>
+                                </p>
+                            </td>
+                            <td class="value">
+                                <span id="select_attributes_for_attributes_<?php echo $i; ?>_span" class="select-wrapper">
+                                     <select id="select_attributes_for_attributes_<?php echo $i; ?>" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" apply_to_all_attribute_sets="0" style="width: 150px;">
+                                         <?php foreach($attributesByInputTypes['text_select'] as $attribute) : ?>
+                                             <option value="<?php echo $attribute['code']; ?>">
+                                                 <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                             </option>
+                                         <?php endforeach; ?>
+                                     </select>
+                                </span>
+                                <?php echo $this->getChildHtml("select_attributes_for_attributes_{$i}_button"); ?>
+                            </td>
+                        </tr>
+                    <?php endfor; ?>
+
+                    <tr id="attributes_actions_tr" style="display: none;">
+                        <td></td>
+                        <td class="value" style="padding-top: 0 !important;">
+                            <a id="show_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateSellingFormatHandlerObj.showElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Add New') ?></a>
+                            /
+                            <a id="hide_attributes_action" href="javascript: void(0);" onclick="WalmartTemplateSellingFormatHandlerObj.hideElement('attributes');"><?php echo Mage::helper('M2ePro')->__('Remove') ?></a>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</form>
+
+<table id="promotions_table_row_template" style="display: none;">
+    <tbody>
+        <tr id="promotions_%i%_tr" class="promotions">
+            <td>
+                <input type="hidden" id="promotions_from_date_custom_attribute_%i%" name="promotions[%i%][from_date][attribute]" value=""/>
+
+                <div class="promotions_date_mode">
+                    <select id="promotions_from_date_mode_%i%" class="M2ePro-custom-attribute-can-be-created promotions_from_date_mode" allowed_attribute_types="text,date" name="promotions[%i%][from_date][mode]">
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::START_DATE_MODE_VALUE; ?>"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                            <?php foreach($attributesByInputTypes['text_date'] as $attribute) : ?>
+                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::START_DATE_MODE_ATTRIBUTE; ?>">
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="promotions_date_value">
+                    <input id="promotions_from_date_value_%i%" name="promotions[%i%][from_date][value]" value="" type="text" class="input-text M2ePro-required-when-visible M2ePro-input-datetime M2ePro-correct-date-range" />
+                    <script type="text/javascript">
+                        //<![CDATA[
+                        Calendar.setup({
+                            inputField: "promotions_from_date_value_%i%",
+                            ifFormat: "%Y-%m-%d %H:%M",
+                            showsTime: true,
+                            button: "promotions_from_date_value_%i%",
+                            align: "Bl",
+                            singleClick : true
+                        });
+                        //]]>
+                    </script>
+                </div>
+            </td>
+            <td>
+                <input type="hidden" id="promotions_to_date_custom_attribute_%i%" name="promotions[%i%][to_date][attribute]" value=""/>
+
+                <div class="promotions_date_mode">
+                    <select id="promotions_to_date_mode_%i%" class="M2ePro-custom-attribute-can-be-created promotions_to_date_mode" allowed_attribute_types="text,date" name="promotions[%i%][to_date][mode]">
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::END_DATE_MODE_VALUE; ?>"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+
+                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                            <?php foreach($attributesByInputTypes['text_date'] as $attribute) : ?>
+                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::END_DATE_MODE_ATTRIBUTE; ?>">
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="promotions_date_value">
+                    <input id="promotions_to_date_value_%i%" name="promotions[%i%][to_date][value]" value="" type="text" class="input-text M2ePro-required-when-visible M2ePro-input-datetime" />
+                    <script type="text/javascript">
+                        //<![CDATA[
+                        Calendar.setup({
+                            inputField: "promotions_to_date_value_%i%",
+                            ifFormat: "%Y-%m-%d %H:%M",
+                            showsTime: true,
+                            button: "promotions_to_date_value_%i%",
+                            align: "Bl",
+                            singleClick : true
+                        });
+                        //]]>
+                    </script>
+                </div>
+            </td>
+            <td style="text-align: center;">
+                <input type="hidden" id="promotions_price_custom_attribute_%i%" name="promotions[%i%][price][attribute]" value=""/>
+
+                <div class="promotions_price_mode_block">
+                    <select id="promotions_price_mode_%i%" name="promotions[%i%][price][mode]" class="promotions_price_mode select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::PRICE_MODE_PRODUCT; ?>"><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::PRICE_MODE_SPECIAL; ?>"><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
+
+                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                            <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::PRICE_MODE_ATTRIBUTE; ?>">
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="promotions_price_coefficient_block">
+                    <input id="promotions_price_coefficient_%i%" name="promotions[%i%][price][coefficient]" value="" type="text" class="M2ePro-validate-price-coefficient input-text"/>
+
+                    <span class="tool-tip-container">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                        <span class="tool-tip-message" style="font-size: 12px; display: none;">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                            <span>
+                                <?php echo Mage::helper('M2ePro')->__('Absolute figure (+8,-3), percentage (+15%, -20%) or Currency rate (1.44)'); ?>
+                            </span>
+                    </span>
+                </div>
+            </td>
+            <td style="text-align: center;">
+
+                <input type="hidden" id="promotions_comparison_price_custom_attribute_%i%" name="promotions[%i%][comparison_price][attribute]" value=""/>
+
+                <div class="promotions_price_mode_block">
+                    <select id="promotions_comparison_price_mode_%i%" name="promotions[%i%][comparison_price][mode]" class="promotions_comparison_price_mode select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::COMPARISON_PRICE_MODE_PRODUCT; ?>"><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::COMPARISON_PRICE_MODE_SPECIAL; ?>"><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
+
+                        <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                            <?php foreach($attributesByInputTypes['text_price'] as $attribute) : ?>
+                                <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::COMPARISON_PRICE_MODE_ATTRIBUTE; ?>">
+                                    <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="promotions_price_coefficient_block">
+                    <input id="promotions_comparison_price_coefficient_%i%" name="promotions[%i%][comparison_price][coefficient]" value="" type="text" class="M2ePro-validate-price-coefficient input-text"/>
+
+                    <span class="tool-tip-container">
+                        <img src="<?php echo $this->getSkinUrl('M2ePro/images/tool-tip-icon.png'); ?>" class="tool-tip-image">
+                        <span class="tool-tip-message" style="font-size: 12px; display: none;">
+                            <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
+                            <span>
+                                 <?php echo Mage::helper('M2ePro')->__('Absolute figure (+8,-3), percentage (+15%, -20%) or Currency rate (1.44)'); ?>
+                            </span>
+                    </span>
+                </div>
+            </td>
+            <td style="text-align: center;">
+                <div class="promotions_type">
+                    <select id="promotions_type_%i%" name="promotions[%i%][type]">
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::TYPE_REDUCED; ?>"><?php echo Mage::helper('M2ePro')->__('Reduced'); ?></option>
+                        <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::TYPE_CLEARANCE; ?>"><?php echo Mage::helper('M2ePro')->__('Clearance'); ?></option>
+                    </select>
+                </div>
+            </td>
+            <td style="text-align: center;">
+                <?php echo $this->getChildHtml('remove_promotion_price_button'); ?>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table id="shipping_override_rule_table_row_template" style="display: none;">
+    <tbody>
+    <tr id="shipping_override_rule_%i%_tr" class="shipping-override-rule">
+        <td style="text-align: center;">
+            <select id="shipping_override_rule_service_%i%" name="shipping_override_rule[%i%][method]" class="shipping-override-service required-entry" style="width: 120px">
+                <option value="" class="empty"></option>
+                <?php foreach ($this->getShippingOverrideMethodsUs() as $code => $label): ?>
+                    <option marketplace_id="<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US; ?>" class="m2epro-marketplace-depended-option" value="<?php echo $code; ?>"><?php echo Mage::helper('M2ePro')->__($label); ?></option>
+                <?php endforeach; ?>
+                <?php foreach ($this->getShippingOverrideMethodsCanada() as $code => $label): ?>
+                    <option marketplace_id="<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA; ?>" class="m2epro-marketplace-depended-option" value="<?php echo $code; ?>"><?php echo Mage::helper('M2ePro')->__($label); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </td>
+        <td style="text-align: center;">
+            <select id="shipping_override_rule_location_%i%" name="shipping_override_rule[%i%][region]" class="required-entry shipping-override-location" disabled="disabled" style="width: 220px;display: none">
+                <option value="" class="empty"></option>
+                <?php foreach ($this->getShippingOverrideRegionsUs() as $code => $label): ?>
+                    <option marketplace_id="<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US; ?>" class="m2epro-marketplace-depended-option" value="<?php echo $code; ?>"><?php echo Mage::helper('M2ePro')->__($label); ?></option>
+                <?php endforeach; ?>
+                <?php foreach ($this->getShippingOverrideRegionsCanada() as $code => $label): ?>
+                    <option marketplace_id="<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA; ?>" class="m2epro-marketplace-depended-option" value="<?php echo $code; ?>"><?php echo Mage::helper('M2ePro')->__($label); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </td>
+        <td style="text-align: center;">
+            <select id="shipping_override_rule_cost_mode_%i%" name="shipping_override_rule[%i%][cost_mode]" class="required-entry shipping-override-cost-mode" disabled="disabled" style="width: 120px; display: none">
+                <option value="" class="empty"></option>
+                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_FREE ?>"><?php echo Mage::helper('M2ePro')->__('Free'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_CUSTOM_VALUE ?>" class="shipping-override-rule-cost-mode-custom-value"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_CUSTOM_ATTRIBUTE ?>" class="shipping-override-rule-cost-mode-custom-attribute"><?php echo Mage::helper('M2ePro')->__('Custom Attribute'); ?></option>
+            </select>
+        </td>
+        <td style="text-align: center;">
+            <input id="shipping_override_rule_cost_value_%i%" name="shipping_override_rule[%i%][cost_value]" type="text" class="required-entry input-text M2ePro-validation-float shipping-override-cost-custom-value" disabled="disabled" style="width: 155px; display: none; text-align: right"/>
+            <select id="shipping_override_rule_cost_attribute_%i%" name="shipping_override_rule[%i%][cost_attribute]" class="required-entry shipping-override-cost-custom-attribute" disabled="disabled" style="width: 155px; display: none;">
+                <option value="" class="empty"></option>
+                <?php foreach ($generalFromAllAttributeSets as $attribute) { ?>
+                    <option value="<?php echo $attribute['code'] ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                <?php } ?>
+            </select>
+        </td>
+        <td style="text-align: center;">
+            <?php echo $this->getChildHtml('remove_shipping_override_rule_button'); ?>
+        </td>
+    </tr>
+    </tbody>
+</table>

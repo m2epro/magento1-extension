@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -202,7 +202,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
             $templateMode = NULL;
             $forceParent = false;
 
-            if ($source->count() <= 200) {
+            if ($source->getSize() <= 200) {
                 foreach ($source as $listingProduct) {
                     $manager = Mage::getModel('M2ePro/Ebay_Template_Manager')
                         ->setTemplate($nick)
@@ -339,7 +339,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         $mode = $source->getParam('mode', Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM);
 
         $attributeSets = $source->getParam('attribute_sets', '');
-        $attributeSets = explode(',', $attributeSets);
+        $attributeSets = array_filter(explode(',', $attributeSets));
+
+        if (empty($attributeSets)) {
+
+            $attributeSets = Mage::helper('M2ePro/Magento_AttributeSet')
+                ->getAll(Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS);
+        }
 
         return array(
             'account_id'                 => $source->getParam('account_id'),

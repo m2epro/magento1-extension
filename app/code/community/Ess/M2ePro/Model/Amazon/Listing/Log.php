@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -28,6 +28,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Log extends Ess_M2ePro_Model_Listing_Log
      * @param null $description
      * @param null $type
      * @param null $priority
+     * @param array $additionalData
      * @throws Ess_M2ePro_Model_Exception
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
@@ -39,7 +40,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Log extends Ess_M2ePro_Model_Listing_Log
                                       $action = NULL,
                                       $description = NULL,
                                       $type = NULL,
-                                      $priority = NULL)
+                                      $priority = NULL,
+                                      array $additionalData = array())
     {
         $dataForAdd = $this->makeDataForAdd($listingId,
                                             $initiator,
@@ -49,7 +51,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Log extends Ess_M2ePro_Model_Listing_Log
                                             $action,
                                             $description,
                                             $type,
-                                            $priority);
+                                            $priority,
+                                            $additionalData);
 
         if (!empty($listingProductId)) {
 
@@ -65,8 +68,14 @@ class Ess_M2ePro_Model_Amazon_Listing_Log extends Ess_M2ePro_Model_Listing_Log
                 $productOptions = $variationManager->getTypeModel()->getProductOptions();
 
                 if (!empty($productOptions)) {
-                    $logAdditionalData['variation_options'] = $productOptions;
-                    $dataForAdd['additional_data'] = json_encode($logAdditionalData);
+
+                    $dataForAdd['additional_data'] = (array)Mage::helper('M2ePro')->jsonDecode(
+                        $dataForAdd['additional_data']
+                    );
+                    $dataForAdd['additional_data']['variation_options'] = $productOptions;
+                    $dataForAdd['additional_data'] = Mage::helper('M2ePro')->jsonEncode(
+                        $dataForAdd['additional_data']
+                    );
                 }
             }
 

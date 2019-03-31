@@ -2,9 +2,11 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
+
+use Ess_M2ePro_Model_Amazon_Listing_Product as AmazonListingProduct;
 
 class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonIsAfnChanel
     extends Ess_M2ePro_Model_Magento_Product_Rule_Custom_Abstract
@@ -33,7 +35,17 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonIsAfnChanel
      */
     public function getValueByProductInstance(Mage_Catalog_Model_Product $product)
     {
-        return $product->getData('is_afn_channel');
+        $isAfn = (int)$product->getData('is_afn_channel');
+        $afnState = (int)$product->getData('variation_parent_afn_state');
+
+        if (($this->filterOperator == '==' && $this->filterCondition == AmazonListingProduct::IS_AFN_CHANNEL_YES) ||
+            ($this->filterOperator == '!=' && $this->filterCondition == AmazonListingProduct::IS_AFN_CHANNEL_NO)) {
+            return $isAfn;
+        }
+
+        return (!$isAfn || $afnState == AmazonListingProduct::VARIATION_PARENT_IS_AFN_STATE_PARTIAL)
+            ? AmazonListingProduct::IS_AFN_CHANNEL_NO
+            : AmazonListingProduct::IS_AFN_CHANNEL_YES;
     }
 
     /**
@@ -59,11 +71,11 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonIsAfnChanel
     {
         return array(
             array(
-                'value' => 0,
+                'value' => AmazonListingProduct::IS_AFN_CHANNEL_NO,
                 'label' => Mage::helper('M2ePro')->__('Merchant'),
             ),
             array(
-                'value' => 1,
+                'value' => AmazonListingProduct::IS_AFN_CHANNEL_YES,
                 'label' => Mage::helper('M2ePro')->__('Amazon'),
             ),
         );

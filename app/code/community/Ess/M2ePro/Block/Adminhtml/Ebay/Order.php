@@ -2,7 +2,7 @@
 
 /*
  * @author     M2E Pro Developers Team
- * @copyright  2011-2015 ESS-UA [M2E Pro]
+ * @copyright  M2E LTD
  * @license    Commercial use is forbidden
  */
 
@@ -23,7 +23,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order extends Mage_Adminhtml_Block_Widget_
 
         // Set header text
         // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__('Orders');
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Orders', $componentName);
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__('Orders');
+        }
         // ---------------------------------------
 
         // Set buttons actions
@@ -117,8 +122,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order extends Mage_Adminhtml_Block_Widget_
 
         return $helpBlock->toHtml()
             . '<div class="filter_block">'
-            . $marketplaceFilterBlock->toHtml()
             . $accountFilterBlock->toHtml()
+            . $marketplaceFilterBlock->toHtml()
             . $orderStateSwitcherBlock->toHtml()
             . '</div>'
             . $editItemBlock->toHtml()

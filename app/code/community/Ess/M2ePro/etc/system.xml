@@ -99,7 +99,7 @@
             <frontend_model>M2ePro/adminhtml_configuration_logsClearing_form</frontend_model>
         </m2epro_logs_clearing>
         <m2epro_license translate="label" module="M2ePro">
-            <label>License</label>
+            <label>Billing Info</label>
             <tab>m2epro</tab>
             <frontend_type>text</frontend_type>
             <sort_order>40</sort_order>
