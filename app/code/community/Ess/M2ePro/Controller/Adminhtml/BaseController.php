@@ -82,6 +82,18 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
         }
         // -----------------------------------------------------------------
 
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
+            return $this->_redirect('*/adminhtml_maintenance');
+        }
+
+        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+            return $this->_redirect('adminhtml/dashboard');
+        }
+
+        if (empty(Mage::helper('M2ePro/Component')->getEnabledComponents())) {
+            return $this->_redirect('adminhtml/dashboard');
+        }
+
         Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
 
         // flag that controller is loaded
@@ -168,7 +180,29 @@ abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
     {
         $customLayout = Ess_M2ePro_Helper_View::LAYOUT_NICK;
         is_array($ids) ? $ids[] = $customLayout : $ids = array('default',$customLayout);
-        return parent::loadLayout($ids, $generateBlocks, $generateXml);
+
+        $layout = parent::loadLayout($ids, $generateBlocks, $generateXml);
+
+        /** Messages must be added after layout was initialized */
+        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+            $message = Mage::helper('M2ePro')->__(<<<HTML
+                M2E Pro is disabled. Inventory and Order synchronization is not running at this moment.
+                At any time, you can enable the Module under <b>System > Configuration > M2E Pro > Advanced.</b>
+HTML
+            );
+            $this->_getSession()->addError($message);
+        }
+
+        if (empty(Mage::helper('M2ePro/Component')->getEnabledComponents())) {
+            $message = Mage::helper('M2ePro')->__(<<<HTML
+                Channel Integrations are disabled. To start working with M2E Pro, please go to 
+                <b>System > Configuration > M2E Pro > Channels</b> and enable at least one Channel Integration.
+HTML
+            );
+            $this->_getSession()->addError($message);
+        }
+
+        return $layout;
     }
 
     // ---------------------------------------

@@ -231,29 +231,6 @@ SQL
 
     //########################################
 
-    public function enableMaintenanceModeAction()
-    {
-        if (!Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
-            Mage::helper('M2ePro/Module_Maintenance')->enable();
-        }
-
-        $this->_getSession()->addSuccess('Maintenance was activated.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDebugTabUrl());
-    }
-
-    public function disableMaintenanceModeAction()
-    {
-        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
-            Mage::helper('M2ePro/Module_Maintenance')->disable();
-            Mage::helper('M2ePro/Data_Session')->getValue('warning_message', true);
-        }
-
-        $this->_getSession()->addSuccess('Maintenance was deactivated.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDebugTabUrl());
-    }
-
-    // ---------------------------------------
-
     public function enableDevelopmentModeAction()
     {
         Mage::helper('M2ePro/Module')->setDevelopmentModeMode(true);

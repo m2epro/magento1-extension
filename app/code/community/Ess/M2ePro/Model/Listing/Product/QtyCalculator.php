@@ -177,6 +177,8 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
 
     protected function getClearVariationValue(Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
+        $value = 0;
+
         if ($this->getMagentoProduct()->isConfigurableType() ||
             $this->getMagentoProduct()->isSimpleTypeWithCustomOptions() ||
             $this->getMagentoProduct()->isGroupedType() ||
@@ -204,7 +206,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
                 $optionsQtyList[] = floor($optionQty[0]/count($optionQty));
             }
 
-            $value = min($optionsQtyList);
+            !empty($optionsQtyArray) && $value = min($optionsQtyList);
 
         } else {
             throw new Ess_M2ePro_Model_Exception_Logic('Unknown Product type.',

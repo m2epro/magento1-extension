@@ -319,7 +319,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         $resultPath['menu'] = $menuLabel;
 
         if ($tabName) {
-            $resultPath['tab'] = Mage::helper('M2ePro')->__($tabName) . ' ' . Mage::helper('M2ePro')->__('Tab');
+            $resultPath['tab'] = Mage::helper('M2ePro')->__($tabName);
         }
 
         if ($additionalEnd) {

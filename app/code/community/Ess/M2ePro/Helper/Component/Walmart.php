@@ -10,6 +10,8 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
 {
     const NICK  = 'walmart';
 
+    const MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK = 'walmart_marketplace_synchronization';
+
     const MARKETPLACE_US = 37;
     const MARKETPLACE_CA = 38;
 
@@ -110,14 +112,23 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getRegisterUrl($marketplaceId = NULL)
+    public function getRegisterUrl($marketplaceId)
     {
-        $marketplaceId = (int)$marketplaceId;
-        $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;
+        switch ($marketplaceId) {
+            case self::MARKETPLACE_US:
+                $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
+                $url = 'https://developer.' . $domain . '/#/generateKey';
+                break;
 
-        $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
+            case self::MARKETPLACE_CA:
+                $url = 'https://seller.walmart.ca/';
+                break;
 
-        return 'https://seller.'.$domain;
+            default:
+                throw new Ess_M2ePro_Model_Exception_Logic('Unknown Marketplace ID.');
+        }
+
+        return $url;
     }
 
     public function getItemUrl($productItemId, $marketplaceId = NULL)
@@ -162,8 +173,6 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
     }
 
     // ----------------------------------------
-
-    // ---------------------------------------
 
     public function getCarriers()
     {

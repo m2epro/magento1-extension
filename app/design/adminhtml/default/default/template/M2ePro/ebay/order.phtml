@@ -11,6 +11,14 @@
         'adminhtml_order/getDebugInformation' => $this->getUrl('M2ePro/adminhtml_order/getDebugInformation/', array('id' => $this->getRequest()->getParam('id')))
     )); ?>);
 
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Custom Note' => Mage::helper('M2ePro')->__('Custom Note')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        OrderNoteHandlerObj = new OrderNoteHandler('<?php echo $this->getChild('order_note_grid')->getId(); ?>');
+    });
+
 </script>
 
 <!-- ########################################################################################### -->
@@ -626,6 +634,19 @@
 <br style="clear: both;"/>
 
 <div class="box-left">
+
+    <div class="entry-edit" id="magento_block_ebay_orders_note" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Custom Notes');?></h4>
+        </div>
+
+        <div class="fieldset">
+            <?php echo $this->getChildHtml('order_note_grid'); ?>
+            <?php echo $this->getChildHtml('add_note_button'); ?>
+        </div>
+
+    </div>
 
     <?php $checkoutMessage = $this->order->getChildObject()->getBuyerMessage() ?>
 

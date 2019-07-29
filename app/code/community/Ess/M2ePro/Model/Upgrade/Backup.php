@@ -23,11 +23,9 @@ class Ess_M2ePro_Model_Upgrade_Backup
 
     //########################################
 
-    public function __construct(
-        Ess_M2ePro_Model_Upgrade_MySqlSetup $installer, $tablesList
-    ){
-        $this->installer = $installer;
-        $this->tablesList = $tablesList;
+    public function __construct(array $arguments = array())
+    {
+        list($this->installer, $this->tablesList) = $arguments;
     }
 
     //########################################
@@ -47,10 +45,6 @@ class Ess_M2ePro_Model_Upgrade_Backup
 
     public function create()
     {
-        if (empty($this->tablesList)) {
-            throw new Ess_M2ePro_Model_Exception_Setup('Unable to create a backup. Tables list is empty.');
-        }
-
         foreach ($this->tablesList as $table) {
 
             $this->prepareColumns($table);

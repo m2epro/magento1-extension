@@ -155,6 +155,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CategorySettingsController
             $mode = $defaultMode;
         }
 
+        $this->clearSession();
+
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_mode');
         $block->setData('mode', $mode);
 

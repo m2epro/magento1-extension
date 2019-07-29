@@ -9,8 +9,6 @@
 class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
 {
-    const SYNCHRONIZATION_LOCK_ITEM_NICK = 'amazon_marketplace_synchronization';
-
     //########################################
 
     protected function _initAction()
@@ -81,7 +79,7 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
         $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace',$marketplaceId);
 
         $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
+            'nick' => Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
         ));
 
         if ($lockItemManager->isExist()) {
@@ -109,7 +107,7 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
         $response = array();
 
         $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
+            'nick' => Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
         ));
 
         if (!$lockItemManager->isExist()) {

@@ -10,6 +10,8 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 {
     const NICK  = 'amazon';
 
+    const MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK = 'amazon_marketplace_synchronization';
+
     const MARKETPLACE_CA = 24;
     const MARKETPLACE_DE = 25;
     const MARKETPLACE_US = 29;
@@ -156,8 +158,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     }
 
     // ----------------------------------------
-
-    // ---------------------------------------
 
     public function getCarriers()
     {

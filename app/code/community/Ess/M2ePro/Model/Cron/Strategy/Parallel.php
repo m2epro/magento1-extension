@@ -277,7 +277,9 @@ class Ess_M2ePro_Model_Cron_Strategy_Parallel extends Ess_M2ePro_Model_Cron_Stra
             Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessListActions::NICK,
             Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive::NICK,
             Ess_M2ePro_Model_Cron_Task_Walmart_Order_Acknowledge::NICK,
-            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Shipping::NICK
+            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Shipping::NICK,
+            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Cancel::NICK,
+            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Refund::NICK
         )));
     }
 

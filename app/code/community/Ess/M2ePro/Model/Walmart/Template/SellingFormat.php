@@ -108,7 +108,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
             $promotion->deleteInstance();
         }
 
-        foreach ($this->getShippingOverrideServices(true) as $service) {
+        foreach ($this->getShippingOverrides(true) as $service) {
             $service->deleteInstance();
         }
 
@@ -202,22 +202,22 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
     /**
      * @param bool $asObjects
      * @param array $filters
-     * @return array|Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService[]
+     * @return array|Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getShippingOverrideServices($asObjects = false, array $filters = array())
+    public function getShippingOverrides($asObjects = false, array $filters = array())
     {
-        $services = $this->getRelatedSimpleItems('Walmart_Template_SellingFormat_ShippingOverrideService',
+        $shippingOverrides = $this->getRelatedSimpleItems('Walmart_Template_SellingFormat_ShippingOverride',
             'template_selling_format_id', $asObjects, $filters);
 
         if ($asObjects) {
-            /** @var $service Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService */
-            foreach ($services as $service) {
-                $service->setSellingFormatTemplate($this);
+            /** @var $shippingOverride Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride */
+            foreach ($shippingOverrides as $shippingOverride) {
+                $shippingOverride->setSellingFormatTemplate($this);
             }
         }
 
-        return $services;
+        return $shippingOverrides;
     }
 
     //########################################
@@ -1139,7 +1139,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
             }
         }
 
-        foreach ($this->getShippingOverrideServices(true) as $service) {
+        foreach ($this->getShippingOverrides(true) as $service) {
 
             if ($isPriceConvertEnabled && $service->isCostModeCustomAttribute() &&
                 $attributeHelper->isAttributeInputTypePrice($service->getCostAttribute())) {

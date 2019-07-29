@@ -128,11 +128,11 @@ JAVASCIRPT;
 
             $listing = $this->getListing();
 
-            if (!Mage::helper('M2ePro/View_Ebay_Component')->isSingleActiveComponent()) {
-                $component =  Mage::helper('M2ePro/Component')->getComponentTitle($listing->getComponentMode());
+            if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
                 $this->_headerText = Mage::helper('M2ePro')->__(
-                    'Log For %component_name% Listing "%listing_title%"',
-                    $component, $this->escapeHtml($listing->getTitle())
+                    '%component_name% / Log For Listing "%listing_title%"',
+                    Mage::helper('M2ePro/Component_Ebay')->getTitle(),
+                    $this->escapeHtml($listing->getTitle())
                 );
             } else {
                 $this->_headerText = Mage::helper('M2ePro')->__(
@@ -151,13 +151,13 @@ JAVASCIRPT;
                 $onlineTitle = $listingProduct->getMagentoProduct()->getName();
             }
 
-            if (!Mage::helper('M2ePro/View_Ebay_Component')->isSingleActiveComponent()) {
-                $component =  Mage::helper('M2ePro/Component')->getComponentTitle($listing->getComponentMode());
+            if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
                 $this->_headerText = Mage::helper('M2ePro')->__(
-                    'Log For Product "%product_name%" (ID:%product_id%) Of %component_name% Listing "%listing_title%"',
+                    '%component_name% / Log For Product "%product_name%" (ID:%product_id%)'
+                    . ' Of Listing "%listing_title%"',
+                    Mage::helper('M2ePro/Component_Ebay')->getTitle(),
                     $this->escapeHtml($onlineTitle),
                     $listingProduct->getProductId(),
-                    $component,
                     $this->escapeHtml($listing->getTitle())
                 );
             } else {

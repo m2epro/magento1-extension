@@ -9,6 +9,7 @@
 class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 {
     const MENU_ROOT_NODE = 'm2epro';
+    const MAINTENANCE_MENU_STATE_CACHE_KEY = 'maintenance_menu_state';
 
     //########################################
 
@@ -423,6 +424,29 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
             return $menuArray;
         }
 
+        $maintenanceMenuState = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue(
+            self::MAINTENANCE_MENU_STATE_CACHE_KEY
+        );
+
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
+            if (is_null($maintenanceMenuState)) {
+                Mage::helper('M2ePro/Data_Cache_Permanent')->setValue(
+                    self::MAINTENANCE_MENU_STATE_CACHE_KEY, true
+                );
+                Mage::helper('M2ePro/Magento')->clearMenuCache();
+            }
+            return $this->processMaintenance($menuArray);
+        } elseif(!is_null($maintenanceMenuState)) {
+            Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue(
+                self::MAINTENANCE_MENU_STATE_CACHE_KEY
+            );
+            Mage::helper('M2ePro/Magento')->clearMenuCache();
+        }
+
+        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+            return $this->processModuleDisable($menuArray);
+        }
+
         /* @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
         $activeComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
@@ -478,6 +502,30 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
                 $menuArray[self::MENU_ROOT_NODE]['children'] = array();
             }
         }
+
+        return $menuArray;
+    }
+
+    //########################################
+
+    private function processMaintenance(array $menuArray)
+    {
+        $m2eproMenu = $menuArray[self::MENU_ROOT_NODE];
+
+        $menuArray[self::MENU_ROOT_NODE] = array(
+            'label' => 'M2E Pro',
+            'sort_order' => $m2eproMenu['sort_order'],
+            'url' => Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_maintenance/index'),
+            'active' => $m2eproMenu['active'],
+            'level' => $m2eproMenu['level']
+        );
+
+        return $menuArray;
+    }
+
+    private function processModuleDisable(array $menuArray)
+    {
+        unset($menuArray[self::MENU_ROOT_NODE]);
 
         return $menuArray;
     }

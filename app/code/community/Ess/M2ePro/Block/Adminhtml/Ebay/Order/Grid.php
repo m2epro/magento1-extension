@@ -11,6 +11,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
     /** @var $itemsCollection Ess_M2ePro_Model_Mysql4_Order_Item_Collection */
     private $itemsCollection = NULL;
 
+    /** @var $notesCollection Ess_M2ePro_Model_Mysql4_Order_Note_Collection */
+    private $notesCollection = NULL;
+
     //########################################
 
     public function __construct()
@@ -42,17 +45,18 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order');
 
         $collection->getSelect()
-                   ->joinLeft(
-                       array('mea' => Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
-                       '(mea.account_id = `main_table`.account_id)',
-                       array('account_mode' => 'mode'))
-                   ->joinLeft(
-                       array(
-                           'so' => Mage::helper('M2ePro/Module_Database_Structure')
-                               ->getTableNameWithPrefix('sales/order')
-                       ),
-                       '(so.entity_id = `main_table`.magento_order_id)',
-                       array('magento_order_num' => 'increment_id'));
+           ->joinLeft(
+               array('mea' => Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
+               'mea.account_id = `main_table`.account_id',
+               array('account_mode' => 'mode')
+           )
+           ->joinLeft(
+               array(
+                   'so' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales/order')
+               ),
+               '(so.entity_id = `main_table`.magento_order_id)',
+               array('magento_order_num' => 'increment_id')
+           );
 
         // Add Filter By Account
         // ---------------------------------------
@@ -85,6 +89,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         $this->itemsCollection = Mage::helper('M2ePro/Component_Ebay')
             ->getCollection('Order_Item')
             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+
+        // ---------------------------------------
+
+        $this->notesCollection = Mage::getModel('M2ePro/Order_Note')
+            ->getCollection()
+            ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+
+        // ---------------------------------------
 
         return parent::_afterLoadCollection();
     }
@@ -293,6 +305,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
              'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ), 'general');
+
+        $this->getMassactionBlock()->addItem('create_order', array(
+            'label'    => Mage::helper('M2ePro')->__('Create Magento Order'),
+            'url'      => $this->getUrl('*/adminhtml_ebay_order/createMagentoOrder'),
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+        ), 'general');
         // ---------------------------------------
 
         if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
@@ -424,6 +442,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
         if ($row['selling_manager_id'] > 0) {
             $returnString .= '<br/> [ <b>SM: </b> # ' . $row['selling_manager_id'] . ' ]';
+        }
+
+        /** @var $notes Ess_M2ePro_Model_Order_Note[] */
+        $notes = $this->notesCollection->getItemsByColumnValue('order_id', $row->getData('id'));
+
+        if ($notes) {
+            $htmlNotesCount = Mage::helper('M2ePro/Data')->__(
+                'You have a custom note for the order. It can be reviewed on the order detail page.'
+            );
+
+            $returnString .= <<<HTML
+<div class="note_icon" style="display: inline-block; margin-left: 5px; width: 16px;">
+    <img class="tool-tip-image"
+         style="vertical-align: middle; cursor: inherit"
+         src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}">
+    <span class="tool-tip-message tool-tip-message" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}" style="width: 18px; height: 18px">
+        <div class="ebay-identifiers">
+           {$htmlNotesCount}
+        </div>
+    </span>
+</div>
+HTML;
         }
 
         if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {

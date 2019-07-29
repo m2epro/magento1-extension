@@ -542,7 +542,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getMagentoOrdersListingsOtherProductTaxClassId()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_tax_class_id'));
+        $setting = $this->getSetting('magento_orders_settings',
+            array('listing_other', 'product_tax_class_id'),
+            Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE
+        );
 
         return (int)$setting;
     }
@@ -613,7 +616,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getQtyReservationDays()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'));
+        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'), 1);
 
         return (int)$setting;
     }

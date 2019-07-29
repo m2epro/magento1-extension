@@ -170,6 +170,16 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
         return $this->getData('consumer_id');
     }
 
+    public function getClientId()
+    {
+        return $this->getData('client_id');
+    }
+
+    public function getClientSecret()
+    {
+        return $this->getData('client_secret');
+    }
+
     /**
      * @return int
      */

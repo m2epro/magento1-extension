@@ -48,7 +48,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/index',array('_current' => true, 'step' => 1));
+        $backUrl = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_listing_productAdd/sourceMode', array(
+            'listing_id' => $this->getRequest()->getParam('listing_id'),
+            'listing_creation' => $this->getRequest()->getParam('listing_creation')
+        ));
+
+        $url = $this->getUrl('*/*/index',array('_current' => true, 'step' => 1, 'back' => $backUrl));
         $this->_addButton('next', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'onclick'   => 'CommonHandlerObj.submitForm(\''.$url.'\');',

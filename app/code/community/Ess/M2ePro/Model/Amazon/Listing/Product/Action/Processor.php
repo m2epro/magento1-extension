@@ -284,31 +284,29 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
     private function prepareRequestsPacks(array $accountsActions)
     {
         $groupHashesMetadata = array();
-
         $requestsPacks = array();
 
         foreach ($accountsActions as $accountId => $accountData) {
             foreach ($accountData as $actionType => $actionData) {
                 foreach ($actionData as $listingProductId => $listingProductData) {
-                    $groupHash = $this->getActualGroupHash($groupHashesMetadata, $listingProductData);
-
-                    if (!isset($groupHashesMetadata[$groupHash])) {
-                        $groupHashesMetadata[$groupHash] = array(
-                            'slow_actions_count' => 0,
+                    $groupHash = $this->getActualGroupHash($accountId, $groupHashesMetadata, $listingProductData);
+                    if (!isset($groupHashesMetadata[$accountId][$groupHash])) {
+                        $groupHashesMetadata[$accountId][$groupHash] = array(
+                            'slow_actions_count' => 0
                         );
                     }
 
                     if ($listingProductData['action_type'] == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
+
                         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator $configurator */
                         $configurator = $listingProductData['configurator'];
-
                         if ($configurator->isDetailsAllowed()) {
-                            $groupHashesMetadata[$groupHash]['slow_actions_count']++;
+                            $groupHashesMetadata[$accountId][$groupHash]['slow_actions_count']++;
                         }
                     }
 
                     if ($listingProductData['action_type'] == Ess_M2ePro_Model_Listing_Product::ACTION_LIST) {
-                        $groupHashesMetadata[$groupHash]['slow_actions_count']++;
+                        $groupHashesMetadata[$accountId][$groupHash]['slow_actions_count']++;
                     }
 
                     $requestsPacks[$accountId][$actionType][$groupHash][$listingProductId] = $listingProductData;
@@ -319,17 +317,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
         return $requestsPacks;
     }
 
-    private function getActualGroupHash(array $groupHashesMetadata, array $listingProductData)
+    private function getActualGroupHash($accountId, array $groupHashesMetadata, array $listingProductData)
     {
-        if (empty($groupHashesMetadata)) {
+        if (empty($groupHashesMetadata[$accountId])) {
             return Mage::helper('M2ePro')->generateUniqueHash();
         }
 
-        end($groupHashesMetadata);
-        $lastGroupHash = key($groupHashesMetadata);
+        end($groupHashesMetadata[$accountId]);
+        $lastGroupHash = key($groupHashesMetadata[$accountId]);
 
         if ($listingProductData['action_type'] == Ess_M2ePro_Model_Listing_Product::ACTION_LIST) {
-            $metadata = $groupHashesMetadata[$lastGroupHash];
+            $metadata = $groupHashesMetadata[$accountId][$lastGroupHash];
             if ($metadata['slow_actions_count'] < $this->getMaxPackSize(self::FEED_TYPE_ADD)) {
                 return $lastGroupHash;
             }
@@ -343,12 +341,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator $configurator */
         $configurator = $listingProductData['configurator'];
-
         if (!$configurator->isDetailsAllowed()) {
             return $lastGroupHash;
         }
 
-        foreach ($groupHashesMetadata as $groupHash => $metadata) {
+        foreach ($groupHashesMetadata[$accountId] as $groupHash => $metadata) {
             if ($metadata['slow_actions_count'] < $this->getMaxPackSize(self::FEED_TYPE_UPDATE_DETAILS)) {
                 return $groupHash;
             }

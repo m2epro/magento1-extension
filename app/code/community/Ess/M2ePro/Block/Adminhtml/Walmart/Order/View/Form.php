@@ -63,10 +63,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Form extends Ess_M2ePro_Bloc
         $this->shippingAddress = $shippingAddress->getData();
         $this->shippingAddress['country_name'] = $shippingAddress->getCountryName();
         // ---------------------------------------
+        $buttonAddNoteBlock = $this->getLayout()
+            ->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                'label'   => Mage::helper('M2ePro')->__('Add Note'),
+                'onclick' => "OrderNoteHandlerObj.openAddNotePopup({$this->order->getId()})",
+                'class'   => 'order_note_btn',
+            ));
 
         $this->setChild('item', $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_order_view_item'));
         $this->setChild('item_edit', $this->getLayout()->createBlock('M2ePro/adminhtml_order_item_edit'));
         $this->setChild('log', $this->getLayout()->createBlock('M2ePro/adminhtml_order_view_log_grid'));
+        $this->setChild('order_note_grid', $this->getLayout()->createBlock('M2ePro/adminhtml_order_note_grid'));
+        $this->setChild('add_note_button', $buttonAddNoteBlock);
 
         return parent::_beforeToHtml();
     }

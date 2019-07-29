@@ -25,7 +25,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin extends Ess_M2ePro_B
         $this->setId('amazonListingAddNewAsin');
         // ---------------------------------------
 
-        $this->_headerText = Mage::helper('M2ePro')->__('New ASIN/ISBN Creation');
+        // Set header text
+        // ---------------------------------------
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / New ASIN/ISBN Creation',
+                Mage::helper('M2ePro/Component_Amazon')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("New ASIN/ISBN Creation");
+        }
 
         $url = $this->getUrl('*/*/index', array(
             'step' => 3,

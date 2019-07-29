@@ -643,7 +643,7 @@ class Ess_M2ePro_Model_Ebay_Listing extends Ess_M2ePro_Model_Component_Child_Eba
                 Ess_M2ePro_Model_Listing_Log::ACTION_SELL_ON_ANOTHER_EBAY_SITE,
                 // M2ePro_TRANSLATIONS
                 // Item was successfully Added into Destination Listing
-                'Item was successfully Added into Destination Listing',
+                'Item was added to the selected Listing',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
             );

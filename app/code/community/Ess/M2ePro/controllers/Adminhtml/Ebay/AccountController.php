@@ -231,7 +231,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $this->_redirect('*/*/index');
         }
 
-        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Sell Api token was successfully obtained'));
+        $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Sell API token was successfully obtained'));
         $this->_redirect('*/*/edit', array('id' => $accountId, '_current' => true));
         // ---------------------------------------
     }

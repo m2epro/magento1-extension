@@ -1,24 +1,46 @@
-<div id="block_notice_walmart_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
-    <?php echo Mage::helper('M2ePro')->__(
-        'Provide an Account Title and select Walmart Marketplace.<br><br>
+<div id="block_notice_walmart_accounts_general" class="block_notices_module marketplace-required-field marketplace-required-field-id-not-null" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
 
-        To connect M2E Pro with your Walmart Account, please complete the following steps:<br/>
+    <div class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US ?>">
+        <?php echo Mage::helper('M2ePro')->__(
+            'Under this section, you need to connect M2E Pro with your Walmart account. Please complete the following steps:<br>
         <ul class="list">
-            <li>Click Get Access Data. You will be redirected to the Walmart website.</li>
-            <li>Log in to your Seller Center Account.</li>
-            <li>In admin panel, navigate to <i>Settings > API > Consumer IDs & Private Keys (Client ID and Client Secret)</i>.</li>
-            <li>Copy the generated Consumer ID and Private Key to the corresponding fields on the current page.</li>
-            <li>Click Save and Continue Edit. Extension will be granted access to your Walmart Account data.</li>
+            <li>Select Walmart marketplace.</li>
+            <li>Click <b>Get Access Data</b>. You will be redirected to the Walmart Developer Center.</li>
+            <li>Log in using your Walmart Seller credentials.</li>
+            <li>Under <i>Username > API Keys > Digital Signature</i>, copy your <i>Consumer ID</i> and paste it into the current M2E Pro page. </li>
+            <li>Under <i>Username > Delegate Access</i>, provide M2E Pro with the full access permissions to all API sections. Click <b>API Keys</b> to generate <i>Client ID</i> and <i>Client Secret</i>.</li>
+            <li>Copy your <i>Client ID</i> and <i>Client Secret</i> and paste the keys into the current M2E Pro page.</li>
+            <li>Click <b>Save and Continue Edit</b>. Extension will be granted access to your Walmart account data.</li>
         </ul>
         
-        <b>Note:</b> Make sure that you copy the valid API credentials, i.e. <b>Consumer ID</b> and <b>Private Key</b>.<br><br>
-        
-        <b>Important note:</b> The Private Key is common for all applications you are using. Regeneration of the Key will deactivate your previous Private Key.
-        This may cause the apps to no longer function properly.<br><br>
+        <b>Note:</b> Your <i>Consumer ID</i> must not be changed once it is obtain. <i>Consumer ID</i> is unique seller identifier M2E Pro requires to act on your behalf. <br>
+        If you need to reauthorize Extension, please generate new <i>Client ID</i> and <i>Client Secret</i> for M2E Pro under <i>Username > Delegate Access</i> in Developer Center. <br><br>
         
         The detailed information can be found <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
-    ); ?>
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, '/x/io1aAQ')
+        ); ?>
+    </div>
+
+    <div class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA ?>">
+        <?php echo Mage::helper('M2ePro')->__(
+            'Under this section, you need to connect M2E Pro with your Walmart account. Please complete the following steps:<br/>
+
+        <ul class="list">
+            <li>Click <b>Get Access Data</b>. You will be redirected to the Walmart website</li>
+            <li>Log in to your Seller Center Account.</li>
+            <li>In admin panel, navigate to <i>Settings > API > Consumer IDs & Private Keys</i>.</li>
+            <li>Copy the generated <i>Consumer ID</i> and <i>Private Key</i> to the corresponding fields on the current page.</li>
+            <li>Click <b>Save and Continue Edit</b>. The Extension will be granted access to your Walmart Account data.</li>
+        </ul>
+        
+        <b>Note:</b> Make sure that you copy valid API credentials, i.e <i>Consumer ID</i> and <i>Private Key</i>.<br><br>
+        
+        <b>Important note:</b> <i>Private Key</i> is common for all applications you are using. Regeneration of the Key will deactivate your previous <i>Private Key</i>. This may cause the apps to no longer function properly<br><br>
+        
+        The detailed information can be found <a href="%url%" target="_blank">here</a>.',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, '/x/io1aAQ')
+        ); ?>
+    </div>
 </div>
 
 <?php
@@ -32,7 +54,9 @@
         'title'           => '',
         'marketplace_id'  => 0,
         'consumer_id'     => '',
-        'private_key'     => ''
+        'old_private_key' => '',
+        'client_id'       => '',
+        'client_secret'   => ''
     );
 
     $formData = array_merge($defaults, $formData);
@@ -85,13 +109,9 @@
         WalmartAccountHandlerObj = new WalmartAccountHandler();
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
 
-        <?php if ($isEdit) { ?>
-            WalmartAccountHandlerObj.showGetAccessData(<?php echo $formData['marketplace_id']; ?>);
-        <?php } else {?>
-            if ($('marketplace_id').value) {
-                $('marketplace_id').simulate('change');
-            }
-        <?php } ?>
+        $('marketplace_id')
+            .observe('change', WalmartAccountHandlerObj.changeMarketplace)
+            .simulate('change');
 
         var urlHash = location.hash.substr(1);
         if (urlHash != '') {
@@ -118,7 +138,9 @@
     M2ePro.translator.add(<?php echo json_encode(array(
         'The specified Title is already used for other Account. Account Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Account. Account Title must be unique.'),
         'You must choose Marketplace first.' => Mage::helper('M2ePro')->__('You must choose Marketplace first.'),
-        'M2E Pro was not able to get access to the Walmart Account. Please, make sure, that you choose correct Option on Private Key Authorization Page and enter correct Consumer ID.' => Mage::helper('M2ePro')->__('M2E Pro was not able to get access to the Walmart Account. Please, make sure, that you choose correct Option on Private Key Authorization Page and enter correct Consumer ID / Private Key Auth Token'),
+        'M2E Pro was not able to get access to the Walmart Account' => Mage::helper('M2ePro')->__('M2E Pro could not get access to your Walmart account. 
+                                                                                                    For Walmart CA, please check if you entered valid Consumer ID and Private Key.
+                                                                                                    For Walmart US, please ensure to provide M2E Pro with full access permissions to all API sections and enter valid Consumer ID, Client ID, and Client Secret.'),
         'M2E Pro was not able to get access to the Walmart Account. Reason: %error_message%' => Mage::helper('M2ePro')->__('M2E Pro was not able to get access to the Walmart Account. Reason: %error_message%')
     )); ?>);
 
@@ -165,6 +187,27 @@
         </div>
 <?php } ?>
 
+<?php if ($isEdit && !$formData['client_id'] && $formData['marketplace_id'] != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA) { ?>
+    <div id="messages">
+        <ul class="messages">
+            <li class="warning-msg">
+                <ul>
+                    <li>
+                        <?php echo Mage::helper('M2ePro')->__(
+                            '<p>
+                                Attention! M2E Pro needs to be reauthorized.<br>
+                                Authentication based on the Private Key will be deprecated soon. You need to grant M2E Pro access based on the new Walmart Access Token based Authentication.<br>
+                                To reauthorize M2E Pro, please generate <i>Client ID</i> and <i>Client Secret</i> following the instruction in the Help block above.
+                            </p>
+                            <p>Important: Your <i>Consumer ID</i> must not be changed once it is obtain. <i>Consumer ID</i> is unique seller identifier M2E Pro requires to act on your behalf.</p>'
+                        ); ?>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+<?php } ?>
+
 <div class="entry-edit" id="magento_block_walmart_accounts_marketplaces_access" collapseable="no">
 
     <div class="entry-edit-head">
@@ -182,7 +225,7 @@
                     </td>
                     <td class="value">
 
-                        <select id="marketplace_id" name="marketplace_id" <?php if ($isEdit) { ?>disabled="disabled"<?php } ?> onchange="WalmartAccountHandlerObj.showGetAccessData(this.value);" class="required-entry">
+                        <select id="marketplace_id" name="marketplace_id" <?php if ($isEdit) { ?>disabled="disabled"<?php } ?> class="required-entry">
 
                             <?php if (!$isEdit) { ?>
                                 <option style="display:none;"></option>
@@ -205,7 +248,7 @@
 
                 <?php foreach ($this->marketplaces as $marketplaceRow) { ?>
 
-                    <tr class="marketplaces_view_element" id="marketplaces_register_url_container_<?php echo $marketplaceRow['id']; ?>" style="display:none;">
+                    <tr class="marketplace-required-field marketplace-required-field-id<?php echo $marketplaceRow['id']; ?>">
                         <td class="label"></td>
                         <td class="value">
                             <a href="<?php echo Mage::helper('M2ePro/Component_Walmart')->getRegisterUrl($marketplaceRow['id']); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Get Access Data') ?></a>
@@ -214,26 +257,54 @@
 
                 <?php } ?>
 
-                <tr id="marketplaces_consumer_id_container">
+                <tr class="marketplace-required-field marketplace-required-field-id-not-null">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Consumer ID'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input id="consumer_id" type="text" name="consumer_id" <?php if ($isEdit) echo ' value="'.$formData['consumer_id'].'"'; ?> class="input-text required-entry M2ePro-required-when-visible" />
+                        <input id="consumer_id" type="text" name="consumer_id" <?php if ($isEdit) echo ' value="'.$formData['consumer_id'].'" disabled="disabled"'; ?> class="input-text required-entry M2ePro-required-when-visible" />
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Walmart Consumer ID generated from your Seller Center Account.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('A unique seller identifier on the website. <br><b>Note:</b> Your <i>Consumer ID</i> must not be changed once it is obtain.'); ?></span>
                         </p>
+
+                        <?php if ($isEdit) : ?>
+                            <input type="hidden" name="consumer_id" value="<?php echo $formData['consumer_id']; ?>" />
+                        <?php endif; ?>
                     </td>
                 </tr>
 
-                <tr id="marketplaces_private_key_container">
+                <tr class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA ?>">
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Private Key'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <textarea name="private_key" id="private_key" cols="50" rows="10" class="required-entry input-text M2ePro-marketplace-merchant M2ePro-required-when-visible" style="height: 15em;"><?php echo Mage::helper('M2ePro')->escapeHtml($formData['private_key']); ?></textarea>
+                        <textarea name="old_private_key" id="old_private_key" cols="50" rows="10" class="marketplace-required-input marketplace-required-input-text-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA ?> input-text M2ePro-required-when-visible" style="height: 15em;"><?php echo Mage::helper('M2ePro')->escapeHtml($formData['old_private_key']); ?></textarea>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Walmart Private Key generated from your Seller Center Account.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US ?>">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Client ID'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="client_id" type="text" name="client_id" <?php if ($isEdit) echo ' value="'.$formData['client_id'].'"'; ?> class="input-text M2ePro-required-when-visible" />
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('A unique API key retrieved to get an access token.'); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr class="marketplace-required-field marketplace-required-field-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US ?>">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Client Secret'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <textarea name="client_secret" id="client_secret" cols="50" rows="10" class="marketplace-required-input marketplace-required-input-text-id<?php echo Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US ?> input-text M2ePro-required-when-visible" style="height: 5em;"><?php echo Mage::helper('M2ePro')->escapeHtml($formData['client_secret']); ?></textarea>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__('A unique API key retrieved to get an access token.'); ?></span>
                         </p>
                     </td>
                 </tr>

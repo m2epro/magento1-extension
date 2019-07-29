@@ -228,6 +228,29 @@ class Ess_M2ePro_Adminhtml_Development_Cron_WalmartController
     }
 
     /**
+     * @title "Order -> Cancel"
+     */
+    public function orderCancelAction()
+    {
+        $taskTitle = 'Order -> Cancel';
+
+        $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
+        $cronRunner->setAllowedTasks(array(
+            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Cancel::NICK
+        ));
+
+        if ($cronRunner->process()) {
+            $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
+        } else {
+            $this->_getSession()->addError("{$taskTitle} was performed with errors.");
+        }
+
+        return $this->getResponse()->setBody(
+            '<pre>'.$cronRunner->getOperationHistory()->getFullDataInfo().'</pre>'
+        );
+    }
+
+    /**
      * @title "Order -> Receive"
      */
     public function orderReceiveAction()
@@ -237,6 +260,29 @@ class Ess_M2ePro_Adminhtml_Development_Cron_WalmartController
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
         $cronRunner->setAllowedTasks(array(
             Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive::NICK
+        ));
+
+        if ($cronRunner->process()) {
+            $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
+        } else {
+            $this->_getSession()->addError("{$taskTitle} was performed with errors.");
+        }
+
+        return $this->getResponse()->setBody(
+            '<pre>'.$cronRunner->getOperationHistory()->getFullDataInfo().'</pre>'
+        );
+    }
+
+    /**
+     * @title "Order -> Refund"
+     */
+    public function orderRefundAction()
+    {
+        $taskTitle = 'Order -> Refund';
+
+        $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
+        $cronRunner->setAllowedTasks(array(
+            Ess_M2ePro_Model_Cron_Task_Walmart_Order_Refund::NICK
         ));
 
         if ($cronRunner->process()) {

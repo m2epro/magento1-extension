@@ -1,14 +1,14 @@
 <div id="block_notice_walmart_orders_list" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Orders'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
-        'On this page, you can review the Channel Sales imported from Walmart.<br><br>
+        'On this page, you can review Channel Sales imported from Walmart.<br><br>
 
-        In the grid below, filter the records to narrow your search results, then click the Order line to review the details.
-        Use the Action menu to manage each Channel Order individually or update them in bulk.<br><br>
+        In the grid below, filter the records to narrow your search results, then click the Order line to review the details. Use the Action menu to manage each Channel Order individually or update them in bulk.<br><br>
 
-        <strong>Note:</strong> you can enable an automatic creation of Magento Orders, Invoices, and Shipments under the <i>%navigation%</i>.<br><br>
+        <strong>Note:</strong> you can enable automatic creation of Magento Orders, Invoices, and Shipments under <i>%navigation%</i>.<br><br>
 
         The detailed information can be found <a href="%url%" target="_blank">here</a>.',
 
-        Mage::helper('M2ePro/View_Walmart')->getPageNavigationPath('configuration', 'Accounts', '[Needed Account] > Orders Tab')
+        Mage::helper('M2ePro/View_Walmart')->getPageNavigationPath('configuration', 'Accounts', 'Edit Account Configuration > Orders'),
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, '/x/hI1aAQ')
     ); ?>
 </div>

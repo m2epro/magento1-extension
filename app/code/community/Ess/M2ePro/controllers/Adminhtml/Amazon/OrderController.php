@@ -22,7 +22,10 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
              ->addJs('M2ePro/Order/Handler.js')
              ->addJs('M2ePro/Amazon/Order/MerchantFulfillmentHandler.js')
              ->addJs('M2ePro/Order/Edit/ItemHandler.js')
-             ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js');
+             ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
+             ->addJs('M2ePro/GridHandler.js')
+             ->addJs('M2ePro/Order/NoteHandler.js');
+
         $this->_initPopUp();
 
         $this->setPageHelpLink(NULL, NULL, "x/cYIVAQ");
@@ -98,61 +101,73 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
 
     public function createMagentoOrderAction()
     {
-        $id = $this->getRequest()->getParam('id');
-        $force = $this->getRequest()->getParam('force');
+        $ids = $this->getRequestIds();
+        $isForce = (bool)$this->getRequest()->getParam('force');
+        $warnings = 0;
+        $errors = 0;
 
-        /** @var $order Ess_M2ePro_Model_Order */
-        $order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', (int)$id);
-        $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
+        foreach ($ids as $id) {
 
-        // M2ePro_TRANSLATIONS
-        // Magento Order is already created for this Amazon Order.
-        if (!is_null($order->getMagentoOrderId()) && $force != 'yes') {
-            $message = 'Magento Order is already created for this Amazon Order. ' .
-                       'Press Create Order Button to create new one.';
+            /** @var $order Ess_M2ePro_Model_Order */
+            $order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', (int)$id);
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
-            $this->_getSession()->addWarning(
-                Mage::helper('M2ePro')->__($message)
-            );
-            $this->_redirect('*/*/view', array('id' => $id));
-            return;
+            if (!is_null($order->getMagentoOrderId()) && !$isForce) {
+                $warnings++;
+                continue;
+            }
+
+            // Create magento order
+            // ---------------------------------------
+            try {
+                $order->createMagentoOrder($isForce);
+            } catch (Exception $e) {
+                $errors++;
+            }
+            // ---------------------------------------
+
+            // Create invoice
+            // ---------------------------------------
+            if ($order->getChildObject()->canCreateInvoice()) {
+                $order->createInvoice();
+            }
+            // ---------------------------------------
+
+            // Create shipment
+            // ---------------------------------------
+            if ($order->getChildObject()->canCreateShipment()) {
+                $order->createShipment();
+            }
+            // ---------------------------------------
+
+            // ---------------------------------------
+            $order->updateMagentoOrderStatus();
+            // ---------------------------------------
         }
 
-        // Create magento order
-        // ---------------------------------------
-        try {
-            $order->createMagentoOrder();
-            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento Order was created.'));
-        } catch (Exception $e) {
-            $message = Mage::helper('M2ePro')->__(
-                'Magento Order was not created. Reason: %error_message%',
-                Mage::helper('M2ePro/Module_Log')->decodeDescription($e->getMessage())
-            );
-            $this->_getSession()->addError($message);
+        if (!$errors && !$warnings) {
+            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento order(s) were created.'));
         }
-        // ---------------------------------------
 
-        // Create invoice
-        // ---------------------------------------
-        if ($order->getChildObject()->canCreateInvoice()) {
-            $result = $order->createInvoice();
-            $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Invoice was created.'));
+        if ($errors) {
+            $this->getSession()->addError(Mage::helper('M2ePro')->__(
+                '%count% Magento order(s) were not created. Please <a target="_blank" href="%url%">view Log</a>
+                for the details.',
+                $errors, $this->getUrl('*/adminhtml_amazon_log/order')
+            ));
         }
-        // ---------------------------------------
 
-        // Create shipment
-        // ---------------------------------------
-        if ($order->getChildObject()->canCreateShipment()) {
-            $result = $order->createShipment();
-            $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Shipment was created.'));
+        if ($warnings) {
+            $this->_getSession()->addWarning(Mage::helper('M2ePro')->__(
+                '%count% Magento order(s) are already created for the selected Amazon order(s).', $warnings
+            ));
         }
-        // ---------------------------------------
 
-        // ---------------------------------------
-        $order->updateMagentoOrderStatus();
-        // ---------------------------------------
-
-        $this->_redirect('*/*/view', array('id' => $id));
+        if (count($ids) == 1) {
+            $this->_redirect('*/*/view', array('id' => $ids[0]));
+        } else {
+            $this->_redirect('*/*/index');
+        }
     }
 
     //########################################

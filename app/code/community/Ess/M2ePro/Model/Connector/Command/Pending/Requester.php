@@ -51,7 +51,25 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Requester
 
     public function process()
     {
-        $this->getConnection()->process();
+        try {
+
+            $this->getConnection()->process();
+
+        } catch (Exception $exception) {
+
+            $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
+            $message->initFromException($exception);
+
+            if ($this->getConnection()->getResponse() === null) {
+
+                $response = Mage::getModel('M2ePro/Connector_Connection_Response');
+                $response->initFromPreparedResponse(array(), array());
+
+                $this->getConnection()->setResponse($response);
+            }
+
+            $this->getConnection()->getResponse()->getMessages()->addEntity($message);
+        }
 
         $this->eventBeforeExecuting();
 

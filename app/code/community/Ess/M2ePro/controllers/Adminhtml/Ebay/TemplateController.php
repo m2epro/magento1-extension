@@ -193,6 +193,8 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         if ((bool)$this->getRequest()->getParam('wizard',false)) {
             $extendedRoutersParams['edit']['wizard'] = true;
+        } else {
+            $extendedRoutersParams['edit']['back'] = true;
         }
 
         $this->_redirectUrl(

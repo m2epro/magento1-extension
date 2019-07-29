@@ -44,8 +44,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
                 $this->_headerText =
                     Mage::helper('M2ePro')->__('Edit %component_name% %template_name% Policy "%template_title%"',
                         $componentName,
-                        $this->escapeHtml($template->getTitle()),
-                        $this->getTemplateName()
+                        $this->getTemplateName(),
+                        $this->escapeHtml($template->getTitle())
                     );
             } else {
                 $this->_headerText = Mage::helper('M2ePro')->__('Add %component_name% %template_name% Policy',
@@ -92,9 +92,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit extends Mage_Adminhtml_Block
 
         // ---------------------------------------
         if ($template->getId() && !(bool)$this->getRequest()->getParam('wizard',false)) {
-            $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
-                Mage::helper('M2ePro')->__('Add %template_name% Policy', $this->getTemplateName())
-            );
+
+            if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+                $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+                    Mage::helper('M2ePro')->__('Add %component_name% %template_name% Policy',
+                        Mage::helper('M2ePro/Component_Ebay')->getTitle(),
+                        $this->getTemplateName()
+                    )
+                );
+            } else {
+                $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+                    Mage::helper('M2ePro')->__('Add %template_name% Policy',
+                        $this->getTemplateName()
+                    )
+                );
+            }
 
             $this->_addButton('duplicate', array(
                 'label'     => Mage::helper('M2ePro')->__('Duplicate'),

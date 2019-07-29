@@ -10,10 +10,14 @@
 
 class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
 {
-    const LOCK_FILE_LIFETIME = 300;
-    const ERRORS_LOGFILE_NAME = 'm2epro_upgrade_errors.log';
+    const MODULE_IDENTIFIER = 'M2ePro_setup';
 
     const INSTALLATION_HISTORY_KEY = '/installation/versions_history/';
+
+    /**
+     * Means that version, upgrade files are included to the build
+     */
+    const MIN_SUPPORTED_VERSION_FOR_UPGRADE = '5.0.3';
 
     /** @var string */
     public $versionFrom;
@@ -21,30 +25,479 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
     /** @var string */
     public $versionTo;
 
-    private $lockId;
     private $cache = array();
 
     //########################################
 
-    /**
-     * @return Ess_M2ePro_Model_Upgrade_Tables
-     */
-    public function getTablesObject()
+    protected function _installResourceDb($newVersion)
     {
-        $cacheKey = 'tablesObject';
-
-        if (isset($this->cache[$cacheKey])) {
-            return $this->cache[$cacheKey];
+        if (!$this->getLockObject()->getLock()) {
+            return;
         }
 
-        /** @var Ess_M2ePro_Model_Upgrade_Tables $object */
-        $object = Mage::getModel('M2ePro/Upgrade_Tables');
-        $object->setInstaller($this)->initialize();
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled() &&
+            !$this->isMaintenanceCanBeIgnored()) {
+            return;
+        }
 
-        return $this->cache[$cacheKey] = $object;
+        Mage::helper('M2ePro/Module_Maintenance')->enable();
+
+        try {
+
+            $this->beforeModuleDbModification();
+            $this->beforeInstall($newVersion);
+
+            /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup_UpgradeManager $upgradeManager */
+            $upgradeManager = $this->getUpgradeManager(NULL, $newVersion);
+            $upgradeManager->process();
+
+            $setupObject = $upgradeManager->getCurrentSetupObject();
+            $setupObject->setData('is_completed', 1);
+            $setupObject->save();
+
+            $this->_setResourceVersion(self::TYPE_DB_INSTALL, $newVersion);
+
+            $this->afterInstall($newVersion);
+            $this->afterModuleDbModification();
+
+        } catch (Exception $e) {
+
+            $this->getLockObject()->releaseLock();
+
+            if (isset($setupObject)) {
+                $setupObject->setData('profiler_data', $e->__toString());
+                $setupObject->save();
+            }
+
+            throw $e;
+        }
+
+        Mage::helper('M2ePro/Module_Maintenance')->disable();
+
+        $this->getLockObject()->releaseLock();
+    }
+
+    protected function _upgradeResourceDb($oldVersion, $newVersion)
+    {
+        if (!$this->getLockObject()->getLock()) {
+            return;
+        }
+
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled() &&
+            !$this->isMaintenanceCanBeIgnored()) {
+            return;
+        }
+
+        Mage::helper('M2ePro/Module_Maintenance')->enable();
+
+        try {
+
+            /** @var Ess_M2ePro_Model_Setup[] $notCompletedUpgrades */
+            $notCompletedUpgrades = $this->getNotCompletedUpgrades();
+            if ($this->getSetupConfigObject()->isAllowedRollbackFromBackup() && !empty($notCompletedUpgrades)) {
+
+                /**
+                 * Only one not completed upgrade is supported
+                 */
+                $notCompletedUpgrade = reset($notCompletedUpgrades);
+                if (version_compare($notCompletedUpgrade->getVersionFrom(), $oldVersion, '<')) {
+                    $oldVersion = $notCompletedUpgrade->getVersionFrom();
+                }
+            }
+
+            if (version_compare($oldVersion, self::MIN_SUPPORTED_VERSION_FOR_UPGRADE, '<')) {
+                throw new Exception(sprintf(
+                    'This version [%s] is too old.', $oldVersion
+                ));
+            }
+
+            $this->beforeModuleDbModification();
+            $this->beforeUpgrade($oldVersion, $newVersion);
+
+            $versionsToExecute = $this->getAvailableFiles($oldVersion, $newVersion);
+            foreach ($versionsToExecute as $versionFrom => $versionTo) {
+
+                /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup_UpgradeManager $upgradeManager */
+                $upgradeManager = $this->getUpgradeManager($versionFrom, $versionTo);
+
+                $setupObject  = $upgradeManager->getCurrentSetupObject();
+                $backupObject = $upgradeManager->getBackupObject();
+
+                if ($setupObject->isBackuped() && $this->getSetupConfigObject()->isAllowedRollbackFromBackup()) {
+                    $backupObject->rollback();
+                }
+
+                $backupObject->remove();
+                $backupObject->create();
+
+                $setupObject->setData('is_backuped', 1);
+                $setupObject->save();
+
+                $upgradeManager->process();
+
+                $setupObject->setData('is_completed', 1);
+                $setupObject->save();
+
+                $backupObject->remove();
+
+                $this->_setResourceVersion(self::TYPE_DB_UPGRADE, $versionTo);
+            }
+
+            $this->afterUpgrade($oldVersion, $newVersion);
+            $this->afterModuleDbModification();
+
+        } catch (Exception $e) {
+
+            $this->getLockObject()->releaseLock();
+
+            if (isset($setupObject)) {
+                $setupObject->setData('profiler_data', $e->__toString());
+                $setupObject->save();
+            }
+
+            throw $e;
+        }
+
+        Mage::helper('M2ePro/Module_Maintenance')->disable();
+
+        $this->getLockObject()->releaseLock();
+    }
+
+    protected function getAvailableFiles($fromVersion, $toVersion)
+    {
+        $filesDir = Mage::getModuleDir('sql', Ess_M2ePro_Helper_Module::IDENTIFIER) .DS. 'Upgrade';
+        if (!is_dir($filesDir) || !is_readable($filesDir)) {
+            return array();
+        }
+
+        $files = array();
+        $directoryIterator = new FilesystemIterator($filesDir, FilesystemIterator::SKIP_DOTS);
+
+        foreach ($directoryIterator as $directory) {
+            /**@var SplFileInfo $directory */
+
+            list($fileVersionFrom, $fileVersionTo) = explode('__', $directory->getFilename());
+            $fileVersionFrom = str_replace(array('_', 'v'), array('.', ''), $fileVersionFrom);
+            $fileVersionTo   = str_replace(array('_', 'v'), array('.', ''), $fileVersionTo);
+
+            if (version_compare($fileVersionFrom, $fromVersion, '<') ||
+                version_compare($fileVersionTo, $toVersion, '>')
+            ) {
+                continue;
+            }
+
+            $files[$fileVersionFrom][$fileVersionTo] = $directory->getFilename();
+        }
+
+        uksort($files, function($first, $second) {
+            return version_compare($first, $second);
+        });
+
+        $maxToVersion = null;
+        $filesData = array();
+
+        foreach ($files as $fileVersionFrom => $fileData) {
+            uksort($fileData, function($first, $second) {
+                return version_compare($first, $second);
+            });
+
+            end($fileData);
+            $finalToVersion = key($fileData);
+
+            if (!is_null($maxToVersion) && version_compare($finalToVersion, $maxToVersion, '<=')) {
+                continue;
+            }
+
+            $maxToVersion = $finalToVersion;
+            $filesData[$fileVersionFrom] = $finalToVersion;
+        }
+
+        return $filesData;
+    }
+
+    /**
+     * @return Ess_M2ePro_Model_Setup[]
+     */
+    private function getNotCompletedUpgrades()
+    {
+        if (!$this->getConnection()->isTableExists($this->getFullTableName('setup'))) {
+            return array();
+        }
+
+        $collection = Mage::getModel('M2ePro/Setup')->getCollection();
+        $collection->addFieldToFilter('version_from', array('notnull' => true));
+        $collection->addFieldToFilter('version_to', array('notnull' => true));
+        $collection->addFieldToFilter('is_backuped', 1);
+        $collection->addFieldToFilter('is_completed', 0);
+
+        return $collection->getItems();
+    }
+
+    //########################################
+
+    public function run($sql)
+    {
+        if (trim($sql) == '') {
+            return $this;
+        }
+
+        foreach ($this->getTablesObject()->getAllHistoryEntities() as $tableNameFrom => $tableNameTo) {
+            $tableNameFrom = ($tableNameFrom == 'ess_config') ?
+                $tableNameFrom :
+                Ess_M2ePro_Model_Upgrade_Tables::M2E_PRO_TABLE_PREFIX . $tableNameFrom;
+            $sql = str_replace(' `'.$tableNameFrom.'`',' `'.$tableNameTo.'`',$sql);
+            $sql = str_replace(' '.$tableNameFrom,' `'.$tableNameTo.'`',$sql);
+        }
+
+        return parent::run($sql);
+    }
+
+    public function generateRandomHash()
+    {
+        return sha1(microtime(1));
+    }
+
+    //########################################
+
+    protected function beforeModuleDbModification()
+    {
+        if (extension_loaded('apc') && ini_get('apc.enabled')) {
+            apc_clear_cache('system');
+        }
+
+        if (function_exists('opcache_get_status')) {
+            opcache_reset();
+        }
+
+        $this->getConnection()->disallowDdlCache();
+    }
+
+    protected function afterModuleDbModification()
+    {
+        $this->resetServicingStatus();
+        $this->removeConfigsDuplicates();
+
+        Mage::helper('M2ePro/Module')->clearCache();
+
+        $this->getConnection()->allowDdlCache();
     }
 
     // ---------------------------------------
+
+    protected function beforeInstall($newVersion)
+    {
+        $this->versionFrom = null;
+        $this->versionTo   = $newVersion;
+
+        $this->updateInstallationVersionHistory(null, $newVersion);
+    }
+
+    protected function afterInstall($newVersion) {}
+
+    // ---------------------------------------
+
+    protected function beforeUpgrade($oldVersion, $newVersion)
+    {
+        $this->versionFrom = $oldVersion;
+        $this->versionTo   = $newVersion;
+
+        $this->updateInstallationVersionHistory($oldVersion, $newVersion);
+    }
+
+    protected function afterUpgrade($oldVersion, $newVersion)
+    {
+        try {
+            $this->removeOldBackupsTables();
+        } catch (Exception $e) {}
+    }
+
+    //########################################
+
+    private function updateInstallationVersionHistory($versionFrom, $versionTo)
+    {
+        if ($versionFrom === $versionTo) {
+            return;
+        }
+
+        $versionsHistory = (array)$this->getInstallationVersionsHistory();
+        $versionsHistory[$versionTo] = array(
+            'from' => $versionFrom,
+            'to'   => $versionTo,
+            'date' => Mage::getModel('core/date')->gmtDate()
+        );
+
+        $this->setInstallationVersionsHistory($versionsHistory);
+    }
+
+    public function getInstallationVersionsHistory()
+    {
+        if (!$this->getTablesObject()->isExists('registry')) {
+            return NULL;
+        }
+
+        $versionsHistory = $this->getConnection()->select()
+            ->from($this->getTablesObject()->getFullName('registry'), array('value'))
+            ->where('`key` = ?', self::INSTALLATION_HISTORY_KEY)
+            ->query()
+            ->fetch();
+
+        if (empty($versionsHistory)) {
+            return NULL;
+        }
+
+        return Mage::helper('M2ePro/Data')->jsonDecode($versionsHistory['value']);
+    }
+
+    public function setInstallationVersionsHistory($history)
+    {
+        if (!$this->getTablesObject()->isExists('registry')) {
+            return;
+        }
+
+        $currentHistory = $this->getInstallationVersionsHistory();
+        if (is_null($currentHistory)) {
+
+            $this->getConnection()->insertArray(
+                $this->getTablesObject()->getFullName('registry'),
+                array('key', 'value', 'update_date', 'create_date'),
+                array(
+                    array(
+                        'key'         => self::INSTALLATION_HISTORY_KEY,
+                        'value'       => Mage::helper('M2ePro/Data')->jsonEncode($history),
+                        'update_date' => Mage::getModel('core/date')->gmtDate(),
+                        'create_date' => Mage::getModel('core/date')->gmtDate()
+                    )
+                )
+            );
+
+            return;
+        }
+
+        $this->getConnection()->update(
+            $this->getTablesObject()->getFullName('registry'),
+            array(
+                'value'       => Mage::helper('M2ePro/Data')->jsonEncode($history),
+                'update_date' => Mage::getModel('core/date')->gmtDate(),
+            ),
+            array('`key` = ?' => self::INSTALLATION_HISTORY_KEY)
+        );
+    }
+
+    //########################################
+
+    public function startSetup()
+    {
+        $this->getLockObject()->activateLock();
+        return parent::startSetup();
+    }
+
+    //########################################
+
+    protected function resetServicingStatus()
+    {
+        $tableName = 'cache_config';
+
+        if (!$this->getTablesObject()->isExists($tableName)) {
+            return;
+        }
+
+        $this->getConnection()->update(
+            $this->getTablesObject()->getFullName($tableName),
+            array('value' => NULL),
+            array(
+                '`group` = ?' => '/servicing/',
+                '`key` = ?' => 'last_update_time'
+            )
+        );
+    }
+
+    protected function removeOldBackupsTables()
+    {
+        $versionsHistory = $this->getInstallationVersionsHistory();
+        if (empty($versionsHistory)) {
+            return;
+        }
+
+        $prefixes = array(
+            'm2epro__source'      => '6.0.0',
+            'ess__source'         => '6.0.0',
+            'm2epro__backup_v5'   => '6.0.0',
+            'ess__backup_v5'      => '6.0.0',
+            'm2epro__backup_v611' => '6.1.1',
+            'm2epro__backup_v630' => '6.2.4.3',
+            'm2epro__b_65016'     => '6.5.0.16'
+        );
+
+        $borderDate = new \DateTime('now', new \DateTimeZone('UTC'));
+        $borderDate->modify('- 30 days');
+
+        foreach ($prefixes as $backupPrefix => $removeAfterVersion) {
+
+            $hasToBeRemoved = false;
+            foreach ($versionsHistory as $versionHistoryRecord) {
+
+                if (empty($versionHistoryRecord['to']) || empty($versionHistoryRecord['date'])) {
+                    continue;
+                }
+
+                try {
+
+                    $version          = $versionHistoryRecord['to'];
+                    $installationDate = new \DateTime($versionHistoryRecord['date'], new \DateTimeZone('UTC'));
+
+                } catch (\Exception $e) {
+                    continue;
+                }
+
+                if (version_compare($version, $removeAfterVersion, '>=') &&
+                    $installationDate->getTimestamp() < $borderDate->getTimestamp())
+                {
+                    $hasToBeRemoved = true;
+                    break;
+                }
+            }
+
+            if ($hasToBeRemoved) {
+
+                $queryStmt = $this->getConnection()->query("SHOW TABLES LIKE '%{$backupPrefix}%'");
+
+                while ($tableName = $queryStmt->fetchColumn()) {
+                    $this->getConnection()->dropTable($tableName);
+                }
+            }
+        }
+    }
+
+    // ---------------------------------------
+
+    public function removeConfigsDuplicates()
+    {
+        foreach ($this->getTablesObject()->getAllHistoryConfigEntities() as $tableName => $tableFullName) {
+
+            if (!$this->getTablesObject()->isExists($tableName)) {
+                continue;
+            }
+
+            $this->getConfigModifier($tableName)->removeDuplicates();
+        }
+    }
+
+    //########################################
+
+    /**
+     * @return Mage_Core_Model_Resource_Resource
+     */
+    public function getResource()
+    {
+        return Mage::getSingleton('core/resource')->getResource();
+    }
+
+    public function getFullTableName($tableName)
+    {
+        return $this->getTablesObject()->getFullName($tableName);
+    }
+
+    //########################################
 
     /**
      * @param string $tableName
@@ -122,552 +575,71 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup extends Mage_Core_Model_Resource_Setup
 
     //########################################
 
-    public function getFullTableName($tableName)
+    /**
+     * @param $versionFrom
+     * @param $versionTo
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup_UpgradeManager
+     */
+    private function getUpgradeManager($versionFrom, $versionTo)
     {
-        return $this->getTablesObject()->getFullName($tableName);
-    }
+        $cacheKey = __METHOD__ .'#'. $versionFrom .'#'. $versionTo;
 
-    //########################################
+        if (isset($this->cache[$cacheKey])) {
+            return $this->cache[$cacheKey];
+        }
+
+        /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup_UpgradeManager $manager */
+        $manager = Mage::getModel('M2ePro/Upgrade_MySqlSetup_UpgradeManager', array(
+            $versionFrom, $versionTo, $this
+        ));
+
+        return $this->cache[$cacheKey] = $manager;
+    }
 
     /**
-     * Fix for invalid sort upgrade files that contains 4 digits in version (e.g. 6.5.1.0) bug
-     *
-     * @param string $actionType
-     * @param string $fromVersion
-     * @param string $toVersion
-     * @param array $arrFiles
-     * @return array
+     * @return Ess_M2ePro_Model_Upgrade_Tables
      */
-    protected function _getModifySqlFiles($actionType, $fromVersion, $toVersion, $arrFiles)
+    public function getTablesObject()
     {
-        // Magento ver. 1.5.1.0 doest not have the TYPE_DB_UPGRADE constant
-        $actionTypeUpgrade = 'upgrade';
-        if (defined('self::TYPE_DB_UPGRADE')) {
-            $actionTypeUpgrade = self::TYPE_DB_UPGRADE;
+        if (isset($this->cache[__METHOD__])) {
+            return $this->cache[__METHOD__];
         }
 
-        if ($actionType != $actionTypeUpgrade) {
-            return parent::_getModifySqlFiles($actionType, $fromVersion, $toVersion, $arrFiles);
-        }
+        /** @var Ess_M2ePro_Model_Upgrade_Tables $object */
+        $object = Mage::getModel('M2ePro/Upgrade_Tables');
+        $object->setInstaller($this)->initialize();
 
-        $upgradeFiles = array();
+        return $this->cache[__METHOD__] = $object;
+    }
 
-        foreach ($arrFiles as $versionInfo => $file) {
-            $versionsInterval = explode('-', $versionInfo);
-            if (count($versionsInterval) != 2) {
-                continue;
-            }
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup_Config
+     */
+    public function getSetupConfigObject()
+    {
+        return Mage::getSingleton('M2ePro/Upgrade_MySqlSetup_Config');
+    }
 
-            $fileVersionFrom = $versionsInterval[0];
-            $fileVersionTo   = $versionsInterval[1];
-
-            if (version_compare($fileVersionFrom, $fromVersion, '<') ||
-                version_compare($fileVersionTo, $toVersion, '>')
-            ) {
-                continue;
-            }
-
-            if (!isset($upgradeFiles[$fileVersionFrom])) {
-                $upgradeFiles[$fileVersionFrom] = array();
-            }
-
-            $upgradeFiles[$fileVersionFrom][$fileVersionTo] = $file;
-        }
-
-        uksort($upgradeFiles, function($first, $second) {
-            return version_compare($first, $second);
-        });
-
-        $maxToVersion = null;
-        $filesData = array();
-
-        foreach ($upgradeFiles as $fileVersionFrom => $fileData) {
-            uksort($fileData, function($first, $second) {
-                return version_compare($first, $second);
-            });
-
-            end($fileData);
-            $finalToVersion = key($fileData);
-
-            if (!is_null($maxToVersion) && version_compare($finalToVersion, $maxToVersion, '<=')) {
-                continue;
-            }
-
-            $maxToVersion = $finalToVersion;
-
-            $filesData[] = array(
-                'toVersion' => $finalToVersion,
-                'fileName'  => $fileData[$finalToVersion],
-            );
-        }
-
-        return $filesData;
+    /**
+     * @return Ess_M2ePro_Model_Upgrade_MySqlSetup_Lock
+     */
+    private function getLockObject()
+    {
+        return Mage::getSingleton('M2ePro/Upgrade_MySqlSetup_Lock');
     }
 
     //########################################
 
-    public function run($sql)
+    private function isMaintenanceCanBeIgnored()
     {
-        if (trim($sql) == '') {
-            return $this;
-        }
-
-        foreach ($this->getTablesObject()->getAllHistoryEntities() as $tableNameFrom => $tableNameTo) {
-            $tableNameFrom = ($tableNameFrom == 'ess_config') ?
-                                $tableNameFrom :
-                                Ess_M2ePro_Model_Upgrade_Tables::M2E_PRO_TABLE_PREFIX . $tableNameFrom;
-            $sql = str_replace(' `'.$tableNameFrom.'`',' `'.$tableNameTo.'`',$sql);
-            $sql = str_replace(' '.$tableNameFrom,' `'.$tableNameTo.'`',$sql);
-        }
-
-        return parent::run($sql);
-    }
-
-    public function generateRandomHash()
-    {
-        return sha1(microtime(1));
-    }
-
-    //########################################
-
-    protected function beforeModuleDbModification()
-    {
-        if (extension_loaded('apc') && ini_get('apc.enabled')) {
-            apc_clear_cache('system');
-        }
-
-        if (function_exists('opcache_get_status')) {
-            opcache_reset();
-        }
-    }
-
-    protected function afterModuleDbModification()
-    {
-        $this->resetServicingStatus();
-        $this->removeConfigsDuplicates();
-
-        Mage::helper('M2ePro/Module')->clearCache();
-    }
-
-    // ---------------------------------------
-
-    protected function beforeInstall($newVersion)
-    {
-        $this->versionFrom = null;
-        $this->versionTo   = $newVersion;
-
-        $this->updateInstallationVersionHistory(null, $newVersion);
-    }
-
-    protected function afterInstall($newVersion) {}
-
-    // ---------------------------------------
-
-    protected function beforeUpgrade($oldVersion, $newVersion)
-    {
-        $this->versionFrom = $oldVersion;
-        $this->versionTo   = $newVersion;
-
-        $this->updateInstallationVersionHistory($oldVersion, $newVersion);
-    }
-
-    protected function afterUpgrade($oldVersion, $newVersion)
-    {
-        try {
-            $this->removeOldBackupsTables();
-        } catch (Exception $e) {}
-    }
-
-    // ---------------------------------------
-
-    protected function beforeFileExecution() {}
-
-    protected function afterFileExecution() {}
-
-    //########################################
-
-    protected function _installResourceDb($newVersion)
-    {
-        if ($this->isLocked()) {
-            return;
-        }
-
-        $this->lock();
-
-        // double running protection
-        usleep(1000000); // 1 sec
-
-        if ($this->isLocked() && !$this->isLockOwner()) {
-            return;
-        }
-
-        try {
-
-            $this->beforeModuleDbModification();
-            $this->beforeInstall($newVersion);
-
-            parent::_installResourceDb($newVersion);
-
-            $this->afterInstall($newVersion);
-            $this->afterModuleDbModification();
-
-        } catch (Exception $e) {
-
-            $this->unlock();
-            Mage::log($e->__toString(), null, self::ERRORS_LOGFILE_NAME, true);
-
-            throw $e;
-        }
-
-        $this->unlock();
-    }
-
-    protected function _upgradeResourceDb($oldVersion, $newVersion)
-    {
-        if ($this->isLocked()) {
-            return;
-        }
-
-        $this->lock();
-
-        // double running protection
-        usleep(1000000); // 1 sec
-
-        if ($this->isLocked() && !$this->isLockOwner()) {
-            return;
-        }
-
-        try {
-
-            $this->beforeModuleDbModification();
-            $this->beforeUpgrade($oldVersion, $newVersion);
-
-            parent::_upgradeResourceDb($oldVersion, $newVersion);
-
-            $this->afterUpgrade($oldVersion, $newVersion);
-            $this->afterModuleDbModification();
-
-        } catch (Exception $e) {
-
-            $this->unlock();
-            Mage::log($e->__toString(), null, self::ERRORS_LOGFILE_NAME, true);
-
-            throw $e;
-        }
-
-        $this->unlock();
-    }
-
-    // ---------------------------------------
-
-    protected function _installData($newVersion)
-    {
-        if ($this->isLocked()) {
-            return;
-        }
-
-        $this->lock();
-
-        // double running protection
-        usleep(1000000); // 1 sec
-
-        if ($this->isLocked() && !$this->isLockOwner()) {
-            return;
-        }
-
-        try {
-
-            parent::_installData($newVersion);
-
-        } catch (Exception $e) {
-
-            $this->unlock();
-            Mage::log($e->__toString(), null, self::ERRORS_LOGFILE_NAME, true);
-
-            throw $e;
-        }
-
-        $this->unlock();
-    }
-
-    protected function _upgradeData($oldVersion, $newVersion)
-    {
-        if ($this->isLocked()) {
-            return;
-        }
-
-        $this->lock();
-
-        // double running protection
-        usleep(1000000); // 1 sec
-
-        if ($this->isLocked() && !$this->isLockOwner()) {
-            return;
-        }
-
-        try {
-
-            parent::_upgradeData($oldVersion, $newVersion);
-
-        } catch (Exception $e) {
-
-            $this->unlock();
-            Mage::log($e->__toString(), null, self::ERRORS_LOGFILE_NAME, true);
-
-            throw $e;
-        }
-
-        $this->unlock();
-    }
-
-    // ---------------------------------------
-
-    public function startSetup()
-    {
-        $this->lock();
-
-        $this->beforeFileExecution();
-        return parent::startSetup();
-    }
-
-    public function endSetup()
-    {
-        parent::endSetup();
-        $this->afterFileExecution();
-
-        if ($this->isLockFileExists() && !$this->isLockOwner()) {
-            throw new Exception('Lock file of another setup process exists.');
-        }
-
-        return $this;
-    }
-
-    //########################################
-
-    protected function resetServicingStatus()
-    {
-        $tableName = 'cache_config';
-
-        if (!$this->getTablesObject()->isExists($tableName)) {
-            return;
-        }
-
-        $this->getConnection()->update(
-            $this->getTablesObject()->getFullName($tableName),
-            array('value' => NULL),
-            array(
-                '`group` = ?' => '/servicing/',
-                '`key` = ?' => 'last_update_time'
-            )
-        );
-    }
-
-    protected function updateInstallationVersionHistory($oldVersion, $newVersion)
-    {
-        $versionsHistory = (array)$this->getInstallationVersionsHistory();
-        $versionsHistory[$newVersion] = array(
-            'from' => $oldVersion,
-            'to'   => $newVersion,
-            'date' => Mage::getModel('core/date')->gmtDate()
-        );
-
-        $this->setInstallationVersionsHistory($versionsHistory);
-    }
-
-    protected function removeOldBackupsTables()
-    {
-        $versionsHistory = $this->getInstallationVersionsHistory();
-        if (empty($versionsHistory)) {
-            return;
-        }
-
-        $prefixes = array(
-            'm2epro__source'      => '6.0.0',
-            'ess__source'         => '6.0.0',
-            'm2epro__backup_v5'   => '6.0.0',
-            'ess__backup_v5'      => '6.0.0',
-            'm2epro__backup_v611' => '6.1.1',
-            'm2epro__backup_v630' => '6.2.4.3',
-            'm2epro__b_65016'     => '6.5.0.16'
-        );
-
-        $borderDate = new \DateTime('now', new \DateTimeZone('UTC'));
-        $borderDate->modify('- 30 days');
-
-        foreach ($prefixes as $backupPrefix => $removeAfterVersion) {
-
-            $hasToBeRemoved = false;
-            foreach ($versionsHistory as $versionHistoryRecord) {
-
-                if (empty($versionHistoryRecord['to']) || empty($versionHistoryRecord['date'])) {
-                    continue;
-                }
-
-                try {
-
-                    $version          = $versionHistoryRecord['to'];
-                    $installationDate = new \DateTime($versionHistoryRecord['date'], new \DateTimeZone('UTC'));
-
-                } catch (\Exception $e) {
-                    continue;
-                }
-
-                if (version_compare($version, $removeAfterVersion, '>=') &&
-                    $installationDate->getTimestamp() < $borderDate->getTimestamp())
-                {
-                    $hasToBeRemoved = true;
-                    break;
-                }
-            }
-
-            if ($hasToBeRemoved) {
-
-                $queryStmt = $this->getConnection()->query("SHOW TABLES LIKE '%{$backupPrefix}%'");
-
-                while ($tableName = $queryStmt->fetchColumn()) {
-                    $this->getConnection()->dropTable($tableName);
-                }
-            }
-        }
-    }
-
-    // ---------------------------------------
-
-    public function removeConfigsDuplicates()
-    {
-        foreach ($this->getTablesObject()->getAllHistoryConfigEntities() as $tableName => $tableFullName) {
-
-            if (!$this->getTablesObject()->isExists($tableName)) {
-                continue;
-            }
-
-            $this->getConfigModifier($tableName)->removeDuplicates();
-        }
-    }
-
-    //########################################
-
-    private function getLocksDirPath()
-    {
-        return Mage::getBaseDir('var') . DS . 'locks';
-    }
-
-    private function getLockFilePath()
-    {
-        return rtrim($this->getLocksDirPath(), DS) . DS . 'm2epro_setup.lock';
-    }
-
-    private function isLockFileExists()
-    {
-        return @file_exists($this->getLockFilePath());
-    }
-
-    // ---------------------------------------
-
-    private function isLocked()
-    {
-        if (!$this->isLockFileExists()) {
-            return false;
-        }
-
-        if (@filemtime($this->getLockFilePath()) > ((int)gmdate('U') - self::LOCK_FILE_LIFETIME)) {
-            return true;
-        }
-
-        $this->unlock();
-        return false;
-    }
-
-    private function lock()
-    {
-        if (!@is_dir($this->getLocksDirPath())) {
-            @mkdir($this->getLocksDirPath(), 0777, true);
-        }
-
-        @file_put_contents($this->getLockFilePath(), $this->getLockId());
-
-        register_shutdown_function(function () {
-            @unlink(Mage::getBaseDir('var').DS.'locks'.DS.'m2epro_setup.lock');
-        });
-    }
-
-    private function unlock()
-    {
-        $this->isLockFileExists() && @unlink($this->getLockFilePath());
-    }
-
-    private function getLockId()
-    {
-        if (is_null($this->lockId)) {
-            $this->lockId = $this->generateRandomHash();
-        }
-
-        return $this->lockId;
-    }
-
-    private function isLockOwner()
-    {
-        if (!$this->isLockFileExists()) {
-            return false;
-        }
-
-        return $this->getLockId() == @file_get_contents($this->getLockFilePath());
-    }
-
-    //########################################
-
-    private function getInstallationVersionsHistory()
-    {
-        if (!$this->getTablesObject()->isExists('registry')) {
-            return NULL;
-        }
-
-        $versionsHistory = $this->getConnection()->select()
-            ->from($this->getTablesObject()->getFullName('registry'), array('value'))
-            ->where('`key` = ?', self::INSTALLATION_HISTORY_KEY)
-            ->query()
-            ->fetch();
-
-        if (empty($versionsHistory)) {
-            return NULL;
-        }
-
-        return (array)json_decode($versionsHistory['value'], true);
-    }
-
-    private function setInstallationVersionsHistory($history)
-    {
-        if (!$this->getTablesObject()->isExists('registry')) {
-            return;
-        }
-
-        $currentHistory = $this->getInstallationVersionsHistory();
-        if (is_null($currentHistory)) {
-
-            $this->getConnection()->insertArray(
-                $this->getTablesObject()->getFullName('registry'),
-                array('key', 'value', 'update_date', 'create_date'),
-                array(
-                    array(
-                        'key'         => self::INSTALLATION_HISTORY_KEY,
-                        'value'       => @json_encode($history),
-                        'update_date' => Mage::getModel('core/date')->gmtDate(),
-                        'create_date' => Mage::getModel('core/date')->gmtDate()
-                    )
-                )
-            );
-
-            return;
-        }
-
-        $this->getConnection()->update(
-            $this->getTablesObject()->getFullName('registry'),
-            array(
-                'value'       => @json_encode($history),
-                'update_date' => Mage::getModel('core/date')->gmtDate(),
-            ),
-            array('`key` = ?' => self::INSTALLATION_HISTORY_KEY)
-        );
+        $select = $this->getConnection()
+            ->select()
+            ->from($this->getTable('core_config_data'), 'value')
+            ->where('scope = ?', 'default')
+            ->where('scope_id = ?', 0)
+            ->where('path = ?', 'm2epro/setup/ignore_maintenace');
+
+        return (bool)$this->getConnection()->fetchOne($select);
     }
 
     //########################################

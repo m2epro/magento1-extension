@@ -87,7 +87,7 @@ TEXT;
 
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account is
-                expired. Please click here to generate a new access token.',
+                expired. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
             $tempMessage = Mage::helper('M2ePro')->__(
@@ -95,7 +95,7 @@ TEXT;
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
@@ -103,7 +103,7 @@ TEXT;
                             Mage_Core_Model_Message::ERROR.__METHOD__);
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 
@@ -146,7 +146,7 @@ TEXT;
             $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account
-                is to expire. Please click here to generate a new access token.',
+                is to expire. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
 
@@ -156,7 +156,7 @@ TEXT;
                 Mage::app()->getLocale()->date($tokenExpirationTimeStamp)->toString($format),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
@@ -164,7 +164,7 @@ TEXT;
                             Mage_Core_Model_Message::NOTICE.__METHOD__);
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 
@@ -204,7 +204,7 @@ TEXT;
 
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account is
-                expired. Please click here to generate a new access token.',
+                expired. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
             $tempMessage = Mage::helper('M2ePro')->__(
@@ -212,7 +212,7 @@ TEXT;
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
@@ -220,7 +220,7 @@ TEXT;
                             Mage_Core_Model_Message::ERROR.__METHOD__);
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 
@@ -247,7 +247,7 @@ Account Configuration.
 TEXT;
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account
-                is to expire. Please click here to generate a new access token.',
+                is to expire. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
 
@@ -258,7 +258,7 @@ TEXT;
                 Mage::app()->getLocale()->date($tokenExpirationTimeStamp)->toString($format),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
@@ -266,7 +266,7 @@ TEXT;
                             Mage_Core_Model_Message::NOTICE.__METHOD__);
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 

@@ -245,7 +245,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
 
     private function updateServices($data, $templateId)
     {
-        $collection = Mage::getModel('M2ePro/Walmart_Template_SellingFormat_ShippingOverrideService')
+        $collection = Mage::getModel('M2ePro/Walmart_Template_SellingFormat_ShippingOverride')
             ->getCollection()
             ->addFieldToFilter('template_selling_format_id', (int)$templateId);
 
@@ -261,11 +261,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
         foreach ($data['shipping_override_rule'] as $serviceData) {
             $newServices[] = array(
                 'template_selling_format_id' => $templateId,
-                'method' => $serviceData['method'],
-                'region' => $serviceData['region'],
-                'cost_mode' => $serviceData['cost_mode'],
-                'cost_value' => !empty($serviceData['cost_value']) ? $serviceData['cost_value'] : '',
-                'cost_attribute' => !empty($serviceData['cost_attribute']) ? $serviceData['cost_attribute'] : ''
+                'method'              => $serviceData['method'],
+                'is_shipping_allowed' => $serviceData['is_shipping_allowed'],
+                'region'              => $serviceData['region'],
+                'cost_mode'           => !empty($serviceData['cost_mode']) ? $serviceData['cost_mode'] : 0,
+                'cost_value'          => !empty($serviceData['cost_value']) ? $serviceData['cost_value'] : 0,
+                'cost_attribute'      => !empty($serviceData['cost_attribute']) ? $serviceData['cost_attribute'] : ''
             );
         }
 
@@ -275,7 +276,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
 
         $coreRes = Mage::getSingleton('core/resource');
         $coreRes->getConnection('core_write')->insertMultiple(
-            $coreRes->getTableName('M2ePro/Walmart_Template_SellingFormat_ShippingOverrideService'), $newServices
+            $coreRes->getTableName('M2ePro/Walmart_Template_SellingFormat_ShippingOverride'), $newServices
         );
     }
 

@@ -318,7 +318,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             ->addFieldToFilter('id', array('in' => ($productsIds)));
 
         $ids = array();
-        $errorsCount = null;
+        $errorsCount = 0;
         foreach ($collection->getItems() as $sourceListingProduct) {
 
             $listingProduct = $targetListing->getChildObject()->addProductFromAnotherEbaySite(
@@ -365,8 +365,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
                 if (count($productsIds) == $errorsCount) {
                     $this->getSession()->addError(Mage::helper('M2ePro')->__(
-                        'The Products have not been added into Destination Listing. Please
-                        <a target="_blank" href="%url%">view Log</a> for the details.',
+                        'Products were not added to the selected Listing. Please <a target="_blank" href="%url%">
+                        view Log</a> for the details.',
                         $logViewUrl
                     ));
 
@@ -376,7 +376,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
                 }
 
                 $this->getSession()->addError(Mage::helper('M2ePro')->__(
-                    '%errors_count% product(s) have not been added into Destination Listing. Please
+                    '%errors_count% product(s) were not added to the selected Listing. Please
                     <a target="_blank" href="%url%">view Log</a> for the details.',
                     $errorsCount, $logViewUrl
                 ));

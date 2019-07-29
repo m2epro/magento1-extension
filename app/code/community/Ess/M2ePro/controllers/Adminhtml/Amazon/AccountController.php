@@ -615,7 +615,10 @@ class Ess_M2ePro_Adminhtml_Amazon_AccountController
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
             $this->_getSession()->addError($error);
-            $model->deleteInstance();
+
+            if (!$isEdit) {
+                $model->deleteInstance();
+            }
 
             return $this->indexAction();
         }

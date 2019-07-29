@@ -51,6 +51,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 
     private $updates = array();
 
+    /** @var Ess_M2ePro_Model_Order[] $relatedOrders */
     private $relatedOrders = array();
 
     //########################################
@@ -495,7 +496,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                     '!new_id' => $this->order->getData('ebay_order_id')
                 ));
 
-                $log->addMessage(null, $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
+                $log->addMessage($order->getId(), $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
 
                 try {
                     $order->cancelMagentoOrder();
@@ -506,16 +507,15 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
                 $order->getReserve()->release();
             }
 
-            $orderId = $order->getData('ebay_order_id');
-            $order->deleteInstance();
-
             $description = 'eBay Order #%old_id% was deleted as new combined eBay order #%new_id% was created.';
             $description = Mage::helper('M2ePro/Module_Log')->encodeDescription($description, array(
-                '!old_id' => $orderId,
+                '!old_id' => $order->getData('ebay_order_id'),
                 '!new_id' => $this->order->getData('ebay_order_id')
             ));
 
-            $log->addMessage(null, $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
+            $log->addMessage($order->getId(), $description, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING);
+
+            $order->deleteInstance();
         }
     }
 

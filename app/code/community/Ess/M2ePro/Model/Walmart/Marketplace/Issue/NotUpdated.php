@@ -61,7 +61,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Issue_NotUpdated extends Ess_M2ePro_M
 
         $tempTitle = Mage::helper('M2ePro')->__(
             'M2E Pro requires action: Walmart marketplace data needs to be synchronized.
-            Please click here to update Walmart marketplaces.'
+            Please update Walmart marketplaces.'
         );
         $textToTranslate = <<<TEXT
 %marketplace_title% data was changed on Walmart. You need to resynchronize the marketplace(s) to correctly
@@ -74,14 +74,14 @@ TEXT;
             implode(', ', array_keys($outdatedMarketplaces)),
             Mage::helper('M2ePro/View_Walmart')->getPageNavigationPath('configuration'),
             Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_walmart_marketplace',
+                'M2ePro/adminhtml_walmart_marketplace',
                 array('tab' => Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_Tabs::TAB_ID_MARKETPLACE)
             )
         );
 
         $editHash = md5(self::CACHE_KEY . Mage::helper('M2ePro')->jsonEncode($outdatedMarketplaces));
         $messageUrl = Mage::helper('adminhtml')->getUrl(
-            '*/adminhtml_walmart_marketplace/index',
+            'M2ePro/adminhtml_walmart_marketplace/index',
             array(
                 'tab'    => Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_Tabs::TAB_ID_MARKETPLACE,
                 '_query' => array('hash' => $editHash)

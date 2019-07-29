@@ -22,7 +22,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category
 
         // Set header text
         // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__("Assign Category Policy");
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__("Assign %component_name% Category Policy",
+                Mage::helper('M2ePro/Component_Walmart')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("Assign Category Policy");
+        }
+
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_listing_add_categoryTemplate_category';
         // ---------------------------------------

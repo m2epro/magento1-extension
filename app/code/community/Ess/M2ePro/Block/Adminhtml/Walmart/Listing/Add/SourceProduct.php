@@ -27,10 +27,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceProduct
         // Set header text
         // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products", $componentName);
+            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products",
+                Mage::helper('M2ePro/Component_Walmart')->getTitle()
+            );
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__("Select Products");
+            $this->_headerText = Mage::helper('M2ePro')->__('Select Products');
         }
         // ---------------------------------------
 

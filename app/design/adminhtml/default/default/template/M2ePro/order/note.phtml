@@ -1,0 +1,29 @@
+<?php /**@var $this Ess_M2ePro_Block_Adminhtml_Order_Note_Popup */?>
+
+<form id="order_note_popup" action="javascript:void(0);" method="post">
+
+    <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" />
+
+    <?php if ($noteId = $this->getRequest()->getParam('note_id')) : ?>
+        <input type="hidden" name="note_id" value="<?php echo $noteId; ?>" />
+    <?php endif; ?>
+
+    <?php if ($orderId = $this->getRequest()->getParam('order_id')) : ?>
+        <input type="hidden" name="order_id" value="<?php echo $orderId; ?>" />
+    <?php endif; ?>
+
+    <div style="float: right; margin-top: 20px; margin-bottom: 12px;">
+        <label for="note"><?php echo $this->__('Description') ?><span class="required">*</span></label><br />
+        <textarea id="note" name="note" class="textarea required-entry" style=" resize: none; width: 560px; height: 100px;"><?php echo $this->getNoteModel()->getNote();?></textarea>
+    </div>
+</form>
+
+<div style="float: right; margin-bottom: 17px;">
+    <?php echo $this->getChildHtml('note_save_btn'); ?>
+</div>
+
+<div style="float: right; margin-bottom: 17px; margin-right: 5px">
+    <a href="javascript:void(0)" onclick="Windows.getFocusedWindow().close();">
+        <?php echo Mage::helper('M2ePro')->__('Cancel'); ?>
+    </a>&nbsp;&nbsp;
+</div>

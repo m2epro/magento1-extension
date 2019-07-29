@@ -43,12 +43,12 @@ class Ess_M2ePro_Model_Ebay_Feedback_Issue_NegativeReceived extends Ess_M2ePro_M
 
             $tempMessage = Mage::helper('M2ePro')->__(
                 'New Buyer negative Feedback was received. Go to the <a href="%url%" target="blank">Feedback Page</a>.',
-                Mage::helper('adminhtml')->getUrl('*/adminhtml_ebay_feedback/index')
+                Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_ebay_feedback/index')
             );
 
             $editHash = md5(self::CACHE_KEY . Mage::helper('M2ePro')->getCurrentGmtDate());
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_feedback/index',
+                'M2ePro/adminhtml_ebay_feedback/index',
                 array('_query' => array('hash' => $editHash))
             );
 

@@ -224,6 +224,16 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
             return '';
         }
 
+        $walmartConfigurationHelper = Mage::helper('M2ePro/Component_Walmart_Configuration');
+
+        if ($walmartConfigurationHelper->isOptionImagesURLHTTPSMode()) {
+            return str_replace('http://', 'https://', $mainImage->getUrl());
+        }
+
+        if ($walmartConfigurationHelper->isOptionImagesURLHTTPMode()) {
+            return str_replace('https://', 'http://', $mainImage->getUrl());
+        }
+
         return $mainImage->getUrl();
     }
 
@@ -231,10 +241,22 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
     {
         $urls = array();
 
+        $walmartConfigurationHelper = Mage::helper('M2ePro/Component_Walmart_Configuration');
         foreach ($this->getWalmartListingProduct()->getDescriptionTemplateSource()->getGalleryImages() as $image) {
             if (!$image->getUrl()) {
                 continue;
             }
+
+            if ($walmartConfigurationHelper->isOptionImagesURLHTTPSMode()) {
+                $urls[] = str_replace('http://', 'https://', $image->getUrl());
+                continue;
+            }
+
+            if ($walmartConfigurationHelper->isOptionImagesURLHTTPMode()) {
+                $urls[] = str_replace('https://', 'http://', $image->getUrl());
+                continue;
+            }
+
             $urls[] = $image->getUrl();
         }
 
@@ -260,8 +282,19 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
             return array();
         }
 
+        $walmartConfigurationHelper = Mage::helper('M2ePro/Component_Walmart_Configuration');
+        $url = $image->getUrl();
+
+        if ($walmartConfigurationHelper->isOptionImagesURLHTTPSMode()) {
+            $url = str_replace('http://', 'https://', $url);
+        }
+
+        if ($walmartConfigurationHelper->isOptionImagesURLHTTPMode()) {
+            $url = str_replace('https://', 'http://', $url);
+        }
+
         $swatchImageData = array(
-            'url'          => $image->getUrl(),
+            'url'          => $url,
             'by_attribute' => $swatchAttribute,
         );
 
@@ -274,23 +307,23 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Details
     {
         $result = array();
 
-        $shippingOverridesServices = $this->getWalmartListingProduct()->getWalmartSellingFormatTemplate()
-            ->getShippingOverrideServices(true);
+        $shippingOverrides = $this->getWalmartListingProduct()->getWalmartSellingFormatTemplate()
+            ->getShippingOverrides(true);
 
-        if (empty($shippingOverridesServices)) {
+        if (empty($shippingOverrides)) {
             return $result;
         }
 
-        foreach ($shippingOverridesServices as $shippingOverridesService) {
-            $source = $shippingOverridesService->getSource(
+        foreach ($shippingOverrides as $shippingOverride) {
+            $source = $shippingOverride->getSource(
                 $this->getWalmartListingProduct()->getActualMagentoProduct()
             );
 
             $result[] = array(
-                'ship_method'         => $shippingOverridesService->getMethod(),
-                'ship_region'         => $shippingOverridesService->getRegion(),
+                'ship_method'         => $shippingOverride->getMethod(),
+                'ship_region'         => $shippingOverride->getRegion(),
                 'ship_price'          => $source->getCost(),
-                'is_shipping_allowed' => true,
+                'is_shipping_allowed' => (bool)$shippingOverride->getIsShippingAllowed(),
             );
         }
 

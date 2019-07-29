@@ -78,10 +78,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Ess_M2ePro_Block_A
             $this->globalShippingServiceDetails = $globalShippingDetails['service_details'];
         }
         // ---------------------------------------
+        $buttonAddNoteBlock = $this->getLayout()
+            ->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                'label'   => Mage::helper('M2ePro')->__('Add Note'),
+                'onclick' => "OrderNoteHandlerObj.openAddNotePopup({$this->order->getId()})",
+                'class'   => 'order_note_btn',
+            ));
 
         $this->setChild('item', $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_order_view_item'));
         $this->setChild('item_edit', $this->getLayout()->createBlock('M2ePro/adminhtml_order_item_edit'));
         $this->setChild('log', $this->getLayout()->createBlock('M2ePro/adminhtml_order_view_log_grid'));
+        $this->setChild('order_note_grid', $this->getLayout()->createBlock('M2ePro/adminhtml_order_note_grid'));
+        $this->setChild('add_note_button', $buttonAddNoteBlock);
         $this->setChild('external_transaction', $this->getLayout()->createBlock(
             'M2ePro/adminhtml_ebay_order_view_externalTransaction'
         ));
