@@ -64,11 +64,6 @@ DropDown.prototype = {
     {
         var tempId = this.id + '_drop_down';
         if ($(tempId).getStyle('display') == 'none') {
-
-            $$('.drop_down_menu').each(function(el) {
-                $(el).hide();
-            });
-
             var offset = $(this).cumulativeOffset();
             var x = offset.left;
             var y = offset.top + $(this).getHeight();

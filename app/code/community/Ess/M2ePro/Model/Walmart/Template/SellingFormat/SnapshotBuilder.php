@@ -27,10 +27,10 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_SnapshotBuilder
         );
 
         // ---------------------------------------
-        $data['shipping_overrides'] = $childModel->getShippingOverrides();
+        $data['shipping_override_services'] = $childModel->getShippingOverrideServices();
 
-        if (!is_null($data['shipping_overrides'])) {
-            foreach ($data['shipping_overrides'] as &$shippingOverride) {
+        if (!is_null($data['shipping_override_services'])) {
+            foreach ($data['shipping_override_services'] as &$shippingOverride) {
                 foreach ($shippingOverride as $key => &$value) {
                     if (in_array($key, $ignoredKeys)) {
                         unset($shippingOverride[$key]);

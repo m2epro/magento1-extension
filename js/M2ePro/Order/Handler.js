@@ -6,7 +6,6 @@ OrderHandler.prototype = Object.extend(new CommonHandler(), {
     initialize: function(gridIds)
     {
         this.gridIds = gridIds ? eval(gridIds) : [];
-        this.hideTitleAttribute($$('div.note_icon'));
     },
 
     initializeGrids: function()
@@ -198,25 +197,6 @@ OrderHandler.prototype = Object.extend(new CommonHandler(), {
         }
 
         return '<div class="hl_footer"><a target="_blank" href="'+url+'">'+ M2ePro.translator.translate('View All Order Logs.')+'</a></div>';
-    },
-
-    hideTitleAttribute: function (elements) {
-
-        elements.forEach(function (item) {
-
-            var element = item.up('tr');
-
-            item.observe('mouseover', function() {
-                if (element.readAttribute('title') !== null) {
-                    element.writeAttribute('backup', element.readAttribute('title'));
-                    element.writeAttribute('title', null);
-                }
-            });
-
-            item.observe('mouseout', function() {
-                element.writeAttribute('title', element.readAttribute('backup'));
-            });
-        });
     }
 
     // ---------------------------------------

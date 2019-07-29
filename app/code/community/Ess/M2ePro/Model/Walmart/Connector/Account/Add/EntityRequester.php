@@ -15,27 +15,15 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityRequester
     {
         /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
         $marketplaceObject = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Marketplace', $this->params['marketplace_id']
+            'Marketplace',$this->params['marketplace_id']
         );
 
-        if ($this->params['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA) {
-            $requestData = array(
-                'title'          => $this->account->getTitle(),
-                'consumer_id'    => $this->params['consumer_id'],
-                'private_key'    => $this->params['private_key'],
-                'marketplace_id' => $marketplaceObject->getNativeId(),
-            );
-        } else {
-            $requestData = array(
-                'title'          => $this->account->getTitle(),
-                'consumer_id'    => $this->params['consumer_id'],
-                'client_id'      => $this->params['client_id'],
-                'client_secret'  => $this->params['client_secret'],
-                'marketplace_id' => $marketplaceObject->getNativeId(),
-            );
-        }
-
-        return $requestData;
+        return array(
+            'title'          => $this->account->getTitle(),
+            'consumer_id'    => $this->params['consumer_id'],
+            'private_key'    => $this->params['private_key'],
+            'marketplace_id' => $marketplaceObject->getNativeId(),
+        );
     }
 
     protected function getCommand()

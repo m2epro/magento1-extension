@@ -32,10 +32,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Configuration extends Mage_Core_Helper
     const ISBN_MODE_NOT_SET          = 0;
     const ISBN_MODE_CUSTOM_ATTRIBUTE = 1;
 
-    const OPTION_IMAGES_URL_MODE_ORIGINAL = 0;
-    const OPTION_IMAGES_URL_MODE_HTTP     = 1;
-    const OPTION_IMAGES_URL_MODE_HTTPS    = 2;
-
     const CONFIG_GROUP = '/walmart/configuration/';
 
     //########################################
@@ -299,39 +295,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Configuration extends Mage_Core_Helper
 
     //########################################
 
-    public function isOptionImagesURLOriginalMode()
-    {
-        return $this->getOptionImagesURLMode() == self::OPTION_IMAGES_URL_MODE_ORIGINAL;
-    }
-
-    public function isOptionImagesURLHTTPSMode()
-    {
-        return $this->getOptionImagesURLMode() == self::OPTION_IMAGES_URL_MODE_HTTPS;
-    }
-
-    public function isOptionImagesURLHTTPMode()
-    {
-        return $this->getOptionImagesURLMode() == self::OPTION_IMAGES_URL_MODE_HTTP;
-    }
-
-    // ---------------------------------------
-
-    public function setOptionImagesURLMode($mode)
-    {
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            self::CONFIG_GROUP, 'option_images_url_mode', $mode
-        );
-    }
-
-    public function getOptionImagesURLMode()
-    {
-        return (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            self::CONFIG_GROUP, 'option_images_url_mode'
-        );
-    }
-
-    //########################################
-
     public function getConfigValues()
     {
         return array(
@@ -348,7 +311,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Configuration extends Mage_Core_Helper
             'gtin_custom_attribute'         => $this->getGtinCustomAttribute(),
             'isbn_mode'                     => $this->getIsbnMode(),
             'isbn_custom_attribute'         => $this->getIsbnCustomAttribute(),
-            'option_images_url_mode'        => $this->getOptionImagesURLMode()
         );
     }
 
@@ -404,10 +366,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Configuration extends Mage_Core_Helper
 
         if (isset($values['isbn_custom_attribute'])) {
             $this->setIsbnCustomAttribute($values['isbn_custom_attribute']);
-        }
-
-        if (isset($values['option_images_url_mode'])) {
-            $this->setOptionImagesURLMode($values['option_images_url_mode']);
         }
     }
 

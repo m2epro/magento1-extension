@@ -23,13 +23,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_
         $this->setId('ebayListingProductReview');
         // ---------------------------------------
 
-        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Congratulations',
-                Mage::helper('M2ePro/Component_Ebay')->getTitle()
-            );
-        } else {
-            $this->_headerText = Mage::helper('M2ePro')->__("Congratulations");
-        }
+        $this->_headerText = Mage::helper('M2ePro')->__('Congratulations');
 
         $this->setTemplate('M2ePro/ebay/listing/product/review.phtml');
     }

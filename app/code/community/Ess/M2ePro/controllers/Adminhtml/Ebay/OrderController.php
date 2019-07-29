@@ -23,10 +23,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
              ->addJs('M2ePro/Order/Handler.js')
              ->addJs('M2ePro/Order/Edit/ItemHandler.js')
              ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
-             ->addJs('M2ePro/Ebay/Order/MigrationToV611Handler.js')
-             ->addJs('M2ePro/GridHandler.js')
-             ->addJs('M2ePro/Order/NoteHandler.js')
-             ->addJs('M2ePro/Plugin/ActionColumn.js');
+             ->addJs('M2ePro/Ebay/Order/MigrationToV611Handler.js');
 
         $this->setPageHelpLink(NULL, NULL, "x/RQAJAQ");
 
@@ -377,75 +374,63 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
 
     public function createMagentoOrderAction()
     {
-        $ids = $this->getRequestIds();
-        $isForce = (bool)$this->getRequest()->getParam('force');
-        $warnings = 0;
-        $errors = 0;
+        $id = $this->getRequest()->getParam('id');
+        $force = $this->getRequest()->getParam('force');
 
-        foreach ($ids as $id) {
+        /** @var $order Ess_M2ePro_Model_Order */
+        $order = Mage::helper('M2ePro/Component_Ebay')->getObject('Order', (int)$id);
+        $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
-            /** @var $order Ess_M2ePro_Model_Order */
-            $order = Mage::helper('M2ePro/Component_Ebay')->getObject('Order', (int)$id);
-            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
+        if (!is_null($order->getMagentoOrderId()) && $force != 'yes') {
+            // M2ePro_TRANSLATIONS
+            // Magento Order is already created for this eBay Order. Press Create Order Button to create new one.
+            $message = 'Magento Order is already created for this eBay Order. ' .
+                       'Press Create Order Button to create new one.';
 
-            if (!is_null($order->getMagentoOrderId()) && !$isForce) {
-                $warnings++;
-                continue;
-            }
-
-            // Create magento order
-            // ---------------------------------------
-            try {
-                $order->createMagentoOrder($isForce);
-            } catch (Exception $e) {
-                $errors++;
-            }
-            // ---------------------------------------
-
-            if ($order->getChildObject()->canCreatePaymentTransaction()) {
-                $order->getChildObject()->createPaymentTransactions();
-            }
-
-            if ($order->getChildObject()->canCreateInvoice()) {
-                $order->createInvoice();
-            }
-
-            if ($order->getChildObject()->canCreateShipment()) {
-                $order->createShipment();
-            }
-
-            if ($order->getChildObject()->canCreateTracks()) {
-                $order->getChildObject()->createTracks();
-            }
-
-            // ---------------------------------------
-            $order->updateMagentoOrderStatus();
-            // ---------------------------------------
+            $this->_getSession()->addWarning(
+                Mage::helper('M2ePro')->__($message)
+            );
+            $this->_redirect('*/*/view', array('id' => $id));
+            return;
         }
 
-        if (!$errors && !$warnings) {
-            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento order(s) were created.'));
+        // Create magento order
+        // ---------------------------------------
+        try {
+            $order->createMagentoOrder();
+            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento Order was created.'));
+        } catch (Exception $e) {
+            $message = Mage::helper('M2ePro')->__(
+                'Magento Order was not created. Reason: %error_message%',
+                 Mage::helper('M2ePro/Module_Log')->decodeDescription($e->getMessage())
+            );
+            $this->_getSession()->addError($message);
+        }
+        // ---------------------------------------
+
+        if ($order->getChildObject()->canCreatePaymentTransaction()) {
+            $order->getChildObject()->createPaymentTransactions();
         }
 
-        if ($errors) {
-            $this->getSession()->addError(Mage::helper('M2ePro')->__(
-                '%count% Magento order(s) were not created. Please <a target="_blank" href="%url%">view Log</a>
-                for the details.',
-                $errors, $this->getUrl('*/adminhtml_ebay_log/order')
-            ));
+        if ($order->getChildObject()->canCreateInvoice()) {
+            $result = $order->createInvoice();
+            $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Invoice was created.'));
         }
 
-        if ($warnings) {
-            $this->_getSession()->addWarning(Mage::helper('M2ePro')->__(
-                '%count% Magento order(s) are already created for the selected eBay order(s).', $warnings
-            ));
+        if ($order->getChildObject()->canCreateShipment()) {
+            $result = $order->createShipment();
+            $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Shipment was created.'));
         }
 
-        if (count($ids) == 1) {
-            $this->_redirect('*/*/view', array('id' => $ids[0]));
-        } else {
-            $this->_redirect('*/*/index');
+        if ($order->getChildObject()->canCreateTracks()) {
+            $order->getChildObject()->createTracks();
         }
+
+        // ---------------------------------------
+        $order->updateMagentoOrderStatus();
+        // ---------------------------------------
+
+        return $this->_redirectUrl($this->_getRefererUrl());
     }
 
     //########################################

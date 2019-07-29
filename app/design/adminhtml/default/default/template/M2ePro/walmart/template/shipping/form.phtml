@@ -19,18 +19,6 @@
 
     $formData = array_merge($default, $formData);
 
-    if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Add %component_name% Shipping Policy',
-                Mage::helper('M2ePro/Component_Walmart')->getTitle()
-            )
-        );
-    } else {
-        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Add Shipping Policy')
-        );
-    }
-
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
@@ -62,7 +50,7 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Shipping Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
+        'Add Shipping Policy' => Mage::helper('M2ePro')->__('Add Shipping Policy'),
         'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
     )); ?>);
 

@@ -279,6 +279,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         $searchAsinManual = $this->getUrl('*/adminhtml_amazon_listing/searchAsinManual');
         $getSearchAsinMenu = $this->getUrl('*/adminhtml_amazon_listing/getSearchAsinMenu');
         $suggestedAsinGridHmtl = $this->getUrl('*/adminhtml_amazon_listing/getSuggestedAsinGrid');
+        $getCategoriesByAsin = $this->getUrl('*/adminhtml_amazon_listing/getCategoriesByAsin');
         $searchAsinAuto = $this->getUrl('*/adminhtml_amazon_listing/searchAsinAuto');
         $getProductsSearchStatus = $this->getUrl('*/adminhtml_amazon_listing/getProductsSearchStatus');
         $mapToAsin = $this->getUrl('*/adminhtml_amazon_listing/mapToAsin');
@@ -435,6 +436,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
     M2ePro.url.searchAsinAuto = '{$searchAsinAuto}';
     M2ePro.url.getProductsSearchStatus = '{$getProductsSearchStatus}';
     M2ePro.url.suggestedAsinGrid = '{$suggestedAsinGridHmtl}';
+    M2ePro.url.getCategoriesByAsin = '{$getCategoriesByAsin}';
     M2ePro.url.mapToAsin = '{$mapToAsin}';
     M2ePro.url.unmapFromAsin = '{$unmapFromAsin}';
     M2ePro.url.mapToNewAsin = '{$mapToNewAsin}';

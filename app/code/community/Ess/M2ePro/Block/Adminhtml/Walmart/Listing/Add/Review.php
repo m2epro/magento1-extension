@@ -23,13 +23,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Review extends Ess_M2ePro_B
         $this->setId('listingProductReview');
         // ---------------------------------------
 
-        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Congratulations',
-                Mage::helper('M2ePro/Component_Walmart')->getTitle()
-            );
-        } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('Congratulations');
-        }
+        $this->_headerText = Mage::helper('M2ePro')->__('Congratulations');
 
         $this->setTemplate('M2ePro/walmart/listing/add/review.phtml');
     }

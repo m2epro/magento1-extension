@@ -24,13 +24,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate
         $this->setId('walmartListingAddCategoryTemplate');
         // ---------------------------------------
 
-        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $this->_headerText = Mage::helper('M2ePro')->__('Set %component_name% Category Policy',
-                Mage::helper('M2ePro/Component_Walmart')->getTitle()
-            );
-        } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('Set Category Policy');
-        }
+        $this->_headerText = Mage::helper('M2ePro')->__('Set Category Policy');
 
         $listingId = $this->getRequest()->getParam('id');
         $url = $this->getUrl('*/adminhtml_walmart_listing_productAdd/removeAddedProducts', array(

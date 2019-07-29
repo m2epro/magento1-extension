@@ -122,10 +122,6 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     protected function isPossibleToRun()
     {
-        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
-            return false;
-        }
-
         if (Mage::helper('M2ePro/Module')->isDisabled()) {
             return false;
         }

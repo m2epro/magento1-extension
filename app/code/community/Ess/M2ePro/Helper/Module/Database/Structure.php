@@ -36,7 +36,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
             'm2epro_registry',
             'm2epro_archived_entity',
-            'm2epro_setup',
 
             'm2epro_lock_item',
             'm2epro_lock_transactional',
@@ -81,7 +80,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_order_change',
             'm2epro_order_item',
             'm2epro_order_log',
-            'm2epro_order_note',
             'm2epro_order_matching',
 
             'm2epro_ebay_account',
@@ -173,12 +171,13 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_walmart_marketplace',
             'm2epro_walmart_order',
             'm2epro_walmart_order_item',
+            'm2epro_walmart_order_action_processing',
             'm2epro_walmart_template_category',
             'm2epro_walmart_template_category_specific',
             'm2epro_walmart_template_description',
             'm2epro_walmart_template_selling_format',
             'm2epro_walmart_template_selling_format_promotion',
-            'm2epro_walmart_template_selling_format_shipping_override',
+            'm2epro_walmart_template_selling_format_shipping_override_service',
             'm2epro_walmart_template_synchronization',
         );
     }

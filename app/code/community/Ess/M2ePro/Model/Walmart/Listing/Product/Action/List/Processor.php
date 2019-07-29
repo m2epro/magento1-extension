@@ -192,8 +192,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor
 
                 $resultActionData = array();
 
-                if (isset($resultData[$processingAction->getListingProductId().'-id'])) {
-                    $resultActionData = $resultData[$processingAction->getListingProductId().'-id'];
+                if (isset($resultData['data'][$processingAction->getListingProductId().'-id'])) {
+                    $resultActionData = $resultData['data'][$processingAction->getListingProductId().'-id'];
                 }
 
                 if (empty($resultActionData['errors'])) {

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.5.5</version>
+            <version>6.5.4</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -303,10 +303,6 @@
                                             <title>Billing Info</title>
                                             <sort_order>4</sort_order>
                                         </m2epro_license>
-                                        <m2epro_advanced>
-                                            <title>Advanced</title>
-                                            <sort_order>5</sort_order>
-                                        </m2epro_advanced>
                                     </children>
                                 </config>
                             </children>
@@ -837,9 +833,6 @@
                     <Wizard>
                         <table>m2epro_wizard</table>
                     </Wizard>
-                    <Setup>
-                        <table>m2epro_setup</table>
-                    </Setup>
 
                     <!-- PROCESSING -->
 
@@ -923,9 +916,9 @@
                     <Walmart_Template_SellingFormat_Promotion>
                         <table>m2epro_walmart_template_selling_format_promotion</table>
                     </Walmart_Template_SellingFormat_Promotion>
-                    <Walmart_Template_SellingFormat_ShippingOverride>
-                        <table>m2epro_walmart_template_selling_format_shipping_override</table>
-                    </Walmart_Template_SellingFormat_ShippingOverride>
+                    <Walmart_Template_SellingFormat_ShippingOverrideService>
+                        <table>m2epro_walmart_template_selling_format_shipping_override_service</table>
+                    </Walmart_Template_SellingFormat_ShippingOverrideService>
 
                     <Template_Synchronization>
                         <table>m2epro_template_synchronization</table>
@@ -1077,9 +1070,6 @@
                     <Order_Log>
                         <table>m2epro_order_log</table>
                     </Order_Log>
-                    <Order_Note>
-                        <table>m2epro_order_note</table>
-                    </Order_Note>
                     <Order_Change>
                         <table>m2epro_order_change</table>
                     </Order_Change>
@@ -1102,6 +1092,9 @@
                     <Walmart_Order>
                         <table>m2epro_walmart_order</table>
                     </Walmart_Order>
+                    <Walmart_Order_Action_Processing>
+                        <table>m2epro_walmart_order_action_processing</table>
+                    </Walmart_Order_Action_Processing>
 
                     <Order_Item>
                         <table>m2epro_order_item</table>

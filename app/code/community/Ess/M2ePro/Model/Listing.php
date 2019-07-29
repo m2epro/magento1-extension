@@ -544,8 +544,8 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode($this->getComponentMode());
 
-        if ($listingProduct->isSetProcessingLock() ||
-            $listingProduct->isSetProcessingLock('in_action')) {
+        if ($this->isSetProcessingLock() ||
+            $this->isSetProcessingLock('in_action')) {
 
             $logModel->addProductMessage(
                 $sourceListing->getId(),

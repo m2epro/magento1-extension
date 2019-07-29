@@ -539,7 +539,7 @@ HTML;
                 array('value')
             );
 
-            $collection->getSelect()->where('eaa.value IS NULL');
+            $collection->getSelect()->orWhere('eaa.value IS NULL');
             $collection->getSelect()->orWhere('eaa.value = \'\'');
             $collection->getSelect()->orWhere('eea.entity_attribute_id IS NULL');
         }
@@ -941,7 +941,7 @@ HTML;
     {
         $this->injectMotorAttributeData();
 
-        $this->productsMotorsData = array();
+        $productsMotorsData = array();
         $motorsHelper = Mage::helper('M2ePro/Component_Ebay_Motors');
 
         $items   = array();
@@ -958,11 +958,11 @@ HTML;
             $attributeCode = $this->motorsAttribute->getAttributeCode();
             $attributeValue = $product->getData($attributeCode);
 
-            $this->productsMotorsData[$productId] = $motorsHelper->parseAttributeValue($attributeValue);
+            $productsMotorsData[$productId] = $motorsHelper->parseAttributeValue($attributeValue);
 
-            $items   = array_merge($items, array_keys($this->productsMotorsData[$productId]['items']));
-            $filters = array_merge($filters, $this->productsMotorsData[$productId]['filters']);
-            $groups  = array_merge($groups, $this->productsMotorsData[$productId]['groups']);
+            $items   = array_merge($items, array_keys($productsMotorsData[$productId]['items']));
+            $filters = array_merge($filters, $productsMotorsData[$productId]['filters']);
+            $groups  = array_merge($groups, $productsMotorsData[$productId]['groups']);
         }
 
         //-------------------------------
@@ -1011,26 +1011,28 @@ HTML;
         $existedGroups = $select->query()->fetchAll(PDO::FETCH_COLUMN);
         //-------------------------------
 
-        foreach ($this->productsMotorsData as $productId => $productMotorsData) {
+        foreach ($productsMotorsData as $productId => $productMotorsData) {
 
-            foreach (array_diff(array_keys($productMotorsData['items']), $existedItems) as $key) {
-                unset($this->productsMotorsData[$productId]['items'][$key]);
+            foreach ($productMotorsData['items'] as $item => $itemData) {
+                if (!in_array($item, $existedItems)) {
+                    unset($productsMotorsData[$productId]['items'][$item]);
+                }
             }
 
-            $invalidFilters = array_diff($productMotorsData['filters'],
-                array_intersect($productMotorsData['filters'], $existedFilters)
-            );
-            foreach ($invalidFilters as $key => $filterId) {
-                unset($this->productsMotorsData[$productId]['filters'][$key]);
+            foreach ($productMotorsData['filters'] as $key => $filterId) {
+                if (!in_array($filterId, $existedFilters)) {
+                    unset($productsMotorsData[$productId]['filters'][$key]);
+                }
             }
 
-            $invalidGroups = array_diff($productMotorsData['groups'],
-                array_intersect($productMotorsData['groups'], $existedGroups)
-            );
-            foreach ($invalidGroups as $key => $groupId) {
-                unset($this->productsMotorsData[$productId]['groups'][$key]);
+            foreach ($productMotorsData['groups'] as $key => $groupId) {
+                if (!in_array($groupId, $existedGroups)) {
+                    unset($productsMotorsData[$productId]['groups'][$key]);
+                }
             }
         }
+
+        $this->productsMotorsData = $productsMotorsData;
 
         return $this;
     }

@@ -1178,6 +1178,42 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
 
     // ---------------------------------------
 
+    public function getCategoriesByAsinAction()
+    {
+        $asin = $this->getRequest()->getParam('asin');
+        $productId = $this->getRequest()->getParam('product_id');
+
+        if (empty($asin)) {
+            return $this->getResponse()->setBody('You should select one or more Products');
+        }
+
+        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $productId);
+
+        /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
+        $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
+        $connectorObj = $dispatcherObject->getVirtualConnector('product','search','categoriesByAsin',
+                                                               array('item' => $asin,
+                                                                     'only_realtime' => true),
+                                                               null,
+                                                               $listingProduct->getAccount()->getId());
+
+        try {
+            $dispatcherObject->process($connectorObj);
+        } catch (Exception $e) {
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
+                'data' => ''
+            )));
+        }
+
+        $categoriesData = $connectorObj->getResponseData();
+
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
+            'data' => empty($categoriesData['categories']) ? '' : $categoriesData['categories']
+        )));
+    }
+
+    // ---------------------------------------
+
     public function getProductsSearchStatusAction()
     {
         $productsIds = $this->getRequest()->getParam('products_ids');

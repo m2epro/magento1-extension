@@ -22,15 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category
 
         // Set header text
         // ---------------------------------------
-        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $this->_headerText = Mage::helper('M2ePro')->__(
-                "Set %component_name% Description Policy for New ASIN/ISBN Creation",
-                Mage::helper('M2ePro/Component_Amazon')->getTitle()
-            );
-        } else {
-            $this->_headerText = Mage::helper('M2ePro')->__("Set Description Policy for New ASIN/ISBN Creation");
-        }
-
+        $this->_headerText = Mage::helper('M2ePro')->__("Set Description Policy for New ASIN/ISBN Creation");
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_amazon_listing_add_newAsin_category';
         // ---------------------------------------

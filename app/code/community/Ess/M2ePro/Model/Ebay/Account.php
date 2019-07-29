@@ -625,11 +625,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getMagentoOrdersListingsOtherProductTaxClassId()
     {
-        $setting = $this->getSetting(
-            'magento_orders_settings',
-            array('listing_other', 'product_tax_class_id'),
-            Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE
-        );
+        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_tax_class_id'));
 
         return (int)$setting;
     }
@@ -726,7 +722,9 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getMagentoOrdersReservationDays()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('creation', 'reservation_days'), 0);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('creation', 'reservation_days')
+        );
 
         return (int)$setting;
     }
@@ -736,7 +734,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getQtyReservationDays()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'), 1);
+        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'));
 
         return (int)$setting;
     }

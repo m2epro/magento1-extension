@@ -26,13 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SourceCategory
 
         // Set header text
         // ---------------------------------------
-        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products",
-                Mage::helper('M2ePro/Component_Amazon')->getTitle()
-            );
-        } else {
-            $this->_headerText = Mage::helper('M2ePro')->__("Select Products");
-        }
+        $this->_headerText = Mage::helper('M2ePro')->__("Select Products");
         // ---------------------------------------
 
         // Set buttons actions

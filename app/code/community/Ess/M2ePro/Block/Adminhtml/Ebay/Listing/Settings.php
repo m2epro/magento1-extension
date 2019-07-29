@@ -23,13 +23,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings extends Mage_Adminhtml_Bl
 
         // Set header text
         // ---------------------------------------
-        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Set Products Settings',
-                Mage::helper('M2ePro/Component_Ebay')->getTitle()
-            );
-        } else {
-            $this->_headerText = Mage::helper('M2ePro')->__("Set Products Settings");
-        }
+
+        $this->_headerText = Mage::helper('M2ePro')->__('Set Products Settings');
         // ---------------------------------------
 
         // Set buttons actions

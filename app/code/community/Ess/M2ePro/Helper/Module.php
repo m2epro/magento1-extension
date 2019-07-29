@@ -63,7 +63,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getRevision()
     {
-        return '14227';
+        return '13755';
     }
 
     // ---------------------------------------

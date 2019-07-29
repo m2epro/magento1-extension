@@ -155,7 +155,24 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
     protected function processRealTime()
     {
-        parent::process();
+        try {
+            parent::process();
+        } catch (Ess_M2ePro_Model_Exception_Connection $exception) {
+            if ($this->account->getChildObject()->isModeSandbox()) {
+                throw $exception;
+            }
+
+            $this->processResponser();
+
+        } catch (Exception $exception) {
+            if (strpos($exception->getMessage(), 'code:34') === false ||
+                $this->account->getChildObject()->isModeSandbox()
+            ) {
+                throw $exception;
+            }
+
+            $this->processResponser();
+        }
 
         if ($this->getResponser()->getStatus() != Ess_M2ePro_Helper_Data::STATUS_SUCCESS) {
             $this->getLogger()->setStatus($this->getResponser()->getStatus());

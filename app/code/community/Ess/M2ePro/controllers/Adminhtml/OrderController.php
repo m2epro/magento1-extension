@@ -545,62 +545,6 @@ class Ess_M2ePro_Adminhtml_OrderController
 
     //########################################
 
-    public function noteGridAction()
-    {
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_order_note_grid');
-        $this->getResponse()->setBody($block->toHtml());
-    }
-
-    public function getNotePopupHtmlAction()
-    {
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_order_note_popup');
-        $this->getResponse()->setBody($block->toHtml());
-    }
-
-    // ---------------------------------------
-
-    public function deleteNoteAction()
-    {
-        $noteId = $this->getRequest()->getParam('note_id');
-        if (is_null($noteId)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => false)));
-        }
-
-        /** @var \Ess_M2ePro_Model_Order_Note $noteModel */
-        $noteModel = Mage::getModel('M2ePro/Order_Note')->load($noteId);
-        $noteModel->deleteInstance();
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
-    }
-
-    // ---------------------------------------
-
-    public function saveNoteAction()
-    {
-        $noteText = $this->getRequest()->getParam('note');
-        if (is_null($noteText)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => false)));
-        }
-
-        /** @var \Ess_M2ePro_Model_Order_Note $noteModel */
-        $noteModel = Mage::getModel('M2ePro/Order_Note');
-        if ($noteId = $this->getRequest()->getParam('note_id')) {
-
-            $noteModel->load($noteId);
-            $noteModel->setData('note', $noteText);
-
-        } else {
-
-            $noteModel->setData('note', $noteText);
-            $noteModel->setData('order_id', $this->getRequest()->getParam('order_id'));
-        }
-        $noteModel->save();
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
-}
-
-    //########################################
-
     public function deleteAction()
     {
         $id = $this->getRequest()->getParam('id');

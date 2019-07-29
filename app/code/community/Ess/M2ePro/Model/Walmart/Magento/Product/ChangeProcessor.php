@@ -123,8 +123,8 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
             $walmartSellingFormatTemplate->getAttributesAttributes()
         );
 
-        foreach ($walmartSellingFormatTemplate->getShippingOverrides(true) as $shippingOverride) {
-            /** @var Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride $shippingOverride */
+        foreach ($walmartSellingFormatTemplate->getShippingOverrideServices(true) as $shippingOverride) {
+            /** @var Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService $shippingOverride */
 
             if ($shippingOverride->isCostModeCustomAttribute()) {
                 $trackingAttributes[] = $shippingOverride->getCostAttribute();

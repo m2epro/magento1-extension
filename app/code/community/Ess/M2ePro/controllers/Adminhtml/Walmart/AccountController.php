@@ -117,9 +117,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             'title',
             'marketplace_id',
             'consumer_id',
-            'client_id',
-            'client_secret',
-            'old_private_key'
+            'private_key'
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
@@ -453,38 +451,35 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
                 $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
 
-                if ($post['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA) {
-                    $requestData = array(
-                        'title'            => $post['title'],
-                        'marketplace_id'   => (int)$post['marketplace_id'],
-                        'related_store_id' => (int)$post['related_store_id'],
-                        'consumer_id'      => $post['consumer_id'],
-                        'private_key'      => $post['old_private_key']
-                    );
-                } else {
-                    $requestData = array(
-                        'title'            => $post['title'],
-                        'marketplace_id'   => (int)$post['marketplace_id'],
-                        'related_store_id' => (int)$post['related_store_id'],
-                        'consumer_id'      => $post['consumer_id'],
-                        'client_id'        => $post['client_id'],
-                        'client_secret'    => $post['client_secret'],
-                    );
-                }
-
                 if (!$isEdit) {
-                    $connectorObj = $dispatcherObject->getConnector(
-                        'account', 'add', 'entityRequester', $requestData, $id
+
+                    $params = array(
+                        'title'            => $post['title'],
+                        'marketplace_id'   => (int)$post['marketplace_id'],
+                        'consumer_id'      => $post['consumer_id'],
+                        'private_key'      => $post['private_key'],
+                        'related_store_id' => (int)$post['related_store_id']
                     );
+
+                    $connectorObj = $dispatcherObject->getConnector('account', 'add' ,'entityRequester',
+                        $params, $id);
                     $dispatcherObject->process($connectorObj);
 
                 } else {
-                    $requestData = array_diff_assoc($requestData, $oldData);
 
-                    if (!empty($requestData)) {
-                        $connectorObj = $dispatcherObject->getConnector(
-                            'account', 'update', 'entityRequester', $requestData, $id
-                        );
+                    $newData = array(
+                        'title'            => $post['title'],
+                        'marketplace_id'   => (int)$post['marketplace_id'],
+                        'consumer_id'      => $post['consumer_id'],
+                        'private_key'      => $post['private_key'],
+                        'related_store_id' => (int)$post['related_store_id']
+                    );
+
+                    $params = array_diff_assoc($newData, $oldData);
+
+                    if (!empty($params)) {
+                        $connectorObj = $dispatcherObject->getConnector('account', 'update' ,'entityRequester',
+                            $params, $id);
                         $dispatcherObject->process($connectorObj);
                     }
                 }
@@ -502,10 +497,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
             $this->_getSession()->addError($error);
-
-            if (!$isEdit) {
-                $model->deleteInstance();
-            }
+            $model->deleteInstance();
 
             return $this->indexAction();
         }
@@ -515,13 +507,13 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         /* @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
-        $routerParams = array('id' => $id);
+        $routerParams = array('id'=>$id);
         if ($wizardHelper->isActive('installationWalmart') &&
             $wizardHelper->getStep('installationWalmart') == 'account') {
             $routerParams['wizard'] = true;
         }
 
-        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit' => $routerParams)));
+        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list',array(),array('edit'=>$routerParams)));
     }
 
     //########################################
@@ -595,57 +587,40 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
     public function checkAuthAction()
     {
-        $consumerId    = $this->getRequest()->getParam('consumer_id', false);
-        $oldPrivateKey = $this->getRequest()->getParam('old_private_key', false);
-        $clientId      = $this->getRequest()->getParam('client_id', false);
-        $clientSecret  = $this->getRequest()->getParam('client_secret', false);
-        $marketplaceId = $this->getRequest()->getParam('marketplace_id', false);
-        $result        = array('result' => null);
+        $consumerId    = $this->getRequest()->getParam('consumer_id');
+        $privateKey    = $this->getRequest()->getParam('private_key');
+        $marketplaceId = $this->getRequest()->getParam('marketplace_id');
 
-        /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
-        $marketplaceObject = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Marketplace', $marketplaceId
-        );
+        if ($consumerId && $privateKey && $marketplaceId) {
 
-        if ($marketplaceId == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
-            $consumerId && $oldPrivateKey) {
+            $marketplaceNativeId = Mage::helper('M2ePro/Component_Walmart')
+                ->getCachedObject('Marketplace',$marketplaceId)
+                ->getNativeId();
 
-            $requestData = array(
-                'marketplace' => $marketplaceObject->getNativeId(),
+            $params = array(
+                'marketplace' => $marketplaceNativeId,
                 'consumer_id' => $consumerId,
-                'private_key' => $oldPrivateKey,
+                'private_key' => $privateKey,
             );
 
-        } elseif ($marketplaceId != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
-                  $clientId && $clientSecret) {
+            try {
 
-            $requestData = array(
-                'marketplace'   => $marketplaceObject->getNativeId(),
-                'client_id'     => $clientId,
-                'client_secret' => $clientSecret,
-                'consumer_id'   => $consumerId
-            );
+                $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
+                $connectorObj = $dispatcherObject->getVirtualConnector('account','check','access',$params);
+                $dispatcherObject->process($connectorObj);
 
-        } else {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));
-        }
+                $response = $connectorObj->getResponseData();
 
-        try {
-            $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('account', 'check', 'access', $requestData);
-            $dispatcherObject->process($connectorObj);
+                $result['result'] = isset($response['status']) ? $response['status']
+                                                               : null;
+                if (!empty($response['reason'])) {
+                    $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
+                }
 
-            $response = $connectorObj->getResponseData();
-
-            $result['result'] = isset($response['status']) ? $response['status']
-                                                           : null;
-            if (!empty($response['reason'])) {
-                $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
+            } catch (Exception $exception) {
+                $result['result'] = false;
+                Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
-
-        } catch (Exception $exception) {
-            $result['result'] = false;
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));

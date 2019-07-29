@@ -617,7 +617,8 @@ HTML;
             return true;
         }
 
-        if ($this->getConfigurator()->isPromotionsAllowed()) {
+        $promotions = $this->getPromotions();
+        if ($this->getConfigurator()->isPromotionsAllowed() && !empty($promotions)) {
 
             $this->getConfigurator()->disallowPromotions();
             $this->addMessage(
@@ -628,7 +629,8 @@ HTML;
             );
         }
 
-        if ($this->getConfigurator()->isPriceAllowed()) {
+        $price = $this->getPrice();
+        if ($this->getConfigurator()->isPriceAllowed() && !empty($price)) {
 
             $this->getConfigurator()->disallowPrice();
             $this->addMessage(

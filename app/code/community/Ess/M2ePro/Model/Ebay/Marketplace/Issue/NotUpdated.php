@@ -61,7 +61,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Issue_NotUpdated extends Ess_M2ePro_Mode
 
         $tempTitle = Mage::helper('M2ePro')->__(
             'M2E Pro requires action: eBay marketplace data needs to be synchronized.
-            Please update eBay marketplaces.'
+            Please click here to update eBay marketplaces.'
         );
         $textToTranslate = <<<TEXT
 %marketplace_title% data was changed on eBay. You need to resynchronize the marketplace(s) to correctly
@@ -74,14 +74,14 @@ TEXT;
             implode(', ', array_keys($outdatedMarketplaces)),
             Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration'),
             Mage::helper('adminhtml')->getUrl(
-                'M2ePro/adminhtml_ebay_marketplace',
+                '*/adminhtml_ebay_marketplace',
                 array('tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_MARKETPLACE)
             )
         );
 
         $editHash = md5(self::CACHE_KEY . Mage::helper('M2ePro')->jsonEncode($outdatedMarketplaces));
         $messageUrl = Mage::helper('adminhtml')->getUrl(
-            'M2ePro/adminhtml_ebay_marketplace/index',
+            '*/adminhtml_ebay_marketplace/index',
             array(
                 'tab'    => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_MARKETPLACE,
                 '_query' => array('hash' => $editHash)

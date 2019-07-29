@@ -1,6 +1,7 @@
 <style>
 
     #block_notice_development_tab_debug_magento_development,
+    #block_notice_development_tab_debug_maintenance,
     #block_notice_development_tab_development_mode {
         style: margin-top: 8px;
         width: 500px;
@@ -54,6 +55,24 @@
         <b><?php echo Mage::helper('M2ePro')->__('M2ePro Development Mode is <span style="color:green;">Disabled</span> now.'); ?></b>
         <div style="float: right;">
             <?php echo $this->getChildHtml('enable_development_mode'); ?>
+        </div>
+    <?php endif; ?>
+
+</div>
+
+<div id="block_notice_development_tab_debug_maintenance" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+
+    <?php if ($this->isMaintenanceEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('Maintenance Mode is <span style="color:red;">Enabled</span> now.'); ?></b>
+        <div style="float: right;">
+            <?php echo $this->getChildHtml('disable_maintenance'); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$this->isMaintenanceEnabled) : ?>
+        <b><?php echo Mage::helper('M2ePro')->__('Maintenance Mode is <span style="color:green;">Disabled</span> now.'); ?></b>
+        <div style="float: right;">
+            <?php echo $this->getChildHtml('enable_maintenance'); ?>
         </div>
     <?php endif; ?>
 

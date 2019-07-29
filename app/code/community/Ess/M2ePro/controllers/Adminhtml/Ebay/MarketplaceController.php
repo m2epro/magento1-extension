@@ -8,6 +8,8 @@
 
 class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
+    const SYNCHRONIZATION_LOCK_ITEM_NICK = 'ebay_marketplace_synchronization';
+
     //########################################
 
     protected function _initAction()
@@ -79,7 +81,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
         $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace',$marketplaceId);
 
         $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
+            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
         ));
 
         if ($lockItemManager->isExist()) {
@@ -107,7 +109,7 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
         $response = array();
 
         $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
+            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
         ));
 
         if (!$lockItemManager->isExist()) {

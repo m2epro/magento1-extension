@@ -61,7 +61,7 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Issue_NotUpdated extends Ess_M2ePro_Mo
 
         $tempTitle = Mage::helper('M2ePro')->__(
             'M2E Pro requires action: Amazon marketplace data needs to be synchronized.
-            Please update Amazon marketplaces.'
+            Please click here to update Amazon marketplaces.'
         );
         $textToTranslate = <<<TEXT
 %marketplace_title% data was changed on Amazon. You need to resynchronize the marketplace(s) to correctly
@@ -74,14 +74,14 @@ TEXT;
             implode(', ', array_keys($outdatedMarketplaces)),
             Mage::helper('M2ePro/View_Amazon')->getPageNavigationPath('configuration'),
             Mage::helper('adminhtml')->getUrl(
-                'M2ePro/adminhtml_amazon_marketplace',
+                '*/adminhtml_amazon_marketplace',
                 array('tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs::TAB_ID_MARKETPLACE)
             )
         );
 
         $editHash = md5(self::CACHE_KEY . Mage::helper('M2ePro')->jsonEncode($outdatedMarketplaces));
         $messageUrl = Mage::helper('adminhtml')->getUrl(
-            'M2ePro/adminhtml_amazon_marketplace/index',
+            '*/adminhtml_amazon_marketplace/index',
             array(
                 'tab'    => Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs::TAB_ID_MARKETPLACE,
                 '_query' => array('hash' => $editHash)

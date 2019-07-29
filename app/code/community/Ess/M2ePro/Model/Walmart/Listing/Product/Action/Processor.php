@@ -268,24 +268,26 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
     private function prepareRequestsPacks(array $accountsActions)
     {
         $groupHashesMetadata = array();
+
         $requestsPacks = array();
 
         foreach ($accountsActions as $accountId => $accountData) {
             foreach ($accountData as $actionType => $actionData) {
                 foreach ($actionData as $listingProductId => $listingProductData) {
-                    $groupHash = $this->getActualGroupHash($accountId, $groupHashesMetadata, $listingProductData);
-                    if (!isset($groupHashesMetadata[$accountId][$groupHash])) {
-                        $groupHashesMetadata[$accountId][$groupHash] = array(
-                            'slow_actions_count' => 0
+                    $groupHash = $this->getActualGroupHash($groupHashesMetadata, $listingProductData);
+
+                    if (!isset($groupHashesMetadata[$groupHash])) {
+                        $groupHashesMetadata[$groupHash] = array(
+                            'slow_actions_count' => 0,
                         );
                     }
 
                     if ($listingProductData['action_type'] == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
-
                         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
                         $configurator = $listingProductData['configurator'];
+
                         if ($configurator->isDetailsAllowed()) {
-                            $groupHashesMetadata[$accountId][$groupHash]['slow_actions_count']++;
+                            $groupHashesMetadata[$groupHash]['slow_actions_count']++;
                         }
                     }
 
@@ -297,14 +299,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
         return $requestsPacks;
     }
 
-    private function getActualGroupHash($accountId, array $groupHashesMetadata, array $listingProductData)
+    private function getActualGroupHash(array $groupHashesMetadata, array $listingProductData)
     {
-        if (empty($groupHashesMetadata[$accountId])) {
+        if (empty($groupHashesMetadata)) {
             return Mage::helper('M2ePro')->generateUniqueHash();
         }
 
-        end($groupHashesMetadata[$accountId]);
-        $lastGroupHash = key($groupHashesMetadata[$accountId]);
+        end($groupHashesMetadata);
+        $lastGroupHash = key($groupHashesMetadata);
 
         if ($listingProductData['action_type'] != Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
             return $lastGroupHash;
@@ -312,11 +314,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
         $configurator = $listingProductData['configurator'];
+
         if (!$configurator->isDetailsAllowed()) {
             return $lastGroupHash;
         }
 
-        foreach ($groupHashesMetadata[$accountId] as $groupHash => $metadata) {
+        foreach ($groupHashesMetadata as $groupHash => $metadata) {
             if ($metadata['slow_actions_count'] < $this->getMaxPackSize(self::FEED_TYPE_UPDATE_DETAILS)) {
                 return $groupHash;
             }

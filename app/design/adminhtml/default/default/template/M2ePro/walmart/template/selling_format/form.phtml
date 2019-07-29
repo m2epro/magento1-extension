@@ -41,7 +41,7 @@
     $formData = $model ? $model->toArray() : array();
 
     if (!empty($formData)) {
-        $formData['shipping_override_rule'] = $model->getChildObject()->getShippingOverrides();
+        $formData['shipping_override_rule'] = $model->getChildObject()->getShippingOverrideServices();
         $formData['promotions'] = $model->getChildObject()->getPromotions();
     }
 
@@ -143,18 +143,6 @@
         $formData['attributes'] = Mage::helper('M2ePro')->jsonDecode($formData['attributes']);
     }
 
-    if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Add %component_name% Selling Policy',
-                Mage::helper('M2ePro/Component_Walmart')->getTitle()
-            )
-        );
-    } else {
-        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Add Selling Policy')
-        );
-    }
-
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
@@ -203,8 +191,8 @@
     );
 
     M2ePro.php.setConstants(
-        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride'); ?>,
-        'Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride'
+        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService'); ?>,
+        'Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService'
     );
 
     M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_walmart_template_sellingFormat')); ?>);
@@ -221,7 +209,7 @@
         'The Price, at which you want to sell your Product(s) at specific time.' => Mage::helper('M2ePro')->__('The Price, at which you want to sell your Product(s) at specific time.'),
         'The Price, at which you want to sell your Product(s) at specific time.<br/><b>Note:</b> The Final Price is only used for Simple Products.' => Mage::helper('M2ePro')->__('The Price, at which you want to sell your Product(s) at specific time.<br/><b>Note:</b> The Final Price is only used for Simple Products.'),
 
-        'Add Selling Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
+        'Add Selling Policy' => Mage::helper('M2ePro')->__('Add Selling Policy'),
         'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
         'You should select Attribute Sets first and press Confirm Button.' => Mage::helper('M2ePro')->__('You should select Attribute Sets first and press Confirm Button.'),
         'Coefficient is not valid.' => Mage::helper('M2ePro')->__('Coefficient is not valid.'),
@@ -1087,10 +1075,6 @@
                                     <?php echo Mage::helper('M2ePro')->__('Locale'); ?>
                                     <span class="required">*</span>
                                 </th>
-                                <th style="width: 220px">
-                                    <?php echo Mage::helper('M2ePro')->__('Action'); ?>
-                                    <span class="required">*</span>
-                                </th>
                                 <th style="width: 120px">
                                     <?php echo Mage::helper('M2ePro')->__('Mode'); ?>
                                     <span class="required">*</span>
@@ -1098,9 +1082,6 @@
                                 <th style="width: 160px">
                                     <?php echo Mage::helper('M2ePro')->__('Cost'); ?>
                                     <span class="required">*</span>
-                                </th>
-                                <th style="width: 50px">
-                                    <?php echo Mage::helper('M2ePro')->__('Currency'); ?>
                                 </th>
                                 <th style="width: 35px;" class="type-butt last">&nbsp;</th>
                             </tr>
@@ -1505,18 +1486,11 @@
             </select>
         </td>
         <td style="text-align: center;">
-            <select id="shipping_override_rule_action_%i%" name="shipping_override_rule[%i%][is_shipping_allowed]" class="shipping-override-action required-entry" disabled="disabled" style="width: 220px;display: none">
-                <option value="" class="empty"></option>
-                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::IS_SHIPPING_ALLOWED_ADD_OR_OVERRIDE; ?>"><?php echo Mage::helper('M2ePro')->__('Add/Override'); ?></option>
-                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::IS_SHIPPING_ALLOWED_REMOVE; ?>"><?php echo Mage::helper('M2ePro')->__('Remove'); ?></option>
-            </select>
-        </td>
-        <td style="text-align: center;">
             <select id="shipping_override_rule_cost_mode_%i%" name="shipping_override_rule[%i%][cost_mode]" class="required-entry shipping-override-cost-mode" disabled="disabled" style="width: 120px; display: none">
                 <option value="" class="empty"></option>
-                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_FREE ?>"><?php echo Mage::helper('M2ePro')->__('Free'); ?></option>
-                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_CUSTOM_VALUE ?>" class="shipping-override-rule-cost-mode-custom-value"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
-                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_CUSTOM_ATTRIBUTE ?>" class="shipping-override-rule-cost-mode-custom-attribute"><?php echo Mage::helper('M2ePro')->__('Custom Attribute'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_FREE ?>"><?php echo Mage::helper('M2ePro')->__('Free'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_CUSTOM_VALUE ?>" class="shipping-override-rule-cost-mode-custom-value"><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
+                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_CUSTOM_ATTRIBUTE ?>" class="shipping-override-rule-cost-mode-custom-attribute"><?php echo Mage::helper('M2ePro')->__('Custom Attribute'); ?></option>
             </select>
         </td>
         <td style="text-align: center;">
@@ -1527,11 +1501,6 @@
                     <option value="<?php echo $attribute['code'] ?>"><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
                 <?php } ?>
             </select>
-        </td>
-        <td style="text-align: center;">
-            <?php foreach ($this->getData('marketplaces') as $marketplaceRow) { ?>
-                <span class="shipping-override-rule-currency-<?php echo $marketplaceRow['id']; ?>" style="display: none;"><?php echo $marketplaceRow['default_currency']; ?></span>
-            <?php } ?>
         </td>
         <td style="text-align: center;">
             <?php echo $this->getChildHtml('remove_shipping_override_rule_button'); ?>

@@ -1,32 +1,3 @@
-* 6.5.5 (r14227) (10/06/2019)
-
-* Common: [Added] Ability add a notes to Order.
-* Common: [Added] Mass action "Create Magento Order" in the order grid.
-* Common: [Added] Migration from 6.5.5 to 1.4.1.
-* Common: [Fixed] Product is not moved to Listing that contain Product with In Progress status.
-* Common: [Fixed] "Warning: max/min(): Array must contain at least one element" around the project.
-* Common: [Fixed] Marketplaces synchronization does not work on some wizards.
-* Common: [Fixed] Notice: Undefined index: default_value in Ess/M2ePro/Model/Magento/Attribute/Builder.php
-* eBay: [Improved] It takes a long time to load Listing Product grid in Settings view mode if too many Parts Compatibility items have been selected.
-* eBay: [Improved] Combine order log.
-* eBay: [Fixed] Product grid filter does not work on the Settings View Mode in some cases.
-* eBay: [Fixed] "Fatal Error: Call to a member function getMessages() on null" on List action.
-* eBay: [Fixed] Incorrect display of the name of an existing Policy on eBay.
-* eBay: [Fixed] eBay Duplicate functionality.
-* eBay: [Fixed] Incorrect status for Child Product on eBay in some case
-* Amazon: [Fixed] Amazon's Shipping Services pop-up window no longer appears for orders with the status "Shipped".
-* Amazon: [Fixed] Account is deleted after Consumer ID was changed.
-* Amazon: [Fixed] Fatal error in some cases when added Magento Products to Listing.
-* Walmart: [Added] Ability to remove a Shipping Service from the channel.
-* Walmart: [Added] Replace URL images.
-* Walmart: [Improved] Walmart introduced new Access Token based Authentication.
-* Walmart: [Improved] Add currency column for Shipping Override in Walmart Selling Policy
-* Walmart: [Improved] Missing log message after successful list action.
-* Walmart: [Improved] Authentication for US and CA.
-* Walmart: [Fixed] Promotions turning off feature does not work.
-* Walmart: [Fixed] Account is deleted after Consumer ID was changed.
-* Walmart: [Fixed] Error on List Action.
-
 * 6.5.4 (r13755) (01/02/2019)
 
 Common: [Added] Integration with Walmart Marketplace

@@ -79,10 +79,6 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             ->addFieldToFilter('order_id', $this->getId())
             ->walk('deleteInstance');
 
-         Mage::getResourceModel('M2ePro/Order_Note_Collection')
-             ->addFieldToFilter('order_id', $this->getId())
-             ->walk('deleteInstance');
-
         $this->account = NULL;
         $this->magentoOrder = NULL;
         $this->itemsCollection = NULL;
@@ -533,9 +529,9 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     //########################################
 
-    private function beforeCreateMagentoOrder($canCreateExistOrder)
+    private function beforeCreateMagentoOrder()
     {
-        if (!is_null($this->getMagentoOrderId()) && !$canCreateExistOrder) {
+        if (!is_null($this->getMagentoOrderId())) {
             throw new Ess_M2ePro_Model_Exception('Magento Order is already created.');
         }
 
@@ -551,7 +547,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         }
     }
 
-    public function createMagentoOrder($canCreateExistOrder = false)
+    public function createMagentoOrder()
     {
         try {
 
@@ -579,7 +575,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             $this->associateItemsWithProducts();
             // ---------------------------------------
 
-            $this->beforeCreateMagentoOrder($canCreateExistOrder);
+            $this->beforeCreateMagentoOrder();
 
             // Create magento order
             // ---------------------------------------

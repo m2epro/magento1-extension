@@ -371,35 +371,4 @@
         </div>
     </div>
 
-    <div class="entry-edit" id="magento_block_walmart_listing_advanced">
-
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Advanced'); ?></h4>
-        </div>
-
-        <div class="fieldset">
-            <div class="hor-scroll">
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <tr>
-                        <td class="label">
-                            <label for="option_images_url_mode"><?php echo Mage::helper('M2ePro')->__('Image(s) URL') ?>:</label>
-                        </td>
-                        <td class="value">
-                            <select name="option_images_url_mode" id="option_images_url_mode">
-                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::OPTION_IMAGES_URL_MODE_ORIGINAL; ?>" <?php if ($this->getData('option_images_url_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::OPTION_IMAGES_URL_MODE_ORIGINAL) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Original'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::OPTION_IMAGES_URL_MODE_HTTPS; ?>" <?php if ($this->getData('option_images_url_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::OPTION_IMAGES_URL_MODE_HTTPS) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Replace with HTTPS'); ?></option>
-                                <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart_Configuration::OPTION_IMAGES_URL_MODE_HTTP; ?>" <?php if ($this->getData('option_images_url_mode') == Ess_M2ePro_Helper_Component_Walmart_Configuration::OPTION_IMAGES_URL_MODE_HTTP) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Replace with HTTP'); ?></option>
-                            </select>
-                        </td>
-                    </tr>
-
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-
 </form>

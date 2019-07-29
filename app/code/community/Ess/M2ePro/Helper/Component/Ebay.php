@@ -10,8 +10,6 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 {
     const NICK  = 'ebay';
 
-    const MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK = 'ebay_marketplace_synchronization';
-
     const MARKETPLACE_US     = 1;
     const MARKETPLACE_MOTORS = 9;
     const MARKETPLACE_AU = 4;

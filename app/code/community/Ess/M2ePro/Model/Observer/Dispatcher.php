@@ -216,8 +216,7 @@ class Ess_M2ePro_Model_Observer_Dispatcher
     private function process($observerModel, Varien_Event_Observer $eventObserver, $forceRun = false)
     {
         if (!$forceRun &&
-            (Mage::helper('M2ePro/Module_Maintenance')->isEnabled() ||
-             Mage::helper('M2ePro/Module')->isDisabled() ||
+            (Mage::helper('M2ePro/Module')->isDisabled() ||
              !Mage::helper('M2ePro/Module')->isReadyToWork() ||
              !Mage::helper('M2ePro/Component')->getActiveComponents())) {
 

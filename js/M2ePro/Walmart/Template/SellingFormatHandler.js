@@ -142,14 +142,6 @@ WalmartTemplateSellingFormatHandler = Class.create(WalmartTemplateEditHandler, {
         M2ePro.customData.marketplaces_with_tax_codes_dictionary.indexOf($('marketplace_id').value) != -1
             ? $('tax_codes').show()
             : $('tax_codes').hide();
-
-        $$('[class^="shipping-override-rule-currency-"]').each(function(el){
-            el.hide();
-        });
-
-        $$('.shipping-override-rule-currency-' + input.value).each(function(el){
-            el.show();
-        });
     },
 
     // ---------------------------------------
@@ -508,8 +500,6 @@ WalmartTemplateSellingFormatHandler = Class.create(WalmartTemplateEditHandler, {
             .observe('change', this.ruleServiceChange).simulate('change');
         row.down('[id^="shipping_override_rule_location"]')
             .observe('change', this.ruleLocationChange).simulate('change');
-        row.down('[id^="shipping_override_rule_action"]')
-            .observe('change', this.ruleActionChange).simulate('change');
         row.down('[id^="shipping_override_rule_cost_mode"]')
             .observe('change', this.ruleCostModeChange).simulate('change');
 
@@ -524,11 +514,10 @@ WalmartTemplateSellingFormatHandler = Class.create(WalmartTemplateEditHandler, {
     injectRuleData: function(row, data)
     {
         var selectorsMap = {
-            'shipping_override_rule_service':        'method',
-            'shipping_override_rule_action':         'is_shipping_allowed',
-            'shipping_override_rule_location':       'region',
-            'shipping_override_rule_cost_mode':      'cost_mode',
-            'shipping_override_rule_cost_value':     'cost_value',
+            'shipping_override_rule_service': 'method',
+            'shipping_override_rule_location': 'region',
+            'shipping_override_rule_cost_mode': 'cost_mode',
+            'shipping_override_rule_cost_value': 'cost_value',
             'shipping_override_rule_cost_attribute': 'cost_attribute',
         };
 
@@ -879,38 +868,14 @@ WalmartTemplateSellingFormatHandler = Class.create(WalmartTemplateEditHandler, {
         if (this.value == 'VALUE') {
             Form.Element.disable(this.up('tr').down('.shipping-override-rule-cost-mode-custom-value'));
             Form.Element.disable(this.up('tr').down('.shipping-override-rule-cost-mode-custom-attribute'));
-
-            var costMode = this.up('tr').down('.shipping-override-rule-cost-mode-custom-value').up('select');
-
-            if (costMode.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_CUSTOM_VALUE') ||
-                costMode.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_CUSTOM_ATTRIBUTE')) {
-
-                costMode.value = '';
-                costMode.simulate('change');
-            }
         }
     },
 
     ruleLocationChange: function()
     {
-        var override = this.up('tr').down('.shipping-override-action');
-
-        if (this.value == '') {
-
-            override.value = '';
-            override.simulate('change');
-            override.disable().hide();
-
-            return;
-        }
-        override.enable().show();
-    },
-
-    ruleActionChange: function()
-    {
         var costMode = this.up('tr').down('.shipping-override-cost-mode');
 
-        if (this.value == '' || this.value == 0) {
+        if (this.value == '') {
 
             costMode.value = '';
             costMode.simulate('change');
@@ -926,14 +891,14 @@ WalmartTemplateSellingFormatHandler = Class.create(WalmartTemplateEditHandler, {
         var costCustomValue = this.up('tr').down('.shipping-override-cost-custom-value'),
             costCustomAttribute = this.up('tr').down('.shipping-override-cost-custom-attribute');
 
-        if (this.value == '' || this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_FREE')) {
+        if (this.value == '' || this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_FREE')) {
             costCustomValue.disable().hide();
             costCustomAttribute.disable().hide();
 
             costCustomValue.value = '';
             costCustomAttribute.value = '';
 
-            if (this.value != '' && this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_FREE')) {
+            if (this.value != '' && this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_FREE')) {
                 costCustomValue.disable().show();
                 costCustomValue.value = 0;
             }
@@ -941,10 +906,10 @@ WalmartTemplateSellingFormatHandler = Class.create(WalmartTemplateEditHandler, {
             return;
         }
 
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_CUSTOM_VALUE')) {
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_CUSTOM_VALUE')) {
             costCustomValue.enable().show();
             costCustomAttribute.disable().hide();
-        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride::COST_MODE_CUSTOM_ATTRIBUTE')) {
+        } else if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::COST_MODE_CUSTOM_ATTRIBUTE')) {
             costCustomValue.disable().hide();
             costCustomAttribute.enable().show();
         }

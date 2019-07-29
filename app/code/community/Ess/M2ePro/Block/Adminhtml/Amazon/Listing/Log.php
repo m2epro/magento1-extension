@@ -94,18 +94,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Log extends Mage_Adminhtml_Block
 
             $listing = $this->getListing();
 
-            if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-                $this->_headerText = Mage::helper('M2ePro')->__(
-                    '%component_name% / Log For Listing "%listing_title%"',
-                    Mage::helper('M2ePro/Component_Amazon')->getTitle(),
-                    $this->escapeHtml($listing->getTitle())
-                );
-            } else {
-                $this->_headerText = Mage::helper('M2ePro')->__(
-                    'Log For Listing "%listing_title%"',
-                    $this->escapeHtml($listing->getTitle())
-                );
-            }
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                'Log For Listing "%listing_title%"',
+                $this->escapeHtml($listing->getTitle())
+            );
 
         } else if ($this->getListingProductId()) {
 
@@ -117,23 +109,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Log extends Mage_Adminhtml_Block
                 $onlineTitle = $listingProduct->getMagentoProduct()->getName();
             }
 
-            if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-                $this->_headerText = Mage::helper('M2ePro')->__(
-                    '%component_name% / Log For Product "%product_name%" (ID:%product_id%)'
-                    . ' Of Listing "%listing_title%"',
-                    Mage::helper('M2ePro/Component_Amazon')->getTitle(),
-                    $this->escapeHtml($onlineTitle),
-                    $listingProduct->getProductId(),
-                    $this->escapeHtml($listing->getTitle())
-                );
-            } else {
-                $this->_headerText = Mage::helper('M2ePro')->__(
-                    'Log For Product "%product_name%" (ID:%product_id%) Of Listing "%listing_title%"',
-                    $this->escapeHtml($onlineTitle),
-                    $listingProduct->getProductId(),
-                    $this->escapeHtml($listing->getTitle())
-                );
-            }
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                'Log For Product "%product_name%" (ID:%product_id%) Of Listing "%listing_title%"',
+                $this->escapeHtml($onlineTitle),
+                $listingProduct->getProductId(),
+                $this->escapeHtml($listing->getTitle())
+            );
         }
         // ---------------------------------------
         $this->addButton('show_general_log', array(

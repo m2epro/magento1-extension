@@ -39,18 +39,6 @@
 
     $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
 
-    if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Add %component_name% Description Policy',
-                Mage::helper('M2ePro/Component_Amazon')->getTitle()
-            )
-        );
-    } else {
-        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Add Description Policy')
-        );
-    }
-
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
@@ -81,7 +69,7 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Description Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
+        'Add Description Policy' => Mage::helper('M2ePro')->__('Add Description Policy'),
 
         'Change Category' => Mage::helper('M2ePro')->__('Change Category'),
         'Not Selected'    => Mage::helper('M2ePro')->__('Not Selected'),

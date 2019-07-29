@@ -124,9 +124,7 @@ class Ess_M2ePro_Model_Upgrade_Tables
             'connector_pending_requester_single',
             'connector_pending_requester_partial',
             'amazon_processing_action_list_sku',
-            'listing_product_synchronization_instruction',
-            'walmart_order_action_processing',
-            'walmart_template_selling_format_shipping_override_service'
+            'listing_product_synchronization_instruction'
         );
 
         $currentTables = array();

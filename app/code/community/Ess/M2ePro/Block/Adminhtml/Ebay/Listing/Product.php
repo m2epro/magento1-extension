@@ -29,9 +29,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
         // Set header text
         // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products",
-                Mage::helper('M2ePro/Component_Ebay')->getTitle()
-            );
+            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
+            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products", $componentName);
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__("Select Products");
         }

@@ -180,6 +180,19 @@ HTML;
 
         $id = $row->getId();
         $generalId = $row->getData('general_id');
+        $categoryLinkTitle = Mage::helper('M2ePro')->escapeHtml('Show Categories');
+        $notFoundText = Mage::helper('M2ePro')->__('Categories Not Found');
+
+        $value .= <<<HTML
+<div style="margin-left: 3px; margin-bottom: 10px; font-size:10px; line-height: 1.1em">
+    <a href="javascript:void(0)"
+        onclick="ListingGridHandlerObj.productSearchHandler.showAsinCategories(
+            this, {$id}, '{$generalId}', {$this->productId})">
+        {$categoryLinkTitle}</a>
+    <div id="asin_categories_{$id}"></div>
+    <div id="asin_categories_not_found_{$id}" style="display: none; font-style: italic">{$notFoundText}</div>
+</div>
+HTML;
 
         if (!$this->listingProduct->getChildObject()->getVariationManager()->isVariationProduct()
             || $this->listingProduct->getChildObject()->getVariationManager()->isIndividualType()) {

@@ -54,8 +54,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             $popUp->setData('message', 'fbaError');
             $responseData['status'] = false;
 
-        } elseif ($order->getChildObject()->isCanceled() || $order->getChildObject()->isPending() ||
-                  $order->getChildObject()->isShipped()) {
+        } elseif ($order->getChildObject()->isCanceled() || $order->getChildObject()->isPending()) {
             $popUp = $this->loadLayout()->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment_message');
             $popUp->setData('message', 'statusError');

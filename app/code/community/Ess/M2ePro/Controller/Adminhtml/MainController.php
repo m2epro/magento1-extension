@@ -41,6 +41,17 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             }
         }
 
+        $maintenanceHelper = Mage::helper('M2ePro/Module_Maintenance');
+
+        if ($maintenanceHelper->isEnabled()) {
+
+            if ($maintenanceHelper->isOwner()) {
+                $maintenanceHelper->prolongRestoreDate();
+            } elseif ($maintenanceHelper->isExpired()) {
+                $maintenanceHelper->disable();
+            }
+        }
+
         return $this;
     }
 
@@ -119,7 +130,10 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             !$this->getRequest()->isPost() &&
             !$this->getRequest()->isXmlHttpRequest()) {
 
-            $muteMessages = $this->addBrowserNotifications();
+            $browserNotification = $this->addBrowserNotifications();
+            $maintenanceNotification = $this->addMaintenanceNotifications();
+
+            $muteMessages = $browserNotification || $maintenanceNotification;
 
             if (!$muteMessages) {
                 $this->addLicenseNotifications();
@@ -149,6 +163,30 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
             return true;
         }
         return false;
+    }
+
+    private function addMaintenanceNotifications()
+    {
+        if (!Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
+            return false;
+        }
+
+        if (Mage::helper('M2ePro/Module_Maintenance')->isOwner()) {
+
+            $this->_getSession()->addNotice(Mage::helper('M2ePro')->__(
+                'Maintenance is Active.'
+            ));
+
+            return false;
+        }
+
+        $this->_getSession()->addError(Mage::helper('M2ePro')->__(
+            'M2E Pro is working in Maintenance Mode at the moment. Developers are investigating your issue.'
+        ).'<br/>'.Mage::helper('M2ePro')->__(
+            'You will be able to see a content of this Page soon. Please wait and then refresh a browser Page later.'
+        ));
+
+        return true;
     }
 
     // ---------------------------------------
@@ -383,7 +421,11 @@ HTML
     {
         return Mage::helper('M2ePro/Module')->isDisabled() ||
                $this->isContentLockedByWizard() ||
-               Mage::helper('M2ePro/Client')->isBrowserIE();
+               Mage::helper('M2ePro/Client')->isBrowserIE() ||
+               (
+                   Mage::helper('M2ePro/Module_Maintenance')->isEnabled() &&
+                   !Mage::helper('M2ePro/Module_Maintenance')->isOwner()
+               );
     }
 
     private function isContentLockedByWizard()

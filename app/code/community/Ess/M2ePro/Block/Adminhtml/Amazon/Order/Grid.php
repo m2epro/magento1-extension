@@ -11,9 +11,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
     /** @var $itemsCollection Ess_M2ePro_Model_Mysql4_Order_Item_Collection */
     private $itemsCollection = NULL;
 
-    /** @var $notesCollection Ess_M2ePro_Model_Mysql4_Order_Note_Collection */
-    private $notesCollection = NULL;
-
     //########################################
 
     public function __construct()
@@ -44,11 +41,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
 
         $collection->getSelect()
-           ->joinLeft(
-               array('so' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales/order')),
-               '(so.entity_id = `main_table`.magento_order_id)',
-               array('magento_order_num' => 'increment_id')
-           );
+                   ->joinLeft(
+                       array(
+                           'so' => Mage::helper('M2ePro/Module_Database_Structure')->
+                           getTableNameWithPrefix('sales/order')
+                       ),
+                       '(so.entity_id = `main_table`.magento_order_id)',
+                       array('magento_order_num' => 'increment_id'));
 
         // Add Filter By Account
         // ---------------------------------------
@@ -80,14 +79,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
         $this->itemsCollection = Mage::helper('M2ePro/Component_Amazon')
             ->getCollection('Order_Item')
             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
-
-        // ---------------------------------------
-
-        $this->notesCollection = Mage::getModel('M2ePro/Order_Note')
-            ->getCollection()
-            ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
-
-        // ---------------------------------------
 
         return parent::_afterLoadCollection();
     }
@@ -272,12 +263,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
              'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-
-        $this->getMassactionBlock()->addItem('create_order', array(
-            'label'    => Mage::helper('M2ePro')->__('Create Magento Order'),
-            'url'      => $this->getUrl('*/adminhtml_amazon_order/createMagentoOrder'),
-            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -302,34 +287,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_Grid extends Mage_Adminhtml_Block_
                                  . '" /></div>';
         }
 
-        $returnString = '<a href="' . $url . '" target="_blank">' . $orderId . '</a> ';
-        $returnString .= $primeImageHtml;
-        $returnString .= $businessImageHtml;
-
-        /** @var $notes Ess_M2ePro_Model_Order_Note[] */
-        $notes = $this->notesCollection->getItemsByColumnValue('order_id', $row->getData('id'));
-
-        if ($notes) {
-            $htmlNotesCount = Mage::helper('M2ePro/Data')->__(
-                'You have a custom note for the order. It can be reviewed on the order detail page.'
-            );
-
-            $returnString .= <<<HTML
-<div class="note_icon" style="display: inline-block; margin-left: 2px; width:16px;">
-    <img class="tool-tip-image"
-         style="vertical-align: middle; cursor: inherit"
-         src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}">
-    <span class="tool-tip-message tool-tip-message" style="display:none;">
-        <img src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}" style="width: 18px; height: 18px">
-        <div class="ebay-identifiers">
-           {$htmlNotesCount}
-        </div>
-    </span>
-</div>
+        return <<<HTML
+<a href="{$url}" target="_blank">{$orderId}</a> {$primeImageHtml} {$businessImageHtml}
 HTML;
-        }
-
-        return $returnString;
     }
 
     public function callbackColumnMagentoOrder($value, $row, $column, $isExport)
