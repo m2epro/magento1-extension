@@ -17,7 +17,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 
@@ -41,25 +41,22 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             $popUp->setData('fulfillment_details', $orderFulfillmentData);
             $popUp->setData('order_items', $orderItems);
             $popUp->setData('fulfillment_not_wizard', true);
-
         } elseif (!$order->getMarketplace()->getChildObject()->isMerchantFulfillmentAvailable()) {
             $popUp = $this->loadLayout()->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment_message');
             $popUp->setData('message', 'marketplaceError');
             $responseData['status'] = false;
-
         } elseif ($order->getChildObject()->isFulfilledByAmazon()) {
             $popUp = $this->loadLayout()->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment_message');
             $popUp->setData('message', 'fbaError');
             $responseData['status'] = false;
-
-        } elseif ($order->getChildObject()->isCanceled() || $order->getChildObject()->isPending()) {
+        } elseif ($order->getChildObject()->isCanceled() || $order->getChildObject()->isPending() ||
+                  $order->getChildObject()->isShipped()) {
             $popUp = $this->loadLayout()->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment_message');
             $popUp->setData('message', 'statusError');
             $responseData['status'] = false;
-
         } else {
             $popUp = $this->loadLayout()->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment_configuration');
@@ -78,7 +75,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 
@@ -106,7 +103,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
         $fulfillmentCachedData = array_intersect_key($post, array_flip($fulfillmentCachedFields));
 
-        Mage::helper('M2ePro/Data_Cache_Permanent')->setValue('amazon_merchant_fulfillment_data',
+        Mage::helper('M2ePro/Data_Cache_Permanent')->setValue(
+            'amazon_merchant_fulfillment_data',
             $fulfillmentCachedData,
             array('amazon', 'merchant_fulfillment')
         );
@@ -141,7 +139,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             !$isVirtualPredefinedPackage)
         {
             $preparedPackageData['predefined_dimensions'] = $post['package_dimension_predefined'];
-
         } elseif ($post['package_dimension_source'] == MerchantFulfillment::DIMENSION_SOURCE_CUSTOM ||
                  ($post['package_dimension_source'] == MerchantFulfillment::DIMENSION_SOURCE_PREDEFINED &&
                   $isVirtualPredefinedPackage))
@@ -204,8 +201,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
         try {
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('shipment', 'get', 'offers',
-                $requestData, NULL, $order->getAccount());
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'shipment', 'get', 'offers',
+                $requestData, NULL, $order->getAccount()
+            );
 
             $dispatcherObject->process($connectorObj);
 
@@ -220,7 +219,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
                     break;
                 }
             }
-
         } catch (Exception $exception) {
             $popup->setData('error_message', $exception->getMessage());
         }
@@ -232,7 +230,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 
@@ -248,7 +246,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
         $requestData = Mage::helper('M2ePro/Data_Session')->getValue('fulfillment_request_data');
 
-        if (is_null($requestData)) {
+        if ($requestData === null) {
             return $this->getResponse()->setBody('You should get eligible shipping services on previous step');
         }
 
@@ -264,8 +262,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
         try {
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('shipment', 'add', 'entity',
-                $requestData, NULL, $order->getAccount());
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'shipment', 'add', 'entity',
+                $requestData, NULL, $order->getAccount()
+            );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
@@ -276,16 +276,17 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
             unset($response['label']['file']['contents']);
 
-            $order->addData(array(
+            $order->addData(
+                array(
                 'merchant_fulfillment_data'  => Mage::helper('M2ePro')->jsonEncode($response),
                 'merchant_fulfillment_label' => $labelContent,
-            ))->save();
+                )
+            )->save();
 
             $popup->setData('fulfillment_details', $response);
 
             $orderItems = $order->getItemsCollection()->getItems();
             $popup->setData('order_items', $orderItems);
-
         } catch (Exception $exception) {
             $popup->setData('error_message', $exception->getMessage());
         }
@@ -297,7 +298,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 
@@ -322,8 +323,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
         try {
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('shipment', 'get', 'entity',
-                $requestData, NULL, $order->getAccount());
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'shipment', 'get', 'entity',
+                $requestData, NULL, $order->getAccount()
+            );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
@@ -331,6 +334,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             if (empty($response['label']) && !empty($orderFulfillmentData['label'])) {
                 $order->setData('merchant_fulfillment_label', NULL);
             }
+
             unset($response['label']['file']['contents']);
 
             $order->setSettings('merchant_fulfillment_data', $response)->save();
@@ -346,7 +350,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 
@@ -377,8 +381,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
         try {
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('shipment', 'cancel', 'entity',
-                $requestData, NULL, $order->getAccount());
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'shipment', 'cancel', 'entity',
+                $requestData, NULL, $order->getAccount()
+            );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
@@ -389,7 +395,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
             $order->setSettings('merchant_fulfillment_data', $response)->save();
             $responseData['success'] = true;
-
         } catch (Exception $exception) {
             $responseData['error_message'] = $exception->getMessage();
         }
@@ -401,7 +406,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 
@@ -421,10 +426,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             return $this->getResponse()->setBody('Shipment status should not be Purchased');
         }
 
-        $order->addData(array(
+        $order->addData(
+            array(
             'merchant_fulfillment_data'  => NULL,
             'merchant_fulfillment_label' => NULL
-        ))->save();
+            )
+        )->save();
 
         $responseData = array(
             'success' => true
@@ -437,7 +444,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 
@@ -449,7 +456,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
         $orderFulfillmentData = $order->getChildObject()->getMerchantFulfillmentData();
         $labelContent = $order->getChildObject()->getData('merchant_fulfillment_label');
 
-        if (empty($orderFulfillmentData['label']) || is_null($labelContent)) {
+        if (empty($orderFulfillmentData['label']) || $labelContent === null) {
             return $this->getResponse()->setBody('The shipment has no label');
         }
 
@@ -464,10 +471,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
         $registry = Mage::getModel('M2ePro/Registry');
         $registry->load('/amazon/order/merchant_fulfillment/disable_notification_popup/', 'key');
 
-        $registry->setData(array(
+        $registry->setData(
+            array(
             'key'   => '/amazon/order/merchant_fulfillment/disable_notification_popup/',
             'value' => 1,
-        ));
+            )
+        );
 
         $registry->save();
     }
@@ -478,7 +487,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
     {
         $orderId = $this->getRequest()->getParam('order_id');
 
-        if (is_null($orderId)) {
+        if ($orderId === null) {
             return $this->getResponse()->setBody('You should specify order ID');
         }
 

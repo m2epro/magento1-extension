@@ -9,10 +9,10 @@
 class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 {
     /** @var Ess_M2ePro_Model_Walmart_Order */
-    protected $order = NULL;
+    protected $_order = null;
 
     /** @var Ess_M2ePro_Model_Walmart_Order_Item_Proxy[] */
-    protected $removedProxyItems = array();
+    protected $_removedProxyItems = array();
 
     //########################################
 
@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
         foreach ($items as $key => $item) {
             if ($item->getPrice() <= 0) {
-                $this->removedProxyItems[] = $item;
+                $this->_removedProxyItems[] = $item;
                 unset($items[$key]);
             }
         }
@@ -47,8 +47,8 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getCheckoutMethod()
     {
-        if ($this->order->getWalmartAccount()->isMagentoOrdersCustomerPredefined() ||
-            $this->order->getWalmartAccount()->isMagentoOrdersCustomerNew()) {
+        if ($this->_order->getWalmartAccount()->isMagentoOrdersCustomerPredefined() ||
+            $this->_order->getWalmartAccount()->isMagentoOrdersCustomerNew()) {
             return self::CHECKOUT_REGISTER;
         }
 
@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function isOrderNumberPrefixSourceChannel()
     {
-        return $this->order->getWalmartAccount()->isMagentoOrdersNumberSourceChannel();
+        return $this->_order->getWalmartAccount()->isMagentoOrdersNumberSourceChannel();
     }
 
     /**
@@ -70,7 +70,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function isOrderNumberPrefixSourceMagento()
     {
-        return $this->order->getWalmartAccount()->isMagentoOrdersNumberSourceMagento();
+        return $this->_order->getWalmartAccount()->isMagentoOrdersNumberSourceMagento();
     }
 
     /**
@@ -78,7 +78,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getChannelOrderNumber()
     {
-        return $this->order->getWalmartOrderId();
+        return $this->_order->getWalmartOrderId();
     }
 
     /**
@@ -86,11 +86,11 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getOrderNumberPrefix()
     {
-        if (!$this->order->getWalmartAccount()->isMagentoOrdersNumberPrefixEnable()) {
+        if (!$this->_order->getWalmartAccount()->isMagentoOrdersNumberPrefixEnable()) {
             return '';
         }
 
-        return $this->order->getWalmartAccount()->getMagentoOrdersNumberPrefix();
+        return $this->_order->getWalmartAccount()->getMagentoOrdersNumberPrefix();
     }
 
     //########################################
@@ -103,27 +103,29 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     {
         $customer = Mage::getModel('customer/customer');
 
-        if ($this->order->getWalmartAccount()->isMagentoOrdersCustomerPredefined()) {
-            $customer->load($this->order->getWalmartAccount()->getMagentoOrdersCustomerId());
+        if ($this->_order->getWalmartAccount()->isMagentoOrdersCustomerPredefined()) {
+            $customer->load($this->_order->getWalmartAccount()->getMagentoOrdersCustomerId());
 
-            if (is_null($customer->getId())) {
-                throw new Ess_M2ePro_Model_Exception('Customer with ID specified in Walmart Account
-                    Settings does not exist.');
+            if ($customer->getId() === null) {
+                throw new Ess_M2ePro_Model_Exception(
+                    'Customer with ID specified in Walmart Account
+                    Settings does not exist.'
+                );
             }
         }
 
-        if ($this->order->getWalmartAccount()->isMagentoOrdersCustomerNew()) {
+        if ($this->_order->getWalmartAccount()->isMagentoOrdersCustomerNew()) {
             $customerInfo = $this->getAddressData();
 
-            $customer->setWebsiteId($this->order->getWalmartAccount()->getMagentoOrdersCustomerNewWebsiteId());
+            $customer->setWebsiteId($this->_order->getWalmartAccount()->getMagentoOrdersCustomerNewWebsiteId());
             $customer->loadByEmail($customerInfo['email']);
 
-            if (!is_null($customer->getId())) {
+            if ($customer->getId() !== null) {
                 return $customer;
             }
 
-            $customerInfo['website_id'] = $this->order->getWalmartAccount()->getMagentoOrdersCustomerNewWebsiteId();
-            $customerInfo['group_id'] = $this->order->getWalmartAccount()->getMagentoOrdersCustomerNewGroupId();
+            $customerInfo['website_id'] = $this->_order->getWalmartAccount()->getMagentoOrdersCustomerNewWebsiteId();
+            $customerInfo['group_id'] = $this->_order->getWalmartAccount()->getMagentoOrdersCustomerNewGroupId();
 
             /** @var $customerBuilder Ess_M2ePro_Model_Magento_Customer */
             $customerBuilder = Mage::getModel('M2ePro/Magento_Customer')->setData($customerInfo);
@@ -139,7 +141,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
     public function getCurrency()
     {
-        return $this->order->getCurrency();
+        return $this->_order->getCurrency();
     }
 
     //########################################
@@ -153,7 +155,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             'method'                => Mage::getSingleton('M2ePro/Magento_Payment')->getCode(),
             'component_mode'        => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'payment_method'        => '',
-            'channel_order_id'      => $this->order->getWalmartOrderId(),
+            'channel_order_id'      => $this->_order->getWalmartOrderId(),
             'channel_final_fee'     => 0,
             'cash_on_delivery_cost' => 0,
             'transactions'          => array()
@@ -170,7 +172,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     public function getShippingData()
     {
         $shippingData = array(
-            'shipping_method' => $this->order->getShippingService(),
+            'shipping_method' => $this->_order->getShippingService(),
             'shipping_price'  => $this->getBaseShippingPrice(),
             'carrier_title'   => Mage::helper('M2ePro')->__('Walmart Shipping')
         );
@@ -183,10 +185,10 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     protected function getShippingPrice()
     {
-        $price = $this->order->getShippingPrice();
+        $price = $this->_order->getShippingPrice();
 
         if ($this->isTaxModeNone() && $this->getShippingPriceTaxRate() > 0) {
-            $price += $this->order->getShippingPriceTaxAmount();
+            $price += $this->_order->getShippingPriceTaxAmount();
         }
 
         return $price;
@@ -203,8 +205,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
         // Removed Order Items
         // ---------------------------------------
-        if (!empty($this->removedProxyItems)) {
-
+        if (!empty($this->_removedProxyItems)) {
             $comment = '<u>'.
                 Mage::helper('M2ePro')->__(
                     'The following SKUs have zero price and can not be included in Magento order line items'
@@ -212,8 +213,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
                 ':</u><br/>';
 
             $zeroItems = array();
-            foreach ($this->removedProxyItems as $item) {
-
+            foreach ($this->_removedProxyItems as $item) {
                 $productSku = $item->getMagentoProduct()->getSku();
                 $qtyPurchased = $item->getQty();
 
@@ -222,6 +222,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
 
             $comments[] = $comment . implode('<br/>,', $zeroItems);
         }
+
         // ---------------------------------------
 
         return $comments;
@@ -234,7 +235,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function hasTax()
     {
-        return $this->order->getProductPriceTaxRate() > 0;
+        return $this->_order->getProductPriceTaxRate() > 0;
     }
 
     /**
@@ -260,7 +261,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getProductPriceTaxRate()
     {
-        return $this->order->getProductPriceTaxRate();
+        return $this->_order->getProductPriceTaxRate();
     }
 
     /**
@@ -268,7 +269,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getShippingPriceTaxRate()
     {
-        return $this->order->getShippingPriceTaxRate();
+        return $this->_order->getShippingPriceTaxRate();
     }
 
     // ---------------------------------------
@@ -282,7 +283,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             ->getConfig()
             ->getGroupValue('/walmart/order/tax/product_price/', 'is_include_tax');
 
-        if (!is_null($configValue)) {
+        if ($configValue !== null) {
             return (bool)$configValue;
         }
 
@@ -302,7 +303,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             ->getConfig()
             ->getGroupValue('/walmart/order/tax/shipping_price/', 'is_include_tax');
 
-        if (!is_null($configValue)) {
+        if ($configValue !== null) {
             return (bool)$configValue;
         }
 
@@ -320,7 +321,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function isTaxModeNone()
     {
-        return $this->order->getWalmartAccount()->isMagentoOrdersTaxModeNone();
+        return $this->_order->getWalmartAccount()->isMagentoOrdersTaxModeNone();
     }
 
     /**
@@ -328,7 +329,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function isTaxModeMagento()
     {
-        return $this->order->getWalmartAccount()->isMagentoOrdersTaxModeMagento();
+        return $this->_order->getWalmartAccount()->isMagentoOrdersTaxModeMagento();
     }
 
     /**
@@ -336,7 +337,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function isTaxModeChannel()
     {
-        return $this->order->getWalmartAccount()->isMagentoOrdersTaxModeChannel();
+        return $this->_order->getWalmartAccount()->isMagentoOrdersTaxModeChannel();
     }
 
     //########################################

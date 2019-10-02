@@ -32,10 +32,15 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
     public function indexAction()
     {
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_configuration', '',
-                array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_ACCOUNT_PICKUP_STORE)
-            ))->renderLayout();
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_ebay_configuration',
+                    '',
+                    array(
+                        'active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_ACCOUNT_PICKUP_STORE
+                    )
+                )
+            )->renderLayout();
     }
 
     public function pickupStoreGridAction()
@@ -110,6 +115,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
                 $data[$key] = $post[$key];
             }
         }
+
         // ---------------------------------------
 
         // tab: location
@@ -131,6 +137,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
                 $data[$key] = $post[$key];
             }
         }
+
         // ---------------------------------------
 
         // tab: businessHours
@@ -149,6 +156,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
             !empty($tmpSpecialHours['date_settings']) &&
                 $data['special_hours'] = Mage::helper('M2ePro')->jsonEncode($tmpSpecialHours);
         }
+
         // ---------------------------------------
 
         // tab: stockSettings
@@ -172,45 +180,47 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
         if (isset($post['default_mode']) && $post['default_mode'] == 0) {
             $data['qty_mode'] = Ess_M2ePro_Model_Ebay_Account_PickupStore::QTY_MODE_SELLING_FORMAT_TEMPLATE;
         }
+
         // ---------------------------------------
 
         // creating of pickup store
         // ---------------------------------------
         if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->validateRequiredFields($data)) {
-
             Mage::helper('M2ePro/Data_Session')->setValue('pickupStore_form_data', $data);
 
-            $this->getSession()->addError(Mage::helper('M2ePro')->__(
-                'Validation error. You must fill all required fields.'
-            ));
+            $this->getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'Validation error. You must fill all required fields.'
+                )
+            );
 
             return $id ? $this->_redirect('*/*/edit', array('id' => $id))
                        : $this->_redirect('*/*/new');
         }
 
         try {
-
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'store','add','entity',
+                'store', 'add', 'entity',
                 Mage::helper('M2ePro/Component_Ebay_PickupStore')->prepareRequestData($data),
                 NULL, NULL, $data['account_id']
             );
 
             $dispatcherObject->process($connectorObj);
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
             Mage::helper('M2ePro/Data_Session')->setValue('pickupStore_form_data', $data);
 
-            $this->getSession()->addError(Mage::helper('M2ePro')->__(
-                'The New Store has not been created. <br/>Reason: %error_message%', $exception->getMessage()
-            ));
+            $this->getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'The New Store has not been created. <br/>Reason: %error_message%', $exception->getMessage()
+                )
+            );
 
             return $id ? $this->_redirect('*/*/edit', array('id' => $id))
                        : $this->_redirect('*/*/new');
         }
+
         // ---------------------------------------
 
         $model = Mage::getModel('M2ePro/Ebay_Account_PickupStore');
@@ -220,6 +230,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
         } else {
             $model->setData($data);
         }
+
         $model->save();
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Store was successfully saved.'));
@@ -257,7 +268,6 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
         }
 
         try {
-
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'store', 'delete', 'entity',
@@ -268,14 +278,14 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
             );
 
             $dispatcherObject->process($connectorObj);
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__(
-                'The Store has not been deleted. <br/>Reason: %error_message%', $exception->getMessage()
-            ));
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'The Store has not been deleted. <br/>Reason: %error_message%', $exception->getMessage()
+                )
+            );
             $this->_redirect('*/adminhtml_ebay_accountPickupStore/index');
         }
 
@@ -294,9 +304,11 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
     {
         $countryCode = $this->getRequest()->getParam('country_code');
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(
-            Mage::helper('M2ePro/Magento')->getRegionsByCountryCode($countryCode)
-        ));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                Mage::helper('M2ePro/Magento')->getRegionsByCountryCode($countryCode)
+            )
+        );
     }
 
     //#############################################
@@ -334,9 +346,11 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
             }
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(
-            array('result'=>!(bool)$pickupStoreCollection->getSize())
-        ));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array('result'=>!(bool)$pickupStoreCollection->getSize())
+            )
+        );
     }
 
     //#############################################

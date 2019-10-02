@@ -25,7 +25,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Category extends Mage_Core_Helper_Abst
         $recentCategories = $allRecentCategories[$marketplaceId];
 
         foreach ($recentCategories as $index => $recentCategoryValue) {
-
             $isRecentCategoryExists = isset($recentCategoryValue['browsenode_id'], $recentCategoryValue['path']);
 
             $isCategoryEqualExcludedCategory = !empty($excludedCategory) &&
@@ -55,7 +54,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Category extends Mage_Core_Helper_Abst
 
         $recentCategories = $allRecentCategories[$marketplaceId];
         foreach ($recentCategories as $recentCategoryValue) {
-
             if (!isset($recentCategoryValue['browsenode_id'], $recentCategoryValue['path'])) {
                 continue;
             }
@@ -78,20 +76,22 @@ class Ess_M2ePro_Helper_Component_Walmart_Category extends Mage_Core_Helper_Abst
         $recentCategories[] = $categoryInfo;
         $allRecentCategories[$marketplaceId] = $recentCategories;
 
-        $registryModel->addData(array(
+        $registryModel->addData(
+            array(
             'key'   => $key,
             'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
-        ))->save();
+            )
+        )->save();
     }
 
     //########################################
 
-    private function getConfigGroup()
+    protected function getConfigGroup()
     {
         return "/walmart/category/recent/";
     }
 
-    private function removeNotAccessibleCategories($marketplaceId, array &$recentCategories)
+    protected function removeNotAccessibleCategories($marketplaceId, array &$recentCategories)
     {
         if (empty($recentCategories)) {
             return;
@@ -121,7 +121,6 @@ class Ess_M2ePro_Helper_Component_Walmart_Category extends Mage_Core_Helper_Abst
         }
 
         foreach ($recentCategories as $categoryKey => &$categoryData) {
-
             $categoryPath = str_replace(' > ', '>', $categoryData['path']);
             $key = $categoryData['browsenode_id'] .'##'. $categoryPath;
 
@@ -132,7 +131,7 @@ class Ess_M2ePro_Helper_Component_Walmart_Category extends Mage_Core_Helper_Abst
         }
     }
 
-    private function removeRecentCategory(array $category, $marketplaceId)
+    protected function removeRecentCategory(array $category, $marketplaceId)
     {
         /** @var $registryModel Ess_M2ePro_Model_Registry */
         $registryModel = Mage::getModel('M2ePro/Registry')->load($this->getConfigGroup(), 'key');
@@ -142,16 +141,17 @@ class Ess_M2ePro_Helper_Component_Walmart_Category extends Mage_Core_Helper_Abst
         foreach ($currentRecentCategories as $index => $recentCategory) {
             if ($category['browsenode_id'] == $recentCategory['browsenode_id'] &&
                 $category['path']          == $recentCategory['path']) {
-
                 unset($allRecentCategories[$marketplaceId][$index]);
                 break;
             }
         }
 
-        $registryModel->addData(array(
+        $registryModel->addData(
+            array(
             'key' => $this->getConfigGroup(),
             'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
-        ))->save();
+            )
+        )->save();
     }
 
     //########################################

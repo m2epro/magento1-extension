@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source
 {
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $sellingFormatPromotionModel Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion
+     * @var $_sellingFormatPromotionModel Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion
      */
-    private $sellingFormatPromotionModel = null;
+    protected $_sellingFormatPromotionModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source
      */
     public function setSellingFormatPromotion(Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion $instance)
     {
-        $this->sellingFormatPromotionModel = $instance;
+        $this->_sellingFormatPromotionModel = $instance;
         return $this;
     }
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source
      */
     public function getSellingFormatPromotion()
     {
-        return $this->sellingFormatPromotionModel;
+        return $this->_sellingFormatPromotionModel;
     }
 
     //########################################

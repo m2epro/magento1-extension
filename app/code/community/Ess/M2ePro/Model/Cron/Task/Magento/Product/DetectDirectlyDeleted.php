@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
 
     //########################################
 
-    private function deleteListingsProducts()
+    protected function deleteListingsProducts()
     {
         $collection = Mage::getModel('M2ePro/Listing_Product')->getCollection();
 
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
             ->getTableNameWithPrefix('catalog_product_entity');
 
         $collection->getSelect()->joinLeft(
-            array('cpe'=>$entityTableName), '(cpe.entity_id = `main_table`.product_id)',array('entity_id')
+            array('cpe'=>$entityTableName), '(cpe.entity_id = `main_table`.product_id)', array('entity_id')
         );
 
         $collection->getSelect()->where('cpe.entity_id IS NULL');
@@ -42,8 +42,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
         $rows = $collection->toArray();
 
         foreach ($rows['items'] as $row) {
-
-            if (in_array((int)$row['product_id'],$tempProductsIds)) {
+            if (in_array((int)$row['product_id'], $tempProductsIds)) {
                 continue;
             }
 
@@ -53,7 +52,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
         }
     }
 
-    private function unmapListingsOther()
+    protected function unmapListingsOther()
     {
         $collection = Mage::getModel('M2ePro/Listing_Other')->getCollection();
 
@@ -66,7 +65,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
             ->getTableNameWithPrefix('catalog_product_entity');
 
         $collection->getSelect()->joinLeft(
-            array('cpe'=>$entityTableName), '(cpe.entity_id = `main_table`.product_id)',array('entity_id')
+            array('cpe'=>$entityTableName), '(cpe.entity_id = `main_table`.product_id)', array('entity_id')
         );
 
         $collection->getSelect()->where('cpe.entity_id IS NULL');
@@ -75,8 +74,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
         $rows = $collection->toArray();
 
         foreach ($rows['items'] as $row) {
-
-            if (in_array((int)$row['product_id'],$tempProductsIds)) {
+            if (in_array((int)$row['product_id'], $tempProductsIds)) {
                 continue;
             }
 
@@ -86,10 +84,9 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
         }
     }
 
-    private function deleteItems()
+    protected function deleteItems()
     {
         foreach (Mage::helper('M2ePro/Component')->getComponents() as $component) {
-
             $upperCasedComponent = ucfirst($component);
             $model = Mage::getModel("M2ePro/{$upperCasedComponent}_Item");
 
@@ -117,8 +114,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted extends E
             $rows = $collection->toArray();
 
             foreach ($rows['items'] as $row) {
-
-                if (in_array((int)$row['product_id'],$tempProductsIds)) {
+                if (in_array((int)$row['product_id'], $tempProductsIds)) {
                     continue;
                 }
 

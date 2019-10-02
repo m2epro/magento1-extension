@@ -326,7 +326,6 @@ OrderMerchantFulfillmentHandler.prototype = Object.extend(new CommonHandler(), {
             $('fulfillment_package_dimension_source').value = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE');
         } else if(this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM')) {
             $('fulfillment_package_dimension_custom').show();
-            $('fulfillment_package_dimension_custom').clear();
             $('fulfillment_package_dimension_source').value = M2ePro.php.constant('Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_CUSTOM');
         } else {
             $('fulfillment_package_dimension_custom').hide();

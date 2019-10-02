@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $parentListingProduct = NULL;
+    protected $_parentListingProduct = null;
 
     //########################################
 
@@ -21,13 +21,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
      */
     public function getParentListingProduct()
     {
-        if (is_null($this->parentListingProduct)) {
-            $parentListingProductId = $this->getVariationManager()->getVariationParentId();
-            $this->parentListingProduct = Mage::helper('M2ePro/Component_Amazon')
-                                                    ->getObject('Listing_Product',$parentListingProductId);
+        if ($this->_parentListingProduct === null) {
+            $parentListingProductId      = $this->getVariationManager()->getVariationParentId();
+            $this->_parentListingProduct = Mage::helper('M2ePro/Component_Amazon')
+                                               ->getObject('Listing_Product', $parentListingProductId);
         }
 
-        return $this->parentListingProduct;
+        return $this->_parentListingProduct;
     }
 
     /**
@@ -145,7 +145,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
 
     // ---------------------------------------
 
-    private function setChannelOptions(array $options, $save = true)
+    protected function setChannelOptions(array $options, $save = true)
     {
         $this->getListingProduct()->setSetting('additional_data', 'variation_channel_options', $options);
         $save && $this->getListingProduct()->save();
@@ -194,7 +194,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Ch
             return false;
         }
 
-        return count(array_diff_assoc($correctMatchedAttributes, $currentMatchedAttributes)) <= 0;
+        return empty(array_diff_assoc($correctMatchedAttributes, $currentMatchedAttributes));
     }
 
     //########################################

@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block_Info
 {
-    private $order = NULL;
+    protected $_order = null;
 
     //########################################
 
@@ -20,9 +20,9 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
 
     //########################################
 
-    private function getAdditionalData($key = '')
+    protected function getAdditionalData($key = '')
     {
-        $additionalData = @unserialize($this->getInfo()->getAdditionalData());
+        $additionalData = Mage::helper('M2ePro')->unserialize($this->getInfo()->getAdditionalData());
 
         if ($key === '') {
             return $additionalData;
@@ -41,6 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         if (isset($additionalData[$backwardCompatibleKey])) {
             return $additionalData[$backwardCompatibleKey];
         }
+
         // ---------------------------------------
 
         return isset($additionalData[$key]) ? $additionalData[$key] : NULL;
@@ -51,24 +52,24 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
      */
     public function getOrder()
     {
-        if (is_null($this->order)) {
+        if ($this->_order === null) {
             // do not replace registry with our wrapper
             if ($this->hasOrder()) {
-                $this->order = $this->getOrder();
+                $this->_order = $this->getOrder();
             } elseif (Mage::registry('current_order')) {
-                $this->order = Mage::registry('current_order');
+                $this->_order = Mage::registry('current_order');
             } elseif (Mage::registry('order')) {
-                $this->order = Mage::registry('order');
+                $this->_order = Mage::registry('order');
             } elseif (Mage::registry('current_invoice')) {
-                $this->order = Mage::registry('current_invoice')->getOrder();
+                $this->_order = Mage::registry('current_invoice')->getOrder();
             } elseif (Mage::registry('current_shipment')) {
-                $this->order = Mage::registry('current_shipment')->getOrder();
+                $this->_order = Mage::registry('current_shipment')->getOrder();
             } elseif (Mage::registry('current_creditmemo')) {
-                $this->order = Mage::registry('current_creditmemo')->getOrder();
+                $this->_order = Mage::registry('current_creditmemo')->getOrder();
             }
         }
 
-        return $this->order;
+        return $this->_order;
     }
 
     public function getPaymentMethod()
@@ -92,12 +93,15 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
 
         switch ($this->getAdditionalData('component_mode')) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
+            case Ess_M2ePro_Helper_Component_Walmart::NICK:
                 break;
             case Ess_M2ePro_Helper_Component_Amazon::NICK:
                 if ($this->getOrder()) {
-                    $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_amazon_order/goToAmazon', array(
+                    $url = Mage::helper('adminhtml')->getUrl(
+                        'M2ePro/adminhtml_amazon_order/goToAmazon', array(
                         'magento_order_id' => $this->getOrder()->getId()
-                    ));
+                        )
+                    );
                 }
                 break;
         }

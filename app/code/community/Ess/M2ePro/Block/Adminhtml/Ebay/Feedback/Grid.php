@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
     protected function _prepareCollection()
     {
         $accountId = $this->getRequest()->getParam('account');
-        if (is_null($accountId)) {
+        if ($accountId === null) {
             return parent::_prepareCollection();
         }
 
@@ -39,11 +39,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
 
         $dbExpr = new Zend_Db_Expr('if(`main_table`.`seller_feedback_text` = \'\', 0, 1)');
         $collection->getSelect()
-                   ->joinLeft(
-                       array('mea' => Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
-                       '(`mea`.`account_id` = `main_table`.`account_id`)',
-                       array('account_mode'=>'mode','have_seller_feedback' => $dbExpr)
-                   );
+                ->joinLeft(
+                    array('mea' => Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
+                    '(`mea`.`account_id` = `main_table`.`account_id`)',
+                    array('account_mode'=>'mode','have_seller_feedback' => $dbExpr)
+                );
 
         $collection->addFieldToFilter('main_table.account_id', $accountId);
 
@@ -68,88 +68,105 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
                             $this->getCollection()->getSelect()->where('`main_table`.`seller_feedback_text` != \'\'');
                         }
                     } else {
-                        $this->getCollection()->addFieldToFilter($field , $cond);
+                        $this->getCollection()->addFieldToFilter($field, $cond);
                     }
                 }
             }
         }
+
         return $this;
     }
 
     protected function _prepareColumns()
     {
-        $this->addColumn('transaction_id', array(
-            'header' => Mage::helper('M2ePro')->__('Transaction ID'),
-            'align'  => 'right',
-            'type'   => 'text',
-            'width'  => '105px',
-            'index'  => 'ebay_transaction_id',
-            'frame_callback' => array($this, 'callbackColumnTransactionId')
-        ));
+        $this->addColumn(
+            'transaction_id', array(
+                'header'         => Mage::helper('M2ePro')->__('Transaction ID'),
+                'align'          => 'right',
+                'type'           => 'text',
+                'width'          => '105px',
+                'index'          => 'ebay_transaction_id',
+                'frame_callback' => array($this, 'callbackColumnTransactionId')
+            )
+        );
 
-        $this->addColumn('ebay_item_id', array(
-            'header' => Mage::helper('M2ePro')->__('Item ID'),
-            'align'  => 'right',
-            'type'   => 'text',
-            'width'  => '50px',
-            'index'  => 'ebay_item_id',
-            'frame_callback' => array($this, 'callbackColumnEbayItemId')
-        ));
+        $this->addColumn(
+            'ebay_item_id', array(
+                'header'         => Mage::helper('M2ePro')->__('Item ID'),
+                'align'          => 'right',
+                'type'           => 'text',
+                'width'          => '50px',
+                'index'          => 'ebay_item_id',
+                'frame_callback' => array($this, 'callbackColumnEbayItemId')
+            )
+        );
 
-        $this->addColumn('ebay_item_title', array(
-            'header' => Mage::helper('M2ePro')->__('Item Title'),
-            'type'   => 'text',
-            'width'  => '185px',
-            'index'  => 'ebay_item_title',
-            'escape' => true
-        ));
+        $this->addColumn(
+            'ebay_item_title', array(
+                'header' => Mage::helper('M2ePro')->__('Item Title'),
+                'type'   => 'text',
+                'width'  => '185px',
+                'index'  => 'ebay_item_title',
+                'escape' => true
+            )
+        );
 
-        $this->addColumn('buyer_feedback_date', array(
-            'header' => Mage::helper('M2ePro')->__('Buyer Feedback Date'),
-            'width'  => '155px',
-            'type'   => 'datetime',
-            'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'index'  => 'buyer_feedback_date',
-            'frame_callback' => array($this, 'callbackColumnBuyerFeedbackDate')
-        ));
+        $this->addColumn(
+            'buyer_feedback_date', array(
+                'header'         => Mage::helper('M2ePro')->__('Buyer Feedback Date'),
+                'width'          => '155px',
+                'type'           => 'datetime',
+                'format'         => Mage::app()->getLocale()
+                                        ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'          => 'buyer_feedback_date',
+                'frame_callback' => array($this, 'callbackColumnBuyerFeedbackDate')
+            )
+        );
 
-        $this->addColumn('seller_feedback_date', array(
-            'header' => Mage::helper('M2ePro')->__('Seller Feedback Date'),
-            'width'  => '155px',
-            'type'   => 'datetime',
-            'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'index'  => 'seller_feedback_date',
-            'frame_callback' => array($this, 'callbackColumnSellerFeedbackDate')
-        ));
+        $this->addColumn(
+            'seller_feedback_date', array(
+                'header'         => Mage::helper('M2ePro')->__('Seller Feedback Date'),
+                'width'          => '155px',
+                'type'           => 'datetime',
+                'format'         => Mage::app()->getLocale()
+                                        ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'          => 'seller_feedback_date',
+                'frame_callback' => array($this, 'callbackColumnSellerFeedbackDate')
+            )
+        );
 
-        $this->addColumn('buyer_feedback_type', array(
-            'header'       => Mage::helper('M2ePro')->__('Type'),
-            'width'        => '50px',
-            'align'        => 'center',
-            'type'         => 'options',
-            'filter_index' => 'buyer_feedback_type',
-            'sortable'     => false,
-            'options'      => array(
-                'Neutral'  => Mage::helper('M2ePro')->__('Neutral'),
-                'Positive' => Mage::helper('M2ePro')->__('Positive'),
-                'Negative' => Mage::helper('M2ePro')->__('Negative')
-            ),
-            'frame_callback' => array($this, 'callbackColumnFeedbackType'),
-            'filter_condition_callback' => array($this, 'callbackFilterFeedbackType'),
-        ));
+        $this->addColumn(
+            'buyer_feedback_type', array(
+                'header'                    => Mage::helper('M2ePro')->__('Type'),
+                'width'                     => '50px',
+                'align'                     => 'center',
+                'type'                      => 'options',
+                'filter_index'              => 'buyer_feedback_type',
+                'sortable'                  => false,
+                'options'                   => array(
+                    'Neutral'  => Mage::helper('M2ePro')->__('Neutral'),
+                    'Positive' => Mage::helper('M2ePro')->__('Positive'),
+                    'Negative' => Mage::helper('M2ePro')->__('Negative')
+                ),
+                'frame_callback'            => array($this, 'callbackColumnFeedbackType'),
+                'filter_condition_callback' => array($this, 'callbackFilterFeedbackType'),
+            )
+        );
 
-        $this->addColumn('feedbacks', array(
-            'header'       => Mage::helper('M2ePro')->__('Feedback'),
-            'align'        => 'left',
-            'type'         => 'options',
-            'filter_index' => 'have_seller_feedback',
-            'sortable'     => false,
-            'options'      => array(
-                0 => Mage::helper('M2ePro')->__('Unresponded Feedback'),
-                1 => Mage::helper('M2ePro')->__('Responded Feedback')
-            ),
-            'frame_callback' => array($this, 'callbackColumnFeedbacks')
-        ));
+        $this->addColumn(
+            'feedbacks', array(
+                'header'         => Mage::helper('M2ePro')->__('Feedback'),
+                'align'          => 'left',
+                'type'           => 'options',
+                'filter_index'   => 'have_seller_feedback',
+                'sortable'       => false,
+                'options'        => array(
+                    0 => Mage::helper('M2ePro')->__('Unresponded Feedback'),
+                    1 => Mage::helper('M2ePro')->__('Responded Feedback')
+                ),
+                'frame_callback' => array($this, 'callbackColumnFeedbacks')
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -225,6 +242,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
                     $color = 'gray';
                     break;
             }
+
             $feedbacksHtml = '<div><label><b>'.Mage::helper('M2ePro')->__('Buyer')
                             .': </b><span style="color: '.$color.';">'
                             .Mage::helper('M2ePro')->escapeHtml($buyerFeedback).'</span></label></div>';
@@ -244,6 +262,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
                     $color = 'gray';
                     break;
             }
+
             $feedbacksHtml .= '<div><label><b>'.Mage::helper('M2ePro')->__('Seller')
                              .': </b><span style="color: '.$color.';">'
                              .Mage::helper('M2ePro')->escapeHtml($sellerFeedback).'</span></label></div></label></div>';
@@ -272,16 +291,22 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Feedback_Grid extends Mage_Adminhtml_Block
 
         switch ($value) {
             case Ess_M2ePro_Model_Ebay_Feedback::TYPE_NEGATIVE:
-                $this->getCollection()->addFieldToFilter('buyer_feedback_type',
-                                                         Ess_M2ePro_Model_Ebay_Feedback::TYPE_NEGATIVE);
+                $this->getCollection()->addFieldToFilter(
+                    'buyer_feedback_type',
+                    Ess_M2ePro_Model_Ebay_Feedback::TYPE_NEGATIVE
+                );
                 break;
             case Ess_M2ePro_Model_Ebay_Feedback::TYPE_NEUTRAL:
-                $this->getCollection()->addFieldToFilter('buyer_feedback_type',
-                                                         Ess_M2ePro_Model_Ebay_Feedback::TYPE_NEUTRAL);
+                $this->getCollection()->addFieldToFilter(
+                    'buyer_feedback_type',
+                    Ess_M2ePro_Model_Ebay_Feedback::TYPE_NEUTRAL
+                );
                 break;
             case Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE:
-                $this->getCollection()->addFieldToFilter('buyer_feedback_type',
-                                                         Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE);
+                $this->getCollection()->addFieldToFilter(
+                    'buyer_feedback_type',
+                    Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE
+                );
                 break;
         }
     }

@@ -43,7 +43,8 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header'    => Mage::helper('M2ePro')->__('Message'),
             'align'     => 'left',
             'width'     => '*',
@@ -52,18 +53,22 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
             'filter_index' => 'id',
             'index'     => 'description',
             'frame_callback' => array($this, 'callbackColumnDescription')
-        ));
+            )
+        );
 
-        $this->addColumn('type', array(
+        $this->addColumn(
+            'type', array(
             'header'    => Mage::helper('M2ePro')->__('Type'),
             'align'     => 'left',
             'width'     => '65px',
             'index'     => 'type',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnType')
-        ));
+            )
+        );
 
-        $this->addColumn('initiator', array(
+        $this->addColumn(
+            'initiator', array(
             'header'    => Mage::helper('M2ePro')->__('Run Mode'),
             'align'     => 'left',
             'width'     => '65px',
@@ -76,16 +81,19 @@ class Ess_M2ePro_Block_Adminhtml_Order_View_Log_Grid extends Mage_Adminhtml_Bloc
                 Ess_M2ePro_Helper_Data::INITIATOR_USER      => Mage::helper('M2ePro')->__('Manual'),
             ),
             'frame_callback' => array($this, 'callbackColumnInitiator')
-        ));
+            )
+        );
 
-        $this->addColumn('create_date', array(
+        $this->addColumn(
+            'create_date', array(
             'header'    => Mage::helper('M2ePro')->__('Create Date'),
             'align'     => 'left',
             'width'     => '165px',
             'type'      => 'datetime',
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'create_date'
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

@@ -22,7 +22,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial
 
     //####################################
 
-    private function removeMissedProcessingItems()
+    protected function removeMissedProcessingItems()
     {
         $collection = Mage::getResourceModel('M2ePro/Connector_Command_Pending_Processing_Partial_Collection');
         $collection->getSelect()->joinLeft(
@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial
         }
     }
 
-    private function completeExpiredItems()
+    protected function completeExpiredItems()
     {
         $collection = Mage::getResourceModel('M2ePro/Connector_Command_Pending_Processing_Partial_Collection');
         $collection->getSelect()->joinLeft(
@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial
         }
     }
 
-    private function processCompletedItems()
+    protected function processCompletedItems()
     {
         $collection = Mage::getResourceModel('M2ePro/Connector_Command_Pending_Processing_Partial_Collection');
         $collection->setCompletedRequestPendingPartialFilter();
@@ -91,7 +91,6 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial
         $requesterPartialObjects = $collection->getItems();
 
         foreach ($requesterPartialObjects as $requesterPartialObject) {
-
             $processing = $requesterPartialObject->getProcessing();
             $processing->setSettings(
                 'result_data',

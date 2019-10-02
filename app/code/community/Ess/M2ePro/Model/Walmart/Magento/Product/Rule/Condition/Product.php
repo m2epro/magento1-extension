@@ -126,7 +126,6 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Product
                 }
             } else {
                 if (is_array($validatedValue)) {
-
                     // hack for walmart status
                     if ($this->getAttribute() == 'walmart_status') {
                         if ($op == '==') {
@@ -148,7 +147,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Product
                     $result = $this->_compareValues($validatedValue, $value);
                 }
             }
-            break;
+                break;
 
             case '<=': case '>':
             if (!is_scalar($validatedValue)) {
@@ -156,7 +155,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Product
             } else {
                 $result = $validatedValue <= $value;
             }
-            break;
+                break;
 
             case '>=': case '<':
             if (!is_scalar($validatedValue)) {
@@ -164,12 +163,12 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Product
             } else {
                 $result = $validatedValue >= $value;
             }
-            break;
+                break;
 
             case '{}': case '!{}':
             if (is_scalar($validatedValue) && is_array($value)) {
                 foreach ($value as $item) {
-                    if (stripos($validatedValue,$item)!==false) {
+                    if (stripos($validatedValue, $item)!==false) {
                         $result = true;
                         break;
                     }
@@ -188,7 +187,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Product
                     $result = $this->_compareValues($value, $validatedValue, false);
                 }
             }
-            break;
+                break;
 
             case '()': case '!()':
             if (is_array($validatedValue)) {
@@ -202,7 +201,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_Rule_Condition_Product
                     }
                 }
             }
-            break;
+                break;
         }
 
         if ('!=' == $op || '>' == $op || '<' == $op || '!{}' == $op || '!()' == $op) {

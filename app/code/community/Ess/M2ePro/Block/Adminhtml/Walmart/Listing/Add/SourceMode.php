@@ -37,6 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Add Products');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -50,12 +51,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/index',array('_current' => true, 'step' => 2));
-        $this->_addButton('next', array(
+        $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 2));
+        $this->_addButton(
+            'next', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'onclick'   => 'CommonHandlerObj.submitForm(\''.$url.'\');',
             'class'     => 'scalable next'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -66,7 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 

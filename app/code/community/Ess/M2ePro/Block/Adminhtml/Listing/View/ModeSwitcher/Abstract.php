@@ -61,7 +61,7 @@ HTML;
         );
     }
 
-    private function getCurrentViewMode()
+    protected function getCurrentViewMode()
     {
         if (!isset($this->_data['current_view_mode'])) {
             throw new Ess_M2ePro_Model_Exception_Logic('View Mode is not set.');

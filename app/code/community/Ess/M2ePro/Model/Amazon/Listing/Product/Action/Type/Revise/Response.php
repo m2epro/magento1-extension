@@ -64,13 +64,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         $isPlural = false;
 
         if ($this->getConfigurator()->isQtyAllowed()) {
-
             $params = $this->getParams();
 
             if (!empty($params['switch_to']) &&
                 $params['switch_to'] ===
                 Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
-
                 // M2ePro_TRANSLATIONS
                 // Item was successfully switched to AFN
                 return 'Item was successfully switched to AFN';
@@ -79,7 +77,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
             if (!empty($params['switch_to']) &&
                 $params['switch_to'] ===
                 Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
-
                 // M2ePro_TRANSLATIONS
                 // Item was successfully switched to MFN
                 return 'Item was successfully switched to MFN';
@@ -145,7 +142,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         if (!empty($params['switch_to']) &&
             $params['switch_to']
                 === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
-
             $data['is_afn_channel'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_YES;
             $data['online_qty'] = null;
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
@@ -156,7 +152,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
         if (!empty($params['switch_to']) &&
             $params['switch_to']
                 === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
-
             $data['is_afn_channel'] = Ess_M2ePro_Model_Amazon_Listing_Product::IS_AFN_CHANNEL_NO;
         }
 

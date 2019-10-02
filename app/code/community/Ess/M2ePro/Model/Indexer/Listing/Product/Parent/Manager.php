@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager extends Ess_M2ePro_Model_Abstract
 {
     /** @var Ess_M2ePro_Model_Listing */
-    private $listing;
+    protected $_listing;
 
     const INDEXER_LIFETIME = 1800;
 
@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager extends Ess_M2ePro
         $args = func_get_args();
         !empty($args[0][0]) && $listing = $args[0][0];
 
-        $this->listing = $listing;
+        $this->_listing = $listing;
     }
 
     //########################################
@@ -35,10 +35,10 @@ class Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager extends Ess_M2ePro
         }
 
         $resourceModel = Mage::getResourceModel(
-            'M2ePro/'.ucfirst($this->listing->getComponentMode()).'_Indexer_Listing_Product_Parent'
+            'M2ePro/'.ucfirst($this->_listing->getComponentMode()) . '_Indexer_Listing_Product_Parent'
         );
-        $resourceModel->clear($this->listing->getId());
-        $resourceModel->build($this->listing);
+        $resourceModel->clear($this->_listing->getId());
+        $resourceModel->build($this->_listing);
 
         $this->markAsIsUpToDate();
     }
@@ -53,14 +53,14 @@ class Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager extends Ess_M2ePro
 
     //########################################
 
-    private function isUpToDate()
+    protected function isUpToDate()
     {
         return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue(
             $this->getUpToDateCacheKey()
         );
     }
 
-    private function markAsIsUpToDate()
+    protected function markAsIsUpToDate()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue(
             $this->getUpToDateCacheKey(),
@@ -71,9 +71,9 @@ class Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager extends Ess_M2ePro
         return $this;
     }
 
-    private function getUpToDateCacheKey()
+    protected function getUpToDateCacheKey()
     {
-        return '_indexer_listing_product_parent_up_to_date_for_listing_id_' . $this->listing->getId();
+        return '_indexer_listing_product_parent_up_to_date_for_listing_id_' . $this->_listing->getId();
     }
 
     //########################################

@@ -38,12 +38,12 @@ class Ess_M2ePro_Model_Requirements_Checks_MagentoVersion extends Ess_M2ePro_Mod
 
         $minVersion = NULL;
         foreach ($constraints as $constraint) {
-            if (is_null($minVersion) || $constraint->versionCompare($constraint->getVersion(), $minVersion, '<')) {
+            if ($minVersion === null || $constraint->versionCompare($constraint->getVersion(), $minVersion, '<')) {
                 $minVersion = $constraint->getVersion();
             }
         }
 
-        return is_null($minVersion) ? $this->getCompatibilityPattern() : $minVersion;
+        return $minVersion === null ? $this->getCompatibilityPattern() : $minVersion;
     }
 
     public function getReal()
@@ -72,7 +72,7 @@ class Ess_M2ePro_Model_Requirements_Checks_MagentoVersion extends Ess_M2ePro_Mod
 
     //########################################
 
-    private function collectConstraints(ConstraintInterface $constraint)
+    protected function collectConstraints(ConstraintInterface $constraint)
     {
         if ($constraint instanceof Constraint) {
             return array($constraint);
@@ -81,7 +81,6 @@ class Ess_M2ePro_Model_Requirements_Checks_MagentoVersion extends Ess_M2ePro_Mod
         $constraints = array();
 
         if ($constraint instanceof MultiConstraint) {
-
             foreach ($constraint->getConstraints() as $constraintChild) {
                 $constraints = array_merge($constraints, $this->collectConstraints($constraintChild));
             }

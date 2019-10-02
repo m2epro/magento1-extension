@@ -16,20 +16,21 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
 
     protected function getReviseInstructionTypes()
     {
-        return array_unique(array_merge(
-            $this->getReviseQtyInstructionTypes(),
-            $this->getRevisePriceInstructionTypes(),
-            $this->getReviseTitleInstructionTypes(),
-            $this->getReviseSubtitleInstructionTypes(),
-            $this->getReviseDescriptionInstructionTypes(),
-            $this->getReviseImagesInstructionTypes(),
-            $this->getReviseCategoriesInstructionTypes(),
-            $this->getReviseShippingInstructionTypes(),
-            $this->getRevisePaymentInstructionTypes(),
-            $this->getReviseReturnInstructionTypes(),
-            $this->getReviseOtherInstructionTypes()
-
-        ));
+        return array_unique(
+            array_merge(
+                $this->getReviseQtyInstructionTypes(),
+                $this->getRevisePriceInstructionTypes(),
+                $this->getReviseTitleInstructionTypes(),
+                $this->getReviseSubtitleInstructionTypes(),
+                $this->getReviseDescriptionInstructionTypes(),
+                $this->getReviseImagesInstructionTypes(),
+                $this->getReviseCategoriesInstructionTypes(),
+                $this->getReviseShippingInstructionTypes(),
+                $this->getRevisePaymentInstructionTypes(),
+                $this->getReviseReturnInstructionTypes(),
+                $this->getReviseOtherInstructionTypes()
+            )
+        );
     }
 
     // ---------------------------------------
@@ -248,53 +249,53 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
 
     protected function getPropertiesDataFromInputInstructions()
     {
-        if (!$this->input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
+        if (!$this->_input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
             return array();
         }
 
         $propertiesData = array();
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
             $propertiesData[] = 'qty';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePriceInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePriceInstructionTypes())) {
             $propertiesData[] = 'price';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseTitleInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseTitleInstructionTypes())) {
             $propertiesData[] = 'title';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseSubtitleInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseSubtitleInstructionTypes())) {
             $propertiesData[] = 'subtitle';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseDescriptionInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseDescriptionInstructionTypes())) {
             $propertiesData[] = 'description';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
             $propertiesData[] = 'images';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseCategoriesInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseCategoriesInstructionTypes())) {
             $propertiesData[] = 'categories';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseShippingInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseShippingInstructionTypes())) {
             $propertiesData[] = 'shipping';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePaymentInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePaymentInstructionTypes())) {
             $propertiesData[] = 'payment';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseReturnInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseReturnInstructionTypes())) {
             $propertiesData[] = 'return';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseOtherInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseOtherInstructionTypes())) {
             $propertiesData[] = 'other';
         }
 
@@ -303,11 +304,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_Synchronization
 
     protected function getPropertiesDataFromInputScheduledAction()
     {
-        if (!$this->input->getScheduledAction() || !$this->input->getScheduledAction()->isActionTypeRevise()) {
+        if (!$this->_input->getScheduledAction() || !$this->_input->getScheduledAction()->isActionTypeRevise()) {
             return array();
         }
 
-        $additionalData = $this->input->getScheduledAction()->getAdditionalData();
+        $additionalData = $this->_input->getScheduledAction()->getAdditionalData();
         if (empty($additionalData['configurator'])) {
             return array();
         }

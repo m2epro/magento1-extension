@@ -39,15 +39,15 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_SellingFormatController
         );
 
         try {
-
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('marketplace', 'get', 'charity',
-                                                                   $params, NULL,
-                                                                   $marketplaceId);
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'marketplace', 'get', 'charity',
+                $params, NULL,
+                $marketplaceId
+            );
 
             $dispatcherObject->process($connectorObj);
             $responseData = $connectorObj->getResponseData();
-
         } catch (Exception $e) {
             $message = Mage::helper('M2ePro')->__('Error search charity');
             $response = array('result' => 'error','data' => $message);
@@ -56,7 +56,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_SellingFormatController
 
         $grid = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_ebay_template_sellingFormat_searchCharity_grid', '',
-            array('Charities' => $responseData['Charities']));
+            array('Charities' => $responseData['Charities'])
+        );
         $data = $grid->toHtml();
 
         $response = array(

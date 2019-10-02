@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Order getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Walmart_Order getResource()
+ * @method Ess_M2ePro_Model_Resource_Walmart_Order getResource()
  */
 class Ess_M2ePro_Model_Walmart_ThrottlingManager
 {
@@ -79,16 +79,18 @@ class Ess_M2ePro_Model_Walmart_ThrottlingManager
         $existedLastRequestInfo = $registry->getValueFromJson();
         $existedLastRequestInfo[$requestType] = $lastRequestInfo;
 
-        $registry->addData(array(
+        $registry->addData(
+            array(
             'key'   => self::REGISTRY_KEY . $accountId . '/',
             'value' => Mage::helper('M2ePro')->jsonEncode($existedLastRequestInfo),
-        ));
+            )
+        );
         $registry->save();
     }
 
     //########################################
 
-    private function getThrottlingInfo($requestType)
+    protected function getThrottlingInfo($requestType)
     {
         $throttlingInfo = array(
             self::REQUEST_TYPE_UPDATE_DETAILS => array(

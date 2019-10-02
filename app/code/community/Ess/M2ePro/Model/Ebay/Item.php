@@ -11,17 +11,17 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
     /**
      * @var Ess_M2ePro_Model_Account
      */
-    private $accountModel = NULL;
+    protected $_accountModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Magento_Product
      */
-    protected $magentoProductModel = NULL;
+    protected $_magentoProductModel = null;
 
     //########################################
 
@@ -36,9 +36,9 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->accountModel = NULL;
-        $temp && $this->marketplaceModel = NULL;
-        $temp && $this->magentoProductModel = NULL;
+        $temp && $this->_accountModel = null;
+        $temp && $this->_marketplaceModel = null;
+        $temp && $this->_magentoProductModel = null;
         return $temp;
     }
 
@@ -49,13 +49,13 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
      */
     public function getAccount()
     {
-        if (is_null($this->accountModel)) {
-            $this->accountModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+        if ($this->_accountModel === null) {
+            $this->_accountModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Account', $this->getAccountId()
             );
         }
 
-        return $this->accountModel;
+        return $this->_accountModel;
     }
 
     /**
@@ -63,7 +63,7 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
      */
     public function setAccount(Ess_M2ePro_Model_Account $instance)
     {
-        $this->accountModel = $instance;
+        $this->_accountModel = $instance;
     }
 
     // ---------------------------------------
@@ -73,13 +73,13 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -87,7 +87,7 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-        $this->marketplaceModel = $instance;
+        $this->_marketplaceModel = $instance;
     }
 
     // ---------------------------------------
@@ -97,13 +97,13 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
      */
     public function getMagentoProduct()
     {
-        if ($this->magentoProductModel) {
-            return $this->magentoProductModel;
+        if ($this->_magentoProductModel) {
+            return $this->_magentoProductModel;
         }
 
-        return $this->magentoProductModel = Mage::getModel('M2ePro/Magento_Product')
-                ->setStoreId($this->getStoreId())
-                ->setProductId($this->getProductId());
+        return $this->_magentoProductModel = Mage::getModel('M2ePro/Magento_Product')
+                                                 ->setStoreId($this->getStoreId())
+                                                 ->setProductId($this->getProductId());
     }
 
     /**
@@ -111,7 +111,7 @@ class Ess_M2ePro_Model_Ebay_Item extends Ess_M2ePro_Model_Component_Abstract
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $instance)
     {
-        $this->magentoProductModel = $instance;
+        $this->_magentoProductModel = $instance;
     }
 
     //########################################

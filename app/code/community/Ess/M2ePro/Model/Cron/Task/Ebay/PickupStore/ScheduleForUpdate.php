@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_ScheduleForUpdate extends Ess_
 
     //########################################
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $collection = Mage::getResourceModel('M2ePro/Ebay_Listing_Product_PickupStore_Collection');
         $collection->addFieldToFilter('is_process_required', 1);

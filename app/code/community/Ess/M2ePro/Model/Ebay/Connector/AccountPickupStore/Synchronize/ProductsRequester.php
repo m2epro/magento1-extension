@@ -12,22 +12,21 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsReq
     const ACTION_UPDATE = 'update';
     const ACTION_DELETE = 'delete';
 
-    //########################################
+    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_State[] $_pickupStoreStateItems */
+    protected $_pickupStoreStateItems = array();
 
-    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_State[] $pickupStoreStateItems */
-    private $pickupStoreStateItems = array();
+    protected $_requestData = array();
 
-    private $requestData = array();
-
-    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_Log $log */
-    private $log = NULL;
+    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_Log $_log */
+    protected $_log;
 
     //########################################
 
-    public function __construct(array $params = array(),
-                                Ess_M2ePro_Model_Marketplace $marketplace = NULL,
-                                Ess_M2ePro_Model_Account $account = NULL)
-    {
+    public function __construct(
+        array $params = array(),
+        Ess_M2ePro_Model_Marketplace $marketplace = null,
+        Ess_M2ePro_Model_Account $account = null
+    ) {
         $params['logs_action_id'] = $this->getLog()->getResource()->getNextActionId();
         parent::__construct($params, $marketplace, $account);
     }
@@ -36,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsReq
 
     public function setPickupStoreStateItems(array $items)
     {
-        $this->pickupStoreStateItems = $items;
+        $this->_pickupStoreStateItems = $items;
         return $this;
     }
 
@@ -49,13 +48,13 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsReq
 
     public function getRequestData()
     {
-        if (!empty($this->requestData)) {
-            return $this->requestData;
+        if (!empty($this->_requestData)) {
+            return $this->_requestData;
         }
 
         $requestData = array();
 
-        foreach ($this->pickupStoreStateItems as $stateItem) {
+        foreach ($this->_pickupStoreStateItems as $stateItem) {
             if (!isset($requestData[$stateItem->getSku()])) {
                 $requestData[$stateItem->getSku()] = array(
                     'sku'       => $stateItem->getSku(),
@@ -76,7 +75,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsReq
             $requestData[$stateItem->getSku()]['locations'][] = $locationData;
         }
 
-        return $this->requestData = array('items' => $requestData);
+        return $this->_requestData = array('items' => $requestData);
     }
 
     //########################################
@@ -91,7 +90,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsReq
         return array_merge(
             parent::getProcessingParams(),
             array(
-                'pickup_store_state_ids' => array_keys($this->pickupStoreStateItems),
+                'pickup_store_state_ids' => array_keys($this->_pickupStoreStateItems),
             )
         );
     }
@@ -100,7 +99,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsReq
     {
         $stateItemsData = array();
 
-        foreach ($this->pickupStoreStateItems as $id => $stateItem) {
+        foreach ($this->_pickupStoreStateItems as $id => $stateItem) {
             $stateItemsData[$id] = array(
                 'online_qty' => $stateItem->getOnlineQty(),
                 'target_qty' => $stateItem->getTargetQty(),
@@ -113,20 +112,20 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsReq
             parent::getResponserParams(),
             array(
                 'pickup_store_state_items' => $stateItemsData,
-                'logs_action_id'           => $this->params['logs_action_id'],
+                'logs_action_id'           => $this->_params['logs_action_id'],
             )
         );
     }
 
     //########################################
 
-    private function getLog()
+    protected function getLog()
     {
-        if (!is_null($this->log)) {
-            return $this->log;
+        if ($this->_log !== null) {
+            return $this->_log;
         }
 
-        return $this->log = Mage::getModel('M2ePro/Ebay_Account_PickupStore_Log');
+        return $this->_log = Mage::getModel('M2ePro/Ebay_Account_PickupStore_Log');
     }
 
     //########################################

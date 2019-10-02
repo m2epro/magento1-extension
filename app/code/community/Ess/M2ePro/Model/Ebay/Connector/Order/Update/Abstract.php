@@ -14,26 +14,26 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
     // Status of India Site Orders cannot be updated if the Buyer uses PaisaPay payment method.
 
     /**
-     * @var $order Ess_M2ePro_Model_Order
+     * @var $_order Ess_M2ePro_Model_Order
      */
-    protected $order = NULL;
-    protected $action = NULL;
+    protected $_order  = null;
+    protected $_action = null;
 
-    private $status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
+    protected $_status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
 
     // ########################################
 
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
-        $this->order = $order;
-        $this->account = $order->getAccount();
+        $this->_order   = $order;
+        $this->_account = $order->getAccount();
 
         return $this;
     }
 
     public function setAction($action)
     {
-        $this->action = $action;
+        $this->_action = $action;
         return $this;
     }
 
@@ -41,7 +41,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     public function getStatus()
     {
-        return $this->status;
+        return $this->_status;
     }
 
     //----------------------------------------
@@ -51,8 +51,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
      */
     public function getOrderChangeId()
     {
-        if (isset($this->params['change_id'])) {
-            return (int)$this->params['change_id'];
+        if (isset($this->_params['change_id'])) {
+            return (int)$this->_params['change_id'];
         }
 
         return NULL;
@@ -75,7 +75,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
     public function process()
     {
         if (!$this->isNeedSendRequest()) {
-            $this->status = Ess_M2ePro_Helper_Data::STATUS_ERROR;
+            $this->_status = Ess_M2ePro_Helper_Data::STATUS_ERROR;
             return;
         }
 
@@ -86,9 +86,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
                 continue;
             }
 
-            $this->status = Ess_M2ePro_Helper_Data::STATUS_ERROR;
+            $this->_status = Ess_M2ePro_Helper_Data::STATUS_ERROR;
 
-            $this->order->addErrorLog(
+            $this->_order->addErrorLog(
                 'eBay Order status was not updated. Reason: %msg%', array('msg' => $message->getText())
             );
         }
@@ -98,21 +98,25 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     protected function isNeedSendRequest()
     {
-        if ($this->order->getMarketplace()->getCode() == 'India'
-            && stripos($this->order->getChildObject()->getPaymentMethod(), 'paisa') !== false
+        if ($this->_order->getMarketplace()->getCode() == 'India'
+            && stripos($this->_order->getChildObject()->getPaymentMethod(), 'paisa') !== false
         ) {
-            $this->order->addErrorLog('eBay Order Status was not updated. Reason: %msg%', array(
+            $this->_order->addErrorLog(
+                'eBay Order Status was not updated. Reason: %msg%', array(
                 'msg' => 'Status of India Site Orders cannot be updated if the Buyer uses PaisaPay payment method.'
-            ));
+                )
+            );
 
             return false;
         }
 
-        if (!in_array($this->action,array(
+        if (!in_array(
+            $this->_action, array(
             Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_PAY,
             Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_SHIP,
             Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_SHIP_TRACK
-        ))) {
+            )
+        )) {
             throw new Ess_M2ePro_Model_Exception_Logic('Invalid Action.');
         }
 
@@ -121,9 +125,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     public function getRequestData()
     {
-        $requestData = array('action' => $this->action);
+        $requestData = array('action' => $this->_action);
 
-        $ebayOrderId = $this->order->getData('ebay_order_id');
+        $ebayOrderId = $this->_order->getData('ebay_order_id');
 
         if (strpos($ebayOrderId, '-') === false) {
             $requestData['order_id'] = $ebayOrderId;

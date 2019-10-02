@@ -16,7 +16,6 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
         // Save settings
         // ---------------------------------------
         if ($this->getRequest()->isPost()) {
-
             $post = $this->getRequest()->getPost();
 
             Mage::getModel('M2ePro/Log_Clearing')->saveSettings(
@@ -52,6 +51,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                 Mage::helper('M2ePro')->__('The clearing Settings has been successfully saved.')
             );
         }
+
         // ---------------------------------------
 
         // Get actions
@@ -59,8 +59,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
         $task = $this->getRequest()->getParam('task');
         $log = $this->getRequest()->getParam('log');
 
-        if (!is_null($task)) {
-
+        if ($task !== null) {
             $title = ucwords(str_replace('_', ' ', $log));
             if ($log == Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE) {
                 $title = 'eBay In-Store Pickup';
@@ -84,6 +83,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                     break;
             }
         }
+
         // ---------------------------------------
 
         $this->_redirectUrl($this->_getRefererUrl());

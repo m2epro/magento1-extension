@@ -177,7 +177,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
      */
     public function getOptions($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
     {
-        return $this->getParentObject()->getOptions($asObjects,$filters,$tryToGetFromStorage);
+        return $this->getParentObject()->getOptions($asObjects, $filters, $tryToGetFromStorage);
     }
 
     //########################################
@@ -196,7 +196,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
         // Configurable, Grouped product
         if ($this->getListingProduct()->getMagentoProduct()->isConfigurableType() ||
             $this->getListingProduct()->getMagentoProduct()->isGroupedType()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
                 $sku = $option->getChildObject()->getSku();
@@ -205,7 +204,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
 
         // Bundle product
         } else if ($this->getListingProduct()->getMagentoProduct()->isBundleType()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
 
@@ -219,7 +217,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
 
         // Simple with options product
         } else if ($this->getListingProduct()->getMagentoProduct()->isSimpleTypeWithCustomOptions()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
                 $sku != '' && $sku .= '-';
@@ -380,10 +377,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
             /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
             $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
             $calculator->setSource($src)->setProduct($this->getListingProduct());
-            $calculator->setSourceModeMapping(array(
+            $calculator->setSourceModeMapping(
+                array(
                 Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_TIER
                     => Ess_M2ePro_Model_Amazon_Template_SellingFormat::BUSINESS_DISCOUNTS_MODE_TIER,
-            ));
+                )
+            );
             $calculator->setCoefficient($this->getAmazonSellingFormatTemplate()->getBusinessDiscountsTierCoefficient());
             $calculator->setVatPercent($this->getAmazonSellingFormatTemplate()->getBusinessPriceVatPercent());
             $calculator->setPriceVariationMode(
@@ -409,14 +408,16 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
             /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator */
             $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_PriceCalculator');
             $calculator->setSource($businessDiscount->getSource())->setProduct($this->getListingProduct());
-            $calculator->setSourceModeMapping(array(
+            $calculator->setSourceModeMapping(
+                array(
                 Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_PRODUCT
                     => Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount::MODE_PRODUCT,
                 Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_SPECIAL
                     => Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount::MODE_SPECIAL,
                 Ess_M2ePro_Model_Listing_Product_PriceCalculator::MODE_ATTRIBUTE
                     => Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount::MODE_ATTRIBUTE,
-            ));
+                )
+            );
             $calculator->setCoefficient($businessDiscount->getCoefficient());
             $calculator->setVatPercent($this->getAmazonSellingFormatTemplate()->getBusinessPriceVatPercent());
             $calculator->setPriceVariationMode(

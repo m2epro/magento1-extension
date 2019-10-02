@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
 {
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $categorySpecificTemplateModel Ess_M2ePro_Model_Ebay_Template_Category_Specific
+     * @var $_categorySpecificTemplateModel Ess_M2ePro_Model_Ebay_Template_Category_Specific
      */
-    private $categorySpecificTemplateModel = null;
+    protected $_categorySpecificTemplateModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
      */
     public function setCategorySpecificTemplate(Ess_M2ePro_Model_Ebay_Template_Category_Specific $instance)
     {
-        $this->categorySpecificTemplateModel = $instance;
+        $this->_categorySpecificTemplateModel = $instance;
         return $this;
     }
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
      */
     public function getCategorySpecificTemplate()
     {
-        return $this->categorySpecificTemplateModel;
+        return $this->_categorySpecificTemplateModel;
     }
 
     // ---------------------------------------
@@ -113,7 +113,6 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
 
         if (empty($categoryId) || empty($marketplaceId) || strpos($valueTemp, ',') === false ||
             $this->getMagentoProduct()->getAttributeFrontendInput($attributeCode) !== 'multiselect') {
-
             $valueData[] = $valueTemp;
             return $valueData;
         }
@@ -127,10 +126,8 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
         }
 
         foreach ($specifics as $specific) {
-
             if ($specific['title'] === $this->getCategorySpecificTemplate()->getData('attribute_title') &&
-                in_array($specific['type'],array('select_multiple_or_text','select_multiple'))) {
-
+                in_array($specific['type'], array('select_multiple_or_text','select_multiple'))) {
                 foreach (explode(',', $valueTemp) as $val) {
                     $valueData[] =  trim($val);
                 }
@@ -145,15 +142,15 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Specific_Source
 
     //########################################
 
-    private function getAttributeLabel()
+    protected function getAttributeLabel()
     {
         return Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel(
-                    $this->getCategorySpecificTemplate()->getData('value_custom_attribute'),
-                    $this->getMagentoProduct()->getStoreId()
-                );
+            $this->getCategorySpecificTemplate()->getData('value_custom_attribute'),
+            $this->getMagentoProduct()->getStoreId()
+        );
     }
 
-    private function getAttributeValue($attributeCode)
+    protected function getAttributeValue($attributeCode)
     {
         $attributeValue = $this->getMagentoProduct()->getAttributeValue($attributeCode);
 

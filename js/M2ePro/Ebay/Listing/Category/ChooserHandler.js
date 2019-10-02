@@ -275,6 +275,11 @@ EbayListingCategoryChooserHandler.prototype = Object.extend(new CommonHandler(),
                 self.openPopUp(title, transport.responseText);
                 self.renderRecent();
                 self.renderAttributes();
+
+                var categoryPathElement = $('selected_category_container').down('#selected_category_path');
+                categoryPathElement.innerHTML = self.cutDownLongPath(
+                    categoryPathElement.innerHTML.trim(), 130, '&gt;'
+                );
             }
         });
     },
@@ -347,7 +352,14 @@ EbayListingCategoryChooserHandler.prototype = Object.extend(new CommonHandler(),
                 category_type: type
             },
             onSuccess: function(transport) {
-                $('selected_category_path').innerHTML = transport.responseText;
+
+                var categoryPath = transport.responseText,
+                    pathElement = $('selected_category_path');
+
+                pathElement.setAttribute('title', categoryPath);
+                categoryPath = self.cutDownLongPath(categoryPath, 130, '>');
+                pathElement.innerHTML = categoryPath;
+
                 $('category_reset_link').show();
                 $('category_title_container').innerHTML = $('category_title').value + ' ' + M2ePro.translator.translate('Category') + ':';
             }
@@ -766,6 +778,40 @@ EbayListingCategoryChooserHandler.prototype = Object.extend(new CommonHandler(),
         var categoryData = self.getInternalData();
 
         self.postForm(url, {category_data: Object.toJSON(categoryData)});
+    },
+
+    // ---------------------------------------
+
+    cutDownLongPath: function (path, length, sep)
+    {
+        if (path.length > length && sep) {
+
+            var parts = path.split(sep),
+                isNeedSeparator = false;
+
+            var shortPath = '';
+            parts.each(function (part, index) {
+                if ((part.length + shortPath.length) >= length) {
+
+                    var lenDiff = (parts[parts.length-1].length + shortPath.length) - length;
+                    if (lenDiff > 0) {
+                        shortPath = shortPath.slice(0, shortPath.length - lenDiff + 1);
+                    }
+
+                    shortPath = shortPath.slice(0, shortPath.length - 3) + '...';
+
+                    shortPath += parts[parts.length-1];
+                    throw $break;
+                }
+
+                shortPath += part + (isNeedSeparator ? sep : '');
+                isNeedSeparator = true;
+            });
+
+            return shortPath;
+        }
+
+        return path;
     }
 
     // ---------------------------------------

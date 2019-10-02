@@ -44,9 +44,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator
     protected function prepareOptionTitles($optionTitles)
     {
         foreach ($optionTitles as &$optionTitle) {
-            $optionTitle = trim(Mage::helper('M2ePro')->reduceWordsInString(
-                $optionTitle, Ess_M2ePro_Helper_Component_Ebay::VARIATION_OPTION_LABEL_MAX_LENGTH
-            ));
+            $optionTitle = trim(
+                Mage::helper('M2ePro')->reduceWordsInString(
+                    $optionTitle, Ess_M2ePro_Helper_Component_Ebay::VARIATION_OPTION_LABEL_MAX_LENGTH
+                )
+            );
         }
 
         return $optionTitles;

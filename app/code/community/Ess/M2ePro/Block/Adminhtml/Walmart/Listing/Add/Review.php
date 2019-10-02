@@ -10,7 +10,7 @@ use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode as SourceModeBlock
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Review extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    protected $source;
+    protected $_source;
 
     //########################################
 
@@ -23,7 +23,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Review extends Ess_M2ePro_B
         $this->setId('listingProductReview');
         // ---------------------------------------
 
-        $this->_headerText = Mage::helper('M2ePro')->__('Congratulations');
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                '%component_name% / Congratulations',
+                Mage::helper('M2ePro/Component_Walmart')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__('Congratulations');
+        }
 
         $this->setTemplate('M2ePro/walmart/listing/add/review.phtml');
     }
@@ -49,7 +56,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Review extends Ess_M2ePro_B
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 
@@ -58,53 +65,66 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Review extends Ess_M2ePro_B
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/viewListing', array(
+        $url = $this->getUrl(
+            '*/*/viewListing', array(
             '_current' => true,
             'id' => $this->getRequest()->getParam('id')
-        ));
+            )
+        );
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Review Your Products'),
                 'onclick' => 'setLocation(\''.$url.'\');',
                 'class' => 'save'
-            ));
+                )
+            );
         $this->setChild('review', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/viewListingAndList', array(
+        $url = $this->getUrl(
+            '*/*/viewListingAndList', array(
             '_current' => true,
             'id' => $this->getRequest()->getParam('id')
-        ));
+            )
+        );
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('List Added Products Now'),
                 'onclick' => 'setLocation(\''.$url.'\');',
                 'class' => 'save'
-            ));
+                )
+            );
         $this->setChild('list', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         if ($this->getSource() === SourceModeBlock::SOURCE_OTHER) {
-            $url = $this->getUrl('*/adminhtml_walmart_listing_other/view', array(
+            $url = $this->getUrl(
+                '*/adminhtml_walmart_listing_other/view', array(
                 'account'     => $listing->getAccountId(),
                 'marketplace' => $listing->getMarketplaceId(),
-            ));
+                )
+            );
 
             $buttonBlock = $this->getLayout()
                 ->createBlock('adminhtml/widget_button')
-                ->setData(array(
+                ->setData(
+                    array(
                     'label'   => Mage::helper('M2ePro')->__('Back to 3rd Party Listing'),
                     'onclick' => 'setLocation(\''.$url.'\');',
                     'class' => 'save'
-                ));
+                    )
+                );
             $this->setChild('back_to_listing_other', $buttonBlock);
         }
+
         // ---------------------------------------
     }
 
@@ -119,12 +139,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Review extends Ess_M2ePro_B
 
     public function setSource($source)
     {
-        $this->source = $source;
+        $this->_source = $source;
     }
 
     public function getSource()
     {
-        return $this->source;
+        return $this->_source;
     }
 
     //########################################

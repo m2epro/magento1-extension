@@ -22,7 +22,7 @@ class Ess_M2ePro_Model_Observer_Magento_Cms_Block_SaveAfter extends Ess_M2ePro_M
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Template_Description_Collection $templates */
+        /** @var Ess_M2ePro_Model_Resource_Template_Description_Collection $templates */
         $templates = Mage::getModel('M2ePro/Ebay_Template_Description')->getCollection()->addFieldToFilter(
             'description_template', array('like' => "%{$block->getIdentifier()}%")
         );
@@ -37,7 +37,6 @@ class Ess_M2ePro_Model_Observer_Magento_Cms_Block_SaveAfter extends Ess_M2ePro_M
             $listingsProductsInstructionsData = array();
 
             foreach ($affectedListingsProducts->getIds() as $listingProductId) {
-
                 $listingsProductsInstructionsData[] = array(
                     'listing_product_id' => $listingProductId,
                     'type'               => Description::INSTRUCTION_TYPE_MAGENTO_STATIC_BLOCK_IN_DESCRIPTION_CHANGED,

@@ -49,18 +49,23 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
         )->joinLeft(
             array('am' => Mage::getResourceModel('M2ePro/Walmart_Marketplace')->getMainTable()),
             'am.marketplace_id = main_table.marketplace_id',
-            array('currency' => 'am.default_currency'));
+            array('currency' => 'am.default_currency')
+        );
 
         // Add Filter By Account
         if ($this->getRequest()->getParam('account')) {
-            $collection->addFieldToFilter('main_table.account_id',
-                                          $this->getRequest()->getParam('account'));
+            $collection->addFieldToFilter(
+                'main_table.account_id',
+                $this->getRequest()->getParam('account')
+            );
         }
 
         // Add Filter By Marketplace
         if ($this->getRequest()->getParam('marketplace')) {
-            $collection->addFieldToFilter('main_table.marketplace_id',
-                                          $this->getRequest()->getParam('marketplace'));
+            $collection->addFieldToFilter(
+                'main_table.marketplace_id',
+                $this->getRequest()->getParam('marketplace')
+            );
         }
 
         // Set collection to grid
@@ -71,7 +76,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
 
     protected function _prepareColumns()
     {
-        $this->addColumn('product_id', array(
+        $this->addColumn(
+            'product_id', array(
             'header' => Mage::helper('M2ePro')->__('Product ID'),
             'align'  => 'left',
             'width'  => '80px',
@@ -81,9 +87,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             'frame_callback' => array($this, 'callbackColumnProductId'),
             'filter'   => 'M2ePro/adminhtml_grid_column_filter_productId',
             'filter_condition_callback' => array($this, 'callbackFilterProductId')
-        ));
+            )
+        );
 
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'    => Mage::helper('M2ePro')->__('Title / SKU'),
             'align' => 'left',
             'type' => 'text',
@@ -91,9 +99,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             'filter_index' => 'second_table.title',
             'frame_callback' => array($this, 'callbackColumnProductTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('gtin', array(
+        $this->addColumn(
+            'gtin', array(
             'header' => Mage::helper('M2ePro')->__('GTIN'),
             'align' => 'left',
             'width' => '160px',
@@ -102,9 +112,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             'filter_index' => 'gtin',
             'frame_callback' => array($this, 'callbackColumnGtin'),
             'filter_condition_callback' => array($this, 'callbackFilterGtin')
-        ));
+            )
+        );
 
-        $this->addColumn('online_qty', array(
+        $this->addColumn(
+            'online_qty', array(
             'header' => Mage::helper('M2ePro')->__('QTY'),
             'align' => 'right',
             'width' => '160px',
@@ -113,7 +125,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             'filter_index' => 'online_qty',
             'frame_callback' => array($this, 'callbackColumnAvailableQty'),
             'filter_condition_callback' => array($this, 'callbackFilterQty')
-        ));
+            )
+        );
 
         $priceColumn = array(
             'header' => Mage::helper('M2ePro')->__('Price'),
@@ -128,7 +141,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
 
         $this->addColumn('online_price', $priceColumn);
 
-        $this->addColumn('status', array(
+        $this->addColumn(
+            'status', array(
             'header' => Mage::helper('M2ePro')->__('Status'),
             'width' => '170px',
             'index' => 'status',
@@ -141,7 +155,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
                 Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Inactive (Blocked)')
             ),
             'frame_callback' => array($this, 'callbackColumnStatus')
-        ));
+            )
+        );
 
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
             '*/adminhtml_walmart_listing_other/view',
@@ -152,7 +167,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             )
         );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'left',
             'width'     => '80px',
@@ -185,7 +201,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
                     )
                 )
             )
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -198,33 +215,43 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
         $this->getMassactionBlock()->setFormFieldName('ids');
         // ---------------------------------------
 
-        $this->getMassactionBlock()->setGroups(array(
+        $this->getMassactionBlock()->setGroups(
+            array(
             'mapping' => Mage::helper('M2ePro')->__('Mapping'),
             'other'   => Mage::helper('M2ePro')->__('Other')
-        ));
+            )
+        );
 
         // Set mass-action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('autoMapping', array(
+        $this->getMassactionBlock()->addItem(
+            'autoMapping', array(
             'label'   => Mage::helper('M2ePro')->__('Map Item(s) Automatically'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'mapping');
-        $this->getMassactionBlock()->addItem('moving', array(
+            ), 'mapping'
+        );
+        $this->getMassactionBlock()->addItem(
+            'moving', array(
             'label'   => Mage::helper('M2ePro')->__('Move Item(s) to Listing'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'other');
-        $this->getMassactionBlock()->addItem('removing', array(
+            ), 'other'
+        );
+        $this->getMassactionBlock()->addItem(
+            'removing', array(
             'label'   => Mage::helper('M2ePro')->__('Remove Item(s)'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'other');
-        $this->getMassactionBlock()->addItem('unmapping', array(
+            ), 'other'
+        );
+        $this->getMassactionBlock()->addItem(
+            'unmapping', array(
             'label'   => Mage::helper('M2ePro')->__('Unmap Item(s)'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'mapping');
+            ), 'mapping'
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -240,6 +267,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             if (strlen($productTitle) > 60) {
                 $productTitle = substr($productTitle, 0, 60) . '...';
             }
+
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
                                     onclick="WalmartListingOtherMappingHandlerObj.openPopUp(\''.
                                         $productTitle.
@@ -250,12 +278,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
             if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
                 $htmlValue .= '<br/>' . $row->getId();
             }
+
             return $htmlValue;
         }
 
         $htmlValue = '&nbsp<a href="'
-                     .$this->getUrl('adminhtml/catalog_product/edit',
-                                    array('id' => $row->getData('product_id')))
+                    .$this->getUrl(
+                        'adminhtml/catalog_product/edit',
+                        array('id' => $row->getData('product_id'))
+                    )
                      .'" target="_blank">'
                      .$row->getData('product_id')
                      .'</a>';
@@ -276,7 +307,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View_Grid extends Mage_Ad
 
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             $value = '<i style="color:gray;">receiving...</i>';
         } else {
             $value = '<span>' .Mage::helper('M2ePro')->escapeHtml($value). '</span>';
@@ -331,6 +362,7 @@ HTML;
             {
                 $htmlAdditional .= "<div class='separator-line'></div>";
             }
+
             $identifierCode  = Mage::helper('M2ePro')->__($title);
             $identifierValue = Mage::helper('M2ePro')->escapeHtml($value);
 
@@ -368,7 +400,7 @@ HTML;
 
     public function callbackColumnAvailableQty($value, $row, $column, $isExport)
     {
-        if (is_null($value) || $value === '' ||
+        if ($value === null || $value === '' ||
             ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
              !$row->getData('is_online_price_invalid')))
         {
@@ -384,7 +416,7 @@ HTML;
 
     public function callbackColumnPrice($value, $row, $column, $isExport)
     {
-        if (is_null($value) || $value === '' ||
+        if ($value === null || $value === '' ||
             ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
              !$row->getData('is_online_price_invalid')))
         {
@@ -392,19 +424,16 @@ HTML;
         }
 
         $currency = Mage::helper('M2ePro/Component_Walmart')
-                                ->getCachedObject('Marketplace',$row->getData('marketplace_id'))
+                                ->getCachedObject('Marketplace', $row->getData('marketplace_id'))
                                 ->getChildObject()
                                 ->getDefaultCurrency();
 
-        $priceValue = Mage::app()->getLocale()->currency($currency)->toCurrency($value);
-
-        return $priceValue;
+        return Mage::app()->getLocale()->currency($currency)->toCurrency($value);
     }
 
     public function callbackColumnStatus($value, $row, $column, $isExport)
     {
         switch ($row->getData('status')) {
-
             case Ess_M2ePro_Model_Listing_Product::STATUS_LISTED:
                 $value = '<span style="color: green;">' . $value . '</span>';
                 break;
@@ -423,7 +452,7 @@ HTML;
 
         /** @var Ess_M2ePro_Model_Listing_Other $listingOther */
         $listingOther = Mage::helper('M2ePro/Component_Walmart')
-            ->getObject('Listing_Other',$row->getData('id'));
+            ->getObject('Listing_Other', $row->getData('id'));
 
         $statusChangeReasons = $listingOther->getChildObject()->getStatusChangeReasons();
 
@@ -450,6 +479,7 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $where .= 'product_id <= ' . (int)$value['to'];
         }
 
@@ -457,6 +487,7 @@ HTML;
             if (!empty($where)) {
                 $where = '(' . $where . ') AND ';
             }
+
             if ($value['is_mapped']) {
                 $where .= 'product_id IS NOT NULL';
             } else {
@@ -496,6 +527,7 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $where .= 'online_qty <= ' . (int)$value['to'];
         }
 
@@ -538,6 +570,7 @@ SQL;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $where .= 'online_price <= ' . (float)$value['to'];
         }
 
@@ -572,11 +605,10 @@ SQL;
         $lastActionId = false;
 
         foreach ($logRows as $row) {
-
             $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
-                if (count($tempActionRows) > 0) {
+                if (!empty($tempActionRows)) {
                     $actionsRows[] = array(
                         'type' => $this->getMainTypeForActionId($tempActionRows),
                         'date' => $this->getMainDateForActionId($tempActionRows),
@@ -586,12 +618,14 @@ SQL;
                     );
                     $tempActionRows = array();
                 }
+
                 $lastActionId = $row['action_id'];
             }
+
             $tempActionRows[] = $row;
         }
 
-        if (count($tempActionRows) > 0) {
+        if (!empty($tempActionRows)) {
             $actionsRows[] = array(
                 'type' => $this->getMainTypeForActionId($tempActionRows),
                 'date' => $this->getMainDateForActionId($tempActionRows),
@@ -601,7 +635,7 @@ SQL;
             );
         }
 
-        if (count($actionsRows) <= 0) {
+        if (empty($actionsRows)) {
             return '';
         }
 
@@ -617,19 +651,21 @@ SQL;
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
         );
 
-        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
+        $summary = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_grid_summary', '', array(
             'entity_id' => $listingOtherId,
             'rows' => $actionsRows,
             'tips' => $tips,
             'icons' => $icons,
             'view_help_handler' => 'WalmartListingOtherGridHandlerObj.viewItemHelp',
             'hide_help_handler' => 'WalmartListingOtherGridHandlerObj.hideItemHelp',
-        ));
+            )
+        );
 
         return $summary->toHtml();
     }
 
-    private function getStatusChangeReasons($statusChangeReasons)
+    protected function getStatusChangeReasons($statusChangeReasons)
     {
         if (empty($statusChangeReasons)) {
             return '';
@@ -695,6 +731,7 @@ HTML;
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
                 break;
             }
+
             if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
             }

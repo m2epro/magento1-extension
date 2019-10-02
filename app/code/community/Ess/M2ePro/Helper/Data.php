@@ -36,7 +36,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getModel($modelName, $params = array())
     {
-        return Mage::getModel('M2ePro/'.$modelName,$params);
+        return Mage::getModel('M2ePro/'.$modelName, $params);
     }
 
     public function getHelper($helperName = NULL)
@@ -70,7 +70,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
     {
         if (Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
-            return $this->getObject($modelName,$value,$field);
+            return $this->getObject($modelName, $value, $field);
         }
 
         $cacheKey = strtoupper($modelName.'_data_'.$field.'_'.$value);
@@ -82,25 +82,24 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
         $tags[] = $modelName;
 
-        if (strpos($modelName,'_') !== false) {
-
+        if (strpos($modelName, '_') !== false) {
             $allComponents = Mage::helper('M2ePro/Component')->getComponents();
-            $modelNameComponent = substr($modelName,0,strpos($modelName,'_'));
+            $modelNameComponent = substr($modelName, 0, strpos($modelName, '_'));
 
-            if (in_array(strtolower($modelNameComponent),array_map('strtolower',$allComponents))) {
-                $modelNameOnlyModel = substr($modelName,strpos($modelName,'_')+1);
+            if (in_array(strtolower($modelNameComponent), array_map('strtolower', $allComponents))) {
+                $modelNameOnlyModel = substr($modelName, strpos($modelName, '_')+1);
                 $tags[] = $modelNameComponent;
                 $tags[] = $modelNameOnlyModel;
             }
         }
 
         $tags = array_unique($tags);
-        $tags = array_map('strtolower',$tags);
+        $tags = array_map('strtolower', $tags);
 
-        $cacheData = $this->getObject($modelName,$value,$field);
+        $cacheData = $this->getObject($modelName, $value, $field);
 
         if (!empty($cacheData)) {
-            Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey,$cacheData,$tags,60*60*24);
+            Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey, $cacheData, $tags, 60*60*24);
         }
 
         return $cacheData;
@@ -113,6 +112,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->gmtTimestamp();
         }
+
         return Mage::getModel('core/date')->gmtDate($format);
     }
 
@@ -121,6 +121,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->timestamp();
         }
+
         return Mage::getModel('core/date')->date($format);
     }
 
@@ -134,7 +135,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             $result = strtotime($date);
         }
 
-        if (is_null($format)) {
+        if ($format === null) {
             $format = 'Y-m-d H:i:s';
         }
 
@@ -154,7 +155,8 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->timestamp($dateGmt);
         }
-        return Mage::getModel('core/date')->date($format,$dateGmt);
+
+        return Mage::getModel('core/date')->date($format, $dateGmt);
     }
 
     public function timezoneDateToGmt($dateTimezone, $returnTimestamp = false, $format = NULL)
@@ -162,16 +164,19 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->gmtTimestamp($dateTimezone);
         }
-        return Mage::getModel('core/date')->gmtDate($format,$dateTimezone);
+
+        return Mage::getModel('core/date')->gmtDate($format, $dateTimezone);
     }
 
     //########################################
 
     public function escapeJs($string)
     {
-        return str_replace(array("\\"  , "\n"  , "\r" , "\""  , "'"),
-                           array("\\\\", "\\n" , "\\r", "\\\"", "\\'"),
-                           $string);
+        return str_replace(
+            array("\\"  , "\n"  , "\r" , "\""  , "'"),
+            array("\\\\", "\\n" , "\\r", "\\\"", "\\'"),
+            $string
+        );
     }
 
     public function escapeHtml($data, $allowedTags = null, $flags = ENT_COMPAT)
@@ -203,6 +208,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                 $result = $data;
             }
         }
+
         return $result;
     }
 
@@ -263,7 +269,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         Mage::helper('M2ePro/Module_Logger')->process(
-            array('source' => serialize($data)),
+            array('source' => $this->serialize($data)),
             'json_encode() failed completely', false
         );
 
@@ -271,10 +277,10 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             return NULL;
         }
 
-        throw new Ess_M2ePro_Model_Exception_Logic('Unable to encode to JSON.',
-                                                   array(
-                                                       'source' => serialize($data)
-                                                   ));
+        throw new Ess_M2ePro_Model_Exception_Logic(
+            'Unable to encode to JSON.',
+            array('source' => $this->serialize($data))
+        );
     }
 
     /**
@@ -288,32 +294,30 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function jsonDecode($data, $throwError = false)
     {
-        if (is_null($data) || $data === '' || strtolower($data) === 'null') {
+        if ($data === null || $data === '' || strtolower($data) === 'null') {
             return NULL;
         }
 
-        $decoded = @json_decode($data, true);
-        if (!is_null($decoded)) {
+        $decoded = json_decode($data, true);
+        if ($decoded !== null) {
             return $decoded;
         }
 
         try {
-
             $previousValue = Zend_Json::$useBuiltinEncoderDecoder;
             Zend_Json::$useBuiltinEncoderDecoder = true;
             $decoded = Zend_Json::decode($data);
             Zend_Json::$useBuiltinEncoderDecoder = $previousValue;
-
         } catch (\Exception $e) {
             $decoded = NULL;
         }
 
-        if (!is_null($decoded)) {
+        if ($decoded !== null) {
             return $decoded;
         }
 
         Mage::helper('M2ePro/Module_Logger')->process(
-            array('source' => serialize($data)),
+            array('source' => $this->serialize($data)),
             'json_decode() failed completely', false
         );
 
@@ -321,14 +325,13 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             return NULL;
         }
 
-        throw new Ess_M2ePro_Model_Exception_Logic('Unable to decode JSON.',
-            array(
-                'source' => $data
-            )
+        throw new Ess_M2ePro_Model_Exception_Logic(
+            'Unable to decode JSON.',
+            array('source' => $data)
         );
     }
 
-    private function normalizeToUtfEncoding($data)
+    protected function normalizeToUtfEncoding($data)
     {
         if (is_array($data)) {
             foreach ($data as $key => $value) {
@@ -343,13 +346,28 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function serialize($data)
+    {
+        return Zend_Serializer::serialize($data);
+    }
+
+    public function unserialize($data)
+    {
+        if (empty($data) || !is_string($data)) {
+            return array();
+        }
+
+        return Zend_Serializer::unserialize($data);
+    }
+
+    //########################################
+
     public function reduceWordsInString($string, $neededLength, $longWord = 6, $minWordLen = 2, $atEndOfWord = '.')
     {
         $oldEncoding = mb_internal_encoding();
         mb_internal_encoding('UTF-8');
 
         if (mb_strlen($string) <= $neededLength) {
-
             mb_internal_encoding($oldEncoding);
             return $string;
         }
@@ -369,14 +387,12 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         $needToBeReduced = mb_strlen($string) - $neededLength + (count($longWords) * mb_strlen($atEndOfWord));
 
         if ($canBeReduced < $needToBeReduced) {
-
             mb_internal_encoding($oldEncoding);
             return $string;
         }
 
         $weightOfOneLetter = $needToBeReduced / $canBeReduced;
         foreach ($longWords as $word => $canBeReducedForWord) {
-
             $willReduced = ceil($weightOfOneLetter * $canBeReducedForWord);
             $reducedWord = mb_substr($word, 0, mb_strlen($word) - $willReduced) . $atEndOfWord;
 
@@ -394,8 +410,10 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     public function convertStringToSku($title)
     {
         $skuVal = strtolower($title);
-        $skuVal = str_replace(array(" ", ":", ",", ".", "?", "*", "+", "(", ")", "&", "%", "$", "#", "@",
-                                    "!", '"', "'", ";", "\\", "|", "/", "<", ">"), "-", $skuVal);
+        $skuVal = str_replace(
+            array(" ", ":", ",", ".", "?", "*", "+", "(", ")", "&", "%", "$", "#", "@",
+            "!", '"', "'", ";", "\\", "|", "/", "<", ">"), "-", $skuVal
+        );
 
         return $skuVal;
     }
@@ -430,7 +448,8 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                 "\n\$0", "\n\$0", "\n\$0", "\n\$0", "\n\$0", "\n\$0",
                 "\n\$0", "\n\$0",
             ),
-            $text);
+            $text
+        );
 
         return $text;
     }
@@ -439,7 +458,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $args = func_get_args();
         foreach (array_slice($args, 1) as $replacements) {
-
             $bref_stack = array(&$base);
             $head_stack = array($replacements);
 
@@ -452,7 +470,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                 unset($bref_stack[key($bref_stack)]);
 
                 foreach (array_keys($head) as $key) {
-
                     if (isset($key, $bref, $bref[$key]) && is_array($bref[$key]) && is_array($head[$key])) {
                         $bref_stack[] = &$bref[$key];
                         $head_stack[] = $head[$key];
@@ -472,7 +489,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function toLowerCaseRecursive(array $data = array())
     {
-        if (count($data) == 0) {
+        if (empty($data)) {
             return $data;
         }
 
@@ -484,6 +501,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             } else {
                 $value = trim(strtolower($value));
             }
+
             $lowerCasedData[trim(strtolower($key))] = $value;
         }
 
@@ -494,31 +512,33 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function makeBackUrlParam($backIdOrRoute, array $backParams = array())
     {
-        $paramsString = count($backParams) > 0 ? '|'.http_build_query($backParams,'','&') : '';
+        $paramsString = !empty($backParams) ? '|'.http_build_query($backParams, '', '&') : '';
         return base64_encode($backIdOrRoute.$paramsString);
     }
 
-    public function getBackUrlParam($defaultBackIdOrRoute = 'index',
-                                    array $defaultBackParams = array())
-    {
+    public function getBackUrlParam(
+        $defaultBackIdOrRoute = 'index',
+        array $defaultBackParams = array()
+    ) {
         $requestParams = Mage::app()->getRequest()->getParams();
         return isset($requestParams['back'])
-            ? $requestParams['back'] : $this->makeBackUrlParam($defaultBackIdOrRoute,$defaultBackParams);
+            ? $requestParams['back'] : $this->makeBackUrlParam($defaultBackIdOrRoute, $defaultBackParams);
     }
 
     // ---------------------------------------
 
-    public function getBackUrl($defaultBackIdOrRoute = 'index',
-                               array $defaultBackParams = array(),
-                               array $extendedRoutersParams = array())
-    {
-        $back = base64_decode($this->getBackUrlParam($defaultBackIdOrRoute,$defaultBackParams));
+    public function getBackUrl(
+        $defaultBackIdOrRoute = 'index',
+        array $defaultBackParams = array(),
+        array $extendedRoutersParams = array()
+    ) {
+        $back = base64_decode($this->getBackUrlParam($defaultBackIdOrRoute, $defaultBackParams));
 
         $params = array();
 
-        if (strpos($back,'|') !== false) {
-            $route = substr($back,0,strpos($back,'|'));
-            parse_str(substr($back,strpos($back,'|')+1),$params);
+        if (strpos($back, '|') !== false) {
+            $route = substr($back, 0, strpos($back, '|'));
+            parse_str(substr($back, strpos($back, '|')+1), $params);
         } else {
             $route = $back;
         }
@@ -526,11 +546,12 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         $extendedRoutersParamsTemp = array();
         foreach ($extendedRoutersParams as $extRouteName => $extParams) {
             if ($route == $extRouteName) {
-                $params = array_merge($params,$extParams);
+                $params = array_merge($params, $extParams);
             } else {
                 $extendedRoutersParamsTemp[$route] = $params;
             }
         }
+
         $extendedRoutersParams = $extendedRoutersParamsTemp;
 
         $route == 'index' && $route = '*/*/index';
@@ -540,18 +561,18 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
         foreach ($extendedRoutersParams as $extRouteName => $extParams) {
             if ($route == $extRouteName) {
-                $params = array_merge($params,$extParams);
+                $params = array_merge($params, $extParams);
             }
         }
 
-        return Mage::helper('adminhtml')->getUrl($route,$params);
+        return Mage::helper('adminhtml')->getUrl($route, $params);
     }
 
     //########################################
 
     public function getClassConstantAsJson($class)
     {
-        if (stripos($class,'Ess_M2ePro_') === false) {
+        if (stripos($class, 'Ess_M2ePro_') === false) {
             throw new Ess_M2ePro_Model_Exception('Class name must begin with "Ess_M2ePro"');
         }
 
@@ -572,27 +593,27 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             $controllerClass
         );
 
-        $route = str_replace('Ess_M2ePro_','',$controllerClass);
-        $route = preg_replace('/Controller$/','',$route);
-        $route = explode('_',$route);
+        $route = str_replace('Ess_M2ePro_', '', $controllerClass);
+        $route = preg_replace('/Controller$/', '', $route);
+        $route = explode('_', $route);
 
         foreach ($route as &$part) {
             $part{0} = strtolower($part{0});
         }
+
         unset($part);
 
-        $route = implode('_',$route) . '/';
+        $route = implode('_', $route) . '/';
 
         $reflectionClass = new ReflectionClass($controllerClass);
 
         $actions = array();
         foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-
-            if (!preg_match('/Action$/',$method->name)) {
+            if (!preg_match('/Action$/', $method->name)) {
                 continue;
             }
 
-            $methodName = preg_replace('/Action$/','',$method->name);
+            $methodName = preg_replace('/Action$/', '', $method->name);
 
             $actions[$route . $methodName] = Mage::helper('adminhtml')->getUrl('M2ePro/'.$route.$methodName, $params);
         }
@@ -604,8 +625,8 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function generateUniqueHash($strParam = NULL, $maxLength = NULL)
     {
-        $hash = sha1(rand(1,1000000).microtime(true).(string)$strParam);
-        (int)$maxLength > 0 && $hash = substr($hash,0,(int)$maxLength);
+        $hash = sha1(rand(1, 1000000).microtime(true).(string)$strParam);
+        (int)$maxLength > 0 && $hash = substr($hash, 0, (int)$maxLength);
         return $hash;
     }
 
@@ -675,6 +696,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                 return false;
             }
         }
+
         return ($a % 11 == 0);
     }
 
@@ -684,7 +706,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             return false;
         }
 
-        if (substr($string,0,3) != '978') {
+        if (substr($string, 0, 3) != '978') {
             return false;
         }
 
@@ -704,17 +726,17 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isUPC($upc)
     {
-        return $this->isWorldWideId($upc,'UPC');
+        return $this->isWorldWideId($upc, 'UPC');
     }
 
     public function isEAN($ean)
     {
-        return $this->isWorldWideId($ean,'EAN');
+        return $this->isWorldWideId($ean, 'EAN');
     }
 
     // ---------------------------------------
 
-    private function isWorldWideId($worldWideId,$type)
+    protected function isWorldWideId($worldWideId,$type)
     {
         $adapters = array(
             'UPC' => array(
@@ -732,7 +754,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
         $length = strlen($worldWideId);
 
-        if (!isset($adapters[$type],$adapters[$type][$length])) {
+        if (!isset($adapters[$type], $adapters[$type][$length])) {
             return false;
         }
 

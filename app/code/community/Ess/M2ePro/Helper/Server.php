@@ -15,14 +15,13 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
     public function getEndpoint()
     {
         if ($this->getCurrentBaseUrlIndex() != $this->getDefaultBaseUrlIndex()) {
-
             $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
 
             $interval = self::MAX_INTERVAL_OF_RETURNING_TO_DEFAULT_BASEURL;
             $switchingDateTime = Mage::helper('M2ePro/Module')->getCacheConfig()
-                                        ->getGroupValue('/server/baseurl/','datetime_of_last_switching');
+                                        ->getGroupValue('/server/baseurl/', 'datetime_of_last_switching');
 
-            if (is_null($switchingDateTime) || strtotime($switchingDateTime) + $interval <= $currentTimeStamp) {
+            if ($switchingDateTime === null || strtotime($switchingDateTime) + $interval <= $currentTimeStamp) {
                 $this->setCurrentBaseUrlIndex($this->getDefaultBaseUrlIndex());
             }
         }
@@ -35,7 +34,7 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         $previousIndex = $this->getCurrentBaseUrlIndex();
         $nextIndex = $previousIndex + 1;
 
-        if (is_null($this->getBaseUrlByIndex($nextIndex))) {
+        if ($this->getBaseUrlByIndex($nextIndex) === null) {
             $nextIndex = 1;
         }
 
@@ -46,8 +45,10 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         $this->setCurrentBaseUrlIndex($nextIndex);
 
         $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
-        $cacheConfig->setGroupValue('/server/baseurl/','datetime_of_last_switching',
-                                        Mage::helper('M2ePro')->getCurrentGmtDate());
+        $cacheConfig->setGroupValue(
+            '/server/baseurl/', 'datetime_of_last_switching',
+            Mage::helper('M2ePro')->getCurrentGmtDate()
+        );
 
         return true;
     }
@@ -56,14 +57,14 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
     public function getAdminKey()
     {
-        return (string)Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','admin_key');
+        return (string)Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/', 'admin_key');
     }
 
     public function getApplicationKey()
     {
         $moduleName = Mage::helper('M2ePro/Module')->getName();
         return (string)Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.$moduleName.'/server/','application_key'
+            '/'.$moduleName.'/server/', 'application_key'
         );
     }
 
@@ -81,10 +82,10 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    private function getDefaultBaseUrlIndex()
+    protected function getDefaultBaseUrlIndex()
     {
         $index = (int)Mage::helper('M2ePro/Primary')->getConfig()
-                        ->getGroupValue('/server/','default_baseurl_index');
+                        ->getGroupValue('/server/', 'default_baseurl_index');
 
         if ($index <= 0 || $index > $this->getMaxBaseUrlIndex()) {
             $this->setDefaultBaseUrlIndex($index = 1);
@@ -93,10 +94,10 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         return $index;
     }
 
-    private function getCurrentBaseUrlIndex()
+    protected function getCurrentBaseUrlIndex()
     {
         $index = (int)Mage::helper('M2ePro/Module')->getCacheConfig()
-                        ->getGroupValue('/server/baseurl/','current_index');
+                        ->getGroupValue('/server/baseurl/', 'current_index');
 
         if ($index <= 0 || $index > $this->getMaxBaseUrlIndex()) {
             $this->setCurrentBaseUrlIndex($index = $this->getDefaultBaseUrlIndex());
@@ -107,29 +108,28 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    private function setDefaultBaseUrlIndex($index)
+    protected function setDefaultBaseUrlIndex($index)
     {
         Mage::helper('M2ePro/Primary')->getConfig()
-                ->setGroupValue('/server/','default_baseurl_index',$index);
+                ->setGroupValue('/server/', 'default_baseurl_index', $index);
     }
 
-    private function setCurrentBaseUrlIndex($index)
+    protected function setCurrentBaseUrlIndex($index)
     {
         Mage::helper('M2ePro/Module')->getCacheConfig()
-                ->setGroupValue('/server/baseurl/','current_index',$index);
+                ->setGroupValue('/server/baseurl/', 'current_index', $index);
     }
 
     //########################################
 
-    private function getMaxBaseUrlIndex()
+    protected function getMaxBaseUrlIndex()
     {
         $index = 1;
 
         for ($tempIndex=2; $tempIndex<100; $tempIndex++) {
-
             $tempBaseUrl = $this->getBaseUrlByIndex($tempIndex);
 
-            if (!is_null($tempBaseUrl)) {
+            if ($tempBaseUrl !== null) {
                 $index = $tempIndex;
             } else {
                 break;
@@ -139,14 +139,14 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         return $index;
     }
 
-    private function getBaseUrlByIndex($index)
+    protected function getBaseUrlByIndex($index)
     {
-        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','baseurl_'.$index);
+        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/', 'baseurl_'.$index);
     }
 
-    private function getHostNameByIndex($index)
+    protected function getHostNameByIndex($index)
     {
-        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','hostname_'.$index);
+        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/', 'hostname_'.$index);
     }
 
     //########################################

@@ -32,11 +32,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Synchronization extends Mage_Adminhtml_
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('save', array(
+        $this->_addButton(
+            'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'SynchronizationHandlerObj.saveSettings(\'\')',
             'class'     => 'save'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

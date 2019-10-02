@@ -8,19 +8,19 @@
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
 {
-    /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
-    private $magentoProduct = null;
+    /** @var Ess_M2ePro_Model_Magento_Product $_magentoProduct */
+    protected $_magentoProduct = null;
 
-    private $destinationOptions = array();
+    protected $_destinationOptions = array();
 
-    private $destinationOptionsLocalVocabularyNames = array();
+    protected $_destinationOptionsLocalVocabularyNames = array();
 
-    private $destinationOptionsServerVocabularyNames = array();
+    protected $_destinationOptionsServerVocabularyNames = array();
 
-    private $matchedAttributes = array();
+    protected $_matchedAttributes = array();
 
-    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option_Resolver $resolver */
-    private $resolver = null;
+    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option_Resolver $_resolver */
+    protected $_resolver = null;
 
     //########################################
 
@@ -30,30 +30,30 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
     // ---------------------------------------
 
-//    $destinationOptions = array(
-//        array(
-//          'Color' => 'Red',
-//          'Size'  => 'XL',
-//        ),
-//        ...
-//    )
-
     /**
+     * $destinationOptions = array(
+     *          array(
+     *          'Color' => 'Red',
+     *          'Size'  => 'XL',
+     *      ),
+     *      ...
+     * );
+     *
      * @param array $destinationOptions
      * @return $this
      */
     public function setDestinationOptions(array $destinationOptions)
     {
-        $this->destinationOptions = $destinationOptions;
+        $this->_destinationOptions = $destinationOptions;
 
-        $this->destinationOptionsLocalVocabularyNames  = array();
-        $this->destinationOptionsServerVocabularyNames = array();
+        $this->_destinationOptionsLocalVocabularyNames  = array();
+        $this->_destinationOptionsServerVocabularyNames = array();
 
         return $this;
     }
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
      */
     public function setMatchedAttributes(array $matchedAttributes)
     {
-        $this->matchedAttributes = $matchedAttributes;
+        $this->_matchedAttributes = $matchedAttributes;
         return $this;
     }
 
@@ -101,20 +101,20 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
 
     //########################################
 
-    private function validate()
+    protected function validate()
     {
-        if (is_null($this->magentoProduct)) {
+        if ($this->_magentoProduct === null) {
             throw new Ess_M2ePro_Model_Exception('Magento Product was not set.');
         }
 
-        if (empty($this->destinationOptions)) {
+        if (empty($this->_destinationOptions)) {
             throw new Ess_M2ePro_Model_Exception('Destination Options is empty.');
         }
     }
 
     // ---------------------------------------
 
-    private function matchOptionByNames(array $sourceOption)
+    protected function matchOptionByNames(array $sourceOption)
     {
         $sourceOptionNames = array();
         foreach ($sourceOption as $attribute => $option) {
@@ -123,37 +123,37 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
 
         $this->getResolver()
             ->setSourceOption($sourceOptionNames)
-            ->setDestinationOptions($this->destinationOptions)
-            ->setMatchedAttributes($this->matchedAttributes);
+            ->setDestinationOptions($this->_destinationOptions)
+            ->setMatchedAttributes($this->_matchedAttributes);
 
         return $this->getResolver()->resolve()->getResolvedOption();
     }
 
-    private function matchOptionByLocalVocabulary(array $sourceOption)
+    protected function matchOptionByLocalVocabulary(array $sourceOption)
     {
         $this->getResolver()
             ->setSourceOption($this->getSourceOptionNames($sourceOption))
             ->setDestinationOptions($this->getDestinationOptionLocalVocabularyNames())
-            ->setMatchedAttributes($this->matchedAttributes);
+            ->setMatchedAttributes($this->_matchedAttributes);
 
         return $this->getResolver()->resolve()->getResolvedOption();
     }
 
-    private function matchOptionByServerVocabulary(array $sourceOption)
+    protected function matchOptionByServerVocabulary(array $sourceOption)
     {
         $this->getResolver()
             ->setSourceOption($this->getSourceOptionNames($sourceOption))
             ->setDestinationOptions($this->getDestinationOptionServerVocabularyNames())
-            ->setMatchedAttributes($this->matchedAttributes);
+            ->setMatchedAttributes($this->_matchedAttributes);
 
         return $this->getResolver()->resolve()->getResolvedOption();
     }
 
     // ---------------------------------------
 
-    private function getSourceOptionNames($sourceOption)
+    protected function getSourceOptionNames($sourceOption)
     {
-        $magentoOptionNames = $this->magentoProduct->getVariationInstance()->getTitlesVariationSet();
+        $magentoOptionNames = $this->_magentoProduct->getVariationInstance()->getTitlesVariationSet();
 
         $resultNames = array();
         foreach ($sourceOption as $attribute => $option) {
@@ -168,15 +168,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
         return $resultNames;
     }
 
-    private function getDestinationOptionLocalVocabularyNames()
+    protected function getDestinationOptionLocalVocabularyNames()
     {
-        if (!empty($this->destinationOptionsLocalVocabularyNames)) {
-            return $this->destinationOptionsLocalVocabularyNames;
+        if (!empty($this->_destinationOptionsLocalVocabularyNames)) {
+            return $this->_destinationOptionsLocalVocabularyNames;
         }
 
         $vocabularyHelper = Mage::helper('M2ePro/Component_Walmart_Vocabulary');
 
-        foreach ($this->destinationOptions as $destinationOption) {
+        foreach ($this->_destinationOptions as $destinationOption) {
             $optionNames = array();
 
             foreach ($destinationOption as $attributeName => $optionName) {
@@ -185,21 +185,21 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
                 );
             }
 
-            $this->destinationOptionsServerVocabularyNames[] = $optionNames;
+            $this->_destinationOptionsServerVocabularyNames[] = $optionNames;
         }
 
-        return $this->destinationOptionsLocalVocabularyNames;
+        return $this->_destinationOptionsLocalVocabularyNames;
     }
 
-    private function getDestinationOptionServerVocabularyNames()
+    protected function getDestinationOptionServerVocabularyNames()
     {
-        if (!empty($this->destinationOptionsServerVocabularyNames)) {
-            return $this->destinationOptionsServerVocabularyNames;
+        if (!empty($this->_destinationOptionsServerVocabularyNames)) {
+            return $this->_destinationOptionsServerVocabularyNames;
         }
 
         $vocabularyHelper = Mage::helper('M2ePro/Component_Walmart_Vocabulary');
 
-        foreach ($this->destinationOptions as $destinationOption) {
+        foreach ($this->_destinationOptions as $destinationOption) {
             $optionNames = array();
 
             foreach ($destinationOption as $attributeName => $optionName) {
@@ -208,25 +208,25 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Option
                 );
             }
 
-            $this->destinationOptionsServerVocabularyNames[] = $optionNames;
+            $this->_destinationOptionsServerVocabularyNames[] = $optionNames;
         }
 
-        return $this->destinationOptionsServerVocabularyNames;
+        return $this->_destinationOptionsServerVocabularyNames;
     }
 
     //########################################
 
-    private function getResolver()
+    protected function getResolver()
     {
-        if (!is_null($this->resolver)) {
-            return $this->resolver;
+        if ($this->_resolver !== null) {
+            return $this->_resolver;
         }
 
-        $this->resolver = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Matcher_Option_Resolver');
-        return $this->resolver;
+        $this->_resolver = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Matcher_Option_Resolver');
+        return $this->_resolver;
     }
 
-    private function prepareOptionNames($option, array $names = array())
+    protected function prepareOptionNames($option, array $names = array())
     {
         $names[] = $option;
         $names = array_unique($names);

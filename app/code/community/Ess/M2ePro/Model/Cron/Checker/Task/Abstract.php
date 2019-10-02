@@ -56,7 +56,7 @@ abstract class Ess_M2ePro_Model_Cron_Checker_Task_Abstract
     {
         $lastRun = $this->getConfigValue('last_run');
 
-        if (is_null($lastRun)) {
+        if ($lastRun === null) {
             return true;
         }
 
@@ -75,24 +75,24 @@ abstract class Ess_M2ePro_Model_Cron_Checker_Task_Abstract
 
     //########################################
 
-    private function getConfig()
+    protected function getConfig()
     {
         return Mage::helper('M2ePro/Module')->getConfig();
     }
 
-    private function getConfigGroup()
+    protected function getConfigGroup()
     {
         return '/cron/checker/task/'.$this->getNick().'/';
     }
 
     // ---------------------------------------
 
-    private function getConfigValue($key)
+    protected function getConfigValue($key)
     {
         return $this->getConfig()->getGroupValue($this->getConfigGroup(), $key);
     }
 
-    private function setConfigValue($key, $value)
+    protected function setConfigValue($key, $value)
     {
         return $this->getConfig()->setGroupValue($this->getConfigGroup(), $key, $value);
     }

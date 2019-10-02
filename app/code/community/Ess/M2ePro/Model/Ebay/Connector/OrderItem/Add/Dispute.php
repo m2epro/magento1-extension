@@ -18,15 +18,15 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
 
     const DISPUTE_EXPLANATION_BUYER_HAS_NOT_PAID = 'BuyerNotPaid';
 
-    /** @var $orderItem Ess_M2ePro_Model_Order_Item */
-    private $orderItem;
+    /** @var $_orderItem Ess_M2ePro_Model_Order_Item */
+    protected $_orderItem;
 
     // ########################################
 
     public function setOrderItem(Ess_M2ePro_Model_Order_Item $orderItem)
     {
-        $this->orderItem = $orderItem;
-        $this->account = $orderItem->getOrder()->getAccount();
+        $this->_orderItem = $orderItem;
+        $this->_account   = $orderItem->getOrder()->getAccount();
 
         return $this;
     }
@@ -40,16 +40,16 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
 
     protected function isNeedSendRequest()
     {
-        if (empty($this->params['explanation'])) {
-            $this->orderItem->getOrder()->addErrorLog(
+        if (empty($this->_params['explanation'])) {
+            $this->_orderItem->getOrder()->addErrorLog(
                 'Dispute cannot be opened. Reason: Dispute explanation is not defined.'
             );
 
             return false;
         }
 
-        if (empty($this->params['reason'])) {
-            $this->orderItem->getOrder()->addErrorLog(
+        if (empty($this->_params['reason'])) {
+            $this->_orderItem->getOrder()->addErrorLog(
                 'Dispute cannot be opened. Reason: Dispute reason is not defined.'
             );
 
@@ -62,10 +62,10 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
     public function getRequestData()
     {
         $requestData = array(
-            'item_id'        => $this->orderItem->getChildObject()->getItemId(),
-            'transaction_id' => $this->orderItem->getChildObject()->getTransactionId(),
-            'explanation'    => $this->params['explanation'],
-            'reason'         => $this->params['reason']
+            'item_id'        => $this->_orderItem->getChildObject()->getItemId(),
+            'transaction_id' => $this->_orderItem->getChildObject()->getTransactionId(),
+            'explanation'    => $this->_params['explanation'],
+            'reason'         => $this->_params['reason']
         );
 
         return $requestData;
@@ -89,18 +89,18 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
                 continue;
             }
 
-            $this->orderItem->getOrder()->addErrorLog(
+            $this->_orderItem->getOrder()->addErrorLog(
                 'Unpaid Item Process was not open for Item #%id%. Reason: %msg%', array(
-                    '!id' => $this->orderItem->getChildObject()->getItemId(),
+                    '!id' => $this->_orderItem->getChildObject()->getItemId(),
                     'msg' => $message->getText()
                 )
             );
 
             if ((in_array($message->getCode(), array(16207, 16212)))) {
-                $this->orderItem->setData(
+                $this->_orderItem->setData(
                     'unpaid_item_process_state', Ess_M2ePro_Model_Ebay_Order_Item::UNPAID_ITEM_PROCESS_OPENED
                 );
-                $this->orderItem->save();
+                $this->_orderItem->save();
             }
         }
 
@@ -117,20 +117,24 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
 
         if (empty($responseData['dispute_id'])) {
             $log = 'Unpaid Item Process was not open for Item #%id%. Reason: eBay failure. Please try again later.';
-            $this->orderItem->getOrder()->addErrorLog($log, array(
-                '!id' => $this->orderItem->getChildObject()->getItemId()
-            ));
+            $this->_orderItem->getOrder()->addErrorLog(
+                $log, array(
+                '!id' => $this->_orderItem->getChildObject()->getItemId()
+                )
+            );
             return;
         }
 
-        $this->orderItem->setData(
+        $this->_orderItem->setData(
             'unpaid_item_process_state', Ess_M2ePro_Model_Ebay_Order_Item::UNPAID_ITEM_PROCESS_OPENED
         );
-        $this->orderItem->save();
+        $this->_orderItem->save();
 
-        $this->orderItem->getOrder()->addSuccessLog('Unpaid Item Process for Item #%id% has been initiated.', array(
-            '!id' => $this->orderItem->getChildObject()->getItemId()
-        ));
+        $this->_orderItem->getOrder()->addSuccessLog(
+            'Unpaid Item Process for Item #%id% has been initiated.', array(
+            '!id' => $this->_orderItem->getChildObject()->getItemId()
+            )
+        );
     }
 
     // ########################################

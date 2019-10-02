@@ -65,9 +65,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         $this->_initAction()
-             ->_addContent(
-                 $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_productTaxCode_edit')
-             )
+            ->_addContent(
+                $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_productTaxCode_edit')
+            )
              ->renderLayout();
     }
 
@@ -124,18 +124,21 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
         );
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
-        return $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('*/adminhtml_amazon_template/index', array(),
-            array(
+        return $this->_redirectUrl(
+            Mage::helper('M2ePro')->getBackUrl(
+                '*/adminhtml_amazon_template/index', array(),
+                array(
                 'edit' => array('id' => $model->getId())
+                )
             )
-        ));
+        );
     }
 
     public function deleteAction()
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             $this->_redirect('*/*/index');
             return;
@@ -187,15 +190,19 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             $messages[] = array(
                 'type' => 'warning',
                 'text' => '<p>' . Mage::helper('M2ePro')->__(
-                        'The Product Tax Code Policy was not assigned because the Products have In Action Status.'
-                    ). '</p>'
+                    'The Product Tax Code Policy was not assigned because the Products have In Action Status.'
+                ). '</p>'
             );
         }
 
         if (empty($productsIdsLocked)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'messages' => $messages
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'messages' => $messages
+                    )
+                )
+            );
         }
 
         $mainBlock = $this->loadLayout()->getLayout()
@@ -205,11 +212,15 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             $mainBlock->setMessages($messages);
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'data' => $mainBlock->toHtml(),
-            'messages' => $messages,
-            'products_ids' => implode(',', $productsIdsLocked)
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'data' => $mainBlock->toHtml(),
+                'messages' => $messages,
+                'products_ids' => implode(',', $productsIdsLocked)
+                )
+            )
+        );
     }
 
     public function viewGridAction()
@@ -253,13 +264,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             $messages[] = array(
                 'type' => 'warning',
                 'text' => '<p>' . Mage::helper('M2ePro')->__(
-                        'Product Tax Code Policy cannot be assigned to some Products
-                         because the Products are in Action'). '</p>'
+                    'Product Tax Code Policy cannot be assigned to some Products
+                         because the Products are in Action'
+                ). '</p>'
             );
         }
 
         if (!empty($productsIdsLocked)) {
-
             $messages[] = array(
                 'type' => 'success',
                 'text' => Mage::helper('M2ePro')->__('Product Tax Code Policy was successfully assigned.')
@@ -289,9 +300,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             );
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'messages' => $messages
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'messages' => $messages
+                )
+            )
+        );
     }
 
     public function unassignAction()
@@ -313,13 +328,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             $messages[] = array(
                 'type' => 'warning',
                 'text' => '<p>' . Mage::helper('M2ePro')->__(
-                        'Product Tax Code Policy cannot be unassigned from some Products
-                         because the Products are in Action'). '</p>'
+                    'Product Tax Code Policy cannot be unassigned from some Products
+                         because the Products are in Action'
+                ). '</p>'
             );
         }
 
         if (!empty($productsIdsLocked)) {
-
             $messages[] = array(
                 'type' => 'success',
                 'text' => Mage::helper('M2ePro')->__('Product Tax Code Policy was successfully unassigned.')
@@ -329,9 +344,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
             $this->runProcessorForParents($productsIdsLocked);
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'messages' => $messages
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'messages' => $messages
+                )
+            )
+        );
     }
 
     //########################################
@@ -344,7 +363,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ProductTaxCodeController
         $productsIds = array();
         $productsIdsParam = array_chunk($productsIdsParam, 1000);
         foreach ($productsIdsParam as $productsIdsParamChunk) {
-
             $select = $connRead->select();
             $select->from(array('lo' => $table), array('object_id'))
                 ->where('model_name = "M2ePro/Listing_Product"')

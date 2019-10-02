@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Ebay_Connector_Item_Verify_Requester
     extends Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 {
-    protected $isRealTime = true;
+    protected $_isRealTime = true;
 
     //########################################
 
@@ -35,9 +35,15 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Verify_Requester
         return false;
     }
 
-    protected function lockListingProduct() {}
+    protected function lockListingProduct()
+    {
+        return null;
+    }
 
-    protected function unlockListingProduct() {}
+    protected function unlockListingProduct()
+    {
+        return null;
+    }
 
     //----------------------------------------
 

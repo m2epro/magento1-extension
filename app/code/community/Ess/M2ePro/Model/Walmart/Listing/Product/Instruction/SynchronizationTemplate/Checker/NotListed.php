@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
     public function isAllowed()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         if (!$listingProduct->isListable() || !$listingProduct->isNotListed()) {
             return false;
@@ -24,7 +24,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         $variationManager = $walmartListingProduct->getVariationManager();
 
         if ($variationManager->isVariationProduct()) {
-
             if ($variationManager->isPhysicalUnit() &&
                 !$variationManager->getTypeModel()->isVariationProductMatched()
             ) {
@@ -44,28 +43,30 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
     public function process(array $params = array())
     {
         if (!$this->isMeetListRequirements()) {
-            if ($this->input->getScheduledAction() && !$this->input->getScheduledAction()->isForce()) {
-                $this->getScheduledActionManager()->deleteAction($this->input->getScheduledAction());
+            if ($this->_input->getScheduledAction() && !$this->_input->getScheduledAction()->isForce()) {
+                $this->getScheduledActionManager()->deleteAction($this->_input->getScheduledAction());
             }
 
             return;
         }
 
-        if ($this->input->getScheduledAction() && $this->input->getScheduledAction()->isActionTypeList()) {
+        if ($this->_input->getScheduledAction() && $this->_input->getScheduledAction()->isActionTypeList()) {
             return;
         }
 
-        $scheduledAction = $this->input->getScheduledAction();
-        if (is_null($scheduledAction)) {
+        $scheduledAction = $this->_input->getScheduledAction();
+        if ($scheduledAction === null) {
             $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
         }
 
-        $scheduledAction->addData(array(
-            'listing_product_id' => $this->input->getListingProduct()->getId(),
-            'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'action_type'        => Ess_M2ePro_Model_Listing_Product::ACTION_LIST,
-            'additional_data'    => Mage::helper('M2ePro')->jsonEncode(array('params' => $params)),
-        ));
+        $scheduledAction->addData(
+            array(
+                'listing_product_id' => $this->_input->getListingProduct()->getId(),
+                'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
+                'action_type'        => Ess_M2ePro_Model_Listing_Product::ACTION_LIST,
+                'additional_data'    => Mage::helper('M2ePro')->jsonEncode(array('params' => $params)),
+            )
+        );
 
         if ($scheduledAction->getId()) {
             $this->getScheduledActionManager()->updateAction($scheduledAction);
@@ -76,9 +77,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
     //########################################
 
-    private function isMeetListRequirements()
+    protected function isMeetListRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
         $walmartListingProduct = $listingProduct->getChildObject();
@@ -99,10 +100,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         $additionalData = $listingProduct->getAdditionalData();
 
         if ($walmartSynchronizationTemplate->isListStatusEnabled()) {
-
             if (!$listingProduct->getMagentoProduct()->isStatusEnabled()) {
                 // M2ePro_TRANSLATIONS
-                // Product was not automatically Listed according to the List Rules in Synchronization Policy. Status of Magento Product is Disabled (%date%) though in Synchronization Rules “Product Status” is set to Enabled.
+                // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                // Status of Magento Product is Disabled (%date%) though in Synchronization Rules “Product Status”
+                // is set to Enabled.
                 $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                     'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                      Status of Magento Product is Disabled (%date%) though in Synchronization Rules “Product Status”
@@ -122,9 +124,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $listingProduct->getListing()->getStoreId()
                 );
 
-                if (!is_null($temp) && $temp) {
+                if ($temp !== null && $temp) {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Status of Magento Product Variation is Disabled (%date%) though in Synchronization Rules “Product Status“ is set to Enabled.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Status of Magento Product Variation is Disabled (%date%) though in Synchronization Rules
+                    // “Product Status“ is set to Enabled.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Status of Magento Product Variation is Disabled (%date%) though in Synchronization Rules
@@ -141,10 +145,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         }
 
         if ($walmartSynchronizationTemplate->isListIsInStock()) {
-
             if (!$listingProduct->getMagentoProduct()->isStockAvailability()) {
                 // M2ePro_TRANSLATIONS
-                // Product was not automatically Listed according to the List Rules in Synchronization Policy. Stock Availability of Magento Product is Out of Stock though in Synchronization Rules “Stock Availability” is set to In Stock.
+                // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                // Stock Availability of Magento Product is Out of Stock though in Synchronization Rules
+                // “Stock Availability” is set to In Stock.
                 $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                     'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                      Stock Availability of Magento Product is Out of Stock though in
@@ -164,9 +169,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $listingProduct->getListing()->getStoreId()
                 );
 
-                if (!is_null($temp) && $temp) {
+                if ($temp !== null && $temp) {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Stock Availability of Magento Product Variation is Out of Stock though in Synchronization Rules “Stock Availability” is set to In Stock.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Stock Availability of Magento Product Variation is Out of Stock though in Synchronization Rules
+                    // “Stock Availability” is set to In Stock.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Stock Availability of Magento Product Variation is Out of Stock though
@@ -183,7 +190,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         }
 
         if ($walmartSynchronizationTemplate->isListWhenQtyMagentoHasValue()) {
-
             $result = false;
 
             if ($variationManager->isRelationParentType()) {
@@ -203,7 +209,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $result = true;
                 } else {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Quantity of Magento Product is %product_qty% though in Synchronization Rules “Magento Quantity“ is set to less then  %template_min_qty%.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
+                    // “Magento Quantity“ is set to less then  %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Quantity of Magento Product is %product_qty% though in Synchronization Rules
@@ -222,7 +230,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $result = true;
                 } else {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Quantity of Magento Product is %product_qty% though in Synchronization Rules “Magento Quantity” is set to more then  %template_min_qty%.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
+                    // “Magento Quantity” is set to more then  %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Quantity of Magento Product is %product_qty% though in Synchronization Rules
@@ -241,7 +251,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $result = true;
                 } else {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Quantity of Magento Product is %product_qty% though in Synchronization Rules “Magento Quantity” is set between  %template_min_qty% and %template_max_qty%.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
+                    // “Magento Quantity” is set between  %template_min_qty% and %template_max_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Quantity of Magento Product is %product_qty% though in Synchronization Rules
@@ -269,7 +281,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
         if ($walmartSynchronizationTemplate->isListWhenQtyCalculatedHasValue() &&
             !$variationManager->isRelationParentType()
         ) {
-
             $result = false;
             $productQty = (int)$walmartListingProduct->getQty(false);
 
@@ -284,7 +295,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $result = true;
                 } else {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Quantity of Magento Product is %product_qty% though in Synchronization Rules “Calculated Quantity” is set to less then %template_min_qty%.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
+                    // “Calculated Quantity” is set to less then %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Quantity of Magento Product is %product_qty% though in Synchronization Rules
@@ -303,7 +316,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $result = true;
                 } else {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Quantity of Magento Product is %product_qty% though in Synchronization Rules “Calculated Quantity” is set to more then  %template_min_qty%.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
+                    // “Calculated Quantity” is set to more then  %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Quantity of Magento Product is %product_qty% though in Synchronization Rules
@@ -322,7 +337,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
                     $result = true;
                 } else {
                     // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy. Quantity of Magento Product is %product_qty% though in Synchronization Rules “Calculated Quantity” is set between  %template_min_qty% and %template_max_qty%.
+                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
+                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
+                    // “Calculated Quantity” is set between  %template_min_qty% and %template_max_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                         'Product was not automatically Listed according to the List Rules in Synchronization Policy.
                          Quantity of Magento Product is %product_qty% though in Synchronization Rules

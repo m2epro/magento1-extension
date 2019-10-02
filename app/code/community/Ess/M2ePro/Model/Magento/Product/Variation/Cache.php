@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
 
     protected function getMethodData($methodName, $params = null)
     {
-        if (is_null($this->getMagentoProduct())) {
+        if ($this->getMagentoProduct() === null) {
             throw new Ess_M2ePro_Model_Exception('Magento Product was not set.');
         }
 
@@ -44,17 +44,17 @@ class Ess_M2ePro_Model_Magento_Product_Variation_Cache extends Ess_M2ePro_Model_
             $methodName,
         );
 
-        if (!is_null($params)) {
+        if ($params !== null) {
             $cacheKey[] = $params;
         }
 
         $cacheResult = $this->getMagentoProduct()->getCacheValue($cacheKey);
 
-        if ($this->getMagentoProduct()->isCacheEnabled() && !is_null($cacheResult)) {
+        if ($this->getMagentoProduct()->isCacheEnabled() && $cacheResult !== null) {
             return $cacheResult;
         }
 
-        if (!is_null($params)) {
+        if ($params !== null) {
             $data = call_user_func_array(array('parent', $methodName), $params);
         } else {
             $data = call_user_func(array('parent', $methodName));

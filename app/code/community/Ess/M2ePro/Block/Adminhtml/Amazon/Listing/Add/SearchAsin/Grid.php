@@ -10,7 +10,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
     /** @var Ess_M2ePro_Model_Listing */
-    private $listing = NULL;
+    protected $_listing = null;
 
     const SEARCH_SETTINGS_STATUS_NONE = 'none';
     const SEARCH_SETTINGS_STATUS_COMPLETED = 'completed';
@@ -45,9 +45,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
 
         // Get collection
         // ---------------------------------------
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                          Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
         $collection->setListingProductModeOn()
                    ->setStoreId($listingData['store_id'])
                    ->addAttributeToSelect('name')
@@ -100,59 +102,67 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('product_id', array(
-            'header'    => Mage::helper('M2ePro')->__('Product ID'),
-            'align'     => 'right',
-            'width'     => '100px',
-            'type'      => 'number',
-            'index'     => 'entity_id',
-            'filter_index' => 'entity_id',
-            'frame_callback' => array($this, 'callbackColumnProductId')
-        ));
+        $this->addColumn(
+            'product_id', array(
+                'header'         => Mage::helper('M2ePro')->__('Product ID'),
+                'align'          => 'right',
+                'width'          => '100px',
+                'type'           => 'number',
+                'index'          => 'entity_id',
+                'filter_index'   => 'entity_id',
+                'frame_callback' => array($this, 'callbackColumnProductId')
+            )
+        );
 
-        $this->addColumn('name', array(
-            'header'    => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
-            'align'     => 'left',
-            'type'      => 'text',
-            'index'     => 'name',
-            'filter_index' => 'name',
-            'frame_callback' => array($this, 'callbackColumnProductTitle'),
-            'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+        $this->addColumn(
+            'name', array(
+                'header'                    => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'name',
+                'filter_index'              => 'name',
+                'frame_callback'            => array($this, 'callbackColumnProductTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
+            )
+        );
 
-        $this->addColumn('general_id', array(
-            'header' => Mage::helper('M2ePro')->__('ASIN / ISBN'),
-            'align' => 'left',
-            'width' => '140px',
-            'type' => 'text',
-            'index' => 'general_id',
-            'filter_index' => 'general_id',
-            'frame_callback' => array($this, 'callbackColumnGeneralId')
-        ));
+        $this->addColumn(
+            'general_id', array(
+                'header'         => Mage::helper('M2ePro')->__('ASIN / ISBN'),
+                'align'          => 'left',
+                'width'          => '140px',
+                'type'           => 'text',
+                'index'          => 'general_id',
+                'filter_index'   => 'general_id',
+                'frame_callback' => array($this, 'callbackColumnGeneralId')
+            )
+        );
 
         if ($this->getListing()->getChildObject()->isGeneralIdAttributeMode() ||
             $this->getListing()->getChildObject()->isWorldwideIdAttributeMode()) {
-
-            $this->addColumn('settings', array(
-                'header' => Mage::helper('M2ePro')->__('Search Settings Values'),
-                'align' => 'left',
-                'width' => '240px',
-                'filter'    => false,
-                'sortable'  => false,
-                'type' => 'text',
-                'index' => 'id',
-                'frame_callback' => array($this, 'callbackColumnSettings')
-            ));
+            $this->addColumn(
+                'settings', array(
+                    'header'         => Mage::helper('M2ePro')->__('Search Settings Values'),
+                    'align'          => 'left',
+                    'width'          => '240px',
+                    'filter'         => false,
+                    'sortable'       => false,
+                    'type'           => 'text',
+                    'index'          => 'id',
+                    'frame_callback' => array($this, 'callbackColumnSettings')
+                )
+            );
         }
 
-        $this->addColumn('status', array(
-            'header' => Mage::helper('M2ePro')->__('Status'),
-            'width' => '200px',
-            'index' => 'search_settings_status',
-            'filter_index' => 'search_settings_status',
-            'sortable'  => false,
-            'type' => 'options',
-            'options' => array(
+        $this->addColumn(
+            'status', array(
+            'header'                    => Mage::helper('M2ePro')->__('Status'),
+            'width'                     => '200px',
+            'index'                     => 'search_settings_status',
+            'filter_index'              => 'search_settings_status',
+            'sortable'                  => false,
+            'type'                      => 'options',
+            'options'                   => array(
                 self::SEARCH_SETTINGS_STATUS_NONE => Mage::helper('M2ePro')->__('None'),
                 Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_IN_PROGRESS =>
                     Mage::helper('M2ePro')->__('In Progress'),
@@ -162,9 +172,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
                     Mage::helper('M2ePro')->__('Action Required'),
                 self::SEARCH_SETTINGS_STATUS_COMPLETED => Mage::helper('M2ePro')->__('Completed')
             ),
-            'frame_callback' => array($this, 'callbackColumnStatus'),
-            'filter_condition_callback' => array($this, 'callbackFilterStatus')
-        ));
+            'frame_callback'            => array($this, 'callbackColumnStatus'),
+            'filter_condition_callback' => array($this, 'callbackFilterStatus'))
+        );
 
         return parent::_prepareColumns();
     }
@@ -175,17 +185,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('assignGeneralId', array(
-            'label'    => Mage::helper('M2ePro')->__('Search ASIN/ISBN automatically'),
-            'url'      => '',
-            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        $this->getMassactionBlock()->addItem(
+            'assignGeneralId', array(
+                'label'   => Mage::helper('M2ePro')->__('Search ASIN/ISBN automatically'),
+                'url'     => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('unassignGeneralId', array(
-            'label'    => Mage::helper('M2ePro')->__('Reset ASIN/ISBN information'),
-            'url'      => '',
-            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        $this->getMassactionBlock()->addItem(
+            'unassignGeneralId', array(
+                'label'   => Mage::helper('M2ePro')->__('Reset ASIN/ISBN information'),
+                'url'     => '',
+                'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -201,15 +215,17 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
         $storeId = (int)$listingData['store_id'];
 
         $withoutImageHtml = '<a href="'
-            .$this->getUrl('adminhtml/catalog_product/edit',
-                array('id' => $productId))
+            .$this->getUrl(
+                'adminhtml/catalog_product/edit',
+                array('id' => $productId)
+            )
             .'" target="_blank">'
             .$productId
             .'</a>';
 
         $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')
             ->getConfig()
-            ->getGroupValue('/view/','show_products_thumbnails');
+            ->getGroupValue('/view/', 'show_products_thumbnails');
         if (!$showProductsThumbnails) {
             return $withoutImageHtml;
         }
@@ -220,13 +236,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
         $magentoProduct->setStoreId($storeId);
 
         $imageResized = $magentoProduct->getThumbnailImage();
-        if (is_null($imageResized)) {
+        if ($imageResized === null) {
             return $withoutImageHtml;
         }
 
         $imageHtml = $productId.'<hr/><img style="max-width: 100px; max-height: 100px;" src="'.
             $imageResized->getUrl().'" />';
-        $withImageHtml = str_replace('>'.$productId.'<','>'.$imageHtml.'<',$withoutImageHtml);
+        $withImageHtml = str_replace('>'.$productId.'<', '>'.$imageHtml.'<', $withoutImageHtml);
 
         return $withImageHtml;
     }
@@ -242,15 +258,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
         $value = '<span>'.$productTitle.'</span>';
 
         $tempSku = $row->getData('sku');
-        is_null($tempSku)
-        && $tempSku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))->getSku();
+
+        if ($tempSku === null) {
+            $tempSku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('entity_id'))
+                                                               ->getSku();
+        }
 
         $value .= '<br/><strong>'.Mage::helper('M2ePro')->__('SKU') .
             ':</strong> '.Mage::helper('M2ePro')->escapeHtml($tempSku) . '<br/>';
 
         $listingProductId = (int)$row->getData('id');
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product',$listingProductId);
+        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $listingProductId);
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
@@ -319,7 +338,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_Grid
         $style = 'display: inline-block; vertical-align: middle;';
 
         if (empty($generalId) && empty($searchSettingsStatus)) {
-
             $msg = Mage::helper('M2ePro')->__('None');
             $tip = Mage::helper('M2ePro')->__('The Search of Product was not performed yet');
 
@@ -355,8 +373,10 @@ HTML;
             case Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND:
 
                 $msg = Mage::helper('M2ePro')->__('Product was not found');
-                $tip = Mage::helper('M2ePro')->__('There are no Products found on Amazon after the Automatic Search
-                                                   was performed according to Listing Search Settings.');
+                $tip = Mage::helper('M2ePro')->__(
+                    'There are no Products found on Amazon after the Automatic Search
+                                                   was performed according to Listing Search Settings.'
+                );
 
                 return <<<HTML
 <span style="color: red; {$style}">{$msg}</span>&nbsp;
@@ -376,6 +396,7 @@ HTML;
                 if (strlen($productTitle) > 60) {
                     $productTitle = substr($productTitle, 0, 60) . '...';
                 }
+
                 $productTitle = Mage::helper('M2ePro')->__(
                     'Search ASIN/ISBN For &quot;%product_title%&quot;',
                     $productTitle
@@ -423,7 +444,7 @@ HTML;
 HTML;
     }
 
-    private function prepareSearchType($searchType)
+    protected function prepareSearchType($searchType)
     {
         if ($searchType == 'string') {
             return 'query';
@@ -434,7 +455,7 @@ HTML;
 
     //########################################
 
-    private function getGeneralIdColumnValueEmptyGeneralId($row)
+    protected function getGeneralIdColumnValueEmptyGeneralId($row)
     {
         // ---------------------------------------
         $iconPath = $this->getSkinUrl('M2ePro/images/search_statuses/');
@@ -447,6 +468,7 @@ HTML;
         if (strlen($productTitle) > 60) {
             $productTitle = substr($productTitle, 0, 60) . '...';
         }
+
         $productTitle = Mage::helper('M2ePro')->__('Search ASIN/ISBN For &quot;%product_title%&quot;', $productTitle);
         $productTitle = Mage::helper('M2ePro')->escapeJs($productTitle);
         // ---------------------------------------
@@ -457,7 +479,6 @@ HTML;
 
         // ---------------------------------------
         if ($searchSettingsStatus == Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_IN_PROGRESS) {
-
             $tip = Mage::helper('M2ePro')->__('Automatic ASIN/ISBN Search in Progress.');
             $iconSrc = $iconPath.'processing.gif';
 
@@ -467,11 +488,11 @@ HTML;
     <img src="{$iconSrc}" alt=""></a>
 HTML;
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
         if ($searchSettingsStatus == Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_ACTION_REQUIRED) {
-
             $linkTxt = Mage::helper('M2ePro')->__('Choose ASIN/ISBN');
 
             return <<<HTML
@@ -479,6 +500,7 @@ HTML;
    onclick="ListingGridHandlerObj.productSearchHandler.openPopUp(1,'{$productTitle}',{$lpId})">{$linkTxt}</a>
 HTML;
         }
+
         // ---------------------------------------
 
         $na = Mage::helper('M2ePro')->__('N/A');
@@ -493,7 +515,7 @@ HTML;
 HTML;
     }
 
-    private function getGeneralIdColumnValueNotEmptyGeneralId($row)
+    protected function getGeneralIdColumnValueNotEmptyGeneralId($row)
     {
         $generalId = $row->getData('general_id');
         $marketplaceId = $this->getListing()->getMarketplaceId();
@@ -512,19 +534,15 @@ HTML;
         }
 
         if (!empty($generalIdSearchInfo['is_set_automatic'])) {
-
             $tip = Mage::helper('M2ePro')->__('ASIN/ISBN was found automatically');
 
             $text = <<<HTML
 <a href="{$url}" target="_blank" title="{$tip}" style="color:#40AADB;">{$generalId}</a>
 HTML;
-
         } else {
-
             $text = <<<HTML
 <a href="{$url}" target="_blank">{$generalId}</a>
 HTML;
-
         }
 
         // ---------------------------------------
@@ -618,7 +636,6 @@ HTML;
 
         if (!$listing->getChildObject()->isGeneralIdAttributeMode() &&
             !$listing->getChildObject()->isWorldwideIdAttributeMode()) {
-
             if (!$listing->getChildObject()->isSearchByMagentoTitleModeEnabled()) {
                 $gridId = $this->getId();
 
@@ -633,7 +650,6 @@ if (mmassActionEl &&  mmassActionEl.select('option[value="assignGeneralId"]').le
 }
 JS;
             }
-
         } else {
             $autoSearchSetting = $listing->getSetting('additional_data', 'auto_search_was_performed');
 
@@ -682,11 +698,11 @@ HTML;
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
-            $this->listing = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing', $listingId);
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing', $listingId);
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################

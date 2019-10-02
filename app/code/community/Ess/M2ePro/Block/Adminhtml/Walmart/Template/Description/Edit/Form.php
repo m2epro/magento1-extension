@@ -26,12 +26,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'method'  => 'post',
             'action'  => $this->getUrl('*/*/save'),
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -68,6 +70,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
             $button = $this->getMultiElementButton('key_features', $i);
             $this->setChild("select_attributes_for_key_features_{$i}_button", $button);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -75,6 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
             $button = $this->getMultiElementButton('other_features', $i);
             $this->setChild("select_attributes_for_other_features_{$i}_button", $button);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -82,6 +86,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
             $button = $this->getNameValueMultiElementButton('attributes', $i);
             $this->setChild("select_attributes_for_attributes_{$i}_button", $button);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -95,7 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form extends 
 
     //########################################
 
-    private function getMultiElementButton($type, $index)
+    protected function getMultiElementButton($type, $index)
     {
         $onClick = <<<JS
         AttributeHandlerObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_{$index}');
@@ -109,7 +114,7 @@ JS;
         return $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
     }
 
-    private function getNameValueMultiElementButton($type, $index)
+    protected function getNameValueMultiElementButton($type, $index)
     {
         $onClick = <<<JS
         AttributeHandlerObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_value_{$index}');
@@ -137,7 +142,7 @@ JS;
 
         $html = "<option %s selected=\"selected\">{$attributeLabel}</option>";
 
-        return is_null($value) ? sprintf($html, "value='{$attributeCode}'")
+        return $value === null ? sprintf($html, "value='{$attributeCode}'")
             : sprintf($html, "attribute_code='{$attributeCode}' value='{$value}'");
     }
 

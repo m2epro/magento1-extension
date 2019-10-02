@@ -21,13 +21,15 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_Installation extends Ess_M2ePro
     {
         $buttonBlock = $this->getLayout()
                             ->createBlock('adminhtml/widget_button')
-                            ->setData(array(
+                            ->setData(
+                                array(
                                 'id'      => 'wizard_complete',
                                 'label'   => Mage::helper('M2ePro')->__('Complete Configuration'),
                                 'onclick' => 'setLocation(\''.$this->getUrl('*/*/complete').'\');',
                                 'class'   => 'end_button',
                                 'style'   => 'display: none'
-                            ));
+                                )
+                            );
 
         $html .= $buttonBlock->toHtml();
         return parent::_afterToHtml($html);

@@ -9,12 +9,15 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_Variations_Child_Form
     extends Mage_Adminhtml_Block_Widget_Form
 {
-    protected $childListingProducts = null;
-    protected $currentProductVariations = null;
-    protected $productVariationsTree = array();
-    protected $channelVariationsTree = array();
+    protected $_childListingProducts     = null;
+    protected $_currentProductVariations = null;
+    protected $_productVariationsTree    = array();
+    protected $_channelVariationsTree    = array();
 
-    protected $listingProductId;
+    protected $_listingProductId;
+
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
 
     //########################################
 
@@ -24,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
@@ -33,11 +36,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
-
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
 
     public function __construct()
     {
@@ -52,12 +52,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function getListingProduct()
     {
-        if (empty($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Walmart')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if (empty($this->_listingProduct)) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Walmart')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################
@@ -103,18 +103,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
     public function getChildListingProducts()
     {
-        if (!is_null($this->childListingProducts)) {
-            return $this->childListingProducts;
+        if ($this->_childListingProducts !== null) {
+            return $this->_childListingProducts;
         }
 
-        return $this->childListingProducts = $this->getListingProduct()->getChildObject()
-            ->getVariationManager()->getTypeModel()->getChildListingsProducts();
+        return $this->_childListingProducts = $this->getListingProduct()->getChildObject()
+                                                   ->getVariationManager()->getTypeModel()->getChildListingsProducts();
     }
 
     public function getCurrentProductVariations()
     {
-        if (!is_null($this->currentProductVariations)) {
-            return $this->currentProductVariations;
+        if ($this->_currentProductVariations !== null) {
+            return $this->_currentProductVariations;
         }
 
         $magentoProductVariations = $this->getListingProduct()
@@ -134,7 +134,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             $productVariations[] = $productOption;
         }
 
-        return $this->currentProductVariations = $productVariations;
+        return $this->_currentProductVariations = $productVariations;
     }
 
     public function getCurrentChannelVariations()
@@ -154,6 +154,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                 if (!isset($attributesOptions[$attr])) {
                     $attributesOptions[$attr] = array();
                 }
+
                 if (!in_array($option, $attributesOptions[$attr])) {
                     $attributesOptions[$attr][] = $option;
                 }
@@ -189,8 +190,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
     public function getProductVariationsTree()
     {
-        if (empty($this->productVariationsTree)) {
-
+        if (empty($this->_productVariationsTree)) {
             $matchedAttributes = $this->getMatchedAttributes();
             $unusedVariations = $this->sortVariationsAttributes(
                 $this->getUnusedProductVariations(),
@@ -203,15 +203,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
             $firstAttribute = key($matchedAttributes);
 
-            $this->productVariationsTree = $this->prepareVariations(
-                $firstAttribute,$unusedVariations,$variationsSets
+            $this->_productVariationsTree = $this->prepareVariations(
+                $firstAttribute, $unusedVariations, $variationsSets
             );
         }
 
-        return $this->productVariationsTree;
+        return $this->_productVariationsTree;
     }
 
-    private function sortVariationsAttributes($variations, $sortTemplate)
+    protected function sortVariationsAttributes($variations, $sortTemplate)
     {
         foreach ($variations as $key => $variation) {
             $variations[$key] = $this->sortVariationAttributes($variation, $sortTemplate);
@@ -220,7 +220,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         return $variations;
     }
 
-    private function sortVariationAttributes($variation, $sortTemplate)
+    protected function sortVariationAttributes($variation, $sortTemplate)
     {
         $sortedData = array();
 
@@ -231,7 +231,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         return $sortedData;
     }
 
-    private function prepareVariations($currentAttribute,$magentoVariations,$variationsSets,$filters = array())
+    protected function prepareVariations($currentAttribute,$magentoVariations,$variationsSets,$filters = array())
     {
         $return = false;
 
@@ -241,16 +241,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         $currentAttributePosition = $temp[$currentAttribute];
 
         if ($currentAttributePosition != $lastAttributePosition) {
-
             $temp = array_keys($variationsSets);
             $nextAttribute = $temp[$currentAttributePosition + 1];
 
             foreach ($variationsSets[$currentAttribute] as $option) {
-
                 $filters[$currentAttribute] = $option;
 
                 $result = $this->prepareVariations(
-                    $nextAttribute,$magentoVariations,$variationsSets,$filters
+                    $nextAttribute, $magentoVariations, $variationsSets, $filters
                 );
 
                 if (!$result) {
@@ -270,9 +268,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         $return = false;
         foreach ($magentoVariations as $key => $magentoVariation) {
             foreach ($magentoVariation as $attribute => $option) {
-
                 if ($attribute == $currentAttribute) {
-
                     if (count($variationsSets) != 1) {
                         continue;
                     }

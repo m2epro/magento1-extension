@@ -37,8 +37,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Images extends Mage_Core_Helper_Abstract
         $hashes = array();
         $haveNotSelfHostedImage = false;
 
-        foreach($images as $image) {
-
+        foreach ($images as $image) {
             $tempImageHash = $image->getHash();
 
             if (!$image->isSelfHosted()) {
@@ -48,13 +47,14 @@ class Ess_M2ePro_Helper_Component_Ebay_Images extends Mage_Core_Helper_Abstract
             $hashes[] = $tempImageHash;
         }
 
-        $hash = md5(Mage::helper('M2ePro')->jsonEncode($hashes));
+        $hash = sha1(Mage::helper('M2ePro')->jsonEncode($hashes));
         $attributeLabel && $hash .= $attributeLabel;
 
         if ($haveNotSelfHostedImage) {
             $date = new \DateTime('now', new \DateTimeZone('UTC'));
             $hash .= '##' . $date->getTimestamp();
         }
+
         return $hash;
     }
 

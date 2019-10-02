@@ -9,9 +9,9 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
     extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
-    protected $listingProductId;
+    protected $_listingProductId;
 
-    private $errorsCount;
+    protected $_errorsCount;
 
     //########################################
 
@@ -20,7 +20,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
     }
 
     /**
@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
@@ -68,20 +68,22 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
 
     protected function _beforeToHtml()
     {
-        $this->addTab('variations', array(
+        $this->addTab(
+            'variations', array(
             'label'   => Mage::helper('M2ePro')->__('Child Products'),
             'title'   => Mage::helper('M2ePro')->__('Child Products'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_walmart_listing_variation_product_manage_tabs_variations')
                 ->setListingProductId($this->getListingProductId())
                 ->toHtml()
-        ));
+            )
+        );
 
         $settingsBlock = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_walmart_listing_variation_product_manage_tabs_settings')
             ->setListingProductId($this->getListingProductId());
         $settingsBlock->calculateWarnings();
-        $this->errorsCount = count($settingsBlock->getMessages());
+        $this->_errorsCount = count($settingsBlock->getMessages());
 
         $settingsBlockLabel = Mage::helper('M2ePro')->__('Settings');
         $settingsBlockTitle = Mage::helper('M2ePro')->__('Settings');
@@ -90,7 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
         $iconTitle = Mage::helper('M2ePro')->__('Action required.');
         $iconStyle = 'vertical-align: middle;';
 
-        if ($this->errorsCount == 0) {
+        if ($this->_errorsCount == 0) {
             $iconStyle .= 'display:none;';
         }
 
@@ -98,25 +100,29 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs
 <img style="{$iconStyle}" src="{$iconPath}" title="{$iconTitle}" alt="" width="16" height="15">
 HTML;
 
-        $this->addTab('settings', array(
+        $this->addTab(
+            'settings', array(
             'label'   => $problemIcon . $settingsBlockLabel,
             'title'   => $settingsBlockTitle,
             'content' => $this->getLayout()
                     ->createBlock('M2ePro/adminhtml_walmart_listing_variation_product_manage_tabs_settings')
                     ->setListingProductId($this->getListingProductId())
                     ->toHtml()
-        ));
+            )
+        );
 
-        $this->addTab('vocabulary', array(
+        $this->addTab(
+            'vocabulary', array(
             'label'   => Mage::helper('M2ePro')->__('Advanced'),
             'title'   => Mage::helper('M2ePro')->__('Advanced'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_walmart_listing_variation_product_manage_tabs_vocabulary')
                 ->setListingProductId($this->getListingProductId())
                 ->toHtml()
-        ));
+            )
+        );
 
-        if ($this->errorsCount > 0) {
+        if ($this->_errorsCount > 0) {
             $this->setActiveTab('settings');
         } else {
             $this->setActiveTab('variations');

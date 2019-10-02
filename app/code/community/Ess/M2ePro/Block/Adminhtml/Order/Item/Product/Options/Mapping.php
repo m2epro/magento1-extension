@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
-    private $magentoProduct = null;
+    /** @var $_magentoProduct Ess_M2ePro_Model_Magento_Product */
+    protected $_magentoProduct = null;
 
     //########################################
 
@@ -30,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
 
     public function getProductTypeHeader()
     {
-        switch ($this->magentoProduct->getTypeId()) {
+        switch ($this->_magentoProduct->getTypeId()) {
             case Ess_M2ePro_Model_Magento_Product::TYPE_BUNDLE:
                 $title = Mage::helper('M2ePro')->__('Bundle Items');
                 break;
@@ -52,11 +52,11 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
 
     public function isMagentoOptionSelected(array $magentoOption, array $magentoOptionValue)
     {
-        if ($this->magentoProduct->isGroupedType()) {
+        if ($this->_magentoProduct->isGroupedType()) {
             $associatedProducts = $this->getOrderItem()->getAssociatedProducts();
 
             if (count($associatedProducts) == 1
-                && count(array_diff($associatedProducts, $magentoOptionValue['product_ids'])) == 0
+                && empty(array_diff($associatedProducts, $magentoOptionValue['product_ids']))
             ) {
                 return true;
             }
@@ -88,13 +88,12 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->magentoProduct = $this->getOrderItem()->getMagentoProduct();
+        $this->_magentoProduct = $this->getOrderItem()->getMagentoProduct();
 
         $magentoOptions = array();
-        $magentoVariations = $this->magentoProduct->getVariationInstance()->getVariationsTypeRaw();
+        $magentoVariations = $this->_magentoProduct->getVariationInstance()->getVariationsTypeRaw();
 
-        if ($this->magentoProduct->isGroupedType()) {
-
+        if ($this->_magentoProduct->isGroupedType()) {
             $magentoOptionLabel = Mage::helper('M2ePro')
                 ->__(Ess_M2ePro_Model_Magento_Product_Variation::GROUPED_PRODUCT_ATTRIBUTE_LABEL);
 
@@ -113,7 +112,6 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
             }
 
             $magentoOptions[] = $magentoOption;
-
         } else {
             foreach ($magentoVariations as $magentoVariation) {
                 $magentoOptionLabel = array_shift($magentoVariation['labels']);
@@ -155,7 +153,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
             'onclick' => 'OrderEditItemHandlerObj.assignProductDetails();'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('product_options_mapping_submit_button',$buttonBlock);
+        $this->setChild('product_options_mapping_submit_button', $buttonBlock);
         // ---------------------------------------
 
         parent::_beforeToHtml();

@@ -31,6 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Listings');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -51,7 +52,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
 
     protected function _toHtml()
     {
-        /* @var $tabsContainer Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings_Tabs */
+        /** @var $tabsContainer Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings_Tabs */
         $tabsContainer = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_manageListings_tabs');
         $tabsContainer->setDestElementId('tabs_container');
 
@@ -60,7 +61,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
         $script = '';
 
         if (Mage::helper('M2ePro/View_Walmart')->is3rdPartyShouldBeShown(Ess_M2ePro_Helper_Component_Walmart::NICK)) {
-
             $tabsContainer->addTab(self::TAB_ID_LISTING_OTHER, $this->prepareListingOtherTab());
             $script = $this->getScriptFor3rdPartyControlVisibility($tabsContainer);
         }
@@ -83,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
 
     //########################################
 
-    private function prepareListingTab()
+    protected function prepareListingTab()
     {
         $tab = array(
             'label' => Mage::helper('M2ePro')->__('M2E Pro'),
@@ -100,7 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
         return $tab;
     }
 
-    private function prepareListingOtherTab()
+    protected function prepareListingOtherTab()
     {
         $tab = array(
             'label' => Mage::helper('M2ePro')->__('3rd Party'),
@@ -117,7 +117,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
         return $tab;
     }
 
-    private function prepareSearchTab()
+    protected function prepareSearchTab()
     {
         $tab = array(
             'label' => Mage::helper('M2ePro')->__('Search'),
@@ -136,7 +136,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
 
     //########################################
 
-    private function getScriptFor3rdPartyControlVisibility($tabsContainer)
+    protected function getScriptFor3rdPartyControlVisibility($tabsContainer)
     {
         $listingOtherId = self::TAB_ID_LISTING_OTHER;
         $walmartNick = Ess_M2ePro_Helper_Component_Walmart::NICK;

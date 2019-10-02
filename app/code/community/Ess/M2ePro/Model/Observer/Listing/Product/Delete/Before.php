@@ -16,8 +16,10 @@ class Ess_M2ePro_Model_Observer_Listing_Product_Delete_Before extends Ess_M2ePro
         $listingProduct = $this->getEvent()->getData('object');
 
         /** @var Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager $manager */
-        $manager = Mage::getModel('M2ePro/Indexer_Listing_Product_Parent_Manager',
-                                  array($listingProduct->getListing()));
+        $manager = Mage::getModel(
+            'M2ePro/Indexer_Listing_Product_Parent_Manager',
+            array($listingProduct->getListing())
+        );
         $manager->markInvalidated();
     }
 

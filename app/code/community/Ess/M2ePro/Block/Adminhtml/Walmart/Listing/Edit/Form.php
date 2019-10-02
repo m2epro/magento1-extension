@@ -23,12 +23,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtm
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/adminhtml_walmart_listing/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -114,7 +116,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtm
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
         }
 

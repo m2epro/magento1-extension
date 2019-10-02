@@ -1,11 +1,20 @@
 <?php
-    /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Vocabulary */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $vocabularyHelper = Mage::helper('M2ePro/Component_Amazon_Vocabulary');
+// @codingStandardsIgnoreFile
 
-    $data = $this->prepareData();
-    $localVocabulary = $data['local_vocabulary'];
-    $fixedAttributes = $data['fixed_attributes'];
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Vocabulary */
+
+$vocabularyHelper = Mage::helper('M2ePro/Component_Amazon_Vocabulary');
+
+$data = $this->prepareData();
+$localVocabulary = $data['local_vocabulary'];
+$fixedAttributes = $data['fixed_attributes'];
+
 ?>
 
 <div style="height: 510px; overflow: auto;">

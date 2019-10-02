@@ -8,19 +8,19 @@
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
 {
-    /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
-    private $magentoProduct = null;
+    /** @var Ess_M2ePro_Model_Magento_Product $_magentoProduct */
+    protected $_magentoProduct = null;
 
-    private $sourceAttributes = array();
+    protected $_sourceAttributes = array();
 
-    private $destinationAttributes = array();
+    protected $_destinationAttributes = array();
 
-    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute_Resolver $resolver */
-    private $resolver = null;
+    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute_Resolver $_resolver */
+    protected $_resolver = null;
 
-    private $matchedAttributes = null;
+    protected $_matchedAttributes = null;
 
-    private $canUseDictionary = true;
+    protected $_canUseDictionary = true;
 
     //########################################
 
@@ -30,10 +30,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $product)
     {
-        $this->magentoProduct = $product;
-        $this->sourceAttributes = array();
+        $this->_magentoProduct   = $product;
+        $this->_sourceAttributes = array();
 
-        $this->matchedAttributes = null;
+        $this->_matchedAttributes = null;
 
         return $this;
     }
@@ -46,10 +46,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function setSourceAttributes(array $attributes)
     {
-        $this->sourceAttributes = $attributes;
-        $this->magentoProduct   = null;
+        $this->_sourceAttributes = $attributes;
+        $this->_magentoProduct   = null;
 
-        $this->matchedAttributes = null;
+        $this->_matchedAttributes = null;
 
         return $this;
     }
@@ -60,8 +60,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function setDestinationAttributes(array $attributes)
     {
-        $this->destinationAttributes = $attributes;
-        $this->matchedAttributes     = null;
+        $this->_destinationAttributes = $attributes;
+        $this->_matchedAttributes     = null;
 
         return $this;
     }
@@ -74,7 +74,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function canUseDictionary($flag = true)
     {
-        $this->canUseDictionary = $flag;
+        $this->_canUseDictionary = $flag;
         return $this;
     }
 
@@ -111,11 +111,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function getMatchedAttributes()
     {
-        if (is_null($this->matchedAttributes)) {
+        if ($this->_matchedAttributes === null) {
             $this->match();
         }
 
-        return $this->matchedAttributes;
+        return $this->_matchedAttributes;
     }
 
     // ---------------------------------------
@@ -125,7 +125,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function isFullyMatched()
     {
-        return count($this->getMagentoUnmatchedAttributes()) <= 0 && count($this->getChannelUnmatchedAttributes()) <= 0;
+        return empty($this->getMagentoUnmatchedAttributes()) && empty($this->getChannelUnmatchedAttributes());
     }
 
     /**
@@ -133,7 +133,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function isNotMatched()
     {
-        return count($this->getMatchedAttributes()) <= 0;
+        return empty($this->getMatchedAttributes());
     }
 
     /**
@@ -160,19 +160,19 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
     public function getChannelUnmatchedAttributes()
     {
         $matchedChannelAttributes = array_values($this->getMatchedAttributes());
-        return array_diff($this->destinationAttributes, $matchedChannelAttributes);
+        return array_diff($this->_destinationAttributes, $matchedChannelAttributes);
     }
 
     //########################################
 
-    private function match()
+    protected function match()
     {
-        if (!is_null($this->magentoProduct) && $this->magentoProduct->isGroupedType() &&
-            !$this->magentoProduct->getVariationVirtualAttributes()
+        if ($this->_magentoProduct !== null && $this->_magentoProduct->isGroupedType() &&
+            !$this->_magentoProduct->getVariationVirtualAttributes()
         ) {
-            $channelAttribute = reset($this->destinationAttributes);
+            $channelAttribute = reset($this->_destinationAttributes);
 
-            $this->matchedAttributes = array(
+            $this->_matchedAttributes = array(
                 Ess_M2ePro_Model_Magento_Product_Variation::GROUPED_PRODUCT_ATTRIBUTE_LABEL => $channelAttribute
             );
 
@@ -183,7 +183,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
             return;
         }
 
-        if (!$this->canUseDictionary) {
+        if (!$this->_canUseDictionary) {
             return;
         }
 
@@ -194,7 +194,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
         $this->matchByServerVocabulary();
     }
 
-    private function matchByNames()
+    protected function matchByNames()
     {
         $this->getResolver()->clearSourceAttributes();
 
@@ -212,12 +212,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
             );
         }
 
-        $this->matchedAttributes = $this->getResolver()->resolve()->getResolvedAttributes();
+        $this->_matchedAttributes = $this->getResolver()->resolve()->getResolvedAttributes();
 
         return $this->isFullyMatched();
     }
 
-    private function matchByLocalVocabulary()
+    protected function matchByLocalVocabulary()
     {
         $this->getResolver()->clearSourceAttributes();
 
@@ -235,12 +235,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
             );
         }
 
-        $this->matchedAttributes = $this->getResolver()->resolve()->getResolvedAttributes();
+        $this->_matchedAttributes = $this->getResolver()->resolve()->getResolvedAttributes();
 
         return $this->isFullyMatched();
     }
 
-    private function matchByServerVocabulary()
+    protected function matchByServerVocabulary()
     {
         $this->getResolver()->clearSourceAttributes();
 
@@ -258,38 +258,38 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
             );
         }
 
-        $this->matchedAttributes = $this->getResolver()->resolve()->getResolvedAttributes();
+        $this->_matchedAttributes = $this->getResolver()->resolve()->getResolvedAttributes();
 
         return $this->isFullyMatched();
     }
 
     //########################################
 
-    private function getSourceAttributes()
+    protected function getSourceAttributes()
     {
-        if (!empty($this->sourceAttributes)) {
-            return $this->sourceAttributes;
+        if (!empty($this->_sourceAttributes)) {
+            return $this->_sourceAttributes;
         }
 
-        if (!is_null($this->magentoProduct)) {
-            $magentoVariations = $this->magentoProduct
+        if ($this->_magentoProduct !== null) {
+            $magentoVariations = $this->_magentoProduct
                 ->getVariationInstance()
                 ->getVariationsTypeStandard();
 
-            $this->sourceAttributes = array_keys($magentoVariations['set']);
+            $this->_sourceAttributes = array_keys($magentoVariations['set']);
         }
 
-        return $this->sourceAttributes;
+        return $this->_sourceAttributes;
     }
 
-    private function getSourceAttributesData()
+    protected function getSourceAttributesData()
     {
-        if (!is_null($this->magentoProduct)) {
-            $magentoAttributesNames = $this->magentoProduct
+        if ($this->_magentoProduct !== null) {
+            $magentoAttributesNames = $this->_magentoProduct
                 ->getVariationInstance()
                 ->getTitlesVariationSet();
 
-            $magentoStandardVariations = $this->magentoProduct
+            $magentoStandardVariations = $this->_magentoProduct
                 ->getVariationInstance()
                 ->getVariationsTypeStandard();
 
@@ -309,12 +309,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
         return array_fill_keys($this->getSourceAttributes(), array());
     }
 
-    private function getDestinationAttributes()
+    protected function getDestinationAttributes()
     {
-        return $this->destinationAttributes;
+        return $this->_destinationAttributes;
     }
 
-    private function getDestinationAttributesLocalVocabularyData()
+    protected function getDestinationAttributesLocalVocabularyData()
     {
         $vocabularyHelper = Mage::helper('M2ePro/Component_Walmart_Vocabulary');
 
@@ -326,7 +326,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
         return $resultData;
     }
 
-    private function getDestinationAttributesServerVocabularyData()
+    protected function getDestinationAttributesServerVocabularyData()
     {
         $vocabularyHelper = Mage::helper('M2ePro/Component_Walmart_Vocabulary');
 
@@ -340,17 +340,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
 
     // ---------------------------------------
 
-    private function getResolver()
+    protected function getResolver()
     {
-        if (!is_null($this->resolver)) {
-            return $this->resolver;
+        if ($this->_resolver !== null) {
+            return $this->_resolver;
         }
 
-        $this->resolver = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Matcher_Attribute_Resolver');
-        return $this->resolver;
+        $this->_resolver = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Matcher_Attribute_Resolver');
+        return $this->_resolver;
     }
 
-    private function prepareAttributeNames($attribute, array $names = array())
+    protected function prepareAttributeNames($attribute, array $names = array())
     {
         $names[] = $attribute;
         $names = array_unique($names);

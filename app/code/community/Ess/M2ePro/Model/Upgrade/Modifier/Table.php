@@ -14,8 +14,8 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
     const COMMIT_KEY_ADD_INDEX     = 'add_index';
     const COMMIT_KEY_DROP_INDEX    = 'drop_index';
 
-    protected $sqlForCommit = array();
-    protected $columnsForCheckBeforeCommit = array();
+    protected $_sqlForCommit                = array();
+    protected $_columnsForCheckBeforeCommit = array();
 
     //########################################
 
@@ -77,8 +77,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         if ($autoCommit) {
             $this->getConnection()->changeColumn($this->getTableName(), $from, $to, $definition);
         } else {
-            $this->addQueryToCommit(self::COMMIT_KEY_CHANGE_COLUMN,
-                                    'CHANGE COLUMN %s %s %s', array($from, $to), $definition);
+            $this->addQueryToCommit(
+                self::COMMIT_KEY_CHANGE_COLUMN,
+                'CHANGE COLUMN %s %s %s', array($from, $to), $definition
+            );
         }
 
         if ($renameIndex) {
@@ -118,8 +120,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         if ($autoCommit) {
             $this->getConnection()->addColumn($this->getTableName(), $name, $definition);
         } else {
-            $this->addQueryToCommit(self::COMMIT_KEY_ADD_COLUMN,
-                                   'ADD COLUMN %s %s', array($name), $definition);
+            $this->addQueryToCommit(
+                self::COMMIT_KEY_ADD_COLUMN,
+                'ADD COLUMN %s %s', array($name), $definition
+            );
         }
 
         $addIndex && $this->addIndex($name, $autoCommit);
@@ -156,8 +160,10 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         if ($autoCommit) {
             $this->getConnection()->modifyColumn($this->getTableName(), $name, $definition);
         } else {
-            $this->addQueryToCommit(self::COMMIT_KEY_CHANGE_COLUMN,
-                                    'MODIFY COLUMN %s %s', array($name), $definition);
+            $this->addQueryToCommit(
+                self::COMMIT_KEY_CHANGE_COLUMN,
+                'MODIFY COLUMN %s %s', array($name), $definition
+            );
         }
 
         return $this;
@@ -261,12 +267,11 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
     //########################################
 
-    private function buildColumnDefinition($type, $default = NULL, $after = NULL, $autoCommit = true)
+    protected function buildColumnDefinition($type, $default = NULL, $after = NULL, $autoCommit = true)
     {
         $definition = $type;
 
-        if (!is_null($default)) {
-
+        if ($default !== null) {
             if ($default === 'NULL') {
                 $definition .= ' DEFAULT NULL';
             } else {
@@ -275,7 +280,6 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         }
 
         if (!empty($after)) {
-
             if ($autoCommit) {
                 if (!$this->isColumnExists($after)) {
                     throw new Ess_M2ePro_Model_Exception_Setup(
@@ -283,7 +287,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
                     );
                 }
             } else {
-                $this->columnsForCheckBeforeCommit[] = $after;
+                $this->_columnsForCheckBeforeCommit[] = $after;
             }
 
             $definition .= ' AFTER ' . $this->getConnection()->quoteIdentifier($after);
@@ -292,7 +296,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         return $definition;
     }
 
-    private function buildColumnDefinitionByName($name)
+    protected function buildColumnDefinitionByName($name)
     {
         if (!$this->isColumnExists($name)) {
             throw new Ess_M2ePro_Model_Exception_Setup(
@@ -323,7 +327,8 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
             $default = $this->getConnection()->quoteInto('DEFAULT ?', $columnInfo['DEFAULT']);
         }
 
-        return sprintf('%s %s %s %s %s',
+        return sprintf(
+            '%s %s %s %s %s',
             $type,
             $columnInfo['UNSIGNED']  ? 'UNSIGNED' : '',
             !$columnInfo['NULLABLE'] ? 'NOT NULL' : 'DEFAULT NULL',
@@ -334,36 +339,37 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
     //########################################
 
-    private function addQueryToCommit($key, $queryPattern, array $columns, $definition = NULL)
+    protected function addQueryToCommit($key, $queryPattern, array $columns, $definition = null)
     {
         foreach ($columns as &$column) {
             $column = $this->getConnection()->quoteIdentifier($column);
         }
 
-        $queryArgs = !is_null($definition) ? array_merge($columns, array($definition)) : $columns;
+        $queryArgs = $definition !== null ? array_merge($columns, array($definition)) : $columns;
         $tempQuery = vsprintf($queryPattern, $queryArgs);
 
-        if (isset($this->sqlForCommit[$key]) && in_array($tempQuery, $this->sqlForCommit[$key])) {
+        if (isset($this->_sqlForCommit[$key]) && in_array($tempQuery, $this->_sqlForCommit[$key])) {
             return $this;
         }
 
-        $this->sqlForCommit[$key][] = $tempQuery;
+        $this->_sqlForCommit[$key][] = $tempQuery;
         return $this;
     }
 
-    private function checkColumnsBeforeCommit()
+    protected function checkColumnsBeforeCommit()
     {
-        foreach ($this->columnsForCheckBeforeCommit as $index => $columnForCheck) {
-
+        foreach ($this->_columnsForCheckBeforeCommit as $index => $columnForCheck) {
             if ($this->isColumnExists($columnForCheck)) {
-                unset($this->columnsForCheckBeforeCommit[$index]);
+                unset($this->_columnsForCheckBeforeCommit[$index]);
                 continue;
             }
 
-            foreach ($this->sqlForCommit as $key => $sqlData) {
-                if (!is_array($sqlData) || in_array($key, array(self::COMMIT_KEY_ADD_INDEX,
+            foreach ($this->_sqlForCommit as $key => $sqlData) {
+                if (!is_array($sqlData) || in_array(
+                    $key, array(self::COMMIT_KEY_ADD_INDEX,
                                                                 self::COMMIT_KEY_DROP_INDEX,
-                                                                self::COMMIT_KEY_DROP_COLUMN))
+                    self::COMMIT_KEY_DROP_COLUMN)
+                )
                 ) {
                     continue;
                 }
@@ -372,13 +378,13 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
                 $tempSql = implode(', ', $sqlData);
 
                 if (preg_match($pattern, $tempSql)) {
-                    unset($this->columnsForCheckBeforeCommit[$index]);
+                    unset($this->_columnsForCheckBeforeCommit[$index]);
                     break;
                 }
             }
         }
 
-        return empty($this->columnsForCheckBeforeCommit);
+        return empty($this->_columnsForCheckBeforeCommit);
     }
 
     /**
@@ -387,7 +393,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
      */
     public function commit()
     {
-        if (empty($this->sqlForCommit)) {
+        if (empty($this->_sqlForCommit)) {
             return $this;
         }
 
@@ -403,9 +409,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         $sep = '';
 
         foreach ($order as $orderKey) {
-
-            foreach ($this->sqlForCommit as $key => $sqlData) {
-
+            foreach ($this->_sqlForCommit as $key => $sqlData) {
                 if ($orderKey != $key || !is_array($sqlData)) {
                     continue;
                 }
@@ -415,14 +419,15 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
             }
         }
 
-        $resultSql = sprintf('ALTER TABLE %s %s',
+        $resultSql = sprintf(
+            'ALTER TABLE %s %s',
             $this->getConnection()->quoteIdentifier($this->getTableName()),
             $tempSql
         );
 
         if (!$this->checkColumnsBeforeCommit()) {
-            $this->sqlForCommit = array();
-            $failedColumns = implode("', '", $this->columnsForCheckBeforeCommit);
+            $this->_sqlForCommit = array();
+            $failedColumns       = implode("', '", $this->_columnsForCheckBeforeCommit);
 
             throw new Ess_M2ePro_Model_Exception_Setup(
                 "Commit for '{$this->getTableName()}' table is failed
@@ -431,7 +436,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
         }
 
         $this->runQuery($resultSql);
-        $this->sqlForCommit = array();
+        $this->_sqlForCommit = array();
         return $this;
     }
 

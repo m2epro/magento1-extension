@@ -230,7 +230,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option extends Ess_M2ePr
         $simpleAttributes = $this->getListingProduct()->getMagentoProduct()->getProduct()->getOptions();
 
         foreach ($simpleAttributes as $tempAttribute) {
-
             if (!(bool)(int)$tempAttribute->getData('is_require')) {
                 continue;
             }
@@ -248,7 +247,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option extends Ess_M2ePr
             }
 
             foreach ($tempAttribute->getValues() as $tempOption) {
-
                 $option = strtolower($this->getParentObject()->getOption());
 
                 if (strtolower($tempOption->getData('default_title')) != $option &&
@@ -257,7 +255,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option extends Ess_M2ePr
                     continue;
                 }
 
-                if (!is_null($tempOption->getData('sku')) &&
+                if ($tempOption->getData('sku') !== null &&
                     $tempOption->getData('sku') !== false) {
                     $tempSku = $tempOption->getData('sku');
                 }

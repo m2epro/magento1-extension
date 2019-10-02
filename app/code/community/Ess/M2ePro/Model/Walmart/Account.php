@@ -84,12 +84,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     const MAGENTO_ORDERS_SHIPMENT_MODE_NO  = 0;
     const MAGENTO_ORDERS_SHIPMENT_MODE_YES = 1;
 
-    //########################################
-
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     //########################################
 
@@ -112,7 +110,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
             $item->deleteInstance();
         }
 
-        $this->marketplaceModel = NULL;
+        $this->_marketplaceModel = NULL;
 
         $this->delete();
 
@@ -123,7 +121,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
 
     public function getWalmartItems($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Walmart_Item','account_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Walmart_Item', 'account_id', $asObjects, $filters);
     }
 
     //########################################
@@ -133,13 +131,13 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                'Marketplace',$this->getMarketplaceId()
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+                'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -147,7 +145,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-         $this->marketplaceModel = $instance;
+         $this->_marketplaceModel = $instance;
     }
 
     //########################################
@@ -168,6 +166,16 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     public function getConsumerId()
     {
         return $this->getData('consumer_id');
+    }
+
+    public function getClientId()
+    {
+        return $this->getData('client_id');
+    }
+
+    public function getClientSecret()
+    {
+        return $this->getData('client_secret');
     }
 
     /**
@@ -191,7 +199,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     public function getDecodedInfo()
     {
         $tempInfo = $this->getInfo();
-        return is_null($tempInfo) ? NULL : Mage::helper('M2ePro')->jsonDecode($tempInfo);
+        return $tempInfo === null ? NULL : Mage::helper('M2ePro')->jsonDecode($tempInfo);
     }
 
     //########################################
@@ -228,9 +236,11 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingSkuMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('sku', 'mode'),
-                                     self::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('sku', 'mode'),
+            self::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -240,17 +250,21 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingSkuPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('sku', 'priority'),
-                                     self::OTHER_LISTINGS_MAPPING_SKU_DEFAULT_PRIORITY);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('sku', 'priority'),
+            self::OTHER_LISTINGS_MAPPING_SKU_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
 
     public function getOtherListingsMappingSkuAttribute()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('sku', 'attribute'));
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('sku', 'attribute')
+        );
 
         return $setting;
     }
@@ -262,9 +276,11 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingUpcMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('upc', 'mode'),
-            self::OTHER_LISTINGS_MAPPING_UPC_MODE_NONE);
+            self::OTHER_LISTINGS_MAPPING_UPC_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -274,17 +290,21 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingUpcPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('upc', 'priority'),
-            self::OTHER_LISTINGS_MAPPING_UPC_DEFAULT_PRIORITY);
+            self::OTHER_LISTINGS_MAPPING_UPC_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
 
     public function getOtherListingsMappingUpcAttribute()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-            array('upc', 'attribute'));
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('upc', 'attribute')
+        );
 
         return $setting;
     }
@@ -296,9 +316,11 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingGtinMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('gtin', 'mode'),
-            self::OTHER_LISTINGS_MAPPING_GTIN_MODE_NONE);
+            self::OTHER_LISTINGS_MAPPING_GTIN_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -308,17 +330,21 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingGtinPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('gtin', 'priority'),
-            self::OTHER_LISTINGS_MAPPING_GTIN_DEFAULT_PRIORITY);
+            self::OTHER_LISTINGS_MAPPING_GTIN_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
 
     public function getOtherListingsMappingGtinAttribute()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-            array('gtin', 'attribute'));
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('gtin', 'attribute')
+        );
 
         return $setting;
     }
@@ -330,9 +356,11 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingWpidMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('wpid', 'mode'),
-            self::OTHER_LISTINGS_MAPPING_WPID_MODE_NONE);
+            self::OTHER_LISTINGS_MAPPING_WPID_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -342,17 +370,21 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingWpidPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('wpid', 'priority'),
-            self::OTHER_LISTINGS_MAPPING_WPID_DEFAULT_PRIORITY);
+            self::OTHER_LISTINGS_MAPPING_WPID_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
 
     public function getOtherListingsMappingWpidAttribute()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-            array('wpid', 'attribute'));
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('wpid', 'attribute')
+        );
 
         return $setting;
     }
@@ -364,9 +396,11 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingTitleMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('title', 'mode'),
-                                     self::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('title', 'mode'),
+            self::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -376,9 +410,11 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function getOtherListingsMappingTitlePriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('title', 'priority'),
-                                     self::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('title', 'priority'),
+            self::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
@@ -529,8 +565,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersListingsModeEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing', 'mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_MODE_YES);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing', 'mode'),
+            self::MAGENTO_ORDERS_LISTINGS_MODE_YES
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_MODE_YES;
     }
@@ -540,8 +578,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersListingsStoreCustom()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing', 'store_mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing', 'store_mode'),
+            self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM;
     }
@@ -563,8 +603,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersListingsOtherModeEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing_other', 'mode'),
+            self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES;
     }
@@ -584,8 +626,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersListingsOtherProductImportEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing_other', 'product_mode'),
+            self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT;
     }
@@ -705,8 +749,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersCustomerGuest()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST;
     }
@@ -716,8 +762,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersCustomerPredefined()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED;
     }
@@ -727,8 +775,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersCustomerNew()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_NEW;
     }
@@ -748,8 +798,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersCustomerNewSubscribed()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'subscription_mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'subscription_mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_YES;
     }
@@ -811,8 +863,10 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersStatusMappingDefault()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('status_mapping', 'mode'),
-                                     self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('status_mapping', 'mode'),
+            self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT
+        );
 
         return $setting == self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT;
     }

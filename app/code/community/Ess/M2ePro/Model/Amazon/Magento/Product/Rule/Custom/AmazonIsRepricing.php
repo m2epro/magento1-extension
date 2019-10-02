@@ -38,8 +38,8 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonIsRepricing
         $isRepricing = (int)$product->getData('is_repricing');
         $repricingState = (int)$product->getData('variation_parent_repricing_state');
 
-        if (($this->filterOperator == '==' && $this->filterCondition == AmazonListingProduct::IS_REPRICING_YES) ||
-            ($this->filterOperator == '!=' && $this->filterCondition == AmazonListingProduct::IS_REPRICING_NO)) {
+        if (($this->_filterOperator == '==' && $this->_filterCondition == AmazonListingProduct::IS_REPRICING_YES) ||
+            ($this->_filterOperator == '!=' && $this->_filterCondition == AmazonListingProduct::IS_REPRICING_NO)) {
             return $isRepricing;
         }
 

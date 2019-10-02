@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Renderer_Description_Image
     extends Ess_M2ePro_Block_Adminhtml_Renderer_Description_Abstract
 {
-    private $imageId;
+    protected $_imageId;
 
     //########################################
 
@@ -29,12 +29,17 @@ class Ess_M2ePro_Block_Adminhtml_Renderer_Description_Image
 
     public function getImageId()
     {
-        if (is_null($this->imageId)) {
-            $this->imageId = substr(sha1(
-                'image-' . $this->getData('index_number') . Mage::helper('M2ePro')->jsonEncode($this->getData('src'))
-            ), 20);
+        if ($this->_imageId === null) {
+            $this->_imageId = substr(
+                sha1(
+                    'image-' . $this->getData('index_number') . Mage::helper('M2ePro')->jsonEncode(
+                        $this->getData('src')
+                    )
+                ), 20
+            );
         }
-        return $this->imageId;
+
+        return $this->_imageId;
     }
 
     //########################################

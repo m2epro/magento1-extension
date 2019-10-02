@@ -31,16 +31,18 @@ HTML;
 
     //########################################
 
-    public function getValue($index=null)
+    public function getValue($index = null)
     {
         if ($index) {
             return $this->getData('value', $index);
         }
+
         $value = $this->getData('value');
-        if ((isset($value['value']) && !is_null($value['value'])) ||
+        if ((isset($value['value']) && $value['value'] !== null) ||
             (isset($value['is_duplicate']) && $value['is_duplicate'] == 1)) {
             return $value;
         }
+
         return null;
     }
 

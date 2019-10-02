@@ -18,7 +18,6 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         $pathData = array();
 
         while (true) {
-
             $currentCategory = NULL;
 
             foreach ($categories as $category) {
@@ -28,7 +27,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
                 }
             }
 
-            if (is_null($currentCategory)) {
+            if ($currentCategory === null) {
                 break;
             }
 
@@ -68,13 +67,15 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         // ---------------------------------------
         $primarySelect = $connRead->select();
         $primarySelect->from(
-                array('primary_table' => $etocTable)
-            )
+            array('primary_table' => $etocTable)
+        )
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                 'store_category_main_id as category_id',
                 'account_id',
-            ))
+                )
+            )
             ->where('store_category_main_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
             ->group(array('category_id', 'account_id'));
         // ---------------------------------------
@@ -83,22 +84,26 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         // ---------------------------------------
         $secondarySelect = $connRead->select();
         $secondarySelect->from(
-                array('secondary_table' => $etocTable)
-            )
+            array('secondary_table' => $etocTable)
+        )
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                 'store_category_secondary_id as category_id',
                 'account_id',
-            ))
+                )
+            )
             ->where('store_category_secondary_mode = ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY)
             ->group(array('category_id', 'account_id'));
         // ---------------------------------------
 
         $unionSelect = $connRead->select();
-        $unionSelect->union(array(
+        $unionSelect->union(
+            array(
             $primarySelect,
             $secondarySelect,
-        ));
+            )
+        );
 
         $mainSelect = $connRead->select();
         $mainSelect->reset()

@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_PickupStore_Handler
 {
     //########################################
 
-    private function getAffectedInstructionTypes()
+    protected function getAffectedInstructionTypes()
     {
         return array(
             ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_QTY_DATA_POTENTIALLY_CHANGED,

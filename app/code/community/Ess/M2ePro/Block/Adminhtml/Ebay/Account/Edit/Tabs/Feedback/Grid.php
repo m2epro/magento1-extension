@@ -48,25 +48,30 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback_Grid extends Ma
 
     protected function _prepareColumns()
     {
-        $this->addColumn('ft_id', array(
+        $this->addColumn(
+            'ft_id', array(
             'header'    => Mage::helper('M2ePro')->__('ID'),
             'align'     => 'right',
             'width'     => '100px',
             'type'      => 'number',
             'index'     => 'id',
             'filter_index' => 'main_table.id'
-        ));
+            )
+        );
 
-        $this->addColumn('ft_title', array(
+        $this->addColumn(
+            'ft_title', array(
             'header'    => Mage::helper('M2ePro')->__('Text'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'body',
             'escape'    => true,
             'filter_index' => 'main_table.body'
-        ));
+            )
+        );
 
-        $this->addColumn('ft_create_date', array(
+        $this->addColumn(
+            'ft_create_date', array(
             'header'    => Mage::helper('M2ePro')->__('Creation Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -74,9 +79,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback_Grid extends Ma
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'create_date',
             'filter_index' => 'main_table.create_date'
-        ));
+            )
+        );
 
-        $this->addColumn('ft_update_date', array(
+        $this->addColumn(
+            'ft_update_date', array(
             'header'    => Mage::helper('M2ePro')->__('Update Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -84,9 +91,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback_Grid extends Ma
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'update_date',
             'filter_index' => 'main_table.update_date'
-        ));
+            )
+        );
 
-        $this->addColumn('ft_action_edit', array(
+        $this->addColumn(
+            'ft_action_edit', array(
             'header'    => Mage::helper('M2ePro')->__('Edit'),
             'align'     => 'left',
             'width'     => '50px',
@@ -96,9 +105,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback_Grid extends Ma
             'sortable'  => false,
             'getter'    => 'getId',
             'frame_callback' => array($this, 'callbackActionEdit')
-        ));
+            )
+        );
 
-        $this->addColumn('ft_action_delete', array(
+        $this->addColumn(
+            'ft_action_delete', array(
             'header'    => Mage::helper('M2ePro')->__('Delete'),
             'align'     => 'left',
             'width'     => '50px',
@@ -108,7 +119,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Feedback_Grid extends Ma
             'sortable'  => false,
             'getter'    => 'getId',
             'frame_callback' => array($this, 'callbackActionDelete')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

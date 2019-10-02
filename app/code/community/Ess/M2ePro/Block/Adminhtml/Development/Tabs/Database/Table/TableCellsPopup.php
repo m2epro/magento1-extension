@@ -11,7 +11,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_TableCellsPopup
     const MODE_CREATE = 'create';
     const MODE_UPDATE = 'update';
 
-    private $mode = self::MODE_UPDATE;
+    protected $_mode = self::MODE_UPDATE;
 
     public $tableName;
     public $modelName;
@@ -32,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_TableCellsPopup
         $this->setId('developmentDatabaseTableCellsPopup');
         // ---------------------------------------
 
-        $this->mode = $this->getRequest()->getParam('mode');
+        $this->_mode = $this->getRequest()->getParam('mode');
 
         $this->tableName = $this->getRequest()->getParam('table');
         $this->modelName = $this->getRequest()->getParam('model');
@@ -80,14 +80,21 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_TableCellsPopup
         $columns = Mage::helper('M2ePro/Module_Database_Structure')->getTableInfo($table);
 
         if ($this->ifNeedToUseMergeMode()) {
-
-            array_walk($columns, function(&$el) { $el['is_parent'] = true; });
+            array_walk(
+                $columns, function(&$el) {
+                $el['is_parent'] = true; 
+                }
+            );
 
             $modelName = 'M2ePro/'.ucfirst($this->component).'_'.$this->modelName;
             $table = Mage::getModel($modelName)->getResource()->getMainTable();
 
             $childColumns = Mage::helper('M2ePro/Module_Database_Structure')->getTableInfo($table);
-            array_walk($childColumns, function(&$el) { $el['is_parent'] = false; });
+            array_walk(
+                $childColumns, function(&$el) {
+                $el['is_parent'] = false; 
+                }
+            );
 
             $columns = array_merge($columns, $childColumns);
         }
@@ -97,7 +104,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_TableCellsPopup
 
     public function isUpdateCellsMode()
     {
-        return $this->mode == self::MODE_UPDATE;
+        return $this->_mode == self::MODE_UPDATE;
     }
 
     public function ifNeedToUseMergeMode()

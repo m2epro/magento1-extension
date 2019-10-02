@@ -28,26 +28,32 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit_Tabs extends Mage_Adminhtm
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        $this->addTab('general', array(
+        $this->addTab(
+            'general', array(
             'label'   => Mage::helper('M2ePro')->__('General'),
             'title'   => Mage::helper('M2ePro')->__('General'),
             'content' => $this->getLayout()
                               ->createBlock('M2ePro/adminhtml_walmart_account_edit_tabs_general')->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('listingOther', array(
+        $this->addTab(
+            'listingOther', array(
             'label'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
             'title'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
             'content' => $this->getLayout()
                               ->createBlock('M2ePro/adminhtml_walmart_account_edit_tabs_listingOther')->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('orders', array(
+        $this->addTab(
+            'orders', array(
             'label'   => Mage::helper('M2ePro')->__('Orders'),
             'title'   => Mage::helper('M2ePro')->__('Orders'),
             'content' => $this->getLayout()
                               ->createBlock('M2ePro/adminhtml_walmart_account_edit_tabs_order')->toHtml(),
-        ));
+            )
+        );
 
         $this->setActiveTab($this->getRequest()->getParam('tab', 'general'));
 

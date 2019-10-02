@@ -28,12 +28,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
 
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Creating A New M2E Pro Listing',
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                '%component_name% / Creating A New M2E Pro Listing',
                 $componentName
             );
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Creating A New M2E Pro Listing');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -47,10 +49,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('next', array(
+        $this->_addButton(
+            'next', array(
             'label'     => Mage::helper('M2ePro')->__('Next Step'),
             'class'     => 'scalable next next_step_button'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

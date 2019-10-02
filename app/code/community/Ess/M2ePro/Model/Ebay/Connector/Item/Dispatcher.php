@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 {
-    private $logsActionId = NULL;
+    protected $_logsActionId = null;
 
     // ########################################
 
@@ -20,15 +20,17 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
      */
     public function process($action, $products, array $params = array())
     {
-        $params = array_merge(array(
+        $params = array_merge(
+            array(
             'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN
-        ), $params);
+            ), $params
+        );
 
         if (empty($params['logs_action_id'])) {
-            $this->logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
-            $params['logs_action_id'] = $this->logsActionId;
+            $this->_logsActionId      = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+            $params['logs_action_id'] = $this->_logsActionId;
         } else {
-            $this->logsActionId = $params['logs_action_id'];
+            $this->_logsActionId = $params['logs_action_id'];
         }
 
         $isRealTime = !empty($params['is_realtime']);
@@ -41,7 +43,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 
     public function getLogsActionId()
     {
-        return (int)$this->logsActionId;
+        return (int)$this->_logsActionId;
     }
 
     // ########################################
@@ -54,26 +56,23 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
      * @return int
      * @throws LogicException
      */
-    protected function processAccountsMarketplaces(array $sortedProducts,
-                                                   $action,
-                                                   $isRealTime = false,
-                                                   array $params = array())
-    {
+    protected function processAccountsMarketplaces(
+        array $sortedProducts,
+        $action,
+        $isRealTime = false,
+        array $params = array()
+    ) {
         $results = array();
 
         foreach ($sortedProducts as $accountId => $accountProducts) {
             foreach ($accountProducts as $marketplaceId => $products) {
-
                 if (empty($products)) {
                     continue;
                 }
 
                 try {
-
                     $result = $this->processProducts($products, $action, $isRealTime, $params);
-
                 } catch (Exception $exception) {
-
                     foreach ($products as $product) {
                         /** @var Ess_M2ePro_Model_Listing_Product $product */
 
@@ -116,15 +115,14 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
                 $logsActionId = $connector->getLogsActionId();
                 // When additional action runs using processing, there is no status for it
                 if (is_array($logsActionId) && $isRealTime) {
-                    $this->logsActionId = max($logsActionId);
-                    $result = Mage::getModel('M2ePro/Listing_Log')->getResource()->getStatusByActionId($logsActionId);
-
+                    $this->_logsActionId = max($logsActionId);
+                    $result              = Mage::getModel('M2ePro/Listing_Log')
+                                               ->getResource()
+                                               ->getStatusByActionId($logsActionId);
                 } else {
-                    $this->logsActionId = $logsActionId;
+                    $this->_logsActionId = $logsActionId;
                 }
-
             } catch (Exception $exception) {
-
                 $this->logListingProductException($product, $exception, $action, $params);
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
 
@@ -149,15 +147,14 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 
         $productsIdsTemp = array();
         foreach ($products as $product) {
-
             $tempProduct = NULL;
             if ($product instanceof Ess_M2ePro_Model_Listing_Product) {
                 $tempProduct = $product;
             } else {
-                $tempProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product',(int)$product);
+                $tempProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product', (int)$product);
             }
 
-            if (in_array((int)$tempProduct->getId(),$productsIdsTemp)) {
+            if (in_array((int)$tempProduct->getId(), $productsIdsTemp)) {
                 continue;
             }
 
@@ -187,10 +184,12 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 
     // ----------------------------------------
 
-    protected function logListingProductException(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                                  Exception $exception,
-                                                  $action, $params)
-    {
+    protected function logListingProductException(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        Exception $exception,
+        $action,
+        $params
+    ) {
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
 
@@ -202,7 +201,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
             $listingProduct->getProductId(),
             $listingProduct->getId(),
             $initiator,
-            $this->logsActionId,
+            $this->_logsActionId,
             $action,
             $exception->getMessage(),
             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -255,7 +254,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 
     // ########################################
 
-    private function getActionNick($action)
+    protected function getActionNick($action)
     {
         switch ($action) {
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:

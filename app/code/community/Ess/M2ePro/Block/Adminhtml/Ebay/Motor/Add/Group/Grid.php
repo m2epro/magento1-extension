@@ -29,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid extends Mage_Adminhtm
 
     protected function _prepareCollection()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Ebay_Motor_Group_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Motor_Group_Collection $collection */
         $collection = Mage::getModel('M2ePro/Ebay_Motor_Group')->getCollection();
         $collection->addFieldToFilter('type', array('=' => $this->getMotorsType()));
 
@@ -40,16 +40,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid extends Mage_Adminhtm
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'       => Mage::helper('M2ePro')->__('Title'),
             'align'        => 'left',
             'type'         => 'text',
             'index'        => 'title',
             'filter_index' => 'title',
             'frame_callback' => array($this, 'callbackColumnTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('mode', array(
+        $this->addColumn(
+            'mode', array(
             'header'       => Mage::helper('M2ePro')->__('Type'),
             'width'        => '150px',
             'align'        => 'left',
@@ -61,9 +64,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid extends Mage_Adminhtm
                 Ess_M2ePro_Model_Ebay_Motor_Group::MODE_FILTER  => Mage::helper('M2ePro')->__('Filters'),
             ),
             'frame_callback' => array($this, 'callbackColumnMode')
-        ));
+            )
+        );
 
-        $this->addColumn('items', array(
+        $this->addColumn(
+            'items', array(
             'header'       => Mage::helper('M2ePro')->__('Amount'),
             'width'        => '60px',
             'align'        => 'center',
@@ -72,7 +77,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid extends Mage_Adminhtm
             'filter'       => false,
             'index'        => 'items_data',
             'frame_callback' => array($this, 'callbackColumnItems')
-        ));
+            )
+        );
     }
 
     protected function _prepareMassaction()
@@ -82,17 +88,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Group_Grid extends Mage_Adminhtm
 
         // Set mass-action
         //--------------------------------
-        $this->getMassactionBlock()->addItem('select', array(
+        $this->getMassactionBlock()->addItem(
+            'select', array(
             'label'   => Mage::helper('M2ePro')->__('Select'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('removeGroup', array(
+        $this->getMassactionBlock()->addItem(
+            'removeGroup', array(
             'label'   => Mage::helper('M2ePro')->__('Remove'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         //--------------------------------
 
         return parent::_prepareMassaction();
@@ -186,9 +196,11 @@ JS;
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/adminhtml_ebay_motor/addGroupGrid', array(
+        return $this->getUrl(
+            '*/adminhtml_ebay_motor/addGroupGrid', array(
             '_current' => true
-        ));
+            )
+        );
     }
 
     public function getRowUrl($row)
@@ -205,7 +217,7 @@ JS;
 
     public function getMotorsType()
     {
-        if (is_null($this->motorsType)) {
+        if ($this->motorsType === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Motors type not set.');
         }
 

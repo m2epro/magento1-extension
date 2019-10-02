@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData_Responser
     extends Ess_M2ePro_Model_Ebay_Connector_Inventory_Get_ItemsResponser
 {
-    protected $synchronizationLog = NULL;
+    protected $_synchronizationLog = null;
 
     //########################################
 
@@ -18,7 +18,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData_Resp
         parent::processResponseMessages();
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -70,14 +69,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData_Resp
             $updatingModel = Mage::getModel('M2ePro/Ebay_Listing_Other_Updating');
             $updatingModel->initialize($this->getAccount());
             $updatingModel->processResponseData($this->getPreparedResponseData());
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-            $this->getSynchronizationLog()->addMessage(Mage::helper('M2ePro')->__($exception->getMessage()),
-                                                       Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                                                       Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH);
+            $this->getSynchronizationLog()->addMessage(
+                Mage::helper('M2ePro')->__($exception->getMessage()),
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
         }
     }
 
@@ -88,7 +87,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData_Resp
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -96,22 +95,22 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData_Resp
      */
     protected function getMarketplace()
     {
-        return $this->getObjectByParam('Marketplace','marketplace_id');
+        return $this->getObjectByParam('Marketplace', 'marketplace_id');
     }
 
     // ---------------------------------------
 
     protected function getSynchronizationLog()
     {
-        if (!is_null($this->synchronizationLog)) {
-            return $this->synchronizationLog;
+        if ($this->_synchronizationLog !== null) {
+            return $this->_synchronizationLog;
         }
 
-        $this->synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $this->synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
-        $this->synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS);
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS);
 
-        return $this->synchronizationLog;
+        return $this->_synchronizationLog;
     }
 
     //########################################

@@ -9,12 +9,12 @@
 class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Connector_Connection_Abstract
 {
     /** @var Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer[] $request */
-    private $requestsContainers = array();
+    protected $_requestsContainers = array();
 
     /** @var Ess_M2ePro_Model_Connector_Connection_Response[] $response */
-    private $responses = array();
+    protected $_responses = array();
 
-    protected $asynchronous = false;
+    protected $_asynchronous = false;
 
     // ########################################
 
@@ -23,7 +23,6 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         $packages = array();
 
         foreach ($this->getRequestsContainers() as $key => $requestContainer) {
-
             $packages[$key] = array(
                 'headers' => $this->getHeaders($requestContainer->getRequest()),
                 'data'    => $this->getBody($requestContainer->getRequest()),
@@ -57,34 +56,29 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         .'">here</a>';
 
         foreach ($result as $key => $response) {
-
             try {
-
                 if ($response['body'] === false) {
-
-                    throw new Ess_M2ePro_Model_Exception_Connection($connectionErrorMessage,
-                                array('curl_error_number'  => $response['curl_error_number'],
+                    throw new Ess_M2ePro_Model_Exception_Connection(
+                        $connectionErrorMessage,
+                        array('curl_error_number'  => $response['curl_error_number'],
                                       'curl_error_message' => $response['curl_error_message'],
-                                      'curl_info'          => $response['curl_info']));
+                        'curl_info'          => $response['curl_info'])
+                    );
                 }
 
                 $responseObj = Mage::getModel('M2ePro/Connector_Connection_Response');
                 $responseObj->initFromRawResponse($response['body']);
-                $responseObj->setRequestTime($this->requestTime);
+                $responseObj->setRequestTime($this->_requestTime);
 
-                $this->responses[$key] = $responseObj;
-                $successResponses[] = $responseObj;
-
+                $this->_responses[$key] = $responseObj;
+                $successResponses[]     = $responseObj;
             } catch (Ess_M2ePro_Model_Exception_Connection_InvalidResponse $exception) {
-
-                $responseError = true;
-                $this->responses[$key] = $this->createFailedResponse($connectionErrorMessage);
+                $responseError          = true;
+                $this->_responses[$key] = $this->createFailedResponse($connectionErrorMessage);
                 Mage::helper('M2ePro/Module_Logger')->process($response, 'Invalid Response Format', false);
-
             } catch (Exception $exception) {
-
-                $responseError = true;
-                $this->responses[$key] = $this->createFailedResponse($connectionErrorMessage);
+                $responseError          = true;
+                $this->_responses[$key] = $this->createFailedResponse($connectionErrorMessage);
                 Mage::helper('M2ePro/Module_Exception')->process($exception, false);
             }
         }
@@ -94,13 +88,13 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         }
 
         foreach ($successResponses as $response) {
-
             if ($response->getMessages()->hasSystemErrorEntity()) {
-
-                $exception = new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
-                    "Internal Server Error(s) [%error_message%]",
-                    $response->getMessages()->getCombinedSystemErrorsString()
-                ), array(), 0, !$response->isServerInMaintenanceMode());
+                $exception = new Ess_M2ePro_Model_Exception(
+                    Mage::helper('M2ePro')->__(
+                        "Internal Server Error(s) [%error_message%]",
+                        $response->getMessages()->getCombinedSystemErrorsString()
+                    ), array(), 0, !$response->isServerInMaintenanceMode()
+                );
 
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
@@ -109,7 +103,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
 
     // ########################################
 
-    private function createFailedResponse($errorMessage)
+    protected function createFailedResponse($errorMessage)
     {
         $messages = array(array(
             Ess_M2ePro_Model_Connector_Connection_Response_Message::CODE_KEY => 0,
@@ -122,7 +116,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
 
         $failedResponse = Mage::getModel('M2ePro/Connector_Connection_Response');
         $failedResponse->initFromPreparedResponse(array(), $messages);
-        $failedResponse->setRequestTime($this->requestTime);
+        $failedResponse->setRequestTime($this->_requestTime);
         return $failedResponse;
     }
 
@@ -136,9 +130,8 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
     public function addRequestContainer(
         $key,
         Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer $requestContainer
-    )
-    {
-        $this->requestsContainers[$key] = $requestContainer;
+    ) {
+        $this->_requestsContainers[$key] = $requestContainer;
         return $this;
     }
 
@@ -147,7 +140,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function getRequestsContainers()
     {
-        return $this->requestsContainers;
+        return $this->_requestsContainers;
     }
 
     /**
@@ -156,7 +149,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function getRequest($key)
     {
-        return isset($this->requestsContainers[$key]) ? $this->requestsContainers[$key]->getRequest() : NULL;
+        return isset($this->_requestsContainers[$key]) ? $this->_requestsContainers[$key]->getRequest() : NULL;
     }
 
     // ----------------------------------------
@@ -167,7 +160,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function getResponse($key)
     {
-        return isset($this->responses[$key]) ? $this->responses[$key] : NULL;
+        return isset($this->_responses[$key]) ? $this->_responses[$key] : NULL;
     }
 
     /**
@@ -175,7 +168,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function getResponses()
     {
-        return $this->responses;
+        return $this->_responses;
     }
 
     // ----------------------------------------
@@ -186,7 +179,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function setAsynchronous($flag)
     {
-        $this->asynchronous = (bool)$flag;
+        $this->_asynchronous = (bool)$flag;
         return $this;
     }
 
@@ -195,7 +188,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function isAsynchronous()
     {
-        return $this->asynchronous;
+        return $this->_asynchronous;
     }
 
     // ########################################

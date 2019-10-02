@@ -8,13 +8,13 @@
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
 {
-    private $sourceOption = array();
+    protected $_sourceOption = array();
 
-    private $destinationOptions = array();
+    protected $_destinationOptions = array();
 
-    private $matchedAttributes = array();
+    protected $_matchedAttributes = array();
 
-    private $resolvedGeneralId = null;
+    protected $_resolvedGeneralId = null;
 
     //########################################
 
@@ -24,8 +24,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
      */
     public function setSourceOption(array $options)
     {
-        $this->sourceOption      = $options;
-        $this->resolvedGeneralId = null;
+        $this->_sourceOption      = $options;
+        $this->_resolvedGeneralId = null;
 
         return $this;
     }
@@ -36,8 +36,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
      */
     public function setDestinationOptions(array $options)
     {
-        $this->destinationOptions = $options;
-        $this->resolvedGeneralId  = null;
+        $this->_destinationOptions = $options;
+        $this->_resolvedGeneralId  = null;
 
         return $this;
     }
@@ -50,7 +50,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
      */
     public function setMatchedAttributes(array $matchedAttributes)
     {
-        $this->matchedAttributes = $matchedAttributes;
+        $this->_matchedAttributes = $matchedAttributes;
         return $this;
     }
 
@@ -61,18 +61,18 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
      */
     public function resolve()
     {
-        foreach ($this->destinationOptions as $generalId => $destinationOption) {
-            if (count($this->sourceOption) != count($destinationOption)) {
+        foreach ($this->_destinationOptions as $generalId => $destinationOption) {
+            if (count($this->_sourceOption) != count($destinationOption)) {
                 continue;
             }
 
             $isResolved = false;
 
             foreach ($destinationOption as $destinationAttribute => $destinationOptionNames) {
-                $sourceAttribute = array_search($destinationAttribute, $this->matchedAttributes);
-                $sourceOptionNames = $this->sourceOption[$sourceAttribute];
+                $sourceAttribute = array_search($destinationAttribute, $this->_matchedAttributes);
+                $sourceOptionNames = $this->_sourceOption[$sourceAttribute];
 
-                if (count(array_intersect((array)$sourceOptionNames, (array)$destinationOptionNames)) > 0) {
+                if (!empty(array_intersect((array)$sourceOptionNames, (array)$destinationOptionNames))) {
                     $isResolved = true;
                     continue;
                 }
@@ -82,7 +82,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
             }
 
             if ($isResolved) {
-                $this->resolvedGeneralId = $generalId;
+                $this->_resolvedGeneralId = $generalId;
                 break;
             }
         }
@@ -92,7 +92,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
 
     public function getResolvedGeneralId()
     {
-        return $this->resolvedGeneralId;
+        return $this->_resolvedGeneralId;
     }
 
     //########################################

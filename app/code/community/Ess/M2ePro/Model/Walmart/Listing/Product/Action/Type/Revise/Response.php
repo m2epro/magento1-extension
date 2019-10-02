@@ -84,7 +84,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
         }
 
         if ($this->getConfigurator()->isDetailsAllowed()) {
-
             if ($this->getRequestData()->getIsNeedSkuUpdate()) {
                 // M2ePro_TRANSLATIONS
                 // SKU
@@ -92,7 +91,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
             }
 
             if ($this->getRequestData()->getIsNeedProductIdUpdate()) {
-
                 $idsMetadata = $this->getRequestMetaData(ReviseRequest::PRODUCT_ID_UPDATE_METADATA_KEY);
                 !empty($idsMetadata) && $sequenceStrings[] = strtoupper($idsMetadata['type']);
             }

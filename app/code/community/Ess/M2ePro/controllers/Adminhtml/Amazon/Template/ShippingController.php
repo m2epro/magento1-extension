@@ -65,9 +65,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         $this->_initAction()
-             ->_addContent(
-                 $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_shipping_edit')
-             )
+            ->_addContent(
+                $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_shipping_edit')
+            )
              ->renderLayout();
     }
 
@@ -124,16 +124,20 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_ShippingController
         );
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
-        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('*/adminhtml_amazon_template/index', array(), array(
-            'edit' => array('id' => $model->getId())
-        )));
+        $this->_redirectUrl(
+            Mage::helper('M2ePro')->getBackUrl(
+                '*/adminhtml_amazon_template/index', array(), array(
+                'edit' => array('id' => $model->getId())
+                )
+            )
+        );
     }
 
     public function deleteAction()
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             $this->_redirect('*/*/index');
             return;

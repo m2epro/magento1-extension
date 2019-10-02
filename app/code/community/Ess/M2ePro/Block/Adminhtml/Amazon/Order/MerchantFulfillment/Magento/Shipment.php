@@ -9,8 +9,8 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Magento_Shipment
     extends Mage_Adminhtml_Block_Template
 {
-    /** @var Ess_M2ePro_Model_Order $order */
-    protected $order = NULL;
+    /** @var Ess_M2ePro_Model_Order $_order */
+    protected $_order = null;
 
     //########################################
 
@@ -30,13 +30,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Magento_Shipme
 
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
-        $this->order = $order;
+        $this->_order = $order;
         return $this;
     }
 
     public function getOrder()
     {
-        return $this->order;
+        return $this->_order;
     }
 
     /**
@@ -44,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Magento_Shipme
      */
     public function getAmazonOrder()
     {
-        return $this->order->getChildObject();
+        return $this->_order->getChildObject();
     }
 
     //########################################

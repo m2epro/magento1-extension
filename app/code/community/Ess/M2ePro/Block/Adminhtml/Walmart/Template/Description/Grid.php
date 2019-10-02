@@ -55,7 +55,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header'       => Mage::helper('M2ePro')->__('ID'),
             'align'        => 'right',
             'type'         => 'number',
@@ -63,9 +64,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
             'index'        => 'id',
             'filter_index' => 'main_table.id',
             'frame_callback' => array($this, 'callbackColumnId')
-        ));
+            )
+        );
 
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'       => Mage::helper('M2ePro')->__('Title / Category'),
             'align'        => 'left',
             'type'         => 'text',
@@ -74,9 +77,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
             'filter_index' => 'main_table.title',
             'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('marketplace', array(
+        $this->addColumn(
+            'marketplace', array(
             'header'       => Mage::helper('M2ePro')->__('Marketplace'),
             'align'        => 'left',
             'type'         => 'options',
@@ -85,9 +90,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
             'width'        => '100px',
             'index'        => 'marketplace_id',
             'filter_index' => 'atd.marketplace_id'
-        ));
+            )
+        );
 
-        $this->addColumn('update_date', array(
+        $this->addColumn(
+            'update_date', array(
             'header'       => Mage::helper('M2ePro')->__('Update Date'),
             'align'        => 'left',
             'width'        => '80px',
@@ -95,9 +102,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
             'format'       => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'        => 'update_date',
             'filter_index' => 'main_table.update_date'
-        ));
+            )
+        );
 
-        $this->addColumn('create_date', array(
+        $this->addColumn(
+            'create_date', array(
             'header'       => Mage::helper('M2ePro')->__('Creation Date'),
             'align'        => 'left',
             'width'        => '80px',
@@ -105,9 +114,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
             'format'       => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'        => 'create_date',
             'filter_index' => 'main_table.create_date'
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'left',
             'width'     => '100px',
@@ -129,7 +140,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
                     'field'   => 'ids'
                 ),
             )
-        ));
+            )
+        );
     }
 
     //########################################
@@ -144,11 +156,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Grid extends Mage_
 
         // Set delete action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('delete', array(
+        $this->getMassactionBlock()->addItem(
+            'delete', array(
              'label'    => Mage::helper('M2ePro')->__('Delete'),
              'url'      => $this->getUrl('*/*/delete'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();

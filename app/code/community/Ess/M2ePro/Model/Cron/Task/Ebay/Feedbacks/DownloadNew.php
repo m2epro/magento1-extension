@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
     {
         $accounts = $this->getPermittedAccounts();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -58,11 +58,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
             );
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Receive" Action for eBay Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -83,8 +80,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
     protected function getPermittedAccounts()
     {
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account')
-                                    ->addFieldToFilter('feedbacks_receive',
-                                                        Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_YES);
+                                    ->addFieldToFilter(
+                                        'feedbacks_receive',
+                                        Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_YES
+                                    );
         return $collection->getItems();
     }
 
@@ -97,25 +96,25 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
         $tableFeedbacks = Mage::getResourceModel('M2ePro/Ebay_Feedback')->getMainTable();
 
         $dbSelect = $connRead->select()
-                             ->from($tableFeedbacks,new Zend_Db_Expr('MAX(`seller_feedback_date`)'))
-                             ->where('`account_id` = ?',(int)$account->getId());
+                             ->from($tableFeedbacks, new Zend_Db_Expr('MAX(`seller_feedback_date`)'))
+                             ->where('`account_id` = ?', (int)$account->getId());
         $maxSellerDate = $connRead->fetchOne($dbSelect);
         if (strtotime($maxSellerDate) < strtotime('2001-01-02')) {
             $maxSellerDate = NULL;
         }
 
         $dbSelect = $connRead->select()
-                             ->from($tableFeedbacks,new Zend_Db_Expr('MAX(`buyer_feedback_date`)'))
-                             ->where('`account_id` = ?',(int)$account->getId());
+                             ->from($tableFeedbacks, new Zend_Db_Expr('MAX(`buyer_feedback_date`)'))
+                             ->where('`account_id` = ?', (int)$account->getId());
         $maxBuyerDate = $connRead->fetchOne($dbSelect);
         if (strtotime($maxBuyerDate) < strtotime('2001-01-02')) {
             $maxBuyerDate = NULL;
         }
 
         $paramsConnector = array();
-        !is_null($maxSellerDate) && $paramsConnector['seller_max_date'] = $maxSellerDate;
-        !is_null($maxBuyerDate) && $paramsConnector['buyer_max_date'] = $maxBuyerDate;
-        $result = $this->receiveFromEbay($account,$paramsConnector);
+        $maxSellerDate !== null && $paramsConnector['seller_max_date'] = $maxSellerDate;
+        $maxBuyerDate !== null && $paramsConnector['buyer_max_date'] = $maxBuyerDate;
+        $result = $this->receiveFromEbay($account, $paramsConnector);
 
         $this->getOperationHistory()->appendText('Total received Feedback from eBay: '.$result['total']);
         $this->getOperationHistory()->appendText('Total only new Feedback from eBay: '.$result['new']);
@@ -125,19 +124,20 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
     protected function receiveFromEbay(Ess_M2ePro_Model_Account $account, array $paramsConnector = array())
     {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('feedback','get','entity',
-                                                            $paramsConnector,'feedbacks',
-                                                            NULL,$account->getId());
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'feedback', 'get', 'entity',
+            $paramsConnector, 'feedbacks',
+            NULL, $account->getId()
+        );
 
         $dispatcherObj->process($connectorObj);
         $feedbacks = $connectorObj->getResponseData();
         $this->processResponseMessages($connectorObj->getResponseMessages());
 
-        is_null($feedbacks) && $feedbacks = array();
+        $feedbacks === null && $feedbacks = array();
 
         $countNewFeedbacks = 0;
         foreach ($feedbacks as $feedback) {
-
             $dbFeedback = array(
                 'account_id' => $account->getId(),
                 'ebay_item_id' => $feedback['item_id'],
@@ -167,8 +167,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
                 ->addFieldToFilter('ebay_transaction_id', $feedback['transaction_id'])
                 ->getFirstItem();
 
-            if (!is_null($existFeedback->getId())) {
-
+            if ($existFeedback->getId() !== null) {
                 if ($feedback['from_role'] == Ess_M2ePro_Model_Ebay_Feedback::ROLE_BUYER &&
                     !$existFeedback->getData('buyer_feedback_id')) {
                     $countNewFeedbacks++;
@@ -178,7 +177,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
                     !$existFeedback->getData('seller_feedback_id')) {
                     $countNewFeedbacks++;
                 }
-
             } else {
                 $countNewFeedbacks++;
             }
@@ -192,14 +190,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
         );
     }
 
-    private function processResponseMessages(array $messages)
+    protected function processResponseMessages(array $messages)
     {
         /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
         $messagesSet->init($messages);
 
         foreach ($messagesSet->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }

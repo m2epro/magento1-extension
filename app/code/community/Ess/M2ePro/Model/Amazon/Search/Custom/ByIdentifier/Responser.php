@@ -11,7 +11,10 @@ class Ess_M2ePro_Model_Amazon_Search_Custom_ByIdentifier_Responser
 {
     //########################################
 
-    protected function processResponseData() {}
+    protected function processResponseData()
+    {
+        return null;
+    }
 
     //########################################
 }

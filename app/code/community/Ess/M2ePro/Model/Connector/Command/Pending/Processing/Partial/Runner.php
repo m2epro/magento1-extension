@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
     extends Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner
 {
-    /** @var Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial */
-    private $requestPendingPartial = NULL;
+    /** @var Ess_M2ePro_Model_Request_Pending_Partial $_requestPendingPartial */
+    protected $_requestPendingPartial;
 
     // ##################################
 
@@ -23,18 +23,18 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
 
     protected function getResponse()
     {
-        if (!is_null($this->response)) {
-            return $this->response;
+        if ($this->_response !== null) {
+            return $this->_response;
         }
 
-        $this->response = Mage::getModel('M2ePro/Connector_Connection_Response');
+        $this->_response = Mage::getModel('M2ePro/Connector_Connection_Response');
 
         $params = $this->getParams();
         if (!empty($params['request_time'])) {
-            $this->response->setRequestTime($params['request_time']);
+            $this->_response->setRequestTime($params['request_time']);
         }
 
-        return $this->response;
+        return $this->_response;
     }
 
     // ##################################
@@ -96,42 +96,46 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         $requestPendingPartial = $requestPendingPartialCollection->getFirstItem();
 
         if (!$requestPendingPartial->getId()) {
-            $requestPendingPartial->setData(array(
+            $requestPendingPartial->setData(
+                array(
                 'component'       => $params['component'],
                 'server_hash'     => $params['server_hash'],
                 'next_part'       => 1,
                 'expiration_date' => Mage::helper('M2ePro')->getDate(
                     Mage::helper('M2ePro')->getCurrentGmtDate(true)+self::PENDING_REQUEST_MAX_LIFE_TIME
                 )
-            ));
+                )
+            );
 
             $requestPendingPartial->save();
         }
 
         $requesterPartial = Mage::getModel('M2ePro/Connector_Command_Pending_Processing_Partial');
-        $requesterPartial->setData(array(
+        $requesterPartial->setData(
+            array(
             'processing_id'              => $this->getProcessingObject()->getId(),
             'request_pending_partial_id' => $requestPendingPartial->getId(),
             'next_data_part_number'      => 1,
-        ));
+            )
+        );
 
         $requesterPartial->save();
     }
 
     // ##################################
 
-    private function getNextData()
+    protected function getNextData()
     {
-        if (is_null($this->getRequestPendingPartialObject())) {
+        if ($this->getRequestPendingPartialObject() === null) {
             return array();
         }
 
         return $this->getRequestPendingPartialObject()->getResultData($this->getNextDataPartNumber());
     }
 
-    private function getMessages()
+    protected function getMessages()
     {
-        if (is_null($this->getRequestPendingPartialObject())) {
+        if ($this->getRequestPendingPartialObject() === null) {
             return array();
         }
 
@@ -142,23 +146,23 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
 
     protected function getRequestPendingPartialObject()
     {
-        if (!is_null($this->requestPendingPartial)) {
-            return $this->requestPendingPartial;
+        if ($this->_requestPendingPartial !== null) {
+            return $this->_requestPendingPartial;
         }
 
         $resultData = $this->getProcessingObject()->getResultData();
         if (empty($resultData['request_pending_partial_id'])) {
-            return NULL;
+            return null;
         }
 
         $requestPendingPartialId = (int)$resultData['request_pending_partial_id'];
 
         $requestPendingPartial = Mage::getModel('M2ePro/Request_Pending_Partial')->load($requestPendingPartialId);
         if (!$requestPendingPartial->getId()) {
-            return NULL;
+            return null;
         }
 
-        return $this->requestPendingPartial = $requestPendingPartial;
+        return $this->_requestPendingPartial = $requestPendingPartial;
     }
 
     // ##################################

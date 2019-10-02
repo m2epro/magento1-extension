@@ -28,12 +28,12 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByAsin_ItemsResponser
         $responseData = $this->getResponse()->getData();
 
         if (!empty($responseData['unavailable'])) {
-            $this->preparedResponseData = false;
+            $this->_preparedResponseData = false;
             return;
         }
 
         if (empty($responseData['item'])) {
-            $this->preparedResponseData = null;
+            $this->_preparedResponseData = null;
             return;
         }
 
@@ -70,7 +70,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByAsin_ItemsResponser
             $product['requested_child_id'] = $responseItem['requested_child_id'];
         }
 
-        $this->preparedResponseData = $product;
+        $this->_preparedResponseData = $product;
     }
 
     // ########################################

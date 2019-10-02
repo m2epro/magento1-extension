@@ -43,13 +43,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Ess_M2ePro_Block_A
         $this->realMagentoOrderId = NULL;
 
         $magentoOrder = $this->order->getMagentoOrder();
-        if (!is_null($magentoOrder)) {
+        if ($magentoOrder !== null) {
             $this->realMagentoOrderId = $magentoOrder->getRealOrderId();
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
-        if (!is_null($magentoOrder) && $magentoOrder->hasShipments()) {
+        if ($magentoOrder !== null && $magentoOrder->hasShipments()) {
             $url = $this->getUrl('*/adminhtml_order/resubmitShippingInfo', array('id' => $this->order->getId()));
             $data = array(
                 'class'   => '',
@@ -59,6 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Ess_M2ePro_Block_A
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
             $this->setChild('resubmit_shipping_info', $buttonBlock);
         }
+
         // ---------------------------------------
 
         // Shipping data
@@ -77,23 +79,37 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Ess_M2ePro_Block_A
             $this->ebayWarehouseAddress = $globalShippingDetails['warehouse_address'];
             $this->globalShippingServiceDetails = $globalShippingDetails['service_details'];
         }
+
         // ---------------------------------------
+        $buttonAddNoteBlock = $this->getLayout()
+            ->createBlock('adminhtml/widget_button')
+            ->setData(
+                array(
+                'label'   => Mage::helper('M2ePro')->__('Add Note'),
+                'onclick' => "OrderNoteHandlerObj.openAddNotePopup({$this->order->getId()})",
+                'class'   => 'order_note_btn',
+                )
+            );
 
         $this->setChild('item', $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_order_view_item'));
         $this->setChild('item_edit', $this->getLayout()->createBlock('M2ePro/adminhtml_order_item_edit'));
         $this->setChild('log', $this->getLayout()->createBlock('M2ePro/adminhtml_order_view_log_grid'));
-        $this->setChild('external_transaction', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_ebay_order_view_externalTransaction'
-        ));
+        $this->setChild('order_note_grid', $this->getLayout()->createBlock('M2ePro/adminhtml_order_note_grid'));
+        $this->setChild('add_note_button', $buttonAddNoteBlock);
+        $this->setChild(
+            'external_transaction', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_ebay_order_view_externalTransaction'
+            )
+        );
 
         return parent::_beforeToHtml();
     }
 
     //########################################
 
-    private function getStore()
+    protected function getStore()
     {
-        if (is_null($this->order->getData('store_id'))) {
+        if ($this->order->getData('store_id') === null) {
             return null;
         }
 
@@ -110,7 +126,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Ess_M2ePro_Block_A
     {
         $store = $this->getStore();
 
-        if (is_null($store)) {
+        if ($store === null) {
             return true;
         }
 
@@ -124,7 +140,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Ess_M2ePro_Block_A
     {
         $store = $this->getStore();
 
-        if (is_null($store)) {
+        if ($store === null) {
             return true;
         }
 

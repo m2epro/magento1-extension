@@ -9,8 +9,8 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    private $marketplaceId;
-    private $noSelection;
+    protected $_marketplaceId;
+    protected $_noSelection;
 
     //########################################
 
@@ -18,8 +18,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes
     {
         parent::__construct($args);
 
-        $this->marketplaceId = (int)$args['marketplaceId'];
-        $this->noSelection   = (bool)$args['noSelection'];
+        $this->_marketplaceId = (int)$args['marketplaceId'];
+        $this->_noSelection   = (bool)$args['noSelection'];
 
         $this->setTemplate('M2ePro/walmart/template/selling_format/tax_codes.phtml');
     }
@@ -34,7 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes
             ->createBlock(
                 'M2ePro/adminhtml_walmart_template_sellingFormat_taxCodes_grid',
                 '',
-                array('marketplaceId' => $this->marketplaceId, 'noSelection' => $this->noSelection)
+                array('marketplaceId' => $this->_marketplaceId, 'noSelection' => $this->_noSelection)
             );
 
         $this->setChild('tax_codes_grid', $block);
@@ -43,11 +43,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes
         //------------------------------
         $closeBtn = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData( array(
+            ->setData(
+                array(
                 'style' => 'float: right;',
                 'label'   => Mage::helper('M2ePro')->__('Close'),
                 'onclick' => 'Windows.getFocusedWindow().close();'
-            ));
+                )
+            );
         $this->setChild('tax_codes_close_btn', $closeBtn);
         //------------------------------
 

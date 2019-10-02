@@ -20,9 +20,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Price
         $data = array();
 
         if ($this->getEbayListingProduct()->isListingTypeFixed()) {
-
             $data['price_fixed'] = $this->getEbayListingProduct()->getFixedPrice();
-
         } else {
             $data['price_start'] = $this->getEbayListingProduct()->getStartPrice();
             $data['price_reserve'] = $this->getEbayListingProduct()->getReservePrice();
@@ -43,7 +41,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Price
     /**
      * @return array
      */
-    private function getPriceDiscountStpData()
+    protected function getPriceDiscountStpData()
     {
         if (!$this->getEbayListingProduct()->isListingTypeFixed() ||
             !$this->getEbayListingProduct()->isPriceDiscountStp()) {
@@ -67,7 +65,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Price
     /**
      * @return array
      */
-    private function getPriceDiscountMapData()
+    protected function getPriceDiscountMapData()
     {
         if (!$this->getEbayListingProduct()->isListingTypeFixed() ||
             !$this->getEbayListingProduct()->isPriceDiscountMap()) {

@@ -1,4 +1,4 @@
-MigrationNewAmazonHandler = Class.create(WizardAmazonCustomHandler, {
+MigrationNewAmazonHandler = Class.create(WizardInstallationAmazonCustomHandler, {
 
     // ---------------------------------------
 

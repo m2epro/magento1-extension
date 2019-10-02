@@ -12,12 +12,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Category
      */
-    private $categoryTemplate = NULL;
+    protected $_categoryTemplate = null;
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_OtherCategory
      */
-    private $otherCategoryTemplate = NULL;
+    protected $_otherCategoryTemplate = null;
 
     //########################################
 
@@ -30,7 +30,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         $data['item_specifics'] = $this->getItemSpecificsData();
 
         if ($this->getEbayListing()->isPartsCompatibilityModeEpids()) {
-
             $motorsType = Mage::helper('M2ePro/Component_Ebay_Motors')->getEpidsTypeByMarketplace(
                 $this->getMarketplace()->getId()
             );
@@ -39,7 +38,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         if ($this->getEbayListing()->isPartsCompatibilityModeKtypes()) {
-
             $motorsType = Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE;
             $tempData = $this->getMotorsData($motorsType);
             $tempData !== false && $data['motors_ktypes'] = $tempData;
@@ -62,7 +60,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
             'store_category_secondary_id' => 0
         );
 
-        if (!is_null($this->getOtherCategoryTemplate())) {
+        if ($this->getOtherCategoryTemplate() !== null) {
             $data['category_secondary_id'] = $this->getOtherCategorySource()->getSecondaryCategory();
             $data['store_category_main_id'] = $this->getOtherCategorySource()->getStoreCategoryMain();
             $data['store_category_secondary_id'] = $this->getOtherCategorySource()->getStoreCategorySecondary();
@@ -98,6 +96,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
                 if ($tempAttributeValue == '--') {
                     continue;
                 }
+
                 $values[] = $tempAttributeValue;
             }
 
@@ -139,7 +138,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
 
     //########################################
 
-    private function getRawMotorsData($type)
+    protected function getRawMotorsData($type)
     {
         $attributeValue = $this->getMagentoProduct()->getAttributeValue($this->getMotorsAttribute($type));
 
@@ -158,7 +157,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         return $this->filterDuplicatedData($motorsData, $type);
     }
 
-    private function filterDuplicatedData($motorsData, $type)
+    protected function filterDuplicatedData($motorsData, $type)
     {
         $uniqueItems = array();
         $uniqueFilters = array();
@@ -167,7 +166,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         $itemType = $this->getMotorsHelper()->getIdentifierKey($type);
 
         foreach ($motorsData as $item) {
-
             if ($item['type'] === $itemType) {
                 $uniqueItems[$item['id']] = $item;
                 continue;
@@ -186,7 +184,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     }
     // ---------------------------------------
 
-    private function prepareRawMotorsItems($data, $type)
+    protected function prepareRawMotorsItems($data, $type)
     {
         if (empty($data)) {
             return array();
@@ -213,7 +211,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         foreach ($data as $typeId => $dataItem) {
-
             $data[$typeId]['type'] = $typeIdentifier;
             $data[$typeId]['info'] = isset($existedItems[$typeId]) ? $existedItems[$typeId] : array();
         }
@@ -221,7 +218,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         return $data;
     }
 
-    private function prepareRawMotorsFilters($data, $type)
+    protected function prepareRawMotorsFilters($data, $type)
     {
         if (empty($data)) {
             return array();
@@ -250,14 +247,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
             }
 
             foreach ($conditions as $key => $value) {
-
                 if ($key != 'year') {
                     $select->where('`'.$key.'` LIKE ?', '%'.$value.'%');
                     continue;
                 }
 
                 if ($this->getMotorsHelper()->isTypeBasedOnEpids($type)) {
-
                     if (!empty($value['from'])) {
                         $select->where('`year` >= ?', $value['from']);
                     }
@@ -265,7 +260,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
                     if (!empty($value['to'])) {
                         $select->where('`year` <= ?', $value['to']);
                     }
-
                 } else {
                     $select->where('from_year <= ?', $value);
                     $select->where('to_year >= ?', $value);
@@ -285,13 +279,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
             }
 
             if ($this->getMotorsHelper()->isTypeBasedOnEpids($type)) {
-
                 if ($type == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR) {
                     $filterData = $this->groupEbayMotorsEpidsData($filterData, $conditions);
                 }
 
                 foreach ($filterData as $group) {
-
                     $result[] = array(
                         'id'    => $filterId,
                         'type'  => 'filter',
@@ -299,6 +291,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
                         'info'  => $group
                     );
                 }
+
                 continue;
             }
 
@@ -315,7 +308,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         return $result;
     }
 
-    private function prepareRawMotorsGroups($data, $type)
+    protected function prepareRawMotorsGroups($data, $type)
     {
         if (empty($data)) {
             return array();
@@ -333,7 +326,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
             }
 
             if (!$group->getId()) {
-
                 $result[] = array(
                     'id'    => $groupId,
                     'type'  => 'group',
@@ -357,7 +349,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
 
     //########################################
 
-    private function getPreparedMotorsEpidsData($data)
+    protected function getPreparedMotorsEpidsData($data)
     {
         $ebayAttributes = $this->getEbayMotorsEpidsAttributes();
 
@@ -365,7 +357,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         $emptySavedItems = array();
 
         foreach ($data as $item) {
-
             if (empty($item['info'])) {
                 $emptySavedItems[$item['type']][] = $item;
                 continue;
@@ -375,7 +366,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
             $motorsData = $this->buildEpidData($item['info']);
 
             foreach ($motorsData as $key => $value) {
-
                 if ($value == '--') {
                     unset($motorsData[$key]);
                     continue;
@@ -404,13 +394,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         if (!empty($emptySavedItems['epid'])) {
-
             $tempItems = array();
             foreach ($emptySavedItems['epid'] as $tempItem) {
                 $tempItems[] = $tempItem['id'];
             }
 
-            $msg = Mage::helper('M2ePro')->__('
+            $msg = Mage::helper('M2ePro')->__(
+                '
                 Some ePID(s) which were saved in Parts Compatibility Magento Attribute
                 have been removed. Their Values were ignored and not sent on eBay',
                 implode(', ', $tempItems)
@@ -419,13 +409,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         if (!empty($emptySavedItems['filter'])) {
-
             $tempItems = array();
             foreach ($emptySavedItems['filter'] as $tempItem) {
                 $tempItems[] = $tempItem['id'];
             }
 
-            $msg = Mage::helper('M2ePro')->__('
+            $msg = Mage::helper('M2ePro')->__(
+                '
                 Some ePID(s) Grid Filter(s) was removed, that is why its Settings were
                 ignored and can not be applied',
                 implode(', ', $tempItems)
@@ -434,13 +424,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         if (!empty($emptySavedItems['group'])) {
-
             $tempItems = array();
             foreach ($emptySavedItems['group'] as $tempItem) {
                 $tempItems[] = $tempItem['id'];
             }
 
-            $msg = Mage::helper('M2ePro')->__('
+            $msg = Mage::helper('M2ePro')->__(
+                '
                 Some ePID(s) Group(s) was removed, that is why its Settings were
                 ignored and can not be applied',
                 implode(', ', $tempItems)
@@ -451,13 +441,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         return $preparedData;
     }
 
-    private function getPreparedMotorsKtypesData($data)
+    protected function getPreparedMotorsKtypesData($data)
     {
         $preparedData = array();
         $emptySavedItems = array();
 
         foreach ($data as $item) {
-
             if (empty($item['info'])) {
                 $emptySavedItems[$item['type']][] = $item;
                 continue;
@@ -470,13 +459,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         if (!empty($emptySavedItems['ktype'])) {
-
             $tempItems = array();
             foreach ($emptySavedItems['ktype'] as $tempItem) {
                 $tempItems[] = $tempItem['id'];
             }
 
-            $msg = Mage::helper('M2ePro')->__('
+            $msg = Mage::helper('M2ePro')->__(
+                '
                 Some kTypes(s) which were saved in Parts Compatibility Magento Attribute
                 have been removed. Their Values were ignored and not sent on eBay',
                 implode(', ', $tempItems)
@@ -485,13 +474,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         if (!empty($emptySavedItems['filter'])) {
-
             $tempItems = array();
             foreach ($emptySavedItems['filter'] as $tempItem) {
                 $tempItems[] = $tempItem['id'];
             }
 
-            $msg = Mage::helper('M2ePro')->__('
+            $msg = Mage::helper('M2ePro')->__(
+                '
                 Some kTypes(s) Grid Filter(s) was removed, that is why its Settings
                 were ignored and can not be applied',
                 implode(', ', $tempItems)
@@ -500,13 +489,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         }
 
         if (!empty($emptySavedItems['group'])) {
-
             $tempItems = array();
             foreach ($emptySavedItems['group'] as $tempItem) {
                 $tempItems[] = $tempItem['id'];
             }
 
-            $msg = Mage::helper('M2ePro')->__('
+            $msg = Mage::helper('M2ePro')->__(
+                '
                 Some kTypes(s) Group(s) was removed, that is why its Settings were
                 ignored and can not be applied',
                 implode(', ', $tempItems)
@@ -519,17 +508,18 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
 
     // ---------------------------------------
 
-    private function groupEbayMotorsEpidsData($data, $condition)
+    protected function groupEbayMotorsEpidsData($data, $condition)
     {
-        $groupingFields = array_unique(array_merge(
-            array('year', 'make', 'model'),
-            array_keys($condition)
-        ));
+        $groupingFields = array_unique(
+            array_merge(
+                array('year', 'make', 'model'),
+                array_keys($condition)
+            )
+        );
 
         $groups = array();
         foreach ($data as $item) {
             if (empty($groups)) {
-
                 $group = array();
                 foreach ($groupingFields as $groupingField) {
                     $group[$groupingField] = $item[$groupingField];
@@ -556,7 +546,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         return $groups;
     }
 
-    private function buildEpidData($resource)
+    protected function buildEpidData($resource)
     {
         $motorsData = array();
 
@@ -587,7 +577,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
         return $motorsData;
     }
 
-    private function getEbayMotorsEpidsAttributes()
+    protected function getEbayMotorsEpidsAttributes()
     {
         $categoryId = $this->getCategorySource()->getMainCategory();
         $categoryData = $this->getEbayMarketplace()->getCategory($categoryId);
@@ -606,27 +596,29 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Category
      */
-    private function getCategoryTemplate()
+    protected function getCategoryTemplate()
     {
-        if (is_null($this->categoryTemplate)) {
-            $this->categoryTemplate = $this->getListingProduct()
-                                           ->getChildObject()
-                                           ->getCategoryTemplate();
+        if ($this->_categoryTemplate === null) {
+            $this->_categoryTemplate = $this->getListingProduct()
+                                            ->getChildObject()
+                                            ->getCategoryTemplate();
         }
-        return $this->categoryTemplate;
+
+        return $this->_categoryTemplate;
     }
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_OtherCategory
      */
-    private function getOtherCategoryTemplate()
+    protected function getOtherCategoryTemplate()
     {
-        if (is_null($this->otherCategoryTemplate)) {
-            $this->otherCategoryTemplate = $this->getListingProduct()
-                                                ->getChildObject()
-                                                ->getOtherCategoryTemplate();
+        if ($this->_otherCategoryTemplate === null) {
+            $this->_otherCategoryTemplate = $this->getListingProduct()
+                                                 ->getChildObject()
+                                                 ->getOtherCategoryTemplate();
         }
-        return $this->otherCategoryTemplate;
+
+        return $this->_otherCategoryTemplate;
     }
 
     //########################################
@@ -634,12 +626,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     /**
      * @return Ess_M2ePro_Helper_Component_Ebay_Motors
      */
-    private function getMotorsHelper()
+    protected function getMotorsHelper()
     {
         return Mage::helper('M2ePro/Component_Ebay_Motors');
     }
 
-    private function getMotorsAttribute($type)
+    protected function getMotorsAttribute($type)
     {
         return $this->getMotorsHelper()->getAttribute($type);
     }
@@ -649,7 +641,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Category_Source
      */
-    private function getCategorySource()
+    protected function getCategorySource()
     {
         return $this->getEbayListingProduct()->getCategoryTemplateSource();
     }
@@ -657,7 +649,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_OtherCategory_Source
      */
-    private function getOtherCategorySource()
+    protected function getOtherCategorySource()
     {
         return $this->getEbayListingProduct()->getOtherCategoryTemplateSource();
     }

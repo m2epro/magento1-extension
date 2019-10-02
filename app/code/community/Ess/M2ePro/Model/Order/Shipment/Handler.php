@@ -56,7 +56,6 @@ abstract class Ess_M2ePro_Model_Order_Shipment_Handler
         $number = trim($track->getData('number'));
 
         if (!empty($number)) {
-
             $carrierCode = $carrierTitle = trim($track->getData('carrier_code'));
 
             $carrier = Mage::getSingleton('shipping/config')->getCarrierInstance($carrierCode, $order->getStoreId());

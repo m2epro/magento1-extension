@@ -33,12 +33,12 @@ class Ess_M2ePro_Helper_Module_Support_Search extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    private function sendRequestAsGet($params)
+    protected function sendRequestAsGet($params)
     {
         $curlObject = curl_init();
 
         $url = Mage::helper('M2ePro/Module_Support')->getMainSupportUrl('extension/search');
-        $url = $url . '?'.http_build_query($params,'','&');
+        $url = $url . '?'.http_build_query($params, '', '&');
         curl_setopt($curlObject, CURLOPT_URL, $url);
 
         curl_setopt($curlObject, CURLOPT_FOLLOWLOCATION, true);

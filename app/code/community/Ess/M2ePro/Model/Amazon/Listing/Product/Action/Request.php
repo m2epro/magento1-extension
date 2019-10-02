@@ -11,27 +11,27 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
     /**
      * @var array
      */
-    private $params = array();
+    protected $_params = array();
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator
      */
-    private $configurator = NULL;
+    protected $_configurator = null;
 
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     /**
      * @var array
      */
-    private $warningMessages = array();
+    protected $_warningMessages = array();
 
     /**
      * @var array
      */
-    protected $metaData = array();
+    protected $_metaData = array();
 
     //########################################
 
@@ -44,7 +44,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     public function setParams(array $params = array())
     {
-        $this->params = $params;
+        $this->_params = $params;
     }
 
     /**
@@ -52,7 +52,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     protected function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     // ---------------------------------------
@@ -62,7 +62,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     public function setConfigurator(Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator $object)
     {
-        $this->configurator = $object;
+        $this->_configurator = $object;
     }
 
     /**
@@ -70,7 +70,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     protected function getConfigurator()
     {
-        return $this->configurator;
+        return $this->_configurator;
     }
 
     // ---------------------------------------
@@ -80,7 +80,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $object)
     {
-        $this->listingProduct = $object;
+        $this->_listingProduct = $object;
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################
@@ -177,7 +177,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
 
     protected function addWarningMessage($message)
     {
-        $this->warningMessages[md5($message)] = $message;
+        $this->_warningMessages[sha1($message)] = $message;
     }
 
     /**
@@ -185,24 +185,24 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Request
      */
     public function getWarningMessages()
     {
-        return $this->warningMessages;
+        return $this->_warningMessages;
     }
 
     //########################################
 
     protected function addMetaData($key, $value)
     {
-        $this->metaData[$key] = $value;
+        $this->_metaData[$key] = $value;
     }
 
     public function getMetaData()
     {
-        return $this->metaData;
+        return $this->_metaData;
     }
 
     public function setMetaData($value)
     {
-        $this->metaData = $value;
+        $this->_metaData = $value;
         return $this;
     }
 

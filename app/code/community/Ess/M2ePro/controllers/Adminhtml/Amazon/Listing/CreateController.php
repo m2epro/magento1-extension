@@ -9,7 +9,7 @@
 class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
 {
-    protected $sessionKeyPostfix = '_listing_create';
+    protected $_sessionKeyPostfix = '_listing_create';
 
     //########################################
 
@@ -42,10 +42,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
         // ---------------------------------------
         if ($this->getRequest()->getParam('clear')) {
             $this->clearSession();
-            $this->getRequest()->setParam('clear',null);
-            $this->_redirect('*/*/index',array('_current' => true, 'step' => 1));
+            $this->getRequest()->setParam('clear', null);
+            $this->_redirect('*/*/index', array('_current' => true, 'step' => 1));
             return;
         }
+
         // ---------------------------------------
 
         $step = (int)$this->getRequest()->getParam('step');
@@ -70,7 +71,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
     protected function stepOne()
     {
         if ($this->getRequest()->isPost()) {
-
             // save data
             $post = $this->getRequest()->getPost();
             // ---------------------------------------
@@ -96,14 +96,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
     protected function stepTwo()
     {
-        if (is_null($this->getSessionValue('account_id'))) {
+        if ($this->getSessionValue('account_id') === null) {
             $this->clearSession();
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 1));
             return;
         }
 
         if ($this->getRequest()->isPost()) {
-
             $this->setSessionValue('marketplace_id', $this->getMarketplaceId());
 
             $dataKeys = Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling::getDefaultFieldsValues();
@@ -113,7 +112,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
                 $this->setSessionValue($key, $post[$key]);
             }
 
-            $this->_redirect('*/*/index',array('_current' => true, 'step'=>'3'));
+            $this->_redirect('*/*/index', array('_current' => true, 'step'=>'3'));
             return;
         }
 
@@ -129,14 +128,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
     protected function stepThree()
     {
-        if (is_null($this->getSessionValue('account_id'))) {
+        if ($this->getSessionValue('account_id') === null) {
             $this->clearSession();
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 1));
             return;
         }
 
         if ($this->getRequest()->isPost()) {
-
             $dataKeys = Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Search::getDefaultFieldsValues();
 
             $post = $this->getRequest()->getPost();
@@ -153,7 +151,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
             }
 
             return $this->_redirect(
-                '*/adminhtml_amazon_listing_productAdd/index',  array(
+                '*/adminhtml_amazon_listing_productAdd/index', array(
                     'id' => $listing->getId(),
                     'new_listing' => 1
                 )
@@ -215,7 +213,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
     protected function getSessionKey()
     {
-        return 'amazon'.$this->sessionKeyPostfix;
+        return 'amazon'.$this->_sessionKeyPostfix;
     }
 
     //########################################
@@ -223,7 +221,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
     protected function getMarketplaceId()
     {
         $accountObj = Mage::helper('M2ePro/Component')
-            ->getCachedUnknownObject('Account',(int)$this->getSessionValue('account_id'));
+            ->getCachedUnknownObject('Account', (int)$this->getSessionValue('account_id'));
         return (int)$accountObj->getMarketplaceId();
     }
 
@@ -243,11 +241,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
     {
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->getSessionKey());
 
-        if (is_null($sessionData)) {
+        if ($sessionData === null) {
             $sessionData = array();
         }
 
-        if (is_null($key)) {
+        if ($key === null) {
             return $sessionData;
         }
 
@@ -256,14 +254,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_CreateController
 
     // ---------------------------------------
 
-    private function clearSession()
+    protected function clearSession()
     {
         Mage::helper('M2ePro/Data_Session')->setValue($this->getSessionKey(), NULL);
     }
 
     //########################################
 
-    private function isCreationModeListingOnly()
+    protected function isCreationModeListingOnly()
     {
         return $this->getRequest()->getParam('creation_mode') ==
             Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY;

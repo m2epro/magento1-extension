@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Model_Listing_Auto_Category extends Ess_M2ePro_Model_Component_Abstract
 {
-    /** @var Ess_M2ePro_Model_Listing_Auto_Category_Group $group */
-    private $group = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Auto_Category_Group $_group */
+    protected $_group = null;
 
     //########################################
 
@@ -49,11 +49,11 @@ class Ess_M2ePro_Model_Listing_Auto_Category extends Ess_M2ePro_Model_Component_
             throw new Ess_M2ePro_Model_Exception_Logic('Group ID was not set.');
         }
 
-        if (!is_null($this->group)) {
-            return $this->group;
+        if ($this->_group !== null) {
+            return $this->_group;
         }
 
-        return $this->group = Mage::helper('M2ePro/Component')->getUnknownObject(
+        return $this->_group = Mage::helper('M2ePro/Component')->getUnknownObject(
             'Listing_Auto_Category_Group', $this->getGroupId()
         );
     }

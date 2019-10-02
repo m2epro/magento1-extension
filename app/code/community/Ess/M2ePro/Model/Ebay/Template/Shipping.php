@@ -7,7 +7,7 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Ebay_Template_Shipping getResource()
+ * @method Ess_M2ePro_Model_Resource_Ebay_Template_Shipping getResource()
  */
 class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component_Abstract
 {
@@ -41,17 +41,17 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated
      */
-    private $calculatedShippingModel = NULL;
+    protected $_calculatedShippingModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Shipping_Source[]
      */
-    private $shippingSourceModels = array();
+    protected $_shippingSourceModels = array();
 
     //########################################
 
@@ -83,14 +83,18 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
                             ->getCollection()
-                            ->addFieldToFilter('template_shipping_mode',
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE)
+                            ->addFieldToFilter(
+                                'template_shipping_mode',
+                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                            )
                             ->addFieldToFilter('template_shipping_id', $this->getId())
                             ->getSize() ||
                (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
                             ->getCollection()
-                            ->addFieldToFilter('template_shipping_mode',
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE)
+                            ->addFieldToFilter(
+                                'template_shipping_mode',
+                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                            )
                             ->addFieldToFilter('template_shipping_id', $this->getId())
                             ->getSize();
     }
@@ -102,7 +106,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         }
 
         $calculatedShippingObject = $this->getCalculatedShipping();
-        if (!is_null($calculatedShippingObject)) {
+        if ($calculatedShippingObject !== null) {
             $calculatedShippingObject->deleteInstance();
         }
 
@@ -111,9 +115,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             $service->deleteInstance();
         }
 
-        $this->marketplaceModel = NULL;
-        $this->calculatedShippingModel = NULL;
-        $this->shippingSourceModels = array();
+        $this->_marketplaceModel        = NULL;
+        $this->_calculatedShippingModel = NULL;
+        $this->_shippingSourceModels    = array();
 
         $this->delete();
         return true;
@@ -126,13 +130,13 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -140,7 +144,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-        $this->marketplaceModel = $instance;
+        $this->_marketplaceModel = $instance;
     }
 
     //########################################
@@ -153,15 +157,15 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     {
         $productId = $magentoProduct->getProductId();
 
-        if (!empty($this->shippingSourceModels[$productId])) {
-            return $this->shippingSourceModels[$productId];
+        if (!empty($this->_shippingSourceModels[$productId])) {
+            return $this->_shippingSourceModels[$productId];
         }
 
-        $this->shippingSourceModels[$productId] = Mage::getModel('M2ePro/Ebay_Template_Shipping_Source');
-        $this->shippingSourceModels[$productId]->setMagentoProduct($magentoProduct);
-        $this->shippingSourceModels[$productId]->setShippingTemplate($this);
+        $this->_shippingSourceModels[$productId] = Mage::getModel('M2ePro/Ebay_Template_Shipping_Source');
+        $this->_shippingSourceModels[$productId]->setMagentoProduct($magentoProduct);
+        $this->_shippingSourceModels[$productId]->setShippingTemplate($this);
 
-        return $this->shippingSourceModels[$productId];
+        return $this->_shippingSourceModels[$productId];
     }
 
     //########################################
@@ -171,21 +175,19 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     public function getCalculatedShipping()
     {
-        if (is_null($this->calculatedShippingModel)) {
-
+        if ($this->_calculatedShippingModel === null) {
             try {
-                $this->calculatedShippingModel = Mage::helper('M2ePro')->getCachedObject(
+                $this->_calculatedShippingModel = Mage::helper('M2ePro')->getCachedObject(
                     'Ebay_Template_Shipping_Calculated', $this->getId(), NULL, array('template')
                 );
 
-                $this->calculatedShippingModel->setShippingTemplate($this);
-
+                $this->_calculatedShippingModel->setShippingTemplate($this);
             } catch (Exception $exception) {
-                return $this->calculatedShippingModel;
+                return $this->_calculatedShippingModel;
             }
         }
 
-        return $this->calculatedShippingModel;
+        return $this->_calculatedShippingModel;
     }
 
     /**
@@ -193,7 +195,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      */
     public function setCalculatedShipping(Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated $instance)
     {
-         $this->calculatedShippingModel = $instance;
+         $this->_calculatedShippingModel = $instance;
     }
 
     //########################################
@@ -205,11 +207,15 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      * @return array|Ess_M2ePro_Model_Abstract[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getServices($asObjects = false, array $filters = array(),
-                                array $sort = array('priority'=>Varien_Data_Collection::SORT_ORDER_ASC))
-    {
-        $services = $this->getRelatedSimpleItems('Ebay_Template_Shipping_Service','template_shipping_id',
-                                                 $asObjects, $filters, $sort);
+    public function getServices(
+        $asObjects = false,
+        array $filters = array(),
+        array $sort = array('priority' => Varien_Data_Collection::SORT_ORDER_ASC)
+    ) {
+        $services = $this->getRelatedSimpleItems(
+            'Ebay_Template_Shipping_Service', 'template_shipping_id',
+            $asObjects, $filters, $sort
+        );
 
         if ($asObjects) {
             /** @var $service Ess_M2ePro_Model_Ebay_Template_Shipping_Service */
@@ -511,7 +517,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
      *
      * @return bool
      */
-    private function getRateTable($type, Ess_M2ePro_Model_Account $account)
+    protected function getRateTable($type, Ess_M2ePro_Model_Account $account)
     {
         $rateTables = $this->getSettings($type.'_shipping_rate_table');
 
@@ -619,7 +625,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     {
         $data = $this->getData('local_shipping_discount_combined_profile_id');
 
-        if (is_null($data)) {
+        if ($data === null) {
             return NULL;
         }
 
@@ -678,7 +684,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     {
         $data = $this->getData('international_shipping_discount_combined_profile_id');
 
-        if (is_null($data)) {
+        if ($data === null) {
             return NULL;
         }
 

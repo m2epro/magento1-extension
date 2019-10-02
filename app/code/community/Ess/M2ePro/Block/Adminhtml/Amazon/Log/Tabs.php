@@ -8,23 +8,21 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
-    // ---------------------------------------
-
     const TAB_ID_LISTING            = 'listing';
     const TAB_ID_LISTING_OTHER      = 'listing_other';
     const TAB_ID_ORDER              = 'order';
     const TAB_ID_SYNCHRONIZATION    = 'synchronization';
 
-    //########################################
+    protected $_logType;
 
-    protected $logType;
+    //########################################
 
     /**
      * @param string $logType
      */
     public function setLogType($logType)
     {
-        $this->logType = $logType;
+        $this->_logType = $logType;
     }
 
     //########################################
@@ -145,9 +143,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs extends Ess_M2ePro_Block_Adminh
 
     protected function _toHtml()
     {
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Description' => Mage::helper('M2ePro')->__('Description')
-        ));
+            )
+        );
 
         $javascript = <<<JAVASCIRPT
 

@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_RunVariationParentProce
 
     protected function performActions()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('is_variation_parent', 1);
         $listingProductCollection->addFieldToFilter('variation_parent_need_processor', 1);

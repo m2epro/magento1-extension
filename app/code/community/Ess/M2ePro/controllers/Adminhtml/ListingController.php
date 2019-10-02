@@ -16,7 +16,7 @@ class Ess_M2ePro_Adminhtml_ListingController
         $listingId = $this->getRequest()->getParam('id');
         $title = $this->getRequest()->getParam('title');
 
-        if (is_null($listingId)) {
+        if ($listingId === null) {
             return;
         }
 
@@ -30,7 +30,7 @@ class Ess_M2ePro_Adminhtml_ListingController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to clear.'));
             $this->_redirect('*/*/index');
             return;
@@ -57,12 +57,16 @@ class Ess_M2ePro_Adminhtml_ListingController
             'table_name' => Mage::getResourceModel('M2ePro/Listing_Log')->getMainTable(),
             'type_log'   => 'listing'
         );
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_log_errorsSummary','',$blockParams);
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_log_errorsSummary', '', $blockParams);
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'result' => 'success',
-            'html' => $block->toHtml()
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'result' => 'success',
+                'html' => $block->toHtml()
+                )
+            )
+        );
     }
 
     //########################################

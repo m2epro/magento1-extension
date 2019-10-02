@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Servicing_Task_Messages extends Ess_M2ePro_Model_Servicin
 
     //########################################
 
-    private function updateMagentoMessages(array $messages)
+    protected function updateMagentoMessages(array $messages)
     {
         $messages = array_filter($messages, array($this, 'updateMagentoMessagesFilterMagentoMessages'));
         !is_array($messages) && $messages = array();
@@ -67,7 +67,7 @@ class Ess_M2ePro_Model_Servicing_Task_Messages extends Ess_M2ePro_Model_Servicin
 
     //########################################
 
-    private function updateModuleMessages(array $messages)
+    protected function updateModuleMessages(array $messages)
     {
         $messages = array_filter($messages, array($this, 'updateModuleMessagesFilterModuleMessages'));
         !is_array($messages) && $messages = array();

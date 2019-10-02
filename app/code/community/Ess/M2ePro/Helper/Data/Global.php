@@ -19,7 +19,7 @@ class Ess_M2ePro_Helper_Data_Global extends Mage_Core_Helper_Abstract
     public function setValue($key, $value)
     {
         $globalKey = Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER.'_'.$key;
-        Mage::register($globalKey,$value,!Mage::helper('M2ePro/Module')->isDevelopmentEnvironment());
+        Mage::register($globalKey, $value, !Mage::helper('M2ePro/Module')->isDevelopmentEnvironment());
     }
 
     //########################################

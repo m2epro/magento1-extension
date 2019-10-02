@@ -39,9 +39,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Acknowledge extends Ess_M2ePro_Mo
     /**
      * @return Ess_M2ePro_Model_Order[]
      */
-    private function getOrdersForProcess()
+    protected function getOrdersForProcess()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Order');
         $collection->addFieldToFilter('status', Ess_M2ePro_Model_Walmart_Order::STATUS_CREATED);
         $collection->addFieldToFilter('is_tried_to_acknowledge', 0);

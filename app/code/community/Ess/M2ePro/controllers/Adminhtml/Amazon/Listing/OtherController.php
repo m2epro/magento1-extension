@@ -103,12 +103,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
         }
 
         foreach ($productArray as $productId) {
-            /* @var $listingOther Ess_M2ePro_Model_Listing_Other */
+            /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
             $listingOther = Mage::helper('M2ePro/Component')->getComponentObject(
                 Ess_M2ePro_Helper_Component_Amazon::NICK, 'Listing_Other', $productId
             );
 
-            if (!is_null($listingOther->getProductId())) {
+            if ($listingOther->getProductId() !== null) {
                 $listingOther->unmapProduct(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
             }
 
@@ -145,7 +145,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
                 );
 
             if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
-
                 $listingOther->moveToListingFailed();
 
                 $errorsCount++;
@@ -158,34 +157,47 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_OtherController
         $sessionHelper->removeValue($sessionKey);
 
         if ($errorsCount) {
-
-            $logViewUrl = $this->getUrl('*/adminhtml_amazon_log/listingOther', array(
+            $logViewUrl = $this->getUrl(
+                '*/adminhtml_amazon_log/listingOther', array(
                 'back' => Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_listing_other/index')
-            ));
+                )
+            );
 
             if (count($selectedProducts) == $errorsCount) {
-                $this->getSession()->addError(Mage::helper('M2ePro')->__(
-                    'Products were not Moved. <a target="_blank" href="%url%">View Log</a> for details.', $logViewUrl
-                ));
+                $this->getSession()->addError(
+                    Mage::helper('M2ePro')->__(
+                        'Products were not Moved. <a target="_blank" href="%url%">View Log</a> for details.',
+                        $logViewUrl
+                    )
+                );
 
-                return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                    'result' => false
-                )));
+                return $this->getResponse()->setBody(
+                    Mage::helper('M2ePro')->jsonEncode(
+                        array(
+                        'result' => false
+                        )
+                    )
+                );
             }
 
-            $this->getSession()->addError(Mage::helper('M2ePro')->__(
-                '%errors_count% product(s) were not Moved. Please <a target="_blank" href="%url%">view Log</a>
+            $this->getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    '%errors_count% product(s) were not Moved. Please <a target="_blank" href="%url%">view Log</a>
                 for the details.',
-                $errorsCount, $logViewUrl
-            ));
-
+                    $errorsCount, $logViewUrl
+                )
+            );
         } else {
             $this->getSession()->addSuccess(Mage::helper('M2ePro')->__('Product(s) was successfully Moved.'));
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'result' => true
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'result' => true
+                )
+            )
+        );
     }
 
     //########################################

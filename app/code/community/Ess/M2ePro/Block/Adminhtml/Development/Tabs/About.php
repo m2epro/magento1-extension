@@ -30,33 +30,49 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_About extends Mage_Adminhtml_B
 
         // Left Column
         // ---------------------------------------
-        $this->setChild('module', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_module'
-        ));
-        $this->setChild('license_information', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_license_information'
-        ));
-        $this->setChild('location', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_location'
-        ));
+        $this->setChild(
+            'module', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_module'
+            )
+        );
+        $this->setChild(
+            'license_information', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_license_information'
+            )
+        );
+        $this->setChild(
+            'location', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_location'
+            )
+        );
         // ---------------------------------------
 
         // Right Column
         // ---------------------------------------
-        $this->setChild('magento', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_magento')
+        $this->setChild(
+            'magento', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_magento'
+            )
         );
-        $this->setChild('system', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_system')
+        $this->setChild(
+            'system', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_system'
+            )
         );
-        $this->setChild('php', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_php')
+        $this->setChild(
+            'php', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_php'
+            )
         );
-        $this->setChild('mysql_info', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_mysql_info')
+        $this->setChild(
+            'mysql_info', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_mysql_info'
+            )
         );
-        $this->setChild('mysql_summary', $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_info_mysql_summary')
+        $this->setChild(
+            'mysql_summary', $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_development_info_mysql_summary'
+            )
         );
         // ---------------------------------------
 

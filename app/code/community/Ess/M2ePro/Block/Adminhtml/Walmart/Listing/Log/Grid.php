@@ -42,7 +42,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Log_Grid extends Ess_M2ePro_Blo
         $value = Mage::helper('M2ePro')->escapeHtml($value);
 
         if ($row->getData('listing_id')) {
-
             $url = $this->getUrl(
                 '*/adminhtml_walmart_listing/view',
                 array('id' => $row->getData('listing_id'))

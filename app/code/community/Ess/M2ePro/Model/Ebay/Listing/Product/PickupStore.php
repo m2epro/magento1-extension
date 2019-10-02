@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore extends Ess_M2ePro_Model_Component_Abstract
 {
     /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore */
-    protected $accountPickupStore = NULL;
+    protected $_accountPickupStore = null;
 
     //########################################
 
@@ -27,15 +27,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore extends Ess_M2ePro_Model
      */
     public function getAccountPickupStore()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
-        if (!is_null($this->accountPickupStore)) {
-            return $this->accountPickupStore;
+        if ($this->_accountPickupStore !== null) {
+            return $this->_accountPickupStore;
         }
 
-        return $this->accountPickupStore = Mage::getModel('M2ePro/Ebay_Account_PickupStore')
+        return $this->_accountPickupStore = Mage::getModel('M2ePro/Ebay_Account_PickupStore')
                                                 ->loadInstance($this->getAccountPickupStoreId());
     }
 

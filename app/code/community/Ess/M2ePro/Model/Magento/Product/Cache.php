@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Product
 {
-    private $isCacheEnabled = false;
+    protected $_isCacheEnabled = false;
 
     //########################################
 
@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
      */
     public function isCacheEnabled()
     {
-        return $this->isCacheEnabled;
+        return $this->_isCacheEnabled;
     }
 
     /**
@@ -53,7 +53,7 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
      */
     public function enableCache()
     {
-        $this->isCacheEnabled = true;
+        $this->_isCacheEnabled = true;
         return $this;
     }
 
@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
      */
     public function disableCache()
     {
-        $this->isCacheEnabled = false;
+        $this->_isCacheEnabled = false;
         return $this;
     }
 
@@ -188,7 +188,7 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
 
     public function getVariationInstance()
     {
-        if (!is_null($this->_variationInstance)) {
+        if ($this->_variationInstance !== null) {
             return $this->_variationInstance;
         }
 
@@ -205,17 +205,17 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
             $methodName,
         );
 
-        if (!is_null($params)) {
+        if ($params !== null) {
             $cacheKey[] = $params;
         }
 
         $cacheResult = $this->getCacheValue($cacheKey);
 
-        if ($this->isCacheEnabled() && !is_null($cacheResult)) {
+        if ($this->isCacheEnabled() && $cacheResult !== null) {
             return $cacheResult;
         }
 
-        if (!is_null($params)) {
+        if ($params !== null) {
             $data = call_user_func_array(array('parent', $methodName), $params);
         } else {
             $data = call_user_func(array('parent', $methodName));

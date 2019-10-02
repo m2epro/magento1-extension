@@ -40,7 +40,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         if ($storeId > 0) {
             /** @var $storeModel Mage_Core_Model_Store */
             $storeModel = Mage::getModel('core/store')->load($storeId);
-            if (!is_null($storeModel)) {
+            if ($storeModel !== null) {
                 $websiteId = $storeModel->getWebsiteId();
                 $productWebsiteTableName = Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('catalog/product_website');
@@ -59,10 +59,11 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
 
     // ---------------------------------------
 
-    public function getGeneralProductsFromCategories(array $categories,
-                                                     $storeId = 0,
-                                                     $returnType = self::RETURN_TYPE_IDS)
-    {
+    public function getGeneralProductsFromCategories(
+        array $categories,
+        $storeId = 0,
+        $returnType = self::RETURN_TYPE_IDS
+    ) {
         $categoryIds = $this->_getIdsFromInput($categories, 'category_id');
         if (empty($categoryIds)) {
             return array();
@@ -99,7 +100,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         if ($storeId > 0) {
             /** @var $storeModel Mage_Core_Model_Store */
             $storeModel = Mage::getModel('core/store')->load($storeId);
-            if (!is_null($storeModel)) {
+            if ($storeModel !== null) {
                 $websiteId = $storeModel->getWebsiteId();
                 $productWebsiteTableName = Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('catalog/product_website');
@@ -135,7 +136,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         if ($storeId > 0) {
             /** @var $storeModel Mage_Core_Model_Store */
             $storeModel = Mage::getModel('core/store')->load($storeId);
-            if (!is_null($storeModel)) {
+            if ($storeModel !== null) {
                 $websiteId = $storeModel->getWebsiteId();
                 $productWebsiteTableName = Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('catalog/product_website');
@@ -165,7 +166,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         if ($storeId > 0) {
             /** @var $storeModel Mage_Core_Model_Store */
             $storeModel = Mage::getModel('core/store')->load($storeId);
-            if (!is_null($storeModel)) {
+            if ($storeModel !== null) {
                 $websiteId = $storeModel->getWebsiteId();
                 $productWebsiteTableName = Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('catalog/product_website');
@@ -193,7 +194,6 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
 
         $resultCategories = array();
         foreach ($productIds as $productId) {
-
             foreach ($productsCount as $categoryId => $count) {
                 if (!isset($categories[$categoryId][$productId])) {
                     continue;
@@ -232,7 +232,7 @@ class Ess_M2ePro_Helper_Magento_Category extends Ess_M2ePro_Helper_Magento_Abstr
         if ($storeId > 0) {
             /** @var $storeModel Mage_Core_Model_Store */
             $storeModel = Mage::getModel('core/store')->load($storeId);
-            if (!is_null($storeModel)) {
+            if ($storeModel !== null) {
                 $websiteId = $storeModel->getWebsiteId();
                 $productWebsiteTableName = Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('catalog/product_website');

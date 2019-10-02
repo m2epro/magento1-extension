@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
      *
      * @var string
      */
-    private static $modifierRegex = '[._-]?(?:(stable|beta|b|RC|alpha|a|patch|pl|p)((?:[.-]?\d+)*+)?)?([.-]?dev)?';
+    private static $_modifierRegex = '[._-]?(?:(stable|beta|b|RC|alpha|a|patch|pl|p)((?:[.-]?\d+)*+)?)?([.-]?dev)?';
 
     /** @var array */
     public static $stabilities = array('stable', 'RC', 'beta', 'alpha', 'dev');
@@ -54,7 +54,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
             return 'dev';
         }
 
-        preg_match('{' . self::$modifierRegex . '(?:\+.*)?$}i', strtolower($version), $match);
+        preg_match('{' . self::$_modifierRegex . '(?:\+.*)?$}i', strtolower($version), $match);
         if (!empty($match[3])) {
             return 'dev';
         }
@@ -63,9 +63,11 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
             if ('beta' === $match[1] || 'b' === $match[1]) {
                 return 'beta';
             }
+
             if ('alpha' === $match[1] || 'a' === $match[1]) {
                 return 'alpha';
             }
+
             if ('rc' === $match[1]) {
                 return 'RC';
             }
@@ -124,16 +126,20 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
         }
 
         // match classical versioning
-        if (preg_match('{^v?(\d{1,5})(\.\d++)?(\.\d++)?(\.\d++)?' . self::$modifierRegex . '$}i',
-                       $version, $matches)) {
+        if (preg_match(
+            '{^v?(\d{1,5})(\.\d++)?(\.\d++)?(\.\d++)?' . self::$_modifierRegex . '$}i',
+            $version, $matches
+        )) {
             $version = $matches[1]
                 . (!empty($matches[2]) ? $matches[2] : '.0')
                 . (!empty($matches[3]) ? $matches[3] : '.0')
                 . (!empty($matches[4]) ? $matches[4] : '.0');
             $index = 5;
         // match date(time) based versioning
-        } elseif (preg_match('{^v?(\d{4}(?:[.:-]?\d{2}){1,6}(?:[.:-]?\d{1,3})?)' . self::$modifierRegex . '$}i',
-                             $version, $matches)) {
+        } elseif (preg_match(
+            '{^v?(\d{4}(?:[.:-]?\d{2}){1,6}(?:[.:-]?\d{1,3})?)' . self::$_modifierRegex . '$}i',
+            $version, $matches
+        )) {
             $version = preg_replace('{\D}', '.', $matches[1]);
             $index = 2;
         }
@@ -144,6 +150,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
                 if ('stable' === $matches[$index]) {
                     return $version;
                 }
+
                 $version .= '-' . $this->expandStability($matches[$index])
                                 . (!empty($matches[$index + 1]) ? ltrim($matches[$index + 1], '.-') : '');
             }
@@ -275,10 +282,12 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
             && substr($b, 0, 3) === '[>=' && (false !== ($posB = strpos($b, '<', 4)))
             && substr($a, $posA + 2, -1) === substr($b, 4, $posB - 5)
         ) {
-            $constraint = new MultiConstraint(array(
+            $constraint = new MultiConstraint(
+                array(
                 new Constraint('>=', substr($a, 4, $posA - 5)),
                 new Constraint('<', substr($b, $posB + 2, -1)),
-            ));
+                )
+            );
         } else {
             $constraint = new MultiConstraint($orGroups, false);
         }
@@ -295,7 +304,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
      *
      * @return array
      */
-    private function parseConstraint($constraint)
+    protected function parseConstraint($constraint)
     {
         if (preg_match('{^([^,\s]+?)@(' . implode('|', self::$stabilities) . ')$}i', $constraint, $match)) {
             $constraint = $match[1];
@@ -308,7 +317,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
             return array(new EmptyConstraint());
         }
 
-        $versionRegex = 'v?(\d++)(?:\.(\d++))?(?:\.(\d++))?(?:\.(\d++))?' . self::$modifierRegex . '(?:\+[^\s]+)?';
+        $versionRegex = 'v?(\d++)(?:\.(\d++))?(?:\.(\d++))?(?:\.(\d++))?' . self::$_modifierRegex . '(?:\+[^\s]+)?';
 
         // Tilde Range
         //
@@ -469,7 +478,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
                 if (!empty($stabilityModifier) && $this->parseStability($version) === 'stable') {
                     $version .= '-' . $stabilityModifier;
                 } elseif ('<' === $matches[1] || '>=' === $matches[1]) {
-                    if (!preg_match('/-' . self::$modifierRegex . '$/', strtolower($matches[2]))) {
+                    if (!preg_match('/-' . self::$_modifierRegex . '$/', strtolower($matches[2]))) {
                         if (substr($matches[2], 0, 4) !== 'dev-') {
                             $version .= '-dev';
                         }
@@ -501,7 +510,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
      *
      * @return string The new version
      */
-    private function manipulateVersionString($matches, $position, $increment = 0, $pad = '0')
+    protected function manipulateVersionString($matches, $position, $increment = 0, $pad = '0')
     {
         for ($i = 4; $i > 0; --$i) {
             if ($i > $position) {
@@ -531,7 +540,7 @@ class Ess_M2ePro_Model_Requirements_Semver_VersionParser
      *
      * @return string
      */
-    private function expandStability($stability)
+    protected function expandStability($stability)
     {
         $stability = strtolower($stability);
 

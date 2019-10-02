@@ -40,18 +40,15 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
             /** @var $account Ess_M2ePro_Model_Account **/
 
             try {
-
                 $this->getOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
                 // ---------------------------------------
 
                 $ebayOrders = $this->getEbayOrders($account);
 
-                if (count($ebayOrders) > 0) {
+                if (!empty($ebayOrders)) {
                     $this->createMagentoOrders($ebayOrders);
                 }
-
             } catch (\Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Create Failed Orders" Action for eBay Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -69,16 +66,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function createMagentoOrders($ebayOrders)
+    protected function createMagentoOrders($ebayOrders)
     {
         $iteration = 1;
 
@@ -90,7 +87,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
             }
 
             if ($order->canCreateMagentoOrder()) {
-
                 try {
                     $order->addNoticeLog(
                         'Magento order creation rules are met. M2E Pro will attempt to create Magento order.'
@@ -99,14 +95,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
                 } catch (Exception $exception) {
                     continue;
                 }
-
             } else {
-
-                $order->addData(array(
+                $order->addData(
+                    array(
                     'magento_order_creation_failure' => Ess_M2ePro_Model_Order::MAGENTO_ORDER_CREATION_FAILED_NO,
                     'magento_order_creation_fails_count' => 0,
                     'magento_order_creation_latest_attempt_date' => NULL
-                ));
+                    )
+                );
                 $order->save();
 
                 continue;
@@ -119,15 +115,19 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
             if ($order->getChildObject()->canCreatePaymentTransaction()) {
                 $order->getChildObject()->createPaymentTransactions();
             }
+
             if ($order->getChildObject()->canCreateInvoice()) {
                 $order->createInvoice();
             }
+
             if ($order->getChildObject()->canCreateShipment()) {
                 $order->createShipment();
             }
+
             if ($order->getChildObject()->canCreateTracks()) {
                 $order->getChildObject()->createTracks();
             }
+
             if ($order->getStatusUpdateRequired()) {
                 $order->updateMagentoOrderStatus();
             }
@@ -146,7 +146,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
      *
      * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
      */
-    private function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
+    protected function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
     {
         /** @var Ess_M2ePro_Model_Order $dbOrder */
         $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
@@ -160,7 +160,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed extends Ess_M2ePro_Mode
 
     // ---------------------------------------
 
-    private function getEbayOrders(Ess_M2ePro_Model_Account $account)
+    protected function getEbayOrders(Ess_M2ePro_Model_Account $account)
     {
         $backToDate = new \DateTime('now', new \DateTimeZone('UTC'));
         $backToDate->modify('-15 minutes');

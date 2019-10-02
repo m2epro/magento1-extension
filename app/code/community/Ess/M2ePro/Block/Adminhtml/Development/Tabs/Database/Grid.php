@@ -46,7 +46,6 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
 
         $collection = new Ess_M2ePro_Model_Collection_Custom();
         foreach ($tablesList as $tableName) {
-
             if (!$structureHelper->isModuleTable($tableName)) {
                 continue;
             }
@@ -63,7 +62,6 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
             );
 
             if ($tableRow['is_exist'] && !$tableRow['is_crashed']) {
-
                 $tableRow['component'] = $structureHelper->getTableComponent($tableName);
                 $tableRow['group']     = $structureHelper->getTableGroup($tableName);
                 $tableRow['size']      = $structureHelper->getDataLength($tableName);
@@ -79,20 +77,23 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
 
     protected function _prepareColumns()
     {
-        $this->addColumn('table_name', array(
+        $this->addColumn(
+            'table_name', array(
             'header'    => Mage::helper('M2ePro')->__('Table Name'),
             'align'     => 'left',
             'index'     => 'table_name',
             'filter_index' => 'table_name',
             'frame_callback' => array($this, 'callbackColumnTableName'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle'),
-        ));
+            )
+        );
 
         // ---------------------------------------
         $options['general'] = 'General';
-        $options = array_merge($options,Mage::helper('M2ePro/Component')->getComponentsTitles());
+        $options = array_merge($options, Mage::helper('M2ePro/Component')->getComponentsTitles());
 
-        $this->addColumn('component', array(
+        $this->addColumn(
+            'component', array(
             'header'    => Mage::helper('M2ePro')->__('Component'),
             'align'     => 'right',
             'width'     => '120px',
@@ -101,7 +102,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
             'options'   => $options,
             'filter_index' => 'component',
             'filter_condition_callback' => array($this, 'callbackFilterMatch'),
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
@@ -123,7 +125,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
             Ess_M2ePro_Helper_Module_Database_Structure::TABLE_GROUP_OTHER             => 'Other'
         );
 
-        $this->addColumn('group', array(
+        $this->addColumn(
+            'group', array(
             'header'    => Mage::helper('M2ePro')->__('Group'),
             'align'     => 'right',
             'width'     => '100px',
@@ -132,25 +135,30 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
             'options'   => $options,
             'filter_index' => 'group',
             'filter_condition_callback' => array($this, 'callbackFilterMatch'),
-        ));
+            )
+        );
         // ---------------------------------------
 
-        $this->addColumn('records', array(
+        $this->addColumn(
+            'records', array(
             'header'    => Mage::helper('M2ePro')->__('Records'),
             'align'     => 'right',
             'width'     => '100px',
             'index'     => 'records',
             'type'      => 'number',
             'filter'    => false,
-        ));
+            )
+        );
 
-        $this->addColumn('size', array(
+        $this->addColumn(
+            'size', array(
             'header'    => Mage::helper('M2ePro')->__('Size (Mb)'),
             'align'     => 'right',
             'width'     => '100px',
             'index'     => 'size',
             'filter'    => false,
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -192,28 +200,34 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Grid extends Mage_Adm
 
         // Set edit action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('edit', array(
+        $this->getMassactionBlock()->addItem(
+            'edit', array(
             'label'    => Mage::helper('M2ePro')->__('Edit Table(s)'),
             'url'      => $this->getUrl('*/adminhtml_development_database/manageTables')
-        ));
+            )
+        );
         // ---------------------------------------
 
         // Set delete action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('delete', array(
+        $this->getMassactionBlock()->addItem(
+            'delete', array(
             'label'    => Mage::helper('M2ePro')->__('Delete Table(s) Rows'),
             'url'      => $this->getUrl('*/adminhtml_development_database/deleteTablesRows'),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         // ---------------------------------------
 
         // Set truncate action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('truncate', array(
+        $this->getMassactionBlock()->addItem(
+            'truncate', array(
             'label'    => Mage::helper('M2ePro')->__('Truncate Table(s)'),
             'url'      => $this->getUrl('*/adminhtml_development_database/truncateTables'),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -254,8 +268,10 @@ HTML;
             return false;
         }
 
-        return $this->getUrl('*/adminhtml_development_database/manageTable',
-                             array('table' => $row->getData('table_name')));
+        return $this->getUrl(
+            '*/adminhtml_development_database/manageTable',
+            array('table' => $row->getData('table_name'))
+        );
     }
 
     //########################################

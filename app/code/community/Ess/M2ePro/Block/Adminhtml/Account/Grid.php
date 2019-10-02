@@ -8,7 +8,7 @@
 
 abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    protected $viewComponentHelper = NULL;
+    protected $_viewComponentHelper;
 
     //########################################
 
@@ -18,8 +18,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
 
         // Initialize view
         // ---------------------------------------
-        $view = Mage::helper('M2ePro/View')->getCurrentView();
-        $this->viewComponentHelper = Mage::helper('M2ePro/View')->getComponentHelper($view);
+        $view                       = Mage::helper('M2ePro/View')->getCurrentView();
+        $this->_viewComponentHelper = Mage::helper('M2ePro/View')->getComponentHelper($view);
         // ---------------------------------------
 
         // Initialization block
@@ -42,11 +42,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
     {
         // Get collection of accounts
         $collection = $this->getCollection();
-        if (is_null($collection)) {
+        if ($collection === null) {
             $collection = Mage::getModel('M2ePro/Account')->getCollection();
         }
 
-        $components = $this->viewComponentHelper->getActiveComponents();
+        $components = $this->_viewComponentHelper->getActiveComponents();
         $collection->addFieldToFilter('main_table.component_mode', array('in'=>$components));
 
         // Set collection to grid
@@ -57,49 +57,57 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
 
     protected function _prepareColumns()
     {
-        $this->addColumn('create_date', array(
-            'header'    => Mage::helper('M2ePro')->__('Creation Date'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'type'      => 'datetime',
-            'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'index'     => 'create_date',
-            'filter_index' => 'main_table.create_date'
-        ));
+        $this->addColumn(
+            'create_date', array(
+                'header'       => Mage::helper('M2ePro')->__('Creation Date'),
+                'align'        => 'left',
+                'width'        => '150px',
+                'type'         => 'datetime',
+                'format'       => Mage::app()->getLocale()
+                                      ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'        => 'create_date',
+                'filter_index' => 'main_table.create_date'
+            )
+        );
 
-        $this->addColumn('update_date', array(
-            'header'    => Mage::helper('M2ePro')->__('Update Date'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'type'      => 'datetime',
-            'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'index'     => 'update_date',
-            'filter_index' => 'main_table.update_date'
-        ));
+        $this->addColumn(
+            'update_date', array(
+                'header'       => Mage::helper('M2ePro')->__('Update Date'),
+                'align'        => 'left',
+                'width'        => '150px',
+                'type'         => 'datetime',
+                'format'       => Mage::app()->getLocale()
+                                      ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'        => 'update_date',
+                'filter_index' => 'main_table.update_date'
+            )
+        );
 
-        $this->addColumn('actions', array(
-            'header'    => Mage::helper('M2ePro')->__('Actions'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'type'      => 'action',
-            'index'     => 'actions',
-            'filter'    => false,
-            'sortable'  => false,
-            'getter'    => 'getId',
-            'renderer'  => 'M2ePro/adminhtml_grid_column_renderer_action',
-            'actions'   => array(
-                array(
-                    'caption'   => Mage::helper('M2ePro')->__('Edit'),
-                    'url'       => array('base'=> '*/*/edit'),
-                    'field'     => 'id'
-                ),
-                array(
-                    'caption'   => Mage::helper('M2ePro')->__('Delete'),
-                    'onclick_action' => 'AccountGridHandlerObj.accountHandler.on_delete_popup',
-                    'field'     => 'id',
+        $this->addColumn(
+            'actions', array(
+                'header'   => Mage::helper('M2ePro')->__('Actions'),
+                'align'    => 'left',
+                'width'    => '150px',
+                'type'     => 'action',
+                'index'    => 'actions',
+                'filter'   => false,
+                'sortable' => false,
+                'getter'   => 'getId',
+                'renderer' => 'M2ePro/adminhtml_grid_column_renderer_action',
+                'actions'  => array(
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('Edit'),
+                        'url'     => array('base' => '*/*/edit'),
+                        'field'   => 'id'
+                    ),
+                    array(
+                        'caption'        => Mage::helper('M2ePro')->__('Delete'),
+                        'onclick_action' => 'AccountGridHandlerObj.accountHandler.on_delete_popup',
+                        'field'          => 'id',
+                    )
                 )
             )
-        ));
+        );
 
         return parent::_prepareColumns();
     }
@@ -119,10 +127,12 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
 
         // Set delete action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('delete', array(
-             'label'    => Mage::helper('M2ePro')->__('Delete'),
-             'url'      => ''
-        ));
+        $this->getMassactionBlock()->addItem(
+            'delete', array(
+                'label' => Mage::helper('M2ePro')->__('Delete'),
+                'url'   => ''
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -157,13 +167,17 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
         $text .= 'go to the <a href="%url%" target="_blank">Clients Portal</a>.';
         $text = Mage::helper('M2ePro')->__($text, Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl());
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
-            'on_delete_account_message' => $text
-        ));
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
+                'on_delete_account_message' => $text
+            )
+        );
 
-        $url = Mage::helper('M2ePro')->jsonEncode(array(
-            '*/*/delete' => $this->getUrl('*/*/delete')
-        ));
+        $url = Mage::helper('M2ePro')->jsonEncode(
+            array(
+                '*/*/delete' => $this->getUrl('*/*/delete')
+            )
+        );
 
         $js = <<<JS
 

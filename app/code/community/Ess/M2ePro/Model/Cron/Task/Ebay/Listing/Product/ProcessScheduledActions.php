@@ -40,14 +40,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         $percentsForOneAction = 100 / count($scheduledActions);
 
         foreach ($scheduledActions as $scheduledAction) {
-
             try {
-
                 $listingProduct = $scheduledAction->getListingProduct();
                 $additionalData = $scheduledAction->getAdditionalData();
-
             } catch (\Ess_M2ePro_Model_Exception_Logic $e) {
-
                 Mage::helper('M2ePro/Module_Exception')->process($e, false);
                 $scheduledAction->delete();
 
@@ -73,7 +69,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
             $scheduledAction->delete();
 
             if ($iteration % 10 == 0) {
-
                 Mage::dispatchEvent(
                     Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,
                     array(
@@ -90,7 +85,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
 
     //####################################
 
-    private function calculateActionsCountLimit()
+    protected function calculateActionsCountLimit()
     {
         $maxAllowedActionsCount = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/scheduled_actions/', 'max_prepared_actions_count'
@@ -114,13 +109,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
      * @param $limit
      * @return Ess_M2ePro_Model_Listing_Product_ScheduledAction[]
      */
-    private function getScheduledActionsForProcessing($limit)
+    protected function getScheduledActionsForProcessing($limit)
     {
         /** @var $resource Mage_Core_Model_Resource */
         $resource = Mage::getSingleton('core/resource');
         $connRead = $resource->getConnection('core_read');
 
-        $unionSelect = $connRead->select()->union(array(
+        $unionSelect = $connRead->select()->union(
+            array(
             $this->getListScheduledActionsPreparedCollection()->getSelect(),
             $this->getRelistScheduledActionsPreparedCollection()->getSelect(),
             $this->getReviseQtyScheduledActionsPreparedCollection()->getSelect(),
@@ -135,7 +131,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
             $this->getReviseReturnScheduledActionsPreparedCollection()->getSelect(),
             $this->getReviseOtherScheduledActionsPreparedCollection()->getSelect(),
             $this->getStopScheduledActionsPreparedCollection()->getSelect(),
-        ));
+            )
+        );
 
         $unionSelect->order(array('coefficient DESC'));
         $unionSelect->order(array('create_date ASC'));
@@ -161,7 +158,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
 
     // ---------------------------------------
 
-    private function getListScheduledActionsPreparedCollection()
+    protected function getListScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/list/', 'priority_coefficient'
@@ -178,7 +175,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getRelistScheduledActionsPreparedCollection()
+    protected function getRelistScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/relist/', 'priority_coefficient'
@@ -195,7 +192,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseQtyScheduledActionsPreparedCollection()
+    protected function getReviseQtyScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_qty/', 'priority_coefficient'
@@ -213,7 +210,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getRevisePriceScheduledActionsPreparedCollection()
+    protected function getRevisePriceScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_price/', 'priority_coefficient'
@@ -231,7 +228,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseTitleScheduledActionsPreparedCollection()
+    protected function getReviseTitleScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_title/', 'priority_coefficient'
@@ -249,7 +246,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseSubtitleScheduledActionsPreparedCollection()
+    protected function getReviseSubtitleScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_subtitle/', 'priority_coefficient'
@@ -267,7 +264,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseDescriptionScheduledActionsPreparedCollection()
+    protected function getReviseDescriptionScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_description/', 'priority_coefficient'
@@ -285,7 +282,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseImagesScheduledActionsPreparedCollection()
+    protected function getReviseImagesScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_images/', 'priority_coefficient'
@@ -303,7 +300,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseCategoriesScheduledActionsPreparedCollection()
+    protected function getReviseCategoriesScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_categories/', 'priority_coefficient'
@@ -321,7 +318,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getRevisePaymentScheduledActionsPreparedCollection()
+    protected function getRevisePaymentScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_payment/', 'priority_coefficient'
@@ -339,7 +336,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseShippingScheduledActionsPreparedCollection()
+    protected function getReviseShippingScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_shipping/', 'priority_coefficient'
@@ -357,7 +354,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseReturnScheduledActionsPreparedCollection()
+    protected function getReviseReturnScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_return/', 'priority_coefficient'
@@ -375,7 +372,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getReviseOtherScheduledActionsPreparedCollection()
+    protected function getReviseOtherScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/revise_other/', 'priority_coefficient'
@@ -393,7 +390,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
         return $collection;
     }
 
-    private function getStopScheduledActionsPreparedCollection()
+    protected function getStopScheduledActionsPreparedCollection()
     {
         $priorityCoefficient = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/action/stop/', 'priority_coefficient'
@@ -415,9 +412,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
     /**
      * @param $priorityCoefficient
      * @param $waitIncreaseCoefficient
-     * @return Ess_M2ePro_Model_Mysql4_Listing_Product_ScheduledAction_Collection
+     * @return Ess_M2ePro_Model_Resource_Listing_Product_ScheduledAction_Collection
      */
-    private function getScheduledActionsPreparedCollection($priorityCoefficient, $waitIncreaseCoefficient)
+    protected function getScheduledActionsPreparedCollection($priorityCoefficient, $waitIncreaseCoefficient)
     {
         $collection = Mage::getResourceModel('M2ePro/Listing_Product_ScheduledAction_Collection');
         $collection->getSelect()->joinLeft(
@@ -442,7 +439,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
 
         $now = Mage::helper('M2ePro')->getCurrentGmtDate();
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                 'id'                 => 'main_table.id',
                 'listing_product_id' => 'main_table.listing_product_id',
                 'account_id'         => 'aa.account_id',
@@ -454,7 +452,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions
                     (time_to_sec(timediff('{$now}', main_table.create_date)) / 3600) * {$waitIncreaseCoefficient}"
                 ),
                 'create_date'        => 'main_table.create_date',
-            ));
+                )
+            );
 
         return $collection;
     }

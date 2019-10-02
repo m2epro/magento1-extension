@@ -12,10 +12,8 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_ProcessingRunner
     const MAX_LIFETIME = 907200;
     const PENDING_REQUEST_MAX_LIFE_TIME = 864000;
 
-    // ##################################
-
-    /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
-    protected $listingsProducts = array();
+    /** @var Ess_M2ePro_Model_Listing_Product[] $_listingsProducts */
+    protected $_listingsProducts = array();
 
     // ##################################
 
@@ -69,17 +67,17 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_ProcessingRunner
 
     protected function getListingsProducts()
     {
-        if (!empty($this->listingsProducts)) {
-            return $this->listingsProducts;
+        if (!empty($this->_listingsProducts)) {
+            return $this->_listingsProducts;
         }
 
         $params = $this->getParams();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->addFieldToFilter('id', array('in' => $params['listing_product_ids']));
 
-        return $this->listingsProducts = $collection->getItems();
+        return $this->_listingsProducts = $collection->getItems();
     }
 
     // ##################################

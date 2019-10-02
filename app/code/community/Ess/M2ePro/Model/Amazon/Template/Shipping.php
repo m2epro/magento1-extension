@@ -7,7 +7,7 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Amazon_Template_Shipping getResource()
+ * @method Ess_M2ePro_Model_Resource_Amazon_Template_Shipping getResource()
  */
 class Ess_M2ePro_Model_Amazon_Template_Shipping extends Ess_M2ePro_Model_Component_Abstract
 {
@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Amazon_Template_Shipping extends Ess_M2ePro_Model_Compone
     /**
      * @var Ess_M2ePro_Model_Amazon_Template_Shipping_Source[]
      */
-    private $shippingTemplateSourceModels = array();
+    protected $_shippingTemplateSourceModels = array();
 
     //########################################
 
@@ -65,17 +65,17 @@ class Ess_M2ePro_Model_Amazon_Template_Shipping extends Ess_M2ePro_Model_Compone
     {
         $id = $magentoProduct->getProductId();
 
-        if (!empty($this->shippingTemplateSourceModels[$id])) {
-            return $this->shippingTemplateSourceModels[$id];
+        if (!empty($this->_shippingTemplateSourceModels[$id])) {
+            return $this->_shippingTemplateSourceModels[$id];
         }
 
-        $this->shippingTemplateSourceModels[$id] =
+        $this->_shippingTemplateSourceModels[$id] =
             Mage::getModel('M2ePro/Amazon_Template_Shipping_Source');
 
-        $this->shippingTemplateSourceModels[$id]->setMagentoProduct($magentoProduct);
-        $this->shippingTemplateSourceModels[$id]->setShippingTemplate($this);
+        $this->_shippingTemplateSourceModels[$id]->setMagentoProduct($magentoProduct);
+        $this->_shippingTemplateSourceModels[$id]->setShippingTemplate($this);
 
-        return $this->shippingTemplateSourceModels[$id];
+        return $this->_shippingTemplateSourceModels[$id];
     }
 
     //########################################

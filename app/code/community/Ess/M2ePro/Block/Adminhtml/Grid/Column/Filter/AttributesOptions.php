@@ -44,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Filter_AttributesOptions
 
     protected function _renderOption($option, $value)
     {
-        $selected = (($option['label'] == $value && (!is_null($value))) ? ' selected="selected"' : '' );
+        $selected = (($option['label'] == $value && ($value !== null)) ? ' selected="selected"' : '' );
         return '<option value="'. $this->escapeHtml($option['label']).'"'.$selected.'>' .
             $this->escapeHtml($option['label']).'</option>';
     }
@@ -84,6 +84,7 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Filter_AttributesOptions
                             $value['attr'] . '[[:space:]]*":"[[:space:]]*' . $value['value'] . '[[:space:]]*'
             );
         }
+
         return $conditions;
     }
 

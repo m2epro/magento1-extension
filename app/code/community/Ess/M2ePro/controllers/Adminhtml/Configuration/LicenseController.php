@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
         // ---------------------------------------
         $key = strip_tags($post['key']);
         $primaryConfig->setGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/','key',(string)$key
+            '/'.Mage::helper('M2ePro/Module')->getName().'/license/', 'key', (string)$key
         );
         // ---------------------------------------
 

@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
     extends Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
 {
-    /** @var Ess_M2ePro_Model_Amazon_Order_Action_Processing $processingAction */
-    private $processingAction;
+    /** @var Ess_M2ePro_Model_Amazon_Order_Action_Processing $_processingAction */
+    protected $_processingAction;
 
     // ########################################
 
@@ -20,12 +20,14 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
 
         /** @var Ess_M2ePro_Model_Amazon_Order_Action_Processing $processingAction */
         $processingAction = Mage::getModel('M2ePro/Amazon_Order_Action_Processing');
-        $processingAction->setData(array(
-            'processing_id' => $this->getProcessingObject()->getId(),
-            'order_id'      => $params['order_id'],
-            'type'          => $params{'action_type'},
-            'request_data'  => Mage::helper('M2ePro')->jsonEncode($params['request_data']),
-        ));
+        $processingAction->setData(
+            array(
+                'processing_id' => $this->getProcessingObject()->getId(),
+                'order_id'      => $params['order_id'],
+                'type'          => $params{'action_type'},
+                'request_data'  => Mage::helper('M2ePro')->jsonEncode($params['request_data']),
+            )
+        );
         $processingAction->save();
     }
 
@@ -66,8 +68,8 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
 
     protected function getProcessingAction()
     {
-        if (!is_null($this->processingAction)) {
-            return $this->processingAction;
+        if ($this->_processingAction !== null) {
+            return $this->_processingAction;
         }
 
         $processingActionCollection = Mage::getResourceModel(
@@ -77,7 +79,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
 
         $processingAction = $processingActionCollection->getFirstItem();
 
-        return $processingAction->getId() ? $this->processingAction = $processingAction : NULL;
+        return $processingAction->getId() ? $this->_processingAction = $processingAction : NULL;
     }
 
     // ########################################

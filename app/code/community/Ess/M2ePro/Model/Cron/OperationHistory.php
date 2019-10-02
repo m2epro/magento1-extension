@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationHistory
 {
-    private $timePoints = array();
-    private $leftPadding = 0;
-    private $bufferString = '';
+    protected $_timePoints   = array();
+    protected $_leftPadding  = 0;
+    protected $_bufferString = '';
 
     //########################################
 
@@ -48,8 +48,8 @@ class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationH
 
     public function appendText($text = NULL)
     {
-        $text && $text = str_repeat(' ',$this->leftPadding).$text;
-        $this->bufferString .= (string)$text.PHP_EOL;
+        $text && $text = str_repeat(' ', $this->_leftPadding) . $text;
+        $this->_bufferString .= (string)$text . PHP_EOL;
     }
 
     // ---------------------------------------
@@ -57,22 +57,22 @@ class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationH
     public function saveBufferString()
     {
         $profilerData = (string)$this->getContentData('profiler');
-        $this->setContentData('profiler',$profilerData.$this->bufferString);
-        $this->bufferString = '';
+        $this->setContentData('profiler', $profilerData.$this->_bufferString);
+        $this->_bufferString = '';
     }
 
     //########################################
 
     public function addTimePoint($id, $title)
     {
-        foreach ($this->timePoints as &$point) {
+        foreach ($this->_timePoints as &$point) {
             if ($point['id'] == $id) {
                 $this->updateTimePoint($id);
                 return true;
             }
         }
 
-        $this->timePoints[] = array(
+        $this->_timePoints[] = array(
             'id' => $id,
             'title' => $title,
             'time' => microtime(true)
@@ -83,10 +83,8 @@ class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationH
 
     public function updateTimePoint($id)
     {
-        foreach ($this->timePoints as $point) {
-
+        foreach ($this->_timePoints as $point) {
             if ($point['id'] == $id) {
-
                 $point['time'] = microtime(true);
                 return true;
             }
@@ -97,12 +95,10 @@ class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationH
 
     public function saveTimePoint($id, $immediatelySave = true)
     {
-        foreach ($this->timePoints as $point) {
-
+        foreach ($this->_timePoints as $point) {
             if ($point['id'] == $id) {
-
                 $this->appendText(
-                    $point['title'].': '.round(microtime(true) - $point['time'],2).' sec.'
+                    $point['title'].': '.round(microtime(true) - $point['time'], 2).' sec.'
                 );
 
                 $immediatelySave && $this->saveBufferString();
@@ -117,28 +113,28 @@ class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationH
 
     public function increaseLeftPadding($count = 5)
     {
-        $this->leftPadding += (int)$count;
+        $this->_leftPadding += (int)$count;
     }
 
     public function decreaseLeftPadding($count = 5)
     {
-        $this->leftPadding -= (int)$count;
-        $this->leftPadding < 0 && $this->leftPadding = 0;
+        $this->_leftPadding -= (int)$count;
+        $this->_leftPadding < 0 && $this->_leftPadding = 0;
     }
 
     //########################################
 
     public function getProfilerInfo($nestingLevel = 0)
     {
-        if (is_null($this->getObject())) {
-            return NULL;
+        if ($this->getObject() === null) {
+            return null;
         }
 
         $offset = str_repeat(' ', $nestingLevel * 7);
-        $separationLine = str_repeat('#',80 - strlen($offset));
+        $separationLine = str_repeat('#', 80 - strlen($offset));
 
         $nick = strtoupper($this->getObject()->getData('nick'));
-        strpos($nick,'_') !== false && $nick = str_replace('SYNCHRONIZATION_','',$nick);
+        strpos($nick, '_') !== false && $nick = str_replace('SYNCHRONIZATION_', '', $nick);
 
         $profilerData = preg_replace('/^/m', "{$offset}", $this->getContentData('profiler'));
 
@@ -153,7 +149,6 @@ class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationH
 INFO;
 
         if ($fatalInfo = $this->getContentData('fatal_error')) {
-
             $info .= <<<INFO
 
 {$offset}<span style="color: red; font-weight: bold;">Fatal: {$fatalInfo['message']}</span>
@@ -163,7 +158,6 @@ INFO;
         }
 
         if ($exceptions = $this->getContentData('exceptions')) {
-
             foreach ($exceptions as $exception) {
                 $info .= <<<INFO
 
@@ -183,8 +177,8 @@ INFO;
 
     public function getFullProfilerInfo($nestingLevel = 0)
     {
-        if (is_null($this->getObject())) {
-            return NULL;
+        if ($this->getObject() === null) {
+            return null;
         }
 
         $profilerInfo = $this->getProfilerInfo($nestingLevel);
@@ -196,7 +190,6 @@ INFO;
         $childObjects->getSize() > 0 && $nestingLevel++;
 
         foreach ($childObjects as $item) {
-
             $object = Mage::getModel('M2ePro/Synchronization_OperationHistory');
             $object->setObject($item);
 

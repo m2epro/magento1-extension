@@ -23,8 +23,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings extends Mage_Adminhtml_Bl
 
         // Set header text
         // ---------------------------------------
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                '%component_name% / Set Products Settings',
+                Mage::helper('M2ePro/Component_Ebay')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("Set Products Settings");
+        }
 
-        $this->_headerText = Mage::helper('M2ePro')->__('Set Products Settings');
         // ---------------------------------------
 
         // Set buttons actions
@@ -38,21 +45,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings extends Mage_Adminhtml_Bl
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/deleteAll',array('_current' => true));
-        $this->_addButton('back', array(
+        $url = $this->getUrl('*/*/deleteAll', array('_current' => true));
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'class'     => 'back',
             'onclick'   => 'setLocation(\''.$url.'\')'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
         if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            $this->_addButton('auto_action', array(
+            $this->_addButton(
+                'auto_action', array(
                 'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
                 'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
-            ));
+                )
+            );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -60,11 +72,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings extends Mage_Adminhtml_Bl
     EbayListingSettingsGridHandlerObj.continue();
 JS;
 
-        $this->_addButton('continue', array(
+        $this->_addButton(
+            'continue', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'class'     => 'next',
             'onclick'   => $onClick
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -73,8 +87,8 @@ JS;
         $listingId = (int)$this->getRequest()->getParam('listing_id');
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
-            array('listing' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',$listingId))
+            'M2ePro/adminhtml_listing_view_header', '',
+            array('listing' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $listingId))
         );
 
         $helpBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_settings_help');

@@ -6,8 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Template_Synchronization as AmazonTemplateSynchronization;
+use Ess_M2ePro_Model_Ebay_Template_Synchronization as EbayTemplateSynchronization;
+use Ess_M2ePro_Model_Walmart_Template_Synchronization as WalmartTemplateSynchronization;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Template_Synchronization|Ess_M2ePro_Model_Ebay_Template_Synchronization|Ess_M2ePro_Model_Walmart_Template_Synchronization getChildObject()
+ * @method AmazonTemplateSynchronization|EbayTemplateSynchronization|WalmartTemplateSynchronization getChildObject()
  */
 class Ess_M2ePro_Model_Template_Synchronization extends Ess_M2ePro_Model_Component_Parent_Abstract
 {

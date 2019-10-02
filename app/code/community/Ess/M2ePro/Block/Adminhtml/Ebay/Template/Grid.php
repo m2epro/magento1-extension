@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    private $enabledMarketplacesCollection = NULL;
+    protected $_enabledMarketplacesCollection = null;
 
     //########################################
 
@@ -131,14 +131,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
         // Prepare union select
         // ---------------------------------------
         $unionSelect = $connRead->select();
-        $unionSelect->union(array(
+        $unionSelect->union(
+            array(
             $collectionSellingFormat->getSelect(),
             $collectionSynchronization->getSelect(),
             $collectionDescription->getSelect(),
             $collectionPayment->getSelect(),
             $collectionShipping->getSelect(),
             $collectionReturn->getSelect()
-        ));
+            )
+        );
         // ---------------------------------------
 
         // Prepare result collection
@@ -159,15 +161,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'        => Mage::helper('M2ePro')->__('Title'),
             'align'         => 'left',
             'type'          => 'text',
-//            'width'         => '150px',
+            //            'width'         => '150px',
             'index'         => 'title',
             'escape'        => true,
             'filter_index'  => 'main_table.title'
-        ));
+            )
+        );
 
         $options = array(
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT => Mage::helper('M2ePro')->__('Payment'),
@@ -180,7 +184,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION
                 => Mage::helper('M2ePro')->__('Synchronization')
         );
-        $this->addColumn('nick', array(
+        $this->addColumn(
+            'nick', array(
             'header'        => Mage::helper('M2ePro')->__('Type'),
             'align'         => 'left',
             'type'          => 'options',
@@ -189,9 +194,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             'index'         => 'nick',
             'filter_index'  => 'main_table.nick',
             'options'       => $options
-        ));
+            )
+        );
 
-        $this->addColumn('marketplace', array(
+        $this->addColumn(
+            'marketplace', array(
             'header'        => Mage::helper('M2ePro')->__('eBay Site'),
             'align'         => 'left',
             'type'          => 'options',
@@ -201,9 +208,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
             'frame_callback'=> array($this, 'callbackColumnMarketplace'),
             'options'       => $this->getEnabledMarketplaceTitles()
-        ));
+            )
+        );
 
-        $this->addColumn('create_date', array(
+        $this->addColumn(
+            'create_date', array(
             'header'    => Mage::helper('M2ePro')->__('Creation Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -211,9 +220,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'create_date',
             'filter_index' => 'main_table.create_date'
-        ));
+            )
+        );
 
-        $this->addColumn('update_date', array(
+        $this->addColumn(
+            'update_date', array(
             'header'    => Mage::helper('M2ePro')->__('Update Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -221,9 +232,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'update_date',
             'filter_index' => 'main_table.update_date'
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'left',
             'width'     => '100px',
@@ -256,7 +269,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
                     'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
                 )
             )
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -304,26 +318,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Grid extends Mage_Adminhtml_Block
 
     //########################################
 
-    private function getEnabledMarketplacesCollection()
+    protected function getEnabledMarketplacesCollection()
     {
-        if (is_null($this->enabledMarketplacesCollection)) {
+        if ($this->_enabledMarketplacesCollection === null) {
             $collection = Mage::getModel('M2ePro/Marketplace')->getCollection();
             $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
             $collection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
             $collection->setOrder('sorder', 'ASC');
 
-            $this->enabledMarketplacesCollection = $collection;
+            $this->_enabledMarketplacesCollection = $collection;
         }
 
-        return $this->enabledMarketplacesCollection;
+        return $this->_enabledMarketplacesCollection;
     }
 
-    private function getEnabledMarketplacesIds()
+    protected function getEnabledMarketplacesIds()
     {
         return $this->getEnabledMarketplacesCollection()->getAllIds();
     }
 
-    private function getEnabledMarketplaceTitles()
+    protected function getEnabledMarketplaceTitles()
     {
         return $this->getEnabledMarketplacesCollection()->toOptionHash();
     }

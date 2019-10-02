@@ -17,12 +17,14 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
 
     protected function getReviseInstructionTypes()
     {
-        return array_unique(array_merge(
-            $this->getReviseQtyInstructionTypes(),
-            $this->getRevisePriceInstructionTypes(),
-            $this->getRevisePromotionsInstructionTypes(),
-            $this->getReviseDetailsInstructionTypes()
-        ));
+        return array_unique(
+            array_merge(
+                $this->getReviseQtyInstructionTypes(),
+                $this->getRevisePriceInstructionTypes(),
+                $this->getRevisePromotionsInstructionTypes(),
+                $this->getReviseDetailsInstructionTypes()
+            )
+        );
     }
 
     // ---------------------------------------
@@ -120,25 +122,25 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
 
     protected function getPropertiesDataFromInputInstructions()
     {
-        if (!$this->input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
+        if (!$this->_input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
             return array();
         }
 
         $propertiesData = array();
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
             $propertiesData[] = 'qty';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePriceInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePriceInstructionTypes())) {
             $propertiesData[] = 'price';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePromotionsInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePromotionsInstructionTypes())) {
             $propertiesData[] = 'promotions';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseDetailsInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseDetailsInstructionTypes())) {
             $propertiesData[] = 'details';
         }
 
@@ -147,11 +149,11 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
 
     protected function getPropertiesDataFromInputScheduledAction()
     {
-        if (!$this->input->getScheduledAction() || !$this->input->getScheduledAction()->isActionTypeRevise()) {
+        if (!$this->_input->getScheduledAction() || !$this->_input->getScheduledAction()->isActionTypeRevise()) {
             return array();
         }
 
-        $additionalData = $this->input->getScheduledAction()->getAdditionalData();
+        $additionalData = $this->_input->getScheduledAction()->getAdditionalData();
         if (empty($additionalData['configurator'])) {
             return array();
         }
@@ -183,7 +185,9 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
     //########################################
 
     protected function checkUpdatePriceOrPromotionsFeedsLock(
-        ActionConfigurator $configurator, array &$tags, $action
+        ActionConfigurator $configurator,
+        array &$tags,
+        $action
     ){
         if (count($configurator->getAllowedDataTypes()) !== 1) {
             return;
@@ -198,7 +202,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
         }
 
         if ($configurator->isPriceAllowed()) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'Item Price cannot yet be submitted. Walmart allows updating the Price information no sooner than
@@ -208,9 +211,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
 
             $configurator->disallowPrice();
             unset($tags['price']);
-
         } else {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'Item Promotion Price cannot yet be submitted. Walmart allows updating the Promotion Price
@@ -226,15 +227,15 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_Synchronizat
         $logger->setAction($action);
         $logger->setActionId(Mage::getResourceModel('M2ePro/Listing_Log')->getNextActionId());
         $logger->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
-        $logger->logListingProductMessage($this->input->getListingProduct(), $message);
+        $logger->logListingProductMessage($this->_input->getListingProduct(), $message);
     }
 
     protected function isLockedForUpdatePriceOrPromotions()
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $this->input->getListingProduct()->getChildObject();
+        $walmartListingProduct = $this->_input->getListingProduct()->getChildObject();
 
-        if (is_null($walmartListingProduct->getListDate())) {
+        if ($walmartListingProduct->getListDate() === null) {
             return false;
         }
 

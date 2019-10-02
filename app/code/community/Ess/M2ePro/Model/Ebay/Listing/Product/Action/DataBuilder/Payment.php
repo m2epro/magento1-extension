@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Payment
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Payment
      */
-    private $paymentTemplate = NULL;
+    protected $_paymentTemplate = null;
 
     //########################################
 
@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Payment
     /**
      * @return array
      */
-    private function getMethodsData()
+    protected function getMethodsData()
     {
         $methods = array();
 
@@ -54,9 +54,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Payment
         return $methods;
     }
 
-    private function getPayPalData($methods)
+    protected function getPayPalData($methods)
     {
-        if (!in_array(self::PAYPAL,$methods)) {
+        if (!in_array(self::PAYPAL, $methods)) {
             return false;
         }
 
@@ -71,14 +71,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Payment
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Payment
      */
-    private function getPaymentTemplate()
+    protected function getPaymentTemplate()
     {
-        if (is_null($this->paymentTemplate)) {
-            $this->paymentTemplate = $this->getListingProduct()
-                                          ->getChildObject()
-                                          ->getPaymentTemplate();
+        if ($this->_paymentTemplate === null) {
+            $this->_paymentTemplate = $this->getListingProduct()
+                                           ->getChildObject()
+                                           ->getPaymentTemplate();
         }
-        return $this->paymentTemplate;
+
+        return $this->_paymentTemplate;
     }
 
     //########################################

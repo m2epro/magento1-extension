@@ -8,6 +8,12 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
+    /** @var Ess_M2ePro_Model_Listing $_listing */
+    protected $_listing;
+
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
+
     //########################################
 
     public function __construct()
@@ -30,11 +36,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_W
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        $this->addButton('show_general_log', array(
-            'label'     => Mage::helper('M2ePro')->__('Show General Log'),
-            'onclick'   => 'setLocation(\'' .$this->getUrl('*/adminhtml_ebay_log/listing').'\')',
-            'class'     => 'button_link'
-        ));
+        $this->addButton(
+            'show_general_log', array(
+                'label'   => Mage::helper('M2ePro')->__('Show General Log'),
+                'onclick' => 'setLocation(\'' . $this->getUrl('*/adminhtml_ebay_log/listing') . '\')',
+                'class'   => 'button_link'
+            )
+        );
         // ---------------------------------------
     }
 
@@ -47,20 +55,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_W
 
     // ---------------------------------------
 
-    /** @var Ess_M2ePro_Model_Listing $listing */
-    protected $listing = NULL;
-
     /**
      * @return Ess_M2ePro_Model_Listing|null
      */
     public function getListing()
     {
-        if (is_null($this->listing)) {
-            $this->listing = Mage::helper('M2ePro/Component_Ebay')
-                ->getObject('Listing', $this->getListingId());
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Ebay')
+                                  ->getObject('Listing', $this->getListingId());
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################
@@ -72,29 +77,28 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log extends Mage_Adminhtml_Block_W
 
     // ---------------------------------------
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct = NULL;
-
     /**
      * @return Ess_M2ePro_Model_Listing_Product|null
      */
     public function getListingProduct()
     {
-        if (is_null($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component')
-                ->getUnknownObject('Listing_Product', $this->getListingProductId());
+        if ($this->_listingProduct === null) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component')
+                                         ->getUnknownObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################
 
     protected function _toHtml()
     {
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Description' => Mage::helper('M2ePro')->__('Description')
-        ));
+            )
+        );
 
         $javascript = <<<JAVASCIRPT
 
@@ -117,22 +121,18 @@ JAVASCIRPT;
 
     protected function _beforeToHtml()
     {
-        /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Log_Grid $grid */
-        $grid = $this->getChild('grid');
-
         // Set header text
         // ---------------------------------------
         $this->_headerText = '';
 
         if ($this->getListingId()) {
-
             $listing = $this->getListing();
 
-            if (!Mage::helper('M2ePro/View_Ebay_Component')->isSingleActiveComponent()) {
-                $component =  Mage::helper('M2ePro/Component')->getComponentTitle($listing->getComponentMode());
+            if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
                 $this->_headerText = Mage::helper('M2ePro')->__(
-                    'Log For %component_name% Listing "%listing_title%"',
-                    $component, $this->escapeHtml($listing->getTitle())
+                    '%component_name% / Log For Listing "%listing_title%"',
+                    Mage::helper('M2ePro/Component_Ebay')->getTitle(),
+                    $this->escapeHtml($listing->getTitle())
                 );
             } else {
                 $this->_headerText = Mage::helper('M2ePro')->__(
@@ -140,9 +140,7 @@ JAVASCIRPT;
                     $this->escapeHtml($listing->getTitle())
                 );
             }
-
         } else if ($this->getListingProductId()) {
-
             $listingProduct = $this->getListingProduct();
             $listing = $listingProduct->getListing();
 
@@ -151,13 +149,13 @@ JAVASCIRPT;
                 $onlineTitle = $listingProduct->getMagentoProduct()->getName();
             }
 
-            if (!Mage::helper('M2ePro/View_Ebay_Component')->isSingleActiveComponent()) {
-                $component =  Mage::helper('M2ePro/Component')->getComponentTitle($listing->getComponentMode());
+            if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
                 $this->_headerText = Mage::helper('M2ePro')->__(
-                    'Log For Product "%product_name%" (ID:%product_id%) Of %component_name% Listing "%listing_title%"',
+                    '%component_name% / Log For Product "%product_name%"'
+                    . ' (ID:%product_id%) Of Listing "%listing_title%"',
+                    Mage::helper('M2ePro/Component_Ebay')->getTitle(),
                     $this->escapeHtml($onlineTitle),
                     $listingProduct->getProductId(),
-                    $component,
                     $this->escapeHtml($listing->getTitle())
                 );
             } else {
@@ -168,15 +166,13 @@ JAVASCIRPT;
                     $this->escapeHtml($listing->getTitle())
                 );
             }
-
         } else {
-
             // Set template
             // ---------------------------------------
             $this->setTemplate('M2ePro/widget/grid/container/only_content.phtml');
             // ---------------------------------------
-
         }
+
         // ---------------------------------------
     }
 

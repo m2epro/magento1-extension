@@ -26,12 +26,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Policy extends M
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/adminhtml_ebay_template/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -120,9 +122,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Policy extends M
 
         $listingProducts = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product')
             ->addFieldToFilter('id', array('in' => $productsIds))
-            ->addFieldToFilter($paymentTemplateColumnName,  Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT)
+            ->addFieldToFilter($paymentTemplateColumnName, Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT)
             ->addFieldToFilter($shippingTemplateColumnName, Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT)
-            ->addFieldToFilter($returnTemplateColumnName,   Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT);
+            ->addFieldToFilter($returnTemplateColumnName, Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT);
 
         return (int)$listingProducts->getSize() != count($productsIds);
     }

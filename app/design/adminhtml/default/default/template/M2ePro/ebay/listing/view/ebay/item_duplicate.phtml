@@ -1,8 +1,17 @@
 <?php
-    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_ItemDuplicate $this */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $duplicateMark = $this->listingProduct->getSetting('additional_data', 'item_duplicate_action_required');
-    $itemId = isset($duplicateMark['item_id']) ? $duplicateMark['item_id'] : null;
+// @codingStandardsIgnoreFile
+
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_ItemDuplicate $this */
+
+$duplicateMark = $this->listingProduct->getSetting('additional_data', 'item_duplicate_action_required');
+$itemId = isset($duplicateMark['item_id']) ? $duplicateMark['item_id'] : null;
+
 ?>
 
 <style type="text/css">
@@ -62,7 +71,7 @@
 
     <?php endif; ?>
 
-    <a href="javascript:();" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, false, false);">
+    <a href="javascript: void(0);" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, false, false);">
         <span>
             <?php echo Mage::helper('M2ePro')->__('Ignore this problem for the Item %s%', $itemId); ?>
         </span>
@@ -71,7 +80,7 @@
 
     <?php if ($itemId) : ?>
 
-        <a href="javascript:();" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, false);">
+        <a href="javascript:void(0);" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, false);">
             <span>
                 <?php echo Mage::helper('M2ePro')->__('Stop Item %s% on eBay', $itemId); ?>
             </span>
@@ -79,7 +88,7 @@
 
         <br>
 
-        <a href="javascript:();" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, true);">
+        <a href="javascript:void(0);" onclick="EbayListingEbayGridHandlerObj.solveItemDuplicateAction(<?php echo $this->listingProduct->getId(); ?>, true, true);">
         <span>
             <?php echo Mage::helper('M2ePro')->__('Stop Item %s% on eBay and list/relist the current Item.', $itemId); ?>
         </span>

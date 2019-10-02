@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
     /**
      * @var Ess_M2ePro_Model_Account
      */
-    private $accountModel = NULL;
+    protected $_accountModel = null;
 
     //########################################
 
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->accountModel = NULL;
+        $temp && $this->_accountModel = null;
         return $temp;
     }
 
@@ -57,13 +57,13 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
      */
     public function getAccount()
     {
-        if (is_null($this->accountModel)) {
-            $this->accountModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-                'Account',$this->getAccountId()
+        if ($this->_accountModel === null) {
+            $this->_accountModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
+                'Account', $this->getAccountId()
             );
         }
 
-        return $this->accountModel;
+        return $this->_accountModel;
     }
 
     /**
@@ -71,7 +71,7 @@ class Ess_M2ePro_Model_Amazon_Account_Repricing extends Ess_M2ePro_Model_Compone
      */
     public function setAccount(Ess_M2ePro_Model_Account $instance)
     {
-        $this->accountModel = $instance;
+        $this->_accountModel = $instance;
     }
 
     //########################################

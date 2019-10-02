@@ -29,16 +29,16 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_Diff_Abstract extends E
 
     public function isListModeEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['list_mode']) && !empty($newSnapshotData['list_mode']);
     }
 
     public function isListModeDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['list_mode']) && empty($newSnapshotData['list_mode']);
     }
@@ -65,16 +65,16 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_Diff_Abstract extends E
 
     public function isRelistModeEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['relist_mode']) && !empty($newSnapshotData['relist_mode']);
     }
 
     public function isRelistModeDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['relist_mode']) && empty($newSnapshotData['relist_mode']);
     }
@@ -102,16 +102,16 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_Diff_Abstract extends E
 
     public function isStopModeEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['stop_mode']) && !empty($newSnapshotData['stop_mode']);
     }
 
     public function isStopModeDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['stop_mode']) && empty($newSnapshotData['stop_mode']);
     }

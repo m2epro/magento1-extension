@@ -36,6 +36,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
             'm2epro_registry',
             'm2epro_archived_entity',
+            'm2epro_setup',
 
             'm2epro_lock_item',
             'm2epro_lock_transactional',
@@ -80,6 +81,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_order_change',
             'm2epro_order_item',
             'm2epro_order_log',
+            'm2epro_order_note',
             'm2epro_order_matching',
 
             'm2epro_ebay_account',
@@ -171,13 +173,12 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_walmart_marketplace',
             'm2epro_walmart_order',
             'm2epro_walmart_order_item',
-            'm2epro_walmart_order_action_processing',
             'm2epro_walmart_template_category',
             'm2epro_walmart_template_category_specific',
             'm2epro_walmart_template_description',
             'm2epro_walmart_template_selling_format',
             'm2epro_walmart_template_selling_format_promotion',
-            'm2epro_walmart_template_selling_format_shipping_override_service',
+            'm2epro_walmart_template_selling_format_shipping_override',
             'm2epro_walmart_template_synchronization',
         );
     }
@@ -199,12 +200,10 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
         $result = array();
         foreach ($mySqlTables as $mySqlTable) {
-
             $tempComponentTables = array();
-            $mySqlTableCropped = str_replace('m2epro_','',$mySqlTable);
+            $mySqlTableCropped = str_replace('m2epro_', '', $mySqlTable);
 
             foreach ($components as $component) {
-
                 $needComponentTable = "m2epro_{$component}_{$mySqlTableCropped}";
 
                 if (in_array($needComponentTable, $mySqlTables)) {
@@ -228,8 +227,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
     public function getTableComponent($tableName)
     {
         foreach (Mage::helper('M2ePro/Component')->getComponents() as $component) {
-
-            if (strpos(strtolower($tableName),strtolower($component)) !== false) {
+            if (strpos(strtolower($tableName), strtolower($component)) !== false) {
                 return $component;
             }
         }
@@ -256,7 +254,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         );
 
         foreach ($mySqlGroups as $group => $expression) {
-
             if (preg_match($expression, $tableName)) {
                 return $group;
             }
@@ -304,7 +301,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         $result = $connRead->query("SHOW TABLE STATUS FROM `{$databaseName}` WHERE `name` = '{$tableName}'")
-                           ->fetch() ;
+                           ->fetch();
 
         return $result !== false;
     }
@@ -321,12 +318,10 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         $tableStatus = true;
 
         try {
-
             $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
             $connRead->select()->from($tableName, new Zend_Db_Expr('1'))
                      ->limit(1)
                      ->query();
-
         } catch (Exception $e) {
             $tableStatus = false;
         }
@@ -403,7 +398,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         $afterPosition = '';
 
         while ($row = $stmtQuery->fetch()) {
-
             $result[strtolower($row['Field'])] = array(
                 'name'     => strtolower($row['Field']),
                 'type'     => strtolower($row['Type']),
@@ -428,8 +422,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
     public function getTableModel($tableName)
     {
-        $tableModels = Mage::getConfig()->getNode('global/models/M2ePro_mysql4/entities');
-
+        $tableModels = Mage::getConfig()->getNode('global/models/M2ePro_resource/entities');
         foreach ($tableModels->asArray() as $model => $infoData) {
             if ($infoData['table'] == $tableName) {
                 return $model;
@@ -468,7 +461,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
         $result = array();
         foreach ($collection['items'] as $item) {
-
             $codeHash = strtolower($item['group']).'#'.strtolower($item['key']);
             $result[$codeHash] = array(
                 'id'     => (int)$item['id'],
@@ -492,7 +484,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
         foreach ($this->getTablesInfo() as $tableName => $tableInfo) {
             foreach ($tableInfo as $columnName => $columnInfo) {
-
                 if (in_array($columnName, $simpleColumns)) {
                     $result[$tableName][] = array('name' => $columnName, 'type' => 'int');
                 }

@@ -14,10 +14,8 @@ class Ess_M2ePro_Model_Connector_Connection_Response_Message extends Ess_M2ePro_
     const SENDER_SYSTEM    = 'system';
     const SENDER_COMPONENT = 'component';
 
-    //########################################
-
-    protected $sender = NULL;
-    protected $code   = NULL;
+    protected $_sender = null;
+    protected $_code   = null;
 
     //########################################
 
@@ -25,45 +23,47 @@ class Ess_M2ePro_Model_Connector_Connection_Response_Message extends Ess_M2ePro_
     {
         parent::initFromResponseData($responseData);
 
-        $this->sender = $responseData[self::SENDER_KEY];
-        $this->code   = $responseData[self::CODE_KEY];
+        $this->_sender = $responseData[self::SENDER_KEY];
+        $this->_code   = $responseData[self::CODE_KEY];
     }
 
     public function initFromPreparedData($text, $type, $sender = NULL, $code = NULL)
     {
         parent::initFromPreparedData($text, $type);
 
-        $this->sender = $sender;
-        $this->code   = $code;
+        $this->_sender = $sender;
+        $this->_code   = $code;
     }
 
     //########################################
 
     public function asArray()
     {
-        return array_merge(parent::asArray(), array(
-            self::SENDER_KEY => $this->sender,
-            self::CODE_KEY   => $this->code,
-        ));
+        return array_merge(
+            parent::asArray(), array(
+                self::SENDER_KEY => $this->_sender,
+                self::CODE_KEY   => $this->_code,
+            )
+        );
     }
 
     //########################################
 
     public function isSenderSystem()
     {
-        return $this->sender == self::SENDER_SYSTEM;
+        return $this->_sender == self::SENDER_SYSTEM;
     }
 
     public function isSenderComponent()
     {
-        return $this->sender == self::SENDER_COMPONENT;
+        return $this->_sender == self::SENDER_COMPONENT;
     }
 
     //########################################
 
     public function getCode()
     {
-        return $this->code;
+        return $this->_code;
     }
 
     //########################################

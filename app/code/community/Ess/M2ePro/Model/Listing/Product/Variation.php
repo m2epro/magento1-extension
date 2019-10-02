@@ -6,15 +6,19 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Listing_Product_Variation as AmazonListingProductVariation;
+use Ess_M2ePro_Model_Ebay_Listing_Product_Variation as EbayListingProductVariation;
+use Ess_M2ePro_Model_Walmart_Listing_Product_Variation as WalmartListingProductVariation;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Listing_Product_Variation|Ess_M2ePro_Model_Ebay_Listing_Product_Variation|Ess_M2ePro_Model_Walmart_Listing_Product_Variation getChildObject()
+ * @method AmazonListingProductVariation|EbayListingProductVariation|WalmartListingProductVariation getChildObject()
  */
 class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProductModel = NULL;
+    protected $_listingProductModel = null;
 
     //########################################
 
@@ -55,7 +59,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
             $option->deleteInstance();
         }
 
-        $this->listingProductModel = NULL;
+        $this->_listingProductModel = NULL;
 
         $this->deleteChildInstance();
         $this->delete();
@@ -70,13 +74,13 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
      */
     public function getListingProduct()
     {
-        if (is_null($this->listingProductModel)) {
-            $this->listingProductModel = Mage::helper('M2ePro/Component')->getComponentObject(
-                $this->getComponentMode(),'Listing_Product',$this->getData('listing_product_id')
+        if ($this->_listingProductModel === null) {
+            $this->_listingProductModel = Mage::helper('M2ePro/Component')->getComponentObject(
+                $this->getComponentMode(), 'Listing_Product', $this->getData('listing_product_id')
             );
         }
 
-        return $this->listingProductModel;
+        return $this->_listingProductModel;
     }
 
     /**
@@ -84,7 +88,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $instance)
     {
-         $this->listingProductModel = $instance;
+         $this->_listingProductModel = $instance;
     }
 
     //########################################
@@ -125,11 +129,14 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
      * @return Ess_M2ePro_Model_Listing_Product_Variation_Option[]
      * @throws Ess_M2ePro_Model_Exception
      */
-    public function getOptions($asObjects = false, array $filters = array(),
-                               $tryToGetFromStorage = true, $throwExceptionIfNoOptions = true)
-    {
+    public function getOptions(
+        $asObjects = false,
+        array $filters = array(),
+        $tryToGetFromStorage = true,
+        $throwExceptionIfNoOptions = true
+    ) {
         $storageKey = "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}_options_" .
-                      md5((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
+                       sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
 
         if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Session')->getValue($storageKey))) {
             return $cacheData;
@@ -137,15 +144,17 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
 
         /** @var $options Ess_M2ePro_Model_Listing_Product_Variation_Option[] */
         $options = $this->getRelatedComponentItems(
-            'Listing_Product_Variation_Option','listing_product_variation_id',$asObjects,$filters
+            'Listing_Product_Variation_Option', 'listing_product_variation_id', $asObjects, $filters
         );
 
-        if ($throwExceptionIfNoOptions && count($options) <= 0) {
-            throw new Ess_M2ePro_Model_Exception_Logic('There are no options for a variation product.',
-                                                        array(
+        if ($throwExceptionIfNoOptions && empty($options)) {
+            throw new Ess_M2ePro_Model_Exception_Logic(
+                'There are no options for a variation product.',
+                array(
                                                             'variation_id'       => $this->getId(),
                                                             'listing_product_id' => $this->getListingProductId()
-                                                        ));
+                )
+            );
         }
 
         if ($asObjects) {
@@ -154,12 +163,14 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
             }
         }
 
-        Mage::helper('M2ePro/Data_Cache_Session')->setValue($storageKey, $options, array(
+        Mage::helper('M2ePro/Data_Cache_Session')->setValue(
+            $storageKey, $options, array(
             'listing_product',
             "listing_product_{$this->getListingProductId()}",
             "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}",
             "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}_options"
-        ));
+            )
+        );
 
         return $options;
     }

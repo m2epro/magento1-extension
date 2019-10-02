@@ -10,6 +10,8 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
 {
     const NICK  = 'walmart';
 
+    const MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK = 'walmart_marketplace_synchronization';
+
     const MARKETPLACE_US = 37;
     const MARKETPLACE_CA = 38;
 
@@ -81,14 +83,14 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
     public function isObject($modelName, $value, $field = NULL)
     {
         $mode = Mage::helper('M2ePro/Component')->getComponentMode($modelName, $value, $field);
-        return !is_null($mode) && $mode == self::NICK;
+        return $mode !== null && $mode == self::NICK;
     }
 
     // ---------------------------------------
 
     public function getModel($modelName)
     {
-        return Mage::helper('M2ePro/Component')->getComponentModel(self::NICK,$modelName);
+        return Mage::helper('M2ePro/Component')->getComponentModel(self::NICK, $modelName);
     }
 
     public function getObject($modelName, $value, $field = NULL)
@@ -110,14 +112,23 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getRegisterUrl($marketplaceId = NULL)
+    public function getRegisterUrl($marketplaceId)
     {
-        $marketplaceId = (int)$marketplaceId;
-        $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;
+        switch ($marketplaceId) {
+            case self::MARKETPLACE_US:
+                $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
+                $url = 'https://developer.' . $domain . '/#/generateKey';
+                break;
 
-        $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
+            case self::MARKETPLACE_CA:
+                $url = 'https://seller.walmart.ca/';
+                break;
 
-        return 'https://seller.'.$domain;
+            default:
+                throw new Ess_M2ePro_Model_Exception_Logic('Unknown Marketplace ID.');
+        }
+
+        return $url;
     }
 
     public function getItemUrl($productItemId, $marketplaceId = NULL)
@@ -128,17 +139,6 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
         $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
 
         return 'https://'.$domain.'/ip/'.$productItemId;
-    }
-
-    //todo is not correct. there are no orders to check
-    public function getOrderUrl($orderId, $marketplaceId = NULL)
-    {
-        $marketplaceId = (int)$marketplaceId;
-        $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;
-
-        $domain = $this->getCachedObject('Marketplace',$marketplaceId)->getUrl();
-
-        return 'https://seller.'.$domain.'/order-management/details./'.$orderId;
     }
 
     //########################################
@@ -162,8 +162,6 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
     }
 
     // ----------------------------------------
-
-    // ---------------------------------------
 
     public function getCarriers()
     {
@@ -201,8 +199,10 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
 
     public function getResultProductStatus($publishStatus, $lifecycleStatus, $onlineQty)
     {
-        if (!in_array($publishStatus, array(self::PRODUCT_PUBLISH_STATUS_PUBLISHED,
-                                            self::PRODUCT_PUBLISH_STATUS_STAGE)) ||
+        if (!in_array(
+            $publishStatus, array(self::PRODUCT_PUBLISH_STATUS_PUBLISHED,
+            self::PRODUCT_PUBLISH_STATUS_STAGE)
+        ) ||
             $lifecycleStatus != self::PRODUCT_LIFECYCLE_STATUS_ACTIVE
         ) {
             return Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED;

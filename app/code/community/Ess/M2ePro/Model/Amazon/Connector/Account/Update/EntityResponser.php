@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Update_EntityResponser
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     // ########################################

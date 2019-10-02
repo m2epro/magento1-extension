@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator
     /**
      * @var bool
      */
-    private $isSalePrice = false;
+    protected $_isSalePrice = false;
 
     //########################################
 
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator
      */
     public function setIsSalePrice($value)
     {
-        $this->isSalePrice = (bool)$value;
+        $this->_isSalePrice = (bool)$value;
         return $this;
     }
 
@@ -50,14 +50,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_PriceCalculator
      */
     protected function getIsSalePrice()
     {
-        return $this->isSalePrice;
+        return $this->_isSalePrice;
     }
 
     //########################################
 
     protected function applyAdditionalOptionValuesModifications(
-        Ess_M2ePro_Model_Listing_Product_Variation $variation, $value)
-    {
+        Ess_M2ePro_Model_Listing_Product_Variation $variation,
+        $value
+    ) {
         if ($this->getIsSalePrice() && $value <= 0 && $this->isSourceModeSpecial()) {
             return 0;
         }

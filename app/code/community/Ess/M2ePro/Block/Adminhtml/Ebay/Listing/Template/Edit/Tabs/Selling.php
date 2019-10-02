@@ -61,8 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs_Selling extends
         return parent::_toHtml()
             . $this->getChildHtml('help')
             . $this->getChildHtml('selling_format')
-            . $this->getChildHtml('description')
-        ;
+            . $this->getChildHtml('description');
     }
 
     //########################################

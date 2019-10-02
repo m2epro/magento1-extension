@@ -29,6 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Widget_Button_DropDown extends Ess_M2ePro_Block
             if (!isset($item['url'])) {
                 throw new InvalidArgumentException('Item url is not set.');
             }
+
             if (!isset($item['label'])) {
                 throw new InvalidArgumentException('Item label is not set');
             }
@@ -52,7 +53,7 @@ HTML;
         return $html;
     }
 
-    private function getItems()
+    protected function getItems()
     {
         if (empty($this->_data['items']) || !is_array($this->_data['items'])) {
             throw new Ess_M2ePro_Model_Exception_Logic('Items are not set.');

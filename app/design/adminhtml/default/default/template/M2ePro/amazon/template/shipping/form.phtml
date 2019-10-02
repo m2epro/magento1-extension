@@ -1,32 +1,53 @@
 <?php
-    /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit_Form */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    /** @var Ess_M2ePro_Model_Amazon_Template_Shipping $model */
-    $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+// @codingStandardsIgnoreFile
 
-    $formData = array();
-    if ($model) {
-        $formData = $model->toArray();
-    }
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_Shipping_Edit_Form */
 
-    $default = array(
-        'title'         => '',
+/** @var Ess_M2ePro_Model_Amazon_Template_Shipping $model */
+$model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        'template_name_mode' => '',
-        'template_name_value' => '',
-        'template_name_attribute' => '',
+$formData = array();
+if ($model) {
+    $formData = $model->toArray();
+}
+
+$default = array(
+    'title'         => '',
+
+    'template_name_mode' => '',
+    'template_name_value' => '',
+    'template_name_attribute' => '',
+);
+
+$formData = array_merge($default, $formData);
+
+if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+    $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+        Mage::helper('M2ePro')->__('Add %component_name% Shipping Policy',
+            Mage::helper('M2ePro/Component_Amazon')->getTitle()
+        )
     );
-
-    $formData = array_merge($default, $formData);
-
-    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
-    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
-
-    $attributes = $magentoAttributeHelper->getGeneralFromAllAttributeSets();
-
-    $attributesByInputTypes = array(
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($attributes, array('text', 'select'))
+} else {
+    $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+        Mage::helper('M2ePro')->__('Add Shipping Policy')
     );
+}
+
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+$attributes = $magentoAttributeHelper->getGeneralFromAllAttributeSets();
+
+$attributesByInputTypes = array(
+    'text_select' => $magentoAttributeHelper->filterByInputTypes($attributes, array('text', 'select'))
+);
+
 ?>
 
 <script type="text/javascript">
@@ -50,7 +71,7 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Shipping Policy' => Mage::helper('M2ePro')->__('Add Shipping Policy'),
+        'Add Shipping Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
         'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
     )); ?>);
 
@@ -70,14 +91,13 @@
 
 </script>
 
-<?php
-// todo "more info" link must be added when develop branch becomes "public"
-?>
 <div id="block_notice_amazon_template_shipping" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Shipping Policy'); ?>">
     <?php
-        echo Mage::helper('M2ePro')->__(
-            'The Shipping Policy allows to provide Shipping Settings for the Items being listed to Amazon. So you should provide a Channel Template Name which you would like to be used.<br />'
-        ); ?>
+    echo Mage::helper('M2ePro')->__(
+        'Shipping Policy allows applying Amazon Shipping Templates to your offers via M2E Pro.<br /><br />
+         More details can be found <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/d44VAQ')
+    ); ?>
 </div>
 
 <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">

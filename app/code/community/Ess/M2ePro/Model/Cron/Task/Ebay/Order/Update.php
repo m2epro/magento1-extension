@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
 
         $permittedAccounts = $this->getPermittedAccounts();
 
-        if (count($permittedAccounts) <= 0) {
+        if (empty($permittedAccounts)) {
             return;
         }
 
@@ -57,11 +57,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
             // ---------------------------------------
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Update" Action for eBay Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -79,16 +76,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $changes = $this->getRelatedChanges($account);
         if (empty($changes)) {
@@ -102,9 +99,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function getRelatedChanges(Ess_M2ePro_Model_Account $account)
+    protected function getRelatedChanges(Ess_M2ePro_Model_Account $account)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Change_Collection $changesCollection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Change_Collection $changesCollection */
         $changesCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
         $changesCollection->addAccountFilter($account->getId());
         $changesCollection->addProcessingAttemptDateFilter();
@@ -116,7 +113,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
 
     // ---------------------------------------
 
-    private function processChange(Ess_M2ePro_Model_Order_Change $change)
+    protected function processChange(Ess_M2ePro_Model_Order_Change $change)
     {
         Mage::getResourceModel('M2ePro/Order_Change')->incrementAttemptCount(array($change->getId()));
         $connectorData = array('change_id' => $change->getId());
@@ -139,12 +136,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
         }
 
         if ($change->isShippingUpdateAction()) {
-
             $changeParams = $change->getParams();
 
             $action = Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_SHIP;
             if (!empty($changeParams['tracking_number']) && !empty($changeParams['carrier_title'])) {
-
                 $action = Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher::ACTION_SHIP_TRACK;
                 /**
                  * TODO check(rewrite) during orders refactoring.
@@ -165,7 +160,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
                     $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_OrderItem_Dispatcher');
                     $dispatcher->process($action, array($item), $connectorData);
                 }
-
             } else {
 
                 /** @var Ess_M2ePro_Model_Order $order */
@@ -181,7 +175,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function deleteNotActualChanges()
+    protected function deleteNotActualChanges()
     {
         Mage::getResourceModel('M2ePro/Order_Change')->deleteByProcessingAttemptCount(
             Ess_M2ePro_Model_Order_Change::MAX_ALLOWED_PROCESSING_ATTEMPTS,

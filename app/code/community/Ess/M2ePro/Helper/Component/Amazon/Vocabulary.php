@@ -55,9 +55,9 @@ class Ess_M2ePro_Helper_Component_Amazon_Vocabulary extends Ess_M2ePro_Helper_Mo
 
     //########################################
 
-    private function getParentListingsProductsAffectedToAttribute($channelAttribute)
+    protected function getParentListingsProductsAffectedToAttribute($channelAttribute)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $existListingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $existListingProductCollection */
         $existListingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $existListingProductCollection->addFieldToFilter('is_variation_parent', 1);
         $existListingProductCollection->addFieldToFilter('general_id', array('notnull' => true));
@@ -72,7 +72,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Vocabulary extends Ess_M2ePro_Helper_Mo
 
         $affectedListingsProducts = $existListingProductCollection->getItems();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $newListingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $newListingProductCollection->addFieldToFilter('is_variation_parent', 1);
         $newListingProductCollection->addFieldToFilter('is_general_id_owner', 1);
@@ -136,9 +136,9 @@ class Ess_M2ePro_Helper_Component_Amazon_Vocabulary extends Ess_M2ePro_Helper_Mo
         return $affectedListingsProducts;
     }
 
-    private function getParentListingsProductsAffectedToOption($channelAttribute, $channelOption)
+    protected function getParentListingsProductsAffectedToOption($channelAttribute, $channelOption)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('is_variation_parent', 1);
         $listingProductCollection->addFieldToFilter('general_id', array('notnull' => true));

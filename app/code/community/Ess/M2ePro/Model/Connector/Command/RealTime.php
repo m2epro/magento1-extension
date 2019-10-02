@@ -8,9 +8,7 @@
 
 abstract class Ess_M2ePro_Model_Connector_Command_RealTime extends Ess_M2ePro_Model_Connector_Command_Abstract
 {
-    // ########################################
-
-    protected $responseData = NULL;
+    protected $_responseData = null;
 
     // ########################################
 
@@ -34,14 +32,14 @@ abstract class Ess_M2ePro_Model_Connector_Command_RealTime extends Ess_M2ePro_Mo
 
     protected function prepareResponseData()
     {
-        $this->responseData = $this->getResponse()->getData();
+        $this->_responseData = $this->getResponse()->getData();
     }
 
     // ########################################
 
     public function getResponseData()
     {
-        return $this->responseData;
+        return $this->_responseData;
     }
 
     public function getResponseMessages()

@@ -45,26 +45,26 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation
         // ---------------------------------------
         $this->setChild(
             'step_description',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_description',$this->getNick())
+            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_description', $this->getNick())
         );
 
-        $block = $this->helper('M2ePro/Module_Wizard')->createBlock('installation_license',$this->getNick());
+        $block = $this->helper('M2ePro/Module_Wizard')->createBlock('installation_license', $this->getNick());
         $block->setData('isLicenseStepFinished', $this->isLicenseStepFinished);
         $this->setChild('step_license', $block);
 
         $this->setChild(
             'step_marketplace',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_marketplace',$this->getNick())
+            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_marketplace', $this->getNick())
         );
 
         $this->setChild(
             'step_account',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_account',$this->getNick())
+            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_account', $this->getNick())
         );
 
         $this->setChild(
             'step_settings',
-            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_settings',$this->getNick())
+            $this->helper('M2ePro/Module_Wizard')->createBlock('installation_settings', $this->getNick())
         );
         // ---------------------------------------
 

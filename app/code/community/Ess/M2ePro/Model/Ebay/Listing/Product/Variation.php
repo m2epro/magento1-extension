@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
 
     public function deleteInstance()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
@@ -221,7 +221,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
      */
     public function getOptions($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
     {
-        return $this->getParentObject()->getOptions($asObjects,$filters,$tryToGetFromStorage);
+        return $this->getParentObject()->getOptions($asObjects, $filters, $tryToGetFromStorage);
     }
 
     //########################################
@@ -322,7 +322,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
                 break;
         }
 
-        $this->getParentObject()->setData('status' , $status)->save();
+        $this->getParentObject()->setData('status', $status)->save();
     }
 
     // ---------------------------------------
@@ -330,9 +330,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     /**
      * @return int
      */
-    private function calculateStatusByQty()
+    protected function calculateStatusByQty()
     {
-        if (is_null($this->getData('online_qty'))) {
+        if ($this->getData('online_qty') === null) {
             return Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED;
         }
 
@@ -433,7 +433,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
         // Configurable, Grouped product
         if ($this->getListingProduct()->getMagentoProduct()->isConfigurableType() ||
             $this->getListingProduct()->getMagentoProduct()->isGroupedType()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
                 $sku = $option->getChildObject()->getSku();
@@ -442,7 +441,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
 
         // Bundle product
         } else if ($this->getListingProduct()->getMagentoProduct()->isBundleType()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
                 $sku != '' && $sku .= '-';
@@ -451,7 +449,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
 
         // Simple with options product
         } else if ($this->getListingProduct()->getMagentoProduct()->isSimpleTypeWithCustomOptions()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
                 $sku != '' && $sku .= '-';
@@ -540,7 +537,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
 
     // ---------------------------------------
 
-    private function getCalculatedPrice($src, $vatPercent = NULL, $coefficient = NULL)
+    protected function getCalculatedPrice($src, $vatPercent = NULL, $coefficient = NULL)
     {
         /** @var $calculator Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Ebay_Listing_Product_PriceCalculator');
@@ -582,7 +579,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
         $findOrderItem = false;
 
         foreach ($ordersItems as $orderItem) {
-
             $orderItemVariationOptions = $orderItem->getVariationProductOptions();
 
             if (empty($orderItemVariationOptions)) {
@@ -594,8 +590,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
             $orderItemVariationValues = array_map('trim', array_values($orderItemVariationOptions));
 
             if (count($currentSpecifics) == count($orderItemVariationOptions) &&
-                count(array_diff($variationKeys,$orderItemVariationKeys)) <= 0 &&
-                count(array_diff($variationValues,$orderItemVariationValues)) <= 0) {
+                empty(array_diff($variationKeys, $orderItemVariationKeys)) &&
+                empty(array_diff($variationValues, $orderItemVariationValues))) {
                 $findOrderItem = true;
                 break;
             }

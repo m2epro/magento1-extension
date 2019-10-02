@@ -10,37 +10,31 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
     extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Responser
 {
     /**
-     * @var Ess_M2ePro_Model_Listing_Product $listingProduct
+     * @var Ess_M2ePro_Model_Listing_Product $_listingProduct
      */
-    protected $listingProduct = NULL;
-
-    // ---------------------------------------
+    protected $_listingProduct = null;
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Logger
      */
-    protected $logger = NULL;
+    protected $_logger = null;
 
     /**
-     * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator
+     * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $_configurator
      */
-    protected $configurator = NULL;
-
-    // ---------------------------------------
+    protected $_configurator = null;
 
     /**
-     * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response $responseObject
+     * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response $_responseObject
      */
-    protected $responseObject = NULL;
+    protected $_responseObject = null;
 
     /**
-     * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData $requestDataObject
+     * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData $_requestDataObject
      */
-    protected $requestDataObject = NULL;
+    protected $_requestDataObject = null;
 
-    // ---------------------------------------
-
-    protected $isSuccess = false;
+    protected $_isSuccess = false;
 
     // ########################################
 
@@ -48,9 +42,9 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
     {
         parent::__construct($params, $response);
 
-        $listingProductId = $this->params['product']['id'];
-        $this->listingProduct = Mage::helper('M2ePro/Component_Walmart')
-            ->getObject('Listing_Product', $listingProductId);
+        $listingProductId      = $this->_params['product']['id'];
+        $this->_listingProduct = Mage::helper('M2ePro/Component_Walmart')
+                                     ->getObject('Listing_Product', $listingProductId);
     }
 
     // ########################################
@@ -66,7 +60,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
         );
 
         $this->getLogger()->logListingProductMessage(
-            $this->listingProduct,
+            $this->_listingProduct,
             $message,
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
         );
@@ -80,12 +74,12 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 
     protected function processParentProcessor()
     {
-        if (!$this->isSuccess) {
+        if (!$this->_isSuccess) {
             return;
         }
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
-        $walmartListingProduct = $this->listingProduct->getChildObject();
+        $walmartListingProduct = $this->_listingProduct->getChildObject();
 
         $variationManager = $walmartListingProduct->getVariationManager();
 
@@ -94,7 +88,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
         }
 
         if ($variationManager->isRelationParentType()) {
-            $parentListingProduct = $this->listingProduct;
+            $parentListingProduct = $this->_listingProduct;
         } else {
             $parentListingProduct = $variationManager->getTypeModel()->getParentListingProduct();
         }
@@ -110,7 +104,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 
     public function isSuccess()
     {
-        return $this->isSuccess;
+        return $this->_isSuccess;
     }
 
     // ########################################
@@ -127,8 +121,8 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 
         $responseData = $this->getPreparedResponseData();
 
-        $requestLogMessages = isset($this->params['product']['request_metadata']['log_messages'])
-            ? $this->params['product']['request_metadata']['log_messages'] : array();
+        $requestLogMessages = isset($this->_params['product']['request_metadata']['log_messages'])
+            ? $this->_params['product']['request_metadata']['log_messages'] : array();
 
         foreach ($requestLogMessages as $messageData) {
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -167,7 +161,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
             !$hasError && $hasError = $message->isError();
 
             $this->getLogger()->logListingProductMessage(
-                $this->listingProduct, $message
+                $this->_listingProduct, $message
             );
         }
 
@@ -185,10 +179,10 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
         );
 
         $this->getLogger()->logListingProductMessage(
-            $this->listingProduct, $message
+            $this->_listingProduct, $message
         );
 
-        $this->isSuccess = true;
+        $this->_isSuccess = true;
     }
 
     //----------------------------------------
@@ -212,7 +206,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
      */
     protected function getLogger()
     {
-        if (is_null($this->logger)) {
+        if ($this->_logger === null) {
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Logger $logger */
 
@@ -235,23 +229,22 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 
             $logger->setInitiator($initiator);
 
-            $this->logger = $logger;
+            $this->_logger = $logger;
         }
 
-        return $this->logger;
+        return $this->_logger;
     }
 
     protected function getConfigurator()
     {
-        if (is_null($this->configurator)) {
-
+        if ($this->_configurator === null) {
             $configurator = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator');
-            $configurator->setData($this->params['product']['configurator']);
+            $configurator->setData($this->_params['product']['configurator']);
 
-            $this->configurator = $configurator;
+            $this->_configurator = $configurator;
         }
 
-        return $this->configurator;
+        return $this->_configurator;
     }
 
     // ########################################
@@ -261,27 +254,26 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
      */
     protected function getResponseObject()
     {
-        if (is_null($this->responseObject)) {
-
-            /* @var $response Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response */
+        if ($this->_responseObject === null) {
+            /** @var $response Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response */
             $response = Mage::getModel(
                 'M2ePro/Walmart_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Response'
             );
 
-            $response->setParams($this->params['params']);
-            $response->setListingProduct($this->listingProduct);
+            $response->setParams($this->_params['params']);
+            $response->setListingProduct($this->_listingProduct);
             $response->setConfigurator($this->getConfigurator());
             $response->setRequestData($this->getRequestDataObject());
 
-            $requestMetaData = !empty($this->params['product']['request_metadata'])
-                ? $this->params['product']['request_metadata'] : array();
+            $requestMetaData = !empty($this->_params['product']['request_metadata'])
+                ? $this->_params['product']['request_metadata'] : array();
 
             $response->setRequestMetaData($requestMetaData);
 
-            $this->responseObject = $response;
+            $this->_responseObject = $response;
         }
 
-        return $this->responseObject;
+        return $this->_responseObject;
     }
 
     /**
@@ -289,18 +281,18 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
      */
     protected function getRequestDataObject()
     {
-        if (is_null($this->requestDataObject)) {
+        if ($this->_requestDataObject === null) {
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData $requestData */
             $requestData = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_RequestData');
 
-            $requestData->setData($this->params['product']['request']);
-            $requestData->setListingProduct($this->listingProduct);
+            $requestData->setData($this->_params['product']['request']);
+            $requestData->setListingProduct($this->_listingProduct);
 
-            $this->requestDataObject = $requestData;
+            $this->_requestDataObject = $requestData;
         }
 
-        return $this->requestDataObject;
+        return $this->_requestDataObject;
     }
 
     // ########################################
@@ -310,7 +302,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -325,31 +317,31 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 
     protected function getActionType()
     {
-        return $this->params['action_type'];
+        return $this->_params['action_type'];
     }
 
     protected function getLockIdentifier()
     {
-        return $this->params['lock_identifier'];
+        return $this->_params['lock_identifier'];
     }
 
     //---------------------------------------
 
     protected function getLogsAction()
     {
-        return $this->params['logs_action'];
+        return $this->_params['logs_action'];
     }
 
     protected function getLogsActionId()
     {
-        return (int)$this->params['logs_action_id'];
+        return (int)$this->_params['logs_action_id'];
     }
 
     //---------------------------------------
 
     protected function getStatusChanger()
     {
-        return (int)$this->params['status_changer'];
+        return (int)$this->_params['status_changer'];
     }
 
     // ########################################

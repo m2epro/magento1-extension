@@ -9,10 +9,10 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
 
-    protected $listingProductId;
+    protected $_listingProductId;
 
     //########################################
 
@@ -22,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
@@ -31,19 +31,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Variation_Product_Manage_View
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
 
     protected function getListingProduct()
     {
-        if (empty($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Ebay')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if (empty($this->_listingProduct)) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Ebay')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################

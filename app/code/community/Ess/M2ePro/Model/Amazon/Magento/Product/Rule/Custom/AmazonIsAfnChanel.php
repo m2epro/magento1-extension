@@ -38,8 +38,8 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_Rule_Custom_AmazonIsAfnChanel
         $isAfn = (int)$product->getData('is_afn_channel');
         $afnState = (int)$product->getData('variation_parent_afn_state');
 
-        if (($this->filterOperator == '==' && $this->filterCondition == AmazonListingProduct::IS_AFN_CHANNEL_YES) ||
-            ($this->filterOperator == '!=' && $this->filterCondition == AmazonListingProduct::IS_AFN_CHANNEL_NO)) {
+        if (($this->_filterOperator == '==' && $this->_filterCondition == AmazonListingProduct::IS_AFN_CHANNEL_YES) ||
+            ($this->_filterOperator == '!=' && $this->_filterCondition == AmazonListingProduct::IS_AFN_CHANNEL_NO)) {
             return $isAfn;
         }
 

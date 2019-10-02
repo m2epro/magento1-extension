@@ -36,11 +36,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template extends Mage_Adminhtml_Block_Wi
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('add', array(
+        $this->_addButton(
+            'add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Policy'),
             'onclick'   => '',
             'class'     => 'add add-button-drop-down'
-        ));
+            )
+        );
         // -------------------------------------
     }
 

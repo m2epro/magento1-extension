@@ -73,8 +73,7 @@ class Ess_M2ePro_Adminhtml_Amazon_TemplateController
         $id   = $this->getRequest()->getParam('id');
         $type = $this->getPreparedTemplateType($this->getRequest()->getParam('type'));
 
-        if (is_null($id) || empty($type)) {
-
+        if ($id === null || empty($type)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('You should provide correct parameters.'));
             return $this->_redirect('*/*/index');
         }
@@ -101,14 +100,12 @@ class Ess_M2ePro_Adminhtml_Amazon_TemplateController
         $ids  = $this->getRequestIds();
         $type = $this->getPreparedTemplateType($this->getRequest()->getParam('type'));
 
-        if (count($ids) == 0) {
-
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             return $this->_redirect('*/*/index');
         }
 
         if (empty($type)) {
-
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('You should provide correct parameters.'));
             return $this->_redirect('*/*/index');
         }
@@ -139,7 +136,7 @@ class Ess_M2ePro_Adminhtml_Amazon_TemplateController
 
     //########################################
 
-    private function getPreparedTemplateType($type)
+    protected function getPreparedTemplateType($type)
     {
         $templateTypes = array(
             Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid::TEMPLATE_SELLING_FORMAT,
@@ -169,7 +166,7 @@ class Ess_M2ePro_Adminhtml_Amazon_TemplateController
         return $type;
     }
 
-    private function getTemplateModel($type, $id)
+    protected function getTemplateModel($type, $id)
     {
         if ($type == 'shipping') {
             return Mage::getModel('M2ePro/Amazon_Template_Shipping')->load($id);

@@ -35,11 +35,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs_C
 
         $chooserBlock->setSingleCategoryMode();
         $chooserBlock->setSingleCategoryType($chooserBlockData['type']);
-        $chooserBlock->setSingleCategoryData(array(
+        $chooserBlock->setSingleCategoryData(
+            array(
             'mode' => $chooserBlockData['mode'],
             'value' => $chooserBlockData['value'],
             'path' => $chooserBlockData['path'],
-        ));
+            )
+        );
 
         $this->setChild('chooser_block', $chooserBlock);
         // ---------------------------------------

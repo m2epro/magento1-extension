@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_AutoActions_Handler
 {
     //########################################
 
-    private function getAffectedInstructionTypes()
+    protected function getAffectedInstructionTypes()
     {
         return array(
             Actions_Listing::INSTRUCTION_TYPE_STOP,
@@ -40,7 +40,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_AutoActions_Handler
         $params = array();
 
         if ($input->hasInstructionWithType(Actions_Listing::INSTRUCTION_TYPE_STOP_AND_REMOVE)) {
-
             if (!$input->getListingProduct()->isStoppable()) {
                 $removeHandler = Mage::getModel(
                     'M2ePro/Walmart_Listing_Product_RemoveHandler',

@@ -29,7 +29,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace extends Ess_M2ePro_Model_Component_Ch
      */
     public function getWalmartItems($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Walmart_Item','marketplace_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Walmart_Item', 'marketplace_id', $asObjects, $filters);
     }
 
     /**
@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace extends Ess_M2ePro_Model_Component_Ch
      */
     public function getDescriptionTemplates($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Walmart_Template_Description','marketplace_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Walmart_Template_Description', 'marketplace_id', $asObjects, $filters);
     }
 
     //########################################

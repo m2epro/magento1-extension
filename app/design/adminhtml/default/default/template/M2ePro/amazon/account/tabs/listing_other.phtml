@@ -1,20 +1,31 @@
 <?php
-    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    if (isset($formData['other_listings_mapping_settings'])) {
-        $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
-    }
+// @codingStandardsIgnoreFile
 
-    $defaults = array(
-        'related_store_id' => 0,
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_ListingOther */
 
-        'other_listings_synchronization' => Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES,
-        'other_listings_mapping_mode' => Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_MODE_YES,
-        'other_listings_mapping_settings' => array(),
-    );
+$formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
 
-    $formData = array_merge($defaults, $formData);
-    $isEdit = !!$this->getRequest()->getParam('id');
+if (isset($formData['other_listings_mapping_settings'])) {
+    $formData['other_listings_mapping_settings'] = (array)json_decode($formData['other_listings_mapping_settings'],true);
+}
+
+$defaults = array(
+    'related_store_id' => 0,
+
+    'other_listings_synchronization' => Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES,
+    'other_listings_mapping_mode' => Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_MODE_YES,
+    'other_listings_mapping_settings' => array(),
+);
+
+$formData = array_merge($defaults, $formData);
+$isEdit = !!$this->getRequest()->getParam('id');
+
 ?>
 
 <script type="text/javascript">

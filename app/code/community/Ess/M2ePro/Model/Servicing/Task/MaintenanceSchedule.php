@@ -47,21 +47,27 @@ class Ess_M2ePro_Model_Servicing_Task_MaintenanceSchedule extends Ess_M2ePro_Mod
         }
 
         /**  @var $enabledFrom Ess_M2ePro_Model_Registry */
-        $enabledFrom = Mage::getModel('M2ePro/Registry')->load('/server/maintenance/schedule/date/enabled/from/','key');
+        $enabledFrom = Mage::getModel('M2ePro/Registry')->load(
+            '/server/maintenance/schedule/date/enabled/from/', 'key'
+        );
         if ($enabledFrom->getValue() != $dateEnabledFrom) {
-            $enabledFrom->addData(array(
+            $enabledFrom->addData(
+                array(
                 'key' => '/server/maintenance/schedule/date/enabled/from/',
                 'value' => $dateEnabledFrom
-            ))->save();
+                )
+            )->save();
         }
 
         /**  @var $realFrom Ess_M2ePro_Model_Registry */
         $realFrom = Mage::getModel('M2ePro/Registry')->load('/server/maintenance/schedule/date/real/from/', 'key');
         if ($realFrom->getValue() != $dateRealFrom) {
-            $realFrom->addData(array(
+            $realFrom->addData(
+                array(
                 'key' => '/server/maintenance/schedule/date/real/from/',
                 'value' => $dateRealFrom
-            ))->save();
+                )
+            )->save();
         }
 
         /**  @var $realTo Ess_M2ePro_Model_Registry */
@@ -69,15 +75,19 @@ class Ess_M2ePro_Model_Servicing_Task_MaintenanceSchedule extends Ess_M2ePro_Mod
         /**  @var $enabledTo Ess_M2ePro_Model_Registry */
         $enabledTo = Mage::getModel('M2ePro/Registry')->load('/server/maintenance/schedule/date/enabled/to/', 'key');
         if ($realTo->getValue() != $dateRealTo) {
-            $realTo->addData(array(
+            $realTo->addData(
+                array(
                 'key' => '/server/maintenance/schedule/date/real/to/',
                 'value' => $dateRealTo
-            ))->save();
+                )
+            )->save();
 
-            $enabledTo->addData(array(
+            $enabledTo->addData(
+                array(
                 'key' => '/server/maintenance/schedule/date/enabled/to/',
                 'value' => $dateEnabledTo
-            ))->save();
+                )
+            )->save();
         }
     }
 

@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    private $marketplacesOptions = NULL;
+    protected $_marketplacesOptions;
 
-    private $accountsOptions = NULL;
+    protected $_accountsOptions;
 
     //########################################
 
@@ -41,20 +41,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         // ---------------------------------------
         $ebayPrimarySelect = $connRead->select();
         $ebayPrimarySelect->from(
-                array('etc' => Mage::getModel('M2ePro/Ebay_Template_Category')->getResource()->getMainTable())
-            )
+            array('etc' => Mage::getModel('M2ePro/Ebay_Template_Category')->getResource()->getMainTable())
+        )
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                 'category_main_mode as mode',
                 new Zend_Db_Expr(
                     'IF (`category_main_mode` = '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY.',
                          `category_main_id`,
-                         `category_main_attribute`) as `value`'),
+                         `category_main_attribute`) as `value`'
+                ),
                 'category_main_path as path',
                 new Zend_Db_Expr(Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN.' as `type`'),
                 'marketplace_id as marketplace',
                 new Zend_Db_Expr('\'\' as `account`'),
-            ))
+                )
+            )
             ->where('category_main_mode != ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE)
             ->group(array('mode', 'value', 'marketplace'));
         // ---------------------------------------
@@ -63,20 +66,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         // ---------------------------------------
         $ebaySecondarySelect = $connRead->select();
         $ebaySecondarySelect->from(
-                array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
-            )
+            array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
+        )
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                 'category_secondary_mode as mode',
                 new Zend_Db_Expr(
                     'IF (`category_secondary_mode` = '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY.',
                          `category_secondary_id`,
-                         `category_secondary_attribute`) as `value`'),
+                         `category_secondary_attribute`) as `value`'
+                ),
                 'category_secondary_path as path',
                 new Zend_Db_Expr(Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_SECONDARY.' as `type`'),
                 'marketplace_id as marketplace',
                 new Zend_Db_Expr('\'\' as `account`'),
-            ))
+                )
+            )
             ->where('category_secondary_mode != ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE)
             ->group(array('mode', 'value', 'marketplace'));
         // ---------------------------------------
@@ -85,20 +91,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         // ---------------------------------------
         $storePrimarySelect = $connRead->select();
         $storePrimarySelect->from(
-                array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
-            )
+            array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
+        )
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                 'store_category_main_mode as mode',
                 new Zend_Db_Expr(
                     'IF (`store_category_main_mode` = '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY.',
                          `store_category_main_id`,
-                         `store_category_main_attribute`) as `value`'),
+                         `store_category_main_attribute`) as `value`'
+                ),
                 'store_category_main_path as path',
                 new Zend_Db_Expr(Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN.' as `type`'),
                 new Zend_Db_Expr('\'\' as `marketplace`'),
                 'account_id as account',
-            ))
+                )
+            )
             ->where('store_category_main_mode != ?', Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE)
             ->group(array('mode', 'value', 'account'));
         // ---------------------------------------
@@ -110,20 +119,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
 
         $storeSecondarySelect = $connRead->select();
         $storeSecondarySelect->from(
-                array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
-            )
+            array('etc' => Mage::getModel('M2ePro/Ebay_Template_OtherCategory')->getResource()->getMainTable())
+        )
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                 'store_category_secondary_mode as mode',
                 new Zend_Db_Expr(
                     'IF (`store_category_secondary_mode` = '.$categoryModeEbay.',
                          `store_category_secondary_id`,
-                         `store_category_secondary_attribute`) as `value`'),
+                         `store_category_secondary_attribute`) as `value`'
+                ),
                 'store_category_secondary_path as path',
                 new Zend_Db_Expr(Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY.' as `type`'),
                 new Zend_Db_Expr('\'\' as `marketplace`'),
                 'account_id as account',
-            ))
+                )
+            )
             ->where('store_category_secondary_mode != ?', $categoryModeNone)
             ->group(array('mode', 'value', 'account'));
         // ---------------------------------------
@@ -131,12 +143,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         // Prepare union select
         // ---------------------------------------
         $unionSelect = $connRead->select();
-        $unionSelect->union(array(
+        $unionSelect->union(
+            array(
             $ebayPrimarySelect,
             $ebaySecondarySelect,
             $storePrimarySelect,
             $storeSecondarySelect,
-        ));
+            )
+        );
         // ---------------------------------------
 
         // Prepare result collection
@@ -166,17 +180,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         // ---------------------------------------
 
         // ---------------------------------------
-        $resultCollection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns(array(
+        $resultCollection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns(
+            array(
             'mode', 'value', 'path', 'type', 'marketplace', 'account',
             'edc.category_id as state_ebay', 'easc.category_id as state_store',
-//            new Zend_Db_Expr(
-//                'IF (`mode` = '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY.',
-//                    IF (`type` IN ('.implode(',', $ebayCategoryTypes).'),
-//                        IF (`edc`.`category_id` IS NULL, 0, 1),
-//                        IF (`easc`.`category_id` IS NULL, 0, 1)
-//                ), 1) as state'
-//            ),
-        ));
+            //            new Zend_Db_Expr(
+            //                'IF (`mode` = '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_EBAY.',
+            //                    IF (`type` IN ('.implode(',', $ebayCategoryTypes).'),
+            //                        IF (`edc`.`category_id` IS NULL, 0, 1),
+            //                        IF (`easc`.`category_id` IS NULL, 0, 1)
+            //                ), 1) as state'
+            //            ),
+            )
+        );
         // ---------------------------------------
 
 //        var_dump($resultCollection->getSelectSql(true)); exit;
@@ -190,17 +206,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
     {
         $helper = Mage::helper('M2ePro');
 
-        $this->addColumn('path', array(
+        $this->addColumn(
+            'path', array(
             'header'        => Mage::helper('M2ePro')->__('Title'),
             'align'         => 'left',
             'type'          => 'text',
-//            'width'         => '150px',
+            //            'width'         => '150px',
             'index'         => 'path',
             'escape'        => true,
             'filter_index'  => 'main_table.path',
             'frame_callback'=> array($this, 'callbackColumnPath'),
             'filter_condition_callback' => array($this, 'callbackFilterPath'),
-        ));
+            )
+        );
 
         $options = array(
             Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_EBAY_MAIN       => $helper->__('Primary'),
@@ -208,7 +226,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_MAIN      => $helper->__('Store Primary'),
             Ess_M2ePro_Helper_Component_Ebay_Category::TYPE_STORE_SECONDARY => $helper->__('Store Secondary'),
         );
-        $this->addColumn('type', array(
+        $this->addColumn(
+            'type', array(
             'header'        => $helper->__('Type'),
             'align'         => 'left',
             'type'          => 'options',
@@ -217,9 +236,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             'sortable'      => false,
             'filter_index'  => 'main_table.type',
             'options'       => $options
-        ));
+            )
+        );
 
-        $this->addColumn('marketplace', array(
+        $this->addColumn(
+            'marketplace', array(
             'header'        => $helper->__('eBay Site'),
             'align'         => 'left',
             'type'          => 'options',
@@ -229,9 +250,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
             'frame_callback'=> array($this, 'callbackColumnMarketplace'),
             'options'       => $this->getMarketplacesOptions(),
-        ));
+            )
+        );
 
-        $this->addColumn('account', array(
+        $this->addColumn(
+            'account', array(
             'header'        => $helper->__('Account'),
             'align'         => 'left',
             'type'          => 'options',
@@ -241,9 +264,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             'filter_condition_callback' => array($this, 'callbackFilterAccount'),
             'frame_callback'=> array($this, 'callbackColumnAccount'),
             'options'       => $this->getAccountsOptions(),
-        ));
+            )
+        );
 
-        $this->addColumn('state', array(
+        $this->addColumn(
+            'state', array(
             'header'        => $helper->__('State'),
             'align'         => 'left',
             'type'          => 'options',
@@ -257,9 +282,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
                 1 => $helper->__('Active'),
                 0 => $helper->__('Removed'),
             ),
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => $helper->__('Actions'),
             'align'     => 'left',
             'width'     => '70px',
@@ -285,7 +312,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
                     'field' => 'id'
                 ),
             )
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -382,8 +410,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         }
 
         $ebayCategoryTypes = Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes();
-        if ((in_array($row->getData('type'), $ebayCategoryTypes) && is_null($row->getData('state_ebay'))) ||
-            (!in_array($row->getData('type'), $ebayCategoryTypes) && is_null($row->getData('state_store')))
+        if ((in_array($row->getData('type'), $ebayCategoryTypes) && $row->getData('state_ebay') === null) ||
+            (!in_array($row->getData('type'), $ebayCategoryTypes) && $row->getData('state_store') === null)
         ) {
             $row->setData('state', 0);
             return $column->getRenderer()->render($row);
@@ -408,12 +436,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
             $collection->getSelect()->where(
                 '((edc.category_id IS NOT NULL AND main_table.type IN ('.implode(',', $ebayCategoryTypes).')) OR
                 (easc.category_id IS NOT NULL AND main_table.type IN ('.implode(',', $storeCategoryTypes).'))) OR
-                (main_table.mode = '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE.')');
+                (main_table.mode = '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE.')'
+            );
         } else {
             $collection->getSelect()->where(
                 '((edc.category_id IS NULL AND main_table.type IN ('.implode(',', $ebayCategoryTypes).')) OR
                 (easc.category_id IS NULL AND main_table.type IN ('.implode(',', $storeCategoryTypes).'))) AND
-                (main_table.mode != '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE.')');
+                (main_table.mode != '.Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE.')'
+            );
         }
     }
 
@@ -445,8 +475,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
         }
 
         $ebayCategoryTypes = Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes();
-        if ((in_array($row->getData('type'), $ebayCategoryTypes) && is_null($row->getData('state_ebay'))) ||
-            (!in_array($row->getData('type'), $ebayCategoryTypes) && is_null($row->getData('state_store')))
+        if ((in_array($row->getData('type'), $ebayCategoryTypes) && $row->getData('state_ebay') === null) ||
+            (!in_array($row->getData('type'), $ebayCategoryTypes) && $row->getData('state_store') === null)
         ) {
             return 'invalid-row';
         }
@@ -456,30 +486,30 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Grid extends Mage_A
 
     //########################################
 
-    private function getMarketplacesOptions()
+    protected function getMarketplacesOptions()
     {
-        if (is_null($this->marketplacesOptions)) {
+        if ($this->_marketplacesOptions === null) {
             $collection = Mage::getModel('M2ePro/Marketplace')->getCollection();
             $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
             $collection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
             $collection->setOrder('sorder', 'ASC');
 
-            $this->marketplacesOptions = $collection->toOptionHash();
+            $this->_marketplacesOptions = $collection->toOptionHash();
         }
 
-        return $this->marketplacesOptions;
+        return $this->_marketplacesOptions;
     }
 
-    private function getAccountsOptions()
+    protected function getAccountsOptions()
     {
-        if (is_null($this->accountsOptions)) {
+        if ($this->_accountsOptions === null) {
             $collection = Mage::getModel('M2ePro/Account')->getCollection();
             $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
 
-            $this->accountsOptions = $collection->toOptionHash();
+            $this->_accountsOptions = $collection->toOptionHash();
         }
 
-        return $this->accountsOptions;
+        return $this->_accountsOptions;
     }
 
     //########################################

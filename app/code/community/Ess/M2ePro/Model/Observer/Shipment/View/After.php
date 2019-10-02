@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Observer_Shipment_View_After extends Ess_M2ePro_Model_Obs
             return;
         }
 
-        if (is_null($order) || !$order->getId()) {
+        if ($order === null || !$order->getId()) {
             return;
         }
 

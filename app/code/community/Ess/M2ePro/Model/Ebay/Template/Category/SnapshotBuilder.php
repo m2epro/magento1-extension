@@ -12,17 +12,17 @@ class Ess_M2ePro_Model_Ebay_Template_Category_SnapshotBuilder extends Ess_M2ePro
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['specifics'] = $this->model->getSpecifics();
+        $data['specifics'] = $this->_model->getSpecifics();
 
         foreach ($data['specifics'] as &$specificData) {
             unset($specificData['id'], $specificData['template_category_id']);
             foreach ($specificData as &$value) {
-                !is_null($value) && !is_array($value) && $value = (string)$value;
+                $value !== null && !is_array($value) && $value = (string)$value;
             }
         }
 

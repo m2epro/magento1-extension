@@ -12,17 +12,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @var Ess_M2ePro_Model_Amazon_Template_Description
      */
-    private $descriptionTemplate = NULL;
+    protected $_descriptionTemplate = null;
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Template_Description_Definition
      */
-    private $definitionTemplate = NULL;
+    protected $_definitionTemplate = null;
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
      */
-    private $definitionSource = NULL;
+    protected $_definitionSource = null;
 
     //########################################
 
@@ -47,7 +47,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         $isUseDescriptionTemplate = false;
 
         do {
-
             if (!$this->getAmazonListingProduct()->isExistDescriptionTemplate()) {
                 break;
             }
@@ -62,13 +61,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
             }
 
             $isUseDescriptionTemplate = true;
-
         } while (false);
 
         if (!$isUseDescriptionTemplate) {
-
             if (isset($data['gift_wrap']) || isset($data['gift_message']) || isset($data['shipping_data'])) {
-
                 $data['description_data']['title'] = $this->getAmazonListingProduct()
                                                           ->getMagentoProduct()
                                                           ->getName();
@@ -101,7 +97,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return array
      */
-    private function getConditionData()
+    protected function getConditionData()
     {
         $condition = array();
 
@@ -121,7 +117,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return array
      */
-    private function getGiftData()
+    protected function getGiftData()
     {
         $giftWrap    = $this->getAmazonListingProduct()->getListingSource()->getGiftWrap();
         $giftMessage = $this->getAmazonListingProduct()->getListingSource()->getGiftMessage();
@@ -136,11 +132,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
 
         $data = array();
 
-        if (!is_null($giftWrap)) {
+        if ($giftWrap !== null) {
             $data['gift_wrap'] = $giftWrap;
         }
 
-        if (!is_null($giftMessage)) {
+        if ($giftMessage !== null) {
             $data['gift_message'] = $giftMessage;
         }
 
@@ -152,7 +148,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return array
      */
-    private function getDescriptionData()
+    protected function getDescriptionData()
     {
         $source = $this->getDefinitionSource();
 
@@ -227,7 +223,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
         $data['shipping_weight_unit_of_measure'] = $source->getShippingWeightUnitOfMeasure();
         $this->processNotFoundAttributes('Shipping Weight Units');
 
-        if (is_null($data['package_weight']) || $data['package_weight'] === '' ||
+        if ($data['package_weight'] === null || $data['package_weight'] === '' ||
             $data['package_weight_unit_of_measure'] === ''
         ) {
             unset(
@@ -236,7 +232,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
             );
         }
 
-        if (is_null($data['shipping_weight']) || $data['shipping_weight'] === '' ||
+        if ($data['shipping_weight'] === null || $data['shipping_weight'] === '' ||
             $data['shipping_weight_unit_of_measure'] === ''
         ) {
             unset(
@@ -284,14 +280,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return array
      */
-    private function getProductData()
+    protected function getProductData()
     {
         $data = array();
 
         $this->searchNotFoundAttributes();
 
         foreach ($this->getDescriptionTemplate()->getSpecifics(true) as $specific) {
-
             $source = $specific->getSource($this->getAmazonListingProduct()->getActualMagentoProduct());
 
             if (!$specific->isRequired() && !$specific->isModeNone() && !$source->getValue()) {
@@ -314,7 +309,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return array
      */
-    private function getShippingData()
+    protected function getShippingData()
     {
         if ($this->getAmazonListingProduct()->isAfnChannel() ||
             !$this->getAmazonListingProduct()->isExistShippingTemplate()
@@ -332,7 +327,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return array
      */
-    private function getTaxCodeData()
+    protected function getTaxCodeData()
     {
         if (!$this->getAmazonMarketplace()->isProductTaxCodePolicyAvailable() ||
             !$this->getAmazonAccount()->isVatCalculationServiceEnabled()
@@ -360,12 +355,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return Ess_M2ePro_Model_Amazon_Template_Description
      */
-    private function getDescriptionTemplate()
+    protected function getDescriptionTemplate()
     {
-        if (is_null($this->descriptionTemplate)) {
-            $this->descriptionTemplate = $this->getAmazonListingProduct()->getAmazonDescriptionTemplate();
+        if ($this->_descriptionTemplate === null) {
+            $this->_descriptionTemplate = $this->getAmazonListingProduct()->getAmazonDescriptionTemplate();
         }
-        return $this->descriptionTemplate;
+
+        return $this->_descriptionTemplate;
     }
 
     // ---------------------------------------
@@ -373,24 +369,26 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Details
     /**
      * @return Ess_M2ePro_Model_Amazon_Template_Description_Definition
      */
-    private function getDefinitionTemplate()
+    protected function getDefinitionTemplate()
     {
-        if (is_null($this->definitionTemplate)) {
-            $this->definitionTemplate = $this->getDescriptionTemplate()->getDefinitionTemplate();
+        if ($this->_definitionTemplate === null) {
+            $this->_definitionTemplate = $this->getDescriptionTemplate()->getDefinitionTemplate();
         }
-        return $this->definitionTemplate;
+
+        return $this->_definitionTemplate;
     }
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
      */
-    private function getDefinitionSource()
+    protected function getDefinitionSource()
     {
-        if (is_null($this->definitionSource)) {
-            $this->definitionSource = $this->getDefinitionTemplate()
-                ->getSource($this->getAmazonListingProduct()->getActualMagentoProduct());
+        if ($this->_definitionSource === null) {
+            $this->_definitionSource = $this->getDefinitionTemplate()
+                                            ->getSource($this->getAmazonListingProduct()->getActualMagentoProduct());
         }
-        return $this->definitionSource;
+
+        return $this->_definitionSource;
     }
 
     //########################################

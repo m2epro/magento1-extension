@@ -16,13 +16,15 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Synchronizati
 
     protected function getReviseInstructionTypes()
     {
-        return array_unique(array_merge(
-            $this->getReviseQtyInstructionTypes(),
-            $this->getRevisePriceRegularInstructionTypes(),
-            $this->getRevisePriceBusinessInstructionTypes(),
-            $this->getReviseDetailsInstructionTypes(),
-            $this->getReviseImagesInstructionTypes()
-        ));
+        return array_unique(
+            array_merge(
+                $this->getReviseQtyInstructionTypes(),
+                $this->getRevisePriceRegularInstructionTypes(),
+                $this->getRevisePriceBusinessInstructionTypes(),
+                $this->getReviseDetailsInstructionTypes(),
+                $this->getReviseImagesInstructionTypes()
+            )
+        );
     }
 
     // ---------------------------------------
@@ -123,29 +125,29 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Synchronizati
 
     protected function getPropertiesDataFromInputInstructions()
     {
-        if (!$this->input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
+        if (!$this->_input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
             return array();
         }
 
         $propertiesData = array();
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
             $propertiesData[] = 'qty';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePriceRegularInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePriceRegularInstructionTypes())) {
             $propertiesData[] = 'price_regular';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePriceBusinessInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePriceBusinessInstructionTypes())) {
             $propertiesData[] = 'price_business';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseDetailsInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseDetailsInstructionTypes())) {
             $propertiesData[] = 'details';
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
             $propertiesData[] = 'images';
         }
 
@@ -154,11 +156,11 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Synchronizati
 
     protected function getPropertiesDataFromInputScheduledAction()
     {
-        if (!$this->input->getScheduledAction() || !$this->input->getScheduledAction()->isActionTypeRevise()) {
+        if (!$this->_input->getScheduledAction() || !$this->_input->getScheduledAction()->isActionTypeRevise()) {
             return array();
         }
 
-        $additionalData = $this->input->getScheduledAction()->getAdditionalData();
+        $additionalData = $this->_input->getScheduledAction()->getAdditionalData();
         if (empty($additionalData['configurator'])) {
             return array();
         }

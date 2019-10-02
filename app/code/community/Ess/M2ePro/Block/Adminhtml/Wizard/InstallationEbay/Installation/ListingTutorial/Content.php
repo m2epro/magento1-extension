@@ -37,11 +37,13 @@ JS;
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'onclick' => $onClick,
                 'class'   => 'continue_button'
-            ));
+                )
+            );
         $this->setChild('continue_button', $buttonBlock);
 
         // ---------------------------------------

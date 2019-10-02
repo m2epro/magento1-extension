@@ -96,11 +96,13 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         array_unshift($categories, $categoryId);
         $categories = array_unique($categories);
 
-        $allRecentCategories[$configPath][$marketplaceOrAccountId] = implode(',' ,$categories);
-        $registryModel->addData(array(
+        $allRecentCategories[$configPath][$marketplaceOrAccountId] = implode(',', $categories);
+        $registryModel->addData(
+            array(
             'key' => $key,
             'value' => Mage::helper('M2ePro')->jsonEncode($allRecentCategories)
-        ))->save();
+            )
+        )->save();
     }
 
     // ---------------------------------------
@@ -143,8 +145,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         }
 
         foreach ($modes as $i => $mode) {
-
-            if (!Mage::helper('M2ePro')->theSameItemsInData($templatesData, array_slice($fields,$i*4,4))) {
+            if (!Mage::helper('M2ePro')->theSameItemsInData($templatesData, array_slice($fields, $i*4, 4))) {
                 $resultData[$mode.'_id'] = 0;
                 $resultData[$mode.'_path'] = NULL;
                 $resultData[$mode.'_mode'] = Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_NONE;
@@ -175,7 +176,6 @@ class Ess_M2ePro_Helper_Component_Ebay_Category extends Mage_Core_Helper_Abstrac
         );
 
         foreach ($temp as $key => $value) {
-
             if (!isset($data[$key.'_mode']) || !empty($data[$key.'_path'])) {
                 continue;
             }

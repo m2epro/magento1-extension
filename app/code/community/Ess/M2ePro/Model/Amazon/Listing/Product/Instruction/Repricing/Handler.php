@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Repricing_Handler
 {
     //########################################
 
-    private function getAffectedInstructionTypes()
+    protected function getAffectedInstructionTypes()
     {
         return array(
             ChangeProcessorAbstract::INSTRUCTION_TYPE_PRODUCT_PRICE_DATA_POTENTIALLY_CHANGED,
@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_Repricing_Handler
 
     //########################################
 
-    private function isProcessRequired(Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing)
+    protected function isProcessRequired(Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing)
     {
         $isDisabled         = $listingProductRepricing->isDisabled();
         $isRepricingManaged = $listingProductRepricing->isOnlineManaged();

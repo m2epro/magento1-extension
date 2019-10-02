@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-    protected $listing;
+    protected $_listing;
 
     //########################################
 
@@ -16,11 +16,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore extends Mage_Adminhtml
     {
         parent::__construct();
 
-        $this->listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         // Initialization block
         // ---------------------------------------
-        $this->setId('ebayListingPickupStore'.$this->listing->getId());
+        $this->setId('ebayListingPickupStore'.$this->_listing->getId());
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_pickupStore';
         // ---------------------------------------
@@ -36,24 +36,28 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore extends Mage_Adminhtml
         // ---------------------------------------
 
         $isExistsPickupStores = Mage::getModel('M2ePro/Ebay_Account_PickupStore')->getCollection()
-            ->addFieldToFilter('account_id', $this->listing->getAccountId())
-            ->addFieldToFilter('marketplace_id', $this->listing->getMarketplaceId())
+            ->addFieldToFilter('account_id', $this->_listing->getAccountId())
+            ->addFieldToFilter('marketplace_id', $this->_listing->getMarketplaceId())
             ->getSize();
 
         // ---------------------------------------
         $this->_headerText = Mage::helper('M2ePro')
-            ->__('In-Store Pickup Management "%s%"', $this->listing->getTitle());
+            ->__('In-Store Pickup Management "%s%"', $this->_listing->getTitle());
         // ---------------------------------------
 
         // ---------------------------------------
-        $backUrl = $this->getUrl('*/adminhtml_ebay_listing/view', array(
-            'id' => $this->listing->getId()
-        ));
-        $this->_addButton('back', array(
+        $backUrl = $this->getUrl(
+            '*/adminhtml_ebay_listing/view', array(
+            'id' => $this->_listing->getId()
+            )
+        );
+        $this->_addButton(
+            'back', array(
             'label'     => $this->getBackButtonLabel(),
             'onclick'   => 'setLocation(\'' . $backUrl .'\')',
             'class'     => 'back',
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
@@ -68,34 +72,42 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore extends Mage_Adminhtml
                               setLocation(\''.$currentUrl.'\');
                           }
                       }, 300);';
-            $this->_addButton('create_new_store', array(
+            $this->_addButton(
+                'create_new_store', array(
                 'label'   => Mage::helper('M2ePro')->__('Create New Store'),
                 'onclick' => $callback,
                 'class'   => 'add'
-            ));
-
+                )
+            );
         } else {
             $locale = Mage::app()->getLocale()->getLocaleCode();
             $filter = array(
-                'marketplace_id' => $this->listing->getMarketplaceId(),
+                'marketplace_id' => $this->_listing->getMarketplaceId(),
                 'create_date[locale]' => $locale,
                 'update_date[locale]' => $locale
             );
-            $myStoresUrl = $this->getUrl('*/adminhtml_ebay_accountPickupStore', array(
+            $myStoresUrl = $this->getUrl(
+                '*/adminhtml_ebay_accountPickupStore', array(
                 'filter' => base64_encode(http_build_query($filter))
-            ));
-            $this->_addButton('my_stores', array(
+                )
+            );
+            $this->_addButton(
+                'my_stores', array(
                 'label' => Mage::helper('M2ePro')->__('My Stores'),
                 'class' => 'scalable button_link',
                 'onclick' => 'window.open(\''.$myStoresUrl.'\',\'_blank\');'
-            ));
-            $this->_addButton('add_products_to_stores', array(
-                'label'     => Mage::helper('M2ePro')->__('Assign Products to Stores'),
-                'onclick'   => 'EbayListingPickupStoreGridHandlerObj.pickupStoreStepProducts('
-                    .$this->listing->getId().')',
-                'class'     => 'add'
-            ));
+                )
+            );
+            $this->_addButton(
+                'add_products_to_stores', array(
+                    'label'     => Mage::helper('M2ePro')->__('Assign Products to Stores'),
+                    'onclick'   => 'EbayListingPickupStoreGridHandlerObj.pickupStoreStepProducts('
+                    .$this->_listing->getId() . ')',
+                    'class'     => 'add'
+                )
+            );
         }
+
         // ---------------------------------------
     }
 
@@ -116,7 +128,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore extends Mage_Adminhtml
 
         // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => Mage::helper('M2ePro/Data_Global')->getValue('temp_data'))
         );
         $html .= $viewHeaderBlock->toHtml();

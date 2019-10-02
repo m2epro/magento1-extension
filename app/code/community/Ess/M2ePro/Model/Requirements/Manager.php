@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Requirements_Manager
         }
 
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue(
-            'is_meet_requirements',(int)$isMeetRequirements, array(), 60*60
+            'is_meet_requirements', (int)$isMeetRequirements, array(), 60*60
         );
 
         return (bool)$isMeetRequirements;

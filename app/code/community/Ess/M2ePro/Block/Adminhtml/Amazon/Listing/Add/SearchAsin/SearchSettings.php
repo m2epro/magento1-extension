@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_SearchSettings
     extends Mage_Adminhtml_Block_Widget_Form
 {
-    protected $component;
+    protected $_component;
 
     //########################################
 
@@ -29,16 +29,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_SearchSettings
     {
         // Prepare action
         // ---------------------------------------
-        $action = $this->getUrl('*/adminhtml_amazon_listing_productAdd/saveSearchSettings', array(
+        $action = $this->getUrl(
+            '*/adminhtml_amazon_listing_productAdd/saveSearchSettings', array(
             'id' => (int)$this->getRequest()->getParam('id')
-        ));
+            )
+        );
         // ---------------------------------------
 
-        $form = new Varien_Data_Form(array(
-            'id'      => 'search_settings_form',
-            'action'  => $action,
-            'method'  => 'post'
-        ));
+        $form = new Varien_Data_Form(
+            array(
+                'id'     => 'search_settings_form',
+                'action' => $action,
+                'method' => 'post'
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -59,12 +63,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin_SearchSettings
 
     protected function _toHtml()
     {
-        $buttonSave = $this->getLayout()->createBlock('adminhtml/widget_button')->setData(array(
-            'id'    => 'save_search_settings',
-            'label' => Mage::helper('M2ePro')->__('Confirm'),
-            'style' => 'float: right; margin: 0 0 7px 5px;',
-            'onclick' => 'ListingGridHandlerObj.saveSearchSettings()'
-        ));
+        $buttonSave = $this->getLayout()->createBlock('adminhtml/widget_button')->setData(
+            array(
+                'id'      => 'save_search_settings',
+                'label'   => Mage::helper('M2ePro')->__('Confirm'),
+                'style'   => 'float: right; margin: 0 0 7px 5px;',
+                'onclick' => 'ListingGridHandlerObj.saveSearchSettings()'
+            )
+        );
 
         $this->setChild('save_search_settings', $buttonSave);
 

@@ -116,7 +116,6 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         $listingProductsIds = array();
 
         foreach ($productsIdsChunks as $productsIdsChunk) {
-
             $select = $connRead->select();
             $select->from(array('alp' => $tableListingProduct), array('id', 'product_id'))
                 ->where('id IN (?)', $productsIdsChunk);
@@ -202,7 +201,6 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
             ->getTableNameWithPrefix('m2epro_amazon_template_description');
 
         foreach ($productsIdsChunks as $productsIdsChunk) {
-
             $select = $connRead->select();
             $select->from(array('alp' => $tableAmazonListingProduct), array('listing_product_id'))
                 ->where('listing_product_id IN (?)', $productsIdsChunk);
@@ -263,6 +261,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
         if (empty($data[$marketplaceId][$theme])) {
             $data[$marketplaceId][$theme] = 0;
         }
+
         $data[$marketplaceId][$theme]++;
 
         arsort($data[$marketplaceId]);
@@ -293,7 +292,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
 
     //########################################
 
-    private function getThemeUsageDataCache()
+    protected function getThemeUsageDataCache()
     {
         $cacheKey = __CLASS__.self::DATA_REGISTRY_KEY;
         return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
@@ -301,7 +300,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
 
     // ---------------------------------------
 
-    private function setThemeUsageDataCache(array $data)
+    protected function setThemeUsageDataCache(array $data)
     {
         $cacheKey = __CLASS__.self::DATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey, $data);
@@ -309,7 +308,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Variation extends Mage_Core_Helper_Abst
 
     // ---------------------------------------
 
-    private function removeThemeUsageDataCache()
+    protected function removeThemeUsageDataCache()
     {
         $cacheKey = __CLASS__.self::DATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue($cacheKey);

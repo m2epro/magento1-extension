@@ -36,7 +36,7 @@ class Ess_M2ePro_Helper_Module_Support_Form extends Mage_Core_Helper_Abstract
 
         $toEmail = Mage::helper('M2ePro/Module_Support')->getContactEmail();
         $componentTitle = Mage::helper('M2ePro/Component')->getComponentTitle($component);
-        $body = $this->createBody($subject,$componentTitle,$description,$severity);
+        $body = $this->createBody($subject, $componentTitle, $description, $severity);
 
         $this->sendMailNow($toEmail, $fromEmail, $fromName, $subject, $body, $attachments);
     }
@@ -125,7 +125,7 @@ DATA;
 
     //########################################
 
-    private function createBody($subject, $component, $description, $severity)
+    protected function createBody($subject, $component, $description, $severity)
     {
         $currentDate = Mage::helper('M2ePro')->getCurrentGmtDate();
 
@@ -150,7 +150,7 @@ DATA;
         return $body;
     }
 
-    private function sendMailNow($toEmail, $fromEmail, $fromName, $subject, $body, array $attachments = array())
+    protected function sendMailNow($toEmail, $fromEmail, $fromName, $subject, $body, array $attachments = array())
     {
         $mail = new Zend_Mail('UTF-8');
 

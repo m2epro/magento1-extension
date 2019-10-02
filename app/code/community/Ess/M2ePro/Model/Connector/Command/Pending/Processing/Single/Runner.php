@@ -60,22 +60,26 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
         $requestPendingSingle = $requestPendingSingle->getFirstItem();
 
         if (!$requestPendingSingle->getId()) {
-            $requestPendingSingle->setData(array(
+            $requestPendingSingle->setData(
+                array(
                 'component'       => $params['component'],
                 'server_hash'     => $params['server_hash'],
                 'expiration_date' => Mage::helper('M2ePro')->getDate(
                     Mage::helper('M2ePro')->getCurrentGmtDate(true)+static::PENDING_REQUEST_MAX_LIFE_TIME
                 )
-            ));
+                )
+            );
 
             $requestPendingSingle->save();
         }
 
         $processingSingle = Mage::getModel('M2ePro/Connector_Command_Pending_Processing_Single');
-        $processingSingle->setData(array(
+        $processingSingle->setData(
+            array(
             'processing_id'             => $this->getProcessingObject()->getId(),
             'request_pending_single_id' => $requestPendingSingle->getId(),
-        ));
+            )
+        );
 
         $processingSingle->save();
     }

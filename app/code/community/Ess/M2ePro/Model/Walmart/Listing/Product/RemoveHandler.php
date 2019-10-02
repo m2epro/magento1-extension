@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Walmart_Listing_Product_RemoveHandler extends Ess_M2ePro_Model_Listing_Product_RemoveHandler
 {
     /** @var Ess_M2ePro_Model_Walmart_Listing_Product */
-    private $parentWalmartListingProductForProcess = NULL;
+    protected $_parentWalmartListingProductForProcess = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_RemoveHandler extends Ess_M2ePro_
                 ->getTypeModel()
                 ->getWalmartParentListingProduct();
 
-            $this->parentWalmartListingProductForProcess = $parentWalmartListingProduct;
+            $this->_parentWalmartListingProductForProcess = $parentWalmartListingProduct;
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Child $childTypeModel */
             $childTypeModel = $variationManager->getTypeModel();
@@ -43,12 +43,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_RemoveHandler extends Ess_M2ePro_
     {
         parent::eventAfterProcess();
 
-        if (is_null($this->parentWalmartListingProductForProcess)) {
+        if ($this->_parentWalmartListingProductForProcess === null) {
             return;
         }
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent $parentTypeModel */
-        $parentTypeModel = $this->parentWalmartListingProductForProcess->getVariationManager()->getTypeModel();
+        $parentTypeModel = $this->_parentWalmartListingProductForProcess->getVariationManager()->getTypeModel();
         $parentTypeModel->getProcessor()->process();
     }
 
@@ -58,9 +58,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_RemoveHandler extends Ess_M2ePro_
      * @return Ess_M2ePro_Model_Walmart_Listing_Product
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    private function getWalmartListingProduct()
+    protected function getWalmartListingProduct()
     {
-        return $this->listingProduct->getChildObject();
+        return $this->_listingProduct->getChildObject();
     }
 
     //########################################

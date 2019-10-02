@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
     public function getRawData()
     {
         return array(
-            'buyer_name'     => $this->order->getChildObject()->getBuyerName(),
+            'buyer_name'     => $this->_order->getChildObject()->getBuyerName(),
             'email'          => $this->getBuyerEmail(),
             'recipient_name' => $this->getData('recipient_name'),
             'country_id'     => $this->getData('country_code'),
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
      */
     public function hasSameBuyerAndRecipient()
     {
-        $rawAddressData = $this->order->getShippingAddress()->getRawData();
+        $rawAddressData = $this->_order->getShippingAddress()->getRawData();
 
         $buyerNameParts =  array_map('strtolower', explode(' ', $rawAddressData['buyer_name']));
         $recipientNameParts = array_map('strtolower', explode(' ', $rawAddressData['recipient_name']));
@@ -45,15 +45,15 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
         sort($buyerNameParts);
         sort($recipientNameParts);
 
-        return count(array_diff($buyerNameParts, $recipientNameParts)) == 0;
+        return empty(array_diff($buyerNameParts, $recipientNameParts));
     }
 
-    private function getBuyerEmail()
+    protected function getBuyerEmail()
     {
-        $email = $this->order->getData('buyer_email');
+        $email = $this->_order->getData('buyer_email');
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $email = str_replace(' ', '-', strtolower($this->order->getChildObject()->getBuyerName()));
+            $email = str_replace(' ', '-', strtolower($this->_order->getChildObject()->getBuyerName()));
             $email = mb_convert_encoding($email, "ASCII");
             $email .= Ess_M2ePro_Model_Magento_Customer::FAKE_EMAIL_POSTFIX;
         }
@@ -61,7 +61,7 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
         return $email;
     }
 
-    private function getPostalCode()
+    protected function getPostalCode()
     {
         $postalCode = $this->getData('postal_code');
 
@@ -72,7 +72,7 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
         return $postalCode;
     }
 
-    private function getPhone()
+    protected function getPhone()
     {
         $phone = $this->getData('phone');
 

@@ -32,10 +32,10 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         $movingHandlerJs = $component.'ListingOtherGridHandlerObj.movingHandler';
 
         $block = $this->loadLayout()->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_moving_grid','',
+            'M2ePro/adminhtml_listing_moving_grid', '',
             array(
                 'grid_url' => $this->getUrl(
-                    '*/adminhtml_listing_other_moving/moveToListingGrid',array('_current'=>true)
+                    '*/adminhtml_listing_other_moving/moveToListingGrid', array('_current'=>true)
                 ),
                 'moving_handler_js' => $movingHandlerJs,
             )
@@ -65,10 +65,13 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         $sessionHelper->setValue($sessionKey, $selectedProducts);
 
         if (!(bool)$this->getRequest()->getParam('is_last_part')) {
-
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'result' => true
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'result' => true
+                    )
+                )
+            );
         }
 
         $listingOtherCollection = Mage::helper('M2ePro/Component')
@@ -79,14 +82,17 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
         $listingOtherCollection->addFieldToFilter('main_table.product_id', array('notnull' => true));
 
         if ($listingOtherCollection->getSize() != count($selectedProducts)) {
-
             $sessionHelper->removeValue($sessionKey);
             $message = Mage::helper('M2ePro')->__('Only Mapped Products must be selected.');
 
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'result'  => false,
-                'message' => $message
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'result'  => false,
+                    'message' => $message
+                    )
+                )
+            );
         }
 
         $listingOtherCollection->getSelect()->join(
@@ -104,11 +110,15 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MovingController
            ->query()
            ->fetch();
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'result'        => true,
-            'accountId'     => (int)$row['account_id'],
-            'marketplaceId' => (int)$row['marketplace_id'],
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'result'        => true,
+                'accountId'     => (int)$row['account_id'],
+                'marketplaceId' => (int)$row['marketplace_id'],
+                )
+            )
+        );
     }
 
     //########################################

@@ -28,21 +28,25 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs
 
     protected function _beforeToHtml()
     {
-        $this->addTab('chooser', array(
+        $this->addTab(
+            'chooser', array(
             'label'   => Mage::helper('M2ePro')->__('General'),
             'title'   => Mage::helper('M2ePro')->__('General'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_ebay_configuration_category_edit_primary_tabs_chooser')
                 ->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('specific', array(
+        $this->addTab(
+            'specific', array(
             'label'   => Mage::helper('M2ePro')->__('Specifics'),
             'title'   => Mage::helper('M2ePro')->__('Specifics'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_ebay_configuration_category_edit_primary_tabs_specific')
                 ->toHtml(),
-        ));
+            )
+        );
 
         $this->setActiveTab($this->getRequest()->getParam('tab', 'chooser'));
 

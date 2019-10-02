@@ -165,7 +165,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
 
     // ---------------------------------------
 
-    private function _getGeneralFromAttributeSets(array $attributeSetIds)
+    protected function _getGeneralFromAttributeSets(array $attributeSetIds)
     {
         if (count($attributeSetIds) > 50) {
             throw new Ess_M2ePro_Model_Exception("Attribute sets must be less then 50");
@@ -208,7 +208,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
 
     // ---------------------------------------
 
-    private function getConfigurable(array $attributeSetIds = array())
+    protected function getConfigurable(array $attributeSetIds = array())
     {
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
@@ -296,13 +296,15 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
                 return true;
             }
         }
+
         return false;
     }
 
-    public function filterByInputTypes(array $attributes,
-                                       array $frontendInputTypes = array(),
-                                       array $backendInputTypes = array())
-    {
+    public function filterByInputTypes(
+        array $attributes,
+        array $frontendInputTypes = array(),
+        array $backendInputTypes = array()
+    ) {
         if (empty($attributes)) {
             return array();
         }
@@ -323,6 +325,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         if (!empty($frontendInputTypes)) {
             $attributeCollection->addFieldToFilter('frontend_input', array('in' => $frontendInputTypes));
         }
+
         if (!empty($backendInputTypes)) {
             $attributeCollection->addFieldToFilter('backend_type', array('in' => $backendInputTypes));
         }
@@ -343,7 +346,7 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
 
     public function getSetsFromProductsWhichLacksAttributes(array $attributes, array $productIds)
     {
-        if (count($attributes) == 0 || count($productIds) == 0) {
+        if (empty($attributes) || empty($productIds)) {
             return array();
         }
 
@@ -353,11 +356,12 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         foreach ($scopeAttributesOptionArray as $scopeAttributesOption) {
             $scopeAttributes[] = $scopeAttributesOption['code'];
         }
+
         // ---------------------------------------
 
         $missingAttributes = array_diff($attributes, $scopeAttributes);
 
-        if (count($missingAttributes) == 0) {
+        if (empty($missingAttributes)) {
             return array();
         }
 
@@ -404,9 +408,12 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         return false;
     }
 
-    public function convertAttributeTypePriceFromStoreToMarketplace(Ess_M2ePro_Model_Magento_Product $magentoProduct,
-                                                                    $attributeCode, $currencyCode, $store)
-    {
+    public function convertAttributeTypePriceFromStoreToMarketplace(
+        Ess_M2ePro_Model_Magento_Product $magentoProduct,
+        $attributeCode,
+        $currencyCode,
+        $store
+    ) {
         $attributeValue = $magentoProduct->getAttributeValue($attributeCode);
 
         if (empty($attributeValue)) {
@@ -418,7 +425,6 @@ class Ess_M2ePro_Helper_Magento_Attribute extends Ess_M2ePro_Helper_Magento_Abst
         );
 
         if ($isPriceConvertEnabled && $this->isAttributeInputTypePrice($attributeCode)) {
-
             $attributeValue = Mage::getSingleton('M2ePro/Currency')->convertPrice(
                 $attributeValue,
                 $currencyCode,

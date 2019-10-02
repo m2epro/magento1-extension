@@ -37,8 +37,8 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Cancel_ItemsRequester
             parent::getProcessingParams(),
             array(
                 'request_data' => $this->getRequestData(),
-                'order_id'     => $this->params['order']['order_id'],
-                'change_id'    => $this->params['order']['change_id'],
+                'order_id'     => $this->_params['order']['order_id'],
+                'change_id'    => $this->_params['order']['change_id'],
                 'action_type'  => Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_CANCEL,
                 'lock_name'    => 'cancel_order',
                 'start_date'   => Mage::helper('M2ePro')->getCurrentGmtDate(),
@@ -50,7 +50,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Cancel_ItemsRequester
 
     public function getRequestData()
     {
-        return $this->params['order']['amazon_order_id'];
+        return $this->_params['order']['amazon_order_id'];
     }
 
     // ########################################

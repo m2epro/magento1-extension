@@ -10,12 +10,10 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 {
     const MAX_MEMORY_LIMIT = 2048;
 
-    //########################################
+    protected $_previousStoreId = null;
 
-    private $previousStoreId = NULL;
-
-    /** @var Ess_M2ePro_Model_Cron_OperationHistory $operationHistory */
-    private $operationHistory = NULL;
+    /** @var Ess_M2ePro_Model_Cron_OperationHistory $_operationHistory */
+    protected $_operationHistory = null;
 
     //########################################
 
@@ -27,12 +25,18 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     public function process()
     {
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
+            return false;
+        }
+
         $this->selfCheck();
 
         /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
-        $transactionalManager = Mage::getModel('M2ePro/Lock_Transactional_Manager', array(
+        $transactionalManager = Mage::getModel(
+            'M2ePro/Lock_Transactional_Manager', array(
             'nick' => 'cron_runner'
-        ));
+            )
+        );
 
         $transactionalManager->lock();
 
@@ -60,17 +64,17 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
             $strategyObject->setParentOperationHistory($this->getOperationHistory());
 
             $result = $strategyObject->process();
-
         } catch (Exception $exception) {
-
             $result = false;
 
-            $this->getOperationHistory()->addContentData('exceptions', array(
+            $this->getOperationHistory()->addContentData(
+                'exceptions', array(
                 'message' => $exception->getMessage(),
                 'file'    => $exception->getFile(),
                 'line'    => $exception->getLine(),
                 'trace'   => $exception->getTraceAsString(),
-            ));
+                )
+            );
 
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
@@ -97,7 +101,7 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     protected function initialize()
     {
-        $this->previousStoreId = Mage::app()->getStore()->getId();
+        $this->_previousStoreId = Mage::app()->getStore()->getId();
         Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
 
         Mage::helper('M2ePro/Client')->setMemoryLimit(self::MAX_MEMORY_LIMIT);
@@ -106,9 +110,9 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     protected function deInitialize()
     {
-        if (!is_null($this->previousStoreId)) {
-            Mage::app()->setCurrentStore($this->previousStoreId);
-            $this->previousStoreId = NULL;
+        if ($this->_previousStoreId !== null) {
+            Mage::app()->setCurrentStore($this->_previousStoreId);
+            $this->_previousStoreId = null;
         }
     }
 
@@ -151,7 +155,9 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     protected function beforeStart()
     {
-        $this->getOperationHistory()->start('cron_runner',null,$this->getInitiator(),$this->getOperationHistoryData());
+        $this->getOperationHistory()->start(
+            'cron_runner', null, $this->getInitiator(), $this->getOperationHistoryData()
+        );
         $this->getOperationHistory()->makeShutdownFunction();
         $this->getOperationHistory()->cleanOldData();
     }
@@ -177,11 +183,11 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
      */
     public function getOperationHistory()
     {
-        if (!is_null($this->operationHistory)) {
-            return $this->operationHistory;
+        if ($this->_operationHistory !== null) {
+            return $this->_operationHistory;
         }
 
-        return $this->operationHistory = Mage::getModel('M2ePro/Cron_OperationHistory');
+        return $this->_operationHistory = Mage::getModel('M2ePro/Cron_OperationHistory');
     }
 
     //########################################

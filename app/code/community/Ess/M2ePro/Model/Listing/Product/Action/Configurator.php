@@ -13,11 +13,11 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
 
     //########################################
 
-    protected $mode = self::MODE_EXCLUDING;
+    protected $_mode = self::MODE_EXCLUDING;
 
-    protected $allowedDataTypes = array();
+    protected $_allowedDataTypes = array();
 
-    protected $params = array();
+    protected $_params = array();
 
     //########################################
 
@@ -34,16 +34,16 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
 
     public function enableAll()
     {
-        $this->mode             = self::MODE_EXCLUDING;
-        $this->allowedDataTypes = $this->getAllDataTypes();
+        $this->_mode             = self::MODE_EXCLUDING;
+        $this->_allowedDataTypes = $this->getAllDataTypes();
 
         return $this;
     }
 
     public function disableAll()
     {
-        $this->mode             = self::MODE_INCLUDING;
-        $this->allowedDataTypes = array();
+        $this->_mode             = self::MODE_INCLUDING;
+        $this->_allowedDataTypes = array();
 
         return $this;
     }
@@ -52,30 +52,30 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
 
     public function getMode()
     {
-        return $this->mode;
+        return $this->_mode;
     }
 
     public function isExcludingMode()
     {
-        return $this->mode == self::MODE_EXCLUDING;
+        return $this->_mode == self::MODE_EXCLUDING;
     }
 
     public function isIncludingMode()
     {
-        return $this->mode == self::MODE_INCLUDING;
+        return $this->_mode == self::MODE_INCLUDING;
     }
 
     // ---------------------------------------
 
     public function setModeExcluding()
     {
-        $this->mode = self::MODE_EXCLUDING;
+        $this->_mode = self::MODE_EXCLUDING;
         return $this;
     }
 
     public function setModeIncluding()
     {
-        $this->mode = self::MODE_INCLUDING;
+        $this->_mode = self::MODE_INCLUDING;
         return $this;
     }
 
@@ -86,7 +86,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function getAllowedDataTypes()
     {
-        return $this->allowedDataTypes;
+        return $this->_allowedDataTypes;
     }
 
     //########################################
@@ -94,7 +94,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
     public function isAllowed($dataType)
     {
         $this->validateDataType($dataType);
-        return in_array($dataType, $this->allowedDataTypes);
+        return in_array($dataType, $this->_allowedDataTypes);
     }
 
     public function allow($dataType)
@@ -105,7 +105,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
             return $this;
         }
 
-        $this->allowedDataTypes[] = $dataType;
+        $this->_allowedDataTypes[] = $dataType;
         return $this;
     }
 
@@ -117,7 +117,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
             return $this;
         }
 
-        $this->allowedDataTypes = array_diff($this->allowedDataTypes, array($dataType));
+        $this->_allowedDataTypes = array_diff($this->_allowedDataTypes, array($dataType));
         return $this;
     }
 
@@ -128,7 +128,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     /**
@@ -137,7 +137,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function setParams(array $params)
     {
-        $this->params = $params;
+        $this->_params = $params;
         return $this;
     }
 
@@ -170,12 +170,14 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
     public function mergeData(Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator)
     {
         if ($configurator->isExcludingMode()) {
-            $this->mode = self::MODE_EXCLUDING;
+            $this->_mode = self::MODE_EXCLUDING;
         }
 
-        $this->allowedDataTypes = array_unique(array_merge(
-            $this->getAllowedDataTypes(), $configurator->getAllowedDataTypes()
-        ));
+        $this->_allowedDataTypes = array_unique(
+            array_merge(
+                $this->getAllowedDataTypes(), $configurator->getAllowedDataTypes()
+            )
+        );
 
         return $this;
     }
@@ -186,9 +188,11 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function mergeParams(Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator)
     {
-        $this->params = array_unique(array_merge(
-            $this->getParams(), $configurator->getParams()
-        ));
+        $this->_params = array_unique(
+            array_merge(
+                $this->getParams(), $configurator->getParams()
+            )
+        );
 
         return $this;
     }
@@ -201,9 +205,9 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
     public function getData()
     {
         return array(
-            'mode'               => $this->mode,
-            'allowed_data_types' => $this->allowedDataTypes,
-            'params'             => $this->params,
+            'mode'               => $this->_mode,
+            'allowed_data_types' => $this->_allowedDataTypes,
+            'params'             => $this->_params,
         );
     }
 
@@ -213,7 +217,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
      */
     public function setData(array $data)
     {
-        $this->mode = $data['mode'];
+        $this->_mode = $data['mode'];
 
         if (!empty($data['allowed_data_types'])) {
             if (!is_array($data['allowed_data_types']) ||
@@ -225,7 +229,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
                 );
             }
 
-            $this->allowedDataTypes = $data['allowed_data_types'];
+            $this->_allowedDataTypes = $data['allowed_data_types'];
         }
 
         if (!empty($data['params'])) {
@@ -233,7 +237,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_Configurator
                 throw new InvalidArgumentException('Params has invalid format.');
             }
 
-            $this->params = $data['params'];
+            $this->_params = $data['params'];
         }
 
         return $this;

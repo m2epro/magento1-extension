@@ -9,24 +9,24 @@
 abstract class Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Responser
     extends Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
-    private $cachedParamsObjects = array();
+    protected $_cachedParamsObjects = array();
 
     //########################################
 
     protected function getObjectByParam($model, $idKey)
     {
-        if (isset($this->cachedParamsObjects[$idKey])) {
-            return $this->cachedParamsObjects[$idKey];
+        if (isset($this->_cachedParamsObjects[$idKey])) {
+            return $this->_cachedParamsObjects[$idKey];
         }
 
-        if (!isset($this->params[$idKey])) {
-            return NULL;
+        if (!isset($this->_params[$idKey])) {
+            return null;
         }
 
-        $this->cachedParamsObjects[$idKey] = Mage::helper('M2ePro/Component_Walmart')
-                    ->getObject($model,$this->params[$idKey]);
+        $this->_cachedParamsObjects[$idKey] = Mage::helper('M2ePro/Component_Walmart')
+                                                  ->getObject($model, $this->_params[$idKey]);
 
-        return $this->cachedParamsObjects[$idKey];
+        return $this->_cachedParamsObjects[$idKey];
     }
 
     //########################################

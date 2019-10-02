@@ -8,15 +8,15 @@
 
 class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
 {
-    private $text;
-    private $placeholders = array();
+    protected $_text;
+    protected $_placeholders = array();
 
-    private $values = array();
-    private $args = array();
+    protected $_values = array();
+    protected $_args   = array();
 
-    private $translatedText;
-    private $processedPlaceholders = array();
-    private $processedArgs = array();
+    protected $_translatedText;
+    protected $_processedPlaceholders = array();
+    protected $_processedArgs         = array();
 
     //########################################
 
@@ -27,90 +27,88 @@ class Ess_M2ePro_Helper_Module_Translation extends Mage_Core_Helper_Abstract
         $this->parseInput($args);
         $this->parsePlaceholders();
 
-        if (count($this->placeholders) <= 0) {
-            array_unshift($this->args, $this->text);
-            return call_user_func_array(array($this,'__'), $this->args);
+        if (empty($this->_placeholders)) {
+            array_unshift($this->_args, $this->_text);
+            return call_user_func_array(array($this,'__'), $this->_args);
         }
 
-        $this->translatedText = parent::__($this->text);
+        $this->_translatedText = parent::__($this->_text);
 
-        !empty($this->values) && $this->replacePlaceholdersByValue();
-        !empty($this->args)   && $this->replacePlaceholdersByArgs();
+        !empty($this->_values) && $this->replacePlaceholdersByValue();
+        !empty($this->_args) && $this->replacePlaceholdersByArgs();
 
-        $unprocessedArgs = array_diff($this->args, $this->processedArgs);
+        $unprocessedArgs = array_diff($this->_args, $this->_processedArgs);
         if (!$unprocessedArgs) {
-            return $this->translatedText;
+            return $this->_translatedText;
         }
 
-        return vsprintf($this->translatedText, $unprocessedArgs);
+        return vsprintf($this->_translatedText, $unprocessedArgs);
     }
 
     //########################################
 
-    private function reset()
+    protected function reset()
     {
-        $this->text = null;
-        $this->values = array();
-        $this->args = array();
-        $this->placeholders = array();
-        $this->processedPlaceholders = array();
-        $this->processedArgs = array();
-        $this->translatedText = null;
+        $this->_text                  = null;
+        $this->_values                = array();
+        $this->_args                  = array();
+        $this->_placeholders          = array();
+        $this->_processedPlaceholders = array();
+        $this->_processedArgs         = array();
+        $this->_translatedText        = null;
     }
 
     // ---------------------------------------
 
-    private function parseInput(array $input)
+    protected function parseInput(array $input)
     {
-        $this->text = array_shift($input);
+        $this->_text = array_shift($input);
 
         if (is_array(current($input))) {
-            $this->values = array_shift($input);
+            $this->_values = array_shift($input);
         }
 
-        $this->args = $input;
+        $this->_args = $input;
     }
 
-    private function parsePlaceholders()
+    protected function parsePlaceholders()
     {
-        preg_match_all('/%[\w\d]+%/', $this->text , $placeholders);
-        $this->placeholders = array_unique($placeholders[0]);
+        preg_match_all('/%[\w\d]+%/', $this->_text, $placeholders);
+        $this->_placeholders = array_unique($placeholders[0]);
     }
 
     //########################################
 
-    private function replacePlaceholdersByValue()
+    protected function replacePlaceholdersByValue()
     {
-        foreach ($this->values as $placeholder=>$value) {
-
-            $newText = str_replace('%'.$placeholder.'%', $value, $this->translatedText, $count);
+        foreach ($this->_values as $placeholder=>$value) {
+            $newText = str_replace('%'.$placeholder.'%', $value, $this->_translatedText, $count);
 
             if ($count <= 0) {
                 continue;
             }
 
-            $this->translatedText = $newText;
-            $this->processedPlaceholders[] = '%'.$placeholder.'%';
+            $this->_translatedText          = $newText;
+            $this->_processedPlaceholders[] = '%' . $placeholder . '%';
         }
     }
 
-    private function replacePlaceholdersByArgs()
+    protected function replacePlaceholdersByArgs()
     {
-        $unprocessedPlaceholders = array_diff($this->placeholders, $this->processedPlaceholders);
-        $unprocessedArgs = $this->args;
+        $unprocessedPlaceholders = array_diff($this->_placeholders, $this->_processedPlaceholders);
+        $unprocessedArgs = $this->_args;
 
         foreach ($unprocessedPlaceholders as $placeholder) {
-
             if (empty($unprocessedArgs)) {
                 break;
             }
 
             $value = (string)array_shift($unprocessedArgs);
 
-            $this->translatedText = str_replace($placeholder, $value, $this->translatedText);
+            $this->_translatedText = str_replace($placeholder, $value, $this->_translatedText);
 
-            $this->processedPlaceholders[] = $placeholder;
-            $this->processedArgs[] = $value;
+            $this->_processedPlaceholders[] = $placeholder;
+            $this->_processedArgs[]         = $value;
         }
     }
 

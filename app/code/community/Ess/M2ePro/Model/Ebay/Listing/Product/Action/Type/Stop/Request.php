@@ -23,7 +23,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Stop_Request
 
     //########################################
 
-    protected function initializeVariations() {}
+    protected function initializeVariations()
+    {
+        return null;
+    }
 
     // ---------------------------------------
 

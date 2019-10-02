@@ -25,11 +25,12 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Requester
 
     protected function getLockIdentifier()
     {
-        if (!empty($this->params['switch_to'])) {
-            $switchTo = $this->params['switch_to'];
+        if (!empty($this->_params['switch_to'])) {
+            $switchTo = $this->_params['switch_to'];
             if ($switchTo === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
                 return 'switch_to_afn';
             }
+
             if ($switchTo === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
                 return 'switch_to_mfn';
             }
@@ -40,11 +41,12 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Requester
 
     protected function getLogsAction()
     {
-        if (!empty($this->params['switch_to'])) {
-            $switchTo = $this->params['switch_to'];
+        if (!empty($this->_params['switch_to'])) {
+            $switchTo = $this->_params['switch_to'];
             if ($switchTo === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
                 return Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_AFN_ON_COMPONENT;
             }
+
             if ($switchTo === Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
                 return Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_MFN_ON_COMPONENT;
             }
@@ -64,7 +66,6 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Requester
         $resultListingProducts = array();
 
         foreach ($listingProducts as $childListingProduct) {
-
             if (!$childListingProduct->getChildObject()->isAfnChannel() &&
                 (!$childListingProduct->isListed() || $childListingProduct->isBlocked())) {
                 continue;

@@ -1,10 +1,18 @@
 <?php
-    /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Settings */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $channelThemes = $this->getChannelThemes();
-    $channelThemeNote = $this->getChannelThemeNote();
+// @codingStandardsIgnoreFile
 
-    $magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->getVariationInstance()->getVariationsTypeStandard();
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Settings */
+
+$channelThemes = $this->getChannelThemes();
+$channelThemeNote = $this->getChannelThemeNote();
+
+$magentoProductVariations = $this->getListingProduct()->getMagentoProduct()->getVariationInstance()->getVariationsTypeStandard();
 
 ?>
 <div style="height: 510px; overflow: auto;">

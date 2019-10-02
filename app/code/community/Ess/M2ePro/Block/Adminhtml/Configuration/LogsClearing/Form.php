@@ -31,12 +31,14 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'config_edit_form',
             'action'  => $this->getUrl('M2ePro/adminhtml_configuration_logsClearing/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -73,8 +75,8 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
         $days  = array();
 
         foreach ($tasks as $task) {
-            $modes[$task] = $config->getGroupValue('/logs/clearing/'.$task.'/','mode');
-            $days[$task] = $config->getGroupValue('/logs/clearing/'.$task.'/','days');
+            $modes[$task] = $config->getGroupValue('/logs/clearing/'.$task.'/', 'mode');
+            $days[$task] = $config->getGroupValue('/logs/clearing/'.$task.'/', 'days');
         }
 
         $this->modes = $modes;

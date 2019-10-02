@@ -10,16 +10,16 @@ abstract class Ess_M2ePro_Model_Processing_Runner
 {
     const MAX_LIFETIME = 86400;
 
-    /** @var Ess_M2ePro_Model_Processing $processingObject */
-    protected $processingObject = NULL;
+    /** @var Ess_M2ePro_Model_Processing $_processingObject */
+    protected $_processingObject = null;
 
-    protected $params = array();
+    protected $_params = array();
 
     //####################################
 
     public function setProcessingObject(Ess_M2ePro_Model_Processing $processingObject)
     {
-        $this->processingObject = $processingObject;
+        $this->_processingObject = $processingObject;
         $this->setParams($processingObject->getParams());
 
         return $this;
@@ -27,18 +27,18 @@ abstract class Ess_M2ePro_Model_Processing_Runner
 
     public function getProcessingObject()
     {
-        return $this->processingObject;
+        return $this->_processingObject;
     }
 
     public function setParams(array $params)
     {
-        $this->params = $params;
+        $this->_params = $params;
         return $this;
     }
 
     public function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     abstract public function getType();
@@ -67,13 +67,25 @@ abstract class Ess_M2ePro_Model_Processing_Runner
 
     //####################################
 
-    protected function eventBefore() {}
+    protected function eventBefore()
+    {
+        return null;
+    }
 
-    protected function setLocks() {}
+    protected function setLocks()
+    {
+        return null;
+    }
 
-    protected function unsetLocks() {}
+    protected function unsetLocks()
+    {
+        return null;
+    }
 
-    protected function eventAfter() {}
+    protected function eventAfter()
+    {
+        return null;
+    }
 
     //####################################
 
@@ -87,9 +99,11 @@ abstract class Ess_M2ePro_Model_Processing_Runner
         $processingObject->setData('type', $this->getType());
         $processingObject->setSettings('params', $this->getParams());
 
-        $processingObject->setData('expiration_date', Mage::helper('M2ePro')->getDate(
-            Mage::helper('M2ePro')->getCurrentGmtDate(true)+static::MAX_LIFETIME
-        ));
+        $processingObject->setData(
+            'expiration_date', Mage::helper('M2ePro')->getDate(
+                Mage::helper('M2ePro')->getCurrentGmtDate(true)+static::MAX_LIFETIME
+            )
+        );
 
         $processingObject->save();
 

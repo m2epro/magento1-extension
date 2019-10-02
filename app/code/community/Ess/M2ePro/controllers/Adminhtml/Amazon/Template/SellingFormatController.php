@@ -63,9 +63,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         $this->_initAction()
-             ->_addContent(
-                 $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_sellingFormat_edit')
-             )
+            ->_addContent(
+                $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_sellingFormat_edit')
+            )
              ->renderLayout();
     }
 
@@ -142,20 +142,21 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
 
         if ($data['regular_sale_price_start_date_value'] === '') {
             $data['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate(
-                false,'Y-m-d 00:00:00'
+                false, 'Y-m-d 00:00:00'
             );
         } else {
             $data['regular_sale_price_start_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['regular_sale_price_start_date_value'],false,'Y-m-d 00:00:00'
+                $data['regular_sale_price_start_date_value'], false, 'Y-m-d 00:00:00'
             );
         }
+
         if ($data['regular_sale_price_end_date_value'] === '') {
             $data['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate(
-                false,'Y-m-d 00:00:00'
+                false, 'Y-m-d 00:00:00'
             );
         } else {
             $data['regular_sale_price_end_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['regular_sale_price_end_date_value'],false,'Y-m-d 00:00:00'
+                $data['regular_sale_price_end_date_value'], false, 'Y-m-d 00:00:00'
             );
         }
 
@@ -205,14 +206,18 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
         $id = $model->getId();
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
-        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('*/adminhtml_amazon_template/index', array(), array(
-            'edit' => array('id'=>$id)
-        )));
+        $this->_redirectUrl(
+            Mage::helper('M2ePro')->getBackUrl(
+                '*/adminhtml_amazon_template/index', array(), array(
+                'edit' => array('id'=>$id)
+                )
+            )
+        );
     }
 
     //########################################
 
-    private function saveDiscounts($templateId, $post)
+    protected function saveDiscounts($templateId, $post)
     {
         $coreRes = Mage::getSingleton('core/resource');
         $connWrite = $coreRes->getConnection('core_write');
@@ -254,10 +259,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
             return;
         }
 
-        usort($discounts, function($a, $b)
-        {
+        usort(
+            $discounts, function($a, $b)
+            {
             return $a["qty"] > $b["qty"];
-        });
+            }
+        );
 
         $connWrite->insertMultiple(
             Mage::helper('M2ePro/Module_Database_Structure')
@@ -273,7 +280,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             $this->_redirect('*/*/index');
             return;

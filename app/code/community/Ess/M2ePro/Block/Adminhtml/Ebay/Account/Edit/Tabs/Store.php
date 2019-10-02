@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Store extends Mage_Admin
             'class'   => 'update_ebay_store'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('update_ebay_store',$buttonBlock);
+        $this->setChild('update_ebay_store', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
@@ -41,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Store extends Mage_Admin
             'class'   => 'hide_selected_category'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('hide_selected_category',$buttonBlock);
+        $this->setChild('hide_selected_category', $buttonBlock);
         // ---------------------------------------
 
         return parent::_beforeToHtml();

@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response
 
     //########################################
 
-    private function processRecheckInstructions(array $data)
+    protected function processRecheckInstructions(array $data)
     {
         if (!isset($data['additional_data'])) {
             $data['additional_data'] = $this->getListingProduct()->getAdditionalData();
@@ -87,7 +87,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response
                     break;
             }
 
-            if (is_null($instructionType)) {
+            if ($instructionType === null) {
                 continue;
             }
 

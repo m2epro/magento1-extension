@@ -49,18 +49,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Qty
         return $data;
     }
 
-    private function checkQtyWarnings()
+    protected function checkQtyWarnings()
     {
         $qtyMode = $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->getQtyMode();
         if ($qtyMode == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED ||
             $qtyMode == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT) {
-
             $listingProductId = $this->getListingProduct()->getId();
             $productId = $this->getListingProduct()->getProductId();
             $storeId = $this->getListingProduct()->getListing()->getStoreId();
 
             if (!empty(Ess_M2ePro_Model_Magento_Product::$statistics[$listingProductId][$productId][$storeId]['qty'])) {
-
                 $qtys = Ess_M2ePro_Model_Magento_Product::$statistics[$listingProductId][$productId][$storeId]['qty'];
                 foreach ($qtys as $type => $override) {
                     $this->addQtyWarnings($type);
@@ -72,20 +70,25 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Qty
     /**
      * @param int $type
      */
-    private function addQtyWarnings($type)
+    protected function addQtyWarnings($type)
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
             // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Manage Stock No" field were taken into consideration.
-            $this->addWarningMessage('During the Quantity Calculation the Settings in the "Manage Stock No" '.
-                'field were taken into consideration.');
+            // During the Quantity Calculation the Settings in the "Manage Stock No"
+            // field were taken into consideration.
+            $this->addWarningMessage(
+                'During the Quantity Calculation the Settings in the "Manage Stock No" '.
+                'field were taken into consideration.'
+            );
         }
 
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_BACKORDERS) {
             // M2ePro_TRANSLATIONS
             // During the Quantity Calculation the Settings in the "Backorders" field were taken into consideration.
-            $this->addWarningMessage('During the Quantity Calculation the Settings in the "Backorders" '.
-                'field were taken into consideration.');
+            $this->addWarningMessage(
+                'During the Quantity Calculation the Settings in the "Backorders" '.
+                'field were taken into consideration.'
+            );
         }
     }
 

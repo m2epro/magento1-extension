@@ -30,6 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Edit_ShippingAddress extends Mage_Ad
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Edit Shipping Address');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -42,32 +43,38 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Edit_ShippingAddress extends Mage_Ad
         $this->removeButton('edit');
         // ---------------------------------------
 
-        if (!is_null($this->getRequest()->getParam('back'))) {
+        if ($this->getRequest()->getParam('back') !== null) {
             // ---------------------------------------
             $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_ebay_order/index');
-            $this->_addButton('back', array(
+            $this->_addButton(
+                'back', array(
                 'label'     => Mage::helper('M2ePro')->__('Back'),
                 'onclick'   => 'CommonHandlerObj.back_click(\''.$url.'\')',
                 'class'     => 'back'
-            ));
+                )
+            );
             // ---------------------------------------
         } else {
             // ---------------------------------------
             $url = $this->getUrl('*/*/view', array('id' => $this->getRequest()->getParam('id')));
-            $this->_addButton('back', array(
+            $this->_addButton(
+                'back', array(
                 'label'     => Mage::helper('M2ePro')->__('Back'),
                 'onclick'   => 'CommonHandlerObj.back_click(\''.$url.'\')',
                 'class'     => 'back'
-            ));
+                )
+            );
             // ---------------------------------------
         }
 
         // ---------------------------------------
-        $this->_addButton('save', array(
+        $this->_addButton(
+            'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save Order Address'),
             'onclick'   => 'CommonHandlerObj.save_click()',
             'class'     => 'save'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

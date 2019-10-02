@@ -34,7 +34,8 @@ class Ess_M2ePro_Adminhtml_Amazon_ConfigurationController
     public function indexAction()
     {
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock(
+            ->_addContent(
+                $this->getLayout()->createBlock(
                     'M2ePro/adminhtml_amazon_configuration', '',
                     array('active_tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs::TAB_ID_GLOBAL)
                 )

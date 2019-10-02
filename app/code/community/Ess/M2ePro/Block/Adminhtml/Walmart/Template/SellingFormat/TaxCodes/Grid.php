@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    private $marketplaceId;
-    private $noSelection;
+    protected $_marketplaceId;
+    protected $_noSelection;
 
     //########################################
 
@@ -18,8 +18,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid ex
         parent::__construct();
 
         $this->setId('taxCodesGrid');
-        $this->marketplaceId = (int)$params['marketplaceId'];
-        $this->noSelection   = (bool)$params['noSelection'];
+        $this->_marketplaceId = (int)$params['marketplaceId'];
+        $this->_noSelection   = (bool)$params['noSelection'];
 
         // Set default values
         //------------------------------
@@ -44,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid ex
                     ->getTableNameWithPrefix('m2epro_walmart_dictionary_marketplace'),
                 array('tax_codes')
             )
-            ->where('marketplace_id = ?', $this->marketplaceId);
+            ->where('marketplace_id = ?', $this->_marketplaceId);
 
         $row = $select->query()->fetchColumn();
 
@@ -61,7 +61,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid ex
 
     protected function _prepareColumns()
     {
-        $this->addColumn('tax_code', array(
+        $this->addColumn(
+            'tax_code', array(
             'header'         => Mage::helper('M2ePro')->__('Tax Code'),
             'align'          => 'left',
             'type'           => 'text',
@@ -69,9 +70,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid ex
             'width'          => '10px',
             'filter_condition_callback' => array($this, 'callbackFilterTaxCodes'),
             'sortable'       => false
-        ));
+            )
+        );
 
-        $this->addColumn('description', array(
+        $this->addColumn(
+            'description', array(
             'header'         => Mage::helper('M2ePro')->__('Description'),
             'align'          => 'left',
             'type'           => 'text',
@@ -79,10 +82,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid ex
             'width'          => '645px',
             'filter_condition_callback'         => array($this, 'callbackFilterDescription'),
             'sortable'       => false
-        ));
+            )
+        );
 
-        if (!$this->noSelection) {
-            $this->addColumn('action', array(
+        if (!$this->_noSelection) {
+            $this->addColumn(
+                'action', array(
                 'header'         => Mage::helper('M2ePro')->__('Action'),
                 'align'          => 'left',
                 'type'           => 'text',
@@ -90,7 +95,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_SellingFormat_TaxCodes_Grid ex
                 'filter'         => false,
                 'sortable'       => false,
                 'frame_callback' => array($this, 'callbackColumnAction'),
-            ));
+                )
+            );
         }
 
         return parent::_prepareColumns();

@@ -43,16 +43,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseQtyEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_qty']) && !empty($newSnapshotData['revise_update_qty']);
     }
 
     public function isReviseQtyDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_qty']) && empty($newSnapshotData['revise_update_qty']);
     }
@@ -73,16 +73,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isRevisePriceEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_price']) && !empty($newSnapshotData['revise_update_price']);
     }
 
     public function isRevisePriceDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_price']) && empty($newSnapshotData['revise_update_price']);
     }
@@ -103,16 +103,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseTitleEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_title']) && !empty($newSnapshotData['revise_update_title']);
     }
 
     public function isReviseTitleDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_title']) && empty($newSnapshotData['revise_update_title']);
     }
@@ -121,8 +121,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseSubtitleEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_sub_title'])
                && !empty($newSnapshotData['revise_update_sub_title']);
@@ -130,8 +130,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseSubtitleDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_sub_title'])
                && empty($newSnapshotData['revise_update_sub_title']);
@@ -141,8 +141,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseDescriptionEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_description'])
                && !empty($newSnapshotData['revise_update_description']);
@@ -150,8 +150,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseDescriptionDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_description'])
                && empty($newSnapshotData['revise_update_description']);
@@ -161,16 +161,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseImagesEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_images']) && !empty($newSnapshotData['revise_update_images']);
     }
 
     public function isReviseImagesDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_images']) && empty($newSnapshotData['revise_update_images']);
     }
@@ -179,8 +179,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseCategoriesEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_categories'])
                && !empty($newSnapshotData['revise_update_categories']);
@@ -188,8 +188,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseCategoriesDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_categories'])
                && empty($newSnapshotData['revise_update_categories']);
@@ -199,16 +199,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isRevisePaymentEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_payment']) && !empty($newSnapshotData['revise_update_payment']);
     }
 
     public function isRevisePaymentDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_payment']) && empty($newSnapshotData['revise_update_payment']);
     }
@@ -217,16 +217,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseShippingEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_shipping']) && !empty($newSnapshotData['revise_update_shipping']);
     }
 
     public function isReviseShippingDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_shipping']) && empty($newSnapshotData['revise_update_shipping']);
     }
@@ -235,16 +235,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseReturnEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_return']) && !empty($newSnapshotData['revise_update_return']);
     }
 
     public function isReviseReturnDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_return']) && empty($newSnapshotData['revise_update_return']);
     }
@@ -253,16 +253,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Diff
 
     public function isReviseOtherEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_other']) && !empty($newSnapshotData['revise_update_other']);
     }
 
     public function isReviseOtherDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_other']) && empty($newSnapshotData['revise_update_other']);
     }

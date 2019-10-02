@@ -10,15 +10,15 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
 {
     const PENDING_REQUEST_MAX_LIFE_TIME = 43200;
 
-    private $responserModelName = NULL;
+    protected $_responserModelName = null;
 
-    private $responserParams = array();
+    protected $_responserParams = array();
 
-    /** @var Ess_M2ePro_Model_Connector_Command_Pending_Responser $responser */
-    protected $responser = NULL;
+    /** @var Ess_M2ePro_Model_Connector_Command_Pending_Responser $_responser */
+    protected $_responser = null;
 
-    /** @var Ess_M2ePro_Model_Connector_Connection_Response $response */
-    protected $response = NULL;
+    /** @var Ess_M2ePro_Model_Connector_Connection_Response $_response */
+    protected $_response = null;
 
     // ##################################
 
@@ -26,8 +26,8 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
     {
         $result = parent::setProcessingObject($processingObjectObject);
 
-        $this->setResponserModelName($this->params['responser_model_name']);
-        $this->setResponserParams($this->params['responser_params']);
+        $this->setResponserModelName($this->_params['responser_model_name']);
+        $this->setResponserParams($this->_params['responser_params']);
 
         return $result;
     }
@@ -48,26 +48,26 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
 
     public function setResponserModelName($modelName)
     {
-        $this->responserModelName = $modelName;
+        $this->_responserModelName = $modelName;
         return $this;
     }
 
     public function getResponserModelName()
     {
-        return $this->responserModelName;
+        return $this->_responserModelName;
     }
 
     // ----------------------------------
 
     public function setResponserParams(array $params)
     {
-        $this->responserParams = $params;
+        $this->_responserParams = $params;
         return $this;
     }
 
     public function getResponserParams()
     {
-        return $this->responserParams;
+        return $this->_responserParams;
     }
 
     // ##################################
@@ -87,8 +87,8 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
 
     protected function getResponser($returnNewObject = false)
     {
-        if (!is_null($this->responser) && !$returnNewObject) {
-            return $this->responser;
+        if ($this->_responser !== null && !$returnNewObject) {
+            return $this->_responser;
         }
 
         $modelClassName = Mage::getConfig()->getModelClassName($this->getResponserModelName());
@@ -97,26 +97,26 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
             throw new Ess_M2ePro_Model_Exception('Responser class does not exist.');
         }
 
-        return $this->responser = new $modelClassName($this->getResponserParams(), $this->getResponse());
+        return $this->_responser = new $modelClassName($this->getResponserParams(), $this->getResponse());
     }
 
     protected function getResponse()
     {
-        if (!is_null($this->response)) {
-            return $this->response;
+        if ($this->_response !== null) {
+            return $this->_response;
         }
 
-        $this->response = Mage::getModel('M2ePro/Connector_Connection_Response');
-        $this->response->initFromPreparedResponse(
+        $this->_response = Mage::getModel('M2ePro/Connector_Connection_Response');
+        $this->_response->initFromPreparedResponse(
             $this->getProcessingObject()->getResultData(), $this->getProcessingObject()->getResultMessages()
         );
 
         $params = $this->getParams();
         if (!empty($params['request_time'])) {
-            $this->response->setRequestTime($params['request_time']);
+            $this->_response->setRequestTime($params['request_time']);
         }
 
-        return $this->response;
+        return $this->_response;
     }
 
     // ##################################

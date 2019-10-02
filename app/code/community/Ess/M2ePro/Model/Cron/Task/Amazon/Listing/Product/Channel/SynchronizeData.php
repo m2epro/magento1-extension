@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData
     {
         $accounts = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account')->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -56,18 +56,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData
             $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
 
             if (!$this->isLockedAccount($account)) {
-
                 $this->getOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
                     'Process Account '.$account->getTitle()
                 );
 
                 try {
-
                     $this->processAccount($account);
-
                 } catch (Exception $exception) {
-
                     // M2ePro_TRANSLATIONS
                     // The "Update Listings Products" Action for Amazon Account: "%account%" was completed with error.
                     $message = 'The "Update Listings Products" Action for Amazon Account "%account%"';
@@ -87,15 +83,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData
 
     //########################################
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::getModel('M2ePro/Listing')->getCollection();
-        $collection->addFieldToFilter('component_mode',Ess_M2ePro_Helper_Component_Amazon::NICK);
-        $collection->addFieldToFilter('account_id',(int)$account->getId());
+        $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Amazon::NICK);
+        $collection->addFieldToFilter('account_id', (int)$account->getId());
 
         if ($collection->getSize()) {
-
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getCustomConnector(
                 'Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_Requester', array(), $account
@@ -104,7 +99,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData
         }
     }
 
-    private function isLockedAccount(Ess_M2ePro_Model_Account $account)
+    protected function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
         $lockItemNick = ProcessingRunner::LOCK_ITEM_PREFIX.'_'.$account->getId();
 

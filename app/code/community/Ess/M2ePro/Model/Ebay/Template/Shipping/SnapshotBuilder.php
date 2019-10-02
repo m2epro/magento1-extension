@@ -12,14 +12,14 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_SnapshotBuilder extends Ess_M2ePro
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['services'] = $this->model->getServices();
-        $data['calculated_shipping'] = $this->model->getCalculatedShipping()
-            ? $this->model->getCalculatedShipping()->getData()
+        $data['services'] = $this->_model->getServices();
+        $data['calculated_shipping'] = $this->_model->getCalculatedShipping()
+            ? $this->_model->getCalculatedShipping()->getData()
             : array();
 
         $ignoredKeys = array(
@@ -34,9 +34,10 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_SnapshotBuilder extends Ess_M2ePro
                     continue;
                 }
 
-                !is_null($value) && !is_array($value) && $value = (string)$value;
+                $value !== null && !is_array($value) && $value = (string)$value;
             }
         }
+
         unset($value);
 
         foreach ($data['calculated_shipping'] as $key => &$value) {
@@ -45,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_SnapshotBuilder extends Ess_M2ePro
                 continue;
             }
 
-            !is_null($value) && !is_array($value) && $value = (string)$value;
+            $value !== null && !is_array($value) && $value = (string)$value;
         }
 
         return $data;

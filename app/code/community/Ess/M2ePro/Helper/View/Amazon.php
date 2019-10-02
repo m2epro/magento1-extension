@@ -44,7 +44,7 @@ class Ess_M2ePro_Helper_View_Amazon extends Mage_Core_Helper_Abstract
     public function getAutocompleteMaxItems()
     {
         $temp = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/amazon/autocomplete/','max_records_quantity'
+            '/view/amazon/autocomplete/', 'max_records_quantity'
         );
         return $temp <= 0 ? 100 : $temp;
     }
@@ -67,7 +67,7 @@ class Ess_M2ePro_Helper_View_Amazon extends Mage_Core_Helper_Abstract
     {
         $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
 
-        if (!is_null($sessionCache->getValue('is_3rd_party_should_be_shown'))) {
+        if ($sessionCache->getValue('is_3rd_party_should_be_shown') !== null) {
             return $sessionCache->getValue('is_3rd_party_should_be_shown');
         }
 

@@ -41,8 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Debug extends Ess_M2ePro_Block_Adminhtml_
             'store_tax_calculation_based_on', $storeConfigurator->getTaxCalculationBasedOn()
         );
 
-        if (!is_null($store->getId())) {
-
+        if ($store->getId() !== null) {
             $this->setData(
                 'store_tax_calculation_algorithm', $store->getConfig(Mage_Tax_Model_Config::XML_PATH_ALGORITHM)
             );

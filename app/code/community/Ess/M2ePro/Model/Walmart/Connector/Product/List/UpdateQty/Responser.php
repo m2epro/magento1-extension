@@ -10,14 +10,14 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_List_UpdateQty_Responser
     extends Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 {
     /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_ProcessingList */
-    protected $processingList;
+    protected $_processingList;
 
     // ########################################
 
     protected function processSuccess(array $params = array())
     {
         $this->getResponseObject()->processSuccess($params);
-        $this->isSuccess = true;
+        $this->_isSuccess = true;
     }
 
     protected function getSuccessfulMessage()
@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_List_UpdateQty_Responser
     protected function getRequestDataObject()
     {
         $requestObject = parent::getRequestDataObject();
-        $requestObject->setData($this->processingList->getRelistRequestData());
+        $requestObject->setData($this->_processingList->getRelistRequestData());
 
         return $requestObject;
     }
@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_List_UpdateQty_Responser
     protected function getConfigurator()
     {
         $configurator = parent::getConfigurator();
-        $configurator->setData($this->processingList->getRelistConfiguratorData());
+        $configurator->setData($this->_processingList->getRelistConfiguratorData());
 
         return $configurator;
     }
@@ -69,7 +69,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_List_UpdateQty_Responser
 
     public function setProcessingList(Ess_M2ePro_Model_Walmart_Listing_Product_Action_ProcessingList $processingList)
     {
-        $this->processingList = $processingList;
+        $this->_processingList = $processingList;
         return $this;
     }
 

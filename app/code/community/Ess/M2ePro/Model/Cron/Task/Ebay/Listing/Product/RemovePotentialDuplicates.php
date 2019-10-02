@@ -15,7 +15,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
     const MAX_ALLOWED_BLOCKED_PRODUCTS    = 100;
     const MIN_SECONDS_FROM_FAILED_REQUEST = 300;
 
-    private $duplicatedItems = array();
+    protected $_duplicatedItems = array();
 
     //####################################
 
@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     //########################################
 
-    private function checkTooManyBlockedListingProducts()
+    protected function checkTooManyBlockedListingProducts()
     {
         $collection = $this->getBlockedListingProductCollection();
         $blockedCount = $collection->getSize();
@@ -67,7 +67,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     //########################################
 
-    private function processListingProducts()
+    protected function processListingProducts()
     {
         $collection = $this->getBlockedListingProductCollection();
         $collection->getSelect()->limit(self::BLOCKED_PRODUCTS_PER_SYNCH);
@@ -84,7 +84,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
             $productStatus = Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED;
 
             try {
-
                 $additionalData = $product->getAdditionalData();
                 if (empty($additionalData['last_failed_action_data'])) {
                     throw new Ess_M2ePro_Model_Exception('last_failed_action_data is empty');
@@ -103,15 +102,15 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
                 $accountId = (int)$product->getData('account_id');
                 $marketplaceId = (int)$product->getData('marketplace_id');
 
-                if (!isset($this->duplicatedItems[$accountId])) {
-                    $this->duplicatedItems[$accountId] = array();
+                if (!isset($this->_duplicatedItems[$accountId])) {
+                    $this->_duplicatedItems[$accountId] = array();
                 }
-                if (!isset($this->duplicatedItems[$accountId][$marketplaceId])) {
-                    $this->duplicatedItems[$accountId][$marketplaceId] = array();
+
+                if (!isset($this->_duplicatedItems[$accountId][$marketplaceId])) {
+                    $this->_duplicatedItems[$accountId][$marketplaceId] = array();
                 }
 
                 if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_RELIST) {
-
                     $itemInfo = $this->getEbayItemInfo(
                         $lastFailedActionData['native_request_data']['item_id'],
                         $accountId
@@ -121,7 +120,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
                         throw new Ess_M2ePro_Model_Exception('Duplicate was not found');
                     }
 
-                    $this->duplicatedItems[$accountId][$marketplaceId][] = $itemInfo['relisted_item_id'];
+                    $this->_duplicatedItems[$accountId][$marketplaceId][] = $itemInfo['relisted_item_id'];
                     $this->modifyAndLogListingProduct($product, $productStatus, $itemInfo['relisted_item_id']);
 
                     continue;
@@ -139,19 +138,20 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
                     ->loadInstance($marketplaceId)
                     ->getCode();
 
-                $duplicatedItem = $this->getDuplicateItemFromPossible($possibleDuplicates, array(
+                $duplicatedItem = $this->getDuplicateItemFromPossible(
+                    $possibleDuplicates, array(
                     'title' => $lastFailedActionData['native_request_data']['title'],
                     'sku' => $lastFailedActionData['native_request_data']['sku'],
                     'marketplace' => $marketplaceCode,
-                ));
+                    )
+                );
 
                 if (empty($duplicatedItem)) {
                     throw new Ess_M2ePro_Model_Exception('Duplicate was not found');
                 }
 
-                $this->duplicatedItems[$accountId][$marketplaceId][] = $duplicatedItem['id'];
+                $this->_duplicatedItems[$accountId][$marketplaceId][] = $duplicatedItem['id'];
                 $this->modifyAndLogListingProduct($product, $productStatus, $duplicatedItem['id']);
-
             } catch(Exception $e) {
                 $this->modifyAndLogListingProduct($product, $productStatus);
             }
@@ -160,16 +160,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     // ---------------------------------------
 
-    private function stopDuplicatedItems()
+    protected function stopDuplicatedItems()
     {
-        if (empty($this->duplicatedItems)) {
+        if (empty($this->_duplicatedItems)) {
             return;
         }
 
-        foreach ($this->duplicatedItems as $accountId => $marketplaceItems) {
-
+        foreach ($this->_duplicatedItems as $accountId => $marketplaceItems) {
             foreach ($marketplaceItems as $marketplaceId => $itemIds) {
-
                 if (empty($itemIds)) {
                     continue;
                 }
@@ -178,14 +176,15 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
                 foreach ($itemsParts as $itemsPart) {
                     try {
-
                         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-                        $connectorObj = $dispatcherObj->getVirtualConnector('item','update','ends',
-                                                                            array('items' => $itemsPart),NULL,
-                                                                            $marketplaceId,$accountId,NULL);
+                        $connectorObj = $dispatcherObj->getVirtualConnector(
+                            'item', 'update', 'ends',
+                            array('items' => $itemsPart), NULL,
+                            $marketplaceId, $accountId, NULL
+                        );
                         $dispatcherObj->process($connectorObj);
-
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                    }
                 }
             }
         }
@@ -193,9 +192,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     //########################################
 
-    private function getBlockedListingProductCollection()
+    protected function getBlockedListingProductCollection()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::getModel('M2ePro/Listing_Product')->getCollection();
 
         $collection->addFieldToFilter('main_table.component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK)
@@ -210,12 +209,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     //########################################
 
-    private function getEbayItemInfo($itemId, $accountId)
+    protected function getEbayItemInfo($itemId, $accountId)
     {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('item','get','info',
-                                                            array('item_id' => $itemId),NULL,
-                                                            NULL,$accountId);
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'item', 'get', 'info',
+            array('item_id' => $itemId), NULL,
+            NULL, $accountId
+        );
 
         $dispatcherObj->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
@@ -223,16 +224,18 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
         return isset($responseData['result']) ? $responseData['result'] : array();
     }
 
-    private function getEbayItemsByStartTimeInterval($timeFrom, $timeTo, $accountId)
+    protected function getEbayItemsByStartTimeInterval($timeFrom, $timeTo, $accountId)
     {
         is_object($timeFrom) && $timeFrom = $timeFrom->format('Y-m-d H:i:s');
         is_object($timeTo)   && $timeTo = $timeTo->format('Y-m-d H:i:s');
 
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('item','get','all',
-                                                            array('since_time'=>$timeFrom,
-                                                                  'to_time'=>$timeTo),NULL,
-                                                            NULL,$accountId);
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'item', 'get', 'all',
+            array('since_time'=>$timeFrom,
+                                                                  'to_time'=>$timeTo), NULL,
+            NULL, $accountId
+        );
 
         $dispatcherObj->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
@@ -242,18 +245,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     // ---------------------------------------
 
-    private function getDuplicateItemFromPossible(array $possibleDuplicates, array $searchParams)
+    protected function getDuplicateItemFromPossible(array $possibleDuplicates, array $searchParams)
     {
         if (empty($possibleDuplicates)) {
             return array();
         }
 
         foreach ($possibleDuplicates as $item) {
-
             $isFound = true;
 
             foreach ($searchParams as $key => $value) {
-
                 if (trim($item[$key]) == trim($value)) {
                     continue;
                 }
@@ -274,9 +275,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     //########################################
 
-    private function modifyAndLogListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                                $status, $duplicateItemId = null)
-    {
+    protected function modifyAndLogListingProduct(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        $status,
+        $duplicateItemId = null
+    ) {
         /** @var Ess_M2ePro_Model_Listing_Log $logModel */
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
@@ -300,15 +303,17 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
         $additionalData = $listingProduct->getAdditionalData();
         unset($additionalData['last_failed_action_data']);
 
-        $listingProduct->addData(array(
+        $listingProduct->addData(
+            array(
             'status'          => $status,
             'status_changer'  => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT,
             'additional_data' => Mage::helper('M2ePro')->jsonEncode($additionalData),
-        ))->save();
+            )
+        )->save();
 
         $listingProduct->getChildObject()->updateVariationsStatus();
 
-        if (is_null($duplicateItemId)) {
+        if ($duplicateItemId === null) {
             return;
         }
 
@@ -332,7 +337,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
 
     // ---------------------------------------
 
-    private function getStatusLogMessage($statusFrom, $statusTo)
+    protected function getStatusLogMessage($statusFrom, $statusTo)
     {
         $message = '';
 

@@ -22,7 +22,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category
 
         // Set header text
         // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__("Set Description Policy for New ASIN/ISBN Creation");
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                "Set %component_name% Description Policy for New ASIN/ISBN Creation",
+                Mage::helper('M2ePro/Component_Amazon')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("Set Description Policy for New ASIN/ISBN Creation");
+        }
+
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_amazon_listing_add_newAsin_category';
         // ---------------------------------------
@@ -38,24 +46,30 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/resetNewAsin', array(
-            '_current' => true
-        ));
-        $this->_addButton('back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'ListingGridHandlerObj.back_click(\'' . $url . '\')',
-            'class'     => 'back'
-        ));
+        $url = $this->getUrl(
+            '*/*/resetNewAsin', array(
+                '_current' => true
+            )
+        );
+        $this->_addButton(
+            'back', array(
+                'label'   => Mage::helper('M2ePro')->__('Back'),
+                'onclick' => 'ListingGridHandlerObj.back_click(\'' . $url . '\')',
+                'class'   => 'back'
+            )
+        );
         // ---------------------------------------
 
         $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 5));
         // ---------------------------------------
-        $this->_addButton('save_and_go_to_listing_view', array(
-            'id'        => 'save_and_go_to_listing_view',
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'onclick'   => 'ListingGridHandlerObj.checkProducts(\''.$url.'\')',
-            'class'     => 'scalable next'
-        ));
+        $this->_addButton(
+            'save_and_go_to_listing_view', array(
+                'id'      => 'save_and_go_to_listing_view',
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'onclick' => 'ListingGridHandlerObj.checkProducts(\'' . $url . '\')',
+                'class'   => 'scalable next'
+            )
+        );
         // ---------------------------------------
     }
 
@@ -66,7 +80,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 
@@ -158,7 +172,7 @@ HTML;
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component_Amazon')
                 ->getObject('Listing', $listingId)->getChildObject();
         }

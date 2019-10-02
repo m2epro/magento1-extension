@@ -35,11 +35,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_General
         $this->removeButton('edit');
 
         // ---------------------------------------
-        $this->_addButton('save', array(
-            'label'     => Mage::helper('M2ePro')->__('Save'),
-            'onclick'   => 'editForm.submit();',
-            'class'     => 'save save_configuration_general'
-        ));
+        $this->_addButton(
+            'save',
+            array(
+                'label'   => Mage::helper('M2ePro')->__('Save'),
+                'onclick' => 'editForm.submit();',
+                'class'   => 'save save_configuration_general'
+            )
+        );
         // ---------------------------------------
     }
 

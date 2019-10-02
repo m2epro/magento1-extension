@@ -1,84 +1,93 @@
 <?php
-    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data $this */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $formData = $this->getFormData();
-    $default = $this->getDefault();
+// @codingStandardsIgnoreFile
 
-    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
-    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data $this */
 
-    $attributesByInputTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text')),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'select')),
-        'text_price' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'price')),
-        'text_weight' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'weight')),
-        'text_price_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'price', 'select')),
-    );
+$formData = $this->getFormData();
+$default = $this->getDefault();
 
-    $formData = array_merge($default, $formData);
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-    foreach (array('local', 'international') as $type) {
-        $key = $type . '_shipping_rate_table';
-        foreach ($default[$key] as $id => $data) {
-            if (isset($formData[$key][$id])) {
-                continue;
-            }
+$attributesByInputTypes = array(
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text')),
+    'text_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'select')),
+    'text_price' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'price')),
+    'text_weight' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'weight')),
+    'text_price_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'price', 'select')),
+);
 
-            $formData[$key][$id] = $data;
+$formData = array_merge($default, $formData);
+
+foreach (array('local', 'international') as $type) {
+    $key = $type . '_shipping_rate_table';
+    foreach ($default[$key] as $id => $data) {
+        if (isset($formData[$key][$id])) {
+            continue;
         }
+
+        $formData[$key][$id] = $data;
     }
+}
 
-    // checking what mode need to show (simple or advanced)
-    $defaultStrictSettingsForSimpleMode = $default;
+// checking what mode need to show (simple or advanced)
+$defaultStrictSettingsForSimpleMode = $default;
 
-    // removing ignored options for mode checking
-    $ignoredOptions = array('country_mode', 'country_custom_value', 'country_custom_attribute',
-        'postal_code_mode', 'postal_code_custom_value', 'postal_code_custom_attribute',
-        'address_mode', 'address_custom_value', 'address_custom_attribute',
-        'local_shipping_mode', 'dispatch_time_mode', 'international_shipping_mode', 'services', 'excluded_locations',
-        'local_shipping_rate_table', 'international_shipping_rate_table');
+// removing ignored options for mode checking
+$ignoredOptions = array('country_mode', 'country_custom_value', 'country_custom_attribute',
+    'postal_code_mode', 'postal_code_custom_value', 'postal_code_custom_attribute',
+    'address_mode', 'address_custom_value', 'address_custom_attribute',
+    'local_shipping_mode', 'dispatch_time_mode', 'international_shipping_mode', 'services', 'excluded_locations',
+    'local_shipping_rate_table', 'international_shipping_rate_table');
 
-    foreach($ignoredOptions as $val) {
-        unset($defaultStrictSettingsForSimpleMode[$val]);
-    }
+foreach($ignoredOptions as $val) {
+    unset($defaultStrictSettingsForSimpleMode[$val]);
+}
 
-    $settingsOnlyForAdvancedMode = array(
-        'local_shipping_mode' =>  Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED,
-        'country_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_ATTRIBUTE,
-        'postal_code_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::POSTAL_CODE_MODE_CUSTOM_ATTRIBUTE,
-        'address_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::ADDRESS_MODE_CUSTOM_ATTRIBUTE
-    );
+$settingsOnlyForAdvancedMode = array(
+    'local_shipping_mode' =>  Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED,
+    'country_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_ATTRIBUTE,
+    'postal_code_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::POSTAL_CODE_MODE_CUSTOM_ATTRIBUTE,
+    'address_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::ADDRESS_MODE_CUSTOM_ATTRIBUTE
+);
 
-    $showSimpleModeSettings = array(
-        Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FREIGHT,
-        Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_LOCAL
-    );
+$showSimpleModeSettings = array(
+    Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FREIGHT,
+    Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_LOCAL
+);
 
-    $showBlockedAdvancedMode = false;
-    if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-        $showBlockedAdvancedMode = !in_array($formData['local_shipping_mode'], $showSimpleModeSettings) &&
-            (!!count(array_intersect_assoc($formData, $settingsOnlyForAdvancedMode)) ||
-            !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)));
-        if(!$showBlockedAdvancedMode) {
-            foreach($formData['services'] as $service) {
-                if(!empty($service['cost_surcharge_value'])) {
-                    $showBlockedAdvancedMode = true;
-                }
-            }
-            if (!empty($formData['excluded_locations'])) {
+$showBlockedAdvancedMode = false;
+if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
+    $showBlockedAdvancedMode = !in_array($formData['local_shipping_mode'], $showSimpleModeSettings) &&
+        (!!count(array_intersect_assoc($formData, $settingsOnlyForAdvancedMode)) ||
+        !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)));
+    if(!$showBlockedAdvancedMode) {
+        foreach($formData['services'] as $service) {
+            if(!empty($service['cost_surcharge_value'])) {
                 $showBlockedAdvancedMode = true;
             }
         }
+        if (!empty($formData['excluded_locations'])) {
+            $showBlockedAdvancedMode = true;
+        }
     }
+}
 
-    $showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
+$showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
 
-    $isLocalRateTableEnabled = $showAdvancedMode && $this->canDisplayLocalShippingRateTable();
-    $isInternationalRateTableEnabled = $showAdvancedMode && $this->canDisplayInternationalShippingRateTable();
+$isLocalRateTableEnabled = $showAdvancedMode && $this->canDisplayLocalShippingRateTable();
+$isInternationalRateTableEnabled = $showAdvancedMode && $this->canDisplayInternationalShippingRateTable();
 
-    $marketplaceData = $this->getMarketplaceData();
+$marketplaceData = $this->getMarketplaceData();
 
-    $missingAttributes = $this->getMissingAttributes();
+$missingAttributes = $this->getMissingAttributes();
+
 ?>
 
 <script type="text/javascript">
@@ -145,7 +154,7 @@
         EbayTemplateShippingExcludedLocationsHandlerObj.clear();
 
         var rateTablesIds =[];
-        <?php if (!is_null($this->getAccountId())): ?>
+        <?php if ($this->getAccountId() !== null): ?>
             <?php if ($isLocalRateTableEnabled): ?>
                 EbayTemplateShippingHandlerObj.renderRateTables({
                     accountId: <?php echo $this->getAccountId(); ?>,
@@ -602,7 +611,7 @@
 
                 <table class="form-list" cellspacing="0" cellpadding="0">
 
-                <?php if (!is_null($this->getAccountId())): ?>
+                <?php if ($this->getAccountId() !== null): ?>
 
                         <?php $isSellApiEnabled = (bool)$this->getAccount()->getChildObject()->getSellApiTokenSession(); ?>
 
@@ -879,7 +888,7 @@
             </table>
 
             <table class="form-list simple_mode_disallowed" cellspacing="0" cellpadding="0">
-                <?php if (!is_null($this->getAccountId())) : ?>
+                <?php if ($this->getAccountId() !== null) : ?>
                     <tr class="local-shipping-tr">
                         <td class="label local-discount-profile-account-tr" account_id="<?php echo $this->getAccountId(); ?>">
                             <label for="local_shipping_discount_combined_profile_id_<?php echo $this->getAccountId(); ?>"><?php echo Mage::helper('M2ePro')->__('Combined Shipping Profile') ?>:</label>
@@ -1113,7 +1122,7 @@
                 <?php if ($isInternationalRateTableEnabled): ?>
                     <table class="form-list" cellspacing="0" cellpadding="0">
 
-                        <?php if (!is_null($this->getAccountId())): ?>
+                        <?php if ($this->getAccountId() !== null): ?>
 
                             <?php $isSellApiEnabled = (bool)$this->getAccount()->getChildObject()->getSellApiTokenSession(); ?>
 
@@ -1307,7 +1316,7 @@
             </table>
 
             <table class="form-list simple_mode_disallowed" cellspacing="0" cellpadding="0">
-                <?php if (!is_null($this->getAccountId())) : ?>
+                <?php if ($this->getAccountId() !== null) : ?>
                     <tr class="international-shipping-tr">
                         <td class="label international-discount-profile-account-tr" account_id="<?php echo $this->getAccountId(); ?>">
                             <label for="international_shipping_discount_combined_profile_id_<?php echo $this->getAccountId(); ?>"><?php echo Mage::helper('M2ePro')->__('Combined Shipping Profile') ?>:</label>

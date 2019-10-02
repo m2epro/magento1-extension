@@ -15,13 +15,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Edit
     {
         $saveConfirmation = '';
 
-        if (is_null($id)) {
+        if ($id === null) {
             $id = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId();
         }
 
         if ($id) {
             $saveConfirmation = Mage::helper('M2ePro')->escapeJs(
-                Mage::helper('M2ePro')->__('<br/>
+                Mage::helper('M2ePro')->__(
+                    '<br/>
 <b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Policy is used.'
                 )
             );
@@ -34,9 +35,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Edit
 
     protected function _toHtml()
     {
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Do not show any more' => Mage::helper('M2ePro')->__('Do not show any more')
-        ));
+            )
+        );
 
         $confirmationBlock = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_widget_dialog_confirm')

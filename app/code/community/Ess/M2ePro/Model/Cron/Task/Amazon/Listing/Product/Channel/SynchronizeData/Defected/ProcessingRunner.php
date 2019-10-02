@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     public function getResponserParams()
     {
         $responserParams = parent::getResponserParams();
-        if (is_null($this->getProcessingObject())) {
+        if ($this->getProcessingObject() === null) {
             return $responserParams;
         }
 

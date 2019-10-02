@@ -13,14 +13,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing extends Ess_M2e
 
     //####################################
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    /** @var Ess_M2ePro_Model_Processing $processing */
-    private $processing = NULL;
+    /** @var Ess_M2ePro_Model_Processing $_processing */
+    protected $_processing = null;
 
-    /** @var Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle */
-    private $requestPendingSingle = NULL;
+    /** @var Ess_M2ePro_Model_Request_Pending_Single $_requestPendingSingle */
+    protected $_requestPendingSingle = null;
 
     //####################################
 
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing extends Ess_M2e
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -44,11 +44,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing extends Ess_M2e
             throw new Ess_M2ePro_Model_Exception_Logic('Instance must be loaded first.');
         }
 
-        if (!is_null($this->listingProduct)) {
-            return $this->listingProduct;
+        if ($this->_listingProduct !== null) {
+            return $this->_listingProduct;
         }
 
-        return $this->listingProduct = Mage::helper('M2ePro')->getObject(
+        return $this->_listingProduct = Mage::helper('M2ePro')->getObject(
             'Listing_Product', $this->getListingProductId()
         );
     }
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing extends Ess_M2e
 
     public function setProcessing(Ess_M2ePro_Model_Processing $processing)
     {
-        $this->processing = $processing;
+        $this->_processing = $processing;
         return $this;
     }
 
@@ -71,18 +71,18 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing extends Ess_M2e
             throw new Ess_M2ePro_Model_Exception_Logic('Instance must be loaded first.');
         }
 
-        if (!is_null($this->processing)) {
-            return $this->processing;
+        if ($this->_processing !== null) {
+            return $this->_processing;
         }
 
-        return $this->processing = Mage::helper('M2ePro')->getObject('Processing', $this->getProcessingId());
+        return $this->_processing = Mage::helper('M2ePro')->getObject('Processing', $this->getProcessingId());
     }
 
     //------------------------------------
 
     public function setRequestPendingSingle(Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle)
     {
-        $this->requestPendingSingle = $requestPendingSingle;
+        $this->_requestPendingSingle = $requestPendingSingle;
         return $this;
     }
 
@@ -100,11 +100,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing extends Ess_M2e
             return null;
         }
 
-        if (!is_null($this->requestPendingSingle)) {
-            return $this->requestPendingSingle;
+        if ($this->_requestPendingSingle !== null) {
+            return $this->_requestPendingSingle;
         }
 
-        return $this->requestPendingSingle = Mage::helper('M2ePro')->getObject(
+        return $this->_requestPendingSingle = Mage::helper('M2ePro')->getObject(
             'Request_Pending_Single', $this->getRequestPendingSingleId()
         );
     }

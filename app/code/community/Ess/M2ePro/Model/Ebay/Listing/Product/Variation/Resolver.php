@@ -10,31 +10,28 @@ use Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General as BuilderG
 
 class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 {
-    //########################################
-
     const MPN_SPECIFIC_NAME = 'MPN';
 
     /** @var Ess_M2ePro_Model_Listing_Product */
-    protected $listingProduct;
-    protected $isAllowedToSave = false;
+    protected $_listingProduct;
+    protected $_isAllowedToSave = false;
 
-    protected $moduleVariations  = array();
-    protected $channelVariations = array();
+    protected $_moduleVariations  = array();
+    protected $_channelVariations = array();
 
     /** @var Ess_M2ePro_Model_Response_Message_Set */
-    protected $messagesSet;
+    protected $_messagesSet;
 
     //########################################
 
     public function process()
     {
         try {
-
             $this->getMessagesSet()->clearEntities();
             $this->validate();
 
-            $this->moduleVariations  = $this->getModuleVariations();
-            $this->channelVariations = $this->getChannelVariations();
+            $this->_moduleVariations  = $this->getModuleVariations();
+            $this->_channelVariations = $this->getChannelVariations();
 
             $this->validateModuleVariations();
 
@@ -42,9 +39,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             $this->processVariationsWhichAreNotExistInTheModule();
 
             $this->processExistedVariations();
-
         } catch (\Exception $exception) {
-
             $message = Mage::getModel('M2ePro/Response_Message');
             $message->initFromException($exception);
 
@@ -54,26 +49,28 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
     //########################################
 
-    private function validate()
+    protected function validate()
     {
-        if (!($this->listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
-            throw new Ess_M2ePro_Model_Exception_Logic(sprintf(
-                'Listing product is not provided [%s].', get_class($this->listingProduct)
-            ));
+        if (!($this->_listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
+            throw new Ess_M2ePro_Model_Exception_Logic(
+                sprintf(
+                    'Listing product is not provided [%s].', get_class($this->_listingProduct)
+                )
+            );
         }
 
-        if (!$this->listingProduct->getChildObject()->isVariationsReady()) {
+        if (!$this->_listingProduct->getChildObject()->isVariationsReady()) {
             throw new Ess_M2ePro_Model_Exception_Logic('Not a variation product.');
         }
 
-        if (!$this->listingProduct->isRevisable()) {
+        if (!$this->_listingProduct->isRevisable()) {
             throw new Ess_M2ePro_Model_Exception_Logic('Not a reviseble product.');
         }
 
         return true;
     }
 
-    private function validateModuleVariations()
+    protected function validateModuleVariations()
     {
         $skus = array();
         $options = array();
@@ -81,8 +78,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         $duplicatedSkus = array();
         $duplicatedOptions = array();
 
-        foreach ($this->moduleVariations as $variation) {
-
+        foreach ($this->_moduleVariations as $variation) {
             $sku = $variation['sku'];
             $option = $this->getVariationHash($variation);
 
@@ -104,40 +100,43 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         }
 
         if (!empty($duplicatedSkus)) {
-
-            throw new Ess_M2ePro_Model_Exception_Logic(sprintf(
-                'Duplicated SKUs: %s', implode(',', $duplicatedSkus)
-            ));
+            throw new Ess_M2ePro_Model_Exception_Logic(
+                sprintf(
+                    'Duplicated SKUs: %s', implode(',', $duplicatedSkus)
+                )
+            );
         }
 
         if (!empty($duplicatedOptions)) {
-
-            throw new Ess_M2ePro_Model_Exception_Logic(sprintf(
-                'Duplicated Options: %s', implode(',', $duplicatedOptions)
-            ));
+            throw new Ess_M2ePro_Model_Exception_Logic(
+                sprintf(
+                    'Duplicated Options: %s', implode(',', $duplicatedOptions)
+                )
+            );
         }
     }
 
     //########################################
 
-    private function getModuleVariations()
+    protected function getModuleVariations()
     {
         $variationUpdater = Mage::getModel('M2ePro/Ebay_Listing_Product_Variation_Updater');
-        $variationUpdater->process($this->listingProduct);
+        $variationUpdater->process($this->_listingProduct);
 
         //--
         $trimmedSpecificsReplacements = array();
-        $specificsReplacements = $this->listingProduct->getSetting(
+        $specificsReplacements = $this->_listingProduct->getSetting(
             'additional_data', 'variations_specifics_replacements', array()
         );
 
         foreach ($specificsReplacements as $findIt => $replaceBy) {
             $trimmedSpecificsReplacements[trim($findIt)] = trim($replaceBy);
         }
+
         //--
 
         $variations = array();
-        foreach ($this->listingProduct->getVariations(true) as $variation) {
+        foreach ($this->_listingProduct->getVariations(true) as $variation) {
 
             /**@var Ess_M2ePro_Model_Ebay_Listing_Product_Variation $ebayVariation */
             $ebayVariation = $variation->getChildObject();
@@ -173,7 +172,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             //--------------------------------
             if (!empty($tempVariation['details']['mpn_previous']) && !empty($tempVariation['details']['mpn']) &&
                 $tempVariation['details']['mpn_previous'] != $tempVariation['details']['mpn']) {
-
                 $oneMoreVariation = array(
                     'id'        => NULL,
                     'qty'       => 0,
@@ -190,10 +188,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
                 if (!empty($trimmedSpecificsReplacements)) {
                     $oneMoreVariation['variations_specifics_replacements'] = $trimmedSpecificsReplacements;
                 }
+
                 //--------------------------------
 
                 $variations[] = $oneMoreVariation;
             }
+
             unset($tempVariation['details']['mpn_previous']);
             //--------------------------------
 
@@ -201,12 +201,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         }
 
         //--------------------------------
-        $variationsThatCanNoBeDeleted = $this->listingProduct->getSetting(
+        $variationsThatCanNoBeDeleted = $this->_listingProduct->getSetting(
             'additional_data', 'variations_that_can_not_be_deleted', array()
         );
 
         foreach ($variationsThatCanNoBeDeleted as $canNoBeDeleted) {
-
             $variations[] = array(
                 'id'            => NULL,
                 'sku'           => $canNoBeDeleted['sku'],
@@ -217,23 +216,22 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
                 'details'       => $canNoBeDeleted['details']
             );
         }
+
         //--------------------------------
 
         return $variations;
     }
 
-    private function insertVariationDetails(Ess_M2ePro_Model_Listing_Product_Variation $variation, &$tempVariation)
+    protected function insertVariationDetails(Ess_M2ePro_Model_Listing_Product_Variation $variation, &$tempVariation)
     {
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
-        $ebayListingProduct = $this->listingProduct->getChildObject();
+        $ebayListingProduct = $this->_listingProduct->getChildObject();
         $ebayDescriptionTemplate = $ebayListingProduct->getEbayDescriptionTemplate();
 
         $additionalData = $variation->getAdditionalData();
 
         foreach (array('isbn','upc','ean','mpn','epid') as $tempType) {
-
             if ($tempType == 'mpn' && !empty($additionalData['online_product_details']['mpn'])) {
-
                 $isMpnFilled = $variation->getListingProduct()->getSetting(
                     'additional_data', 'is_variation_mpn_filled'
                 );
@@ -261,7 +259,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             }
 
             if ($tempType == 'mpn') {
-
                 if ($ebayDescriptionTemplate->isProductDetailsModeNone('brand')) {
                     continue;
                 }
@@ -281,8 +278,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
                 continue;
             }
 
-            if (!$this->listingProduct->getMagentoProduct()->isConfigurableType() &&
-                !$this->listingProduct->getMagentoProduct()->isGroupedType()) {
+            if (!$this->_listingProduct->getMagentoProduct()->isConfigurableType() &&
+                !$this->_listingProduct->getMagentoProduct()->isGroupedType()) {
                 continue;
             }
 
@@ -306,17 +303,17 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         $this->deleteNotAllowedIdentifier($tempVariation['details']);
     }
 
-    private function deleteNotAllowedIdentifier(array &$data)
+    protected function deleteNotAllowedIdentifier(array &$data)
     {
         if (empty($data)) {
             return;
         }
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
-        $ebayListingProduct = $this->listingProduct->getChildObject();
+        $ebayListingProduct = $this->_listingProduct->getChildObject();
 
         $categoryId = $ebayListingProduct->getCategoryTemplateSource()->getMainCategory();
-        $marketplaceId = $this->listingProduct->getMarketplace()->getId();
+        $marketplaceId = $this->_listingProduct->getMarketplace()->getId();
 
         $categoryFeatures = Mage::helper('M2ePro/Component_Ebay_Category_Ebay')
             ->getFeatures($categoryId, $marketplaceId);
@@ -328,7 +325,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         $statusDisabled = Ess_M2ePro_Helper_Component_Ebay_Category_Ebay::PRODUCT_IDENTIFIER_STATUS_DISABLED;
 
         foreach (array('ean','upc','isbn','epid') as $identifier) {
-
             $key = $identifier.'_enabled';
             if (!isset($categoryFeatures[$key]) || $categoryFeatures[$key] != $statusDisabled) {
                 continue;
@@ -340,18 +336,18 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         }
     }
 
-    private function getChannelVariations()
+    protected function getChannelVariations()
     {
         /** @var Ess_M2ePro_Model_Connector_Command_RealTime_Virtual $connector */
         $connector = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher')->getVirtualConnector(
             'item', 'get', 'info',
             array(
-                'item_id'              => $this->listingProduct->getChildObject()->getEbayItemIdReal(),
+                'item_id'              => $this->_listingProduct->getChildObject()->getEbayItemIdReal(),
                 'parser_type'          => 'standard',
                 'full_variations_mode' => true
             ),
             'result',
-            $this->listingProduct->getMarketplace(), $this->listingProduct->getAccount()
+            $this->_listingProduct->getMarketplace(), $this->_listingProduct->getAccount()
         );
 
         $connector->process();
@@ -363,7 +359,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
         $variations = array();
         foreach ($result['variations'] as $variation) {
-
             $tempVariation = array(
                 'id'            => NULL,
                 'sku'           => $variation['sku'],
@@ -375,7 +370,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             );
 
             if (isset($tempVariation['specifics'][self::MPN_SPECIFIC_NAME])) {
-
                 $tempVariation['details']['mpn'] = $tempVariation['specifics'][self::MPN_SPECIFIC_NAME];
                 unset($tempVariation['specifics'][self::MPN_SPECIFIC_NAME]);
             }
@@ -388,32 +382,34 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
     //########################################
 
-    private function getVariationsWhichDoNotExistOnChannel()
+    protected function getVariationsWhichDoNotExistOnChannel()
     {
         $variations = array();
 
-        foreach ($this->moduleVariations as $moduleVariation) {
-            foreach ($this->channelVariations as $channelVariation) {
+        foreach ($this->_moduleVariations as $moduleVariation) {
+            foreach ($this->_channelVariations as $channelVariation) {
                 if ($this->isVariationEqualWithCurrent($channelVariation, $moduleVariation)) {
                     continue 2;
                 }
             }
+
             $variations[] = $moduleVariation;
         }
 
         return $variations;
     }
 
-    private function getVariationsWhichDoNotExistInModule()
+    protected function getVariationsWhichDoNotExistInModule()
     {
         $variations = array();
 
-        foreach ($this->channelVariations as $channelVariation) {
-            foreach ($this->moduleVariations as $moduleVariation) {
+        foreach ($this->_channelVariations as $channelVariation) {
+            foreach ($this->_moduleVariations as $moduleVariation) {
                 if ($this->isVariationEqualWithCurrent($channelVariation, $moduleVariation)) {
                     continue 2;
                 }
             }
+
             $variations[] = $channelVariation;
         }
 
@@ -422,7 +418,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
     //########################################
 
-    private function processVariationsWhichDoNotExistOnTheChannel()
+    protected function processVariationsWhichDoNotExistOnTheChannel()
     {
         $variations = $this->getVariationsWhichDoNotExistOnChannel();
         if (empty($variations)) {
@@ -430,14 +426,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         }
 
         foreach ($variations as $variation) {
-
-            $this->addNotice(sprintf(
-                "SKU %s will be added to the Channel. Hash: %s",
-                $variation['sku'], $this->getVariationHash($variation)
-            ));
+            $this->addNotice(
+                sprintf(
+                    "SKU %s will be added to the Channel. Hash: %s",
+                    $variation['sku'], $this->getVariationHash($variation)
+                )
+            );
         }
 
-        if (!$this->isAllowedToSave) {
+        if (!$this->_isAllowedToSave) {
             return;
         }
     }
@@ -445,7 +442,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
     /**
      * variations_that_can_not_be_deleted will be filled up
      */
-    private function processVariationsWhichAreNotExistInTheModule()
+    protected function processVariationsWhichAreNotExistInTheModule()
     {
         $variations = $this->getVariationsWhichDoNotExistInModule();
         if (empty($variations)) {
@@ -453,23 +450,23 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         }
 
         foreach ($variations as $variation) {
-
-            $this->addWarning(sprintf(
-                "SKU %s will be added to the Module. Hash: %s",
-                $variation['sku'], $this->getVariationHash($variation)
-            ));
+            $this->addWarning(
+                sprintf(
+                    "SKU %s will be added to the Module. Hash: %s",
+                    $variation['sku'], $this->getVariationHash($variation)
+                )
+            );
         }
 
-        if (!$this->isAllowedToSave) {
+        if (!$this->_isAllowedToSave) {
             return;
         }
 
-        $variationsThatCanNoBeDeleted = $this->listingProduct->getSetting(
+        $variationsThatCanNoBeDeleted = $this->_listingProduct->getSetting(
             'additional_data', 'variations_that_can_not_be_deleted', array()
         );
 
         foreach ($variations as $variation) {
-
             $variationsThatCanNoBeDeleted[] = array(
                 'qty'       => 0,
                 'price'     => $variation['price'],
@@ -482,25 +479,25 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             );
         }
 
-        $this->listingProduct->setSetting(
+        $this->_listingProduct->setSetting(
             'additional_data', 'variations_that_can_not_be_deleted', $variationsThatCanNoBeDeleted
         );
-        $this->listingProduct->save();
+        $this->_listingProduct->save();
     }
 
-    private function processExistedVariations()
+    protected function processExistedVariations()
     {
-        foreach ($this->moduleVariations as $moduleVariation) {
-            foreach ($this->channelVariations as $channelVariation) {
-
+        foreach ($this->_moduleVariations as $moduleVariation) {
+            foreach ($this->_channelVariations as $channelVariation) {
                 if ($this->isVariationEqualWithCurrent($channelVariation, $moduleVariation)) {
+                    $this->addNotice(
+                        sprintf(
+                            "Variation ID %s will be Updated. Hash: %s",
+                            $moduleVariation['id'], $this->getVariationHash($moduleVariation)
+                        )
+                    );
 
-                    $this->addNotice(sprintf(
-                        "Variation ID %s will be Updated. Hash: %s",
-                        $moduleVariation['id'], $this->getVariationHash($moduleVariation)
-                    ));
-
-                    if (!$this->isAllowedToSave) {
+                    if (!$this->_isAllowedToSave) {
                         continue;
                     }
 
@@ -514,7 +511,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
                     $additionalData = $lpv->getAdditionalData();
                     $additionalData['online_product_details'] = $channelVariation['details'];
 
-                    $lpv->addData(array(
+                    $lpv->addData(
+                        array(
                         'online_sku'      => $channelVariation['sku'],
                         'online_qty'      => $channelVariation['quantity'],
                         'online_qty_sold' => $channelVariation['quantity_sold'],
@@ -524,7 +522,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
                         'detele'          => 0,
 
                         'additional_data' => json_encode($additionalData)
-                    ));
+                        )
+                    );
                     $lpv->save();
 
                     continue 2;
@@ -535,7 +534,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
     //########################################
 
-    private function isVariationEqualWithCurrent(array $channelVariation, array $moduleVariation)
+    protected function isVariationEqualWithCurrent(array $channelVariation, array $moduleVariation)
     {
         if (count($channelVariation['specifics']) != count($moduleVariation['specifics'])) {
             return false;
@@ -549,10 +548,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         }
 
         foreach ($moduleVariation['specifics'] as $moduleVariationOptionName => $moduleVariationOptionValue) {
-
             $haveOption = false;
             foreach ($channelVariation['specifics'] as $channelVariationOptionName => $channelVariationOptionValue) {
-
                 if (trim($moduleVariationOptionName)  == trim($channelVariationOptionName) &&
                     trim($moduleVariationOptionValue) == trim($channelVariationOptionValue))
                 {
@@ -569,7 +566,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         return true;
     }
 
-    private function getVariationHash($variation)
+    protected function getVariationHash($variation)
     {
         $hash = array();
 
@@ -588,13 +585,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $lp)
     {
-        $this->listingProduct = $lp;
+        $this->_listingProduct = $lp;
         return $this;
     }
 
     public function setIsAllowedToSave($value)
     {
-        $this->isAllowedToSave = $value;
+        $this->_isAllowedToSave = $value;
         return $this;
     }
 
@@ -602,11 +599,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
     public function getMessagesSet()
     {
-        if (is_null($this->messagesSet)) {
-            $this->messagesSet = Mage::getModel('M2ePro/Response_Message_Set');
+        if ($this->_messagesSet === null) {
+            $this->_messagesSet = Mage::getModel('M2ePro/Response_Message_Set');
         }
 
-        return $this->messagesSet;
+        return $this->_messagesSet;
     }
 
     //########################################

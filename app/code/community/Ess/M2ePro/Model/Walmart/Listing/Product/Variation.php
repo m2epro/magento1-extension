@@ -176,7 +176,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
      */
     public function getOptions($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
     {
-        return $this->getParentObject()->getOptions($asObjects,$filters,$tryToGetFromStorage);
+        return $this->getParentObject()->getOptions($asObjects, $filters, $tryToGetFromStorage);
     }
 
     //########################################
@@ -195,7 +195,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
         // Configurable, Grouped product
         if ($this->getListingProduct()->getMagentoProduct()->isConfigurableType() ||
             $this->getListingProduct()->getMagentoProduct()->isGroupedType()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
                 $sku = $option->getChildObject()->getSku();
@@ -204,7 +203,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
 
         // Bundle product
         } else if ($this->getListingProduct()->getMagentoProduct()->isBundleType()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
 
@@ -218,7 +216,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
 
         // Simple with options product
         } else if ($this->getListingProduct()->getMagentoProduct()->isSimpleTypeWithCustomOptions()) {
-
             foreach ($options as $option) {
                 /** @var $option Ess_M2ePro_Model_Listing_Product_Variation_Option */
                 $sku != '' && $sku .= '-';
@@ -309,11 +306,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
             /** @var $priceCalculator Ess_M2ePro_Model_Walmart_Listing_Product_PriceCalculator */
             $priceCalculator = Mage::getModel('M2ePro/Walmart_Listing_Product_PriceCalculator');
             $priceCalculator->setSource($promotion->getPriceSource())->setProduct($this->getListingProduct());
-            $priceCalculator->setSourceModeMapping(array(
+            $priceCalculator->setSourceModeMapping(
+                array(
                 PriceCalculator::MODE_PRODUCT   => Promotion::PRICE_MODE_PRODUCT,
                 PriceCalculator::MODE_SPECIAL   => Promotion::PRICE_MODE_SPECIAL,
                 PriceCalculator::MODE_ATTRIBUTE => Promotion::PRICE_MODE_ATTRIBUTE,
-            ));
+                )
+            );
             $priceCalculator->setCoefficient($promotion->getPriceCoefficient());
             $priceCalculator->setVatPercent($this->getWalmartSellingFormatTemplate()->getPriceVatPercent());
             $priceCalculator->setPriceVariationMode(
@@ -323,13 +322,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
             /** @var $comparisonPriceCalculator Ess_M2ePro_Model_Walmart_Listing_Product_PriceCalculator */
             $comparisonPriceCalculator = Mage::getModel('M2ePro/Walmart_Listing_Product_PriceCalculator');
             $comparisonPriceCalculator->setSource(
-                $promotion->getComparisonPriceSource())->setProduct($this->getListingProduct()
+                $promotion->getComparisonPriceSource()
+            )->setProduct(
+                $this->getListingProduct()
             );
-            $comparisonPriceCalculator->setSourceModeMapping(array(
+            $comparisonPriceCalculator->setSourceModeMapping(
+                array(
                 PriceCalculator::MODE_PRODUCT   => Promotion::COMPARISON_PRICE_MODE_PRODUCT,
                 PriceCalculator::MODE_SPECIAL   => Promotion::COMPARISON_PRICE_MODE_SPECIAL,
                 PriceCalculator::MODE_ATTRIBUTE => Promotion::COMPARISON_PRICE_MODE_ATTRIBUTE,
-            ));
+                )
+            );
             $comparisonPriceCalculator->setCoefficient($promotion->getComparisonPriceCoefficient());
             $comparisonPriceCalculator->setVatPercent($this->getWalmartSellingFormatTemplate()->getPriceVatPercent());
             $comparisonPriceCalculator->setPriceVariationMode(

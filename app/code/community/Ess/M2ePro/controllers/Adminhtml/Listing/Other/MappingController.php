@@ -30,9 +30,11 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
             return;
         }
 
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                           Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
 
         $productId && $collection->addFieldToFilter('entity_id', $productId);
         $sku       && $collection->addFieldToFilter('sku', $sku);
@@ -45,7 +47,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
         $productId || $productId = $tempData['entity_id'];
 
         $productOtherInstance = Mage::helper('M2ePro/Component')->getComponentObject(
-            $componentMode,'Listing_Other',$productOtherId
+            $componentMode, 'Listing_Other', $productOtherId
         );
 
         $productOtherInstance->mapProduct($productId, Ess_M2ePro_Helper_Data::INITIATOR_USER);
@@ -73,7 +75,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
 
             /** @var $listingOther Ess_M2ePro_Model_Listing_Other */
             $listingOther = Mage::helper('M2ePro/Component')
-                ->getComponentObject($componentMode,'Listing_Other',$productId);
+                ->getComponentObject($componentMode, 'Listing_Other', $productId);
 
             if ($listingOther->getProductId()) {
                 continue;
@@ -110,7 +112,7 @@ class Ess_M2ePro_Adminhtml_Listing_Other_MappingController
             $listingOtherProductInstance = Mage::getModel('M2ePro/Listing_Other')->load($productId);
 
             if (!$listingOtherProductInstance->getId() ||
-                is_null($listingOtherProductInstance->getData('product_id'))) {
+                $listingOtherProductInstance->getData('product_id') === null) {
                 continue;
             }
 

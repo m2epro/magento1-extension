@@ -34,19 +34,22 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
                     $this->escapeHtml(Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getTitle())
                 );
             } else {
-                $this->_headerText = Mage::helper('M2ePro')->__("Add %component_name% Description Policy",
+                $this->_headerText = Mage::helper('M2ePro')->__(
+                    "Add %component_name% Description Policy",
                     $componentName
                 );
             }
         } else {
             if ($this->isEditMode()) {
-                $this->_headerText = Mage::helper('M2ePro')->__('Edit Description Policy "%template_title%"',
+                $this->_headerText = Mage::helper('M2ePro')->__(
+                    'Edit Description Policy "%template_title%"',
                     $this->escapeHtml(Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getTitle())
                 );
             } else {
                 $this->_headerText = Mage::helper('M2ePro')->__("Add Description Policy");
             }
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -61,35 +64,41 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
 
         // ---------------------------------------
         $url = Mage::helper('M2ePro')->getBackUrl('list');
-        $this->_addButton('back', array(
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'onclick'   => 'CommonHandlerObj.back_click(\'' . $url . '\')',
             'class'     => 'back'
-        ));
+            )
+        );
         // ---------------------------------------
 
         if ($this->isEditMode()) {
-
             $headId = 'walmart-template-description';
             // ---------------------------------------
-            $this->_addButton('duplicate', array(
+            $this->_addButton(
+                'duplicate', array(
                 'label'   => Mage::helper('M2ePro')->__('Duplicate'),
                 'onclick' => "WalmartTemplateDescriptionHandlerObj.duplicate_click('{$headId}')",
                 'class'   => 'add M2ePro_duplicate_button'
-            ));
+                )
+            );
             // ---------------------------------------
 
             // ---------------------------------------
-            $this->_addButton('delete', array(
+            $this->_addButton(
+                'delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
                 'onclick'   => 'CommonHandlerObj.delete_click()',
                 'class'     => 'delete M2ePro_delete_button'
-            ));
+                )
+            );
             // ---------------------------------------
         }
 
         // ---------------------------------------
-        $this->_addButton('save', array(
+        $this->_addButton(
+            'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'WalmartTemplateDescriptionHandlerObj.save_click('
                 . '\'\','
@@ -97,11 +106,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
                 . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_DESCRIPTION . '\''
                 . ')',
             'class'     => 'save'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('save_and_continue', array(
+        $this->_addButton(
+            'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
             'onclick'   => 'WalmartTemplateDescriptionHandlerObj.save_and_edit_click('
                 . '\'\','
@@ -110,13 +121,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit
                 . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_DESCRIPTION . '\''
                 . ')',
             'class'     => 'save'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
     //########################################
 
-    private function isEditMode()
+    protected function isEditMode()
     {
         $templateModel = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
         return $templateModel && $templateModel->getId();

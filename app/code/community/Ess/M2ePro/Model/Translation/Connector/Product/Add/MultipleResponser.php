@@ -9,12 +9,12 @@
 class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
     extends Ess_M2ePro_Model_Translation_Connector_Command_Pending_Responser
 {
-    protected $listingsProducts = array();
+    protected $_listingsProducts = array();
 
-    protected $failedListingsProducts = array();
-    protected $succeededListingsProducts = array();
+    protected $_failedListingsProducts    = array();
+    protected $_succeededListingsProducts = array();
 
-    private $descriptionTemplatesIds = array();
+    protected $_descriptionTemplatesIds = array();
 
     // ########################################
 
@@ -22,11 +22,12 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
     {
         parent::__construct($params, $response);
 
-        foreach ($this->params['products'] as $listingProductId => $listingProductData) {
+        foreach ($this->_params['products'] as $listingProductId => $listingProductData) {
             try {
-                $this->listingsProducts[] = Mage::helper('M2ePro/Component_Ebay')
-                    ->getObject('Listing_Product',(int)$listingProductId);
-            } catch (Exception $exception) {}
+                $this->_listingsProducts[] = Mage::helper('M2ePro/Component_Ebay')
+                                                 ->getObject('Listing_Product', (int)$listingProductId);
+            } catch (Exception $exception) {
+            }
         }
     }
 
@@ -35,8 +36,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
         parent::failDetected($messageText);
 
         $alreadyLoggedListings = array();
-        foreach ($this->listingsProducts as $listingProduct) {
-
+        foreach ($this->_listingsProducts as $listingProduct) {
             $listingProduct->getChildObject()->setData(
                 'translation_status', Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_PENDING
             )->save();
@@ -59,10 +59,12 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
 
     // ########################################
 
-    protected function addListingsProductsLogsMessage(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                                      $text, $type = Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-                                                      $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM)
-    {
+    protected function addListingsProductsLogsMessage(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        $text,
+        $type = Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
+        $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+    ) {
         $action = Ess_M2ePro_Model_Listing_Log::ACTION_TRANSLATE_PRODUCT;
 
         if ($this->getStatusChanger() == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN) {
@@ -77,12 +79,14 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
 
-        $logModel->addProductMessage($listingProduct->getListingId() ,
-                                     $listingProduct->getProductId() ,
-                                     $listingProduct->getId() ,
-                                     $initiator ,
-                                     $this->getLogsActionId() ,
-                                     $action , $text, $type , $priority);
+        $logModel->addProductMessage(
+            $listingProduct->getListingId(),
+            $listingProduct->getProductId(),
+            $listingProduct->getId(),
+            $initiator,
+            $this->getLogsActionId(),
+            $action, $text, $type, $priority
+        );
     }
 
     // ########################################
@@ -100,11 +104,9 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
         //----------------------
         $globalMessages = $this->getResponse()->getMessages()->getEntities();
 
-        foreach ($this->listingsProducts as $listingProduct) {
-
+        foreach ($this->_listingsProducts as $listingProduct) {
             $hasError = false;
             foreach ($globalMessages as $message) {
-
                 !$hasError && $hasError = $message->isError();
 
                 $this->addListingsProductsLogsMessage(
@@ -112,7 +114,6 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
                 );
 
                 if (strpos($message->getText(), 'code:64') !== false) {
-
                     preg_match("/amount_due\:(.*?)\s*,\s*currency\:(.*?)\s*\)/i", $message->getText(), $matches);
 
                     $additionalData = $listingProduct->getAdditionalData();
@@ -132,9 +133,9 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
                 }
             }
 
-            if ($hasError && !in_array($listingProduct->getId(),$failedListingsProductsIds)) {
-                $this->failedListingsProducts[] = $listingProduct;
-                $failedListingsProductsIds[] = $listingProduct->getId();
+            if ($hasError && !in_array($listingProduct->getId(), $failedListingsProductsIds)) {
+                $this->_failedListingsProducts[] = $listingProduct;
+                $failedListingsProductsIds[]     = $listingProduct->getId();
             }
         }
 
@@ -142,26 +143,27 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
 
         $responseData = $this->getResponse()->getData();
 
-        foreach ($this->listingsProducts as $listingProduct) {
-
-            if (in_array($listingProduct->getId(),$failedListingsProductsIds)) {
+        foreach ($this->_listingsProducts as $listingProduct) {
+            if (in_array($listingProduct->getId(), $failedListingsProductsIds)) {
                 continue;
             }
 
-            $this->succeededListingsProducts[] = $listingProduct;
+            $this->_succeededListingsProducts[] = $listingProduct;
 
             foreach ($responseData['products'] as $responseProduct) {
-               if ($responseProduct['sku'] == $this->params['products'][$listingProduct->getId()]['sku']) {
+               if ($responseProduct['sku'] == $this->_params['products'][$listingProduct->getId()]['sku']) {
                     $this->updateProduct($listingProduct, $responseProduct);
                     break;
-                }
+               }
             }
 
             // M2ePro_TRANSLATIONS
             // 'Product has been successfully Translated.',
-            $this->addListingsProductsLogsMessage($listingProduct, 'Product has been successfully Translated.',
+            $this->addListingsProductsLogsMessage(
+                $listingProduct, 'Product has been successfully Translated.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+            );
         }
     }
 
@@ -173,11 +175,10 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
         $descriptionTemplate = $listingProduct->getChildObject()->getDescriptionTemplate();
         $oldDescriptionTemplateId = $descriptionTemplate->getId();
 
-        if (!isset($this->descriptionTemplatesIds[$oldDescriptionTemplateId]) && (
+        if (!isset($this->_descriptionTemplatesIds[$oldDescriptionTemplateId]) && (
             trim($descriptionTemplate->getData('title_template'))       != '#ebay_translated_title#'    ||
             trim($descriptionTemplate->getData('subtitle_template'))    != '#ebay_translated_subtitle#' ||
             trim($descriptionTemplate->getData('description_template')) != '#ebay_translated_description#')) {
-
             $data = $descriptionTemplate->getSnapshot();
             unset($data['id'], $data['update_date'], $data['create_date']);
 
@@ -191,15 +192,15 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
             $data['description_template'] = '#ebay_translated_description#';
             $data['is_custom_template']   = 1;
 
-            $newDescriptionTemplate = Mage::getModel('M2ePro/Ebay_Template_Manager')
+            $newDescriptionTemplate                                    = Mage::getModel('M2ePro/Ebay_Template_Manager')
                 ->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION)
                 ->getTemplateBuilder()
                 ->build($data);
-            $this->descriptionTemplatesIds[$oldDescriptionTemplateId] = $newDescriptionTemplate->getId();
+            $this->_descriptionTemplatesIds[$oldDescriptionTemplateId] = $newDescriptionTemplate->getId();
         }
 
-        if (isset($this->descriptionTemplatesIds[$oldDescriptionTemplateId])) {
-            $productData['template_description_custom_id'] = $this->descriptionTemplatesIds[$oldDescriptionTemplateId];
+        if (isset($this->_descriptionTemplatesIds[$oldDescriptionTemplateId])) {
+            $productData['template_description_custom_id'] = $this->_descriptionTemplatesIds[$oldDescriptionTemplateId];
             $productData['template_description_mode']      = Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM;
         }
 
@@ -211,14 +212,16 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
         $this->checkAndCreateMagentoAttributes($listingProduct->getMagentoProduct(), $attributes);
 
         $listingProduct->getMagentoProduct()
-                       ->setAttributeValue('ebay_translated_title',       $response['title'])
-                       ->setAttributeValue('ebay_translated_subtitle',    $response['subtitle'])
+                       ->setAttributeValue('ebay_translated_title', $response['title'])
+                       ->setAttributeValue('ebay_translated_subtitle', $response['subtitle'])
                        ->setAttributeValue('ebay_translated_description', $response['description']);
         //------------------------------
 
-        $categoryPath = !is_null($response['category']['primary_id'])
-            ? Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getPath((int)$response['category']['primary_id'],
-                                                                            $this->params['marketplace_id'])
+        $categoryPath = $response['category']['primary_id'] !== null
+            ? Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getPath(
+                (int)$response['category']['primary_id'],
+                $this->_params['marketplace_id']
+            )
             : '';
 
         $response['category']['path'] = $categoryPath;
@@ -227,7 +230,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
             $data = Mage::getModel('M2ePro/Ebay_Template_Category')->getDefaultSettings();
             $data['category_main_id']   = (int)$response['category']['primary_id'];
             $data['category_main_path'] = $categoryPath;
-            $data['marketplace_id']     = $this->params['marketplace_id'];
+            $data['marketplace_id']     = $this->_params['marketplace_id'];
             $data['specifics']          = $this->getSpecificsData($response['item_specifics']);
 
             $productData['template_category_id'] =
@@ -243,10 +246,12 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
         $productData['additional_data'] = Mage::helper('M2ePro')->jsonEncode($additionalData);
 
         $listingProduct->addData($productData)->save();
-        $listingProduct->getChildObject()->addData(array(
+        $listingProduct->getChildObject()->addData(
+            array(
             'translation_status' => Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_TRANSLATED,
             'translated_date'    => Mage::helper('M2ePro')->getCurrentGmtDate()
-        ))->save();
+            )
+        )->save();
     }
 
     // ########################################
@@ -288,7 +293,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -296,24 +301,24 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
      */
     protected function getMarketplace()
     {
-        return $this->getObjectByParam('Marketplace','marketplace_id');
+        return $this->getObjectByParam('Marketplace', 'marketplace_id');
     }
 
     //---------------------------------------
 
     protected function getStatusChanger()
     {
-        return (int)$this->params['status_changer'];
+        return (int)$this->_params['status_changer'];
     }
 
     protected function getLogsActionId()
     {
-        return (int)$this->params['logs_action_id'];
+        return (int)$this->_params['logs_action_id'];
     }
 
     // ########################################
 
-    private function checkAndCreateMagentoAttributes($magentoProduct, array $attributes)
+    protected function checkAndCreateMagentoAttributes($magentoProduct, array $attributes)
     {
         $attributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
@@ -327,7 +332,6 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
               ->save();
 
         foreach ($attributes as $attributeCode => $attributeProp) {
-
             if (!$attributeHelper->getByCode($attributeCode)) {
 
                 /** @var Ess_M2ePro_Model_Magento_Attribute_Builder $model */
@@ -357,7 +361,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_MultipleResponser
 
     //---------------------------------------
 
-    private function getSpecificsData($responseSpecifics)
+    protected function getSpecificsData($responseSpecifics)
     {
         $data = array();
         foreach ($responseSpecifics as $responseSpecific) {

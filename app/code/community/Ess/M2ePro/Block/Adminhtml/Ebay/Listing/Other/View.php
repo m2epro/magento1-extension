@@ -29,6 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -42,21 +43,25 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         // ---------------------------------------
 
         // ---------------------------------------
-        if (!is_null($this->getRequest()->getParam('back'))) {
+        if ($this->getRequest()->getParam('back') !== null) {
             $url = Mage::helper('M2ePro')->getBackUrl();
-            $this->_addButton('back', array(
+            $this->_addButton(
+                'back', array(
                 'label'   => Mage::helper('M2ePro')->__('Back'),
                 'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
                 'class'   => 'back'
-            ));
+                )
+            );
         }
 
         $url = $this->getUrl('*/adminhtml_ebay_log/listingOther');
-        $this->_addButton('view_log', array(
+        $this->_addButton(
+            'view_log', array(
             'label'     => Mage::helper('M2ePro')->__('View Log'),
             'onclick'   => 'window.open(\''.$url.'\',\'_blank\')',
             'class'     => 'button_link'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -69,7 +74,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
 
         // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_other_view_header','',
+            'M2ePro/adminhtml_listing_other_view_header', '',
             array(
                 'account' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', $accountId),
                 'marketplace' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', $marketplaceId)
@@ -96,19 +101,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
 
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Mapping Product' => $helper->__('Mapping Product'),
             'Product does not exist.' => $helper->__('Product does not exist.'),
             'Please enter correct Product ID.' => $helper->__('Please enter correct Product ID.'),
             'Product(s) was successfully Mapped.' => $helper->__('Product(s) was successfully Mapped.'),
             'Please enter correct Product ID or SKU' => $helper->__('Please enter correct Product ID or SKU')
-        ));
+            )
+        );
 
         $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
 
-        $logViewUrl = $this->getUrl('*/adminhtml_ebay_log/listingOther', array(
+        $logViewUrl = $this->getUrl(
+            '*/adminhtml_ebay_log/listingOther', array(
             'back'=>$helper->makeBackUrlParam('*/adminhtml_listing_other/index')
-        ));
+            )
+        );
 
         $mapAutoToProductUrl = $this->getUrl('*/adminhtml_listing_other_mapping/autoMap');
 
@@ -199,9 +208,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $enterProductOrSkuMessage = $helper->escapeJs($helper->__('Please enter correct Product ID or SKU'));
         $autoMapProgressTitle = $helper->escapeJs($helper->__('Map Item(s) to Products'));
 
-        $selectItemsMessage = $helper->escapeJs($helper->__(
-            'Please select the Products you want to perform the Action on.'
-        ));
+        $selectItemsMessage = $helper->escapeJs(
+            $helper->__(
+                'Please select the Products you want to perform the Action on.'
+            )
+        );
         $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
 
         $javascript = <<<HTML

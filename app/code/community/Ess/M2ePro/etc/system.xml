@@ -108,5 +108,15 @@
             <show_in_store>1</show_in_store>
             <frontend_model>M2ePro/adminhtml_configuration_license_form</frontend_model>
         </m2epro_license>
+        <m2epro_advanced translate="label" module="M2ePro">
+            <label>Advanced</label>
+            <tab>m2epro</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>50</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <frontend_model>M2ePro/adminhtml_configuration_advanced_form</frontend_model>
+        </m2epro_advanced>
     </sections>
 </config>

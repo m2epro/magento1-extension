@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Observer_Indexes_Enable extends Ess_M2ePro_Model_Observer
             }
         }
 
-        if (count($executedIndexes) <= 0) {
+        if (empty($executedIndexes)) {
             return;
         }
 

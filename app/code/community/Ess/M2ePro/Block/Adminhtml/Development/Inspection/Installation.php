@@ -40,7 +40,6 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Installation
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
 
         if ($structureHelper->isTableExists($registryModel->getResource()->getMainTable())) {
-
             $this->installationVersionHistory = $registryModel
                     ->load('/installation/versions_history/', 'key')
                     ->getValueFromJson();
@@ -52,7 +51,6 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Installation
 
         $lastVersion = array_pop($this->installationVersionHistory);
         if (!empty($lastVersion)) {
-
             $this->latestUpgradeDate        = $lastVersion['date'];
             $this->latestUpgradeFromVersion = $lastVersion['from'];
             $this->latestUpgradeToVersion   = $lastVersion['to'];
@@ -61,7 +59,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Installation
 
     protected function isShown()
     {
-        if (is_null($this->latestVersion)) {
+        if ($this->latestVersion === null) {
             return false;
         }
 

@@ -8,11 +8,11 @@
 
 class Ess_M2ePro_Model_Magento_Order_Invoice
 {
-    /** @var $magentoOrder Mage_Sales_Model_Order */
-    private $magentoOrder = NULL;
+    /** @var $_magentoOrder Mage_Sales_Model_Order */
+    protected $_magentoOrder = null;
 
-    /** @var $invoice Mage_Sales_Model_Order_Invoice */
-    private $invoice = NULL;
+    /** @var $_invoice Mage_Sales_Model_Order_Invoice */
+    protected $_invoice = null;
 
     //########################################
 
@@ -22,7 +22,7 @@ class Ess_M2ePro_Model_Magento_Order_Invoice
      */
     public function setMagentoOrder(Mage_Sales_Model_Order $magentoOrder)
     {
-        $this->magentoOrder = $magentoOrder;
+        $this->_magentoOrder = $magentoOrder;
         return $this;
     }
 
@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Magento_Order_Invoice
 
     public function getInvoice()
     {
-        return $this->invoice;
+        return $this->_invoice;
     }
 
     //########################################
@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Magento_Order_Invoice
 
     //########################################
 
-    private function prepareInvoice()
+    protected function prepareInvoice()
     {
         // Skip invoice observer
         // ---------------------------------------
@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Magento_Order_Invoice
         // ---------------------------------------
 
         $qtys = array();
-        foreach ($this->magentoOrder->getAllItems() as $item) {
+        foreach ($this->_magentoOrder->getAllItems() as $item) {
             $qtyToInvoice = $item->getQtyToInvoice();
 
             if ($qtyToInvoice == 0) {
@@ -63,14 +63,14 @@ class Ess_M2ePro_Model_Magento_Order_Invoice
 
         // Create invoice
         // ---------------------------------------
-        $this->invoice = $this->magentoOrder->prepareInvoice($qtys);
-        $this->invoice->register();
+        $this->_invoice = $this->_magentoOrder->prepareInvoice($qtys);
+        $this->_invoice->register();
         // it is necessary for updating qty_invoiced field in sales_flat_order_item table
-        $this->invoice->getOrder()->setIsInProcess(true);
+        $this->_invoice->getOrder()->setIsInProcess(true);
 
         Mage::getModel('core/resource_transaction')
-            ->addObject($this->invoice)
-            ->addObject($this->invoice->getOrder())
+            ->addObject($this->_invoice)
+            ->addObject($this->_invoice->getOrder())
             ->save();
         // ---------------------------------------
     }

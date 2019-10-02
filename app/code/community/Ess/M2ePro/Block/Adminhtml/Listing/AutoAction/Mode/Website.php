@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Adminhtml_Block_Widget_Form
 {
-    protected $listing;
+    protected $_listing;
 
     //########################################
 
@@ -28,12 +28,14 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -70,12 +72,12 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website extends Mage_Ad
      */
     public function getListing()
     {
-        if (is_null($this->listing)) {
-            $listingId = $this->getRequest()->getParam('listing_id');
-            $this->listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
+        if ($this->_listing === null) {
+            $listingId      = $this->getRequest()->getParam('listing_id');
+            $this->_listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################

@@ -15,6 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Menu extends Mage_Adminhtml_Block_Page_
         if (Mage::getStoreConfig('advanced/modules_disable_output/Ess_M2ePro')) {
             return 'Mage_Adminhtml';
         }
+
         return parent::getModuleName();
     }
 
@@ -23,10 +24,9 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Menu extends Mage_Adminhtml_Block_Page_
         $menuArray = parent::getMenuArray();
 
         try {
-
             $menuArray = Mage::helper('M2ePro/Component')->prepareMenu($menuArray);
-
-        } catch (Exception $exception) {}
+        } catch (Exception $exception) {
+        }
 
         return $menuArray;
     }

@@ -17,20 +17,20 @@ abstract class Ess_M2ePro_Model_Log_Abstract extends Ess_M2ePro_Model_Abstract
     const PRIORITY_MEDIUM  = 2;
     const PRIORITY_LOW     = 3;
 
-    protected $componentMode = NULL;
+    protected $_componentMode = null;
 
     //########################################
 
     public function setComponentMode($mode)
     {
         $mode = strtolower((string)$mode);
-        $mode && $this->componentMode = $mode;
+        $mode && $this->_componentMode = $mode;
         return $this;
     }
 
     public function getComponentMode()
     {
-        return $this->componentMode;
+        return $this->_componentMode;
     }
 
     //########################################

@@ -44,7 +44,7 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
     public function getAutocompleteMaxItems()
     {
         $temp = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/walmart/autocomplete/','max_records_quantity'
+            '/view/walmart/autocomplete/', 'max_records_quantity'
         );
         return $temp <= 0 ? 100 : $temp;
     }
@@ -67,7 +67,7 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
     {
         $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
 
-        if (!is_null($sessionCache->getValue('is_3rd_party_should_be_shown'))) {
+        if ($sessionCache->getValue('is_3rd_party_should_be_shown') !== null) {
             return $sessionCache->getValue('is_3rd_party_should_be_shown');
         }
 
@@ -101,9 +101,9 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
         $sessionKey = 'is_reset_filter_should_be_shown_' . (int)$listingId . '_' . (int)$isVariation;
         $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
 
-        if (is_null($sessionCache->getValue($sessionKey))) {
+        if ($sessionCache->getValue($sessionKey) === null) {
 
-            /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+            /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
             $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
             $collection->addFieldToFilter('is_online_price_invalid', 0)
                        ->addFieldToFilter('status', Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)
@@ -112,6 +112,7 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
             if ($isVariation) {
                 $collection->addFieldToFilter('is_variation_product', 1);
             }
+
             $sessionCache->setValue($sessionKey, (bool)$collection->getSize());
         }
 

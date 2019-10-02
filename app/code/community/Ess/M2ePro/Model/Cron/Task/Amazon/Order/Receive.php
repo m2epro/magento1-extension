@@ -56,11 +56,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
             // ---------------------------------------
 
             try {
-
                 $this->processAccounts($merchantId, $accounts);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Receive" Action for Amazon Account Merchant "%merchant%" was completed with error.',
                     $merchantId
@@ -80,9 +77,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
 
         $accounts = array();
@@ -102,7 +99,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
     // ---------------------------------------
 
-    private function processAccounts($merchantId, array $accounts)
+    protected function processAccounts($merchantId, array $accounts)
     {
         $accountsByServerHash = array();
         foreach ($accounts as $account) {
@@ -130,7 +127,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         $processedAmazonOrders = array();
 
         foreach ($preparedResponseData['items'] as $accountAccessToken => $ordersData) {
-
             $amazonOrders = $this->processAmazonOrders($ordersData, $accountsByServerHash[$accountAccessToken]);
 
             if (empty($amazonOrders)) {
@@ -141,13 +137,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         }
 
         foreach ($processedAmazonOrders as $amazonOrders) {
-
             try {
-
                 $this->createMagentoOrders($amazonOrders);
-
             } catch (Exception $exception) {
-
                 $this->getSynchronizationLog()->addMessage(
                     Mage::helper('M2ePro')->__($exception->getMessage()),
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -163,7 +155,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         );
     }
 
-    private function receiveAmazonOrdersData($merchantId, $accounts)
+    protected function receiveAmazonOrdersData($merchantId, $accounts)
     {
         $updateSinceTime = $this->getRegistryValue("/amazon/orders/receive/{$merchantId}/from_update_date/");
 
@@ -225,7 +217,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         $messagesSet->init($messages);
 
         foreach ($messagesSet->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -243,16 +234,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
     // ---------------------------------------
 
-    private function processAmazonOrders(array $ordersData, Ess_M2ePro_Model_Account $account)
+    protected function processAmazonOrders(array $ordersData, Ess_M2ePro_Model_Account $account)
     {
         $orders = array();
 
         try {
-
             $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
 
             foreach ($ordersData as $orderData) {
-
                 $orderCreateDate = new DateTime($orderData['purchase_create_date'], new DateTimeZone('UTC'));
                 if ($orderCreateDate < $accountCreateDate) {
                     continue;
@@ -270,9 +259,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
                 $orders[] = $order;
             }
-
         } catch (Exception $exception) {
-
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($exception->getMessage()),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -287,7 +274,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
     // ---------------------------------------
 
-    private function createMagentoOrders($amazonOrders)
+    protected function createMagentoOrders($amazonOrders)
     {
         $iteration = 0;
 
@@ -324,9 +311,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
             if ($order->getChildObject()->canCreateInvoice()) {
                 $order->createInvoice();
             }
+
             if ($order->getChildObject()->canCreateShipment()) {
                 $order->createShipment();
             }
+
             if ($order->getStatusUpdateRequired()) {
                 $order->updateMagentoOrderStatus();
             }
@@ -339,7 +328,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
      *
      * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
      */
-    private function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
+    protected function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
     {
         /** @var Ess_M2ePro_Model_Order $dbOrder */
         $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
@@ -353,7 +342,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
 
     //########################################
 
-    private function prepareFromDate($lastFromDate)
+    protected function prepareFromDate($lastFromDate)
     {
         // Get last from date
         // ---------------------------------------
@@ -362,11 +351,12 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         } else {
             $lastFromDate = new DateTime($lastFromDate, new DateTimeZone('UTC'));
         }
+
         // ---------------------------------------
 
         // Get min date for synch
         // ---------------------------------------
-        $minDate = new DateTime('now',new DateTimeZone('UTC'));
+        $minDate = new DateTime('now', new DateTimeZone('UTC'));
         $minDate->modify('-30 days');
         // ---------------------------------------
 
@@ -375,15 +365,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         if ((int)$lastFromDate->format('U') < (int)$minDate->format('U')) {
             $lastFromDate = $minDate;
         }
+
         // ---------------------------------------
 
         return $lastFromDate->format('Y-m-d H:i:s');
     }
 
-    private function prepareToDate()
+    protected function prepareToDate()
     {
         $operationHistory = $this->getOperationHistory()->getParentObject('synchronization');
-        if (!is_null($operationHistory)) {
+        if ($operationHistory !== null) {
             $toDate = $operationHistory->getData('start_date');
         } else {
             $toDate = new DateTime('now', new DateTimeZone('UTC'));

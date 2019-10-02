@@ -9,7 +9,10 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
     extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
-    protected $listingProductId;
+    protected $_listingProductId;
+
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
 
     //########################################
 
@@ -18,7 +21,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
     }
 
     /**
@@ -26,25 +29,22 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
-
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product|null
      */
     public function getListingProduct()
     {
-        if (empty($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Amazon')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if (empty($this->_listingProduct)) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Amazon')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ---------------------------------------
@@ -66,14 +66,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
 
     protected function _beforeToHtml()
     {
-        $this->addTab('variations', array(
+        $this->addTab(
+            'variations', array(
             'label'   => Mage::helper('M2ePro')->__('Child Products'),
             'title'   => Mage::helper('M2ePro')->__('Child Products'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_listing_variation_product_manage_tabs_variations')
                 ->setListingProductId($this->getListingProductId())
                 ->toHtml()
-        ));
+            )
+        );
 
         $settingsBlock = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_amazon_listing_variation_product_manage_tabs_settings')
@@ -87,7 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
         $iconTitle = Mage::helper('M2ePro')->__('Action required.');
         $iconStyle = 'vertical-align: middle; padding-right: 5px;';
 
-        if (count($settingsBlock->getMessages()) == 0) {
+        if (empty($settingsBlock->getMessages())) {
             $iconStyle .= 'display:none;';
         }
 
@@ -95,23 +97,27 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
 <img style="{$iconStyle}" src="{$iconPath}" title="{$iconTitle}" alt="" width="16" height="15">
 HTML;
 
-        $this->addTab('settings', array(
+        $this->addTab(
+            'settings', array(
             'label'   => $problemIcon . $settingsBlockLabel,
             'title'   => $settingsBlockTitle,
             'content' => $this->getLayout()
                     ->createBlock('M2ePro/adminhtml_amazon_listing_variation_product_manage_tabs_settings')
                     ->setListingProductId($this->getListingProductId())
                     ->toHtml()
-        ));
+            )
+        );
 
-        $this->addTab('vocabulary', array(
+        $this->addTab(
+            'vocabulary', array(
             'label'   => Mage::helper('M2ePro')->__('Advanced'),
             'title'   => Mage::helper('M2ePro')->__('Advanced'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_listing_variation_product_manage_tabs_vocabulary')
                 ->setListingProductId($this->getListingProductId())
                 ->toHtml()
-        ));
+            )
+        );
 
         $generalId = $this->getListingProduct()->getChildObject()->getGeneralId();
         if (empty($generalId) && $this->getListingProduct()->getChildObject()->isGeneralIdOwner()) {

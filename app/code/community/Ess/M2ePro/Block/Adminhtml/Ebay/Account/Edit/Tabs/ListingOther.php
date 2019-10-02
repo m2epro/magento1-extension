@@ -47,8 +47,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_ListingOther extends Mag
         $marketplaces = Mage::helper('M2ePro/Component_Ebay')
             ->getCollection('Marketplace')
             ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
-            ->setOrder('sorder','ASC')
-            ->setOrder('title','ASC')
+            ->setOrder('sorder', 'ASC')
+            ->setOrder('title', 'ASC')
             ->toArray();
         $marketplaces = $marketplaces['items'];
 

@@ -8,8 +8,11 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    /** @var $itemsCollection Ess_M2ePro_Model_Mysql4_Order_Item_Collection */
-    private $itemsCollection = NULL;
+    /** @var $_itemsCollection Ess_M2ePro_Model_Resource_Order_Item_Collection */
+    protected $_itemsCollection = null;
+
+    /** @var $_notesCollection Ess_M2ePro_Model_Resource_Order_Note_Collection */
+    protected $_notesCollection = null;
 
     //########################################
 
@@ -42,23 +45,25 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order');
 
         $collection->getSelect()
-                   ->joinLeft(
-                       array('mea' => Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
-                       '(mea.account_id = `main_table`.account_id)',
-                       array('account_mode' => 'mode'))
-                   ->joinLeft(
-                       array(
-                           'so' => Mage::helper('M2ePro/Module_Database_Structure')
-                               ->getTableNameWithPrefix('sales/order')
-                       ),
-                       '(so.entity_id = `main_table`.magento_order_id)',
-                       array('magento_order_num' => 'increment_id'));
+        ->joinLeft(
+            array('mea' => Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
+            'mea.account_id = `main_table`.account_id',
+            array('account_mode' => 'mode')
+        )
+        ->joinLeft(
+            array(
+                   'so' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales/order')
+               ),
+            '(so.entity_id = `main_table`.magento_order_id)',
+            array('magento_order_num' => 'increment_id')
+        );
 
         // Add Filter By Account
         // ---------------------------------------
         if ($accountId = $this->getRequest()->getParam('ebayAccount')) {
             $collection->addFieldToFilter('main_table.account_id', $accountId);
         }
+
         // ---------------------------------------
 
         // Add Filter By Marketplace
@@ -66,6 +71,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         if ($marketplaceId = $this->getRequest()->getParam('ebayMarketplace')) {
             $collection->addFieldToFilter('main_table.marketplace_id', $marketplaceId);
         }
+
         // ---------------------------------------
 
         // Add Not Created Magento Orders Filter
@@ -73,6 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         if ($this->getRequest()->getParam('not_created_only')) {
             $collection->addFieldToFilter('magento_order_id', array('null' => true));
         }
+
         // ---------------------------------------
 
         $this->setCollection($collection);
@@ -82,33 +89,46 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
     protected function _afterLoadCollection()
     {
-        $this->itemsCollection = Mage::helper('M2ePro/Component_Ebay')
-            ->getCollection('Order_Item')
-            ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+        $this->_itemsCollection = Mage::helper('M2ePro/Component_Ebay')
+             ->getCollection('Order_Item')
+             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+
+        // ---------------------------------------
+
+        $this->_notesCollection = Mage::getModel('M2ePro/Order_Note')
+             ->getCollection()
+             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+
+        // ---------------------------------------
 
         return parent::_afterLoadCollection();
     }
 
     protected function _prepareColumns()
     {
-        $this->addColumn('purchase_create_date', array(
+        $this->addColumn(
+            'purchase_create_date', array(
             'header' => Mage::helper('M2ePro')->__('Sale Date'),
             'align'  => 'left',
             'type'   => 'datetime',
             'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'  => 'purchase_create_date',
             'width'  => '170px'
-        ));
+            )
+        );
 
-        $this->addColumn('magento_order_num', array(
+        $this->addColumn(
+            'magento_order_num', array(
             'header' => Mage::helper('M2ePro')->__('Magento Order #'),
             'align'  => 'left',
             'index'  => 'so.increment_id',
             'width'  => '200px',
             'frame_callback' => array($this, 'callbackColumnMagentoOrder')
-        ));
+            )
+        );
 
-        $this->addColumn('ebay_order_id', array(
+        $this->addColumn(
+            'ebay_order_id', array(
             'header' => Mage::helper('M2ePro')->__('eBay Order #'),
             'align'  => 'left',
             'width'  => '145px',
@@ -116,9 +136,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             'frame_callback' => array($this, 'callbackColumnEbayOrder'),
             'filter'   => 'M2ePro/adminhtml_ebay_grid_column_filter_orderId',
             'filter_condition_callback' => array($this, 'callbackFilterEbayOrderId')
-        ));
+            )
+        );
 
-        $this->addColumn('ebay_order_items', array(
+        $this->addColumn(
+            'ebay_order_items', array(
             'header' => Mage::helper('M2ePro')->__('Items'),
             'align'  => 'left',
             'index'  => 'ebay_order_items',
@@ -126,27 +148,33 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             'width'  => '*',
             'frame_callback' => array($this, 'callbackColumnItems'),
             'filter_condition_callback' => array($this, 'callbackFilterItems')
-        ));
+            )
+        );
 
-        $this->addColumn('buyer', array(
+        $this->addColumn(
+            'buyer', array(
             'header' => Mage::helper('M2ePro')->__('Buyer'),
             'align'  => 'left',
             'index'  => 'buyer_user_id',
             'frame_callback' => array($this, 'callbackColumnBuyer'),
             'filter_condition_callback' => array($this, 'callbackFilterBuyer'),
             'width'  => '120px'
-        ));
+            )
+        );
 
-        $this->addColumn('paid_amount', array(
+        $this->addColumn(
+            'paid_amount', array(
             'header' => Mage::helper('M2ePro')->__('Total Paid'),
             'align'  => 'left',
             'width'  => '110px',
             'index'  => 'paid_amount',
             'type'   => 'number',
             'frame_callback' => array($this, 'callbackColumnTotal')
-        ));
+            )
+        );
 
-        $this->addColumn('reservation_state', array(
+        $this->addColumn(
+            'reservation_state', array(
             'header' => Mage::helper('M2ePro')->__('Reservation'),
             'align'  => 'left',
             'width'  => '50px',
@@ -158,9 +186,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
                 Ess_M2ePro_Model_Order_Reserve::STATE_RELEASED => Mage::helper('M2ePro')->__('Released'),
                 Ess_M2ePro_Model_Order_Reserve::STATE_CANCELED => Mage::helper('M2ePro')->__('Canceled'),
             )
-        ));
+            )
+        );
 
-        $this->addColumn('checkout_status', array(
+        $this->addColumn(
+            'checkout_status', array(
             'header' => Mage::helper('M2ePro')->__('Checkout'),
             'align'  => 'left',
             'width'  => '50px',
@@ -170,9 +200,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
                 Ess_M2ePro_Model_Ebay_Order::CHECKOUT_STATUS_INCOMPLETE => Mage::helper('M2ePro')->__('No'),
                 Ess_M2ePro_Model_Ebay_Order::CHECKOUT_STATUS_COMPLETED  => Mage::helper('M2ePro')->__('Yes')
             )
-        ));
+            )
+        );
 
-        $this->addColumn('payment_status', array(
+        $this->addColumn(
+            'payment_status', array(
             'header' => Mage::helper('M2ePro')->__('Paid'),
             'align'  => 'left',
             'width'  => '50px',
@@ -184,9 +216,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             ),
             'frame_callback' => array($this, 'callbackColumnPayment'),
             'filter_condition_callback' => array($this, 'callbackFilterPaymentCondition')
-        ));
+            )
+        );
 
-        $this->addColumn('shipping_status', array(
+        $this->addColumn(
+            'shipping_status', array(
             'header' => Mage::helper('M2ePro')->__('Shipped'),
             'align'  => 'left',
             'width'  => '50px',
@@ -198,11 +232,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             ),
             'frame_callback' => array($this, 'callbackColumnShipping'),
             'filter_condition_callback' => array($this, 'callbackFilterShippingCondition')
-        ));
+            )
+        );
 
         $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_order/index', array());
 
-        $this->addColumn('action', array(
+        $this->addColumn(
+            'action', array(
             'header'  => Mage::helper('M2ePro')->__('Action'),
             'width'   => '80px',
             'type'    => 'action',
@@ -239,7 +275,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             'filter'    => false,
             'sortable'  => false,
             'is_system' => true
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -264,58 +301,82 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
         // Set mass-action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('reservation_place', array(
+        $this->getMassactionBlock()->addItem(
+            'reservation_place', array(
              'label'    => Mage::helper('M2ePro')->__('Reserve QTY'),
              'url'      => $this->getUrl('*/adminhtml_order/reservationPlace'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'general');
+            ), 'general'
+        );
 
-        $this->getMassactionBlock()->addItem('reservation_cancel', array(
+        $this->getMassactionBlock()->addItem(
+            'reservation_cancel', array(
              'label'    => Mage::helper('M2ePro')->__('Cancel QTY Reserve'),
              'url'      => $this->getUrl('*/adminhtml_order/reservationCancel'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'general');
+            ), 'general'
+        );
 
-        $this->getMassactionBlock()->addItem('ship', array(
+        $this->getMassactionBlock()->addItem(
+            'ship', array(
              'label'    => Mage::helper('M2ePro')->__('Mark Order(s) as Shipped'),
              'url'      => $this->getUrl('*/adminhtml_ebay_order/updateShippingStatus'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'general');
+            ), 'general'
+        );
 
-        $this->getMassactionBlock()->addItem('pay', array(
+        $this->getMassactionBlock()->addItem(
+            'pay', array(
              'label'    => Mage::helper('M2ePro')->__('Mark Order(s) as Paid'),
              'url'      => $this->getUrl('*/adminhtml_ebay_order/updatePaymentStatus'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'general');
+            ), 'general'
+        );
 
-        $this->getMassactionBlock()->addItem('resend_shipping', array(
+        $this->getMassactionBlock()->addItem(
+            'resend_shipping', array(
              'label'    => Mage::helper('M2ePro')->__('Resend Shipping Information'),
              'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'general');
+            ), 'general'
+        );
+
+        $this->getMassactionBlock()->addItem(
+            'create_order', array(
+            'label'    => Mage::helper('M2ePro')->__('Create Magento Order'),
+            'url'      => $this->getUrl('*/adminhtml_ebay_order/createMagentoOrder'),
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            ), 'general'
+        );
         // ---------------------------------------
 
         if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
             return parent::_prepareMassaction();
         }
 
-        $this->getMassactionBlock()->addItem('mark_as_ready_for_pickup', array(
+        $this->getMassactionBlock()->addItem(
+            'mark_as_ready_for_pickup', array(
             'label'    => Mage::helper('M2ePro')->__('Mark as Ready For Pickup'),
             'url'      => $this->getUrl('*/adminhtml_ebay_order/markAsReadyForPickup'),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'in_store_pickup');
+            ), 'in_store_pickup'
+        );
 
-        $this->getMassactionBlock()->addItem('mark_as_picked_up', array(
+        $this->getMassactionBlock()->addItem(
+            'mark_as_picked_up', array(
             'label'    => Mage::helper('M2ePro')->__('Mark as Picked Up'),
             'url'      => $this->getUrl('*/adminhtml_ebay_order/markAsPickedUp'),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'in_store_pickup');
+            ), 'in_store_pickup'
+        );
 
-        $this->getMassactionBlock()->addItem('mark_as_cancelled', array(
+        $this->getMassactionBlock()->addItem(
+            'mark_as_cancelled', array(
             'label'    => Mage::helper('M2ePro')->__('Mark as Cancelled'),
             'url'      => $this->getUrl('*/adminhtml_ebay_order/markAsCancelled'),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'in_store_pickup');
+            ), 'in_store_pickup'
+        );
 
         return parent::_prepareMassaction();
     }
@@ -341,7 +402,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         return $returnString.$this->getViewLogIconHtml($row->getId());
     }
 
-    private function getViewLogIconHtml($orderId)
+    protected function getViewLogIconHtml($orderId)
     {
         $orderId = (int)$orderId;
 
@@ -371,6 +432,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
                 'date' => Mage::app()->getLocale()->date(strtotime($log->getData('create_date')))->toString($format)
             );
         }
+
         // ---------------------------------------
 
         $tips = array(
@@ -385,14 +447,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
         );
 
-        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
+        $summary = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_grid_summary', '', array(
             'entity_id' => $orderId,
             'rows' => $logRows,
             'tips' => $tips,
             'icons' => $icons,
             'view_help_handler' => 'OrderHandlerObj.viewOrderHelp',
             'hide_help_handler' => 'OrderHandlerObj.hideOrderHelp',
-        ));
+            )
+        );
 
         return $summary->toHtml();
     }
@@ -426,6 +490,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             $returnString .= '<br/> [ <b>SM: </b> # ' . $row['selling_manager_id'] . ' ]';
         }
 
+        /** @var $notes Ess_M2ePro_Model_Order_Note[] */
+        $notes = $this->_notesCollection->getItemsByColumnValue('order_id', $row->getData('id'));
+
+        if ($notes) {
+            $htmlNotesCount = Mage::helper('M2ePro/Data')->__(
+                'You have a custom note for the order. It can be reviewed on the order detail page.'
+            );
+
+            $returnString .= <<<HTML
+<div class="note_icon" style="display: inline-block; margin-left: 5px; width: 16px;">
+    <img class="tool-tip-image"
+         style="vertical-align: middle; cursor: inherit"
+         src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}">
+    <span class="tool-tip-message tool-tip-message" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}" style="width: 18px; height: 18px">
+        <div class="ebay-identifiers">
+           {$htmlNotesCount}
+        </div>
+    </span>
+</div>
+HTML;
+        }
+
         if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
             return $returnString;
         }
@@ -449,7 +536,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
     public function callbackColumnItems($value, $row, $column, $isExport)
     {
         /** @var $items Ess_M2ePro_Model_Order_Item[] */
-        $items = $this->itemsCollection->getItemsByColumnValue('order_id', $row->getData('id'));
+        $items = $this->_itemsCollection->getItemsByColumnValue('order_id', $row->getData('id'));
 
         $html = '';
         $gridId = $this->getId();
@@ -462,7 +549,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             $isShowEditLink = false;
 
             $product = $item->getProduct();
-            if (!is_null($product)) {
+            if ($product !== null) {
                 /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
                 $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
                 $magentoProduct->setProduct($product);
@@ -660,6 +747,7 @@ HTML;
         if ($value === null) {
             return;
         }
+
         $filterType = ($value == 1) ? 'eq' : 'neq';
         $this->getCollection()->addFieldToFilter(
             'payment_status', array($filterType => Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED)
@@ -672,6 +760,7 @@ HTML;
         if ($value === null) {
             return;
         }
+
         $filterType = ($value == 1) ? 'eq' : 'neq';
         $this->getCollection()->addFieldToFilter(
             'shipping_status', array($filterType => Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED)

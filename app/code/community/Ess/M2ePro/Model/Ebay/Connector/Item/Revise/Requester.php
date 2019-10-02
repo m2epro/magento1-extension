@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Requester
     protected function initOutOfStockControlLogic()
     {
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
-        $ebayListingProduct = $this->listingProduct->getChildObject();
+        $ebayListingProduct = $this->_listingProduct->getChildObject();
 
         $outOfStockControlCurrentState = $ebayListingProduct->getOutOfStockControl();
         $outOfStockControlTemplateState = $ebayListingProduct->getEbaySellingFormatTemplate()
@@ -49,9 +49,9 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Requester
             $outOfStockControlCurrentState = true;
         }
 
-        $this->params['out_of_stock_control_current_state'] = $outOfStockControlCurrentState;
-        $this->params['out_of_stock_control_result'] = $outOfStockControlCurrentState
-                                                       || $ebayListingProduct->getEbayAccount()
+        $this->_params['out_of_stock_control_current_state'] = $outOfStockControlCurrentState;
+        $this->_params['out_of_stock_control_result']        = $outOfStockControlCurrentState
+                                                               || $ebayListingProduct->getEbayAccount()
                                                                              ->getOutOfStockControl();
     }
 

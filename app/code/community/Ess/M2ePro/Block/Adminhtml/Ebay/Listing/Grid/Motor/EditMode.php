@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid_Motor_EditMode
     extends Mage_Adminhtml_Block_Widget
 {
-    protected $listingId;
+    protected $_listingId;
 
     //########################################
 
@@ -46,17 +46,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid_Motor_EditMode
 
     public function setListingId($id)
     {
-        $this->listingId = $id;
+        $this->_listingId = $id;
         return $this;
     }
 
     public function getListing()
     {
-        if (empty($this->listingId)) {
+        if (empty($this->_listingId)) {
             throw new Exception('Listing ID is not set.');
         }
 
-        return Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $this->listingId);
+        return Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $this->_listingId);
     }
 
     //########################################

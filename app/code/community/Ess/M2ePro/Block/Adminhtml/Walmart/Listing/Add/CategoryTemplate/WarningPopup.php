@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_WarningPop
             'label'   => Mage::helper('M2ePro')->__('Continue'),
             'onclick' => 'ListingGridHandlerObj.categoryNotSelectedWarningPopupContinueClick();'
         );
-        $this->setChild('continue_button',$this->getLayout()->createBlock('adminhtml/widget_button')->setData($data));
+        $this->setChild('continue_button', $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data));
 
         return $this;
     }

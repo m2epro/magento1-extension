@@ -50,12 +50,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_ModeSwitcher
             )
         );
 
-        /** @var  $collection Mage_Core_Model_Mysql4_Collection_Abstract $listingProductCollection */
+        /** @var  $collection Mage_Core_Model_Resource_Db_Collection_Abstract $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('listing_id', (int)$this->getRequest()->getParam('id'));
-        $listingProductCollection->addFieldToFilter('translation_status', array('neq' =>
+        $listingProductCollection->addFieldToFilter(
+            'translation_status', array('neq' =>
             Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_NONE
-        ));
+            )
+        );
 
         if ($listingProductCollection->getSize()) {
             $data[] = array(

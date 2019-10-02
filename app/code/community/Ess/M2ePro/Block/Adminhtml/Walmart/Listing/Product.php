@@ -44,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product extends Mage_Adminhtml_
         // ---------------------------------------
 
         // ---------------------------------------
-        if (is_null($this->getRequest()->getParam('back'))) {
+        if ($this->getRequest()->getParam('back') === null) {
             $url = $this->getUrl(
                 '*/adminhtml_walmart_listing/categoryProduct',
                 array(
@@ -58,19 +58,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product extends Mage_Adminhtml_
                 '*/adminhtml_walmart_listing/index'
             );
         }
-        $this->_addButton('back', array(
+
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'onclick'   => 'ProductGridHandlerObj.back_click(\''.$url.'\')',
             'class'     => 'back'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('save', array(
+        $this->_addButton(
+            'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'ProductGridHandlerObj.save_click(\'view\')',
             'class'     => 'save'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

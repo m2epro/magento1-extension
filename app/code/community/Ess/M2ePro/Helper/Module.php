@@ -53,9 +53,9 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
         if (Mage::helper('M2ePro/Data_Cache_Permanent')->getValue('MODULE_VERSION_UPDATER') === false) {
             Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/modules/',$this->getName(),$version.'.r'.$this->getRevision()
+                '/modules/', $this->getName(), $version.'.r'.$this->getRevision()
             );
-            Mage::helper('M2ePro/Data_Cache_Permanent')->setValue('MODULE_VERSION_UPDATER',array(),array(),60*60*24);
+            Mage::helper('M2ePro/Data_Cache_Permanent')->setValue('MODULE_VERSION_UPDATER', array(), array(), 60*60*24);
         }
 
         return $version;
@@ -63,7 +63,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getRevision()
     {
-        return '13755';
+        return '14422';
     }
 
     // ---------------------------------------
@@ -90,11 +90,11 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
             '/'.$this->getName().'/server/', 'messages'
         );
 
-        $messages = (!is_null($messages) && $messages != '') ?
+        $messages = ($messages !== null && $messages != '') ?
                     (array)Mage::helper('M2ePro')->jsonDecode((string)$messages) :
                     array();
 
-        $messages = array_filter($messages,array($this,'getServerMessagesFilterModuleMessages'));
+        $messages = array_filter($messages, array($this,'getServerMessagesFilterModuleMessages'));
         !is_array($messages) && $messages = array();
 
         return $messages;
@@ -123,7 +123,6 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         if (!Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished() &&
             !Mage::helper('M2ePro/View_Amazon')->isInstallationWizardFinished() &&
             !Mage::helper('M2ePro/View_Walmart')->isInstallationWizardFinished()) {
-
             return false;
         }
 
@@ -157,10 +156,9 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     {
         $directoriesForCheck = array();
         foreach ($this->getFoldersAndFiles() as $item) {
-
             $fullDirPath = Mage::getBaseDir().DS.$item;
 
-            if (preg_match('/\*.*$/',$item)) {
+            if (preg_match('/\*.*$/', $item)) {
                 $fullDirPath = preg_replace('/\*.*$/', '', $fullDirPath);
                 $directoriesForCheck = array_merge($directoriesForCheck, $this->getDirectories($fullDirPath));
             }
@@ -168,6 +166,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
             $directoriesForCheck[] = dirname($fullDirPath);
             is_dir($fullDirPath) && $directoriesForCheck[] = rtrim($fullDirPath, '/\\');
         }
+
         $directoriesForCheck = array_unique($directoriesForCheck);
 
         $unWritableDirs = array();
@@ -178,14 +177,14 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         return $unWritableDirs;
     }
 
-    private function getDirectories($dirPath)
+    protected function getDirectories($dirPath)
     {
         $directoryIterator = new RecursiveDirectoryIterator($dirPath, FilesystemIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::SELF_FIRST);
 
         $directories = array();
         foreach ($iterator as $path) {
-            $path->isDir() && $directories[] = rtrim($path->getPathname(),'/\\');
+            $path->isDir() && $directories[] = rtrim($path->getPathname(), '/\\');
         }
 
         return $directories;

@@ -29,12 +29,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_StepOne extends Mage_Adminht
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
 
-            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Creating A New M2E Pro Listing",
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                "%component_name% / Creating A New M2E Pro Listing",
                 $componentName
             );
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__("Creating A New M2E Pro Listing");
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -48,14 +50,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_StepOne extends Mage_Adminht
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/adminhtml_amazon_listing_create/index', array(
-            '_current' => true
-        ));
-        $this->_addButton('save_and_next', array(
-            'label'     => Mage::helper('M2ePro')->__('Next Step'),
-            'onclick'   => 'AmazonListingSettingsHandlerObj.save_click(\'' . $url . '\')',
-            'class'     => 'next'
-        ));
+        $url = $this->getUrl(
+            '*/adminhtml_amazon_listing_create/index', array(
+                '_current' => true
+            )
+        );
+        $this->_addButton(
+            'save_and_next', array(
+                'label'   => Mage::helper('M2ePro')->__('Next Step'),
+                'onclick' => 'AmazonListingSettingsHandlerObj.save_click(\'' . $url . '\')',
+                'class'   => 'next'
+            )
+        );
         // ---------------------------------------
     }
 

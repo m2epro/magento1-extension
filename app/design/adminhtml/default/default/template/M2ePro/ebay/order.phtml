@@ -1,6 +1,16 @@
 <?php
-    /** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form */
-    echo $this->getChildHtml('item_edit');
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form */
+
+echo $this->getChildHtml('item_edit');
+
 ?>
 
 <!-- ########################################################################################### -->
@@ -10,6 +20,14 @@
     M2ePro.url.add(<?php echo json_encode(array(
         'adminhtml_order/getDebugInformation' => $this->getUrl('M2ePro/adminhtml_order/getDebugInformation/', array('id' => $this->getRequest()->getParam('id')))
     )); ?>);
+
+    M2ePro.translator.add(<?php echo json_encode(array(
+        'Custom Note' => Mage::helper('M2ePro')->__('Custom Note')
+    )); ?>);
+
+    Event.observe(window, 'load', function() {
+        OrderNoteHandlerObj = new OrderNoteHandler('<?php echo $this->getChild('order_note_grid')->getId(); ?>');
+    });
 
 </script>
 
@@ -38,9 +56,9 @@
                             <td class="label"><?php echo Mage::helper('M2ePro')->__('Magento Order #');?>:</td>
                             <td class="value">
                                 <strong>
-                                    <?php if (!is_null($this->realMagentoOrderId)) { ?>
+                                    <?php if ($this->realMagentoOrderId !== null) { ?>
 
-                                        <?php if (!is_null($this->realMagentoOrderId)) { ?>
+                                        <?php if ($this->realMagentoOrderId !== null) { ?>
                                             <a href="<?php echo $this->getUrl('adminhtml/sales_order/view/', array('order_id' => $this->order->getData('magento_order_id'))); ?>" target="_blank"><?php echo $this->realMagentoOrderId; ?></a>
                                         <?php } else { ?>
                                             <?php echo $this->order->getData('magento_order_id'); ?>
@@ -65,7 +83,7 @@
                             <td class="value"><strong><?php echo Mage::helper('core')->formatDate($this->order->getChildObject()->getPurchaseUpdateDate(), 'medium', true); ?></strong></td>
                         </tr>
 
-                        <?php if (!is_null($this->order->getData('reservation_start_date'))): ?>
+                        <?php if ($this->order->getData('reservation_start_date') !== null): ?>
                         <tr>
                                 <td class="label"><?php echo Mage::helper('M2ePro')->__('Reservation Time') ?></td>
                                 <td class="value"><strong><?php echo Mage::helper('core')->formatDate($this->order->getData('reservation_start_date'), 'medium', true); ?></strong></td>
@@ -626,6 +644,19 @@
 <br style="clear: both;"/>
 
 <div class="box-left">
+
+    <div class="entry-edit" id="magento_block_ebay_orders_note" collapseable="no">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Custom Notes');?></h4>
+        </div>
+
+        <div class="fieldset">
+            <?php echo $this->getChildHtml('order_note_grid'); ?>
+            <?php echo $this->getChildHtml('add_note_button'); ?>
+        </div>
+
+    </div>
 
     <?php $checkoutMessage = $this->order->getChildObject()->getBuyerMessage() ?>
 

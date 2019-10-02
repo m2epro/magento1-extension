@@ -34,11 +34,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Ess_M2e
         return $this->_data['allowed_tabs'];
     }
 
-    private function isTabAllowed($tab)
+    protected function isTabAllowed($tab)
     {
         $allowedTabs = $this->getAllowedTabs();
 
-        if (count($allowedTabs) == 0) {
+        if (empty($allowedTabs)) {
             return true;
         }
 
@@ -56,8 +56,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Ess_M2e
         // ---------------------------------------
         if ($this->isTabAllowed('general')) {
             $block = $this->getLayout()
-                          ->createBlock('M2ePro/adminhtml_ebay_listing_template_edit_tabs_general','',
-                                        array('policy_localization' => $this->getData('policy_localization')));
+                        ->createBlock(
+                            'M2ePro/adminhtml_ebay_listing_template_edit_tabs_general', '',
+                            array('policy_localization' => $this->getData('policy_localization'))
+                        );
             $this->addTab(
                 'general',
                 array(
@@ -67,6 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Ess_M2e
                 )
             );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -81,6 +84,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Ess_M2e
                 )
             );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -96,6 +100,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs extends Ess_M2e
                 )
             );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------

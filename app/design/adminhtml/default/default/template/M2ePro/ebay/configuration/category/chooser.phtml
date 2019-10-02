@@ -1,18 +1,28 @@
 <?php
-    $categoryMode = $this->getRequest()->getParam('mode');
-    $categoryValue = $this->getRequest()->getParam('value');
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $translations = array();
+// @codingStandardsIgnoreFile
 
-    // ->__('<b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Category is used.')
-    $text = '<b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Category is used.';
-    $translations[$text] = Mage::helper('M2ePro')->__($text);
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary_Tabs_Chooser */
 
-    // ->__('Do not show any more')
-    $text = 'Do not show any more';
-    $translations[$text] = Mage::helper('M2ePro')->__($text);
+$categoryMode = $this->getRequest()->getParam('mode');
+$categoryValue = $this->getRequest()->getParam('value');
 
-    $translations = json_encode($translations);
+$translations = array();
+
+// ->__('<b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Category is used.')
+$text = '<b>Note:</b> All changes you have made will be automatically applied to all M2E Pro Listings where this Category is used.';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+// ->__('Do not show any more')
+$text = 'Do not show any more';
+$translations[$text] = Mage::helper('M2ePro')->__($text);
+
+$translations = json_encode($translations);
 
 ?>
 <script type="text/javascript">
@@ -41,7 +51,7 @@
 
                 <tbody>
 
-                    <?php if (!is_null($this->marketplaceData)): ?>
+                    <?php if ($this->marketplaceData !== null): ?>
                         <tr>
                             <td class="label" style="width: 110px;">
                                 <label style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('eBay Site'); ?>: </label>
@@ -52,7 +62,7 @@
                         </tr>
                     <?php endif; ?>
 
-                    <?php if (!is_null($this->accountData)): ?>
+                    <?php if ($this->accountData !== null): ?>
                         <tr>
                             <td class="label" style="width: 110px;">
                                 <label style="width: 100px;"><?php echo Mage::helper('M2ePro')->__('Account'); ?>: </label>

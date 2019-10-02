@@ -1,15 +1,26 @@
 <?php
-    $isCompactMode = $this->isCompactMode();
-    $interfaceMode = Mage::helper('M2ePro/View_Ebay')->getMode();
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $uniqueId      = $this->getUniqueId();
-    $internalData  = $this->getInternalData();
+// @codingStandardsIgnoreFile
 
-    $requiredDetailsFields = $this->getRequiredDetailsFields();
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific */
 
-    $dictionarySpecifics       = json_encode($this->getDictionarySpecifics());
-    $ebaySelectedSpecifics     = json_encode($this->getEbaySelectedSpecifics());
-    $customSelectedSpecifics   = json_encode($this->getCustomSelectedSpecifics());
+$isCompactMode = $this->isCompactMode();
+$interfaceMode = Mage::helper('M2ePro/View_Ebay')->getMode();
+
+$uniqueId      = $this->getUniqueId();
+$internalData  = $this->getInternalData();
+
+$requiredDetailsFields = $this->getRequiredDetailsFields();
+
+$dictionarySpecifics       = json_encode($this->getDictionarySpecifics());
+$ebaySelectedSpecifics     = json_encode($this->getEbaySelectedSpecifics());
+$customSelectedSpecifics   = json_encode($this->getCustomSelectedSpecifics());
+
 ?>
 
 <?php if (!$this->_isAjax): ?>

@@ -45,9 +45,13 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_ShippingController extends Ess_M2ePro_C
         $type          = $this->getRequest()->getParam('type', false);
 
         if (!$accountId || !$marketplaceId || !$type) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'error' => Mage::helper('M2ePro')->__('Wrong parameters.')
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'error' => Mage::helper('M2ePro')->__('Wrong parameters.')
+                    )
+                )
+            );
         }
 
         $account = Mage::helper('M2ePro/Component_Ebay')->getModel('Account')->load($accountId);
@@ -55,18 +59,26 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_ShippingController extends Ess_M2ePro_C
         $ebayAccount = $account->getChildObject();
 
         if (!$ebayAccount->getSellApiTokenSession()) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'sell_api_disabled' => true,
-                'error' => Mage::helper('M2ePro')->__('Sell Api token is missing.')
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'sell_api_disabled' => true,
+                    'error' => Mage::helper('M2ePro')->__('Sell Api token is missing.')
+                    )
+                )
+            );
         }
 
         try {
             $ebayAccount->updateRateTables();
         } catch (Exception $exception) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'error' => $exception->getMessage()
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'error' => $exception->getMessage()
+                    )
+                )
+            );
         }
 
         $rateTables = $ebayAccount->getRateTables();
@@ -80,7 +92,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_ShippingController extends Ess_M2ePro_C
             if (empty($rateTable['countryCode']) ||
                 strtolower($rateTable['countryCode']) != $countryCode ||
                 strtolower($rateTable['locality']) != $type) {
-
                 continue;
             }
 
@@ -92,9 +103,13 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_ShippingController extends Ess_M2ePro_C
                 $rateTable['rateTableId'];
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'data' => $rateTablesData
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'data' => $rateTablesData
+                )
+            )
+        );
     }
 
     //########################################

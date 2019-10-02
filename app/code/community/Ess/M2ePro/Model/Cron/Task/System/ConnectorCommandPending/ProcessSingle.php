@@ -22,7 +22,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessSingle
 
     //####################################
 
-    private function removeMissedProcessingItems()
+    protected function removeMissedProcessingItems()
     {
         $collection = Mage::getResourceModel('M2ePro/Connector_Command_Pending_Processing_Single_Collection');
         $collection->getSelect()->joinLeft(
@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessSingle
         }
     }
 
-    private function completeExpiredItems()
+    protected function completeExpiredItems()
     {
         $collection = Mage::getResourceModel('M2ePro/Connector_Command_Pending_Processing_Single_Collection');
         $collection->getSelect()->joinLeft(
@@ -75,7 +75,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessSingle
         }
     }
 
-    private function processCompletedItems()
+    protected function processCompletedItems()
     {
         $collection = Mage::getResourceModel('M2ePro/Connector_Command_Pending_Processing_Single_Collection');
         $collection->setCompletedRequestPendingSingleFilter();
@@ -95,9 +95,10 @@ class Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessSingle
 
     //####################################
 
-    private function completeRequesterPendingSingle(
+    protected function completeRequesterPendingSingle(
         Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single $requesterPendingSingle,
-        array $data = array(), array $messages = array()
+        array $data = array(),
+        array $messages = array()
     ) {
         $processing = $requesterPendingSingle->getProcessing();
 

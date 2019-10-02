@@ -35,11 +35,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationNewAmazon_Installation_Descript
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                     'label'   => Mage::helper('M2ePro')->__('Confirm'),
                     'onclick' => 'WizardHandlerObj.skipStep(\'descriptionTemplates\');',
                     'class' => 'process_template_description_button'
-                ));
+                )
+            );
         $this->setChild('process_description_templates_button', $buttonBlock);
         // ---------------------------------------
 
@@ -48,7 +50,8 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationNewAmazon_Installation_Descript
 
     //########################################
 
-    protected function createMagentoGridFromArray(array $data) {
+    protected function createMagentoGridFromArray(array $data)
+    {
         $collection = new Varien_Data_Collection();
 
         foreach ($data as $key => $value) {
@@ -60,29 +63,35 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_MigrationNewAmazon_Installation_Descript
         /** @var $grid Mage_Adminhtml_Block_Widget_Grid */
         $grid = Mage::getBlockSingleton('adminhtml/Widget_Grid');
         $grid->setCollection($collection);
-        $grid->addColumn('title', array(
+        $grid->addColumn(
+            'title', array(
             'header'   => Mage::helper('M2ePro')->__('Title'),
             'type'     => 'title',
             'width'    => '350px',
             'index'    => 'title',
             'filter'   => false,
             'sortable' => false
-        ));
-        $grid->addColumn('marketplace_title', array(
+            )
+        );
+        $grid->addColumn(
+            'marketplace_title', array(
             'header'   => Mage::helper('M2ePro')->__('Marketplaces'),
             'type'     => 'text',
             'width'    => '200px',
             'index'    => 'marketplace_title',
             'filter'   => false,
             'sortable' => false
-        ));
-        $grid->addColumn('category_path', array(
+            )
+        );
+        $grid->addColumn(
+            'category_path', array(
             'header'   => Mage::helper('M2ePro')->__('Category'),
             'type'     => 'text',
             'index'    => 'category_path',
             'filter'   => false,
             'sortable' => false
-        ));
+            )
+        );
 
         $grid->setFilterVisibility(false);
         $grid->setPagerVisibility(false);

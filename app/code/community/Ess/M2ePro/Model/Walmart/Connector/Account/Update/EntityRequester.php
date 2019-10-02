@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityRequester
 
     public function getRequestData()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     protected function getCommand()

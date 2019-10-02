@@ -22,9 +22,8 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_List_Responser
     {
         $responseMessages = $this->getResponse()->getMessages()->getEntities();
 
-        if (!$this->listingProduct->getAccount()->getChildObject()->isModeSandbox() &&
+        if (!$this->_listingProduct->getAccount()->getChildObject()->isModeSandbox() &&
             $this->isEbayApplicationErrorAppeared($responseMessages)) {
-
             $this->markAsPotentialDuplicate();
 
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -34,7 +33,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_List_Responser
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
             );
 
-            $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
         }
 
         if ($message = $this->isDuplicateErrorByUUIDAppeared($responseMessages)) {

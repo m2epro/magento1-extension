@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Requirements_Reader
 {
-    private $cachedData;
+    protected $_cachedData;
 
     //########################################
 
@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Requirements_Reader
         $composerData = Mage::helper('M2ePro/Data')->jsonDecode(file_get_contents($composerFile));
         $requirements['composer'] = $composerData['require'];
 
-        $this->cachedData = $requirements;
+        $this->_cachedData = $requirements;
     }
 
     //########################################
@@ -55,9 +55,9 @@ class Ess_M2ePro_Model_Requirements_Reader
 
     // ---------------------------------------
 
-    protected function getPath(array $path, $data = NULL)
+    protected function getPath(array $path, $data = null)
     {
-        is_null($data) && $data = $this->cachedData;
+        $data === null && $data = $this->_cachedData;
         $pathPart = array_shift($path);
 
         if (isset($data[$pathPart])) {

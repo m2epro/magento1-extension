@@ -15,7 +15,7 @@ class Ess_M2ePro_Adminhtml_Listing_OtherController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to clear.'));
             $this->_redirect('*/*/index');
             return;
@@ -40,7 +40,7 @@ class Ess_M2ePro_Adminhtml_Listing_OtherController
             'table_name' => Mage::getResourceModel('M2ePro/Listing_Other_Log')->getMainTable(),
             'type_log' => 'listing_other'
         );
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_log_errorsSummary','',$blockParams);
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_log_errorsSummary', '', $blockParams);
         return $this->getResponse()->setBody($block->toHtml());
     }
 

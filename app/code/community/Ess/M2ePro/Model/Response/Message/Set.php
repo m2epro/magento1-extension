@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Model_Response_Message_Set
 {
-    /** @var Ess_M2ePro_Model_Response_Message[] $entities */
-    protected $entities = array();
+    /** @var Ess_M2ePro_Model_Response_Message[] $_entities */
+    protected $_entities = array();
 
     //########################################
 
@@ -18,11 +18,10 @@ class Ess_M2ePro_Model_Response_Message_Set
         $this->clearEntities();
 
         foreach ($responseData as $messageData) {
-
             $message = $this->getEntityModel();
             $message->initFromResponseData($messageData);
 
-            $this->entities[] = $message;
+            $this->_entities[] = $message;
         }
     }
 
@@ -36,19 +35,19 @@ class Ess_M2ePro_Model_Response_Message_Set
 
     public function addEntity(Ess_M2ePro_Model_Response_Message $message)
     {
-        $this->entities[] = $message;
+        $this->_entities[] = $message;
     }
 
     public function clearEntities()
     {
-        $this->entities = array();
+        $this->_entities = array();
     }
 
     //########################################
 
     public function getEntities()
     {
-        return $this->entities;
+        return $this->_entities;
     }
 
     public function getEntitiesAsArrays()
@@ -124,22 +123,22 @@ class Ess_M2ePro_Model_Response_Message_Set
 
     public function hasErrorEntities()
     {
-        return count($this->getErrorEntities()) > 0;
+        return !empty($this->getErrorEntities());
     }
 
     public function hasWarningEntities()
     {
-        return count($this->getWarningEntities()) > 0;
+        return !empty($this->getWarningEntities());
     }
 
     public function hasSuccessEntities()
     {
-        return count($this->getSuccessEntities()) > 0;
+        return !empty($this->getSuccessEntities());
     }
 
     public function hasNoticeEntities()
     {
-        return count($this->getNoticeEntities()) > 0;
+        return !empty($this->getNoticeEntities());
     }
 
     // ########################################

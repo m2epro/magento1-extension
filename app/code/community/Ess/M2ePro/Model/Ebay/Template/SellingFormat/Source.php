@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Source
 {
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $sellingTemplateModel Ess_M2ePro_Model_Template_SellingFormat
+     * @var $_sellingTemplateModel Ess_M2ePro_Model_Template_SellingFormat
      */
-    private $sellingTemplateModel = null;
+    protected $_sellingTemplateModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Source
      */
     public function setSellingFormatTemplate(Ess_M2ePro_Model_Template_SellingFormat $instance)
     {
-        $this->sellingTemplateModel = $instance;
+        $this->_sellingTemplateModel = $instance;
         return $this;
     }
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Source
      */
     public function getSellingFormatTemplate()
     {
-        return $this->sellingTemplateModel;
+        return $this->_sellingTemplateModel;
     }
 
     /**
@@ -122,7 +122,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Source
         $src = $this->getEbaySellingFormatTemplate()->getListingTypeSource();
 
         if ($src['mode'] == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE) {
-
             $ebayStringType = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
 
             switch ($ebayStringType) {

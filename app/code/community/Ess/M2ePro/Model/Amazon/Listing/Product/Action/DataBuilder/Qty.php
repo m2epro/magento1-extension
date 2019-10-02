@@ -19,41 +19,43 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
      */
     public function getData()
     {
-        if (!empty($this->params['switch_to']) && $this->params['switch_to'] === self::FULFILLMENT_MODE_AFN) {
+        if (!empty($this->_params['switch_to']) && $this->_params['switch_to'] === self::FULFILLMENT_MODE_AFN) {
             return array(
                 'switch_to' => self::FULFILLMENT_MODE_AFN
             );
         }
 
         if (!isset($this->validatorsData['qty'])) {
-            $this->cachedData['qty'] = $this->getAmazonListingProduct()->getQty();
+            $this->_cachedData['qty'] = $this->getAmazonListingProduct()->getQty();
         }
 
         $data = array(
-            'qty' => $this->cachedData['qty'],
+            'qty' => $this->_cachedData['qty'],
         );
 
         $this->checkQtyWarnings();
 
         if (!isset($this->validatorsData['handling_time'])) {
-            $handlingTime = $this->getAmazonListingProduct()->getListingSource()->getHandlingTime();
-            $this->cachedData['handling_time'] = $handlingTime;
+            $handlingTime                       = $this->getAmazonListingProduct()
+                                                       ->getListingSource()
+                                                       ->getHandlingTime();
+            $this->_cachedData['handling_time'] = $handlingTime;
         }
 
         if (!isset($this->validatorsData['restock_date'])) {
-            $restockDate = $this->getAmazonListingProduct()->getListingSource()->getRestockDate();
-            $this->cachedData['restock_date'] = $restockDate;
+            $restockDate                       = $this->getAmazonListingProduct()->getListingSource()->getRestockDate();
+            $this->_cachedData['restock_date'] = $restockDate;
         }
 
-        if (!empty($this->cachedData['handling_time'])) {
-            $data['handling_time'] = $this->cachedData['handling_time'];
+        if (!empty($this->_cachedData['handling_time'])) {
+            $data['handling_time'] = $this->_cachedData['handling_time'];
         }
 
-        if (!empty($this->cachedData['restock_date'])) {
-            $data['restock_date'] = $this->cachedData['restock_date'];
+        if (!empty($this->_cachedData['restock_date'])) {
+            $data['restock_date'] = $this->_cachedData['restock_date'];
         }
 
-        if (!empty($this->params['switch_to']) && $this->params['switch_to'] === self::FULFILLMENT_MODE_MFN) {
+        if (!empty($this->_params['switch_to']) && $this->_params['switch_to'] === self::FULFILLMENT_MODE_MFN) {
             $data['switch_to'] = self::FULFILLMENT_MODE_MFN;
         }
 
@@ -67,13 +69,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
         $qtyMode = $this->getAmazonListing()->getAmazonSellingFormatTemplate()->getQtyMode();
         if ($qtyMode == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED ||
             $qtyMode == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT) {
-
             $listingProductId = $this->getListingProduct()->getId();
             $productId = $this->getAmazonListingProduct()->getActualMagentoProduct()->getProductId();
             $storeId = $this->getListing()->getStoreId();
 
             if (!empty(Ess_M2ePro_Model_Magento_Product::$statistics[$listingProductId][$productId][$storeId]['qty'])) {
-
                 $qtys = Ess_M2ePro_Model_Magento_Product::$statistics[$listingProductId][$productId][$storeId]['qty'];
                 foreach ($qtys as $type => $override) {
                     $this->addQtyWarnings($type);
@@ -86,16 +86,21 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
             // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Manage Stock No" field were taken into consideration.
-            $this->addWarningMessage('During the Quantity Calculation the Settings in the "Manage Stock No" '.
-                'field were taken into consideration.');
+            // During the Quantity Calculation the Settings in the "Manage Stock No"
+            // field were taken into consideration.
+            $this->addWarningMessage(
+                'During the Quantity Calculation the Settings in the "Manage Stock No" '.
+                'field were taken into consideration.'
+            );
         }
 
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_BACKORDERS) {
             // M2ePro_TRANSLATIONS
             // During the Quantity Calculation the Settings in the "Backorders" field were taken into consideration.
-            $this->addWarningMessage('During the Quantity Calculation the Settings in the "Backorders" '.
-                'field were taken into consideration.');
+            $this->addWarningMessage(
+                'During the Quantity Calculation the Settings in the "Backorders" '.
+                'field were taken into consideration.'
+            );
         }
     }
 

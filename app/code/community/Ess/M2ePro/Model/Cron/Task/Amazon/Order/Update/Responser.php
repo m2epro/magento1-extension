@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Orders_Update_ItemsResponser
 {
-    /** @var Ess_M2ePro_Model_Order $order */
-    private $order = array();
+    /** @var Ess_M2ePro_Model_Order $_order */
+    protected $_order = array();
 
     //########################################
 
     public function __construct(array $params, Ess_M2ePro_Model_Connector_Connection_Response $response)
     {
-        $this->order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', $params['order']['order_id']);
+        $this->_order = Mage::helper('M2ePro/Component_Amazon')->getObject('Order', $params['order']['order_id']);
         parent::__construct($params, $response);
     }
 
@@ -26,15 +26,15 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
     {
         parent::failDetected($messageText);
 
-        $this->order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
-        $this->order->addErrorLog('Amazon Order status was not updated. Reason: %msg%', array('msg' => $messageText));
+        $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+        $this->_order->addErrorLog('Amazon Order status was not updated. Reason: %msg%', array('msg' => $messageText));
     }
 
     //########################################
 
     protected function processResponseData()
     {
-        Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds(array($this->params['order']['change_id']));
+        Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds(array($this->_params['order']['change_id']));
 
         $responseData = $this->getResponse()->getData();
 
@@ -47,18 +47,19 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
         $messagesSet->init($responseData['messages']);
 
         foreach ($messagesSet->getEntities() as $message) {
-            $this->order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
             if ($message->isError()) {
                 $isFailed = true;
 
-                $this->order->addErrorLog(
+                $this->_order->addErrorLog(
                     'Amazon Order status was not updated. Reason: %msg%',
                     array('msg' => $message->getText())
                 );
             } else {
-                $this->order->addWarningLog($message->getText());
+                $this->_order->addWarningLog($message->getText());
             }
         }
+
         //----------------------
 
         if ($isFailed) {
@@ -66,18 +67,18 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_Responser
         }
 
         //----------------------
-        $this->order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
-        $this->order->addSuccessLog('Amazon Order status was updated to Shipped.');
+        $this->_order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+        $this->_order->addSuccessLog('Amazon Order status was updated to Shipped.');
 
-        if (empty($this->params['order']['tracking_number']) || empty($this->params['order']['carrier_name'])) {
+        if (empty($this->_params['order']['tracking_number']) || empty($this->_params['order']['carrier_name'])) {
             return;
         }
 
-        $this->order->addSuccessLog(
+        $this->_order->addSuccessLog(
             'Tracking number "%num%" for "%code%" has been sent to Amazon.',
             array(
-                '!num' => $this->params['order']['tracking_number'],
-                'code' => $this->params['order']['carrier_name']
+                '!num' => $this->_params['order']['tracking_number'],
+                'code' => $this->_params['order']['carrier_name']
             )
         );
         //----------------------

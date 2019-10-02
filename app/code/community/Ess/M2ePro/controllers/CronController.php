@@ -22,10 +22,10 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
     {
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Service');
 
-        $authKey = $this->getRequest()->getPost('auth_key',false);
+        $authKey = $this->getRequest()->getPost('auth_key', false);
         $authKey && $cronRunner->setRequestAuthKey($authKey);
 
-        $connectionId = $this->getRequest()->getPost('connection_id',false);
+        $connectionId = $this->getRequest()->getPost('connection_id', false);
         $connectionId && $cronRunner->setRequestConnectionId($connectionId);
 
         $cronRunner->process();

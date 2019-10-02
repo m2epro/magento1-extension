@@ -30,22 +30,22 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
         switch ($type) {
             case self::TYPE_EPID_MOTOR:
                 return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/','epids_motor_attribute'
+                    '/ebay/motors/', 'epids_motor_attribute'
                 );
 
             case self::TYPE_KTYPE:
                 return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/','ktypes_attribute'
+                    '/ebay/motors/', 'ktypes_attribute'
                 );
 
             case self::TYPE_EPID_UK:
                 return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/','epids_uk_attribute'
+                    '/ebay/motors/', 'epids_uk_attribute'
                 );
 
             case self::TYPE_EPID_DE:
                 return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-                    '/ebay/motors/','epids_de_attribute'
+                    '/ebay/motors/', 'epids_de_attribute'
                 );
         }
 
@@ -104,7 +104,6 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
                 }
 
                 $parsedData['filters'][] = $item[1];
-
             } else if ($item[0] == 'GROUP') {
                 if ((empty($item[1]))) {
                     continue;
@@ -115,9 +114,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
                 }
 
                 $parsedData['groups'][] = $item[1];
-
             } else {
-
                 if ($item[0] === 'ITEM') {
                     $itemId = $item[1];
                     $itemNote = $item[2];
@@ -209,10 +206,12 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
 
     public function isTypeBasedOnEpids($type)
     {
-        if (in_array($type, array(
+        if (in_array(
+            $type, array(
             self::TYPE_EPID_MOTOR,
             self::TYPE_EPID_UK,
-            self::TYPE_EPID_DE))
+            self::TYPE_EPID_DE)
+        )
         ){
             return true;
         }
@@ -279,7 +278,6 @@ class Ess_M2ePro_Helper_Component_Ebay_Motors extends Mage_Core_Helper_Abstract
     public function getEpidsTypeByMarketplace($marketplaceId)
     {
         switch ((int)$marketplaceId) {
-
             case Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_MOTORS:
                 return self::TYPE_EPID_MOTOR;
 

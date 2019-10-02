@@ -14,7 +14,7 @@ class Ess_M2ePro_Adminhtml_Configuration_SettingsController
     public function saveAction()
     {
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/view/','show_products_thumbnails',
+            '/view/', 'show_products_thumbnails',
             (int)$this->getRequest()->getParam('products_show_thumbnails')
         );
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
@@ -33,7 +33,7 @@ class Ess_M2ePro_Adminhtml_Configuration_SettingsController
         );
 
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/magento/attribute/','price_type_converting',
+            '/magento/attribute/', 'price_type_converting',
             (int)$this->getRequest()->getParam('price_convert_mode')
         );
 

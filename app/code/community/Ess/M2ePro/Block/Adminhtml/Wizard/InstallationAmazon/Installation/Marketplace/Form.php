@@ -25,12 +25,14 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_Marketpl
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $this->setForm($form);
 
@@ -46,8 +48,8 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_Marketpl
         /** @var Ess_M2ePro_Model_Marketplace[] $marketplaces */
         $marketplaces = Mage::helper('M2ePro/Component_Amazon')->getCollection('Marketplace')
             ->setOrder('group_title', 'ASC')
-            ->setOrder('sorder','ASC')
-            ->setOrder('title','ASC')
+            ->setOrder('sorder', 'ASC')
+            ->setOrder('title', 'ASC')
             ->getItems();
 
         $resultMarketplaces = array();
@@ -57,7 +59,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_Marketpl
         $canadaStoreStatus = NULL;
 
         foreach ($marketplaces as $marketplace) {
-            if (is_null($marketplace->getData('developer_key'))) {
+            if ($marketplace->getData('developer_key') === null) {
                 continue;
             }
 
@@ -90,7 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_Marketpl
             );
         }
 
-        if (!is_null($canadaMarketplace) && !is_null($canadaStoreStatus)) {
+        if ($canadaMarketplace !== null && $canadaStoreStatus !== null) {
             $storedStatuses[] = $canadaStoreStatus;
             $resultMarketplaces[] = $canadaMarketplace;
         }

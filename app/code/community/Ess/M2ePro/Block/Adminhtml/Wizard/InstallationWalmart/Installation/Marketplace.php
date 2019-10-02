@@ -38,11 +38,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Marketp
         $step = 'marketplace';
         $buttonBlock = $this->getLayout()
                         ->createBlock('adminhtml/widget_button')
-                        ->setData(array(
+                        ->setData(
+                            array(
                             'label'   => Mage::helper('M2ePro')->__('Proceed'),
                             'onclick' => 'WizardInstallationWalmartMarketplaceHandlerObj.proceedAction(\''.$step.'\');',
                             'class' => 'process_marketplace_button'
-                        ));
+                            )
+                        );
         $this->setChild('process_marketplace_button', $buttonBlock);
         // ---------------------------------------
 

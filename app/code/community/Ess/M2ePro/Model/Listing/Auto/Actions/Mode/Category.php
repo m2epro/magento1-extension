@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
     extends Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Abstract
 {
-    private $cacheLoadedListings = array();
-    private $cacheAutoCategoriesByCategoryId = array();
+    protected $_cacheLoadedListings             = array();
+    protected $_cacheAutoCategoriesByCategoryId = array();
 
     //########################################
 
@@ -78,7 +78,7 @@ class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
 
     //########################################
 
-    private function getLoadedListing($listing)
+    protected function getLoadedListing($listing)
     {
         if ($listing instanceof Ess_M2ePro_Model_Listing) {
             return $listing;
@@ -86,27 +86,27 @@ class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Category
 
         $listingId = (int)$listing;
 
-        if (isset($this->cacheLoadedListings[$listingId])) {
-            return $this->cacheLoadedListings[$listingId];
+        if (isset($this->_cacheLoadedListings[$listingId])) {
+            return $this->_cacheLoadedListings[$listingId];
         }
 
         /** @var $listing Ess_M2ePro_Model_Listing */
-        $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing',$listingId);
+        $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
 
         /** @var $listingStoreObject Mage_Core_Model_Store */
         $listingStoreObject = Mage::getModel('core/store')->load($listing->getStoreId());
-        $listing->setData('store_website_id',$listingStoreObject->getWebsite()->getId());
+        $listing->setData('store_website_id', $listingStoreObject->getWebsite()->getId());
 
-        return $this->cacheLoadedListings[$listingId] = $listing;
+        return $this->_cacheLoadedListings[$listingId] = $listing;
     }
 
-    private function getAutoCategoriesByCategory($categoryId)
+    protected function getAutoCategoriesByCategory($categoryId)
     {
-        if (isset($this->cacheAutoCategoriesByCategoryId[$categoryId])) {
-            return $this->cacheAutoCategoriesByCategoryId[$categoryId];
+        if (isset($this->_cacheAutoCategoriesByCategoryId[$categoryId])) {
+            return $this->_cacheAutoCategoriesByCategoryId[$categoryId];
         }
 
-        return $this->cacheAutoCategoriesByCategoryId[$categoryId] =
+        return $this->_cacheAutoCategoriesByCategoryId[$categoryId] =
                                 Mage::getModel('M2ePro/Listing_Auto_Category')
                                         ->getCollection()
                                         ->addFieldToFilter('category_id', $categoryId)

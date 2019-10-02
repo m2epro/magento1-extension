@@ -9,16 +9,16 @@
 class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
     /** @var Varien_Db_Adapter_Pdo_Mysql */
-    private $connection = NULL;
+    protected $_connection = null;
 
     /** @var Ess_M2ePro_Model_Upgrade_Tables */
-    private $tablesObject = NULL;
+    protected $_tablesObject = null;
 
-    protected $tableName = NULL;
-    protected $queriesLog = array();
+    protected $_tableName  = null;
+    protected $_queriesLog = array();
 
     //########################################
 
@@ -28,9 +28,9 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
-        $this->connection = $installer->getConnection();
-        $this->tablesObject = $installer->getTablesObject();
+        $this->_installer    = $installer;
+        $this->_connection   = $installer->getConnection();
+        $this->_tablesObject = $installer->getTablesObject();
         return $this;
     }
 
@@ -42,12 +42,14 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
     public function setTableName($tableName)
     {
         if (!$this->getTablesObject()->isExists($tableName)) {
-            throw new Ess_M2ePro_Model_Exception_Setup(sprintf(
-                'Table Name [%s] does not exist.', $tableName
-            ));
+            throw new Ess_M2ePro_Model_Exception_Setup(
+                sprintf(
+                    'Table Name [%s] does not exist.', $tableName
+                )
+            );
         }
 
-        $this->tableName = $this->getTablesObject()->getFullName($tableName);
+        $this->_tableName = $this->getTablesObject()->getFullName($tableName);
         return $this;
     }
 
@@ -59,11 +61,11 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
      */
     public function getInstaller()
     {
-        if (is_null($this->installer)) {
+        if ($this->_installer === null) {
             throw new Ess_M2ePro_Model_Exception_Setup("Installer does not exist.");
         }
 
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -72,11 +74,11 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
      */
     public function getConnection()
     {
-        if (is_null($this->connection)) {
+        if ($this->_connection === null) {
             throw new Ess_M2ePro_Model_Exception_Setup("Connection does not exist.");
         }
 
-        return $this->connection;
+        return $this->_connection;
     }
 
     /**
@@ -85,11 +87,11 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
      */
     public function getTablesObject()
     {
-        if (is_null($this->tablesObject)) {
+        if ($this->_tablesObject === null) {
             throw new Ess_M2ePro_Model_Exception_Setup("Tables Object does not exist.");
         }
 
-        return $this->tablesObject;
+        return $this->_tablesObject;
     }
 
     /**
@@ -98,11 +100,11 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
      */
     public function getTableName()
     {
-        if (is_null($this->tableName)) {
+        if ($this->_tableName === null) {
             throw new Ess_M2ePro_Model_Exception_Setup("Table Name does not exist.");
         }
 
-        return $this->tableName;
+        return $this->_tableName;
     }
 
     //########################################
@@ -119,7 +121,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
 
     public function addQueryToLog($query)
     {
-        $this->queriesLog[] = $query;
+        $this->_queriesLog[] = $query;
         return $this;
     }
 
@@ -127,13 +129,13 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Abstract
 
     public function setQueriesLog(array $queriesLog = array())
     {
-        $this->queriesLog = $queriesLog;
+        $this->_queriesLog = $queriesLog;
         return $this;
     }
 
     public function getQueriesLog()
     {
-        return $this->queriesLog;
+        return $this->_queriesLog;
     }
 
     //########################################

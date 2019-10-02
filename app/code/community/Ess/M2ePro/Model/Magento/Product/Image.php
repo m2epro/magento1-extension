@@ -8,20 +8,20 @@
 
 class Ess_M2ePro_Model_Magento_Product_Image
 {
-    protected $url;
-    protected $path;
+    protected $_url;
+    protected $_path;
 
-    protected $hash;
+    protected $_hash;
 
-    protected $storeId = 0;
-    protected $area = Mage_Core_Model_App_Area::AREA_FRONTEND;
+    protected $_storeId = 0;
+    protected $_area    = Mage_Core_Model_App_Area::AREA_FRONTEND;
 
     //########################################
 
-    function __construct($url, $path = null)
+    public function __construct($url, $path = null)
     {
-        $this->url  = $url;
-        $this->path = $path;
+        $this->_url  = $url;
+        $this->_path = $path;
     }
 
     //########################################
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function getUrl()
     {
-        return $this->url;
+        return $this->_url;
     }
 
     /**
@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function setUrl($url)
     {
-        $this->url = $url;
+        $this->_url = $url;
         return $this;
     }
 
@@ -51,11 +51,11 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function getPath()
     {
-        if (is_null($this->path)) {
-            $this->path = $this->getPathByUrl();
+        if ($this->_path === null) {
+            $this->_path = $this->getPathByUrl();
         }
 
-        return $this->path;
+        return $this->_path;
     }
 
     /**
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function setPath($path)
     {
-        $this->path = $path;
+        $this->_path = $path;
         return $this;
     }
 
@@ -75,7 +75,7 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function getArea()
     {
-        return $this->area;
+        return $this->_area;
     }
 
     /**
@@ -84,7 +84,7 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function setArea($area)
     {
-        $this->area = $area;
+        $this->_area = $area;
         return $this;
     }
 
@@ -95,11 +95,11 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function getHash()
     {
-        if ($this->hash) {
-            return $this->hash;
+        if ($this->_hash) {
+            return $this->_hash;
         }
 
-        return $this->hash = $this->generateHash($this->getUrl(), $this->getPath());
+        return $this->_hash = $this->generateHash($this->getUrl(), $this->getPath());
     }
 
     /**
@@ -107,17 +107,17 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function resetHash()
     {
-        $this->hash = null;
+        $this->_hash = null;
         return $this;
     }
 
-    private function generateHash($url, $path)
+    protected function generateHash($url, $path)
     {
         if ($this->isSelfHosted()) {
             return md5_file($path);
         }
 
-        return md5($url);
+        return sha1($url);
     }
 
     //----------------------------------------
@@ -128,7 +128,7 @@ class Ess_M2ePro_Model_Magento_Product_Image
      */
     public function setStoreId($storeId)
     {
-        $this->storeId = $storeId;
+        $this->_storeId = $storeId;
         return $this;
     }
 
@@ -171,13 +171,13 @@ class Ess_M2ePro_Model_Magento_Product_Image
 
     //########################################
 
-    private function getBaseMediaUrl()
+    protected function getBaseMediaUrl()
     {
         $shouldBeSecure = $this->getArea() == Mage_Core_Model_App_Area::AREA_FRONTEND
             ? Mage::helper('M2ePro/Component_Ebay_Images')->shouldBeUrlsSecure()
             : NULL;
 
-        return Mage::app()->getStore($this->storeId)->getBaseUrl(
+        return Mage::app()->getStore($this->_storeId)->getBaseUrl(
             Mage_Core_Model_Store::URL_TYPE_MEDIA, $shouldBeSecure
         );
     }

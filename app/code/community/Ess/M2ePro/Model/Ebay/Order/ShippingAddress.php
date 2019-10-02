@@ -16,8 +16,8 @@ class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order
     public function getRawData()
     {
         return array(
-            'buyer_name'     => $this->order->getChildObject()->getBuyerName(),
-            'recipient_name' => $this->order->getChildObject()->getBuyerName(),
+            'buyer_name'     => $this->_order->getChildObject()->getBuyerName(),
+            'recipient_name' => $this->_order->getChildObject()->getBuyerName(),
             'email'          => $this->getBuyerEmail(),
             'country_id'     => $this->getData('country_code'),
             'region'         => $this->getData('state'),
@@ -29,19 +29,19 @@ class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order
         );
     }
 
-    private function getBuyerEmail()
+    protected function getBuyerEmail()
     {
-        $email = $this->order->getData('buyer_email');
+        $email = $this->_order->getData('buyer_email');
 
         if (stripos($email, 'Invalid Request') !== false || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $email = str_replace(' ', '-', strtolower($this->order->getChildObject()->getBuyerUserId()));
+            $email = str_replace(' ', '-', strtolower($this->_order->getChildObject()->getBuyerUserId()));
             $email .= Ess_M2ePro_Model_Magento_Customer::FAKE_EMAIL_POSTFIX;
         }
 
         return $email;
     }
 
-    private function getPostalCode()
+    protected function getPostalCode()
     {
         $postalCode = $this->getData('postal_code');
 
@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order
         return $postalCode;
     }
 
-    private function getPhone()
+    protected function getPhone()
     {
         $phone = $this->getData('phone');
 

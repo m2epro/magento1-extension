@@ -16,13 +16,13 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
     /**
      * @var null|Ess_M2ePro_Model_Listing
      */
-    private $listing = NULL;
+    protected $_listing = null;
 
     //########################################
 
     public function setListing(Ess_M2ePro_Model_Listing $listing)
     {
-        $this->listing = $listing;
+        $this->_listing = $listing;
     }
 
     /**
@@ -31,11 +31,11 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
      */
     protected function getListing()
     {
-        if (!($this->listing instanceof Ess_M2ePro_Model_Listing)) {
+        if (!($this->_listing instanceof Ess_M2ePro_Model_Listing)) {
             throw new Ess_M2ePro_Model_Exception_Logic('Property "Listing" should be set first.');
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################
@@ -46,14 +46,13 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
             return;
         }
 
-        $listingsProducts = $this->getListing()->getProducts(true,array('product_id'=>(int)$product->getId()));
+        $listingsProducts = $this->getListing()->getProducts(true, array('product_id'=>(int)$product->getId()));
 
-        if (count($listingsProducts) <= 0) {
+        if (empty($listingsProducts)) {
             return;
         }
 
         foreach ($listingsProducts as $listingProduct) {
-
             if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
                 return;
             }
@@ -63,7 +62,6 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
             }
 
             try {
-
                 $instructionType = self::INSTRUCTION_TYPE_STOP;
 
                 if ($deletingMode == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE) {
@@ -71,29 +69,37 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
                 }
 
                 $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
-                $instruction->setData(array(
+                $instruction->setData(
+                    array(
                     'listing_product_id' => $listingProduct->getId(),
                     'component'          => $listingProduct->getComponentMode(),
                     'type'               => $instructionType,
                     'initiator'          => self::INSTRUCTION_INITIATOR,
                     'priority'           => $listingProduct->isStoppable() ? 60 : 0,
-                ));
+                    )
+                );
                 $instruction->save();
-
-            } catch (Exception $exception) {}
+            } catch (Exception $exception) {
+            }
         }
     }
 
     //########################################
 
-    abstract public function addProductByCategoryGroup(Mage_Catalog_Model_Product $product,
-                                                       Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup);
+    abstract public function addProductByCategoryGroup(
+        Mage_Catalog_Model_Product $product,
+        Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup
+);
 
-    abstract public function addProductByGlobalListing(Mage_Catalog_Model_Product $product,
-                                                       Ess_M2ePro_Model_Listing $listing);
+    abstract public function addProductByGlobalListing(
+        Mage_Catalog_Model_Product $product,
+        Ess_M2ePro_Model_Listing $listing
+);
 
-    abstract public function addProductByWebsiteListing(Mage_Catalog_Model_Product $product,
-                                                        Ess_M2ePro_Model_Listing $listing);
+    abstract public function addProductByWebsiteListing(
+        Mage_Catalog_Model_Product $product,
+        Ess_M2ePro_Model_Listing $listing
+);
 
     //########################################
 
@@ -116,7 +122,8 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
             // Product was successfully Added
             'Product was successfully Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
+            Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+        );
     }
 
     //########################################

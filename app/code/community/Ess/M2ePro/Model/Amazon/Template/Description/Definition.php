@@ -77,12 +77,12 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
     /**
      * @var Ess_M2ePro_Model_Template_Description
      */
-    private $descriptionTemplateModel = NULL;
+    protected $_descriptionTemplateModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source[]
      */
-    private $descriptionDefinitionSourceModels = array();
+    protected $_descriptionDefinitionSourceModels = array();
 
     //########################################
 
@@ -97,8 +97,8 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->descriptionTemplateModel = NULL;
-        $temp && $this->descriptionDefinitionSourceModels = array();
+        $temp && $this->_descriptionTemplateModel = null;
+        $temp && $this->_descriptionDefinitionSourceModels = array();
         return $temp;
     }
 
@@ -110,14 +110,13 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     public function getDescriptionTemplate()
     {
-        if (is_null($this->descriptionTemplateModel)) {
-
-            $this->descriptionTemplateModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
+        if ($this->_descriptionTemplateModel === null) {
+            $this->_descriptionTemplateModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
                 'Template_Description', $this->getId(), NULL, array('template')
             );
         }
 
-        return $this->descriptionTemplateModel;
+        return $this->_descriptionTemplateModel;
     }
 
     /**
@@ -125,7 +124,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     public function setDescriptionTemplate(Ess_M2ePro_Model_Template_Description $instance)
     {
-        $this->descriptionTemplateModel = $instance;
+        $this->_descriptionTemplateModel = $instance;
     }
 
     /**
@@ -147,17 +146,17 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
     {
         $productId = $magentoProduct->getProductId();
 
-        if (!empty($this->descriptionDefinitionSourceModels[$productId])) {
-            return $this->descriptionDefinitionSourceModels[$productId];
+        if (!empty($this->_descriptionDefinitionSourceModels[$productId])) {
+            return $this->_descriptionDefinitionSourceModels[$productId];
         }
 
-        $this->descriptionDefinitionSourceModels[$productId] = Mage::getModel(
+        $this->_descriptionDefinitionSourceModels[$productId] = Mage::getModel(
             'M2ePro/Amazon_Template_Description_Definition_Source'
         );
-        $this->descriptionDefinitionSourceModels[$productId]->setMagentoProduct($magentoProduct);
-        $this->descriptionDefinitionSourceModels[$productId]->setDescriptionDefinitionTemplate($this);
+        $this->_descriptionDefinitionSourceModels[$productId]->setMagentoProduct($magentoProduct);
+        $this->_descriptionDefinitionSourceModels[$productId]->setDescriptionDefinitionTemplate($this);
 
-        return $this->descriptionDefinitionSourceModels[$productId];
+        return $this->_descriptionDefinitionSourceModels[$productId];
     }
 
     //########################################
@@ -508,7 +507,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     public function getTargetAudienceTemplate()
     {
-        return !is_null($this->getData('target_audience'))
+        return $this->getData('target_audience') !== null
             ? Mage::helper('M2ePro')->jsonDecode($this->getData('target_audience')) : array();
     }
 
@@ -554,7 +553,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
 
         if ($src['mode'] == self::TARGET_AUDIENCE_MODE_CUSTOM) {
             $match = array();
-            $audience = implode(PHP_EOL,$src['template']);
+            $audience = implode(PHP_EOL, $src['template']);
             preg_match_all('/#([a-zA-Z_0-9]+?)#/', $audience, $match);
             $match && $attributes = $match[1];
         }
@@ -577,7 +576,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     public function getBulletPointsTemplate()
     {
-        return is_null($this->getData('bullet_points'))
+        return $this->getData('bullet_points') === null
             ? array() : Mage::helper('M2ePro')->jsonDecode($this->getData('bullet_points'));
     }
 
@@ -623,7 +622,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
 
         if ($src['mode'] == self::BULLET_POINTS_MODE_CUSTOM) {
             $match = array();
-            $bullets = implode(PHP_EOL,$src['template']);
+            $bullets = implode(PHP_EOL, $src['template']);
             preg_match_all('/#([a-zA-Z_0-9]+?)#/', $bullets, $match);
             $match && $attributes = $match[1];
         }
@@ -646,7 +645,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     public function getSearchTermsTemplate()
     {
-        return is_null($this->getData('search_terms'))
+        return $this->getData('search_terms') === null
             ? array() : Mage::helper('M2ePro')->jsonDecode($this->getData('search_terms'));
     }
 
@@ -692,7 +691,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
 
         if ($src['mode'] == self::SEARCH_TERMS_MODE_CUSTOM) {
             $match = array();
-            $searchTerms = implode(PHP_EOL,$src['template']);
+            $searchTerms = implode(PHP_EOL, $src['template']);
             preg_match_all('/#([a-zA-Z_0-9]+?)#/', $searchTerms, $match);
             $match && $attributes = $match[1];
         }
@@ -1658,37 +1657,32 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     public function getUsedDetailsAttributes()
     {
-        return array_unique(array_merge(
+        return array_unique(
+            array_merge(
 
-            $this->getTitleAttributes(),
-            $this->getBrandAttributes(),
-            $this->getNumberOfItemsAttributes(),
-            $this->getItemPackageQuantityAttributes(),
-            $this->getDescriptionAttributes(),
-
-            $this->getBulletPointsAttributes(),
-            $this->getSearchTermsAttributes(),
-            $this->getTargetAudienceAttributes(),
-
-            $this->getManufacturerAttributes(),
-            $this->getManufacturerPartNumberAttributes(),
-
-            $this->getMsrpRrpAttributes(),
-
-            $this->getItemDimensionsVolumeAttributes(),
-            $this->getItemDimensionsVolumeUnitOfMeasureAttributes(),
-            $this->getItemDimensionsWeightAttributes(),
-            $this->getItemDimensionsWeightUnitOfMeasureAttributes(),
-
-            $this->getPackageDimensionsVolumeAttributes(),
-            $this->getPackageDimensionsVolumeUnitOfMeasureAttributes(),
-
-            $this->getPackageWeightAttributes(),
-            $this->getPackageWeightUnitOfMeasureAttributes(),
-
-            $this->getShippingWeightAttributes(),
-            $this->getShippingWeightUnitOfMeasureAttributes()
-        ));
+                $this->getTitleAttributes(),
+                $this->getBrandAttributes(),
+                $this->getNumberOfItemsAttributes(),
+                $this->getItemPackageQuantityAttributes(),
+                $this->getDescriptionAttributes(),
+                $this->getBulletPointsAttributes(),
+                $this->getSearchTermsAttributes(),
+                $this->getTargetAudienceAttributes(),
+                $this->getManufacturerAttributes(),
+                $this->getManufacturerPartNumberAttributes(),
+                $this->getMsrpRrpAttributes(),
+                $this->getItemDimensionsVolumeAttributes(),
+                $this->getItemDimensionsVolumeUnitOfMeasureAttributes(),
+                $this->getItemDimensionsWeightAttributes(),
+                $this->getItemDimensionsWeightUnitOfMeasureAttributes(),
+                $this->getPackageDimensionsVolumeAttributes(),
+                $this->getPackageDimensionsVolumeUnitOfMeasureAttributes(),
+                $this->getPackageWeightAttributes(),
+                $this->getPackageWeightUnitOfMeasureAttributes(),
+                $this->getShippingWeightAttributes(),
+                $this->getShippingWeightUnitOfMeasureAttributes()
+            )
+        );
     }
 
     /**
@@ -1696,11 +1690,13 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
      */
     public function getUsedImagesAttributes()
     {
-        return array_unique(array_merge(
-            $this->getImageMainAttributes(),
-            $this->getImageVariationDifferenceAttributes(),
-            $this->getGalleryImagesAttributes()
-        ));
+        return array_unique(
+            array_merge(
+                $this->getImageMainAttributes(),
+                $this->getImageVariationDifferenceAttributes(),
+                $this->getGalleryImagesAttributes()
+            )
+        );
     }
 
     //########################################

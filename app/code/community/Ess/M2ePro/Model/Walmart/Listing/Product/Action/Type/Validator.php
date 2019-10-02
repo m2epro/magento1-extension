@@ -11,25 +11,25 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
     /**
      * @var array
      */
-    private $params = array();
+    protected $_params = array();
 
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
-    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
-    private $configurator = NULL;
-
-    /**
-     * @var array
-     */
-    private $messages = array();
+    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $_configurator */
+    protected $_configurator = null;
 
     /**
      * @var array
      */
-    protected $data = array();
+    protected $_messages = array();
+
+    /**
+     * @var array
+     */
+    protected $_data = array();
 
     //########################################
 
@@ -38,7 +38,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     public function setParams(array $params)
     {
-        $this->params = $params;
+        $this->_params = $params;
     }
 
     /**
@@ -46,7 +46,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     protected function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     // ---------------------------------------
@@ -56,7 +56,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
     }
 
     /**
@@ -64,7 +64,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ---------------------------------------
@@ -75,7 +75,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     public function setConfigurator(Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator)
     {
-        $this->configurator = $configurator;
+        $this->_configurator = $configurator;
         return $this;
     }
 
@@ -84,7 +84,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     protected function getConfigurator()
     {
-        return $this->configurator;
+        return $this->_configurator;
     }
 
     //########################################
@@ -175,7 +175,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
 
     protected function addMessage($message, $type = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR)
     {
-        $this->messages[] = array(
+        $this->_messages[] = array(
             'text' => $message,
             'type' => $type,
         );
@@ -188,7 +188,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this->_messages;
     }
 
     // ---------------------------------------
@@ -199,11 +199,11 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     public function getData($key = null)
     {
-        if (is_null($key)) {
-            return $this->data;
+        if ($key === null) {
+            return $this->_data;
         }
 
-        return isset($this->data[$key]) ? $this->data[$key] : null;
+        return isset($this->_data[$key]) ? $this->_data[$key] : null;
     }
 
     /**
@@ -212,7 +212,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
      */
     public function setData($data)
     {
-        $this->data = $data;
+        $this->_data = $data;
         return $this;
     }
 
@@ -221,7 +221,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
     protected function validateSku()
     {
         if (!$this->getWalmartListingProduct()->getSku()) {
-
             // M2ePro_TRANSLATIONS
             // You have to list Item first.
             $this->addMessage('You have to list Item first.');
@@ -230,9 +229,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
 
         $params = $this->getParams();
         if (isset($params['changed_sku'])) {
-
             if (preg_match('/[.\s-]+/', $params['changed_sku'])) {
-
                 $this->addMessage(
                     'Item SKU was not updated because it contains special characters,
                     i.e. hyphen (-), space ( ), and period (.), that are not allowed by Walmart.
@@ -242,7 +239,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
             }
 
             if (strlen($params['changed_sku']) > Ess_M2ePro_Helper_Component_Walmart::SKU_MAX_LENGTH) {
-
                 $this->addMessage('The length of SKU must be less than 50 characters.');
                 return false;
             }
@@ -256,7 +252,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
     protected function validateCategory()
     {
         if (!$this->getWalmartListingProduct()->isExistCategoryTemplate()) {
-
             // M2ePro_TRANSLATIONS
             // Categories Settings are not set.
             $this->addMessage('Categories Settings are not set.');
@@ -288,7 +283,6 @@ HTML;
     protected function validateMissedOnChannelBlocked()
     {
         if ($this->getListingProduct()->isBlocked() && $this->getWalmartListingProduct()->isMissedOnChannel()) {
-
             $message = <<<HTML
 The action cannot be submitted. Your Item is in Inactive (Blocked) status because it seems that the corresponding
  Walmart Item does not exist in your Channel inventory. Please contact Walmart Support Team to resolve the issue.
@@ -330,12 +324,11 @@ HTML;
 
         $qty = $this->getQty();
         if ($qty <= 0) {
-
-            if (isset($this->params['status_changer']) &&
-                $this->params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
-
+            if (isset($this->_params['status_changer']) &&
+                $this->_params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
                 // M2ePro_TRANSLATIONS
-                // You are submitting an Item with zero quantity. It contradicts Walmart requirements. Please apply the Stop Action instead.
+                // You are submitting an Item with zero quantity. It contradicts Walmart requirements.
+                // Please apply the Stop Action instead.
                 $message = 'You are submitting an Item with zero quantity. It contradicts Walmart requirements.';
 
                 if ($this->getListingProduct()->isStoppable()) {
@@ -345,7 +338,10 @@ HTML;
                 $this->addMessage($message);
             } else {
                 // M2ePro_TRANSLATIONS
-                // Cannot submit an Item with zero quantity. It contradicts Walmart requirements. This action has been generated automatically based on your Synchronization Rule settings. The error occurs when the Stop Rules are not properly configured or disabled. Please review your settings.
+                // Cannot submit an Item with zero quantity. It contradicts Walmart requirements.
+                // This action has been generated automatically based on your Synchronization Rule settings.
+                // The error occurs when the Stop Rules are not properly configured or disabled.
+                // Please review your settings.
                 $message = 'Cannot submit an Item with zero quantity. It contradicts Walmart requirements.
                             This action has been generated automatically based on your Synchronization Rule settings. ';
 
@@ -361,7 +357,7 @@ HTML;
             return false;
         }
 
-        $this->data['qty'] = $qty;
+        $this->_data['qty'] = $qty;
 
         return true;
     }
@@ -374,7 +370,6 @@ HTML;
 
         $price = $this->getPrice();
         if ($price <= 0) {
-
             // M2ePro_TRANSLATIONS
             // The Price must be greater than 0. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
@@ -384,7 +379,7 @@ HTML;
             return false;
         }
 
-        $this->data['price'] = $price;
+        $this->_data['price'] = $price;
 
         return true;
     }
@@ -431,11 +426,14 @@ HTML;
             $this->addMessage('This Parent has no Child Products on which the chosen Action can be performed.');
             return false;
         }
+
 // M2ePro_TRANSLATIONS
 // This Action cannot be fully performed because there are different actions in progress on some Child Products
         if ($this->getListingProduct()->getData('child_locked')) {
-            $this->addMessage('This Action cannot be fully performed because there are
-                                different Actions in progress on some Child Products');
+            $this->addMessage(
+                'This Action cannot be fully performed because there are
+                                different Actions in progress on some Child Products'
+            );
             return false;
         }
 
@@ -447,7 +445,6 @@ HTML;
     protected function validatePhysicalUnitAndSimple()
     {
         if (!$this->getVariationManager()->isPhysicalUnit() && !$this->getVariationManager()->isSimpleType()) {
-
             // M2ePro_TRANSLATIONS
             // Only physical Products can be processed.
             $this->addMessage('Only physical Products can be processed.');
@@ -461,7 +458,6 @@ HTML;
     protected function validatePhysicalUnitMatching()
     {
         if (!$this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             // M2ePro_TRANSLATIONS
             // You have to select Magento Variation.
             $this->addMessage('You have to select Magento Variation.');
@@ -501,8 +497,8 @@ HTML;
 
     protected function getPrice()
     {
-        if (isset($this->data['price'])) {
-            return $this->data['price'];
+        if (isset($this->_data['price'])) {
+            return $this->_data['price'];
         }
 
         return $this->getWalmartListingProduct()->getPrice();
@@ -510,8 +506,8 @@ HTML;
 
     protected function getQty()
     {
-        if (isset($this->data['qty'])) {
-            return $this->data['qty'];
+        if (isset($this->_data['qty'])) {
+            return $this->_data['qty'];
         }
 
         return $this->getWalmartListingProduct()->getQty();
@@ -519,8 +515,8 @@ HTML;
 
     protected function getPromotions()
     {
-        if (isset($this->data['promotions'])) {
-            return $this->data['promotions'];
+        if (isset($this->_data['promotions'])) {
+            return $this->_data['promotions'];
         }
 
         return $this->getWalmartListingProduct()->getPromotions();
@@ -543,10 +539,8 @@ HTML;
 
         $promotions = $this->getPromotions();
         foreach ($promotions as $promotionIndex => $promotionRow) {
-
             foreach ($requiredAttributesMap as $requiredAttributeKey => $requiredAttributeTitle) {
                 if (empty($promotionRow[$requiredAttributeKey])) {
-
                     $message = <<<HTML
 Invalid Promotion #%s. The Promotion Price has no defined value.
  Please adjust Magento Attribute "%s" value set for the Promotion Price in your Selling Policy.
@@ -593,7 +587,7 @@ HTML;
             }
         }
 
-        $this->data['promotions'] = $promotions;
+        $this->_data['promotions'] = $promotions;
 
         return true;
     }
@@ -602,7 +596,7 @@ HTML;
 
     protected function validatePriceAndPromotionsFeedBlocked()
     {
-        if (is_null($this->getWalmartListingProduct()->getListDate())) {
+        if ($this->getWalmartListingProduct()->getListDate() === null) {
             return true;
         }
 
@@ -617,9 +611,7 @@ HTML;
             return true;
         }
 
-        $promotions = $this->getPromotions();
-        if ($this->getConfigurator()->isPromotionsAllowed() && !empty($promotions)) {
-
+        if ($this->getConfigurator()->isPromotionsAllowed()) {
             $this->getConfigurator()->disallowPromotions();
             $this->addMessage(
                 'Item Promotion Price will not be submitted during this action.
@@ -629,9 +621,7 @@ HTML;
             );
         }
 
-        $price = $this->getPrice();
-        if ($this->getConfigurator()->isPriceAllowed() && !empty($price)) {
-
+        if ($this->getConfigurator()->isPriceAllowed()) {
             $this->getConfigurator()->disallowPrice();
             $this->addMessage(
                 'Item Price will not be submitted during this action.
@@ -655,7 +645,6 @@ HTML;
         $isAtLeastOneSpecified = false;
 
         if ($gtin = $this->getGtin()) {
-
             if (!Mage::helper('M2ePro')->isGTIN($gtin)) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
@@ -667,12 +656,11 @@ HTML;
                 return false;
             }
 
-            $this->data['gtin'] = $gtin;
+            $this->_data['gtin']   = $gtin;
             $isAtLeastOneSpecified = true;
         }
 
         if ($upc = $this->getUpc()) {
-
             if (!Mage::helper('M2ePro')->isUPC($upc)) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
@@ -684,12 +672,11 @@ HTML;
                 return false;
             }
 
-            $this->data['upc'] = $upc;
+            $this->_data['upc']    = $upc;
             $isAtLeastOneSpecified = true;
         }
 
         if ($ean = $this->getEan()) {
-
             if (!Mage::helper('M2ePro')->isEAN($ean)) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
@@ -701,12 +688,11 @@ HTML;
                 return false;
             }
 
-            $this->data['ean'] = $ean;
+            $this->_data['ean']    = $ean;
             $isAtLeastOneSpecified = true;
         }
 
         if ($isbn = $this->getIsbn()) {
-
             if (!Mage::helper('M2ePro')->isISBN($isbn)) {
                 $this->addMessage(
                     Mage::helper('M2ePro/Module_Log')->encodeDescription(
@@ -718,12 +704,11 @@ HTML;
                 return false;
             }
 
-            $this->data['isbn'] = $isbn;
+            $this->_data['isbn']   = $isbn;
             $isAtLeastOneSpecified = true;
         }
 
         if (!$isAtLeastOneSpecified) {
-
             $this->addMessage(
                 'The Item was not listed because it has no defined Product ID. Walmart requires that all Items sold
                 on the website have Product IDs. Please provide a valid GTIN, UPC, EAN or ISBN for the Product.
@@ -737,8 +722,8 @@ HTML;
 
     protected function getGtin()
     {
-        if (isset($this->data['gtin'])) {
-            return $this->data['gtin'];
+        if (isset($this->_data['gtin'])) {
+            return $this->_data['gtin'];
         }
 
         return $this->getWalmartListingProduct()->getGtin();
@@ -746,8 +731,8 @@ HTML;
 
     protected function getUpc()
     {
-        if (isset($this->data['upc'])) {
-            return $this->data['upc'];
+        if (isset($this->_data['upc'])) {
+            return $this->_data['upc'];
         }
 
         return $this->getWalmartListingProduct()->getUpc();
@@ -755,8 +740,8 @@ HTML;
 
     protected function getEan()
     {
-        if (isset($this->data['ean'])) {
-            return $this->data['ean'];
+        if (isset($this->_data['ean'])) {
+            return $this->_data['ean'];
         }
 
         return $this->getWalmartListingProduct()->getEan();
@@ -764,8 +749,8 @@ HTML;
 
     protected function getIsbn()
     {
-        if (isset($this->data['isbn'])) {
-            return $this->data['isbn'];
+        if (isset($this->_data['isbn'])) {
+            return $this->_data['isbn'];
         }
 
         return $this->getWalmartListingProduct()->getIsbn();

@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Adminhtml_Component_Switcher
 {
-    protected $paramName = 'account';
+    protected $_paramName = 'account';
 
     //########################################
 
@@ -27,17 +27,17 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
                                                       ->setOrder('component_mode', 'ASC')
                                                       ->setOrder('title', 'ASC');
 
-        if (!is_null($this->getData('component_mode'))) {
+        if ($this->getData('component_mode') !== null) {
             $collection->addFieldToFilter('component_mode', $this->getData('component_mode'));
         }
 
         if (!$collection->getSize()) {
-            $this->items = array();
+            $this->_items = array();
             return;
         }
 
         if ($collection->getSize() < 2) {
-            $this->hasDefaultOption = false;
+            $this->_hasDefaultOption = false;
             $this->setIsDisabled(true);
         }
 
@@ -46,22 +46,16 @@ class Ess_M2ePro_Block_Adminhtml_Account_Switcher extends Ess_M2ePro_Block_Admin
         foreach ($collection as $account) {
             /** @var $account Ess_M2ePro_Model_Account */
 
-            if (!isset($items[$account->getComponentMode()]['label'])) {
-                $label = '';
-                if (isset($componentTitles[$account->getComponentMode()])) {
-                    $label = $componentTitles[$account->getComponentMode()];
-                }
+            $componentMode = $account->getComponentMode();
 
-                $items[$account->getComponentMode()]['label'] = $label;
-            }
-
-            $items[$account->getComponentMode()]['value'][] = array(
+            $items[$componentMode]['label'] = ucfirst($componentMode);
+            $items[$componentMode]['value'][] = array(
                 'value' => $account->getId(),
                 'label' => $account->getTitle()
             );
         }
 
-        $this->items = $items;
+        $this->_items = $items;
     }
 
     //########################################

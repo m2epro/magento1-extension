@@ -18,11 +18,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Price
     {
         $data = array();
 
-        if (!isset($this->cachedData['price'])) {
-            $this->cachedData['price'] = $this->getWalmartListingProduct()->getPrice();
+        if (!isset($this->_cachedData['price'])) {
+            $this->_cachedData['price'] = $this->getWalmartListingProduct()->getPrice();
         }
 
-        $data['price'] = $this->cachedData['price'];
+        $data['price'] = $this->_cachedData['price'];
 
         return $data;
     }

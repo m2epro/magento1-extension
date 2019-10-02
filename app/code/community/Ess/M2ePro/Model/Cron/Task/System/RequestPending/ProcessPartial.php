@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
 
     //####################################
 
-    private function removeOutdated()
+    protected function removeOutdated()
     {
         $requestPendingPartialCollection = Mage::getResourceModel('M2ePro/Request_Pending_Partial_Collection');
         $requestPendingPartialCollection->setOnlyOutdatedItemsFilter();
@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
         }
     }
 
-    private function completeExpired()
+    protected function completeExpired()
     {
         $requestPendingPartialCollection = Mage::getResourceModel('M2ePro/Request_Pending_Partial_Collection');
         $requestPendingPartialCollection->setOnlyExpiredItemsFilter();
@@ -66,7 +66,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
         }
     }
 
-    private function executeInProgress()
+    protected function executeInProgress()
     {
         $requestPendingPartialCollection = Mage::getResourceModel('M2ePro/Request_Pending_Partial_Collection');
         $requestPendingPartialCollection->addFieldToFilter('is_completed', 0);
@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
 
     //####################################
 
-    private function processRequest(Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial)
+    protected function processRequest(Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial)
     {
         for ($requestCount = 1; $requestCount <= self::MAX_PARTS_PER_ONE_ITERATION; $requestCount++) {
             $serverData = $this->getServerData($requestPendingPartial);
@@ -106,11 +106,11 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
         }
     }
 
-    private function getServerData(Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial)
+    protected function getServerData(Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial)
     {
         $dispatcher = Mage::getModel('M2ePro/'.ucfirst($requestPendingPartial->getComponent()).'_Connector_Dispatcher');
         $connector = $dispatcher->getVirtualConnector(
-            'processing','get','results',
+            'processing', 'get', 'results',
             array(
                 'processing_id' => $requestPendingPartial->getServerHash(),
                 'necessary_parts' => array(
@@ -128,7 +128,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
 
     //####################################
 
-    private function getFailedMessage()
+    protected function getFailedMessage()
     {
         $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
         $message->initFromPreparedData(
@@ -139,9 +139,10 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
         return $message;
     }
 
-    private function completeRequest(Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial,
-                                     array $messages = array())
-    {
+    protected function completeRequest(
+        Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial,
+        array $messages = array()
+    ) {
         $requestPendingPartial->setSettings('result_messages', $messages);
         $requestPendingPartial->setData('next_part', null);
         $requestPendingPartial->setData('is_completed', 1);

@@ -53,7 +53,7 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
 
         // set the data body of the request
         curl_setopt($curlObject, CURLOPT_POST, true);
-        curl_setopt($curlObject, CURLOPT_POSTFIELDS, http_build_query($postData,'','&'));
+        curl_setopt($curlObject, CURLOPT_POSTFIELDS, http_build_query($postData, '', '&'));
 
         // set it to return the transfer as a string from curl_exec
         curl_setopt($curlObject, CURLOPT_RETURNTRANSFER, true);
@@ -68,7 +68,6 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
         curl_close($curlObject);
 
         if ($response === false) {
-
             throw new Ess_M2ePro_Model_Exception_Connection(
                 'The Action was not completed because connection with M2E Pro Repricing Service was not set.
                  There are several possible reasons: temporary connection problem – please wait and try again later;
@@ -82,7 +81,6 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
 
         $responseDecoded = Mage::helper('M2ePro')->jsonDecode($response);
         if (!$responseDecoded || !is_array($responseDecoded)) {
-
             throw new Ess_M2ePro_Model_Exception_Connection(
                 'The Action was not completed because server responded with an incorrect response.',
                 array(
@@ -120,9 +118,11 @@ class Ess_M2ePro_Helper_Component_Amazon_Repricing extends Mage_Core_Helper_Abst
             return false;
         }
 
-        return $this->getBaseUrl().self::COMMAND_GOTO_SERVICE.'?'.http_build_query(array(
+        return $this->getBaseUrl().self::COMMAND_GOTO_SERVICE.'?'.http_build_query(
+            array(
             'account_token' => $amazonAccount->getRepricing()->getToken()
-        ));
+            )
+        );
     }
 
     //########################################

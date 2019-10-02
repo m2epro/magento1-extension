@@ -12,30 +12,28 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData
 
     const MAX_EXECUTION_LIMIT_PERCENT = 70;
 
-    //########################################
+    /** @var $_connection Varien_Db_Adapter_Pdo_Mysql */
+    protected $_connection = null;
 
-    /** @var $connection Varien_Db_Adapter_Pdo_Mysql */
-    private $connection = null;
+    protected $_maxOrdersCount = null;
 
-    private $maxOrdersCount = null;
+    protected $_maxBackDaysInterval = null;
 
-    private $maxBackDaysInterval = null;
+    protected $_dataForOrderItems = array();
 
-    private $dataForOrderItems = array();
-
-    private $startExecutionTimestamp = null;
+    protected $_startExecutionTimestamp = null;
 
     //########################################
 
     public function setMaxOrdersCount($ordersCount)
     {
-        $this->maxOrdersCount = $ordersCount;
+        $this->_maxOrdersCount = $ordersCount;
         return $this;
     }
 
     public function setMaxBackDaysInterval($days)
     {
-        $this->maxBackDaysInterval = $days;
+        $this->_maxBackDaysInterval = $days;
         return $this;
     }
 
@@ -58,15 +56,17 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData
         $lastProcessedOrderId = $this->getLastProcessedOrderId();
 
         $where = '';
-        if (!is_null($lastProcessedOrderId)) {
+        if ($lastProcessedOrderId !== null) {
             $where = 'WHERE `order_id` < '.$lastProcessedOrderId;
         }
 
-        $tempQuery = $this->getConnection()->query("
+        $tempQuery = $this->getConnection()->query(
+            "
             SELECT COUNT(*)
             FROM `{$orderBackupTable}`
             $where
-        ");
+        "
+        );
 
         return $tempQuery->fetchColumn();
     }
@@ -75,7 +75,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData
     {
         $configTable = $this->getTableName('m2epro_config');
 
-        $query = $this->getConnection()->query(<<<SQL
+        $query = $this->getConnection()->query(
+            <<<SQL
 
 SELECT `value` FROM `{$configTable}`
 WHERE `group` = '/ebay/order/migration_to_v611/' AND
@@ -110,7 +111,6 @@ SQL
         $lastOrderCreateDate = null;
 
         while (true) {
-
             if ($this->isExceededMaxExecutionTime() ||
                 $this->isExceededMinOrderCreateDate($lastOrderCreateDate) ||
                 $this->isExceededMaxOrdersCount($processedOrdersCount)
@@ -129,7 +129,6 @@ SQL
             $itemsPack = array();
 
             while ($row = $ordersStatement->fetch()) {
-
                 $orderId = (int)$row['order_id'];
 
                 if (!isset($performedOrders[$orderId])) {
@@ -195,7 +194,7 @@ SQL
 
         $shippingAddress = '';
         if (!empty($oldData['shipping_address'])) {
-            $address = @unserialize($oldData['shipping_address']);
+            $address = Mage::helper('M2ePro')->unserialize($oldData['shipping_address']);
 
             if (is_array($address)) {
                 // compatibility with M2E 3.x
@@ -216,7 +215,7 @@ SQL
         }
 
         $shippingService = null;
-        if ($oldData['shipping_method'] != 'NotSelected') {
+        if ($oldData['shipping_method'] !== 'NotSelected') {
             $shippingService = $oldData['shipping_method'];
         }
 
@@ -270,7 +269,7 @@ SQL
         if (!empty($oldData['shipping_tracking_details'])) {
             // compatibility with M2E 3.x
             // ---------------------------------------
-            $trackingDetails = @unserialize($oldData['shipping_tracking_details']);
+            $trackingDetails = Mage::helper('M2ePro')->unserialize($oldData['shipping_tracking_details']);
             if (!is_array($trackingDetails)) {
                 $trackingDetails = json_decode($oldData['shipping_tracking_details'], true);
             }
@@ -280,10 +279,11 @@ SQL
             } else {
                 $trackingDetails = null;
             }
+
             // ---------------------------------------
         }
 
-        $this->dataForOrderItems[$orderId] = array(
+        $this->_dataForOrderItems[$orderId] = array(
             'tracking_details' => $trackingDetails,
             'tax_details'      => $taxDetails,
             'final_fee'        => $oldData['final_fee'],
@@ -314,18 +314,20 @@ SQL
         if (!empty($oldData['variation'])) {
             // compatibility with M2E 3.x
             // ---------------------------------------
-            $variationDetails = @unserialize($oldData['variation']);
+            $variationDetails = Mage::helper('M2ePro')->unserialize($oldData['variation']);
             $variationDetails === false && $variationDetails = json_decode($oldData['variation'], true);
             $variationDetails = is_array($variationDetails) ? $variationDetails : array();
             // ---------------------------------------
         }
 
         if (!empty($variationDetails)) {
-            $item['variation_details'] = json_encode(array(
+            $item['variation_details'] = json_encode(
+                array(
                 'title' => $oldData['title'],
                 'sku'   => $oldData['sku'],
                 'options' => $variationDetails,
-            ));
+                )
+            );
         } else {
             $item['variation_details'] = null;
         }
@@ -333,16 +335,15 @@ SQL
         // ---------------------------------------
 
         $additionalItemData = array();
-        if (isset($this->dataForOrderItems[$orderId])) {
-            $additionalItemData = $this->dataForOrderItems[$orderId];
-            unset($this->dataForOrderItems[$orderId]);
+        if (isset($this->_dataForOrderItems[$orderId])) {
+            $additionalItemData = $this->_dataForOrderItems[$orderId];
+            unset($this->_dataForOrderItems[$orderId]);
         }
 
         // ---------------------------------------
 
         $taxDetails = null;
         if (!empty($additionalItemData['tax_details'])) {
-
             $taxRate = (float)$additionalItemData['tax_details']['rate'];
             $taxAmount = 0.0;
             if (!$additionalItemData['tax_details']['is_vat']) {
@@ -377,7 +378,8 @@ SQL
     {
         $configTable = $this->getTableName('m2epro_config');
 
-        $query = $this->getConnection()->query(<<<SQL
+        $query = $this->getConnection()->query(
+            <<<SQL
 
 SELECT `value` FROM `{$configTable}`
 WHERE `group` = '/ebay/order/migration_to_v611/' AND
@@ -398,7 +400,7 @@ SQL
     {
         $configTable = $this->getTableName('m2epro_config');
 
-        if (is_null($this->getLastProcessedOrderId())) {
+        if ($this->getLastProcessedOrderId() === null) {
             $dataForInsert = array(
                 'group' => '/ebay/order/migration_to_v611/',
                 'key'   => 'last_processed_order_id',
@@ -434,13 +436,14 @@ SQL
         $orderItemTable = $this->getTableName('m2epro_order_item');
 
         $where = '';
-        if (!is_null($lastProcessedOrderId)) {
+        if ($lastProcessedOrderId !== null) {
             $where = 'WHERE `meo`.`order_id` < ' . $lastProcessedOrderId;
         }
 
         $ordersCount = self::MAX_ORDERS_PER_ITERATION;
 
-        return $this->getConnection()->query(<<<SQL
+        return $this->getConnection()->query(
+            <<<SQL
 
 SELECT `meo`.*, `meoi`.*, `mo`.`create_date`
 FROM `{$orderBackupTable}` AS `meo`
@@ -459,8 +462,8 @@ SQL
 
     protected function isExceededMaxExecutionTime()
     {
-        if (is_null($this->startExecutionTimestamp)) {
-            $this->startExecutionTimestamp = time();
+        if ($this->_startExecutionTimestamp === null) {
+            $this->_startExecutionTimestamp = time();
             return false;
         }
 
@@ -471,17 +474,17 @@ SQL
 
         $limit = (int)($maxExecutionTime * (self::MAX_EXECUTION_LIMIT_PERCENT / 100));
 
-        return (time() - $this->startExecutionTimestamp) >= $limit;
+        return (time() - $this->_startExecutionTimestamp) >= $limit;
     }
 
     protected function isExceededMinOrderCreateDate($orderCreateDate)
     {
-        if (is_null($this->maxBackDaysInterval) || is_null($orderCreateDate)) {
+        if ($this->_maxBackDaysInterval === null || $orderCreateDate === null) {
             return false;
         }
 
         $minOrderCreateDateObject = new DateTime('now', new DateTimeZone('UTC'));
-        $minOrderCreateDateObject->modify('- '.$this->maxBackDaysInterval.' days');
+        $minOrderCreateDateObject->modify('- '.$this->_maxBackDaysInterval . ' days');
 
         $orderCreateDateObject = new DateTime($orderCreateDate, new DateTimeZone('UTC'));
 
@@ -490,22 +493,22 @@ SQL
 
     protected function isExceededMaxOrdersCount($processedOrdersCount)
     {
-        if (is_null($this->maxOrdersCount)) {
+        if ($this->_maxOrdersCount === null) {
             return false;
         }
 
-        return $processedOrdersCount > $this->maxOrdersCount;
+        return $processedOrdersCount > $this->_maxOrdersCount;
     }
 
     //########################################
 
     protected function getConnection()
     {
-        if (!is_null($this->connection)) {
-            return $this->connection;
+        if ($this->_connection !== null) {
+            return $this->_connection;
         }
 
-        return $this->connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+        return $this->_connection = Mage::getSingleton('core/resource')->getConnection('core_write');
     }
 
     protected function getTableName($table)

@@ -8,8 +8,6 @@
 
 class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    const SYNCHRONIZATION_LOCK_ITEM_NICK = 'ebay_marketplace_synchronization';
-
     //########################################
 
     protected function _initAction()
@@ -44,12 +42,12 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
     public function indexAction()
     {
         $this->_initAction()
-             ->_addContent(
-                 $this->getLayout()->createBlock(
-                     'M2ePro/adminhtml_ebay_configuration', '',
-                     array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_MARKETPLACE)
-                 )
-             )->renderLayout();
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_ebay_configuration', '',
+                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_MARKETPLACE)
+                )
+            )->renderLayout();
     }
 
     public function saveAction()
@@ -59,12 +57,14 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
         foreach ($marketplaces as $marketplace) {
             $newStatus = $this->getRequest()->getParam('status_'.$marketplace->getId());
 
-            if (is_null($newStatus)) {
+            if ($newStatus === null) {
                 continue;
             }
+
             if ($marketplace->getStatus() == $newStatus) {
                 continue;
             }
+
             $marketplace->setData('status', $newStatus)->save();
         }
     }
@@ -78,11 +78,13 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
         $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id');
 
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
-        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace',$marketplaceId);
+        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace', $marketplaceId);
 
-        $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
-        ));
+        $lockItemManager = Mage::getModel(
+            'M2ePro/Lock_Item_Manager', array(
+            'nick' => Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
+            )
+        );
 
         if ($lockItemManager->isExist()) {
             return;
@@ -90,10 +92,12 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
 
         $lockItemManager->create();
 
-        $progressManager = Mage::getModel('M2ePro/Lock_Item_Progress', array(
+        $progressManager = Mage::getModel(
+            'M2ePro/Lock_Item_Progress', array(
             'lock_item_manager' => $lockItemManager,
             'progress_nick'     => $marketplace->getTitle() . ' eBay Site',
-        ));
+            )
+        );
 
         $synchronization = Mage::getModel('M2ePro/Ebay_Marketplace_Synchronization');
         $synchronization->setMarketplace($marketplace);
@@ -108,9 +112,11 @@ class Ess_M2ePro_Adminhtml_Ebay_MarketplaceController extends Ess_M2ePro_Control
     {
         $response = array();
 
-        $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
-        ));
+        $lockItemManager = Mage::getModel(
+            'M2ePro/Lock_Item_Manager', array(
+            'nick' => Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
+            )
+        );
 
         if (!$lockItemManager->isExist()) {
             $response['mode'] = 'inactive';

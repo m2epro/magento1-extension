@@ -8,14 +8,14 @@
 
 abstract class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Abstract
 {
-    /** @var Ess_M2ePro_Model_Order $order */
-    protected $order = NULL;
+    /** @var Ess_M2ePro_Model_Order $_order */
+    protected $_order = null;
 
     //########################################
 
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
-        $this->order = $order;
+        $this->_order = $order;
         return $this;
     }
 
@@ -33,7 +33,7 @@ abstract class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Abstract
 
         $connector = $dispatcher->getVirtualConnector(
             $serverCommand[0], $serverCommand[1], $serverCommand[2],
-            $this->getRequestData(), NULL, $this->order->getAccount()
+            $this->getRequestData(), NULL, $this->_order->getAccount()
         );
 
         try {
@@ -83,7 +83,7 @@ abstract class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Abstract
      */
     protected function getOrder()
     {
-        return $this->order;
+        return $this->_order;
     }
 
     /**

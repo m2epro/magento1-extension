@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Filter extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    private $listingProductId;
+    protected $_listingProductId;
 
-    private $motorsType;
+    protected $_motorsType;
 
     //########################################
 
@@ -51,11 +51,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Filter extends Ess_M2ePro_Block
      */
     public function getListingProductId()
     {
-        if (is_null($this->listingProductId)) {
+        if ($this->_listingProductId === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Listing Product ID was not set.');
         }
 
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     /**
@@ -63,23 +63,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Filter extends Ess_M2ePro_Block
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
     }
 
     //########################################
 
     public function setMotorsType($motorsType)
     {
-        $this->motorsType = $motorsType;
+        $this->_motorsType = $motorsType;
     }
 
     public function getMotorsType()
     {
-        if (is_null($this->motorsType)) {
+        if ($this->_motorsType === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Motors type not set.');
         }
 
-        return $this->motorsType;
+        return $this->_motorsType;
     }
 
     //########################################

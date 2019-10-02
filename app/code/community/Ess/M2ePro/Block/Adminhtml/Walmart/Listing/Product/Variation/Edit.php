@@ -41,17 +41,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Variation_Edit
         }
 
         $variations = $this->getListingProduct()->getVariations(true);
-        if (count($variations) <= 0) {
-            throw new Ess_M2ePro_Model_Exception('There are no variations for a variation product.',
-                                                 array(
+        if (empty($variations)) {
+            throw new Ess_M2ePro_Model_Exception(
+                'There are no variations for a variation product.',
+                array(
                                                      'listing_product_id' => $this->getListingProduct()->getId()
-                                                 ));
+                )
+            );
         }
 
-        /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+        /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
         $variation = reset($variations);
 
-        /* @var $optionInstance Ess_M2ePro_Model_Listing_Product_Variation_Option */
+        /** @var $optionInstance Ess_M2ePro_Model_Listing_Product_Variation_Option */
         foreach ($variation->getOptions(true) as $optionInstance) {
             $option = $optionInstance->getOption();
             $attribute = $optionInstance->getAttribute();
@@ -67,12 +69,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Variation_Edit
     {
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label' => Mage::helper('M2ePro')->__('Confirm'),
                 'onclick' => '',
                 'class' => 'confirm',
                 'id' => 'variation_edit_confirm'
-            ));
+                )
+            );
         $this->setChild('variation_edit_confirm', $buttonBlock);
     }
 

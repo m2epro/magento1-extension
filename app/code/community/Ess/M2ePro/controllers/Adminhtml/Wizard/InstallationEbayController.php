@@ -57,12 +57,14 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
     //########################################
 
-    private function renderSimpleStep()
+    protected function renderSimpleStep()
     {
         return $this->_initAction()
-                    ->_addContent($this->getWizardHelper()->createBlock(
-                        'installation_' . $this->getCurrentStep(),
-                        $this->getNick())
+                    ->_addContent(
+                        $this->getWizardHelper()->createBlock(
+                            'installation_' . $this->getCurrentStep(),
+                            $this->getNick()
+                        )
                     )
                     ->renderLayout();
     }
@@ -98,22 +100,22 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
     public function listingAccountAction()
     {
-        return $this->_redirect('*/adminhtml_ebay_listing_create',array('step' => 1,'wizard' => true,'clear' => true));
+        return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 1,'wizard' => true,'clear' => true));
     }
 
     public function listingGeneralAction()
     {
-        return $this->_redirect('*/adminhtml_ebay_listing_create',array('step' => 2, 'wizard' => true));
+        return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 2, 'wizard' => true));
     }
 
     public function listingSellingAction()
     {
-        return $this->_redirect('*/adminhtml_ebay_listing_create',array('step' => 3, 'wizard' => true));
+        return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 3, 'wizard' => true));
     }
 
     public function listingSynchronizationAction()
     {
-        return $this->_redirect('*/adminhtml_ebay_listing_create',array('step' => 4, 'wizard' => true));
+        return $this->_redirect('*/adminhtml_ebay_listing_create', array('step' => 4, 'wizard' => true));
     }
 
     //########################################
@@ -239,7 +241,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
         $licenseData = array();
         foreach ($requiredKeys as $key) {
-
             if ($tempValue = $this->getRequest()->getParam($key)) {
                 $licenseData[$key] = $tempValue;
                 continue;
@@ -253,7 +254,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         }
 
         if (!Mage::helper('M2ePro/Module_License')->getKey()) {
-
             $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
                 $licenseData['email'],
                 $licenseData['firstname'], $licenseData['lastname'],
@@ -261,7 +261,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
                 $licenseData['postal_code'], $licenseData['phone']
             );
         } else {
-
             $licenseResult = Mage::helper('M2ePro/Module_License')->updateLicenseUserInfo(
                 $licenseData['email'],
                 $licenseData['firstname'], $licenseData['lastname'],
@@ -271,9 +270,13 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         }
 
         if (!$licenseResult) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'url' => null
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'url' => null
+                    )
+                )
+            );
         }
 
         $registry = Mage::getModel('M2ePro/Registry')->load('/wizard/license_form_data/', 'key');
@@ -284,37 +287,48 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $accountMode = $this->getRequest()->getParam('account_mode');
 
         try {
-
              $backUrl = $this->getUrl('*/*/afterToken', array('mode' => $accountMode));
 
              $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-             $connectorObj = $dispatcherObject->getVirtualConnector('account','get','authUrl',
-                                                                    array('back_url' => $backUrl,
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'account', 'get', 'authUrl',
+                array('back_url' => $backUrl,
                                                                           'mode' => $accountMode),
-                                                                    NULL,NULL,NULL);
+                NULL, NULL, NULL
+            );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'url' => null
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'url' => null
+                    )
+                )
+            );
         }
 
-        if (!$response || !isset($response['url'],$response['session_id'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'url' => null
-            )));
+        if (!$response || !isset($response['url'], $response['session_id'])) {
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'url' => null
+                    )
+                )
+            );
         }
 
         Mage::helper('M2ePro/Data_Session')->setValue('token_session_id', $response['session_id']);
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'url' => $response['url']
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'url' => $response['url']
+                )
+            )
+        );
 
         // ---------------------------------------
     }
@@ -336,9 +350,11 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         );
 
         $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('account','add','entity',
-                                                               $requestParams,NULL,
-                                                               NULL,NULL);
+        $connectorObj = $dispatcherObject->getVirtualConnector(
+            'account', 'add', 'entity',
+            $requestParams, NULL,
+            NULL, NULL
+        );
 
         $dispatcherObject->process($connectorObj);
         $response = array_filter($connectorObj->getResponseData());
@@ -379,7 +395,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
     public function setModeAndUpdateAccountAction()
     {
-        $mode = $this->getRequest()->getParam('mode','');
+        $mode = $this->getRequest()->getParam('mode', '');
 
         if (!in_array(
             $mode,
@@ -388,10 +404,14 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
                 Ess_M2ePro_Helper_View_Ebay::MODE_ADVANCED
             )
         )) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'result' => 'error',
-                'message' => Mage::helper('M2ePro')->__('Unknown Mode "%mode%"', $mode)
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'result' => 'error',
+                    'message' => Mage::helper('M2ePro')->__('Unknown Mode "%mode%"', $mode)
+                    )
+                )
+            );
         }
 
         Mage::helper('M2ePro/View_Ebay')->setMode($mode);
@@ -404,9 +424,13 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
             ->addData(Mage::getModel('M2ePro/Ebay_Account')->$method())
             ->save();
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'result' => 'success'
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'result' => 'success'
+                )
+            )
+        );
     }
 
     //########################################
@@ -416,24 +440,32 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $accountId = (int)$this->getRequest()->getParam('account_id');
 
         if (!$accountId) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'result' => 'error',
-                'message' => Mage::helper('M2ePro')->__('Account id is not defined')
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'result' => 'error',
+                    'message' => Mage::helper('M2ePro')->__('Account id is not defined')
+                    )
+                )
+            );
         }
 
-        $account = Mage::helper('M2ePro/Component_Ebay')->getObject('Account',$accountId);
+        $account = Mage::helper('M2ePro/Component_Ebay')->getObject('Account', $accountId);
 
         $yes = Mage::helper('M2ePro')->__('Yes');
         $no  = Mage::helper('M2ePro')->__('No');
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'result' => 'success',
-            'text' => array(
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'result' => 'success',
+                'text' => array(
                 'listing_other' => $account->getChildObject()->isOtherListingsSynchronizationEnabled() ? $yes : $no,
                 'feedbacks'     => $account->getChildObject()->isFeedbacksReceive() ? $yes : $no,
+                )
+                )
             )
-        )));
+        );
 
     }
 

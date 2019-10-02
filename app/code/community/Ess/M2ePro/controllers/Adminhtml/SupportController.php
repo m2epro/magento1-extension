@@ -78,7 +78,7 @@ class Ess_M2ePro_Adminhtml_SupportController
     public function knowledgeBaseAction()
     {
         $url = $this->getRequest()->getParam('url');
-        if (is_null($url)) {
+        if ($url === null) {
             $url = Mage::helper('M2ePro/Module_Support')->getKnowledgeBaseUrl();
         } else {
             $url = base64_decode($url);
@@ -113,17 +113,20 @@ class Ess_M2ePro_Adminhtml_SupportController
                 $this->_getSession()->addError(Mage::helper('M2ePro')->__('You should fill in all required fields.'));
                 return $this->_redirect('*/*/index');
             }
+
             $data[$key] = $post[$key];
         }
 
         $severity = isset($post['severity']) ? $post['severity'] : null;
 
-        Mage::helper('M2ePro/Module_Support_Form')->send($data['component'],
-                                                         $data['contact_mail'],
-                                                         $data['contact_name'],
-                                                         $data['subject'],
-                                                         $data['description'],
-                                                         $severity);
+        Mage::helper('M2ePro/Module_Support_Form')->send(
+            $data['component'],
+            $data['contact_mail'],
+            $data['contact_name'],
+            $data['subject'],
+            $data['description'],
+            $severity
+        );
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Your message has been successfully sent.'));
         $this->_redirect('*/*/index');

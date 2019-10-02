@@ -8,20 +8,18 @@
 
 class Ess_M2ePro_Helper_Data_Cache_Session extends Ess_M2ePro_Helper_Data_Cache_Abstract
 {
-    //########################################
-
-    private $cacheStorage = array();
+    protected $_cacheStorage = array();
 
     //########################################
 
     public function getValue($key)
     {
-        return !empty($this->cacheStorage[$key]['data']) ? $this->cacheStorage[$key]['data'] : null;
+        return !empty($this->_cacheStorage[$key]['data']) ? $this->_cacheStorage[$key]['data'] : null;
     }
 
     public function setValue($key, $value, array $tags = array(), $lifetime = null)
     {
-        $this->cacheStorage[$key] = array(
+        $this->_cacheStorage[$key] = array(
             'data' => $value,
             'tags' => $tags,
         );
@@ -33,23 +31,23 @@ class Ess_M2ePro_Helper_Data_Cache_Session extends Ess_M2ePro_Helper_Data_Cache_
 
     public function removeValue($key)
     {
-        if (!isset($this->cacheStorage[$key])) {
+        if (!isset($this->_cacheStorage[$key])) {
             return false;
         }
 
-        unset($this->cacheStorage[$key]);
+        unset($this->_cacheStorage[$key]);
         return true;
     }
 
     public function removeTagValues($tag)
     {
         $isDelete = false;
-        foreach ($this->cacheStorage as $key => $data) {
+        foreach ($this->_cacheStorage as $key => $data) {
             if (!in_array($tag, $data['tags'])) {
                 continue;
             }
 
-            unset($this->cacheStorage[$key]);
+            unset($this->_cacheStorage[$key]);
             $isDelete = true;
         }
 
@@ -58,11 +56,11 @@ class Ess_M2ePro_Helper_Data_Cache_Session extends Ess_M2ePro_Helper_Data_Cache_
 
     public function removeAllValues()
     {
-        if (empty($this->cacheStorage)) {
+        if (empty($this->_cacheStorage)) {
             return false;
         }
 
-        $this->cacheStorage = array();
+        $this->_cacheStorage = array();
         return true;
     }
 

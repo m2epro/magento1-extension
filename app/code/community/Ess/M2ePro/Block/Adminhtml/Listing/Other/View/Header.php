@@ -39,7 +39,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_View_Header extends Ess_M2ePro_Bl
 
     //########################################
 
-    private function cutLongLines($line)
+    protected function cutLongLines($line)
     {
         if (strlen($line) < 50) {
             return $line;
@@ -53,7 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_View_Header extends Ess_M2ePro_Bl
     /**
      * @return Ess_M2ePro_Model_Account
      */
-    private function getAccount()
+    protected function getAccount()
     {
         return $this->getData('account');
     }
@@ -61,7 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_View_Header extends Ess_M2ePro_Bl
     /**
      * @return Ess_M2ePro_Model_Marketplace
      */
-    private function getMarketplace()
+    protected function getMarketplace()
     {
         return $this->getData('marketplace');
     }

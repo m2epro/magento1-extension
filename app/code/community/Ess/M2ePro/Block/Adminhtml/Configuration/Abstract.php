@@ -63,15 +63,17 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_Abstract extends Mage_Adminhtml_B
 
     protected function setPageHelpLink($tinyLink = NULL)
     {
-        $this->setData('page_help_link',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, $tinyLink));
+        $this->setData(
+            'page_help_link',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, $tinyLink)
+        );
 
         return $this;
     }
 
     public function getPageHelpLink()
     {
-        if (is_null($this->getData('page_help_link'))) {
+        if ($this->getData('page_help_link') === null) {
             return Mage::helper('M2ePro/Module_Support')->getDocumentationUrl();
         }
 

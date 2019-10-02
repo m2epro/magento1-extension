@@ -10,24 +10,22 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
 {
     const API_VERSION = 1;
 
-    protected $requestTime = NULL;
+    protected $_requestTime = NULL;
 
-    protected $serverBaseUrl = NULL;
-    protected $serverHostName = NULL;
+    protected $_serverBaseUrl  = NULL;
+    protected $_serverHostName = NULL;
 
-    protected $tryToResendOnError = true;
-    protected $tryToSwitchEndpointOnError = true;
+    protected $_tryToResendOnError         = true;
+    protected $_tryToSwitchEndpointOnError = true;
 
     // ########################################
 
     public function process()
     {
         try {
-
-            $this->requestTime = Mage::helper('M2ePro')->getCurrentGmtDate();
+            $this->_requestTime = Mage::helper('M2ePro')->getCurrentGmtDate();
 
             $result = $this->sendRequest();
-
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Client')->updateMySqlConnection();
             throw $exception;
@@ -48,26 +46,26 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
 
     public function setServerBaseUrl($value)
     {
-        $this->serverBaseUrl = $value;
+        $this->_serverBaseUrl = $value;
         return $this;
     }
 
     public function getServerBaseUrl()
     {
-        return $this->serverBaseUrl;
+        return $this->_serverBaseUrl;
     }
 
     // ----------------------------------------
 
     public function setServerHostName($value)
     {
-        $this->serverHostName = $value;
+        $this->_serverHostName = $value;
         return $this;
     }
 
     public function getServerHostName()
     {
-        return $this->serverHostName;
+        return $this->_serverHostName;
     }
 
     // ----------------------------------------
@@ -78,7 +76,7 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
      */
     public function setTryToResendOnError($tryToResendOnError)
     {
-        $this->tryToResendOnError = $tryToResendOnError;
+        $this->_tryToResendOnError = $tryToResendOnError;
         return $this;
     }
 
@@ -87,7 +85,7 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
      */
     public function isTryToResendOnError()
     {
-        return $this->tryToResendOnError;
+        return $this->_tryToResendOnError;
     }
 
     // ----------------------------------------
@@ -98,7 +96,7 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
      */
     public function setTryToSwitchEndpointOnError($tryToSwitchEndpointOnError)
     {
-        $this->tryToSwitchEndpointOnError = $tryToSwitchEndpointOnError;
+        $this->_tryToSwitchEndpointOnError = $tryToSwitchEndpointOnError;
         return $this;
     }
 
@@ -107,7 +105,7 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
      */
     public function isTryToSwitchEndpointOnError()
     {
-        return $this->tryToSwitchEndpointOnError;
+        return $this->_tryToSwitchEndpointOnError;
     }
 
     // ########################################

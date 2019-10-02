@@ -9,15 +9,16 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Category_Grid
     extends Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Grid
 {
-    private $selectedIds = array();
+    protected $_selectedIds = array();
 
-    private $currentCategoryId = NULL;
+    protected $_currentCategoryId;
 
     //########################################
 
-    private function getCollectionIds()
+    protected function getCollectionIds()
     {
-        if (!is_null($ids = $this->getData('collection_ids'))) {
+        $ids = $this->getData('collection_ids');
+        if ($ids !== null) {
             return $ids;
         }
 
@@ -29,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Category_Grid
             array($this->getCurrentCategoryId()), Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID
         );
 
-        $this->setData('collection_ids',$ids);
+        $this->setData('collection_ids', $ids);
         return $ids;
     }
 
@@ -45,12 +46,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Category_Grid
             return parent::_prepareMassaction();
         }
 
-        $ids = array_filter(explode(',',$ids));
-        $ids = array_merge($ids,$this->getSelectedIds());
-        $ids = array_intersect($ids,$this->getCollectionIds());
+        $ids = array_filter(explode(',', $ids));
+        $ids = array_merge($ids, $this->getSelectedIds());
+        $ids = array_intersect($ids, $this->getCollectionIds());
         $ids = array_values(array_unique($ids));
 
-        $this->getRequest()->setPost($this->getMassactionBlock()->getFormFieldNameInternal(),implode(',',$ids));
+        $this->getRequest()->setPost($this->getMassactionBlock()->getFormFieldNameInternal(), implode(',', $ids));
 
         return parent::_prepareMassaction();
     }
@@ -59,26 +60,26 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Category_Grid
 
     public function setSelectedIds(array $ids)
     {
-        $this->selectedIds = $ids;
+        $this->_selectedIds = $ids;
         return $this;
     }
 
     public function getSelectedIds()
     {
-        return $this->selectedIds;
+        return $this->_selectedIds;
     }
 
     // ---------------------------------------
 
     public function setCurrentCategoryId($currentCategoryId)
     {
-        $this->currentCategoryId = $currentCategoryId;
+        $this->_currentCategoryId = $currentCategoryId;
         return $this;
     }
 
     public function getCurrentCategoryId()
     {
-        return $this->currentCategoryId;
+        return $this->_currentCategoryId;
     }
 
     //########################################
@@ -91,7 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Category_Grid
             array('category_id' => 'category_id')
         );
 
-        $collection->addFieldToFilter('category_id', $this->currentCategoryId);
+        $collection->addFieldToFilter('category_id', $this->_currentCategoryId);
 
         parent::setCollection($collection);
     }
@@ -138,9 +139,8 @@ JS;
         $js = '';
 
         if (!$this->getRequest()->isXmlHttpRequest() || $this->getRequest()->getParam('category_change')) {
-
             $jsObjectName = $this->getMassactionBlock()->getJsObjectName();
-            $checkedString = implode(',', array_intersect($this->getCollectionIds(), $this->selectedIds));
+            $checkedString = implode(',', array_intersect($this->getCollectionIds(), $this->_selectedIds));
 
             $js .= <<<HTML
 <script type="text/javascript">

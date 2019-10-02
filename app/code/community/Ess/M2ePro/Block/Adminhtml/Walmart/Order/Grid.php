@@ -8,8 +8,11 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    /** @var $itemsCollection Ess_M2ePro_Model_Mysql4_Order_Item_Collection */
-    private $itemsCollection = NULL;
+    /** @var $_itemsCollection Ess_M2ePro_Model_Resource_Order_Item_Collection */
+    protected $_itemsCollection = null;
+
+    /** @var $_notesCollection Ess_M2ePro_Model_Resource_Order_Note_Collection */
+    protected $_notesCollection = null;
 
     //########################################
 
@@ -43,17 +46,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
         $collection->getSelect()
             ->joinLeft(
                 array(
-                    'so' => Mage::helper('M2ePro/Module_Database_Structure')->
-                    getTableNameWithPrefix('sales/order')
+                    'so' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales/order')
                 ),
                 '(so.entity_id = `main_table`.magento_order_id)',
-                array('magento_order_num' => 'increment_id'));
+                array('magento_order_num' => 'increment_id')
+            );
 
         // Add Filter By Account
         // ---------------------------------------
         if ($accountId = $this->getRequest()->getParam('walmartAccount')) {
             $collection->addFieldToFilter('main_table.account_id', $accountId);
         }
+
         // ---------------------------------------
 
         // Add Filter By Marketplace
@@ -61,6 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
         if ($marketplaceId = $this->getRequest()->getParam('walmartMarketplace')) {
             $collection->addFieldToFilter('main_table.marketplace_id', $marketplaceId);
         }
+
         // ---------------------------------------
 
         // Add Not Created Magento Orders Filter
@@ -68,6 +73,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
         if ($this->getRequest()->getParam('not_created_only')) {
             $collection->addFieldToFilter('magento_order_id', array('null' => true));
         }
+
         // ---------------------------------------
 
         $this->setCollection($collection);
@@ -76,41 +82,56 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
 
     protected function _afterLoadCollection()
     {
-        $this->itemsCollection = Mage::helper('M2ePro/Component_Walmart')
-            ->getCollection('Order_Item')
-            ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+        $this->_itemsCollection = Mage::helper('M2ePro/Component_Walmart')
+             ->getCollection('Order_Item')
+             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+
+        // ---------------------------------------
+
+        $this->_notesCollection = Mage::getModel('M2ePro/Order_Note')
+             ->getCollection()
+             ->addFieldToFilter('order_id', array('in' => $this->getCollection()->getColumnValues('id')));
+
+        // ---------------------------------------
 
         return parent::_afterLoadCollection();
     }
 
     protected function _prepareColumns()
     {
-        $this->addColumn('purchase_create_date', array(
+        $this->addColumn(
+            'purchase_create_date', array(
             'header' => Mage::helper('M2ePro')->__('Sale Date'),
             'align'  => 'left',
             'type'   => 'datetime',
             'format' => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'  => 'purchase_create_date',
             'width'  => '170px'
-        ));
+            )
+        );
 
-        $this->addColumn('magento_order_num', array(
+        $this->addColumn(
+            'magento_order_num', array(
             'header' => Mage::helper('M2ePro')->__('Magento Order #'),
             'align'  => 'left',
             'index'  => 'so.increment_id',
             'width'  => '110px',
             'frame_callback' => array($this, 'callbackColumnMagentoOrder')
-        ));
+            )
+        );
 
-        $this->addColumn('walmart_order_id', array(
+        $this->addColumn(
+            'walmart_order_id', array(
             'header' => Mage::helper('M2ePro')->__('Walmart Order #'),
             'align'  => 'left',
             'width'  => '110px',
             'index'  => 'walmart_order_id',
             'frame_callback' => array($this, 'callbackColumnWalmartOrderId')
-        ));
+            )
+        );
 
-        $this->addColumn('walmart_order_items', array(
+        $this->addColumn(
+            'walmart_order_items', array(
             'header' => Mage::helper('M2ePro')->__('Items'),
             'align'  => 'left',
             'index'  => 'walmart_order_items',
@@ -118,29 +139,35 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
             'width'  => '*',
             'frame_callback' => array($this, 'callbackColumnItems'),
             'filter_condition_callback' => array($this, 'callbackFilterItems')
-        ));
+            )
+        );
 
-        $this->addColumn('buyer', array(
+        $this->addColumn(
+            'buyer', array(
             'header' => Mage::helper('M2ePro')->__('Buyer'),
             'align'  => 'left',
             'index'  => 'buyer_name',
             'width'  => '120px',
             'frame_callback' => array($this, 'callbackColumnBuyer'),
             'filter_condition_callback' => array($this, 'callbackFilterBuyer')
-        ));
+            )
+        );
 
-        $this->addColumn('paid_amount', array(
+        $this->addColumn(
+            'paid_amount', array(
             'header' => Mage::helper('M2ePro')->__('Total Paid'),
             'align'  => 'left',
             'width'  => '110px',
             'index'  => 'paid_amount',
             'type'   => 'number',
             'frame_callback' => array($this, 'callbackColumnTotal')
-        ));
+            )
+        );
 
         $helper = Mage::helper('M2ePro');
 
-        $this->addColumn('status', array(
+        $this->addColumn(
+            'status', array(
             'header'  => Mage::helper('M2ePro')->__('Status'),
             'align'   => 'left',
             'width'   => '50px',
@@ -155,11 +182,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
                 Ess_M2ePro_Model_Walmart_Order::STATUS_CANCELED            => $helper->__('Canceled')
             ),
             'frame_callback' => array($this, 'callbackColumnStatus')
-        ));
+            )
+        );
 
         $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_walmart_order/index');
 
-        $this->addColumn('action', array(
+        $this->addColumn(
+            'action', array(
             'header'   => Mage::helper('M2ePro')->__('Action'),
             'width'    => '80px',
             'type'     => 'action',
@@ -185,7 +214,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
             'filter'    => false,
             'sortable'  => false,
             'is_system' => true
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -200,17 +230,29 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
 
         // Set mass-action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('ship', array(
+        $this->getMassactionBlock()->addItem(
+            'ship', array(
              'label'    => Mage::helper('M2ePro')->__('Mark Order(s) as Shipped'),
              'url'      => $this->getUrl('*/adminhtml_walmart_order/updateShippingStatus'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('resend_shipping', array(
+        $this->getMassactionBlock()->addItem(
+            'resend_shipping', array(
              'label'    => Mage::helper('M2ePro')->__('Resend Shipping Information'),
              'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
+
+        $this->getMassactionBlock()->addItem(
+            'create_order', array(
+            'label'    => Mage::helper('M2ePro')->__('Create Magento Order'),
+            'url'      => $this->getUrl('*/adminhtml_walmart_order/createMagentoOrder'),
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -220,12 +262,32 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_Grid extends Mage_Adminhtml_Block
 
     public function callbackColumnWalmartOrderId($value, $row, $column, $isExport)
     {
-        $orderId = Mage::helper('M2ePro')->escapeHtml($row->getData('walmart_order_id'));
-        $url = Mage::helper('M2ePro/Component_Walmart')->getOrderUrl($orderId, $row->getData('marketplace_id'));
+        $returnString = Mage::helper('M2ePro')->escapeHtml($row->getData('walmart_order_id'));
 
-        return <<<HTML
-<a href="{$url}" target="_blank">{$orderId}</a>
+        /** @var $notes Ess_M2ePro_Model_Order_Note[] */
+        $notes = $this->_notesCollection->getItemsByColumnValue('order_id', $row->getData('id'));
+
+        if ($notes) {
+            $htmlNotesCount = Mage::helper('M2ePro/Data')->__(
+                'You have a custom note for the order. It can be reviewed on the order detail page.'
+            );
+
+            $returnString .= <<<HTML
+<div class="note_icon" style="display: inline-block; margin-left: 2px; width: 16px;">
+    <img class="tool-tip-image"
+         style="vertical-align: middle; cursor: inherit"
+         src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}">
+    <span class="tool-tip-message tool-tip-message" style="display:none;">
+        <img src="{$this->getSkinUrl('M2ePro/images/fam_book_open.png')}" style="width: 18px; height: 18px">
+        <div class="ebay-identifiers">
+           {$htmlNotesCount}
+        </div>
+    </span>
+</div>
 HTML;
+        }
+
+        return $returnString;
     }
 
     public function callbackColumnMagentoOrder($value, $row, $column, $isExport)
@@ -247,13 +309,13 @@ HTML;
         return $returnString.$this->getViewLogIconHtml($row->getId());
     }
 
-    private function getViewLogIconHtml($orderId)
+    protected function getViewLogIconHtml($orderId)
     {
         $orderId = (int)$orderId;
 
         // Prepare collection
         // ---------------------------------------
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Log_Collection $orderLogsCollection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Log_Collection $orderLogsCollection */
         $orderLogsCollection = Mage::getModel('M2ePro/Order_Log')->getCollection()
             ->addFieldToFilter('order_id', $orderId)
             ->setOrder('id', 'DESC');
@@ -278,6 +340,7 @@ HTML;
                 'date' => Mage::app()->getLocale()->date(strtotime($log->getData('create_date')))->toString($format)
             );
         }
+
         // ---------------------------------------
 
         $tips = array(
@@ -292,14 +355,16 @@ HTML;
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
         );
 
-        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
+        $summary = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_grid_summary', '', array(
             'entity_id' => $orderId,
             'rows' => $logRows,
             'tips' => $tips,
             'icons' => $icons,
             'view_help_handler' => 'OrderHandlerObj.viewOrderHelp',
             'hide_help_handler' => 'OrderHandlerObj.hideOrderHelp',
-        ));
+            )
+        );
 
         return $summary->toHtml();
     }
@@ -328,7 +393,7 @@ HTML;
     public function callbackColumnItems($value, $row, $column, $isExport)
     {
         /** @var $items Ess_M2ePro_Model_Order_Item[] */
-        $items = $this->itemsCollection->getItemsByColumnValue('order_id', $row->getData('id'));
+        $items = $this->_itemsCollection->getItemsByColumnValue('order_id', $row->getData('id'));
 
         $html = '';
         $gridId = $this->getId();
@@ -341,7 +406,7 @@ HTML;
             $isShowEditLink = false;
 
             $product = $item->getProduct();
-            if (!is_null($product)) {
+            if ($product !== null) {
                 /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
                 $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
                 $magentoProduct->setProduct($product);

@@ -66,9 +66,10 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
     public function setMode($mode)
     {
         $mode = strtolower($mode);
-        if (!in_array($mode,array(self::MODE_SIMPLE,self::MODE_ADVANCED))) {
+        if (!in_array($mode, array(self::MODE_SIMPLE,self::MODE_ADVANCED))) {
             return;
         }
+
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue('/view/ebay/', 'mode', $mode);
     }
 
@@ -95,7 +96,7 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 
         $feedbackCollection = Mage::getModel('M2ePro/Ebay_Feedback')->getCollection();
 
-        if (!is_null($accountId)) {
+        if ($accountId !== null) {
             $accountCollection->addFieldToFilter(
                 'account_id', $accountId
             );
@@ -111,7 +112,7 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
     {
         $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
 
-        if (!is_null($sessionCache->getValue('is_3rd_party_should_be_shown'))) {
+        if ($sessionCache->getValue('is_3rd_party_should_be_shown') !== null) {
             return $sessionCache->getValue('is_3rd_party_should_be_shown');
         }
 
@@ -144,7 +145,7 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
     {
         $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
 
-        if (!is_null($sessionCache->getValue('is_duplicates_filter_should_be_shown'))) {
+        if ($sessionCache->getValue('is_duplicates_filter_should_be_shown') !== null) {
             return $sessionCache->getValue('is_duplicates_filter_should_be_shown');
         }
 

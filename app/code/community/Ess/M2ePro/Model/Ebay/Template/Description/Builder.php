@@ -96,7 +96,6 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         }
 
         if (isset($data['product_details'])) {
-
             $prepared['product_details'] = $data['product_details'];
 
             if (is_array($prepared['product_details'])) {
@@ -117,7 +116,6 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         }
 
         if (isset($data['enhancement'])) {
-
             $prepared['enhancement'] = $data['enhancement'];
 
             if (is_array($prepared['enhancement'])) {
@@ -222,13 +220,11 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
         // ---------------------------------------
 
         if (!empty($_FILES['watermark_image']['tmp_name'])) {
-
             $hashChange = true;
 
             $prepared['watermark_image'] = file_get_contents($_FILES['watermark_image']['tmp_name']);
 
             if (isset($prepared['id'])) {
-
                 $varDir = new Ess_M2ePro_Model_VariablesDir(
                     array('child_folder' => 'ebay/template/description/watermarks')
                 );
@@ -238,7 +234,6 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
                     @unlink($watermarkPath);
                 }
             }
-
         } elseif (!empty($data['old_watermark_image']) && !isset($prepared['id'])) {
             $prepared['watermark_image'] = base64_decode($data['old_watermark_image']);
         }

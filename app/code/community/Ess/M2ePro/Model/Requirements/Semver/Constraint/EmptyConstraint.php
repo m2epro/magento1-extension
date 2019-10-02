@@ -17,7 +17,7 @@ use Ess_M2ePro_Model_Requirements_Semver_Constraint_ConstraintInterface as Const
 class Ess_M2ePro_Model_Requirements_Semver_Constraint_EmptyConstraint implements ConstraintInterface
 {
     /** @var string */
-    protected $prettyString;
+    protected $_prettyString;
 
     /**
      * @param ConstraintInterface $provider
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_EmptyConstraint implements
      */
     public function setPrettyString($prettyString)
     {
-        $this->prettyString = $prettyString;
+        $this->_prettyString = $prettyString;
     }
 
     /**
@@ -42,8 +42,8 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_EmptyConstraint implements
      */
     public function getPrettyString()
     {
-        if ($this->prettyString) {
-            return $this->prettyString;
+        if ($this->_prettyString) {
+            return $this->_prettyString;
         }
 
         return $this->__toString();

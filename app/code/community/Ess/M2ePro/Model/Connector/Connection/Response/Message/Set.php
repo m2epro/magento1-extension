@@ -36,7 +36,6 @@ class Ess_M2ePro_Model_Connector_Connection_Response_Message_Set extends Ess_M2e
         $messages = array();
 
         foreach ($this->getErrorEntities() as $message) {
-
             if (!$message->isSenderSystem()) {
                 continue;
             }

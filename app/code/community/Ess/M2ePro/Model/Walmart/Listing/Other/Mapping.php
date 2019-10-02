@@ -11,16 +11,16 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
     /**
      * @var Ess_M2ePro_Model_Account|null
      */
-    protected $account = NULL;
+    protected $_account = null;
 
-    protected $mappingSettings = NULL;
+    protected $_mappingSettings = null;
 
     //########################################
 
     public function initialize(Ess_M2ePro_Model_Account $account = NULL)
     {
-        $this->account = $account;
-        $this->mappingSettings = NULL;
+        $this->_account         = $account;
+        $this->_mappingSettings = NULL;
     }
 
     //########################################
@@ -34,7 +34,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         $otherListingsFiltered = array();
 
         foreach ($otherListings as $otherListing) {
-
             if (!($otherListing instanceof Ess_M2ePro_Model_Listing_Other)) {
                 continue;
             }
@@ -48,7 +47,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             $otherListingsFiltered[] = $otherListing;
         }
 
-        if (count($otherListingsFiltered) <= 0) {
+        if (empty($otherListingsFiltered)) {
             return false;
         }
 
@@ -92,7 +91,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         $mappingSettings = $this->getMappingRulesByPriority();
 
         foreach ($mappingSettings as $type) {
-
             $magentoProductId = NULL;
 
             if ($type == 'wpid') {
@@ -115,7 +113,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
                 $magentoProductId = $this->getTitleMappedMagentoProductId($otherListing);
             }
 
-            if (is_null($magentoProductId)) {
+            if ($magentoProductId === null) {
                 continue;
             }
 
@@ -131,27 +129,28 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
 
     protected function getMappingRulesByPriority()
     {
-        if (!is_null($this->mappingSettings)) {
-            return $this->mappingSettings;
+        if ($this->_mappingSettings !== null) {
+            return $this->_mappingSettings;
         }
 
-        $this->mappingSettings = array();
+        $this->_mappingSettings = array();
 
         foreach ($this->getAccount()->getChildObject()->getOtherListingsMappingSettings() as $key=>$value) {
             if ((int)$value['mode'] == 0) {
                 continue;
             }
+
             for ($i=0;$i<10;$i++) {
-                if (!isset($this->mappingSettings[(int)$value['priority']+$i])) {
-                    $this->mappingSettings[(int)$value['priority']+$i] = (string)$key;
+                if (!isset($this->_mappingSettings[(int)$value['priority'] + $i])) {
+                    $this->_mappingSettings[(int)$value['priority'] + $i] = (string)$key;
                     break;
                 }
             }
         }
 
-        ksort($this->mappingSettings);
+        ksort($this->_mappingSettings);
 
-        return $this->mappingSettings;
+        return $this->_mappingSettings;
     }
 
     // ---------------------------------------
@@ -165,7 +164,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         }
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingGtinModeCustomAttribute()) {
-
             $storeId = $otherListing->getChildObject()->getRelatedStoreId();
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingGtinAttribute();
             $attributeValue = trim($otherListing->getChildObject()->getGtin());
@@ -190,7 +188,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         }
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingWpidModeCustomAttribute()) {
-
             $storeId = $otherListing->getChildObject()->getRelatedStoreId();
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingWpidAttribute();
             $attributeValue = trim($otherListing->getChildObject()->getWpid());
@@ -215,7 +212,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         }
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingUpcModeCustomAttribute()) {
-
             $storeId = $otherListing->getChildObject()->getRelatedStoreId();
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingUpcAttribute();
             $attributeValue = trim($otherListing->getChildObject()->getUpc());
@@ -245,7 +241,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
         }
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingSkuModeProductId()) {
-
             $productId = trim($otherListing->getChildObject()->getSku());
 
             if (!ctype_digit($productId) || (int)$productId <= 0) {
@@ -271,7 +266,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingSkuAttribute();
         }
 
-        if (is_null($attributeCode)) {
+        if ($attributeCode === null) {
             return NULL;
         }
 
@@ -311,7 +306,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingTitleAttribute();
         }
 
-        if (is_null($attributeCode)) {
+        if ($attributeCode === null) {
             return NULL;
         }
 
@@ -325,9 +320,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
             return $productObj->getId();
         }
 
-        $findCount = preg_match('/^.+(\[(.+)\])$/',$attributeValue,$tempMatches);
+        $findCount = preg_match('/^.+(\[(.+)\])$/', $attributeValue, $tempMatches);
         if ($findCount > 0 && isset($tempMatches[1])) {
-            $attributeValue = trim(str_replace($tempMatches[1],'',$attributeValue));
+            $attributeValue = trim(str_replace($tempMatches[1], '', $attributeValue));
             $productObj = Mage::getModel('catalog/product')->setStoreId($storeId);
             $productObj = $productObj->loadByAttribute($attributeCode, $attributeValue);
             if ($productObj && $productObj->getId()) {
@@ -345,7 +340,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
      */
     protected function getAccount()
     {
-        return $this->account;
+        return $this->_account;
     }
 
     // ---------------------------------------
@@ -355,15 +350,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Other_Mapping
      */
     protected function setAccountByOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
-        if (!is_null($this->account) && $this->account->getId() == $otherListing->getAccountId()) {
+        if ($this->_account !== null && $this->_account->getId() == $otherListing->getAccountId()) {
             return;
         }
 
-        $this->account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Account',$otherListing->getAccountId()
+        $this->_account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+            'Account', $otherListing->getAccountId()
         );
 
-        $this->mappingSettings = NULL;
+        $this->_mappingSettings = NULL;
     }
 
     //########################################

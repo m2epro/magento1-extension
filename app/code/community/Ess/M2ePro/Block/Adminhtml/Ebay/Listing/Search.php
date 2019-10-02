@@ -45,22 +45,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search extends Ess_M2ePro_Block_Ad
         );
 
         /** @var Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher $marketplaceSwitcher */
-        $marketplaceSwitcher = $this->getLayout()->createBlock('M2ePro/adminhtml_marketplace_switcher', '',
-                                                                $switchersSettings);
+        $marketplaceSwitcher = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_marketplace_switcher', '',
+            $switchersSettings
+        );
         $marketplaceSwitcher->setUseConfirm(false);
 
         /** @var Ess_M2ePro_Block_Adminhtml_Account_Switcher $accountSwitcher */
-        $accountSwitcher = $this->getLayout()->createBlock('M2ePro/adminhtml_account_switcher', '',
-                                                            $switchersSettings);
+        $accountSwitcher = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_account_switcher', '',
+            $switchersSettings
+        );
         $accountSwitcher->setUseConfirm(false);
 
         /** @var Ess_M2ePro_Block_Adminhtml_Listing_Search_Switcher $searchSwitcher */
-        $searchSwitcher = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_search_switcher', '',
-                                                          $switchersSettings);
+        $searchSwitcher = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_listing_search_switcher', '',
+            $switchersSettings
+        );
 
         if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode() ||
             !Mage::helper('M2ePro/View_Ebay')->is3rdPartyShouldBeShown()) {
-
             $searchSwitcher->showOtherOption = false;
         }
 

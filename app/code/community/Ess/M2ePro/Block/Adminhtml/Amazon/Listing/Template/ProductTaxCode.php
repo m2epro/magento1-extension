@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    protected $messages = array();
+    protected $_messages = array();
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode
      */
     public function setMessages($messages)
     {
-        $this->messages = $messages;
+        $this->_messages = $messages;
     }
 
     /**
@@ -34,7 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this->_messages;
     }
 
     //########################################
@@ -53,6 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode
 </ul>
 HTML;
         }
+
         return $warnings;
     }
 

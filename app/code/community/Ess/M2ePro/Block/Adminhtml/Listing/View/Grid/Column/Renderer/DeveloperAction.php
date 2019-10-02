@@ -26,13 +26,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Grid_Column_Renderer_DeveloperActi
 
         if ($row->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK &&
             $row->getData('ebay_status')) {
-
             $status = $row->getData('ebay_status');
         }
 
         if ($row->getData('component_mode') == Ess_M2ePro_Helper_Component_Amazon::NICK &&
             $row->getData('amazon_status')) {
-
             $status = $row->getData('amazon_status');
         }
 

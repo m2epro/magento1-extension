@@ -9,22 +9,22 @@
 abstract class Ess_M2ePro_Model_Template_Diff_Abstract
 {
     /** @var array */
-    protected $newSnapshot = array();
+    protected $_newSnapshot = array();
 
     /** @var array */
-    protected $oldSnapshot = array();
+    protected $_oldSnapshot = array();
 
     //########################################
 
     public function setNewSnapshot(array $snapshot)
     {
-        $this->newSnapshot = $snapshot;
+        $this->_newSnapshot = $snapshot;
         return $this;
     }
 
     public function setOldSnapshot(array $snapshot)
     {
-        $this->oldSnapshot = $snapshot;
+        $this->_oldSnapshot = $snapshot;
         return $this;
     }
 
@@ -36,13 +36,13 @@ abstract class Ess_M2ePro_Model_Template_Diff_Abstract
 
     protected function isSettingsDifferent($keys, $groupKey = NULL)
     {
-        $newSnapshotData = $this->newSnapshot;
-        if (!is_null($groupKey) && isset($newSnapshotData[$groupKey])) {
+        $newSnapshotData = $this->_newSnapshot;
+        if ($groupKey !== null && isset($newSnapshotData[$groupKey])) {
             $newSnapshotData = $newSnapshotData[$groupKey];
         }
 
-        $oldSnapshotData = $this->oldSnapshot;
-        if (!is_null($groupKey) && isset($oldSnapshotData[$groupKey])) {
+        $oldSnapshotData = $this->_oldSnapshot;
+        if ($groupKey !== null && isset($oldSnapshotData[$groupKey])) {
             $oldSnapshotData = $oldSnapshotData[$groupKey];
         }
 

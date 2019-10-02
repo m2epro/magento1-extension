@@ -14,23 +14,23 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
     const PENDING_REQUEST_MAX_LIFE_TIME = 86400;
     const MAX_LIFETIME                  = 172800;
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction */
-    private $processingAction = NULL;
+    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $_processingAction */
+    protected $_processingAction = null;
 
     // ########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
     public function setProcessingAction(Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction)
     {
-        $this->processingAction = $processingAction;
+        $this->_processingAction = $processingAction;
         return $this;
     }
 
@@ -38,11 +38,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
 
     public function prepare()
     {
-        if (is_null($this->getProcessingObject()) || !$this->getProcessingObject()->getId()) {
+        if ($this->getProcessingObject() === null || !$this->getProcessingObject()->getId()) {
             throw new Ess_M2ePro_Model_Exception_Logic('Processing does not exist.');
         }
 
-        if (is_null($this->getProcessingAction()) || !$this->getProcessingAction()->getId()) {
+        if ($this->getProcessingAction() === null || !$this->getProcessingAction()->getId()) {
             throw new Ess_M2ePro_Model_Exception_Logic('Processing Action does not exist.');
         }
 
@@ -60,23 +60,25 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
         $sku       = (string)$params['request_data']['sku'];
 
         $processingActionList = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_ProcessingList');
-        $processingActionList->setData(array(
+        $processingActionList->setData(
+            array(
             'account_id'           => $accountId,
             'processing_action_id' => $this->getProcessingAction()->getId(),
             'listing_product_id'   => $this->getListingProduct()->getId(),
             'sku'                  => $sku,
             'stage'                => ProcessingList::STAGE_LIST_DETAILS
-        ));
+            )
+        );
         $processingActionList->save();
     }
 
     public function stop()
     {
-        if (is_null($this->getProcessingObject()) || !$this->getProcessingObject()->getId()) {
+        if ($this->getProcessingObject() === null || !$this->getProcessingObject()->getId()) {
             return;
         }
 
-        if (is_null($this->getProcessingAction()) || !$this->getProcessingAction()->getId()) {
+        if ($this->getProcessingAction() === null || !$this->getProcessingAction()->getId()) {
             return;
         }
 
@@ -94,13 +96,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction */
         $processingAction = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Processing');
-        $processingAction->setData(array(
+        $processingAction->setData(
+            array(
             'listing_product_id' => $params['listing_product_id'],
             'processing_id'      => $this->getProcessingObject()->getId(),
             'type'               => Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing::TYPE_ADD,
             'is_prepared'        => 0,
             'group_hash'         => $params['group_hash'],
-        ));
+            )
+        );
         $processingAction->save();
     }
 
@@ -133,7 +137,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
             /** @var Ess_M2ePro_Model_Walmart_Connector_Product_List_Responser $responser */
             $responser = $this->getResponser();
             $responser->process();
-
         } catch (Exception $exception) {
             $this->getResponser()->failDetected($exception->getMessage());
             return false;
@@ -142,9 +145,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
         return $this->getResponser()->isSuccess();
     }
 
-    public function processRelistResult(ProcessingList $processingList, array $resultData){
+    public function processRelistResult(ProcessingList $processingList, array $resultData)
+    {
         try {
-
             $response = Mage::getModel('M2ePro/Connector_Connection_Response');
             $response->initFromPreparedResponse($resultData);
 
@@ -153,7 +156,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
             );
             $responser->setProcessingList($processingList);
             $responser->process();
-
         } catch (Exception $exception) {
             $responser->failDetected($exception->getMessage());
             return false;
@@ -167,7 +169,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
     public function complete()
     {
         // listing product can be removed during processing action
-        if (is_null($this->getListingProduct()->getId())) {
+        if ($this->getListingProduct()->getId() === null) {
             $this->getProcessingObject()->deleteInstance();
             return;
         }
@@ -239,23 +241,23 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
 
     protected function getListingProduct()
     {
-        if (!is_null($this->listingProduct)) {
-            return $this->listingProduct;
+        if ($this->_listingProduct !== null) {
+            return $this->_listingProduct;
         }
 
         $params = $this->getParams();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->addFieldToFilter('id', array('in' => $params['listing_product_id']));
 
-        return $this->listingProduct = $collection->getFirstItem();
+        return $this->_listingProduct = $collection->getFirstItem();
     }
 
     protected function getProcessingAction()
     {
-        if (!is_null($this->processingAction)) {
-            return $this->processingAction;
+        if ($this->_processingAction !== null) {
+            return $this->_processingAction;
         }
 
         $processingActionCollection = Mage::getResourceModel(
@@ -265,7 +267,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
 
         $processingAction = $processingActionCollection->getFirstItem();
 
-        return $processingAction->getId() ? $this->processingAction = $processingAction : NULL;
+        return $processingAction->getId() ? $this->_processingAction = $processingAction : NULL;
     }
 
     // ########################################

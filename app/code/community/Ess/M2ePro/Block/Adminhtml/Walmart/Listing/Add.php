@@ -24,7 +24,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add
         // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Creating A New M2E Pro Listing",
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                "%component_name% / Creating A New M2E Pro Listing",
                 $componentName
             );
         } else {
@@ -41,14 +42,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add
         $this->removeButton('edit');
 
         // ---------------------------------------
-        $url = $this->getUrl('*/adminhtml_walmart_listing_create/index', array(
+        $url = $this->getUrl(
+            '*/adminhtml_walmart_listing_create/index', array(
             '_current' => true
-        ));
-        $this->_addButton('save_and_next', array(
+            )
+        );
+        $this->_addButton(
+            'save_and_next', array(
             'label'     => Mage::helper('M2ePro')->__('Next Step'),
             'onclick'   => 'WalmartListingSettingsHandlerObj.save_click(\'' . $url . '\')',
             'class'     => 'next'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

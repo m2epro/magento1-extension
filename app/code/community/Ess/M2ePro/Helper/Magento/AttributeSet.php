@@ -96,9 +96,11 @@ class Ess_M2ePro_Helper_Magento_AttributeSet extends Ess_M2ePro_Helper_Magento_A
             return array();
         }
 
-        /* @var $productsCollection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $productsCollection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                                  Mage::getModel('catalog/product')->getResource());
+        /** @var $productsCollection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $productsCollection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
         $productsCollection->addFieldToFilter('attribute_set_id', array('in' => $attributeSetIds));
 
         return $this->_convertCollectionToReturnType($productsCollection, $returnType);
@@ -132,10 +134,11 @@ class Ess_M2ePro_Helper_Magento_AttributeSet extends Ess_M2ePro_Helper_Magento_A
 
     //########################################
 
-    protected function _getContainsAttributeIds(array $attributeIds,
-                                                             $returnType = self::RETURN_TYPE_ARRAYS,
-                                                             $isFully = false)
-    {
+    protected function _getContainsAttributeIds(
+        array $attributeIds,
+        $returnType = self::RETURN_TYPE_ARRAYS,
+        $isFully = false
+    ) {
         if (empty($attributeIds)) {
             return array();
         }

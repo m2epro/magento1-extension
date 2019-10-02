@@ -47,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Template_Edit
             'allowed_tabs' => $this->getAllowedTabs(),
             'policy_localization' => $this->getData('policy_localization')
         );
-        $tabs = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_template_edit_tabs', '',$parameters);
+        $tabs = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_template_edit_tabs', '', $parameters);
         $tabs->setDestElementId('transferring_policies_block');
         $this->setChild('tabs', $tabs);
         // ---------------------------------------
@@ -103,7 +103,8 @@ HTML;
     $('{$tabs->getId()}').hide();
 </script>
 HTML;
-    }
+        }
+
         // ---------------------------------------
 
         return $html . $tabs->toHtml() . parent::getFormHtml();

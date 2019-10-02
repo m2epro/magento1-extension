@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Stop_Requester
 
     protected function getLogsAction()
     {
-        if (!empty($this->params['remove'])) {
+        if (!empty($this->_params['remove'])) {
             return Ess_M2ePro_Model_Listing_Log::ACTION_STOP_AND_REMOVE_PRODUCT;
         }
 
@@ -39,7 +39,10 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Stop_Requester
 
     //########################################
 
-    public function initializeVariations() {}
+    public function initializeVariations()
+    {
+        return null;
+    }
 
     //########################################
 }

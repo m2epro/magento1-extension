@@ -12,62 +12,62 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
     const DEFAULT_REQUEST_TIMEOUT         = 300;
     const TIMEOUT_INCREMENT_FOR_ONE_IMAGE = 30;
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
     /** @var Ess_M2ePro_Model_Listing_Product_LockManager */
-    protected $lockManager = NULL;
+    protected $_lockManager = null;
 
-    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator $validatorObject */
-    protected $validatorObject = NULL;
+    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator $_validatorObject */
+    protected $_validatorObject = null;
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
      */
-    protected $requestObject = NULL;
+    protected $_requestObject = null;
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_RequestData
      */
-    protected $requestDataObject = NULL;
+    protected $_requestDataObject = null;
 
-    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger $logger */
-    protected $logger = NULL;
+    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger $_logger */
+    protected $_logger = null;
 
     /**
      * @var Ess_M2ePro_Model_Connector_Connection_Response_Message[]
      */
-    protected $storedLogMessages = array();
+    protected $_storedLogMessages = array();
 
-    protected $isRealTime = false;
+    protected $_isRealTime = false;
 
     //########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
 
-        if (is_null($this->listingProduct->getActionConfigurator())) {
-            $this->listingProduct->setActionConfigurator(
+        if ($this->_listingProduct->getActionConfigurator() === null) {
+            $this->_listingProduct->setActionConfigurator(
                 Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator')
             );
         }
 
-        $this->marketplace = $this->listingProduct->getMarketplace();
-        $this->account     = $this->listingProduct->getAccount();
+        $this->marketplace = $this->_listingProduct->getMarketplace();
+        $this->account     = $this->_listingProduct->getAccount();
     }
 
     //########################################
 
     public function setIsRealTime($isRealTime = true)
     {
-        $this->isRealTime = $isRealTime;
+        $this->_isRealTime = $isRealTime;
         return $this;
     }
 
     public function isRealTime()
     {
-        return $this->isRealTime;
+        return $this->_isRealTime;
     }
 
     //########################################
@@ -83,7 +83,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
             parent::getProcessingParams(),
             array(
                 'request_data'        => $this->getRequestData(),
-                'listing_product_id'  => $this->listingProduct->getId(),
+                'listing_product_id'  => $this->_listingProduct->getId(),
                 'lock_identifier'     => $this->getLockIdentifier(),
                 'action_type'         => $this->getActionType(),
                 'request_timeout'     => $this->getRequestTimeout(),
@@ -108,7 +108,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
         if (!isset($requestData['is_eps_ebay_images_mode']) || !isset($requestData['upload_images_mode']) ||
             $requestData['is_eps_ebay_images_mode'] === false ||
-            (is_null($requestData['is_eps_ebay_images_mode']) &&
+            ($requestData['is_eps_ebay_images_mode'] === null &&
                 $requestData['upload_images_mode'] ==
                 Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images::UPLOAD_IMAGES_MODE_SELF)) {
             return self::DEFAULT_REQUEST_TIMEOUT;
@@ -155,29 +155,13 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
     protected function processRealTime()
     {
-        try {
-            parent::process();
-        } catch (Ess_M2ePro_Model_Exception_Connection $exception) {
-            if ($this->account->getChildObject()->isModeSandbox()) {
-                throw $exception;
-            }
-
-            $this->processResponser();
-
-        } catch (Exception $exception) {
-            if (strpos($exception->getMessage(), 'code:34') === false ||
-                $this->account->getChildObject()->isModeSandbox()
-            ) {
-                throw $exception;
-            }
-
-            $this->processResponser();
-        }
+        parent::process();
 
         if ($this->getResponser()->getStatus() != Ess_M2ePro_Helper_Data::STATUS_SUCCESS) {
             $this->getLogger()->setStatus($this->getResponser()->getStatus());
         }
-        $this->params['logs_action_id'] = $this->getResponser()->getLogsActionId();
+
+        $this->_params['logs_action_id'] = $this->getResponser()->getLogsActionId();
     }
 
     protected function processResponser()
@@ -193,7 +177,6 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         $tempData = $this->getRequestObject()->getData();
 
         foreach ($this->getRequestObject()->getWarningMessages() as $messageText) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 $messageText, Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
@@ -220,8 +203,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         $product = array(
             'request'          => $this->getRequestDataObject()->getData(),
             'request_metadata' => $metaData,
-            'configurator'     => $this->listingProduct->getActionConfigurator()->getData(),
-            'id'               => $this->listingProduct->getId(),
+            'configurator'     => $this->_listingProduct->getActionConfigurator()->getData(),
+            'id'               => $this->_listingProduct->getId(),
         );
 
         return array(
@@ -231,8 +214,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
             'lock_identifier' => $this->getLockIdentifier(),
             'logs_action'     => $this->getLogsAction(),
             'logs_action_id'  => $this->getLogger()->getActionId(),
-            'status_changer'  => $this->params['status_changer'],
-            'params'          => $this->params,
+            'status_changer'  => $this->_params['status_changer'],
+            'params'          => $this->_params,
             'product'         => $product,
         );
     }
@@ -246,7 +229,6 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         $validationResult = $validator->validate();
 
         foreach ($validator->getMessages() as $messageData) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData($messageData['text'], $messageData['type']);
 
@@ -269,9 +251,8 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
     protected function validateConfigurator()
     {
         /** @var Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator */
-        $configurator = $this->listingProduct->getActionConfigurator();
-        if (count($configurator->getAllowedDataTypes()) <= 0) {
-
+        $configurator = $this->_listingProduct->getActionConfigurator();
+        if (empty($configurator->getAllowedDataTypes())) {
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'There was no need for this action. It was skipped.
@@ -294,7 +275,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
     {
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater $variationUpdater */
         $variationUpdater = Mage::getModel('M2ePro/Ebay_Listing_Product_Variation_Updater');
-        $variationUpdater->process($this->listingProduct);
+        $variationUpdater->process($this->_listingProduct);
         $variationUpdater->afterMassProcessEvent();
     }
 
@@ -302,8 +283,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
     protected function isListingProductLocked()
     {
-        if ($this->listingProduct->isSetProcessingLock('in_action') || $this->getLockManager()->isLocked()) {
-
+        if ($this->_listingProduct->isSetProcessingLock('in_action') || $this->getLockManager()->isLocked()) {
             // M2ePro_TRANSLATIONS
             // Another Action is being processed. Try again when the Action is completed.
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -344,7 +324,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
      */
     public function getLogsActionId()
     {
-        return $this->params['logs_action_id'];
+        return $this->_params['logs_action_id'];
     }
 
     //########################################
@@ -355,11 +335,11 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
     protected function getLockManager()
     {
-        if (!is_null($this->lockManager)) {
-            return $this->lockManager;
+        if ($this->_lockManager !== null) {
+            return $this->_lockManager;
         }
 
-        switch ($this->params['status_changer']) {
+        switch ($this->_params['status_changer']) {
             case Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN:
                 $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
                 break;
@@ -371,14 +351,14 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
                 break;
         }
 
-        $this->lockManager = Mage::getModel(
-            'M2ePro/Listing_Product_LockManager', array('listing_product' => $this->listingProduct)
+        $this->_lockManager = Mage::getModel(
+            'M2ePro/Listing_Product_LockManager', array('listing_product' => $this->_listingProduct)
         );
-        $this->lockManager->setInitiator($initiator);
-        $this->lockManager->setLogsActionId($this->params['logs_action_id']);
-        $this->lockManager->setLogsAction($this->getLogsAction());
+        $this->_lockManager->setInitiator($initiator);
+        $this->_lockManager->setLogsActionId($this->_params['logs_action_id']);
+        $this->_lockManager->setLogsAction($this->getLogsAction());
 
-        return $this->lockManager;
+        return $this->_lockManager;
     }
 
     protected function getOrmActionType()
@@ -409,21 +389,21 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
      */
     protected function getValidatorObject()
     {
-        if (empty($this->validatorObject)) {
+        if (empty($this->_validatorObject)) {
 
             /** @var $validator Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator */
             $validator = Mage::getModel(
                 'M2ePro/Ebay_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Validator'
             );
 
-            $validator->setParams($this->params);
-            $validator->setListingProduct($this->listingProduct);
-            $validator->setConfigurator($this->listingProduct->getActionConfigurator());
+            $validator->setParams($this->_params);
+            $validator->setListingProduct($this->_listingProduct);
+            $validator->setConfigurator($this->_listingProduct->getActionConfigurator());
 
-            $this->validatorObject = $validator;
+            $this->_validatorObject = $validator;
         }
 
-        return $this->validatorObject;
+        return $this->_validatorObject;
     }
 
     /**
@@ -431,11 +411,11 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
      */
     protected function getRequestObject()
     {
-        if (empty($this->requestObject)) {
-            $this->requestObject = $this->makeRequestObject();
+        if (empty($this->_requestObject)) {
+            $this->_requestObject = $this->makeRequestObject();
         }
 
-        return $this->requestObject;
+        return $this->_requestObject;
     }
 
     /**
@@ -447,9 +427,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
         $request = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Request');
 
-        $request->setParams($this->params);
-        $request->setListingProduct($this->listingProduct);
-        $request->setConfigurator($this->listingProduct->getActionConfigurator());
+        $request->setParams($this->_params);
+        $request->setListingProduct($this->_listingProduct);
+        $request->setConfigurator($this->_listingProduct->getActionConfigurator());
         $request->setCachedData($this->getValidatorObject()->getData());
 
         return $request;
@@ -461,11 +441,11 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
      */
     protected function buildRequestDataObject(array $data)
     {
-        if (empty($this->requestDataObject)) {
-            $this->requestDataObject = $this->makeRequestDataObject($data);
+        if (empty($this->_requestDataObject)) {
+            $this->_requestDataObject = $this->makeRequestDataObject($data);
         }
 
-        return $this->requestDataObject;
+        return $this->_requestDataObject;
     }
 
     /**
@@ -477,7 +457,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         $requestData = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_RequestData');
 
         $requestData->setData($data);
-        $requestData->setListingProduct($this->listingProduct);
+        $requestData->setListingProduct($this->_listingProduct);
 
         return $requestData;
     }
@@ -487,7 +467,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
      */
     protected function getRequestDataObject()
     {
-        return $this->requestDataObject;
+        return $this->_requestDataObject;
     }
 
     /**
@@ -496,20 +476,20 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
      */
     public function getLogger()
     {
-        if (is_null($this->logger)) {
+        if ($this->_logger === null) {
 
             /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger $logger */
 
             $logger = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Logger');
 
-            if (!isset($this->params['logs_action_id']) || !isset($this->params['status_changer'])) {
+            if (!isset($this->_params['logs_action_id']) || !isset($this->_params['status_changer'])) {
                 throw new Ess_M2ePro_Model_Exception('Product Connector has not received some params');
             }
 
-            $logger->setActionId((int)$this->params['logs_action_id']);
+            $logger->setActionId((int)$this->_params['logs_action_id']);
             $logger->setAction($this->getLogsAction());
 
-            switch ($this->params['status_changer']) {
+            switch ($this->_params['status_changer']) {
                 case Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN:
                     $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
                     break;
@@ -523,10 +503,10 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
 
             $logger->setInitiator($initiator);
 
-            $this->logger = $logger;
+            $this->_logger = $logger;
         }
 
-        return $this->logger;
+        return $this->_logger;
     }
 
     //########################################
@@ -536,19 +516,19 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
      */
     protected function getStoredLogMessages()
     {
-        return $this->storedLogMessages;
+        return $this->_storedLogMessages;
     }
 
     protected function storeLogMessage(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
     {
-        $this->storedLogMessages[] = $message;
+        $this->_storedLogMessages[] = $message;
     }
 
     protected function writeStoredLogMessages()
     {
         foreach ($this->getStoredLogMessages() as $message) {
             $this->getLogger()->logListingProductMessage(
-                $this->listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                $this->_listingProduct, $message, Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
             );
         }
     }

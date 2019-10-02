@@ -30,13 +30,11 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
         $added = false;
 
         if (!$this->isAttributeExistsInLocalStorage($productAttribute, $channelAttribute)) {
-
             $this->addAttributeToLocalStorage($productAttribute, $channelAttribute);
             $added = true;
         }
 
         if (!$this->isAttributeExistsInServerStorage($productAttribute, $channelAttribute)) {
-
             $this->addAttributeToServerStorage($productAttribute, $channelAttribute);
             $added = true;
         }
@@ -71,7 +69,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             /** @var $dispatcherObject Ess_M2ePro_Model_M2ePro_Connector_Dispatcher */
             $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'product','variationVocabulary','add',
+                'product', 'variationVocabulary', 'add',
                 array(
                     'type'     => self::VALUE_TYPE_ATTRIBUTE,
                     'original' => $channelAttribute,
@@ -80,7 +78,6 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             );
 
             $dispatcherObject->process($connectorObj);
-
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
@@ -153,7 +150,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
     public function isAttributeAutoActionEnabled()
     {
         $configValue = $this->getConfigValue('/product/variation/vocabulary/attribute/auto_action/', 'enabled');
-        if (is_null($configValue)) {
+        if ($configValue === null) {
             return false;
         }
 
@@ -163,7 +160,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
     public function isAttributeAutoActionDisabled()
     {
         $configValue = $this->getConfigValue('/product/variation/vocabulary/attribute/auto_action/', 'enabled');
-        if (is_null($configValue)) {
+        if ($configValue === null) {
             return false;
         }
 
@@ -198,13 +195,11 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
         $added = false;
 
         if (!$this->isOptionExistsInLocalStorage($productOption, $channelOption, $channelAttribute)) {
-
             $this->addOptionToLocalStorage($productOption, $channelOption, $channelAttribute);
             $added = true;
         }
 
         if (!$this->isOptionExistsInServerStorage($productOption, $channelOption, $channelAttribute)) {
-
             $this->addOptionToServerStorage($productOption, $channelOption, $channelAttribute);
             $added = true;
         }
@@ -259,7 +254,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             /** @var $dispatcherObject Ess_M2ePro_Model_M2ePro_Connector_Dispatcher */
             $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'product','variationVocabulary','add',
+                'product', 'variationVocabulary', 'add',
                 array(
                     'type'      => self::VALUE_TYPE_OPTION,
                     'attribute' => $channelAttribute,
@@ -269,7 +264,6 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
             );
 
             $dispatcherObject->process($connectorObj);
-
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
@@ -288,12 +282,10 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
         }
 
         foreach ($vocabularyData[$channelAttribute]['options'] as $optionsGroupKey => &$options) {
-
             $comparedOptions = array_diff($productOptionsGroup, $options);
             $nameKey = array_search($productOption, $options);
 
             if (empty($comparedOptions) && $nameKey !== false) {
-
                 unset($options[$nameKey]);
 
                 $vocabularyData[$channelAttribute]['options'][$optionsGroupKey] = array_values($options);
@@ -301,6 +293,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
                 if (count($options) == 1) {
                     unset($vocabularyData[$channelAttribute]['options'][$optionsGroupKey]);
                 }
+
                 break;
             }
         }
@@ -359,7 +352,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
     public function isOptionAutoActionEnabled()
     {
         $configValue = $this->getConfigValue('/product/variation/vocabulary/option/auto_action/', 'enabled');
-        if (is_null($configValue)) {
+        if ($configValue === null) {
             return false;
         }
 
@@ -369,7 +362,7 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
     public function isOptionAutoActionDisabled()
     {
         $configValue = $this->getConfigValue('/product/variation/vocabulary/option/auto_action/', 'enabled');
-        if (is_null($configValue)) {
+        if ($configValue === null) {
             return false;
         }
 
@@ -537,19 +530,19 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     //########################################
 
-    private function getLocalDataCache()
+    protected function getLocalDataCache()
     {
         $cacheKey = __CLASS__.self::LOCAL_DATA_REGISTRY_KEY;
         return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
     }
 
-    private function getServerDataCache()
+    protected function getServerDataCache()
     {
         $cacheKey = __CLASS__.self::SERVER_DATA_REGISTRY_KEY;
         return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
     }
 
-    private function getServerMetadataCache()
+    protected function getServerMetadataCache()
     {
         $cacheKey = __CLASS__.self::SERVER_METADATA_REGISTRY_KEY;
         return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
@@ -557,19 +550,19 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     // ---------------------------------------
 
-    private function setLocalDataCache(array $data)
+    protected function setLocalDataCache(array $data)
     {
         $cacheKey = __CLASS__.self::LOCAL_DATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey, $data);
     }
 
-    private function setServerDataCache(array $data)
+    protected function setServerDataCache(array $data)
     {
         $cacheKey = __CLASS__.self::SERVER_DATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey, $data);
     }
 
-    private function setServerMetadataCache(array $data)
+    protected function setServerMetadataCache(array $data)
     {
         $cacheKey = __CLASS__.self::SERVER_METADATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey, $data);
@@ -577,19 +570,19 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     // ---------------------------------------
 
-    private function removeLocalDataCache()
+    protected function removeLocalDataCache()
     {
         $cacheKey = __CLASS__.self::LOCAL_DATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue($cacheKey);
     }
 
-    private function removeServerDataCache()
+    protected function removeServerDataCache()
     {
         $cacheKey = __CLASS__.self::SERVER_DATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue($cacheKey);
     }
 
-    private function removeServerMetadataCache()
+    protected function removeServerMetadataCache()
     {
         $cacheKey = __CLASS__.self::SERVER_METADATA_REGISTRY_KEY;
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue($cacheKey);
@@ -597,17 +590,17 @@ class Ess_M2ePro_Helper_Module_Product_Variation_Vocabulary extends Mage_Core_He
 
     //########################################
 
-    private function getConfigValue($group, $key)
+    protected function getConfigValue($group, $key)
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue($group, $key);
     }
 
-    private function setConfigValue($group, $key, $value)
+    protected function setConfigValue($group, $key, $value)
     {
         return Mage::helper('M2ePro/Module')->getConfig()->setGroupValue($group, $key, $value);
     }
 
-    private function unsetConfigValue($group, $key)
+    protected function unsetConfigValue($group, $key)
     {
         return Mage::helper('M2ePro/Module')->getConfig()->deleteGroupValue($group, $key);
     }

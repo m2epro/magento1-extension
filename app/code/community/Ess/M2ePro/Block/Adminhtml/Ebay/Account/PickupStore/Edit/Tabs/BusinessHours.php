@@ -33,7 +33,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit_Tabs_BusinessHour
 
         $formData = array();
         $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if(!is_null($model)) {
+        if ($model !== null) {
             $formData = $model->toArray();
         }
 

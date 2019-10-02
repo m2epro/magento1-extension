@@ -15,12 +15,12 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
      */
     public function getOriginalPrice()
     {
-        $price = $this->item->getPrice()
-            + $this->item->getGiftPrice()
-            - $this->item->getDiscountAmount();
+        $price = $this->_item->getPrice()
+            + $this->_item->getGiftPrice()
+            - $this->_item->getDiscountAmount();
 
         if ($this->getProxyOrder()->isTaxModeNone() && $this->hasTax()) {
-            $price += $this->item->getTaxAmount();
+            $price += $this->_item->getTaxAmount();
         }
 
         return $price;
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
      */
     public function getOriginalQty()
     {
-        return $this->item->getQtyPurchased();
+        return $this->_item->getQtyPurchased();
     }
 
     //########################################
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
      */
     public function getGiftMessage()
     {
-        $giftMessage = $this->item->getGiftMessage();
+        $giftMessage = $this->_item->getGiftMessage();
         if (empty($giftMessage)) {
             return parent::getGiftMessage();
         }
@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
         return array(
             'sender'    => '',
             'recipient' => '',
-            'message'   => $this->item->getGiftMessage()
+            'message'   => $this->_item->getGiftMessage()
         );
     }
 
@@ -60,12 +60,13 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
      */
     public function getAdditionalData()
     {
-        if (count($this->additionalData) == 0) {
-            $this->additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items'][] = array(
-                'order_item_id' => $this->item->getAmazonOrderItemId()
+        if (empty($this->_additionalData)) {
+            $this->_additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items'][] = array(
+                'order_item_id' => $this->_item->getAmazonOrderItemId()
             );
         }
-        return $this->additionalData;
+
+        return $this->_additionalData;
     }
 
     //########################################

@@ -8,7 +8,7 @@
 
 abstract class Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract extends Ess_M2ePro_Model_Observer_Product_Abstract
 {
-    private $affectedListingsProducts = array();
+    protected $_affectedListingsProducts = array();
 
     //########################################
 
@@ -28,7 +28,7 @@ abstract class Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract extends Ess_
 
     protected function areThereAffectedItems()
     {
-        return count($this->getAffectedListingsProducts()) > 0;
+        return !empty($this->getAffectedListingsProducts());
     }
 
     // ---------------------------------------
@@ -38,12 +38,12 @@ abstract class Ess_M2ePro_Model_Observer_Product_AddUpdate_Abstract extends Ess_
      */
     protected function getAffectedListingsProducts()
     {
-        if (!empty($this->affectedListingsProducts)) {
-            return $this->affectedListingsProducts;
+        if (!empty($this->_affectedListingsProducts)) {
+            return $this->_affectedListingsProducts;
         }
 
-        return $this->affectedListingsProducts = Mage::getResourceModel('M2ePro/Listing_Product')
-                                                            ->getItemsByProductId($this->getProductId());
+        return $this->_affectedListingsProducts = Mage::getResourceModel('M2ePro/Listing_Product')
+                                                      ->getItemsByProductId($this->getProductId());
     }
 
     //########################################

@@ -15,7 +15,7 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
     {
         parent::_initAction();
         $this->getLayout()->getBlock('head')
-            ->addJs('M2ePro/Wizard/Amazon/CustomHandler.js')
+            ->addJs('M2ePro/Wizard/InstallationAmazon/CustomHandler.js')
             ->addJs('M2ePro/Wizard/FullAmazonCategories.js');
 
         return $this;
@@ -48,7 +48,7 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
         }
 
         return $this->_initAction()
-            ->_addContent($this->getWizardHelper()->createBlock('installation',$this->getNick()))
+            ->_addContent($this->getWizardHelper()->createBlock('installation', $this->getNick()))
             ->renderLayout();
     }
 
@@ -67,18 +67,36 @@ class Ess_M2ePro_Adminhtml_Wizard_FullAmazonCategoriesController
             return $this->getResponse()->setBody('error');
         }
 
-        /** @var $dispatcher Ess_M2ePro_Model_Synchronization_Dispatcher */
-        $dispatcher = Mage::getModel('M2ePro/Synchronization_Dispatcher');
+        /** @var Ess_M2ePro_Model_Marketplace $marketplace */
+        $marketplace = Mage::helper('M2ePro/Component')
+            ->getUnknownObject('Marketplace', $marketplaceId);
 
-        $dispatcher->setAllowedComponents(array(Ess_M2ePro_Helper_Component_Amazon::NICK));
-        $dispatcher->setAllowedTasksTypes(array(
-            Ess_M2ePro_Model_Synchronization_Task_Component_Abstract::MARKETPLACES
-        ));
+        $lockItemManager = Mage::getModel(
+            'M2ePro/Lock_Item_Manager',
+            array('nick' => Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,)
+        );
 
-        $dispatcher->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
-        $dispatcher->setParams(array('marketplace_id' => $marketplaceId));
+        if ($lockItemManager->isExist()) {
+            return $this->getResponse()->setBody('error');
+        }
 
-        $dispatcher->process();
+        $lockItemManager->create();
+
+        $progressManager = Mage::getModel(
+            'M2ePro/Lock_Item_Progress',
+            array(
+                'lock_item_manager' => $lockItemManager,
+                'progress_nick'     => $marketplace->getTitle() . ' Amazon Site',
+            )
+        );
+
+        $synchronization = Mage::getModel('M2ePro/Amazon_Marketplace_Synchronization');
+        $synchronization->setMarketplace($marketplace);
+        $synchronization->setProgressManager($progressManager);
+
+        $synchronization->process();
+
+        $lockItemManager->remove();
 
         return $this->getResponse()->setBody('success');
     }

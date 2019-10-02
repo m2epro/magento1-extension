@@ -40,11 +40,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
     protected function _beforeToHtml()
     {
         $pathParts = explode('/', ltrim($this->getRequest()->getParam('current_indexed_xpath'), '/'));
-        array_walk($pathParts, function (&$el) {
+        array_walk(
+            $pathParts, function (&$el) {
             $el = preg_replace('/-\d+/', '', $el);
             $el = preg_replace('/(?<!^)[A-Z0-9]/', ' $0', $el);
             $el = ucfirst($el);
-        });
+            }
+        );
 
         $additionalTitle = implode(' > ', $pathParts);
         $this->setData('additional_title', Mage::helper('M2ePro')->escapeHtml($additionalTitle));

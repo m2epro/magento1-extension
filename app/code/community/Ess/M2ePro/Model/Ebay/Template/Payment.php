@@ -7,14 +7,14 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Ebay_Template_Payment getResource()
+ * @method Ess_M2ePro_Model_Resource_Ebay_Template_Payment getResource()
  */
 class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_Abstract
 {
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     //########################################
 
@@ -46,14 +46,18 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
 
         return (bool)Mage::getModel('M2ePro/Ebay_Listing')
                             ->getCollection()
-                            ->addFieldToFilter('template_payment_mode',
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE)
+                            ->addFieldToFilter(
+                                'template_payment_mode',
+                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                            )
                             ->addFieldToFilter('template_payment_id', $this->getId())
                             ->getSize() ||
                (bool)Mage::getModel('M2ePro/Ebay_Listing_Product')
                             ->getCollection()
-                            ->addFieldToFilter('template_payment_mode',
-                                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE)
+                            ->addFieldToFilter(
+                                'template_payment_mode',
+                                Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE
+                            )
                             ->addFieldToFilter('template_payment_id', $this->getId())
                             ->getSize();
     }
@@ -69,7 +73,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
             $service->deleteInstance();
         }
 
-        $this->marketplaceModel = NULL;
+        $this->_marketplaceModel = NULL;
 
         $this->delete();
         return true;
@@ -82,13 +86,13 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -96,7 +100,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-         $this->marketplaceModel = $instance;
+         $this->_marketplaceModel = $instance;
     }
 
     //########################################
@@ -108,8 +112,10 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
      */
     public function getServices($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Ebay_Template_Payment_Service','template_payment_id',
-                                            $asObjects, $filters);
+        return $this->getRelatedSimpleItems(
+            'Ebay_Template_Payment_Service', 'template_payment_id',
+            $asObjects, $filters
+        );
     }
 
     //########################################

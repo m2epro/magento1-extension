@@ -27,6 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Log extends Ess_M2ePro_Block_Adminhtml_W
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Logs');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -72,7 +73,7 @@ HTML;
 
 JAVASCIRPT;
 
-        $activeTab = !is_null($this->getData('active_tab')) ? $this->getData('active_tab')
+        $activeTab = $this->getData('active_tab') !== null ? $this->getData('active_tab')
             : Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs::TAB_ID_LISTING;
         $tabsBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_amazon_log_tabs', '', array('active_tab' => $activeTab)

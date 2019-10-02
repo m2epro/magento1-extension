@@ -38,11 +38,13 @@ JS;
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Start Configuration'),
                 'onclick' => $onClick,
                 'class' => 'start_installation_button'
-            ));
+                )
+            );
         // ---------------------------------------
 
         // ---------------------------------------

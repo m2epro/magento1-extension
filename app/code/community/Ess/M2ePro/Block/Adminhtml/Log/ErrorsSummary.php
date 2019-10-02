@@ -39,9 +39,9 @@ class Ess_M2ePro_Block_Adminhtml_Log_ErrorsSummary extends Mage_Adminhtml_Block_
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
         $fields = new Zend_Db_Expr('COUNT(`'.$countField.'`) as `count_products`, `description`');
         $dbSelect = $connRead->select()
-                             ->from($tableName,$fields)
+                             ->from($tableName, $fields)
                              ->where('`action_id` IN ('.$actionIdsString.')')
-                             ->where('`type` = ?',Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR)
+                             ->where('`type` = ?', Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR)
                              ->group('description')
                              ->order(array('count_products DESC'))
                              ->limit(100);

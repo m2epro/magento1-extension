@@ -54,7 +54,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Response
      * Updating of Promotions/Price will be skipped for 24 hours. So we add instructions to check them after
      * that time
      */
-    private function throwSynchronizationInstructions(DateTime $instructionDate)
+    protected function throwSynchronizationInstructions(DateTime $instructionDate)
     {
         $instructionsData = array(
             array(

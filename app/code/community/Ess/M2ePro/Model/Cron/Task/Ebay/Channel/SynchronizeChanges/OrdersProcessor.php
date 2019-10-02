@@ -9,21 +9,21 @@
 class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 {
     /** @var Ess_M2ePro_Model_Synchronization_Log */
-    private $synchronizationLog = NULL;
+    protected $_synchronizationLog = null;
 
-    private $receiveOrdersToDate = NULL;
+    protected $_receiveOrdersToDate = null;
 
     //########################################
 
     public function setSynchronizationLog(Ess_M2ePro_Model_Synchronization_Log $log)
     {
-        $this->synchronizationLog = $log;
+        $this->_synchronizationLog = $log;
         return $this;
     }
 
     public function setReceiveOrdersToDate($toDate)
     {
-        $this->receiveOrdersToDate = $toDate;
+        $this->_receiveOrdersToDate = $toDate;
         return $this;
     }
 
@@ -51,12 +51,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
             /** @var $account Ess_M2ePro_Model_Account **/
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
-                $this->synchronizationLog->addMessage(
+                $this->_synchronizationLog->addMessage(
                     Mage::helper('M2ePro')->__($exception->getMessage()),
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
@@ -69,16 +66,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     //########################################
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $ebayData = $this->receiveEbayOrdersData($account);
         /** @var Ess_M2ePro_Model_Ebay_Account $ebayAccount */
@@ -98,7 +95,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 
         // ---------------------------------------
 
-        if (count($processedEbayOrders) > 0) {
+        if (!empty($processedEbayOrders)) {
             $this->createMagentoOrders($processedEbayOrders);
         }
 
@@ -112,7 +109,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
      * @param Ess_M2ePro_Model_Account $account
      * @return array
      */
-    private function receiveEbayOrdersData(Ess_M2ePro_Model_Account $account)
+    protected function receiveEbayOrdersData(Ess_M2ePro_Model_Account $account)
     {
         $toTime   = $this->prepareToTime();
         $fromTime = $this->prepareFromTime($account, $toTime);
@@ -160,13 +157,12 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
      * @param array $ordersData
      * @return Ess_M2ePro_Model_Order[]
      */
-    private function processEbayOrders(Ess_M2ePro_Model_Account $account, array $ordersData)
+    protected function processEbayOrders(Ess_M2ePro_Model_Account $account, array $ordersData)
     {
         $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
 
         $orders = array();
         foreach ($ordersData as $ebayOrderData) {
-
             $orderCreateDate = new DateTime($ebayOrderData['purchase_create_date'], new DateTimeZone('UTC'));
             if ($orderCreateDate < $accountCreateDate) {
                 continue;
@@ -184,14 +180,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 
     // ---------------------------------------
 
-    private function processResponseMessages(array $messages)
+    protected function processResponseMessages(array $messages)
     {
         /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
         $messagesSet->init($messages);
 
         foreach ($messagesSet->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -199,7 +194,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
             $logType = $message->isError() ? Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
                 : Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
 
-            $this->synchronizationLog->addMessage(
+            $this->_synchronizationLog->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
                 $logType,
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
@@ -209,7 +204,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
 
     // ---------------------------------------
 
-    private function createMagentoOrders($ebayOrders)
+    protected function createMagentoOrders($ebayOrders)
     {
         $iteration = 0;
 
@@ -240,15 +235,19 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
             if ($order->getChildObject()->canCreatePaymentTransaction()) {
                 $order->getChildObject()->createPaymentTransactions();
             }
+
             if ($order->getChildObject()->canCreateInvoice()) {
                 $order->createInvoice();
             }
+
             if ($order->getChildObject()->canCreateShipment()) {
                 $order->createShipment();
             }
+
             if ($order->getChildObject()->canCreateTracks()) {
                 $order->getChildObject()->createTracks();
             }
+
             if ($order->getStatusUpdateRequired()) {
                 $order->updateMagentoOrderStatus();
             }
@@ -263,7 +262,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
      *
      * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
      */
-    private function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
+    protected function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
     {
         /** @var Ess_M2ePro_Model_Order $dbOrder */
         $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
@@ -282,15 +281,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
      * @param DateTime $toTime
      * @return DateTime
      */
-    private function prepareFromTime(Ess_M2ePro_Model_Account $account, DateTime $toTime)
+    protected function prepareFromTime(Ess_M2ePro_Model_Account $account, DateTime $toTime)
     {
         $lastSynchronizationDate = $account->getData('orders_last_synchronization');
 
-        if (is_null($lastSynchronizationDate)) {
+        if ($lastSynchronizationDate === null) {
             $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
-
         } else {
-
             $sinceTime = new DateTime($lastSynchronizationDate, new DateTimeZone('UTC'));
 
             // Get min date for synch
@@ -304,6 +301,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
             if ((int)$sinceTime->format('U') < (int)$minDate->format('U')) {
                 $sinceTime = $minDate;
             }
+
             // ---------------------------------------
         }
 
@@ -318,10 +316,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
     /**
      * @return DateTime
      */
-    private function prepareToTime()
+    protected function prepareToTime()
     {
-        if (!is_null($this->receiveOrdersToDate)) {
-            $toTime = new DateTime($this->receiveOrdersToDate, new DateTimeZone('UTC'));
+        if ($this->_receiveOrdersToDate !== null) {
+            $toTime = new DateTime($this->_receiveOrdersToDate, new DateTimeZone('UTC'));
         } else {
             $toTime = new DateTime('now', new DateTimeZone('UTC'));
         }

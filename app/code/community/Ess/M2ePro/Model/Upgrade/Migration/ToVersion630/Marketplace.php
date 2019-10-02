@@ -9,9 +9,9 @@
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
-    private $forceAllSteps = false;
+    protected $_forceAllSteps = false;
 
     //########################################
 
@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
      */
     public function getInstaller()
     {
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -28,19 +28,19 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
+        $this->_installer = $installer;
     }
 
     // ---------------------------------------
 
     public function setForceAllSteps($value = true)
     {
-        $this->forceAllSteps = $value;
+        $this->_forceAllSteps = $value;
     }
 
     //########################################
 
-    /*
+    /**
 
         ALTER TABLE m2epro_amazon_dictionary_category
             DROP COLUMN node_hash,
@@ -88,15 +88,15 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
 
     //########################################
 
-    private function isNeedToSkip()
+    protected function isNeedToSkip()
     {
-        if ($this->forceAllSteps) {
+        if ($this->_forceAllSteps) {
             return false;
         }
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_marketplace');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_marketplace');
         if ($connection->tableColumnExists($tempTable, 'is_asin_available') !== false) {
             return true;
         }
@@ -106,13 +106,13 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
 
     //########################################
 
-    private function processAmazonDictionaryCaterory()
+    protected function processAmazonDictionaryCaterory()
     {
-        $this->installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_category`");
+        $this->_installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_category`");
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_dictionary_category');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_dictionary_category');
         $tempTableIndexList = $connection->getIndexList($tempTable);
 
         if ($connection->tableColumnExists($tempTable, 'node_hash') !== false) {
@@ -171,13 +171,13 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
         }
     }
 
-    private function processAmazonDictionaryMarketplace()
+    protected function processAmazonDictionaryMarketplace()
     {
-        $this->installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_marketplace`");
+        $this->_installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_marketplace`");
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_dictionary_marketplace');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_dictionary_marketplace');
 
         if ($connection->tableColumnExists($tempTable, 'nodes') !== false) {
             $connection->dropColumn($tempTable, 'nodes');
@@ -198,13 +198,13 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
         }
     }
 
-    private function processAmazonDictionarySpecific()
+    protected function processAmazonDictionarySpecific()
     {
-        $this->installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_specific`");
+        $this->_installer->run("TRUNCATE TABLE `m2epro_amazon_dictionary_specific`");
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_dictionary_specific');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_dictionary_specific');
         $tempTableIndexList = $connection->getIndexList($tempTable);
 
         if ($connection->tableColumnExists($tempTable, 'xsd_hash') !== false) {
@@ -225,11 +225,11 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
 
     //########################################
 
-    private function processAmazonMarketplace()
+    protected function processAmazonMarketplace()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_marketplace');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_marketplace');
         $tempTableIndexList = $connection->getIndexList($tempTable);
 
         if ($connection->tableColumnExists($tempTable, 'is_asin_available') === false) {
@@ -243,7 +243,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_Marketplace
             $connection->addKey($tempTable, 'is_asin_available', 'is_asin_available');
         }
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
     UPDATE `m2epro_amazon_marketplace`
     SET is_asin_available = 0

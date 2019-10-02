@@ -80,9 +80,13 @@ class Ess_M2ePro_Adminhtml_Amazon_SynchronizationController
             );
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'messages' => $warningMessages
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'messages' => $warningMessages
+                )
+            )
+        );
     }
 
     //########################################
@@ -113,9 +117,13 @@ class Ess_M2ePro_Adminhtml_Amazon_SynchronizationController
 
         $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
 
-        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'start_date' => Mage::app()->getLocale()->date(strtotime($startDate))->toString($format)
-        )));
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'start_date' => Mage::app()->getLocale()->date(strtotime($startDate))->toString($format)
+                )
+            )
+        );
     }
 
     //########################################

@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Order_ExternalTransaction_Builder extends Mage_Core_
     /**
      * @return Ess_M2ePro_Model_Ebay_Order_ExternalTransaction
      */
-    private function createOrderExternalTransaction()
+    protected function createOrderExternalTransaction()
     {
         $transaction = Mage::getModel('M2ePro/Ebay_Order_ExternalTransaction')->getCollection()
             ->addFieldToFilter('order_id', $this->getData('order_id'))

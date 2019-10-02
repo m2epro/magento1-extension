@@ -28,14 +28,13 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByIdentifier_ItemsRespon
         $responseData = $this->getResponse()->getData();
 
         if (!empty($responseData['unavailable'])) {
-            $this->preparedResponseData = false;
+            $this->_preparedResponseData = false;
             return;
         }
 
         $result = array();
 
         foreach ($responseData['items'] as $item) {
-
             $product = array(
                 'general_id' => $item['product_id'],
                 'brand' => isset($item['brand']) ? $item['brand'] : '',
@@ -70,7 +69,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByIdentifier_ItemsRespon
             $result[] = $product;
         }
 
-        $this->preparedResponseData = $result;
+        $this->_preparedResponseData = $result;
     }
 
     // ########################################

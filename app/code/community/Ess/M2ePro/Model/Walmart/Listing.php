@@ -8,26 +8,24 @@
 
 /**
  * @method Ess_M2ePro_Model_Listing getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Walmart_Listing getResource()
+ * @method Ess_M2ePro_Model_Resource_Walmart_Listing getResource()
  */
 class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
-    //########################################
-
     /**
      * @var Ess_M2ePro_Model_Template_Description
      */
-    private $descriptionTemplateModel = NULL;
+    protected $_descriptionTemplateModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Template_SellingFormat
      */
-    private $sellingFormatTemplateModel = NULL;
+    protected $_sellingFormatTemplateModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Template_Synchronization
      */
-    private $synchronizationTemplateModel = NULL;
+    protected $_synchronizationTemplateModel = null;
 
     //########################################
 
@@ -42,9 +40,9 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->descriptionTemplateModel = NULL;
-        $temp && $this->sellingFormatTemplateModel = NULL;
-        $temp && $this->synchronizationTemplateModel = NULL;
+        $temp && $this->_descriptionTemplateModel = null;
+        $temp && $this->_sellingFormatTemplateModel = null;
+        $temp && $this->_synchronizationTemplateModel = null;
         return $temp;
     }
 
@@ -112,13 +110,13 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      */
     public function getDescriptionTemplate()
     {
-        if (is_null($this->descriptionTemplateModel)) {
-            $this->descriptionTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                'Template_Description',$this->getData('template_description_id'),NULL,array('template')
+        if ($this->_descriptionTemplateModel === null) {
+            $this->_descriptionTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+                'Template_Description', $this->getData('template_description_id'), NULL, array('template')
             );
         }
 
-        return $this->descriptionTemplateModel;
+        return $this->_descriptionTemplateModel;
     }
 
     /**
@@ -126,7 +124,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      */
     public function setDescriptionTemplate(Ess_M2ePro_Model_Template_Description $instance)
     {
-        $this->descriptionTemplateModel = $instance;
+        $this->_descriptionTemplateModel = $instance;
     }
 
     // ---------------------------------------
@@ -136,13 +134,13 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      */
     public function getSellingFormatTemplate()
     {
-        if (is_null($this->sellingFormatTemplateModel)) {
-            $this->sellingFormatTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                'Template_SellingFormat',$this->getData('template_selling_format_id'),NULL,array('template')
+        if ($this->_sellingFormatTemplateModel === null) {
+            $this->_sellingFormatTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+                'Template_SellingFormat', $this->getData('template_selling_format_id'), NULL, array('template')
             );
         }
 
-        return $this->sellingFormatTemplateModel;
+        return $this->_sellingFormatTemplateModel;
     }
 
     /**
@@ -150,7 +148,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      */
     public function setSellingFormatTemplate(Ess_M2ePro_Model_Template_SellingFormat $instance)
     {
-         $this->sellingFormatTemplateModel = $instance;
+         $this->_sellingFormatTemplateModel = $instance;
     }
 
     // ---------------------------------------
@@ -160,13 +158,13 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      */
     public function getSynchronizationTemplate()
     {
-        if (is_null($this->synchronizationTemplateModel)) {
-            $this->synchronizationTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                'Template_Synchronization', $this->getData('template_synchronization_id'),NULL,array('template')
+        if ($this->_synchronizationTemplateModel === null) {
+            $this->_synchronizationTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+                'Template_Synchronization', $this->getData('template_synchronization_id'), NULL, array('template')
             );
         }
 
-        return $this->synchronizationTemplateModel;
+        return $this->_synchronizationTemplateModel;
     }
 
     /**
@@ -174,7 +172,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      */
     public function setSynchronizationTemplate(Ess_M2ePro_Model_Template_Synchronization $instance)
     {
-         $this->synchronizationTemplateModel = $instance;
+         $this->_synchronizationTemplateModel = $instance;
     }
 
     // ---------------------------------------
@@ -212,7 +210,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      */
     public function getProducts($asObjects = false, array $filters = array())
     {
-        return $this->getParentObject()->getProducts($asObjects,$filters);
+        return $this->getParentObject()->getProducts($asObjects, $filters);
     }
 
     //########################################
@@ -243,11 +241,12 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
      * @return bool|Ess_M2ePro_Model_Listing_Product
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function addProductFromOther(Ess_M2ePro_Model_Listing_Other $listingOtherProduct,
-                                        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-                                        $checkingMode = false,
-                                        $checkHasProduct = true)
-    {
+    public function addProductFromOther(
+        Ess_M2ePro_Model_Listing_Other $listingOtherProduct,
+        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
+        $checkingMode = false,
+        $checkHasProduct = true
+    ) {
         if (!$listingOtherProduct->getProductId()) {
             return false;
         }
@@ -315,13 +314,15 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
         $listingOtherProduct->save();
 
         $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
-        $instruction->setData(array(
+        $instruction->setData(
+            array(
             'listing_product_id' => $listingProduct->getId(),
             'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'type'               => Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_MOVED_FROM_OTHER,
             'initiator'          => Ess_M2ePro_Model_Listing::INSTRUCTION_INITIATOR_MOVING_PRODUCT_FROM_OTHER,
             'priority'           => 20,
-        ));
+            )
+        );
         $instruction->save();
 
         return $listingProduct;

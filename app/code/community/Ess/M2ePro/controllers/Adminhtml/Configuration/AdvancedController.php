@@ -17,4 +17,16 @@ class Ess_M2ePro_Adminhtml_Configuration_AdvancedController
     }
 
     //########################################
+
+    public function changeModuleModeAction()
+    {
+        $moduleMode = (int)$this->getRequest()->getParam('module_mode');
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(NULL, 'is_disabled', $moduleMode);
+
+        Mage::helper('M2ePro/Magento')->clearMenuCache();
+
+        $this->_redirectUrl($this->_getRefererUrl());
+    }
+
+    //########################################
 }

@@ -16,7 +16,10 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Delete_EntityResponser
         return true;
     }
 
-    protected function processResponseData() {}
+    protected function processResponseData()
+    {
+        return null;
+    }
 
     // ########################################
 }

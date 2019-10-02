@@ -19,7 +19,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Category_Get_Suggested
     public function getRequestData()
     {
         return array(
-            'query' => $this->params['query']
+            'query' => $this->_params['query']
         );
     }
 
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Category_Get_Suggested
             return;
         }
 
-        $this->responseData = $this->getResponse()->getData();
+        $this->_responseData = $this->getResponse()->getData();
     }
 
     // ########################################

@@ -19,7 +19,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
         $feedbacks = $this->getLastUnanswered(5);
         $feedbacks = $this->filterLastAnswered($feedbacks);
 
-        if (count($feedbacks) <= 0) {
+        if (empty($feedbacks)) {
             return;
         }
 
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
 
     //########################################
 
-    private function getLastUnanswered($daysAgo = 30)
+    protected function getLastUnanswered($daysAgo = 30)
     {
         $interval = new \DateTime('now', new \DateTimeZone('UTC'));
         $interval->modify("-{$daysAgo} days");
@@ -50,7 +50,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
         return $collection->getItems();
     }
 
-    private function filterLastAnswered(array $feedbacks)
+    protected function filterLastAnswered(array $feedbacks)
     {
         $result = array();
 
@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
             $lastResponseAttemptDate = $feedback->getData('last_response_attempt_date');
             $currentGmtDate = Mage::helper('M2ePro')->getCurrentGmtDate(true);
 
-            if (!is_null($lastResponseAttemptDate) &&
+            if ($lastResponseAttemptDate !== null &&
                 strtotime($lastResponseAttemptDate) + self::ATTEMPT_INTERVAL > $currentGmtDate) {
                 continue;
             }
@@ -70,12 +70,15 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
             if (!$ebayAccount->isFeedbacksReceive()) {
                 continue;
             }
+
             if ($ebayAccount->isFeedbacksAutoResponseDisabled()) {
                 continue;
             }
+
             if ($ebayAccount->isFeedbacksAutoResponseOnlyPositive() && !$feedback->isPositive()) {
                 continue;
             }
+
             if (!$ebayAccount->hasFeedbackTemplate()) {
                 continue;
             }
@@ -88,7 +91,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
 
     // ---------------------------------------
 
-    private function processFeedback(Ess_M2ePro_Model_Ebay_Feedback $feedback)
+    protected function processFeedback(Ess_M2ePro_Model_Ebay_Feedback $feedback)
     {
         /** @var $feedback Ess_M2ePro_Model_Ebay_Feedback */
         $account = $feedback->getAccount();
@@ -104,7 +107,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
             return;
         }
 
-        $feedback->sendResponse($body,Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE);
+        $feedback->sendResponse($body, Ess_M2ePro_Model_Ebay_Feedback::TYPE_POSITIVE);
 
         $this->getOperationHistory()->appendText('Send Feedback for "'.$feedback->getData('buyer_name').'"');
         $this->getOperationHistory()->appendText(
@@ -116,10 +119,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
         $this->getOperationHistory()->saveBufferString();
     }
 
-    private function getResponseBody(Ess_M2ePro_Model_Account $account)
+    protected function getResponseBody(Ess_M2ePro_Model_Account $account)
     {
         if ($account->getChildObject()->isFeedbacksAutoResponseCycled()) {
-
             $lastUsedId = 0;
             if ($account->getChildObject()->getFeedbacksLastUsedId() != null) {
                 $lastUsedId = (int)$account->getChildObject()->getFeedbacksLastUsedId();
@@ -127,7 +129,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
 
             $feedbackTemplatesIds = Mage::getModel('M2ePro/Ebay_Feedback_Template')->getCollection()
                 ->addFieldToFilter('account_id', $account->getId())
-                ->setOrder('id','ASC')
+                ->setOrder('id', 'ASC')
                 ->getAllIds();
 
             if (!count($feedbackTemplatesIds)) {
@@ -159,7 +161,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse extends Ess_M2ePro_
         }
 
         if ($account->getChildObject()->isFeedbacksAutoResponseRandom()) {
-
             $feedbackTemplatesIds = Mage::getModel('M2ePro/Ebay_Feedback_Template')->getCollection()
                 ->addFieldToFilter('account_id', $account->getId())
                 ->getAllIds();

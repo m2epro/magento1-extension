@@ -64,9 +64,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         $this->_initAction()
-             ->_addContent(
-                 $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_sellingFormat_edit')
-             )
+            ->_addContent(
+                $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_sellingFormat_edit')
+            )
              ->renderLayout();
     }
 
@@ -151,20 +151,21 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
 
         if ($data['sale_time_start_date_value'] === '') {
             $data['sale_time_start_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate(
-                false,'Y-m-d 00:00:00'
+                false, 'Y-m-d 00:00:00'
             );
         } else {
             $data['sale_time_start_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['sale_time_start_date_value'],false,'Y-m-d 00:00:00'
+                $data['sale_time_start_date_value'], false, 'Y-m-d 00:00:00'
             );
         }
+
         if ($data['sale_time_end_date_value'] === '') {
             $data['sale_time_end_date_value'] = Mage::helper('M2ePro')->getCurrentGmtDate(
-                false,'Y-m-d 00:00:00'
+                false, 'Y-m-d 00:00:00'
             );
         } else {
             $data['sale_time_end_date_value'] = Mage::helper('M2ePro')->getDate(
-                $data['sale_time_end_date_value'],false,'Y-m-d 00:00:00'
+                $data['sale_time_end_date_value'], false, 'Y-m-d 00:00:00'
             );
         }
 
@@ -214,14 +215,16 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
             $params['marketplace_id'] = $model->getData('marketplace_id');
         }
 
-        $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_walmart_template/index', array(), array(
+        $url = Mage::helper('M2ePro')->getBackUrl(
+            '*/adminhtml_walmart_template/index', array(), array(
             'edit' => $params
-        ));
+            )
+        );
 
         return $this->_redirectUrl($url);
     }
 
-    private function getComparedData($data, $keyName, $valueName)
+    protected function getComparedData($data, $keyName, $valueName)
     {
         $result = array();
 
@@ -243,9 +246,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
         return $result;
     }
 
-    private function updateServices($data, $templateId)
+    protected function updateServices($data, $templateId)
     {
-        $collection = Mage::getModel('M2ePro/Walmart_Template_SellingFormat_ShippingOverrideService')
+        $collection = Mage::getModel('M2ePro/Walmart_Template_SellingFormat_ShippingOverride')
             ->getCollection()
             ->addFieldToFilter('template_selling_format_id', (int)$templateId);
 
@@ -261,11 +264,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
         foreach ($data['shipping_override_rule'] as $serviceData) {
             $newServices[] = array(
                 'template_selling_format_id' => $templateId,
-                'method' => $serviceData['method'],
-                'region' => $serviceData['region'],
-                'cost_mode' => $serviceData['cost_mode'],
-                'cost_value' => !empty($serviceData['cost_value']) ? $serviceData['cost_value'] : '',
-                'cost_attribute' => !empty($serviceData['cost_attribute']) ? $serviceData['cost_attribute'] : ''
+                'method'              => $serviceData['method'],
+                'is_shipping_allowed' => $serviceData['is_shipping_allowed'],
+                'region'              => $serviceData['region'],
+                'cost_mode'           => !empty($serviceData['cost_mode']) ? $serviceData['cost_mode'] : 0,
+                'cost_value'          => !empty($serviceData['cost_value']) ? $serviceData['cost_value'] : 0,
+                'cost_attribute'      => !empty($serviceData['cost_attribute']) ? $serviceData['cost_attribute'] : ''
             );
         }
 
@@ -275,11 +279,11 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
 
         $coreRes = Mage::getSingleton('core/resource');
         $coreRes->getConnection('core_write')->insertMultiple(
-            $coreRes->getTableName('M2ePro/Walmart_Template_SellingFormat_ShippingOverrideService'), $newServices
+            $coreRes->getTableName('M2ePro/Walmart_Template_SellingFormat_ShippingOverride'), $newServices
         );
     }
 
-    private function updatePromotions($data, $templateId)
+    protected function updatePromotions($data, $templateId)
     {
         $collection = Mage::getModel('M2ePro/Walmart_Template_SellingFormat_Promotion')->getCollection()
                             ->addFieldToFilter('template_selling_format_id', (int)$templateId);
@@ -294,24 +298,23 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
 
         $newPromotions = array();
         foreach ($data['promotions'] as $promotionData) {
-
             if (!empty($promotionData['from_date']['value'])) {
                 $startDate = Mage::helper('M2ePro')->getDate(
-                    $promotionData['from_date']['value'],false,'Y-m-d H:i'
+                    $promotionData['from_date']['value'], false, 'Y-m-d H:i'
                 );
             } else {
                 $startDate = Mage::helper('M2ePro')->getCurrentGmtDate(
-                    false,'Y-m-d H:i'
+                    false, 'Y-m-d H:i'
                 );
             }
 
             if (!empty($promotionData['to_date']['value'])) {
                 $endDate = Mage::helper('M2ePro')->getDate(
-                    $promotionData['to_date']['value'],false,'Y-m-d H:i'
+                    $promotionData['to_date']['value'], false, 'Y-m-d H:i'
                 );
             } else {
                 $endDate = Mage::helper('M2ePro')->getCurrentGmtDate(
-                    false,'Y-m-d H:i'
+                    false, 'Y-m-d H:i'
                 );
             }
 
@@ -349,7 +352,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_SellingFormatController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             $this->_redirect('*/*/index');
             return;

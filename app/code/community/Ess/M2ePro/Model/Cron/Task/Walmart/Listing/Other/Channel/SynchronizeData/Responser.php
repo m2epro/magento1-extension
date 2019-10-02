@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_Responser
     extends Ess_M2ePro_Model_Walmart_Connector_Inventory_Get_ItemsResponser
 {
-    protected $logsActionId = NULL;
-    protected $synchronizationLog = NULL;
+    protected $_logsActionId       = null;
+    protected $_synchronizationLog = null;
 
     // ########################################
 
@@ -19,7 +19,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         parent::processResponseMessages();
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -68,12 +67,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         $receivedItems = $this->getReceivedOnlyOtherListings();
 
         try {
-
             $this->updateReceivedOtherListings($receivedItems);
             $this->createNotExistedOtherListings($receivedItems);
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             $this->getSynchronizationLog()->addMessage(
@@ -95,7 +91,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         $tempLog->setComponentMode(Ess_M2ePro_Helper_Component_Walmart::NICK);
 
         while ($existingItem = $stmtTemp->fetch()) {
-
             if (!isset($receivedItems[$existingItem['wpid']])) {
                 continue;
             }
@@ -161,7 +156,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
                 );
             }
 
-            if (!is_null($newData['online_qty']) && $newData['online_qty'] != $existingData['online_qty']) {
+            if ($newData['online_qty'] !== null && $newData['online_qty'] != $existingData['online_qty']) {
                 // M2ePro_TRANSLATIONS
                 // Item QTY was successfully changed from %from% to %to%.
                 $tempLogMessages[] = Mage::helper('M2ePro')->__(
@@ -203,7 +198,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
             }
 
             $listingOtherObj = Mage::helper('M2ePro/Component_Walmart')
-                                ->getObject('Listing_Other',(int)$existingItem['listing_other_id']);
+                                ->getObject('Listing_Other', (int)$existingItem['listing_other_id']);
 
             $listingOtherObj->addData($newData)->save();
         }
@@ -215,7 +210,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         $stmtTemp = $this->getPdoStatementExistingListings(false);
 
         while ($existingItem = $stmtTemp->fetch()) {
-
             if (!isset($receivedItems[$existingItem['wpid']])) {
                 continue;
             }
@@ -231,7 +225,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         $mappingModel = Mage::getModel('M2ePro/Walmart_Listing_Other_Mapping');
 
         foreach ($receivedItems as $receivedItem) {
-
             if (isset($receivedItem['founded'])) {
                 continue;
             }
@@ -273,15 +266,17 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
             $listingOtherModel = Mage::helper('M2ePro/Component_Walmart')->getModel('Listing_Other');
             $listingOtherModel->setData($newData)->save();
 
-            $logModel->addProductMessage($listingOtherModel->getId(),
-                                         Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                                         NULL,
-                                         Ess_M2ePro_Model_Listing_Other_Log::ACTION_ADD_LISTING,
-                                         // M2ePro_TRANSLATIONS
+            $logModel->addProductMessage(
+                $listingOtherModel->getId(),
+                Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
+                NULL,
+                Ess_M2ePro_Model_Listing_Other_Log::ACTION_ADD_LISTING,
+                // M2ePro_TRANSLATIONS
                                          // Item was successfully Added
                                          'Item was successfully Added',
-                                         Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-                                         Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
+                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
+            );
 
             if (!$this->getAccount()->getChildObject()->isOtherListingsMappingEnabled()) {
                 continue;
@@ -299,14 +294,14 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns(array('second_table.wpid'));
 
         $listingTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
 
         $collection->getSelect()->join(array('l' => $listingTable), 'main_table.listing_id = l.id', array());
-        $collection->getSelect()->where('l.account_id = ?',(int)$this->getAccount()->getId());
+        $collection->getSelect()->where('l.account_id = ?', (int)$this->getAccount()->getId());
 
         /** @var $stmtTemp Zend_Db_Statement_Pdo */
         $stmtTemp = $connRead->query($collection->getSelect()->__toString());
@@ -315,7 +310,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         $receivedItems = $responseData['data'];
 
         while ($existListingProduct = $stmtTemp->fetch()) {
-
             if (empty($existListingProduct['wpid'])) {
                 continue;
             }
@@ -333,9 +327,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other');
-        $collection->getSelect()->where('`main_table`.`account_id` = ?',(int)$this->params['account_id']);
+        $collection->getSelect()->where('`main_table`.`account_id` = ?', (int)$this->_params['account_id']);
 
         $tempColumns = array('second_table.wpid');
 
@@ -365,7 +359,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -380,24 +374,24 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Other_Channel_SynchronizeData_R
 
     protected function getLogsActionId()
     {
-        if (!is_null($this->logsActionId)) {
-            return $this->logsActionId;
+        if ($this->_logsActionId !== null) {
+            return $this->_logsActionId;
         }
 
-        return $this->logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
+        return $this->_logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
     }
 
     protected function getSynchronizationLog()
     {
-        if (!is_null($this->synchronizationLog)) {
-            return $this->synchronizationLog;
+        if ($this->_synchronizationLog !== null) {
+            return $this->_synchronizationLog;
         }
 
-        $this->synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $this->synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Walmart::NICK);
-        $this->synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS);
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Walmart::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS);
 
-        return $this->synchronizationLog;
+        return $this->_synchronizationLog;
     }
 
     // ########################################

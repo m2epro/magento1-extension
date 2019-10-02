@@ -70,9 +70,15 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
 
     // ---------------------------------------
 
-    protected function addNotificationMessages() {}
+    protected function addNotificationMessages()
+    {
+        return null;
+    }
 
-    protected function beforeAddContentEvent() {}
+    protected function beforeAddContentEvent()
+    {
+        return null;
+    }
 
     // ---------------------------------------
 
@@ -151,7 +157,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
         }
 
         if ($this->getRequest()->getParam('manage_mode') == self::MANAGE_VARIATION_THAT_CAN_NOT_BE_DELETED_MODE) {
-
             $listingProductId = $this->getRequest()->getParam('listing_product_id');
             $variationIndex = $this->getRequest()->getParam('variation_id');
             $variationIndex = str_replace(array($listingProductId, '##'), '', $variationIndex);
@@ -167,13 +172,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
             if (!isset($canNotBeDeleted[$variationIndex])) {
                 return $this->getResponse()->setBody(sprintf('Variation index "%s" is not exists', $variationIndex));
             }
+
             $canNotBeDeleted[$variationIndex]['details'] = $data;
 
             $lp->setSetting('additional_data', 'variations_that_can_not_be_deleted', $canNotBeDeleted);
             $lp->save();
-
         } else {
-
             $variationId = $this->getRequest()->getParam('variation_id');
 
             if (empty($variationId)) {

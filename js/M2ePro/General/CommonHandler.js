@@ -50,7 +50,7 @@ CommonHandler.prototype = {
                 return false;
             }
 
-            return parseInt(value) > 0;
+            return parseInt(value) >= 0;
         });
 
         Validation.add('M2ePro-validation-float', M2ePro.translator.translate('Invalid input data. Decimal value required. Example 12.05'), function(value, el) {
@@ -67,7 +67,7 @@ CommonHandler.prototype = {
                 return false;
             }
 
-            return parseFloat(value);
+            return parseFloat(value) >= 0;
         });
 
         Validation.add('M2ePro-validate-greater-than', M2ePro.translator.translate('Please enter a valid number value in a specified range.'), function(value, el) {

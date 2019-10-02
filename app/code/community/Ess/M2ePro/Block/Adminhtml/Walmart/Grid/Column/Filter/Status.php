@@ -38,7 +38,7 @@ HTML;
         $value = $this->getData('value');
 
         if (is_array($value) &&
-            (isset($value['value']) && !is_null($value['value'])) ||
+            (isset($value['value']) && $value['value'] !== null) ||
             (isset($value['is_reset']) && $value['is_reset'] == 1))
         {
             return $value;

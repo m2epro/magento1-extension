@@ -8,39 +8,37 @@
 
 class Ess_M2ePro_Model_Connector_Connection_Request
 {
-    // ########################################
+    protected $_component        = NULL;
+    protected $_componentVersion = NULL;
+    protected $_command          = NULL;
 
-    private $component = NULL;
-    private $componentVersion = NULL;
-    private $command = NULL;
-
-    private $infoRewrites = array();
-    private $data = array();
+    protected $_infoRewrites = array();
+    protected $_data         = array();
 
     // ########################################
 
     public function setComponent($value)
     {
-        $this->component = (string)$value;
+        $this->_component = (string)$value;
         return $this;
     }
 
     public function getComponent()
     {
-        return $this->component;
+        return $this->_component;
     }
 
     // ----------------------------------------
 
     public function setComponentVersion($value)
     {
-        $this->componentVersion = (int)$value;
+        $this->_componentVersion = (int)$value;
         return $this;
     }
 
     public function getComponentVersion()
     {
-        return $this->componentVersion;
+        return $this->_componentVersion;
     }
 
     // ----------------------------------------
@@ -53,13 +51,13 @@ class Ess_M2ePro_Model_Connector_Connection_Request
             throw new Exception('Invalid Command Format.');
         }
 
-        $this->command = $value;
+        $this->_command = $value;
         return $this;
     }
 
     public function getCommand()
     {
-        return $this->command;
+        return $this->_command;
     }
 
     // ########################################
@@ -89,34 +87,34 @@ class Ess_M2ePro_Model_Connector_Connection_Request
             ),
             'auth' => array(),
             'component' => array(
-                'name' => $this->component,
-                'version' => $this->componentVersion
+                'name' => $this->_component,
+                'version' => $this->_componentVersion
             ),
             'command' => array(
-                'entity' => $this->command[0],
-                'type' => $this->command[1],
-                'name' => $this->command[2]
+                'entity' => $this->_command[0],
+                'type' => $this->_command[1],
+                'name' => $this->_command[2]
             )
         );
 
         $adminKey = Mage::helper('M2ePro/Server')->getAdminKey();
-        !is_null($adminKey) && $adminKey != '' && $data['auth']['admin_key'] = $adminKey;
+        $adminKey !== null && $adminKey != '' && $data['auth']['admin_key'] = $adminKey;
 
         $applicationKey = Mage::helper('M2ePro/Server')->getApplicationKey();
-        !is_null($applicationKey) && $applicationKey != '' && $data['auth']['application_key'] = $applicationKey;
+        $applicationKey !== null && $applicationKey != '' && $data['auth']['application_key'] = $applicationKey;
 
         $licenseKey = Mage::helper('M2ePro/Module_License')->getKey();
-        !is_null($licenseKey) && $licenseKey != '' && $data['auth']['license_key'] = $licenseKey;
+        $licenseKey !== null && $licenseKey != '' && $data['auth']['license_key'] = $licenseKey;
 
         $installationKey = Mage::helper('M2ePro/Module')->getInstallationKey();
-        !is_null($installationKey) && $installationKey != '' && $data['auth']['installation_key'] = $installationKey;
+        $installationKey !== null && $installationKey != '' && $data['auth']['installation_key'] = $installationKey;
 
-        return array_merge_recursive($data,$this->infoRewrites);
+        return array_merge_recursive($data, $this->_infoRewrites);
     }
 
     public function setInfoRewrites(array $value = array())
     {
-        $this->infoRewrites = $value;
+        $this->_infoRewrites = $value;
         return $this;
     }
 
@@ -124,13 +122,13 @@ class Ess_M2ePro_Model_Connector_Connection_Request
 
     public function setData(array $value = array())
     {
-        $this->data = $value;
+        $this->_data = $value;
         return $this;
     }
 
     public function getData()
     {
-        return $this->data;
+        return $this->_data;
     }
 
     // ########################################

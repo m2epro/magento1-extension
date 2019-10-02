@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Responser
             );
 
             $this->getLogger()->logListingProductMessage(
-                $this->listingProduct, $message
+                $this->_listingProduct, $message
             );
 
             return;
@@ -48,23 +48,24 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Responser
         if ($this->getStatusChanger() == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH &&
             (!$this->getConfigurator()->isExcludingMode()) &&
             $this->isNewRequiredSpecificNeeded($responseMessages)) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
-            $message->initFromPreparedData(Mage::helper('M2ePro')->__(
-                'eBay Category assigned to this Item requires the Product Identifier to be specified
+            $message->initFromPreparedData(
+                Mage::helper('M2ePro')->__(
+                    'eBay Category assigned to this Item requires the Product Identifier to be specified
                 (UPC, EAN, ISBN, etc.). The related data will be automatically submitted to the Channel based
-                on eBay Catalog Identifiers settings in the Description Policy.'),
+                on eBay Catalog Identifiers settings in the Description Policy.'
+                ),
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
             );
 
-            $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
 
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
 
             $this->processAdditionalAction($this->getActionType(), $configurator);
         }
 
-        $additionalData = $this->listingProduct->getAdditionalData();
+        $additionalData = $this->_listingProduct->getAdditionalData();
 
         if ($this->isVariationErrorAppeared($responseMessages) &&
             $this->getRequestDataObject()->hasVariations() &&
@@ -75,13 +76,13 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Revise_Responser
 
         parent::eventAfterExecuting();
 
-        if ($this->isSuccess) {
+        if ($this->_isSuccess) {
             return;
         }
 
-        $additionalData = $this->listingProduct->getAdditionalData();
+        $additionalData = $this->_listingProduct->getAdditionalData();
         $additionalData['need_full_synchronization_template_recheck'] = true;
-        $this->listingProduct->setSettings('additional_data', $additionalData)->save();
+        $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
     }
 
     //########################################

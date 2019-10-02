@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Magento_Product_StockItem
 {
     /** @var Mage_CatalogInventory_Model_Stock_Item */
-    private $stockItem = null;
+    protected $_stockItem = null;
 
     //########################################
 
@@ -19,7 +19,7 @@ class Ess_M2ePro_Model_Magento_Product_StockItem
      */
     public function setStockItem(Mage_CatalogInventory_Model_Stock_Item $stockItem)
     {
-        $this->stockItem = $stockItem;
+        $this->_stockItem = $stockItem;
         return $this;
     }
 
@@ -29,11 +29,11 @@ class Ess_M2ePro_Model_Magento_Product_StockItem
      */
     public function getStockItem()
     {
-        if (is_null($this->stockItem)) {
+        if ($this->_stockItem === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Stock Item is not set.');
         }
 
-        return $this->stockItem;
+        return $this->_stockItem;
     }
 
     /**

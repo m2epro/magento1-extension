@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Template_SellingFormat getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Amazon_Template_SellingFormat getResource()
+ * @method Ess_M2ePro_Model_Resource_Amazon_Template_SellingFormat getResource()
  */
 class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
 {
@@ -79,7 +79,7 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat extends Ess_M2ePro_Model_Co
      */
     public function getListings($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedComponentItems('Listing','template_selling_format_id',$asObjects,$filters);
+        return $this->getRelatedComponentItems('Listing', 'template_selling_format_id', $asObjects, $filters);
     }
 
     //########################################

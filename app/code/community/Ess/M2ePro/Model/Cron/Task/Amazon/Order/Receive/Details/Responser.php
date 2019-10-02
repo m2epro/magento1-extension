@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsResponser
 {
-    protected $synchronizationLog = NULL;
+    protected $_synchronizationLog = null;
 
     //########################################
 
@@ -18,7 +18,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
         parent::processResponseMessages();
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -76,14 +75,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Collection $ordersCollection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Collection $ordersCollection */
         $ordersCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
         $ordersCollection->addFieldToFilter('amazon_order_id', array('in' => $amazonOrdersIds));
 
         foreach ($responseData['data'] as $details) {
             /** @var Ess_M2ePro_Model_Order $order */
             $order = $ordersCollection->getItemByColumnValue('amazon_order_id', $details['amazon_order_id']);
-            if (is_null($order)) {
+            if ($order === null) {
                 continue;
             }
 
@@ -102,7 +101,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -110,15 +109,15 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details_Responser
      */
     protected function getSynchronizationLog()
     {
-        if (!is_null($this->synchronizationLog)) {
-            return $this->synchronizationLog;
+        if ($this->_synchronizationLog !== null) {
+            return $this->_synchronizationLog;
         }
 
-        $this->synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $this->synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
-        $this->synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_ORDERS);
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_ORDERS);
 
-        return $this->synchronizationLog;
+        return $this->_synchronizationLog;
     }
 
     //########################################

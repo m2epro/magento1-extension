@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Servicing_Task
 {
-    private $needToCleanCache = false;
+    protected $_needToCleanCache = false;
 
     //########################################
 
@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
             $this->processAmazonLastUpdateDates($data['amazon_last_update_dates']);
         }
 
-        if ($this->needToCleanCache) {
+        if ($this->_needToCleanCache) {
             Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('marketplace');
         }
     }
@@ -57,9 +57,8 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
         $dictionaryTable = Mage::helper('M2ePro/Module_Database_Structure')
             ->getTableNameWithPrefix('m2epro_ebay_dictionary_marketplace');
 
-        /* @var $marketplace Ess_M2ePro_Model_Marketplace */
+        /** @var $marketplace Ess_M2ePro_Model_Marketplace */
         foreach ($enabledMarketplaces as $marketplace) {
-
             if (!isset($lastUpdateDates[$marketplace->getNativeId()])) {
                 continue;
             }
@@ -67,19 +66,21 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
             $serverLastUpdateDate = $lastUpdateDates[$marketplace->getNativeId()];
 
             $select = $writeConn->select()
-                ->from($dictionaryTable, array(
+                ->from(
+                    $dictionaryTable, array(
                     'client_details_last_update_date'
-                ))
+                    )
+                )
                 ->where('marketplace_id = ?', $marketplace->getId());
 
             $clientLastUpdateDate = $writeConn->fetchOne($select);
 
-            if (is_null($clientLastUpdateDate)) {
+            if ($clientLastUpdateDate === null) {
                 $clientLastUpdateDate = $serverLastUpdateDate;
             }
 
             if ($clientLastUpdateDate < $serverLastUpdateDate) {
-                $this->needToCleanCache = true;
+                $this->_needToCleanCache = true;
             }
 
             $writeConn->update(
@@ -102,9 +103,8 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
         $dictionaryTable = Mage::helper('M2ePro/Module_Database_Structure')
             ->getTableNameWithPrefix('m2epro_amazon_dictionary_marketplace');
 
-        /* @var $marketplace Ess_M2ePro_Model_Marketplace */
+        /** @var $marketplace Ess_M2ePro_Model_Marketplace */
         foreach ($enabledMarketplaces as $marketplace) {
-
             if (!isset($lastUpdateDates[$marketplace->getNativeId()])) {
                 continue;
             }
@@ -112,19 +112,21 @@ class Ess_M2ePro_Model_Servicing_Task_Marketplaces extends Ess_M2ePro_Model_Serv
             $serverLastUpdateDate = $lastUpdateDates[$marketplace->getNativeId()];
 
             $select = $writeConn->select()
-                ->from($dictionaryTable, array(
+                ->from(
+                    $dictionaryTable, array(
                     'client_details_last_update_date'
-                ))
+                    )
+                )
                 ->where('marketplace_id = ?', $marketplace->getId());
 
             $clientLastUpdateDate = $writeConn->fetchOne($select);
 
-            if (is_null($clientLastUpdateDate)) {
+            if ($clientLastUpdateDate === null) {
                 $clientLastUpdateDate = $serverLastUpdateDate;
             }
 
             if ($clientLastUpdateDate < $serverLastUpdateDate) {
-                $this->needToCleanCache = true;
+                $this->_needToCleanCache = true;
             }
 
             $writeConn->update(

@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Observer_Ebay_Order extends Ess_M2ePro_Model_Observer_Abs
 
     //########################################
 
-    private function sendNotification($account, $orderId, $type)
+    protected function sendNotification($account, $orderId, $type)
     {
         $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connector = $dispatcher->getVirtualConnector(

@@ -57,13 +57,13 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal extends Ess_
 
     //########################################
 
-    private function calculateAllowedListingsProductsCount($component)
+    protected function calculateAllowedListingsProductsCount($component)
     {
         $maxAllowedInstructionsCount = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             self::KEY_PREFIX.'/'.$component.'/', 'max_allowed_instructions_count'
         );
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Instruction_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection $collection */
         $currentInstructionsCount = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection')
             ->applySkipUntilFilter()
             ->addFieldToFilter('component', $component)
@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal extends Ess_
         return $maxAllowedInstructionsCount - $currentInstructionsCount;
     }
 
-    private function getNextListingsProductsIds($component, $limit)
+    protected function getNextListingsProductsIds($component, $limit)
     {
         $collection = Mage::getResourceModel('M2ePro/Listing_Product_Collection');
         $collection->addFieldToFilter('component_mode', $component);
@@ -91,21 +91,21 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal extends Ess_
 
     //########################################
 
-    private function isEnabled($component)
+    protected function isEnabled($component)
     {
         return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             self::KEY_PREFIX.'/'.$component.'/', 'mode'
         );
     }
 
-    private function isFinished($component)
+    protected function isFinished($component)
     {
         return (bool)$this->getRegistryValue(self::KEY_PREFIX.'/'.$component.'/end_date/');
     }
 
     // ---------------------------------------
 
-    private function finish($component)
+    protected function finish($component)
     {
         $this->setRegistryValue(
             self::KEY_PREFIX.'/'.$component.'/end_date/', Mage::helper('M2ePro')->getCurrentGmtDate()
@@ -115,12 +115,12 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal extends Ess_
 
     // ---------------------------------------
 
-    private function getLastListingProductId($component)
+    protected function getLastListingProductId($component)
     {
         return (int)$this->getRegistryValue(self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/');
     }
 
-    private function setLastListingProductId($component, $listingProductId)
+    protected function setLastListingProductId($component, $listingProductId)
     {
         $this->setRegistryValue(self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/', $listingProductId);
     }

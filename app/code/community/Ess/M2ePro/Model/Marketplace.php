@@ -6,8 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Marketplace as AmazonMarketplace;
+use Ess_M2ePro_Model_Ebay_Marketplace as EbayMarketplace;
+use Ess_M2ePro_Model_Walmart_Marketplace as WalmartMarketplace;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Marketplace|Ess_M2ePro_Model_Ebay_Marketplace|Ess_M2ePro_Model_Walmart_Marketplace getChildObject()
+ * @method AmazonMarketplace|EbayMarketplace|WalmartMarketplace getChildObject()
  */
 class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -64,7 +68,7 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
      */
     public function getOtherListings($asObjects = false, array $filters = array())
     {
-        $otherListings = $this->getRelatedComponentItems('Listing_Other','marketplace_id',$asObjects,$filters);
+        $otherListings = $this->getRelatedComponentItems('Listing_Other', 'marketplace_id', $asObjects, $filters);
 
         if ($asObjects) {
             foreach ($otherListings as $otherListing) {
@@ -84,7 +88,7 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
      */
     public function getOrders($asObjects = false, array $filters = array())
     {
-        $orders = $this->getRelatedComponentItems('Order','marketplace_id',$asObjects,$filters);
+        $orders = $this->getRelatedComponentItems('Order', 'marketplace_id', $asObjects, $filters);
 
         if ($asObjects) {
             foreach ($orders as $order) {
@@ -100,7 +104,7 @@ class Ess_M2ePro_Model_Marketplace extends Ess_M2ePro_Model_Component_Parent_Abs
 
     public function getIdByCode($code)
     {
-        return $this->load($code,'code')->getId();
+        return $this->load($code, 'code')->getId();
     }
 
     /**

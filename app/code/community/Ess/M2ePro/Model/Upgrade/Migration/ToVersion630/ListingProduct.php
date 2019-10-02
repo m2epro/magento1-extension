@@ -9,9 +9,9 @@
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
-    private $forceAllSteps = false;
+    protected $_forceAllSteps = false;
 
     //########################################
 
@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
      */
     public function getInstaller()
     {
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -28,19 +28,19 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
+        $this->_installer = $installer;
     }
 
     // ---------------------------------------
 
     public function setForceAllSteps($value = true)
     {
-        $this->forceAllSteps = $value;
+        $this->_forceAllSteps = $value;
     }
 
     //########################################
 
-    /*
+    /**
 
         ALTER TABLE `m2epro_buy_listing_product`
             CHANGE COLUMN is_variation_matched is_variation_product_matched TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -107,15 +107,15 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
 
     //########################################
 
-    private function isNeedToSkip()
+    protected function isNeedToSkip()
     {
-        if ($this->forceAllSteps) {
+        if ($this->_forceAllSteps) {
             return false;
         }
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_listing_product');
         if ($connection->tableColumnExists($tempTable, 'is_general_id_owner') !== false) {
             return true;
         }
@@ -125,11 +125,11 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
 
     //########################################
 
-    private function processGeneral()
+    protected function processGeneral()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_listing_product');
 
         if ($connection->tableColumnExists($tempTable, 'is_general_id_owner') === false) {
             $connection->addColumn(
@@ -153,11 +153,11 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
         }
     }
 
-    private function processVariation()
+    protected function processVariation()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_listing_product');
 
         if ($connection->tableColumnExists($tempTable, 'is_variation_matched') !== false &&
             $connection->tableColumnExists($tempTable, 'is_variation_product_matched') === false) {
@@ -217,7 +217,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
             $connection->addKey($tempTable, 'variation_parent_id', 'variation_parent_id');
         }
 
-        $tempTable = $this->installer->getTable('m2epro_buy_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_buy_listing_product');
 
         if ($connection->tableColumnExists($tempTable, 'is_variation_matched') !== false &&
             $connection->tableColumnExists($tempTable, 'is_variation_product_matched') === false) {
@@ -237,7 +237,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
             $connection->addKey($tempTable, 'is_variation_product_matched', 'is_variation_product_matched');
         }
 
-        $tempTable = $this->installer->getTable('m2epro_play_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_play_listing_product');
 
         if ($connection->tableColumnExists($tempTable, 'is_variation_matched') !== false &&
             $connection->tableColumnExists($tempTable, 'is_variation_product_matched') === false) {
@@ -257,7 +257,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_ListingProduct
             $connection->addKey($tempTable, 'is_variation_product_matched', 'is_variation_product_matched');
         }
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
     UPDATE `m2epro_listing_product`
     SET additional_data = REPLACE(additional_data, '"variation_options":', '"variation_product_options":')
@@ -267,14 +268,14 @@ SQL
         );
     }
 
-    private function processSearch()
+    protected function processSearch()
     {
-        $connection = $this->installer->getConnection();
-        $tempTable  = $this->installer->getTable('m2epro_amazon_listing_product');
+        $connection = $this->_installer->getConnection();
+        $tempTable  = $this->_installer->getTable('m2epro_amazon_listing_product');
 
         if ($connection->tableColumnExists($tempTable, 'general_id_search_status') !== false) {
-
-            $this->installer->run(<<<SQL
+            $this->_installer->run(
+                <<<SQL
 
 UPDATE `m2epro_amazon_listing_product`
 SET general_id_search_status = 0,
@@ -324,7 +325,7 @@ SQL
             $connection->addKey($tempTable, 'search_settings_status', 'search_settings_status');
         }
 
-        $tempTable = $this->installer->getTable('m2epro_buy_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_buy_listing_product');
 
         if ($connection->tableColumnExists($tempTable, 'general_id_search_status') !== false &&
             $connection->tableColumnExists($tempTable, 'search_settings_status') === false) {
@@ -359,7 +360,7 @@ SQL
             $connection->addKey($tempTable, 'search_settings_status', 'search_settings_status');
         }
 
-        $tempTable = $this->installer->getTable('m2epro_play_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_play_listing_product');
 
         if ($connection->tableColumnExists($tempTable, 'general_id_search_status') !== false &&
             $connection->tableColumnExists($tempTable, 'search_settings_status') === false) {

@@ -18,13 +18,13 @@ use Ess_M2ePro_Model_Requirements_Semver_Constraint_ConstraintInterface as Const
 class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements ConstraintInterface
 {
     /** @var ConstraintInterface[] */
-    protected $constraints;
+    protected $_constraints;
 
     /** @var string */
-    protected $prettyString;
+    protected $_prettyString;
 
     /** @var bool */
-    protected $conjunctive;
+    protected $_conjunctive;
 
     /**
      * @param ConstraintInterface[] $constraints A set of constraints
@@ -32,8 +32,8 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
      */
     public function __construct(array $constraints, $conjunctive = true)
     {
-        $this->constraints = $constraints;
-        $this->conjunctive = $conjunctive;
+        $this->_constraints = $constraints;
+        $this->_conjunctive = $conjunctive;
     }
 
     /**
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
      */
     public function getConstraints()
     {
-        return $this->constraints;
+        return $this->_constraints;
     }
 
     /**
@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
      */
     public function isConjunctive()
     {
-        return $this->conjunctive;
+        return $this->_conjunctive;
     }
 
     /**
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
      */
     public function isDisjunctive()
     {
-        return !$this->conjunctive;
+        return !$this->_conjunctive;
     }
 
     /**
@@ -67,8 +67,8 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
      */
     public function matches(ConstraintInterface $provider)
     {
-        if (false === $this->conjunctive) {
-            foreach ($this->constraints as $constraint) {
+        if (false === $this->_conjunctive) {
+            foreach ($this->_constraints as $constraint) {
                 if ($constraint->matches($provider)) {
                     return true;
                 }
@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
             return false;
         }
 
-        foreach ($this->constraints as $constraint) {
+        foreach ($this->_constraints as $constraint) {
             if (!$constraint->matches($provider)) {
                 return false;
             }
@@ -91,7 +91,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
      */
     public function setPrettyString($prettyString)
     {
-        $this->prettyString = $prettyString;
+        $this->_prettyString = $prettyString;
     }
 
     /**
@@ -99,8 +99,8 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
      */
     public function getPrettyString()
     {
-        if ($this->prettyString) {
-            return $this->prettyString;
+        if ($this->_prettyString) {
+            return $this->_prettyString;
         }
 
         return $this->__toString();
@@ -112,10 +112,10 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_MultiConstraint implements
     public function __toString()
     {
         $constraints = array();
-        foreach ($this->constraints as $constraint) {
+        foreach ($this->_constraints as $constraint) {
             $constraints[] = (string) $constraint;
         }
 
-        return '[' . implode($this->conjunctive ? ' ' : ' || ', $constraints) . ']';
+        return '[' . implode($this->_conjunctive ? ' ' : ' || ', $constraints) . ']';
     }
 }

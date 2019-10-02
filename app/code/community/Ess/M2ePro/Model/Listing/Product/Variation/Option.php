@@ -6,20 +6,24 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option as AmazonProductVariationOption;
+use Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option as EbayProductVariationOption;
+use Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Option as WalmartProductVariationOption;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option|Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option|Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Option getChildObject()
+ * @method AmazonProductVariationOption|EbayProductVariationOption|WalmartProductVariationOption getChildObject()
  */
 class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
     /**
      * @var Ess_M2ePro_Model_Listing_Product_Variation
      */
-    private $listingProductVariationModel = NULL;
+    protected $_listingProductVariationModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Magento_Product_Cache
      */
-    protected $magentoProductModel = NULL;
+    protected $_magentoProductModel = null;
 
     //########################################
 
@@ -60,8 +64,8 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->listingProductVariationModel = NULL;
-        $temp && $this->magentoProductModel = NULL;
+        $temp && $this->_listingProductVariationModel = NULL;
+        $temp && $this->_magentoProductModel = NULL;
         return $temp;
     }
 
@@ -72,13 +76,13 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
      */
     public function getListingProductVariation()
     {
-        if (is_null($this->listingProductVariationModel)) {
-            $this->listingProductVariationModel = Mage::helper('M2ePro/Component')->getComponentObject(
-                $this->getComponentMode(),'Listing_Product_Variation',$this->getData('listing_product_variation_id')
+        if ($this->_listingProductVariationModel === null) {
+            $this->_listingProductVariationModel = Mage::helper('M2ePro/Component')->getComponentObject(
+                $this->getComponentMode(), 'Listing_Product_Variation', $this->getData('listing_product_variation_id')
             );
         }
 
-        return $this->listingProductVariationModel;
+        return $this->_listingProductVariationModel;
     }
 
     /**
@@ -86,7 +90,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
      */
     public function setListingProductVariation(Ess_M2ePro_Model_Listing_Product_Variation $instance)
     {
-         $this->listingProductVariationModel = $instance;
+         $this->_listingProductVariationModel = $instance;
     }
 
     // ---------------------------------------
@@ -96,17 +100,17 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
      */
     public function getMagentoProduct()
     {
-        if (!$this->magentoProductModel) {
-            $this->magentoProductModel = Mage::getModel('M2ePro/Magento_Product_Cache')
-                                                    ->setStoreId($this->getListing()->getStoreId())
-                                                    ->setProductId($this->getData('product_id'))
-                                                    ->setStatisticId($this->getListingProduct()->getId());
+        if (!$this->_magentoProductModel) {
+            $this->_magentoProductModel = Mage::getModel('M2ePro/Magento_Product_Cache')
+                                              ->setStoreId($this->getListing()->getStoreId())
+                                              ->setProductId($this->getData('product_id'))
+                                              ->setStatisticId($this->getListingProduct()->getId());
         }
 
         $this->getListingProduct()->getMagentoProduct()->isCacheEnabled()
-            ? $this->magentoProductModel->enableCache() : $this->magentoProductModel->disableCache();
+            ? $this->_magentoProductModel->enableCache() : $this->_magentoProductModel->disableCache();
 
-        return $this->magentoProductModel;
+        return $this->_magentoProductModel;
     }
 
     /**
@@ -114,7 +118,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product_Cache $instance)
     {
-        $this->magentoProductModel = $instance;
+        $this->_magentoProductModel = $instance;
     }
 
     //########################################

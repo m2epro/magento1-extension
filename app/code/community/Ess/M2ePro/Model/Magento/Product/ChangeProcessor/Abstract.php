@@ -17,21 +17,21 @@ abstract class Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract
     const INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED = 'magmi_plugin_product_changed';
 
     /** @var Ess_M2ePro_Model_Listing_Product */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
-    private $defaultInstructionTypes = array();
+    protected $_defaultInstructionTypes = array();
 
     //########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
     public function setDefaultInstructionTypes(array $instructionTypes)
     {
-        $this->defaultInstructionTypes = $instructionTypes;
+        $this->_defaultInstructionTypes = $instructionTypes;
         return $this;
     }
 
@@ -45,7 +45,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract
     {
         $listingProductInstructionsData = array();
 
-        foreach ($this->defaultInstructionTypes as $instructionType) {
+        foreach ($this->_defaultInstructionTypes as $instructionType) {
             $listingProductInstructionsData[] = array(
                 'listing_product_id' => $this->getListingProduct()->getId(),
                 'type'               => $instructionType,
@@ -74,7 +74,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract
 
     protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################

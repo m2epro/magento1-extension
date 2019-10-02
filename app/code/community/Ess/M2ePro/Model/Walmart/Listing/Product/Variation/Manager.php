@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     //########################################
 
@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
     }
 
     // ---------------------------------------
@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
      */
     public function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     /**
@@ -111,30 +111,30 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
 
     public function setSimpleType()
     {
-        $this->getListingProduct()->setData('is_variation_product',0)
-                                  ->setData('is_variation_parent',0)
-                                  ->setData('variation_parent_id',NULL)
+        $this->getListingProduct()->setData('is_variation_product', 0)
+                                  ->setData('is_variation_parent', 0)
+                                  ->setData('variation_parent_id', NULL)
                                   ->save();
     }
 
     public function setIndividualType()
     {
-        $this->getListingProduct()->setData('is_variation_parent',0)
-                                  ->setData('variation_parent_id',NULL)
+        $this->getListingProduct()->setData('is_variation_parent', 0)
+                                  ->setData('variation_parent_id', NULL)
                                   ->save();
     }
 
     public function setRelationParentType()
     {
-        $this->getListingProduct()->setData('is_variation_parent',1)
-                                  ->setData('variation_parent_id',NULL)
+        $this->getListingProduct()->setData('is_variation_parent', 1)
+                                  ->setData('variation_parent_id', NULL)
                                   ->save();
     }
 
     public function setRelationChildType($variationParentId)
     {
-        $this->getListingProduct()->setData('is_variation_parent',0)
-                                  ->setData('variation_parent_id',$variationParentId)
+        $this->getListingProduct()->setData('is_variation_parent', 0)
+                                  ->setData('variation_parent_id', $variationParentId)
                                   ->save();
     }
 

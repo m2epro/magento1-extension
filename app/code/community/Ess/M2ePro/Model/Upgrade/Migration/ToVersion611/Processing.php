@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
     //########################################
 
@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
      */
     public function getInstaller()
     {
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -26,12 +26,12 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
+        $this->_installer = $installer;
     }
 
     //########################################
 
-    /*
+    /**
         ALTER TABLE `m2epro_lock_item`
         CHANGE COLUMN `data` `data` TEXT DEFAULT NULL,
         ADD COLUMN `parent_id` INT(11) UNSIGNED DEFAULT NULL AFTER `nick`,
@@ -71,11 +71,11 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
 
     //########################################
 
-    private function isNeedToSkip()
+    protected function isNeedToSkip()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_lock_item');
+        $tempTable = $this->_installer->getTable('m2epro_lock_item');
         if ($connection->tableColumnExists($tempTable, 'parent_id') !== false) {
             return true;
         }
@@ -85,11 +85,11 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
 
     //########################################
 
-    private function processLockItemTable()
+    protected function processLockItemTable()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_lock_item');
+        $tempTable = $this->_installer->getTable('m2epro_lock_item');
         $tempTableIndexList = $connection->getIndexList($tempTable);
 
         if ($connection->tableColumnExists($tempTable, 'data') !== false) {
@@ -110,20 +110,20 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
             $connection->addKey($tempTable, 'parent_id', 'parent_id');
         }
 
-        foreach ($connection->select()->from($tempTable,'*')->query() as $row) {
-            $nick = preg_replace('/(listing|listing_other)_(ebay|amazon|buy|play)/','$2_$1',$row['nick']);
-            $connection->update($tempTable,array('nick' => $nick),"id={$row['id']}");
+        foreach ($connection->select()->from($tempTable, '*')->query() as $row) {
+            $nick = preg_replace('/(listing|listing_other)_(ebay|amazon|buy|play)/', '$2_$1', $row['nick']);
+            $connection->update($tempTable, array('nick' => $nick), "id={$row['id']}");
         }
     }
 
-    private function processOperationHistoryTable()
+    protected function processOperationHistoryTable()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $oldTable = $this->installer->getTable('m2epro_synchronization_run');
-        $newTable = $this->installer->getTable('m2epro_operation_history');
+        $oldTable = $this->_installer->getTable('m2epro_synchronization_run');
+        $newTable = $this->_installer->getTable('m2epro_operation_history');
 
-        if ($this->installer->tableExists($oldTable) && !$this->installer->tableExists($newTable)) {
+        if ($this->_installer->tableExists($oldTable) && !$this->_installer->tableExists($newTable)) {
             $connection->query("RENAME TABLE `{$oldTable}` TO `{$newTable}`");
         }
 
@@ -188,10 +188,10 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
         $connection->update($newTable, array('initiator' => 2), '`initiator` = '.(1 + $offset));
     }
 
-    private function processProcessingRequestTable()
+    protected function processProcessingRequestTable()
     {
-        $connection = $this->installer->getConnection();
-        $tempTable = $this->installer->getTable('m2epro_processing_request');
+        $connection = $this->_installer->getConnection();
+        $tempTable = $this->_installer->getTable('m2epro_processing_request');
 
         $connection->update(
             $tempTable, array('responser_model' => new Zend_Db_Expr("REPLACE(`responser_model`,'_Tasks','')"))
@@ -200,7 +200,8 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing
         $connection->update(
             $tempTable,
             array('responser_model' => 'M2ePro/Amazon_Synchronization_Orders_Receive_Responser'),
-            array("responser_model = 'M2ePro/Amazon_Synchronization_Orders_Responser'"));
+            array("responser_model = 'M2ePro/Amazon_Synchronization_Orders_Responser'")
+        );
     }
 
     //########################################

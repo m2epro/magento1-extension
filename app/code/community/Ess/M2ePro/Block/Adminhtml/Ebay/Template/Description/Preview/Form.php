@@ -26,12 +26,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Preview_Form extends 
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/preview'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -44,23 +46,27 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Preview_Form extends 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'id' => 'display_product_description',
                 'label'   => Mage::helper('M2ePro')->__('View'),
                 'type' => 'submit'
-            ));
+                )
+            );
         $this->setChild('display_product_description', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'id' => 'display_random_product_description',
                 'label'   => Mage::helper('M2ePro')->__('View Random Product'),
                 'type' => 'submit',
                 'onclick' => '$(\'product_id\').value = \'\'; return true;'
-            ));
+                )
+            );
         $this->setChild('display_random_product_description', $buttonBlock);
         // ---------------------------------------
 

@@ -213,13 +213,13 @@ class Ess_M2ePro_Model_Observer_Dispatcher
 
     //########################################
 
-    private function process($observerModel, Varien_Event_Observer $eventObserver, $forceRun = false)
+    protected function process($observerModel, Varien_Event_Observer $eventObserver, $forceRun = false)
     {
         if (!$forceRun &&
-            (Mage::helper('M2ePro/Module')->isDisabled() ||
+            (Mage::helper('M2ePro/Module_Maintenance')->isEnabled() ||
+             Mage::helper('M2ePro/Module')->isDisabled() ||
              !Mage::helper('M2ePro/Module')->isReadyToWork() ||
              !Mage::helper('M2ePro/Component')->getActiveComponents())) {
-
             return;
         }
 
@@ -236,7 +236,6 @@ class Ess_M2ePro_Model_Observer_Dispatcher
             $observer->beforeProcess();
             $observer->process();
             $observer->afterProcess();
-
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }

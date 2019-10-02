@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Helper_Magento_Store_Group
 {
-    private $defaultStoreGroup = NULL;
+    protected $_defaultStoreGroup = null;
 
     //########################################
 
@@ -40,22 +40,21 @@ class Ess_M2ePro_Helper_Magento_Store_Group
 
     public function getDefault()
     {
-        if (is_null($this->defaultStoreGroup)) {
-
+        if ($this->_defaultStoreGroup === null) {
             $defaultWebsite = Mage::helper('M2ePro/Magento_Store_Website')->getDefault();
             $defaultStoreGroupId = $defaultWebsite->getDefaultGroupId();
 
-            $this->defaultStoreGroup = Mage::getModel('core/store_group')->load($defaultStoreGroupId);
-            if (is_null($this->defaultStoreGroup->getId())) {
-                $this->defaultStoreGroup = Mage::getModel('core/store_group')->load(0);
+            $this->_defaultStoreGroup = Mage::getModel('core/store_group')->load($defaultStoreGroupId);
+            if ($this->_defaultStoreGroup->getId() === null) {
+                $this->_defaultStoreGroup = Mage::getModel('core/store_group')->load(0);
 
-                if (is_null($this->defaultStoreGroup->getId())) {
+                if ($this->_defaultStoreGroup->getId() === null) {
                     throw new Ess_M2ePro_Model_Exception('Getting default store group is failed');
                 }
             }
         }
 
-        return $this->defaultStoreGroup;
+        return $this->_defaultStoreGroup;
     }
 
     public function getDefaultGroupId()

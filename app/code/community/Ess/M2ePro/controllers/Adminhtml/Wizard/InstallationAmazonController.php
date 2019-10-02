@@ -68,7 +68,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
 
         $licenseData = array();
         foreach ($requiredKeys as $key) {
-
             if ($tempValue = $this->getRequest()->getParam($key)) {
                 $licenseData[$key] = $tempValue;
                 continue;
@@ -95,7 +94,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
             );
 
             return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => true)));
-
         }
 
         $licenseResult = Mage::helper('M2ePro/Module_License')->obtainRecord(
@@ -125,7 +123,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
 
         $licenseData = array();
         foreach ($requiredKeys as $key) {
-
             if ($tempValue = $this->getRequest()->getParam($key)) {
                 $licenseData[$key] = $tempValue;
                 continue;

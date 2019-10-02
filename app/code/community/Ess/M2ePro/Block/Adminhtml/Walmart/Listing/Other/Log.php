@@ -27,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Log extends Mage_Adminhtm
 
         if (isset($otherListingData['id'])) {
             $tempTitle = Mage::helper('M2ePro/Component_'.ucfirst($otherListingData['component_mode']))
-                ->getObject('Listing_Other',$otherListingData['id'])
+                ->getObject('Listing_Other', $otherListingData['id'])
                 ->getChildObject()->getTitle();
 
             $this->_headerText = Mage::helper('M2ePro')->__("Log For ");
@@ -35,6 +35,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Log extends Mage_Adminhtm
         } else {
             $this->_headerText = '';
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -47,11 +48,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Log extends Mage_Adminhtm
         $this->removeButton('edit');
         // ---------------------------------------
 
-        $this->addButton('show_general_log', array(
+        $this->addButton(
+            'show_general_log', array(
             'label'     => Mage::helper('M2ePro')->__('Show General Log'),
             'onclick'   => 'setLocation(\'' .$this->getUrl('*/adminhtml_walmart_log/listingOther').'\')',
             'class'     => 'button_link'
-        ));
+            )
+        );
     }
 
     //########################################

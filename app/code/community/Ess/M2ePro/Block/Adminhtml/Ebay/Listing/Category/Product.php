@@ -39,21 +39,25 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/',array('step' => 1, '_current' => true));
-        $this->_addButton('back', array(
+        $url = $this->getUrl('*/*/', array('step' => 1, '_current' => true));
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'class'     => 'back',
             'onclick'   => 'setLocation(\''.$url.'\');'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('next', array(
+        $this->_addButton(
+            'next', array(
             'id'      => 'ebay_listing_category_continue_btn',
             'class'   => 'next',
             'label'   => Mage::helper('M2ePro')->__('Continue'),
             'onclick' => 'EbayListingCategoryProductGridHandlerObj.completeCategoriesDataStep();'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -88,7 +92,7 @@ HTML;
 
     //########################################
 
-    private function getPopupsHtml()
+    protected function getPopupsHtml()
     {
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_WarningPopup $block */
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_warningPopup');

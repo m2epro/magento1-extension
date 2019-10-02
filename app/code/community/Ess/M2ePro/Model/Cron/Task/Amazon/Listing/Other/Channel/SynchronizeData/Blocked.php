@@ -28,14 +28,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
 
     protected function performActions()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('other_listings_synchronization',
-            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES);
+        $accountsCollection->addFieldToFilter(
+            'other_listings_synchronization',
+            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+        );
 
         $accounts = $accountsCollection->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -46,7 +48,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
             $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
 
             if (!$this->isLockedAccount($account) && !$this->isLockedAccountInterval($account)) {
-
                 $this->getOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
                     'Process Account '.$account->getTitle()
@@ -69,7 +70,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
 
     //########################################
 
-    private function isLockedAccount(Ess_M2ePro_Model_Account $account)
+    protected function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
         $lockItemNick = Runner::LOCK_ITEM_PREFIX.'_'.$account->getId();
 
@@ -87,7 +88,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         return true;
     }
 
-    private function isLockedAccountInterval(Ess_M2ePro_Model_Account $account)
+    protected function isLockedAccountInterval(Ess_M2ePro_Model_Account $account)
     {
         if ($this->getInitiator() == Ess_M2ePro_Helper_Data::INITIATOR_USER ||
             $this->getInitiator() == Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER) {

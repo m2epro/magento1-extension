@@ -13,12 +13,12 @@ class Ess_M2ePro_Model_Walmart_Template_Category_SnapshotBuilder
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['specifics'] = $this->model->getSpecifics();
+        $data['specifics'] = $this->_model->getSpecifics();
 
         $ignoredKeys = array(
             'id', 'title', 'template_category_id',
@@ -32,9 +32,10 @@ class Ess_M2ePro_Model_Walmart_Template_Category_SnapshotBuilder
                     continue;
                 }
 
-                !is_null($value) && !is_array($value) && $value = (string)$value;
+                $value !== null && !is_array($value) && $value = (string)$value;
             }
         }
+
         unset($value);
 
         return $data;

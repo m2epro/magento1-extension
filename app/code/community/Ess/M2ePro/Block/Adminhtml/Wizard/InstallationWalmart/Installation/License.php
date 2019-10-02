@@ -35,32 +35,36 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_License
 
     //########################################
 
-    private function prepareButtons()
+    protected function prepareButtons()
     {
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
                             ->createBlock('adminhtml/widget_button')
-                            ->setData(array(
+                            ->setData(
+                                array(
                                           'label'   => Mage::helper('M2ePro')->__('Confirm'),
                                           'onclick' => '',
                                           'id'      => 'license_popup_confirm_button'
-                                      ));
+                                )
+                            );
         $this->setChild('license_popup_confirm_button', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
                             ->createBlock('adminhtml/widget_button')
-                            ->setData(array(
+                            ->setData(
+                                array(
                                            'label'   => Mage::helper('M2ePro')->__('Proceed'),
                                            'onclick' => '',
                                            'id'      => 'process_license_button'
-                                       ));
+                                )
+                            );
         $this->setChild('process_license_button', $buttonBlock);
         // ---------------------------------------
     }
 
-    private function prepareOptionsForSelection()
+    protected function prepareOptionsForSelection()
     {
         $defaultStoreId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
 

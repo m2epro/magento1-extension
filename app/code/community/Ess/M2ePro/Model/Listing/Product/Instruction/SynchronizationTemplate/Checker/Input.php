@@ -10,19 +10,19 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTemplate_Check
     extends Ess_M2ePro_Model_Listing_Product_Instruction_Handler_Input
 {
     /** @var Ess_M2ePro_Model_Listing_Product_ScheduledAction */
-    private $scheduledAction = NULL;
+    protected $_scheduledAction = null;
 
     //########################################
 
     public function setScheduledAction(Ess_M2ePro_Model_Listing_Product_ScheduledAction $scheduledAction)
     {
-        $this->scheduledAction = $scheduledAction;
+        $this->_scheduledAction = $scheduledAction;
         return $this;
     }
 
     public function getScheduledAction()
     {
-        return $this->scheduledAction;
+        return $this->_scheduledAction;
     }
 
     //########################################

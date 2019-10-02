@@ -25,12 +25,14 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Setting
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'wizard_settings',
             'action'  => $this->getUrl('*/adminhtml_walmart_configuration/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $this->setForm($form);
 

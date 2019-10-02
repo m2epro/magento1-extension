@@ -15,13 +15,13 @@ class Ess_M2ePro_Model_Amazon_Connector_Account_Add_EntityRequester
     {
         /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
         $marketplaceObject = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-            'Marketplace',$this->params['marketplace_id']
+            'Marketplace', $this->_params['marketplace_id']
         );
 
         return array(
-            'title'          => $this->account->getTitle(),
-            'merchant_id'    => $this->params['merchant_id'],
-            'token'          => $this->params['token'],
+            'title'          => $this->_account->getTitle(),
+            'merchant_id'    => $this->_params['merchant_id'],
+            'token'          => $this->_params['token'],
             'marketplace_id' => $marketplaceObject->getNativeId(),
         );
     }

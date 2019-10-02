@@ -16,7 +16,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
     const DEFAULT_VIEW_MODE = self::VIEW_MODE_EBAY;
 
     /** @var Ess_M2ePro_Model_Listing */
-    private $listing = NULL;
+    protected $_listing = null;
 
     //########################################
 
@@ -24,7 +24,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
     {
         parent::__construct();
 
-        $this->listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         // Initialization block
         // ---------------------------------------
@@ -50,50 +50,62 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('View Listing');
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_ebay_log/listing',
             array(
-                'id'   => $this->listing->getId()
+                'id'   => $this->_listing->getId()
             )
         );
-        $this->_addButton('view_log', array(
+        $this->_addButton(
+            'view_log', array(
             'label'   => Mage::helper('M2ePro')->__('View Log'),
             'onclick' => 'window.open(\'' . $url . '\',\'_blank\')',
             'class'   => 'button_link'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        if ($this->listing->getAccount()->getChildObject()->isPickupStoreEnabled() &&
+        if ($this->_listing->getAccount()->getChildObject()->isPickupStoreEnabled() &&
             Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
-            $pickupStoreUrl = $this->getUrl('*/adminhtml_ebay_listing_pickupStore/index', array(
-                'id'   => $this->listing->getId()
-            ));
-            $this->_addButton('pickup_store_management', array(
+            $pickupStoreUrl = $this->getUrl(
+                '*/adminhtml_ebay_listing_pickupStore/index', array(
+                'id'   => $this->_listing->getId()
+                )
+            );
+            $this->_addButton(
+                'pickup_store_management', array(
                 'label' => Mage::helper('M2ePro')->__('In-Store Pickup Management'),
                 'onclick' => 'window.open(\'' . $pickupStoreUrl . '\',\'_blank\')',
                 'class' => 'success'
-            ));
+                )
+            );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('edit_templates', array(
+        $this->_addButton(
+            'edit_templates', array(
             'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
             'onclick' => '',
             'class'   => 'drop_down edit_default_settings_drop_down'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('add_products', array(
+        $this->_addButton(
+            'add_products', array(
             'label'     => Mage::helper('M2ePro')->__('Add Products'),
             'onclick'   => '',
             'class'     => 'add drop_down add_products_drop_down'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -123,7 +135,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
     protected function getParam($paramName, $default = NULL)
     {
         $session = Mage::helper('M2ePro/Data_Session');
-        $sessionParamName = $this->getId() . $this->listing->getId() . $paramName;
+        $sessionParamName = $this->getId() . $this->_listing->getId() . $paramName;
 
         if ($this->getRequest()->has($paramName)) {
             $param = $this->getRequest()->getParam($paramName);
@@ -143,7 +155,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         // ---------------------------------------
         $collection = Mage::getModel('M2ePro/Listing')->getCollection();
         $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK);
-        $collection->addFieldToFilter('id', array('neq' => $this->listing->getId()));
+        $collection->addFieldToFilter('id', array('neq' => $this->_listing->getId()));
         $collection->setPageSize(200);
         $collection->setOrder('title', 'ASC');
 
@@ -154,9 +166,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
                 'url' => $this->getUrl('*/*/view', array('id' => $item->getId()))
             );
         }
+
         // ---------------------------------------
 
-        if (count($items) == 0) {
+        if (empty($items)) {
             return parent::getHeaderHtml();
         }
 
@@ -178,7 +191,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View extends Mage_Adminhtml_Block_
         // ---------------------------------------
         $changeProfile = Mage::helper('M2ePro')->__('Change Listing');
         $headerText = parent::getHeaderText();
-        $listingTitle = Mage::helper('M2ePro')->escapeHtml($this->listing->getTitle());
+        $listingTitle = Mage::helper('M2ePro')->escapeHtml($this->_listing->getTitle());
         // ---------------------------------------
 
         return <<<HTML
@@ -237,7 +250,7 @@ HTML;
 
         // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => Mage::helper('M2ePro/Data_Global')->getValue('temp_data'))
         );
 
@@ -246,20 +259,23 @@ HTML;
 
         // ---------------------------------------
         if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            if ($this->listing->getChildObject()->isEstimatedFeesObtainRequired()) {
+            if ($this->_listing->getChildObject()->isEstimatedFeesObtainRequired()) {
                 $obtain = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_view_fee_obtain');
-                $obtain->setData('listing_id', $this->listing->getId());
+                $obtain->setData('listing_id', $this->_listing->getId());
 
                 $html .= $obtain->toHtml();
-            } elseif ($this->listing->getChildObject()->getEstimatedFees()) {
+            } elseif ($this->_listing->getChildObject()->getEstimatedFees()) {
                 $preview = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_view_fee_preview');
-                $preview->setData('fees', $this->listing->getChildObject()->getEstimatedFees());
-                $preview->setData('product_name',
-                                  $this->listing->getChildObject()->getEstimatedFeesSourceProductName());
+                $preview->setData('fees', $this->_listing->getChildObject()->getEstimatedFees());
+                $preview->setData(
+                    'product_name',
+                    $this->_listing->getChildObject()->getEstimatedFeesSourceProductName()
+                );
 
                 $html .= $preview->toHtml();
             }
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -275,37 +291,42 @@ HTML;
         $helper = Mage::helper('M2ePro');
 
         // ---------------------------------------
-        $urls = Mage::helper('M2ePro')->jsonEncode(array_merge(
-            $helper->getControllerActions(
-                'adminhtml_ebay_listing', array('_current' => true)
-            ),
-            $helper->getControllerActions(
-                'adminhtml_ebay_listing_autoAction', array('listing_id' => $this->getRequest()->getParam('id'))
-            ),
-            $helper->getControllerActions(
-                'adminhtml_ebay_listing_transferring', array('listing_id' => $this->getRequest()->getParam('id'))
-            ),
-            $helper->getControllerActions('adminhtml_ebay_account'),
-            $helper->getControllerActions('adminhtml_ebay_listing_categorySettings'),
-            $helper->getControllerActions('adminhtml_ebay_marketplace'),
-            array('adminhtml_system_store/index' =>
+        $urls = Mage::helper('M2ePro')->jsonEncode(
+            array_merge(
+                $helper->getControllerActions(
+                    'adminhtml_ebay_listing', array('_current' => true)
+                ),
+                $helper->getControllerActions(
+                    'adminhtml_ebay_listing_autoAction', array('listing_id' => $this->getRequest()->getParam('id'))
+                ),
+                $helper->getControllerActions(
+                    'adminhtml_ebay_listing_transferring', array('listing_id' => $this->getRequest()->getParam('id'))
+                ),
+                $helper->getControllerActions('adminhtml_ebay_account'),
+                $helper->getControllerActions('adminhtml_ebay_listing_categorySettings'),
+                $helper->getControllerActions('adminhtml_ebay_marketplace'),
+                array('adminhtml_system_store/index' =>
                 Mage::helper('adminhtml')->getUrl('adminhtml/system_store/')),
-            array('logViewUrl' =>
-                $this->getUrl('M2ePro/adminhtml_ebay_log/synchronization',
-                    array('back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index')))),
-            array('runSynchNow' =>
+                array('logViewUrl' =>
+                $this->getUrl(
+                    'M2ePro/adminhtml_ebay_log/synchronization',
+                    array('back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_synchronization/index'))
+                )),
+                array('runSynchNow' =>
                 $this->getUrl('M2ePro/adminhtml_ebay_marketplace/runSynchNow')),
-            array('synchCheckProcessingNow' =>
+                array('synchCheckProcessingNow' =>
                 $this->getUrl('M2ePro/adminhtml_ebay_synchronization/synchCheckProcessingNow')),
-            array('variationProductManage' =>
+                array('variationProductManage' =>
                 $this->getUrl('*/adminhtml_ebay_listing_variation_product_manage/index')),
-            array('getListingProductBids' =>
+                array('getListingProductBids' =>
                 $this->getUrl('*/adminhtml_ebay_listing/getListingProductBids'))
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Auto Add/Remove Rules' => $helper->__('Auto Add/Remove Rules'),
             'Based on Magento Categories' => $helper->__('Based on Magento Categories'),
             'You must select at least 1 Category.' => $helper->__('You must select at least 1 Category.'),
@@ -326,22 +347,29 @@ HTML;
                 $helper->__('Adding Products in process. Please wait...'),
             'Products failed to add' => $helper->__('Failed Products'),
             'Migration success.' => $helper->__('The Products have been successfully added into Destination Listing.'),
-            'Migration error.' => $helper->__('The Products have not been added into Destination Listing'
-                                           .' because Products with the same Magento Product IDs already exist there.'),
+            'Migration error.' => $helper->__(
+                'The Products have not been added into Destination Listing'
+                .' because Products with the same Magento Product IDs already exist there.'
+            ),
             'Some Products Categories Settings are not set or Attributes for Title or Description are empty.' =>
-                $helper->__('Some Products Categories Settings are not set'
-                           .' or Attributes for Title or Description are empty.'),
+                $helper->__(
+                    'Some Products Categories Settings are not set'
+                    .' or Attributes for Title or Description are empty.'
+                ),
             'Another Synchronization Is Already Running.' => $helper->__('Another Synchronization Is Already Running.'),
             'Getting information. Please wait ...' => $helper->__('Getting information. Please wait ...'),
             'Preparing to start. Please wait ...' => $helper->__('Preparing to start. Please wait ...'),
             'Synchronization has successfully ended.' => $helper->__('Synchronization has successfully ended.'),
             'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.' =>
                 $helper->__(
-                    'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.'),
+                    'Synchronization ended with warnings. <a target="_blank" href="%url%">View Log</a> for details.'
+                ),
             'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.' =>
                 $helper->__(
-                    'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.')
-        ));
+                    'Synchronization ended with errors. <a target="_blank" href="%url%">View Log</a> for details.'
+                )
+            )
+        );
         // ---------------------------------------
 
         $html .= <<<HTML
@@ -363,6 +391,7 @@ HTML;
 </script>
 HTML;
         }
+
         // ---------------------------------------
 
         return $html .
@@ -381,7 +410,7 @@ HTML;
         $url = $this->getUrl(
             '*/adminhtml_ebay_template/editListing',
             array(
-                'id' => $this->listing->getId(),
+                'id' => $this->_listing->getId(),
                 'tab' => 'selling'
             )
         );
@@ -397,7 +426,7 @@ HTML;
             $url = $this->getUrl(
                 '*/adminhtml_ebay_template/editListing',
                 array(
-                    'id' => $this->listing->getId(),
+                    'id' => $this->_listing->getId(),
                     'tab' => 'synchronization'
                 )
             );
@@ -407,13 +436,14 @@ HTML;
                 'target' => '_blank'
             );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_ebay_template/editListing',
             array(
-                'id' => $this->listing->getId(),
+                'id' => $this->_listing->getId(),
                 'tab' => 'general'
             )
         );
@@ -432,6 +462,7 @@ HTML;
                 'label' => Mage::helper('M2ePro')->__('Auto Add/Remove Rules')
             );
         }
+
         // ---------------------------------------
 
         return $items;
@@ -443,17 +474,21 @@ HTML;
     {
         $items = array();
 
-        $backUrl = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_listing/view', array(
-            'id' => $this->listing->getId()
-        ));
+        $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
+            '*/adminhtml_ebay_listing/view', array(
+            'id' => $this->_listing->getId()
+            )
+        );
 
         // ---------------------------------------
-        $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd',array(
-            'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_LIST,
-            'clear'      => 1,
-            'listing_id' => $this->listing->getId(),
-            'back'       => $backUrl
-        ));
+        $url = $this->getUrl(
+            '*/adminhtml_ebay_listing_productAdd', array(
+                'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_LIST,
+                'clear'      => 1,
+                'listing_id' => $this->_listing->getId(),
+                'back'       => $backUrl
+            )
+        );
         $items[] = array(
             'url'   => $url,
             'label' => Mage::helper('M2ePro')->__('From Products List')
@@ -461,12 +496,14 @@ HTML;
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd',array(
-            'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_CATEGORIES,
-            'clear'      => 1,
-            'listing_id' => $this->listing->getId(),
-            'back'       => $backUrl
-        ));
+        $url = $this->getUrl(
+            '*/adminhtml_ebay_listing_productAdd', array(
+                'source'     => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode::SOURCE_CATEGORIES,
+                'clear'      => 1,
+                'listing_id' => $this->_listing->getId(),
+                'back'       => $backUrl
+            )
+        );
         $items[] = array(
             'url'   => $url,
             'label' => Mage::helper('M2ePro')->__('From Categories')

@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View extends Mage_Adminhtml_Block_Widget_Form_Container
 {
-    /** @var $order Ess_M2ePro_Model_Order */
-    protected $order = null;
+    /** @var $_order Ess_M2ePro_Model_Order */
+    protected $_order = null;
 
     //########################################
 
@@ -33,9 +33,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View extends Mage_Adminhtml_Block
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('View Order Details');
         }
+
         // ---------------------------------------
 
-        $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         // Set buttons actions
         // ---------------------------------------
@@ -49,54 +50,64 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View extends Mage_Adminhtml_Block
 
         // ---------------------------------------
         $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_walmart_order/index');
-        $this->_addButton('back', array(
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'onclick'   => 'CommonHandlerObj.back_click(\''.$url.'\')',
             'class'     => 'back'
-        ));
+            )
+        );
         // ---------------------------------------
 
-        if ($this->order->getReserve()->isPlaced()) {
+        if ($this->_order->getReserve()->isPlaced()) {
             // ---------------------------------------
-            $url = $this->getUrl('*/adminhtml_order/reservationCancel', array('ids' => $this->order->getId()));
-            $this->_addButton('reservation_cancel', array(
+            $url = $this->getUrl('*/adminhtml_order/reservationCancel', array('ids' => $this->_order->getId()));
+            $this->_addButton(
+                'reservation_cancel', array(
                 'label'     => Mage::helper('M2ePro')->__('Cancel QTY Reserve'),
                 'onclick'   => "confirmSetLocation(M2ePro.translator.translate('Are you sure?'), '".$url."');",
                 'class'     => 'scalable'
-            ));
+                )
+            );
             // ---------------------------------------
-        } elseif ($this->order->isReservable()) {
+        } elseif ($this->_order->isReservable()) {
             // ---------------------------------------
-            $url = $this->getUrl('*/adminhtml_order/reservationPlace', array('ids' => $this->order->getId()));
-            $this->_addButton('reservation_place', array(
+            $url = $this->getUrl('*/adminhtml_order/reservationPlace', array('ids' => $this->_order->getId()));
+            $this->_addButton(
+                'reservation_place', array(
                 'label'     => Mage::helper('M2ePro')->__('Reserve QTY'),
                 'onclick'   => "confirmSetLocation(M2ePro.translator.translate('Are you sure?'), '".$url."');",
                 'class'     => 'scalable'
-            ));
+                )
+            );
             // ---------------------------------------
         }
 
-        if (is_null($this->order->getMagentoOrderId())) {
+        if ($this->_order->getMagentoOrderId() === null) {
             // ---------------------------------------
-            $url = $this->getUrl('*/*/createMagentoOrder', array('id' => $this->order->getId()));
-            $this->_addButton('order', array(
+            $url = $this->getUrl('*/*/createMagentoOrder', array('id' => $this->_order->getId()));
+            $this->_addButton(
+                'order', array(
                 'label'     => Mage::helper('M2ePro')->__('Create Order'),
                 'onclick'   => "setLocation('".$url."');",
                 'class'     => 'scalable'
-            ));
+                )
+            );
             // ---------------------------------------
-        } elseif (is_null($this->order->getMagentoOrder()) || $this->order->getMagentoOrder()->isCanceled()) {
+        } elseif ($this->_order->getMagentoOrder() === null || $this->_order->getMagentoOrder()->isCanceled()) {
             // ---------------------------------------
-            $url = $this->getUrl('*/*/createMagentoOrder', array('id' => $this->order->getId(), 'force' => 'yes'));
+            $url = $this->getUrl('*/*/createMagentoOrder', array('id' => $this->_order->getId(), 'force' => 'yes'));
             $confirm = Mage::helper('M2ePro')->escapeJs(
                 Mage::helper('M2ePro')->__('Are you sure that you want to create new Magento Order?')
             );
 
-            $this->_addButton('order', array(
+            $this->_addButton(
+                'order', array(
                 'label'     => Mage::helper('M2ePro')->__('Create Order'),
                 'onclick'   => "confirmSetLocation('".$confirm."','".$url."');",
                 'class'     => 'scalable'
-            ));
+                )
+            );
             // ---------------------------------------
         }
     }

@@ -1,1 +1,1 @@
-WizardFullAmazonCategories = Class.create(WizardAmazonCustomHandler, {});
+WizardFullAmazonCategories = Class.create(WizardInstallationAmazonCustomHandler, {});

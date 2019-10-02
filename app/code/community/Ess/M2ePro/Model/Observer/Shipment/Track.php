@@ -31,6 +31,7 @@ class Ess_M2ePro_Model_Observer_Shipment_Track extends Ess_M2ePro_Model_Observer
             Mage::helper('M2ePro/Data_Global')->unsetValue($eventKey);
             return;
         }
+
         Mage::helper('M2ePro/Data_Global')->setValue($eventKey, true);
 
         try {
@@ -42,7 +43,7 @@ class Ess_M2ePro_Model_Observer_Shipment_Track extends Ess_M2ePro_Model_Observer
             return;
         }
 
-        if (is_null($order)) {
+        if ($order === null) {
             return;
         }
 

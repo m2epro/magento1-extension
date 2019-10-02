@@ -154,7 +154,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Translation exte
             $translationServices[$name] = array(
                 'name'       => $name,
                 'title'    => $title,
-                'avg_cost' => !is_null($avgCost) ? $avgCost : '0.00'
+                'avg_cost' => $avgCost !== null ? $avgCost : '0.00'
             );
         }
 

@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Amazon_Listing_Product_RemoveHandler extends Ess_M2ePro_Model_Listing_Product_RemoveHandler
 {
     /** @var Ess_M2ePro_Model_Amazon_Listing_Product */
-    private $parentAmazonListingProductForProcess = NULL;
+    protected $_parentAmazonListingProductForProcess = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_RemoveHandler extends Ess_M2ePro_M
                 ->getTypeModel()
                 ->getAmazonParentListingProduct();
 
-            $this->parentAmazonListingProductForProcess = $parentAmazonListingProduct;
+            $this->_parentAmazonListingProductForProcess = $parentAmazonListingProduct;
 
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Child $childTypeModel */
             $childTypeModel = $variationManager->getTypeModel();
@@ -43,12 +43,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_RemoveHandler extends Ess_M2ePro_M
     {
         parent::eventAfterProcess();
 
-        if (is_null($this->parentAmazonListingProductForProcess)) {
+        if ($this->_parentAmazonListingProductForProcess === null) {
             return;
         }
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent $parentTypeModel */
-        $parentTypeModel = $this->parentAmazonListingProductForProcess->getVariationManager()->getTypeModel();
+        $parentTypeModel = $this->_parentAmazonListingProductForProcess->getVariationManager()->getTypeModel();
         try {
             $parentTypeModel->getProcessor()->process();
         } catch (\Exception $exception) {
@@ -62,9 +62,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_RemoveHandler extends Ess_M2ePro_M
      * @return Ess_M2ePro_Model_Amazon_Listing_Product
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    private function getAmazonListingProduct()
+    protected function getAmazonListingProduct()
     {
-        return $this->listingProduct->getChildObject();
+        return $this->_listingProduct->getChildObject();
     }
 
     //########################################

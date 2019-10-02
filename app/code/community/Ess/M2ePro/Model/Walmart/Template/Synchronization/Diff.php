@@ -27,16 +27,16 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization_Diff
 
     public function isReviseQtyEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_qty']) && !empty($newSnapshotData['revise_update_qty']);
     }
 
     public function isReviseQtyDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_qty']) && empty($newSnapshotData['revise_update_qty']);
     }
@@ -57,16 +57,16 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization_Diff
 
     public function isRevisePriceEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_price']) && !empty($newSnapshotData['revise_update_price']);
     }
 
     public function isRevisePriceDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_price']) && empty($newSnapshotData['revise_update_price']);
     }
@@ -87,8 +87,8 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization_Diff
 
     public function isRevisePromotionsEnabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return empty($oldSnapshotData['revise_update_promotions']) &&
               !empty($newSnapshotData['revise_update_promotions']);
@@ -96,8 +96,8 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization_Diff
 
     public function isRevisePromotionsDisabled()
     {
-        $newSnapshotData = $this->newSnapshot;
-        $oldSnapshotData = $this->oldSnapshot;
+        $newSnapshotData = $this->_newSnapshot;
+        $oldSnapshotData = $this->_oldSnapshot;
 
         return !empty($oldSnapshotData['revise_update_promotions']) &&
                 empty($newSnapshotData['revise_update_promotions']);

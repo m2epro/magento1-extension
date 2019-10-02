@@ -114,7 +114,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
 
         Mage::getSingleton('core/resource')->getConnection('core_write')
-            ->delete($storeCategoriesTable,array('account_id = ?'=>$this->getId()));
+            ->delete($storeCategoriesTable, array('account_id = ?'=>$this->getId()));
 
         $otherCategoryTemplates = $this->getOtherCategoryTemplates(true);
         foreach ($otherCategoryTemplates as $otherCategoryTemplate) {
@@ -158,7 +158,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getOtherCategoryTemplates($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Ebay_Template_OtherCategory','account_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Ebay_Template_OtherCategory', 'account_id', $asObjects, $filters);
     }
 
     /**
@@ -169,7 +169,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getFeedbacks($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Ebay_Feedback','account_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Ebay_Feedback', 'account_id', $asObjects, $filters);
     }
 
     /**
@@ -180,7 +180,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getFeedbackTemplates($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Ebay_Feedback_Template','account_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Ebay_Feedback_Template', 'account_id', $asObjects, $filters);
     }
 
     /**
@@ -191,7 +191,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getEbayItems($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Ebay_Item','account_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Ebay_Item', 'account_id', $asObjects, $filters);
     }
 
     //########################################
@@ -351,9 +351,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getOtherListingsMappingSkuMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('sku', 'mode'),
-            self::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE);
+            self::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -363,17 +365,21 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getOtherListingsMappingSkuPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('sku', 'priority'),
-            self::OTHER_LISTINGS_MAPPING_SKU_DEFAULT_PRIORITY);
+            self::OTHER_LISTINGS_MAPPING_SKU_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
 
     public function getOtherListingsMappingSkuAttribute()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-            array('sku', 'attribute'));
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('sku', 'attribute')
+        );
 
         return $setting;
     }
@@ -385,9 +391,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getOtherListingsMappingTitleMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('title', 'mode'),
-            self::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE);
+            self::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -397,9 +405,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getOtherListingsMappingTitlePriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('title', 'priority'),
-            self::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY);
+            self::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
@@ -418,9 +428,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getOtherListingsMappingItemIdMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('item_id', 'mode'),
-            self::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_NONE);
+            self::OTHER_LISTINGS_MAPPING_ITEM_ID_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -430,9 +442,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getOtherListingsMappingItemIdPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
             array('item_id', 'priority'),
-            self::OTHER_LISTINGS_MAPPING_ITEM_ID_DEFAULT_PRIORITY);
+            self::OTHER_LISTINGS_MAPPING_ITEM_ID_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
@@ -549,7 +563,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     public function getRelatedStoreId($marketplaceId)
     {
         $storeId = $this->getSetting('marketplaces_data', array((int)$marketplaceId, 'related_store_id'));
-        return !is_null($storeId) ? (int)$storeId : Mage_Core_Model_App::ADMIN_STORE_ID;
+        return $storeId !== null ? (int)$storeId : Mage_Core_Model_App::ADMIN_STORE_ID;
     }
 
     //########################################
@@ -559,8 +573,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersListingsModeEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing', 'mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_MODE_YES);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing', 'mode'),
+            self::MAGENTO_ORDERS_LISTINGS_MODE_YES
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_MODE_YES;
     }
@@ -570,8 +586,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersListingsStoreCustom()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing', 'store_mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing', 'store_mode'),
+            self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM;
     }
@@ -593,8 +611,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersListingsOtherModeEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing_other', 'mode'),
+            self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES;
     }
@@ -614,8 +634,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersListingsOtherProductImportEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing_other', 'product_mode'),
+            self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT;
     }
@@ -625,7 +647,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getMagentoOrdersListingsOtherProductTaxClassId()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_tax_class_id'));
+        $setting = $this->getSetting(
+            'magento_orders_settings',
+            array('listing_other', 'product_tax_class_id'),
+            Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE
+        );
 
         return (int)$setting;
     }
@@ -722,9 +748,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getMagentoOrdersReservationDays()
     {
-        $setting = $this->getSetting(
-            'magento_orders_settings', array('creation', 'reservation_days')
-        );
+        $setting = $this->getSetting('magento_orders_settings', array('creation', 'reservation_days'), 0);
 
         return (int)$setting;
     }
@@ -734,7 +758,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function getQtyReservationDays()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'));
+        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'), 1);
 
         return (int)$setting;
     }
@@ -746,8 +770,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersTaxModeNone()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
-                                     self::MAGENTO_ORDERS_TAX_MODE_MIXED);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('tax', 'mode'),
+            self::MAGENTO_ORDERS_TAX_MODE_MIXED
+        );
 
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_NONE;
     }
@@ -757,8 +783,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersTaxModeChannel()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
-                                     self::MAGENTO_ORDERS_TAX_MODE_MIXED);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('tax', 'mode'),
+            self::MAGENTO_ORDERS_TAX_MODE_MIXED
+        );
 
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_CHANNEL;
     }
@@ -768,8 +796,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersTaxModeMagento()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
-                                     self::MAGENTO_ORDERS_TAX_MODE_MIXED);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('tax', 'mode'),
+            self::MAGENTO_ORDERS_TAX_MODE_MIXED
+        );
 
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_MAGENTO;
     }
@@ -779,8 +809,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersTaxModeMixed()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('tax', 'mode'),
-                                     self::MAGENTO_ORDERS_TAX_MODE_MIXED);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('tax', 'mode'),
+            self::MAGENTO_ORDERS_TAX_MODE_MIXED
+        );
 
         return $setting == self::MAGENTO_ORDERS_TAX_MODE_MIXED;
     }
@@ -792,8 +824,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersCustomerGuest()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST;
     }
@@ -803,8 +837,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersCustomerPredefined()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED;
     }
@@ -814,8 +850,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersCustomerNew()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_NEW;
     }
@@ -835,8 +873,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersCustomerNewSubscribed()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'subscription_mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'subscription_mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_YES;
     }
@@ -926,8 +966,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
      */
     public function isMagentoOrdersStatusMappingDefault()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('status_mapping', 'mode'),
-                                     self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('status_mapping', 'mode'),
+            self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT
+        );
 
         return $setting == self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT;
     }
@@ -1003,7 +1045,8 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     public function updateUserPreferences()
     {
         $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('account','get','userPreferences',
+        $connectorObj = $dispatcherObject->getVirtualConnector(
+            'account', 'get', 'userPreferences',
             array(), NULL, NULL, $this->getId()
         );
 
@@ -1014,8 +1057,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             return;
         }
 
-        $this->setData('user_preferences', Mage::helper('M2ePro')->jsonEncode(
-            $responseData['user_preferences'])
+        $this->setData(
+            'user_preferences', Mage::helper('M2ePro')->jsonEncode(
+                $responseData['user_preferences']
+            )
         )->save();
     }
 
@@ -1052,7 +1097,8 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         }
 
         $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('account','get','shippingRateTables',
+        $connectorObj = $dispatcherObject->getVirtualConnector(
+            'account', 'get', 'shippingRateTables',
             array(), NULL, NULL, $this->getId()
         );
 
@@ -1136,14 +1182,14 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $dbSelect = $connRead->select()
-            ->from($tableAccountStoreCategories,'*')
-            ->where('`account_id` = ?',(int)$this->getId())
-            ->where('`category_id` = ?',(int)$id)
+            ->from($tableAccountStoreCategories, '*')
+            ->where('`account_id` = ?', (int)$this->getId())
+            ->where('`category_id` = ?', (int)$id)
             ->order(array('sorder ASC'));
 
         $categories = $connRead->fetchAll($dbSelect);
 
-        return count($categories) > 0 ? $categories[0] : array();
+        return !empty($categories) ? $categories[0] : array();
     }
 
     /**
@@ -1158,8 +1204,8 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $dbSelect = $connRead->select()
-                             ->from($tableAccountStoreCategories,'*')
-                             ->where('`account_id` = ?',(int)$this->getId())
+                             ->from($tableAccountStoreCategories, '*')
+                             ->where('`account_id` = ?', (int)$this->getId())
                              ->order(array('sorder ASC'));
 
         return $connRead->fetchAll($dbSelect);
@@ -1182,7 +1228,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
         }
 
         foreach ($children as &$child) {
-            $child['children'] = $this->buildEbayStoreCategoriesTreeRec($data,$child['id']);
+            $child['children'] = $this->buildEbayStoreCategoriesTreeRec($data, $child['id']);
         }
 
         return $children;
@@ -1198,9 +1244,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     public function updateEbayStoreInfo()
     {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('account','get','store',
-                                                            array(),NULL,
-                                                            NULL, $this->getId());
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'account', 'get', 'store',
+            array(), NULL,
+            NULL, $this->getId()
+        );
 
         $dispatcherObj->process($connectorObj);
         $data = $connectorObj->getResponseData();
@@ -1222,8 +1270,10 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
                 $dataForUpdate['ebay_store_'.$key] = '';
                 continue;
             }
+
             $dataForUpdate['ebay_store_'.$key] = $data['data'][$key];
         }
+
         $this->addData($dataForUpdate);
         $this->save();
 
@@ -1231,7 +1281,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             ->getTableNameWithPrefix('m2epro_ebay_account_store_category');
 
         Mage::getSingleton('core/resource')->getConnection('core_write')
-            ->delete($tableAccountStoreCategories,array('account_id = ?'=>$this->getId()));
+            ->delete($tableAccountStoreCategories, array('account_id = ?'=>$this->getId()));
 
         if (empty($data['categories'])) {
             return;
@@ -1251,9 +1301,11 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
     public function updateShippingDiscountProfiles($marketplaceId)
     {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('account', 'get', 'shippingDiscountProfiles',
-                                                            array(), NULL, $marketplaceId, $this->getId(),
-                                                            NULL);
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'account', 'get', 'shippingDiscountProfiles',
+            array(), NULL, $marketplaceId, $this->getId(),
+            NULL
+        );
 
         $dispatcherObj->process($connectorObj);
         $data = $connectorObj->getResponseData();
@@ -1262,7 +1314,7 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             return;
         }
 
-        if (is_null($this->getData('ebay_shipping_discount_profiles'))) {
+        if ($this->getData('ebay_shipping_discount_profiles') === null) {
             $profiles = array();
         } else {
             $profiles = Mage::helper('M2ePro')->jsonDecode($this->getData('ebay_shipping_discount_profiles'));
@@ -1307,7 +1359,8 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
             'other_listings_mapping_mode' => self::OTHER_LISTINGS_MAPPING_MODE_NO,
             'other_listings_mapping_settings' => Mage::helper('M2ePro')->jsonEncode(array()),
 
-            'magento_orders_settings' => Mage::helper('M2ePro')->jsonEncode(array(
+            'magento_orders_settings' => Mage::helper('M2ePro')->jsonEncode(
+                array(
                 'listing' => array(
                     'mode' => self::MAGENTO_ORDERS_LISTINGS_MODE_YES,
                     'store_mode' => self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT,
@@ -1347,7 +1400,8 @@ class Ess_M2ePro_Model_Ebay_Account extends Ess_M2ePro_Model_Component_Child_Eba
                 ),
                 'invoice_mode' => self::MAGENTO_ORDERS_INVOICE_MODE_YES,
                 'shipment_mode' => self::MAGENTO_ORDERS_SHIPMENT_MODE_YES
-            ))
+                )
+            )
         );
     }
 

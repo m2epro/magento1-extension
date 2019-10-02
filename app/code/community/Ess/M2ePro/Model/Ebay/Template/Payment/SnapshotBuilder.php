@@ -12,12 +12,12 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_SnapshotBuilder extends Ess_M2ePro_
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['services'] = $this->model->getServices();
+        $data['services'] = $this->_model->getServices();
 
         $ignoredKeys = array(
             'id', 'template_payment_id',
@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_SnapshotBuilder extends Ess_M2ePro_
                     continue;
                 }
 
-                !is_null($value) && !is_array($value) && $value = (string)$value;
+                $value !== null && !is_array($value) && $value = (string)$value;
             }
         }
 

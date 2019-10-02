@@ -32,11 +32,12 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $lastRun = $cacheConfig->getGroupValue('/servicing/statistic/', 'last_run');
 
         if ($this->getInitiator() === Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER ||
-            is_null($lastRun) ||
+            $lastRun === null ||
             Mage::helper('M2ePro')->getCurrentGmtDate(true) > strtotime($lastRun) + self::RUN_INTERVAL) {
-
-            $cacheConfig->setGroupValue('/servicing/statistic/', 'last_run',
-                                        Mage::helper('M2ePro')->getCurrentGmtDate());
+            $cacheConfig->setGroupValue(
+                '/servicing/statistic/', 'last_run',
+                Mage::helper('M2ePro')->getCurrentGmtDate()
+            );
 
             return true;
         }
@@ -60,11 +61,14 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         );
     }
 
-    public function processResponseData(array $data) {}
+    public function processResponseData(array $data)
+    {
+        return null;
+    }
 
     //########################################
 
-    private function fillUpDataByMethod(array &$data, $method)
+    protected function fillUpDataByMethod(array &$data, $method)
     {
         try {
             if (is_callable(array($this, $method))) {
@@ -77,7 +81,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     //########################################
 
-    private function getServerRequestPart()
+    protected function getServerRequestPart()
     {
         $data = array();
 
@@ -90,12 +94,12 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     // ---------------------------------------
 
-    private function appendServerSystemInfo(&$data)
+    protected function appendServerSystemInfo(&$data)
     {
         $data['name'] = Mage::helper('M2ePro/Client')->getSystem();
     }
 
-    private function appendServerPhpInfo(&$data)
+    protected function appendServerPhpInfo(&$data)
     {
         $phpSettings = Mage::helper('M2ePro/Client')->getPhpSettings();
 
@@ -105,7 +109,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['php']['max_execution_time'] = $phpSettings['max_execution_time'];
     }
 
-    private function appendServerMysqlInfo(&$data)
+    protected function appendServerMysqlInfo(&$data)
     {
         $mySqlSettings = Mage::helper('M2ePro/Client')->getMysqlSettings();
 
@@ -119,7 +123,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     //########################################
 
-    private function getMagentoRequestPart()
+    protected function getMagentoRequestPart()
     {
         $data = array();
 
@@ -137,7 +141,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     // ---------------------------------------
 
-    private function appendMagentoSystemInfo(&$data)
+    protected function appendMagentoSystemInfo(&$data)
     {
         $data['info']['edition'] = Mage::helper('M2ePro/Magento')->getEditionName();
         $data['info']['version'] = Mage::helper('M2ePro/Magento')->getVersion();
@@ -147,10 +151,9 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['settings']['secret_key']    = Mage::helper('M2ePro/Magento')->isSecretKeyToUrl();
     }
 
-    private function appendMagentoModulesInfo(&$data)
+    protected function appendMagentoModulesInfo(&$data)
     {
         foreach (Mage::getConfig()->getNode('modules')->asArray() as $module => $moduleData) {
-
             $data['modules'][$module] = array(
                 'name'    => $module,
                 'version' => isset($moduleData['version']) ? $moduleData['version'] : null,
@@ -159,7 +162,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendMagentoStoresInfo(&$data)
+    protected function appendMagentoStoresInfo(&$data)
     {
         foreach (Mage::app()->getWebsites() as $website) {
             foreach ($website->getGroups() as $group) {
@@ -170,7 +173,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendMagentoAttributesInfo(&$data)
+    protected function appendMagentoAttributesInfo(&$data)
     {
         $collection = Mage::getResourceModel('catalog/product_attribute_collection')->addVisibleFilter();
         $data['attributes']['amount'] = $collection->getSize();
@@ -183,56 +186,56 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['categories']['amount'] = $collection->getSize();
     }
 
-    private function appendMagentoProductsInfo(&$data)
+    protected function appendMagentoProductsInfo(&$data)
     {
         $resource = Mage::getSingleton('core/resource');
 
         // Count of Products
         $queryStmt = $resource->getConnection('core_read')
               ->select()
-              ->from(
-                  Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('catalog_product_entity'),
-                  array(
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('catalog_product_entity'),
+                array(
                          'count' => new Zend_Db_Expr('COUNT(*)'),
                          'type'  => 'type_id'
                   )
-              )
+            )
               ->group('type_id')
               ->query();
 
         $data['products']['total'] = 0;
 
         while ($row = $queryStmt->fetch()) {
-
             $data['products']['total'] += (int)$row['count'];
             $data['products']['types'][$row['type']]['amount'] = (int)$row['count'];
         }
+
         // ---------------------------------------
 
         // QTY / Stock Availability {simple}
         $queryStmt = $resource->getConnection('core_read')
               ->select()
-              ->from(
-                  array(
+            ->from(
+                array(
                       'stock_item' => Mage::helper('M2ePro/Module_Database_Structure')
                           ->getTableNameWithPrefix('cataloginventory_stock_item')
                   ),
-                  array(
+                array(
                       'min_qty'     => new Zend_Db_Expr('MIN(stock_item.qty)'),
                       'max_qty'     => new Zend_Db_Expr('MAX(stock_item.qty)'),
                       'avg_qty'     => new Zend_Db_Expr('AVG(stock_item.qty)'),
                       'count'       => new Zend_Db_Expr('COUNT(*)'),
                       'is_in_stock' => 'stock_item.is_in_stock'
                   )
-              )
-              ->joinLeft(
-                  array(
+            )
+            ->joinLeft(
+                array(
                       'catalog_product' => Mage::helper('M2ePro/Module_Database_Structure')
                           ->getTableNameWithPrefix('catalog_product_entity')
                   ),
-                  'stock_item.product_id = catalog_product.entity_id',
-                  array()
-              )
+                'stock_item.product_id = catalog_product.entity_id',
+                array()
+            )
               ->where('catalog_product.type_id = ?', 'simple')
               ->group('is_in_stock')
               ->query();
@@ -245,7 +248,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['products']['stock_availability']['out'] = 0;
 
         while ($row = $queryStmt->fetch()) {
-
             $data['products']['qty']['min'] += (int)$row['min_qty'];
             $data['products']['qty']['max'] += (int)$row['max_qty'];
             $data['products']['qty']['avg'] += (int)$row['avg_qty'];
@@ -257,15 +259,15 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         // Prices {simple}
         $result = $resource->getConnection('core_read')
               ->select()
-              ->from(
-                  Mage::helper('M2ePro/Module_Database_Structure')
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')
                       ->getTableNameWithPrefix('catalog/product_index_price'),
-                  array(
+                array(
                      'min_price' => new Zend_Db_Expr('MIN(price)'),
                      'max_price' => new Zend_Db_Expr('MAX(price)'),
                      'avg_price' => new Zend_Db_Expr('AVG(price)')
                  )
-              )
+            )
               ->where('website_id = ?', Mage::app()->getWebsite(true)->getId())
               ->query()
               ->fetch();
@@ -276,30 +278,30 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         // ---------------------------------------
     }
 
-    private function appendMagentoOrdersInfo(&$data)
+    protected function appendMagentoOrdersInfo(&$data)
     {
         $resource = Mage::getSingleton('core/resource');
 
         // Count of Orders
         $queryStmt = $resource->getConnection('core_read')
               ->select()
-              ->from(
-                  Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales_flat_order'),
-                  array(
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('sales_flat_order'),
+                array(
                      'count'  => new Zend_Db_Expr('COUNT(*)'),
                      'status' => 'status'
                  )
-              )
+            )
               ->group('status')
               ->query();
 
         $data['orders']['total'] = 0;
 
         while ($row = $queryStmt->fetch()) {
-
             $data['orders']['total'] += (int)$row['count'];
             $data['orders']['statuses'][$row['status']]['amount'] = (int)$row['count'];
         }
+
         // ---------------------------------------
 
         $collection = Mage::getResourceModel('sales/order_invoice_collection');
@@ -317,7 +319,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     //########################################
 
-    private function getExtensionRequestPart()
+    protected function getExtensionRequestPart()
     {
         $data = array();
 
@@ -344,12 +346,12 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     // ---------------------------------------
 
-    private function appendExtensionSystemInfo(&$data)
+    protected function appendExtensionSystemInfo(&$data)
     {
         $data['info']['version'] = Mage::helper('M2ePro/Module')->getVersion();
     }
 
-    private function appendExtensionM2eProUpdaterModuleInfo(&$data)
+    protected function appendExtensionM2eProUpdaterModuleInfo(&$data)
     {
         $updaterModule = (array)Mage::getConfig()->getModuleConfig('Ess_M2eProUpdater');
 
@@ -363,13 +365,12 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['info']['m2eproupdater_module'] = $updaterData;
     }
 
-    private function appendExtensionTablesInfo(&$data)
+    protected function appendExtensionTablesInfo(&$data)
     {
         $helper = Mage::helper('M2ePro/Module_Database_Structure');
         $data['info']['tables'] = array();
 
         foreach ($helper->getMySqlTables() as $tableName) {
-
             $data['info']['tables'][$tableName] = array(
                 'size'   => $helper->getDataLength($tableName),
                 'amount' => $helper->getCountOfRecords($tableName),
@@ -377,17 +378,17 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendExtensionSettingsInfo(&$data)
+    protected function appendExtensionSettingsInfo(&$data)
     {
         $settings = array();
         $conf = Mage::helper('M2ePro/Module')->getConfig();
 
-        $settings['products_show_thumbnails']    = $conf->getGroupValue('/view/','show_products_thumbnails');
-        $settings['block_notices_show']          = $conf->getGroupValue('/view/','show_block_notices');
-        $settings['manage_stock_backorders']     = $conf->getGroupValue('/product/force_qty/','mode');
-        $settings['manage_stock_backorders_qty'] = $conf->getGroupValue('/product/force_qty/','value');
-        $settings['price_convert_mode']          = $conf->getGroupValue('/magento/attribute/','price_type_converting');
-        $settings['inspector_mode']              = $conf->getGroupValue('/listing/product/inspector/','mode');
+        $settings['products_show_thumbnails']    = $conf->getGroupValue('/view/', 'show_products_thumbnails');
+        $settings['block_notices_show']          = $conf->getGroupValue('/view/', 'show_block_notices');
+        $settings['manage_stock_backorders']     = $conf->getGroupValue('/product/force_qty/', 'mode');
+        $settings['manage_stock_backorders_qty'] = $conf->getGroupValue('/product/force_qty/', 'value');
+        $settings['price_convert_mode']          = $conf->getGroupValue('/magento/attribute/', 'price_type_converting');
+        $settings['inspector_mode']              = $conf->getGroupValue('/listing/product/inspector/', 'mode');
 
         $settings['logs_clearing'] = array();
         $settings['channels']      = array();
@@ -400,8 +401,8 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         );
         foreach ($logsTypes as $logType) {
             $settings['logs_clearing'][$logType] = array(
-                'mode' => $conf->getGroupValue('/logs/clearing/'.$logType.'/','mode'),
-                'days' => $conf->getGroupValue('/logs/clearing/'.$logType.'/','days')
+                'mode' => $conf->getGroupValue('/logs/clearing/'.$logType.'/', 'mode'),
+                'days' => $conf->getGroupValue('/logs/clearing/'.$logType.'/', 'days')
             );
         }
 
@@ -415,7 +416,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['settings'] = $settings;
     }
 
-    private function appendExtensionMarketplacesInfo(&$data)
+    protected function appendExtensionMarketplacesInfo(&$data)
     {
         $data['marketplaces'] = array();
 
@@ -428,7 +429,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendExtensionAccountsInfo(&$data)
+    protected function appendExtensionAccountsInfo(&$data)
     {
         $data['accounts'] = array();
 
@@ -436,7 +437,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
         /** @var Ess_M2ePro_Model_Account $item */
         foreach ($collection->getItems() as $item) {
-
             $tempInfo = array();
             $childItem = $item->getChildObject();
 
@@ -459,28 +459,30 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendExtensionListingsInfo(&$data)
+    protected function appendExtensionListingsInfo(&$data)
     {
         $resource = Mage::getSingleton('core/resource');
 
         $queryStmt = $resource->getConnection('core_read')
               ->select()
-              ->from(
-                  Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_listing'),
-                  array(
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_listing'),
+                array(
                          'count'          => new Zend_Db_Expr('COUNT(*)'),
                          'component'      => 'component_mode',
                          'marketplace_id' => 'marketplace_id',
                          'account_id'     => 'account_id',
                          'store_id'       => 'store_id'
                   )
-              )
-              ->group(array(
+            )
+            ->group(
+                array(
                           'component_mode',
                           'marketplace_id',
                           'account_id',
                           'store_id'
-                      ))
+                )
+            )
               ->query();
 
         $data['listings']['total'] = 0;
@@ -492,7 +494,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
         $helper = Mage::helper('M2ePro/Component');
         while ($row = $queryStmt->fetch()) {
-
             if (!in_array($row['component'], $availableComponents)) {
                 continue;
             }
@@ -526,7 +527,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendExtensionListingsProductsInfo(&$data)
+    protected function appendExtensionListingsProductsInfo(&$data)
     {
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
 
@@ -539,7 +540,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
                     'marketplace_id' => 'marketplace_id',
                     'account_id'     => 'account_id',
                     'products_count' => 'products_total_count'
-               )
+                )
             )
             ->query();
 
@@ -555,11 +556,9 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $data['listings_products']['total'] = 0;
 
         foreach (Mage::helper('M2ePro/Component')->getComponents() as $componentName) {
-
             $data['listings_products'][$componentName]['total'] = 0;
 
             foreach ($productTypes as $productType) {
-
                 $select = Mage::getSingleton('core/resource')->getConnection('core_read')
                     ->select()
                     ->from(
@@ -580,7 +579,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
                 if ($componentName === Ess_M2ePro_Helper_Component_Amazon::NICK ||
                     $componentName === Ess_M2ePro_Helper_Component_Walmart::NICK) {
-
                     $tableComponentLp = $structureHelper->getTableNameWithPrefix(
                         'm2epro_'.$componentName.'_listing_product'
                     );
@@ -600,7 +598,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
 
         foreach ($productTypes as $productType) {
-
             $amount = 0;
             foreach (Mage::helper('M2ePro/Component')->getComponents() as $component) {
                 $amount += $data['listings_products'][$component]['products']['type'][$productType]['amount'];
@@ -612,7 +609,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
 
         while ($row = $queryStmt->fetch()) {
-
             if (!in_array($row['component'], Mage::helper('M2ePro/Component')->getComponents())) {
                 continue;
             }
@@ -641,24 +637,28 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendExtensionListingsOtherInfo(&$data)
+    protected function appendExtensionListingsOtherInfo(&$data)
     {
         $resource = Mage::getSingleton('core/resource');
 
         $queryStmt = $resource->getConnection('core_read')
               ->select()
-              ->from(Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_listing_other'),
-                     array(
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_listing_other'),
+                array(
                          'count'          => new Zend_Db_Expr('COUNT(*)'),
                          'component'      => 'component_mode',
                          'marketplace_id' => 'marketplace_id',
                          'account_id'     => 'account_id',
-                     ))
-              ->group(array(
+                )
+            )
+            ->group(
+                array(
                           'component_mode',
                           'marketplace_id',
                           'account_id'
-                      ))
+                )
+            )
               ->query();
 
         $data['listings_other']['total'] = 0;
@@ -670,7 +670,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
         $helper = Mage::helper('M2ePro/Component');
         while ($row = $queryStmt->fetch()) {
-
             if (!in_array($row['component'], $availableComponents)) {
                 continue;
             }
@@ -697,7 +696,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
     }
 
-    private function appendExtensionPoliciesInfo(&$data)
+    protected function appendExtensionPoliciesInfo(&$data)
     {
         $this->_appendComponentPolicyInfo('selling_format', 'amazon', $data);
         $this->_appendComponentPolicyInfo('synchronization', 'amazon', $data);
@@ -720,24 +719,28 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         $this->_appendComponentPolicyInfo('category', 'walmart', $data);
     }
 
-    private function appendExtensionOrdersInfo(&$data)
+    protected function appendExtensionOrdersInfo(&$data)
     {
         $resource = Mage::getSingleton('core/resource');
 
         $queryStmt = $resource->getConnection('core_read')
               ->select()
-              ->from(Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_order'),
-                     array(
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_order'),
+                array(
                          'count'          => new Zend_Db_Expr('COUNT(*)'),
                          'component'      => 'component_mode',
                          'marketplace_id' => 'marketplace_id',
                          'account_id'     => 'account_id',
-                     ))
-              ->group(array(
+                )
+            )
+            ->group(
+                array(
                           'component_mode',
                           'marketplace_id',
                           'account_id'
-                      ))
+                )
+            )
               ->query();
 
         $data['orders']['total'] = 0;
@@ -749,7 +752,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
         $helper = Mage::helper('M2ePro/Component');
         while ($row = $queryStmt->fetch()) {
-
             if (!in_array($row['component'], $availableComponents)) {
                 continue;
             }
@@ -778,8 +780,10 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         // Orders types eBay
         $result = $resource->getConnection('core_read')
                ->select()
-               ->from(Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_order'),
-                      array('count' => new Zend_Db_Expr('COUNT(*)')))
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_order'),
+                array('count' => new Zend_Db_Expr('COUNT(*)'))
+            )
                ->where('checkout_status = ?', Ess_M2ePro_Model_Ebay_Order::CHECKOUT_STATUS_COMPLETED)
                ->query()
                ->fetchColumn();
@@ -788,8 +792,10 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
         $result = $resource->getConnection('core_read')
                ->select()
-               ->from(Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_order'),
-                      array('count' => new Zend_Db_Expr('COUNT(*)')))
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_order'),
+                array('count' => new Zend_Db_Expr('COUNT(*)'))
+            )
                ->where('shipping_status = ?', Ess_M2ePro_Model_Ebay_Order::SHIPPING_STATUS_COMPLETED)
                ->query()
                ->fetchColumn();
@@ -798,8 +804,10 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
         $result = $resource->getConnection('core_read')
               ->select()
-              ->from(Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_order'),
-                     array('count' => new Zend_Db_Expr('COUNT(*)')))
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_ebay_order'),
+                array('count' => new Zend_Db_Expr('COUNT(*)'))
+            )
               ->where('payment_status = ?', Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED)
               ->query()
               ->fetchColumn();
@@ -810,11 +818,13 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         // Orders types Amazon
         $queryStmt = $resource->getConnection('core_read')
                ->select()
-               ->from(Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_amazon_order'),
-                      array(
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_amazon_order'),
+                array(
                           'count'  => new Zend_Db_Expr('COUNT(*)'),
                           'status' => 'status'
-                      ))
+                )
+            )
                ->group(array('status'))
                ->query();
 
@@ -829,7 +839,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         );
 
         while ($row = $queryStmt->fetch()) {
-
             $status = $statuses[(int)$row['status']];
 
             if (!isset($data['orders']['amazon']['types'][$status])) {
@@ -838,10 +847,11 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
             $data['orders']['amazon']['types'][$status] += (int)$row['count'];
         }
+
         // ---------------------------------------
     }
 
-    private function appendExtensionLogsInfo(&$data)
+    protected function appendExtensionLogsInfo(&$data)
     {
         $data['logs']['total'] = 0;
 
@@ -857,17 +867,19 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
 
     //########################################
 
-    private function _appendLogsInfoByType($type, $tableName, $data)
+    protected function _appendLogsInfoByType($type, $tableName, $data)
     {
         $resource = Mage::getSingleton('core/resource');
 
         $queryStmt = $resource->getConnection('core_read')
               ->select()
-              ->from(Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName),
-                     array(
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName),
+                array(
                          'count'     => new Zend_Db_Expr('COUNT(*)'),
                          'component' => 'component_mode'
-                     ))
+                )
+            )
               ->group('component_mode')
               ->query();
 
@@ -879,7 +891,6 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         }
 
         while ($row = $queryStmt->fetch()) {
-
             if (!in_array($row['component'], $availableComponents)) {
                 continue;
             }
@@ -894,7 +905,7 @@ class Ess_M2ePro_Model_Servicing_Task_Statistic extends Ess_M2ePro_Model_Servici
         return $data;
     }
 
-    private function _appendComponentPolicyInfo($template, $component, &$data)
+    protected function _appendComponentPolicyInfo($template, $component, &$data)
     {
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
         $tableName = $structureHelper->getTableNameWithPrefix('m2epro_' . $component .'_template_'. $template);

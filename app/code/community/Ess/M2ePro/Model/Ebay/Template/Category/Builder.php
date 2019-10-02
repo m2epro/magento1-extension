@@ -39,7 +39,6 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder
         $transaction = Mage::getModel('core/resource_transaction');
 
         foreach ($data['specifics'] as $specific) {
-
             $specificData = array(
                 'mode'                   => (int)$specific['mode'],
                 'attribute_title'        => $specific['attribute_title'],
@@ -70,24 +69,25 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Builder
      * @param array $postSpecifics
      * @return Ess_M2ePro_Model_Ebay_Template_Category|null
      */
-    private function getTemplateIfTheSameAlreadyExists(array $templateData, array $postSpecifics)
+    protected function getTemplateIfTheSameAlreadyExists(array $templateData, array $postSpecifics)
     {
         $existingTemplates = Mage::getModel('M2ePro/Ebay_Template_Category')->getCollection()
              ->getItemsByPrimaryCategories(array($templateData));
 
-        /* @var $existingCategoryTemplate Ess_M2ePro_Model_Ebay_Template_Category */
+        /** @var $existingCategoryTemplate Ess_M2ePro_Model_Ebay_Template_Category */
         foreach ($existingTemplates as $existingCategoryTemplate) {
-
             $currentSpecifics = $existingCategoryTemplate->getSpecifics();
 
             foreach ($currentSpecifics as &$specific) {
                 unset($specific['id'], $specific['template_category_id']);
             }
+
             unset($specific);
 
             foreach ($postSpecifics as &$specific) {
                 unset($specific['id'], $specific['template_category_id']);
             }
+
             unset($specific);
 
             if ($currentSpecifics == $postSpecifics) {

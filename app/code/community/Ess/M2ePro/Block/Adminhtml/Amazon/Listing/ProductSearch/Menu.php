@@ -9,7 +9,10 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_ProductSearch_Menu
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    protected $listingProductId;
+    protected $_listingProductId;
+
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
 
     //########################################
 
@@ -19,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_ProductSearch_Menu
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
@@ -28,25 +31,22 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_ProductSearch_Menu
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
-
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct = null;
 
     /**
      * @return Ess_M2ePro_Model_Listing_Product|null
      */
     public function getListingProduct()
     {
-        if (is_null($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Amazon')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if ($this->_listingProduct === null) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Amazon')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     public function isIndividualFromBundleOrSimpleOrDownloadable()

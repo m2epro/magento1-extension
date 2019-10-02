@@ -33,14 +33,14 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
     protected function isIntervalExceeded()
     {
         $lastRun = $this->getConfigValue('last_run');
-        if (is_null($lastRun)) {
+        if ($lastRun === null) {
             return true;
         }
 
         $borderDate = new DateTime('now', new DateTimeZone('UTC'));
         $borderDate->modify('- 24 hours');
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->addFieldToFilter('list_date', array('gt' => $borderDate->format('Y-m-d H:i:s')));
 
@@ -72,7 +72,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
     {
         $accounts = Mage::helper('M2ePro/Component_Walmart')->getCollection('Account')->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -83,18 +83,14 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
 
             if (!$this->isLockedAccount($account)) {
-
                 $this->getOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
                     'Process Account '.$account->getTitle()
                 );
 
                 try {
-
                     $this->processAccount($account);
-
                 } catch (Exception $exception) {
-
                     // M2ePro_TRANSLATIONS
                     // The "Update Listings Products" Action for Walmart Account: "%account%" was completed with error.
                     $message = 'The "Update Listings Products" Action for Walmart Account "%account%"';
@@ -114,15 +110,14 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
 
     //########################################
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::getModel('M2ePro/Listing')->getCollection();
-        $collection->addFieldToFilter('component_mode',Ess_M2ePro_Helper_Component_Walmart::NICK);
-        $collection->addFieldToFilter('account_id',(int)$account->getId());
+        $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
+        $collection->addFieldToFilter('account_id', (int)$account->getId());
 
         if ($collection->getSize()) {
-
             $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getCustomConnector(
                 'Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData_Requester', array(), $account
@@ -131,7 +126,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         }
     }
 
-    private function isLockedAccount(Ess_M2ePro_Model_Account $account)
+    protected function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
         $lockItemNick = ProcessingRunner::LOCK_ITEM_PREFIX .'_'. $account->getId();
 

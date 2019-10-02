@@ -23,16 +23,16 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
     const CODE_MAX_LENGTH = 30;
 
     /** @var Mage_Eav_Model_Entity_Attribute */
-    private $attributeObj = null;
+    protected $_attributeObj = null;
 
-    private $code;
-    private $primaryLabel;
-    private $inputType;
+    protected $_code;
+    protected $_primaryLabel;
+    protected $_inputType;
 
-    private $entityTypeId;
+    protected $_entityTypeId;
 
-    private $options = array();
-    private $params = array();
+    protected $_options = array();
+    protected $_params  = array();
 
     //########################################
 
@@ -44,44 +44,46 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
 
     // ---------------------------------------
 
-    private function init()
+    protected function init()
     {
-        if (is_null($this->entityTypeId)) {
-            $this->entityTypeId = Mage::getModel('catalog/product')->getResource()->getTypeId();
+        if ($this->_entityTypeId === null) {
+            $this->_entityTypeId = Mage::getModel('catalog/product')->getResource()->getTypeId();
         }
 
-        if (is_null($this->inputType)) {
-            $this->inputType = self::TYPE_TEXT;
+        if ($this->_inputType === null) {
+            $this->_inputType = self::TYPE_TEXT;
         }
 
-        $this->attributeObj = Mage::getModel('eav/entity_attribute')
-                                        ->loadByCode($this->entityTypeId, $this->code);
+        $this->_attributeObj = Mage::getModel('eav/entity_attribute')
+                                   ->loadByCode($this->_entityTypeId, $this->_code);
 
         return $this;
     }
 
-    private function saveAttribute()
+    protected function saveAttribute()
     {
-        if ($this->attributeObj->getId()) {
-            return array('result' => true, 'obj' => $this->attributeObj);
+        if ($this->_attributeObj->getId()) {
+            return array('result' => true, 'obj' => $this->_attributeObj);
         }
 
         if (!$this->validate()) {
             return array('result' => false, 'error' => 'Attribute builder. Validation failed.');
         }
 
-        $this->attributeObj = Mage::getModel('catalog/resource_eav_attribute');
+        $this->_attributeObj = Mage::getModel('catalog/resource_eav_attribute');
 
-        $data = $this->params;
-        $data['attribute_code'] = $this->code;
-        $data['frontend_label'] = array(Mage_Core_Model_App::ADMIN_STORE_ID => $this->primaryLabel);
-        $data['frontend_input'] = $this->inputType;
-        $data['entity_type_id'] = $this->entityTypeId;
+        $data = $this->_params;
+        $data['attribute_code'] = $this->_code;
+        $data['frontend_label'] = array(Mage_Core_Model_App::ADMIN_STORE_ID => $this->_primaryLabel);
+        $data['frontend_input'] = $this->_inputType;
+        $data['entity_type_id'] = $this->_entityTypeId;
         $data['is_user_defined']   = 1;
 
-        $data['source_model']  = Mage::helper('catalog/product')->getAttributeSourceModelByInputType($this->inputType);
-        $data['backend_model'] = Mage::helper('catalog/product')->getAttributeBackendModelByInputType($this->inputType);
-        $data['backend_type']  = $this->attributeObj->getBackendTypeByInput($this->inputType);
+        $data['source_model'] = Mage::helper('catalog/product')->getAttributeSourceModelByInputType($this->_inputType);
+        $data['backend_model'] = Mage::helper('catalog/product')->getAttributeBackendModelByInputType(
+            $this->_inputType
+        );
+        $data['backend_type'] = $this->_attributeObj->getBackendTypeByInput($this->_inputType);
 
         !isset($data['is_global'])               && $data['is_global'] = self::SCOPE_STORE;
         !isset($data['is_configurable'])         && $data['is_configurable'] = 0;
@@ -92,35 +94,35 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
         $this->prepareOptions($data);
         $this->prepareDefault($data);
 
-        $this->attributeObj->addData($data);
+        $this->_attributeObj->addData($data);
 
         try {
-            $this->attributeObj->save();
+            $this->_attributeObj->save();
         } catch (Exception $e) {
             return array('result' => false, 'error' => $e->getMessage());
         }
 
-        return array('result' => true, 'obj' => $this->attributeObj);
+        return array('result' => true, 'obj' => $this->_attributeObj);
     }
 
-    private function validate()
+    protected function validate()
     {
         $validatorAttrCode = new Zend_Validate_Regex(array('pattern' => '/^[a-z][a-z_0-9]{1,254}$/'));
-        if (!$validatorAttrCode->isValid($this->code)) {
+        if (!$validatorAttrCode->isValid($this->_code)) {
             return false;
         }
 
-        if (strlen($this->code) > self::CODE_MAX_LENGTH) {
+        if (strlen($this->_code) > self::CODE_MAX_LENGTH) {
             return false;
         }
 
-        if (empty($this->primaryLabel)) {
+        if (empty($this->_primaryLabel)) {
             return false;
         }
 
         /** @var $validatorInputType Mage_Eav_Model_Adminhtml_System_Config_Source_Inputtype_Validator */
         $validatorInputType = Mage::getModel('eav/adminhtml_system_config_source_inputtype_validator');
-        if (!$validatorInputType->isValid($this->inputType)) {
+        if (!$validatorInputType->isValid($this->_inputType)) {
             return false;
         }
 
@@ -132,7 +134,7 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
     public static function generateCodeByLabel($primaryLabel)
     {
         $attributeCode = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $primaryLabel);
-        $attributeCode = preg_replace('/[^0-9a-z]/i','_', $attributeCode);
+        $attributeCode = preg_replace('/[^0-9a-z]/i', '_', $attributeCode);
         $attributeCode = preg_replace('/_+/', '_', $attributeCode);
 
         $abc = 'abcdefghijklmnopqrstuvwxyz';
@@ -146,21 +148,19 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
 
     //########################################
 
-    private function prepareOptions(&$data)
+    protected function prepareOptions(&$data)
     {
-        $options = $this->options;
+        $options = $this->_options;
 
-        if (!empty($this->params['default_value'])) {
-
+        if (!empty($this->_params['default_value'])) {
             if ($this->isSelectType()) {
-                $options[] = (string)$this->params['default_value'];
+                $options[] = (string)$this->_params['default_value'];
             }
 
             if ($this->isMultipleSelectType()) {
-
-                is_array($this->params['default_value'])
-                    ? $options = array_merge($options, $this->params['default_value'])
-                    : $options[] = (string)$this->params['default_value'];
+                is_array($this->_params['default_value'])
+                    ? $options = array_merge($options, $this->_params['default_value'])
+                    : $options[] = (string)$this->_params['default_value'];
             }
         }
 
@@ -170,31 +170,32 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
         }
     }
 
-    private function getOptionCode($optionValue)
+    protected function getOptionCode($optionValue)
     {
         return 'option_'.substr(sha1($optionValue), 0, 6);
     }
 
     //----------------------------------------
 
-    private function prepareDefault(&$data)
+    protected function prepareDefault(&$data)
     {
-        if ($this->isDateType() || $this->isTextAreaType() || $this->isTextType()) {
+        if (!isset($this->_params['default_value'])) {
+            $this->_params['default_value'] = null;
+        }
 
-            $data['default_value'] = (string)$this->params['default_value'];
+        if ($this->isDateType() || $this->isTextAreaType() || $this->isTextType()) {
+            $data['default_value'] = (string)$this->_params['default_value'];
             return;
         }
 
         if ($this->isBooleanType()) {
-
-            $data['default_value'] = (int)(strtolower($this->params['default_value']) == 'yes');
+            $data['default_value'] = (int)(strtolower($this->_params['default_value']) == 'yes');
             return;
         }
 
         if ($this->isSelectType() || $this->isMultipleSelectType()) {
-
-            $defaultValues = is_array($this->params['default_value']) ? $this->params['default_value']
-                                                                      : array($this->params['default_value']);
+            $defaultValues = is_array($this->_params['default_value']) ? $this->_params['default_value']
+                                                                      : array($this->_params['default_value']);
 
             $data['default_value'] = null;
             foreach ($defaultValues as $value) {
@@ -209,31 +210,31 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
 
     public function setCode($value)
     {
-        $this->code = $value;
+        $this->_code = $value;
         return $this;
     }
 
     public function setLabel($value)
     {
-        $this->primaryLabel = $value;
+        $this->_primaryLabel = $value;
         return $this;
     }
 
     public function setInputType($value)
     {
-        $this->inputType = $value;
+        $this->_inputType = $value;
         return $this;
     }
 
     public function setOptions($options)
     {
-        $this->options = $options;
+        $this->_options = $options;
         return $this;
     }
 
     public function setParams(array $value = array())
     {
-        $this->params = $value;
+        $this->_params = $value;
         return $this;
     }
 
@@ -244,19 +245,19 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
      */
     public function setDefaultValue($value)
     {
-        $this->params['default_value'] = $value;
+        $this->_params['default_value'] = $value;
         return $this;
     }
 
     public function setScope($value)
     {
-        $this->params['is_global'] = $value;
+        $this->_params['is_global'] = $value;
         return $this;
     }
 
     public function setEntityTypeId($value)
     {
-        $this->entityTypeId = $value;
+        $this->_entityTypeId = $value;
         return $this;
     }
 
@@ -264,32 +265,32 @@ class Ess_M2ePro_Model_Magento_Attribute_Builder
 
     public function isSelectType()
     {
-        return $this->inputType == self::TYPE_SELECT;
+        return $this->_inputType == self::TYPE_SELECT;
     }
 
     public function isMultipleSelectType()
     {
-        return $this->inputType == self::TYPE_MULTIPLE_SELECT;
+        return $this->_inputType == self::TYPE_MULTIPLE_SELECT;
     }
 
     public function isBooleanType()
     {
-        return $this->inputType == self::TYPE_BOOLEAN;
+        return $this->_inputType == self::TYPE_BOOLEAN;
     }
 
     public function isTextType()
     {
-        return $this->inputType == self::TYPE_TEXT;
+        return $this->_inputType == self::TYPE_TEXT;
     }
 
     public function isTextAreaType()
     {
-        return $this->inputType == self::TYPE_TEXTAREA;
+        return $this->_inputType == self::TYPE_TEXTAREA;
     }
 
     public function isDateType()
     {
-        return $this->inputType == self::TYPE_DATE;
+        return $this->_inputType == self::TYPE_DATE;
     }
 
     //########################################

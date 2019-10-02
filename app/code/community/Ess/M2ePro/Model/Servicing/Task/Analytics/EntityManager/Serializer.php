@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
 
     //########################################
 
-    private function prepareEntityData(Ess_M2ePro_Model_Abstract $item, EntityManager $manager)
+    protected function prepareEntityData(Ess_M2ePro_Model_Abstract $item, EntityManager $manager)
     {
         $data = $item->getData();
 
@@ -34,7 +34,6 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
         );
 
         switch ($manager->getComponent() .'::'. $manager->getEntityType()) {
-
             case Ess_M2ePro_Helper_Component_Amazon::NICK . '::Account':
                 unset($data['server_hash'], $data['token']);
                 break;
@@ -80,6 +79,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
                 if ($calculated = $item->getCalculatedShipping()) {
                     $data['calculated'] = $calculated->getData();
                 }
+
                 $data['services'] = $this->unsetDataInRelatedItems($item->getServices(), 'template_shipping_id');
                 break;
 
@@ -115,12 +115,14 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager_Serializer
 
     //########################################
 
-    private function unsetDataInRelatedItems(array $items, $dataKey)
+    protected function unsetDataInRelatedItems(array $items, $dataKey)
     {
-        return array_map(function($el) use ($dataKey) {
+        return array_map(
+            function($el) use ($dataKey) {
             unset($el[$dataKey]);
             return $el;
-        }, $items);
+            }, $items
+        );
     }
 
     //########################################

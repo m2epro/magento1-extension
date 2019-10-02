@@ -22,7 +22,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
 
         $sku = $this->getSku();
         if (empty($sku)) {
-
             // M2ePro_TRANSLATIONS
             // SKU is not provided. Please, check Listing Settings.
             $this->addMessage('SKU is not provided. Please, check Listing Settings.');
@@ -30,7 +29,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         }
 
         if (strlen($sku) > Ess_M2ePro_Helper_Component_Walmart::SKU_MAX_LENGTH) {
-
             // M2ePro_TRANSLATIONS
             // The length of SKU must be less than 50 characters.
             $this->addMessage('The length of SKU must be less than 50 characters.');
@@ -46,7 +44,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         }
 
         if (!$this->getListingProduct()->isNotListed() || !$this->getListingProduct()->isListable()) {
-
             // M2ePro_TRANSLATIONS
             // Item is already on Walmart, or not available.
             $this->addMessage('Item is already on Walmart, or not available.');
@@ -79,10 +76,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
 
     //########################################
 
-    private function getSku()
+    protected function getSku()
     {
-        if (isset($this->data['sku'])) {
-            return $this->data['sku'];
+        if (isset($this->_data['sku'])) {
+            return $this->_data['sku'];
         }
 
         $params = $this->getParams();
@@ -98,7 +95,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
     protected function getGtin()
     {
         $gtin = parent::getGtin();
-        if (!is_null($gtin)) {
+        if ($gtin !== null) {
             return $gtin;
         }
 
@@ -116,7 +113,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
     protected function getUpc()
     {
         $upc = parent::getUpc();
-        if (!is_null($upc)) {
+        if ($upc !== null) {
             return $upc;
         }
 
@@ -134,7 +131,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
     protected function getEan()
     {
         $ean = parent::getEan();
-        if (!is_null($ean)) {
+        if ($ean !== null) {
             return $ean;
         }
 
@@ -152,7 +149,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
     protected function getIsbn()
     {
         $isbn = parent::getIsbn();
-        if (!is_null($isbn)) {
+        if ($isbn !== null) {
             return $isbn;
         }
 

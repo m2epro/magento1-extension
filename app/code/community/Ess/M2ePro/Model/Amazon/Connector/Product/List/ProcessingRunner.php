@@ -21,10 +21,12 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_ProcessingRunner
         $sku       = (string)$params['request_data']['sku'];
 
         $processingActionListSku = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_ProcessingListSku');
-        $processingActionListSku->setData(array(
+        $processingActionListSku->setData(
+            array(
             'account_id' => $accountId,
             'sku'        => $sku,
-        ));
+            )
+        );
         $processingActionListSku->save();
     }
 

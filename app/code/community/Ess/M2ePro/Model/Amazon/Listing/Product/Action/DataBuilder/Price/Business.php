@@ -20,17 +20,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Price_Business
     {
         $data = array();
 
-        if (!isset($this->cachedData['business_price'])) {
-            $this->cachedData['business_price'] = $this->getAmazonListingProduct()->getBusinessPrice();
+        if (!isset($this->_cachedData['business_price'])) {
+            $this->_cachedData['business_price'] = $this->getAmazonListingProduct()->getBusinessPrice();
         }
 
-        if (!isset($this->cachedData['business_discounts'])) {
-            $this->cachedData['business_discounts'] = $this->getAmazonListingProduct()->getBusinessDiscounts();
+        if (!isset($this->_cachedData['business_discounts'])) {
+            $this->_cachedData['business_discounts'] = $this->getAmazonListingProduct()->getBusinessDiscounts();
         }
 
-        $data['business_price'] = $this->cachedData['business_price'];
+        $data['business_price'] = $this->_cachedData['business_price'];
 
-        if ($businessDiscounts = $this->cachedData['business_discounts']) {
+        if ($businessDiscounts = $this->_cachedData['business_discounts']) {
             ksort($businessDiscounts);
 
             $data['business_discounts'] = array(

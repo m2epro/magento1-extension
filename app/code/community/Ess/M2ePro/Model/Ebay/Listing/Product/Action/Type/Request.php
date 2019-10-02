@@ -12,7 +12,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
     /**
      * @var array
      */
-    private $dataTypes = array(
+    protected $_dataTypes = array(
         'general',
         'qty',
         'price',
@@ -31,7 +31,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
     /**
      * @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract[]
      */
-    private $dataBuilders = array();
+    protected $_dataBuilders = array();
 
     //########################################
 
@@ -56,8 +56,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
     protected function collectMetadata()
     {
-        foreach ($this->dataBuilders as $dataBuilder) {
-            $this->metaData = array_merge($this->metaData, $dataBuilder->getMetaData());
+        foreach ($this->_dataBuilders as $dataBuilder) {
+            $this->_metaData = array_merge($this->_metaData, $dataBuilder->getMetaData());
         }
     }
 
@@ -72,24 +72,20 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         $this->setIsVariationItem($this->getEbayListingProduct()->isVariationsReady());
     }
 
-    protected function beforeBuildDataEvent() {}
+    protected function beforeBuildDataEvent()
+    {
+        return null;
+    }
 
     protected function afterBuildDataEvent(array $data)
     {
         if ($this->getIsVariationItem() || isset($data['price_fixed'])) {
-
             $isListingTypeFixed = true;
-
         } elseif (isset($data['price_start'])) {
-
             $isListingTypeFixed = false;
-
-        } elseif (!is_null($this->getEbayListingProduct()->isOnlineAuctionType())) {
-
+        } elseif ($this->getEbayListingProduct()->isOnlineAuctionType() !== null) {
             $isListingTypeFixed = !$this->getEbayListingProduct()->isOnlineAuctionType();
-
         } else {
-
             $isListingTypeFixed = $this->getEbayListingProduct()->isListingTypeFixed();
         }
 
@@ -128,7 +124,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
     {
         if (!$this->getIsVariationItem() || !$this->getMagentoProduct()->isConfigurableType() ||
             empty($data['variations_sets']) || !is_array($data['variations_sets'])) {
-
             return $data;
         }
 
@@ -149,7 +144,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         if (!$this->getIsVariationItem() ||
             empty($data['item_specifics']) || !is_array($data['item_specifics']) ||
             empty($data['variations_sets']) || !is_array($data['variations_sets'])) {
-
             return $data;
         }
 
@@ -157,7 +151,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         $variationAttributes = array_map('strtolower', $variationAttributes);
 
         foreach ($data['item_specifics'] as $key => $itemSpecific) {
-
             if (!in_array(strtolower($itemSpecific['name']), $variationAttributes)) {
                 continue;
             }
@@ -273,7 +266,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         }
 
         if (isset($data['variation']) && is_array($data['variation'])) {
-
             foreach ($data['variation'] as &$variationData) {
 
                 /**
@@ -285,7 +277,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
                 }
 
                 if (!isset($variationData['details']['mpn']) &&
-                    ($isMpnOnChannel === true || (is_null($isMpnOnChannel) && !$withoutMpnIssue))
+                    ($isMpnOnChannel === true || ($isMpnOnChannel === null && !$withoutMpnIssue))
                 ) {
                     $variationData['details']['mpn']
                     = Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General::PRODUCT_DETAILS_DOES_NOT_APPLY;
@@ -299,9 +291,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
     protected function doReplaceVariationSpecifics(array $data, array $replacements)
     {
         if (isset($data['variation_image']['specific'])) {
-
             foreach ($replacements as $findIt => $replaceBy) {
-
                 if ($data['variation_image']['specific'] == $findIt) {
                     $data['variation_image']['specific'] = $replaceBy;
                 }
@@ -309,10 +299,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         }
 
         if (isset($data['variation']) && is_array($data['variation'])) {
-
             foreach ($data['variation'] as &$variationItem) {
                 foreach ($replacements as $findIt => $replaceBy) {
-
                     if (!isset($variationItem['specifics'][$findIt])) {
                         continue;
                     }
@@ -321,10 +309,10 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
                     unset($variationItem['specifics'][$findIt]);
                 }
             }
+
             unset($variationItem);
 
             foreach ($replacements as $findIt => $replaceBy) {
-
                 if (!isset($data['variations_sets'][$findIt])) {
                     continue;
                 }
@@ -333,7 +321,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
                 unset($data['variations_sets'][$findIt]);
 
                 // M2ePro_TRANSLATIONS
-                // The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item Specific "%replaced_by%" you select an Attribute by which your Variational Item varies. As it is impossible to send a correct Value for this Item Specific, it’s Label will be used as Variational Attribute Label instead of "%replaced_it%". This replacement cannot be edit in future by Relist/Revise Actions.
+                // The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item
+                // Specific "%replaced_by%" you select an Attribute by which your Variational Item varies.
+                // As it is impossible to send a correct Value for this Item Specific, it’s Label will be used
+                // as Variational Attribute Label instead of "%replaced_it%".
+                // This replacement cannot be edit in future by Relist/Revise Actions.
                 $this->addWarningMessage(
                     Mage::helper('M2ePro')->__(
                         'The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item
@@ -354,8 +346,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
     protected function collectDataBuildersWarningMessages()
     {
-        foreach ($this->dataTypes as $requestType) {
-
+        foreach ($this->_dataTypes as $requestType) {
             $messages = $this->getDataBuilder($requestType)->getWarningMessages();
 
             foreach ($messages as $message) {
@@ -592,9 +583,9 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
      * @param $type
      * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
      */
-    private function getDataBuilder($type)
+    protected function getDataBuilder($type)
     {
-        if (!isset($this->dataBuilders[$type])) {
+        if (!isset($this->_dataBuilders[$type])) {
 
             /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract $dataBuilder */
             $dataBuilder = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_DataBuilder_'.ucfirst($type));
@@ -605,10 +596,10 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
             $dataBuilder->setIsVariationItem($this->getIsVariationItem());
 
-            $this->dataBuilders[$type] = $dataBuilder;
+            $this->_dataBuilders[$type] = $dataBuilder;
         }
 
-        return $this->dataBuilders[$type];
+        return $this->_dataBuilders[$type];
     }
 
     //########################################

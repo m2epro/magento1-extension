@@ -13,9 +13,9 @@ class Ess_M2ePro_Model_Ebay_Listing_AffectedListingsProducts
 
     public function getObjects(array $filters = array())
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $collection->addFieldToFilter('listing_id', $this->model->getId());
+        $collection->addFieldToFilter('listing_id', $this->_model->getId());
 
         if (isset($filters['template'])) {
             $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
@@ -31,9 +31,9 @@ class Ess_M2ePro_Model_Ebay_Listing_AffectedListingsProducts
 
     public function getData($columns = '*', array $filters = array())
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $collection->addFieldToFilter('listing_id', $this->model->getId());
+        $collection->addFieldToFilter('listing_id', $this->_model->getId());
 
         if (isset($filters['template'])) {
             $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
@@ -54,9 +54,9 @@ class Ess_M2ePro_Model_Ebay_Listing_AffectedListingsProducts
 
     public function getIds(array $filters = array())
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-        $collection->addFieldToFilter('listing_id', $this->model->getId());
+        $collection->addFieldToFilter('listing_id', $this->_model->getId());
 
         if (isset($filters['template'])) {
             $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');

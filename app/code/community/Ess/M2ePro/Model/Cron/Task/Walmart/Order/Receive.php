@@ -56,10 +56,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
             // ---------------------------------------
 
             try {
-
-                $preparedResponseData = $this->receiveWalmartOrdersData($account);
-
-                if (empty($preparedResponseData)) {
+                $orders = $this->receiveWalmartOrdersData($account);
+                if (empty($orders)) {
                     continue;
                 }
 
@@ -70,11 +68,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
                 $processedWalmartOrders = array();
 
                 try {
-
                     $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
-
-                    foreach ($preparedResponseData['items'] as $orderData) {
-
+                    foreach ($orders as $orderData) {
                         $orderCreateDate = new DateTime($orderData['purchase_date'], new DateTimeZone('UTC'));
                         if ($orderCreateDate < $accountCreateDate) {
                             continue;
@@ -92,9 +87,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
 
                         $processedWalmartOrders[] = $order;
                     }
-
                 } catch (Exception $exception) {
-
                     $this->getSynchronizationLog()->addMessage(
                         Mage::helper('M2ePro')->__($exception->getMessage()),
                         Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -105,9 +98,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
                 }
 
                 foreach ($processedWalmartOrders as $walmartOrder) {
-
                     try {
-
                         $iteration = 0;
 
                         /** @var $walmartOrder Ess_M2ePro_Model_Order */
@@ -143,15 +134,15 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
                         if ($walmartOrder->getChildObject()->canCreateInvoice()) {
                             $walmartOrder->createInvoice();
                         }
+
                         if ($walmartOrder->getChildObject()->canCreateShipment()) {
                             $walmartOrder->createShipment();
                         }
+
                         if ($walmartOrder->getStatusUpdateRequired()) {
                             $walmartOrder->updateMagentoOrderStatus();
                         }
-
                     } catch (Exception $exception) {
-
                         $this->getSynchronizationLog()->addMessage(
                             Mage::helper('M2ePro')->__($exception->getMessage()),
                             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -161,9 +152,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
                         Mage::helper('M2ePro/Module_Exception')->process($exception);
                     }
                 }
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Receive" Action for Walmart Account "%title%" was completed with error.',
                     $account->getTitle()
@@ -183,63 +172,95 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function receiveWalmartOrdersData(Ess_M2ePro_Model_Account $account)
+    /**
+     * @param Ess_M2ePro_Model_Account $account
+     * @return array|null
+     * @throws Exception
+     */
+    protected function receiveWalmartOrdersData(Ess_M2ePro_Model_Account $account)
     {
-        $createSinceTime = $account->getData('orders_last_synchronization');
 
-        $fromDate = $this->prepareFromDate($createSinceTime);
-        $toDate   = $this->prepareToDate();
+        $fromDate = $this->prepareFromDate($account->getData('orders_last_synchronization'));
+        $toDate = $this->prepareToDate();
 
-        if (strtotime($fromDate) >= strtotime($toDate)) {
-            $fromDate = new DateTime($toDate, new DateTimeZone('UTC'));
-            $fromDate->modify('- 5 minutes');
+        // ----------------------------------------
 
-            $fromDate = $fromDate->format('Y-m-d H:i:s');
+        if ($fromDate >= $toDate) {
+            $fromDate = clone $toDate;
+            $fromDate->modify('-5 minutes');
         }
 
-        $requestData = array(
-            'account'          => $account->getData('server_hash'),
-            'from_create_date' => $fromDate,
-            'to_create_date'   => $toDate
-        );
+        // ----------------------------------------
 
-        /** @var Ess_M2ePro_Model_Connector_Command_RealTime $connectorObj */
+        /** @var Ess_M2ePro_Model_Walmart_Connector_Dispatcher $dispatcherObject */
         $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector(
-            'orders', 'get', 'items', $requestData
-        );
+        $orders = array(array());
+        $breakDate = null;
 
-        $dispatcherObject->process($connectorObj);
-        $responseData = $connectorObj->getResponseData();
+        // -------------------------------------
 
-        $this->processResponseMessages($connectorObj->getResponseMessages());
-        $this->getOperationHistory()->saveTimePoint(__METHOD__.'get'.$account->getTitle());
-
-        if (!isset($responseData['items']) || !isset($responseData['to_create_date'])) {
-            $logData = array(
-                'from_create_date'  => $fromDate,
-                'to_create_date'    => $toDate,
-                'account_id'        => $account->getId(),
-                'response_data'     => $responseData,
-                'response_messages' => $connectorObj->getResponseMessages()
+        do {
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'orders', 'get', 'items',
+                array(
+                    'account'          => $account->getData('server_hash'),
+                    'from_create_date' => $fromDate->format('Y-m-d H:i:s'),
+                    'to_create_date'   => $toDate->format('Y-m-d H:i:s')
+                )
             );
-            Mage::helper('M2ePro/Module_Logger')->process($logData, 'Walmart orders receive task - empty response');
+            $dispatcherObject->process($connectorObj);
 
-            return array();
-        } else {
-            $account->setData('orders_last_synchronization', $responseData['to_create_date'])->save();
-        }
+            // ----------------------------------------
 
-        return $responseData;
+            $this->processResponseMessages($connectorObj->getResponseMessages());
+            $this->getOperationHistory()->saveTimePoint(__METHOD__ . 'get' . $account->getTitle());
+
+            // ----------------------------------------
+
+            $responseData = $connectorObj->getResponseData();
+            if (!isset($responseData['items']) || !isset($responseData['to_create_date'])) {
+                Mage::helper('M2ePro/Module_Logger')->process(
+                    array(
+                        'from_create_date'  => $fromDate->format('Y-m-d H:i:s'),
+                        'to_create_date'    => $toDate->format('Y-m-d H:i:s'),
+                        'account_id'        => $account->getId(),
+                        'response_data'     => $responseData,
+                        'response_messages' => $connectorObj->getResponseMessages()
+                    ),
+                    'Walmart orders receive task - empty response'
+                );
+
+                return array();
+            }
+
+            // ----------------------------------------
+
+            $fromDate = new DateTime($responseData['to_create_date'], new DateTimeZone('UTC'));
+            if ($breakDate === $fromDate) {
+                break;
+            }
+
+            $orders[] = $responseData['items'];
+            $breakDate = $fromDate;
+        } while (!empty($responseData['items']));
+
+        // ----------------------------------------
+
+        $account->setData('orders_last_synchronization', $responseData['to_create_date']);
+        $account->save();
+
+        // ----------------------------------------
+
+        return call_user_func_array('array_merge', $orders);
     }
 
     protected function processResponseMessages(array $messages = array())
@@ -249,7 +270,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
         $messagesSet->init($messages);
 
         foreach ($messagesSet->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -273,7 +293,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
      *
      * But this protection is not covering a cases when two parallel cron processes are isolated by mysql transactions
      */
-    private function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
+    protected function isOrderChangedInParallelProcess(Ess_M2ePro_Model_Order $order)
     {
         /** @var Ess_M2ePro_Model_Order $dbOrder */
         $dbOrder = Mage::getModel('M2ePro/Order')->load($order->getId());
@@ -287,44 +307,103 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
 
     //########################################
 
-    private function prepareFromDate($lastFromDate)
+    /**
+     * @param DateTime $minPurchaseDateTime
+     * @return DateTime|null
+     * @throws Exception
+     */
+    protected function getMinPurchaseDateTime(DateTime $minPurchaseDateTime)
     {
-        // Get last from date
-        // ---------------------------------------
-        if (empty($lastFromDate)) {
-            $lastFromDate = new DateTime('now', new DateTimeZone('UTC'));
-        } else {
-            $lastFromDate = new DateTime($lastFromDate, new DateTimeZone('UTC'));
+        /** @var Ess_M2ePro_Model_Resource_Order_Collection $collection */
+        $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Order');
+        $collection->addFieldToFilter(
+            'status',
+            array(
+                'from' => Ess_M2ePro_Model_Walmart_Order::STATUS_CREATED,
+                'to'   => Ess_M2ePro_Model_Walmart_Order::STATUS_SHIPPED_PARTIALLY
+            )
+        );
+        $collection->addFieldToFilter(
+            'purchase_create_date',
+            array(
+                'from' => $minPurchaseDateTime->format('Y-m-d H:i:s')
+            )
+        );
+        $collection->getSelect()->order('purchase_create_date DESC');
+        $collection->getSelect()->limit(1);
+
+        /** @var Ess_M2ePro_Model_Order $order */
+        $order = $collection->getFirstItem();
+        if ($order->getId() === null) {
+            return null;
         }
-        // ---------------------------------------
 
-        // Get min date for synch
-        // ---------------------------------------
-        $minDate = new DateTime('now',new DateTimeZone('UTC'));
-        $minDate->modify('-30 days');
-        // ---------------------------------------
+        $purchaseDateTime = new DateTime(
+            $order->getChildObject()->getPurchaseCreateDate(),
+            new DateTimeZone('UTC')
+        );
+        $purchaseDateTime->modify('-1 second');
 
-        // Prepare last date
-        // ---------------------------------------
-        if ((int)$lastFromDate->format('U') < (int)$minDate->format('U')) {
-            $lastFromDate = $minDate;
-        }
-        // ---------------------------------------
-
-        return $lastFromDate->format('Y-m-d H:i:s');
+        return $purchaseDateTime;
     }
 
-    private function prepareToDate()
+    //####################################
+
+    /**
+     * @param mixed $lastFromDate
+     * @return DateTime
+     * @throws Exception
+     */
+    protected function prepareFromDate($lastFromDate)
     {
-        $operationHistory = $this->getOperationHistory()->getParentObject('synchronization');
-        if (!is_null($operationHistory)) {
-            $toDate = $operationHistory->getData('start_date');
-        } else {
-            $toDate = new DateTime('now', new DateTimeZone('UTC'));
-            $toDate = $toDate->format('Y-m-d H:i:s');
+        $nowDateTime = new DateTime('now', new DateTimeZone('UTC'));
+
+        // ----------------------------------------
+
+        if (!empty($lastFromDate)) {
+            $lastFromDate = new DateTime($lastFromDate, new DateTimeZone('UTC'));
         }
 
-        return $toDate;
+        if (empty($lastFromDate)) {
+            $lastFromDate = clone $nowDateTime;
+        }
+
+        // ----------------------------------------
+
+        $minDateTime = clone $nowDateTime;
+        $minDateTime->modify('-1 day');
+
+        if ($lastFromDate > $minDateTime) {
+            $minPurchaseDateTime = $this->getMinPurchaseDateTime($minDateTime);
+            if ($minPurchaseDateTime !== null) {
+                $lastFromDate = $minPurchaseDateTime;
+            }
+        }
+
+        // ----------------------------------------
+
+        $minDateTime = clone $nowDateTime;
+        $minDateTime->modify('-30 days');
+
+        if ((int)$lastFromDate->format('U') < (int)$minDateTime->format('U')) {
+            $lastFromDate = $minDateTime;
+        }
+
+        // ---------------------------------------
+
+        return $lastFromDate;
+    }
+
+    /**
+     * @return DateTime
+     * @throws Exception
+     */
+    protected function prepareToDate()
+    {
+        $operationHistory = $this->getOperationHistory()->getParentObject('synchronization');
+        $toDate = $operationHistory !== null ? $operationHistory->getData('start_date') : 'now';
+
+        return new DateTime($toDate, new DateTimeZone('UTC'));
     }
 
     //########################################

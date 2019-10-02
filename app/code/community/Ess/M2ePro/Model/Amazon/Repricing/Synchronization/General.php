@@ -12,18 +12,18 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
     const INSTRUCTION_TYPE_STATUS_CHANGED = 'repricing_status_changed';
     const INSTRUCTION_INITIATOR           = 'repricing_general_synchronization';
 
-    private $parentProductsIds = array();
+    protected $_parentProductsIds = array();
 
     //########################################
 
     public function run($skus = NULL)
     {
-        if (!is_null($skus) && empty($skus)) {
+        if ($skus !== null && empty($skus)) {
             return false;
         }
 
         $filters = array();
-        if (!is_null($skus)) {
+        if ($skus !== null) {
             $filters = array(
                 'skus_list' => $skus,
             );
@@ -40,28 +40,30 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
             $this->getAmazonAccountRepricing()->setData('email', $response['email']);
         }
 
-        if (is_null($skus)) {
+        if ($skus === null) {
             $this->getAmazonAccountRepricing()->setData('total_products', count($response['offers']));
             $this->getAmazonAccountRepricing()->save();
         }
 
-        $existedSkus = array_unique(array_merge(
-            Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getSkus(
-                $this->getAccount(), $skus
-            ),
-            Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getRepricingSkus(
-                $this->getAccount(), $skus
+        $existedSkus = array_unique(
+            array_merge(
+                Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getSkus(
+                    $this->getAccount(), $skus
+                ),
+                Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getRepricingSkus(
+                    $this->getAccount(), $skus
+                )
             )
-        ));
+        );
         $existedSkus = array_map('strtolower', $existedSkus);
 
         $skuIndexedResultOffersData = array();
         foreach ($response['offers'] as $offerData) {
-
             $offerSku = strtolower($offerData['sku']);
-            if (!is_null($skus) && !in_array($offerSku, $skus, true)) {
+            if ($skus !== null && !in_array($offerSku, $skus, true)) {
                 continue;
             }
+
             $skuIndexedResultOffersData[$offerSku] = $offerData;
         }
 
@@ -91,7 +93,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
     //########################################
 
-    private function processNewOffers(array $resultOffersData, array $existedSkus)
+    protected function processNewOffers(array $resultOffersData, array $existedSkus)
     {
         $newOffersData = array();
         foreach ($resultOffersData as $offerSku => $offerData) {
@@ -108,7 +110,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         $this->addListingOthersRepricing($newOffersData);
     }
 
-    private function processRemovedOffers(array $resultOffersData, array $existedSkus)
+    protected function processRemovedOffers(array $resultOffersData, array $existedSkus)
     {
         $removedOffersSkus = array();
         foreach ($existedSkus as $existedSku) {
@@ -125,7 +127,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         $this->removeListingsOthersRepricing($removedOffersSkus);
     }
 
-    private function processUpdatedOffers(array $resultOffersData, array $existedSkus)
+    protected function processUpdatedOffers(array $resultOffersData, array $existedSkus)
     {
         $updatedOffersData = array();
         foreach ($resultOffersData as $offerSku => $offerData) {
@@ -144,7 +146,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
     //########################################
 
-    private function addListingsProductsRepricing(array $newOffersData)
+    protected function addListingsProductsRepricing(array $newOffersData)
     {
         $resourceModel = Mage::getResourceModel('M2ePro/Amazon_Listing_Product');
         $listingsProductsData = $resourceModel->getProductsDataBySkus(
@@ -170,7 +172,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         $insertData = array();
 
         foreach ($listingsProductsData as $listingProductData) {
-
             $listingProductId       = (int)$listingProductData['listing_product_id'];
             $parentListingProductId = (int)$listingProductData['variation_parent_id'];
 
@@ -188,7 +189,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
                 'create_date'               => Mage::helper('M2ePro')->getCurrentGmtDate(),
             );
 
-            if (!is_null($offerData['product_price']) &&
+            if ($offerData['product_price'] !== null &&
                 $offerData['product_price'] != $listingProductData['online_regular_price']
             ) {
                 $connWrite->update(
@@ -199,13 +200,12 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
                 );
             }
 
-            if ($parentListingProductId && !in_array($parentListingProductId, $this->parentProductsIds)) {
-                $this->parentProductsIds[] = $parentListingProductId;
+            if ($parentListingProductId && !in_array($parentListingProductId, $this->_parentProductsIds)) {
+                $this->_parentProductsIds[] = $parentListingProductId;
             }
         }
 
         foreach (array_chunk($insertData, 1000, true) as $insertDataPack) {
-
             $connWrite->insertOnDuplicate(
                 Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('m2epro_amazon_listing_product_repricing'),
@@ -226,7 +226,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         }
     }
 
-    private function addListingOthersRepricing(array $newOffersData)
+    protected function addListingOthersRepricing(array $newOffersData)
     {
         $resourceModel = Mage::getResourceModel('M2ePro/Amazon_Listing_Other');
         $listingsOthersData = $resourceModel->getProductsDataBySkus(
@@ -254,11 +254,10 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         $inactiveListingOthersIds = array();
 
         foreach ($listingsOthersData as $listingOtherData) {
-
             $listingOtherId = (int)$listingOtherData['listing_other_id'];
             $offerData = $newOffersData[strtolower($listingOtherData['sku'])];
 
-            if (!is_null($offerData['product_price']) &&
+            if ($offerData['product_price'] !== null &&
                 $offerData['product_price'] != $listingOtherData['online_price']
             ) {
                 $connWrite->update(
@@ -290,41 +289,49 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         }
 
         if (!empty($enabledListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_disabled' => 0,),
-                $enabledListingOthersIds);
+                $enabledListingOthersIds
+            );
         }
 
         if (!empty($disabledListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_disabled' => 1,),
-                $disabledListingOthersIds);
+                $disabledListingOthersIds
+            );
         }
 
         if (!empty($activeListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_inactive' => 0,),
-                $activeListingOthersIds);
+                $activeListingOthersIds
+            );
         }
 
         if (!empty($inactiveListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_inactive' => 1,),
-                $inactiveListingOthersIds);
+                $inactiveListingOthersIds
+            );
         }
     }
 
     //----------------------------------------
 
-    private function updateListingsProductsRepricing(array $updatedOffersData)
+    protected function updateListingsProductsRepricing(array $updatedOffersData)
     {
-        $keys = array_map(function($el){ return (string)$el; }, array_keys($updatedOffersData));
+        $keys = array_map(
+            function($el){
+            return (string)$el; 
+            }, array_keys($updatedOffersData)
+        );
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
         $listingProductCollection->addFieldToFilter('is_repricing', 1);
@@ -375,7 +382,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
             $offerData = $updatedOffersData[strtolower($listingProductData['sku'])];
 
-            if (!is_null($offerData['product_price']) &&
+            if ($offerData['product_price'] !== null &&
                 !$offerData['is_calculation_disabled'] && !$offerData['is_offer_inactive'] &&
                  $listingProductData['online_regular_price'] != $offerData['product_price']
             ) {
@@ -410,7 +417,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
             }
 
             if ($listingProductData['is_online_disabled'] != $offerData['is_calculation_disabled']) {
-
                 if ($offerData['is_calculation_disabled']) {
                     $disabledListingsProductsIds[] = $listingProductId;
                 } else {
@@ -419,7 +425,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
             }
 
             if ($listingProductData['is_online_inactive'] != $offerData['is_offer_inactive']) {
-
                 if ($offerData['is_offer_inactive']) {
                     $inactiveListingsProductsIds[] = $listingProductId;
                 } else {
@@ -431,7 +436,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
             // but it had the managed state before
             if ($listingProductData['is_online_disabled'] != $offerData['is_calculation_disabled'] ||
                 $listingProductData['is_online_inactive'] != $offerData['is_offer_inactive']) {
-
                 if (!$listingProductData['is_online_disabled'] && !$listingProductData['is_online_inactive']) {
                     $notManagedListingsProductsIds[] = $listingProductId;
                 }
@@ -439,7 +443,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         }
 
         if (!empty($notManagedListingsProductsIds)) {
-
             $instructionsData = array();
 
             foreach ($notManagedListingsProductsIds as $notManagedListingProductId) {
@@ -460,47 +463,63 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         );
 
         if (!empty($enabledListingsProductsIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_product_repricing',
-                array_merge($defaultParams, array(
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_product_repricing',
+                array_merge(
+                    $defaultParams, array(
                     'is_online_disabled' => 0,
-                )),
-                $enabledListingsProductsIds);
+                    )
+                ),
+                $enabledListingsProductsIds
+            );
         }
 
         if (!empty($disabledListingsProductsIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_product_repricing',
-                array_merge($defaultParams, array(
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_product_repricing',
+                array_merge(
+                    $defaultParams, array(
                     'is_online_disabled' => 1,
-                )),
-                $disabledListingsProductsIds);
+                    )
+                ),
+                $disabledListingsProductsIds
+            );
         }
 
         if (!empty($activeListingsProductsIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_product_repricing',
-                array_merge($defaultParams, array(
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_product_repricing',
+                array_merge(
+                    $defaultParams, array(
                     'is_online_inactive' => 0,
-                )),
-                $activeListingsProductsIds);
+                    )
+                ),
+                $activeListingsProductsIds
+            );
         }
 
         if (!empty($inactiveListingsProductsIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_product_repricing',
-                array_merge($defaultParams, array(
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_product_repricing',
+                array_merge(
+                    $defaultParams, array(
                     'is_online_inactive' => 1,
-                )),
-                $inactiveListingsProductsIds);
+                    )
+                ),
+                $inactiveListingsProductsIds
+            );
         }
     }
 
-    private function updateListingsOthersRepricing(array $updatedOffersData)
+    protected function updateListingsOthersRepricing(array $updatedOffersData)
     {
-        $keys = array_map(function($el){ return (string)$el; }, array_keys($updatedOffersData));
+        $keys = array_map(
+            function($el){
+            return (string)$el; 
+            }, array_keys($updatedOffersData)
+        );
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Other_Collection $listingOtherCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Other_Collection $listingOtherCollection */
         $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
         $listingOtherCollection->addFieldToFilter('account_id', $this->getAccount()->getId());
         $listingOtherCollection->addFieldToFilter('sku', array('in' => $keys));
@@ -536,7 +555,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
             $offerData = $updatedOffersData[strtolower($listingOtherData['sku'])];
 
-            if (!is_null($offerData['product_price']) &&
+            if ($offerData['product_price'] !== null &&
                 !$offerData['is_calculation_disabled'] && !$offerData['is_offer_inactive'] &&
                 $offerData['product_price'] != $listingOtherData['online_price']
             ) {
@@ -561,6 +580,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
                     $enabledListingOthersIds[] = $listingOtherId;
                 }
             }
+
             if ($listingOtherData['is_repricing_inactive'] != !$offerData['is_offer_inactive']) {
                 if ($offerData['is_offer_inactive']) {
                     $inactiveListingOthersIds[] = $listingOtherId;
@@ -571,37 +591,41 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         }
 
         if (!empty($enabledListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_disabled' => 0),
-                $enabledListingOthersIds);
+                $enabledListingOthersIds
+            );
         }
 
         if (!empty($disabledListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_disabled' => 1),
-                $disabledListingOthersIds);
+                $disabledListingOthersIds
+            );
         }
 
         if (!empty($activeListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_inactive' => 0),
-                $activeListingOthersIds);
+                $activeListingOthersIds
+            );
         }
 
         if (!empty($inactiveListingOthersIds)) {
-
-            $this->multipleUpdateListings('m2epro_amazon_listing_other',
+            $this->multipleUpdateListings(
+                'm2epro_amazon_listing_other',
                 array('is_repricing' => 1, 'is_repricing_inactive' => 1),
-                $inactiveListingOthersIds);
+                $inactiveListingOthersIds
+            );
         }
     }
 
     //----------------------------------------
 
-    private function removeListingsProductsRepricing(array $removedOffersSkus)
+    protected function removeListingsProductsRepricing(array $removedOffersSkus)
     {
         $resourceModel = Mage::getResourceModel('M2ePro/Amazon_Listing_Product');
         $listingsProductsData = $resourceModel->getProductsDataBySkus(
@@ -622,12 +646,11 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         $listingProductIds = array();
 
         foreach ($listingsProductsData as $listingProductData) {
-
             $listingProductIds[] = (int)$listingProductData['id'];
             $parentListingProductId = (int)$listingProductData['variation_parent_id'];
 
-            if ($parentListingProductId && !in_array($parentListingProductId, $this->parentProductsIds)) {
-                $this->parentProductsIds[] = $parentListingProductId;
+            if ($parentListingProductId && !in_array($parentListingProductId, $this->_parentProductsIds)) {
+                $this->_parentProductsIds[] = $parentListingProductId;
             }
         }
 
@@ -635,7 +658,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         $connWrite = $resource->getConnection('core_write');
 
         foreach (array_chunk($listingProductIds, 1000, true) as $listingProductIdsPack) {
-
             $connWrite->delete(
                 Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('m2epro_amazon_listing_product_repricing'),
@@ -651,7 +673,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         }
     }
 
-    private function removeListingsOthersRepricing(array $removedOffersSkus)
+    protected function removeListingsOthersRepricing(array $removedOffersSkus)
     {
         $resourceModel = Mage::getResourceModel('M2ePro/Amazon_Listing_Other');
         $listingsOthersData = $resourceModel->getProductsDataBySkus(
@@ -677,7 +699,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         $connWrite = $resource->getConnection('core_write');
 
         foreach (array_chunk($listingOtherIds, 1000, true) as $listingOtherIdsPack) {
-
             $connWrite->update(
                 Mage::helper('M2ePro/Module_Database_Structure')
                     ->getTableNameWithPrefix('m2epro_amazon_listing_other'),
@@ -693,16 +714,16 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
     //########################################
 
-    private function processVariationProcessor()
+    protected function processVariationProcessor()
     {
-        if (empty($this->parentProductsIds)) {
+        if (empty($this->_parentProductsIds)) {
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('is_variation_parent', 1);
-        $listingProductCollection->addFieldToFilter('id', array('in' => $this->parentProductsIds));
+        $listingProductCollection->addFieldToFilter('id', array('in' => $this->_parentProductsIds));
 
         foreach ($listingProductCollection->getItems() as $item) {
             /** @var Ess_M2ePro_Model_Listing_Product $item */
@@ -712,12 +733,12 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
             $alp->getVariationManager()->getTypeModel()->getProcessor()->process();
         }
 
-        $this->parentProductsIds = array();
+        $this->_parentProductsIds = array();
     }
 
     //########################################
 
-    private function multipleUpdateListings($tableName, $params, $listingsIds)
+    protected function multipleUpdateListings($tableName, $params, $listingsIds)
     {
         $resource  = Mage::getSingleton('core/resource');
         $connWrite = $resource->getConnection('core_write');
@@ -726,6 +747,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
         } else {
             $tableId = 'listing_other_id';
         }
+
         $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName);
 
         $listingsIdsPacks = array_chunk(array_unique($listingsIds), 1000);

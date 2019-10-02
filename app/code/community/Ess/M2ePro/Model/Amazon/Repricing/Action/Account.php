@@ -43,7 +43,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Account extends Ess_M2ePro_Model_
 
     //########################################
 
-    private function sendData($command, array $data, $backUrl)
+    protected function sendData($command, array $data, $backUrl)
     {
         $requestData = array(
             'request' => array(
@@ -64,7 +64,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Account extends Ess_M2ePro_Model_
         try {
             $result = $this->getHelper()->sendRequest($command, $requestData);
         } catch (Exception $exception) {
-
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($exception->getMessage()),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,

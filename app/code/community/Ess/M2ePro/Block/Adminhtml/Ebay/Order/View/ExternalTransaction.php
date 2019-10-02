@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mage_Adminhtml_Block_Widget_Grid
 {
-    /** @var $order Ess_M2ePro_Model_Order */
-    protected $order = null;
+    /** @var $_order Ess_M2ePro_Model_Order */
+    protected $_order = null;
 
     //########################################
 
@@ -30,12 +30,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
         $this->setFilterVisibility(false);
         // ---------------------------------------
 
-        $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
     }
 
     protected function _prepareCollection()
     {
-        $collection = $this->order->getChildObject()->getExternalTransactionsCollection();
+        $collection = $this->_order->getChildObject()->getExternalTransactionsCollection();
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -43,16 +43,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
 
     protected function _prepareColumns()
     {
-        $this->addColumn('transaction_id', array(
+        $this->addColumn(
+            'transaction_id', array(
             'header' => Mage::helper('M2ePro')->__('Transaction #'),
             'align' => 'left',
             'width' => '*',
             'index' => 'transaction_id',
             'sortable' => false,
             'frame_callback' => array($this, 'callbackColumnTransactionId')
-        ));
+            )
+        );
 
-        $this->addColumn('fee', array(
+        $this->addColumn(
+            'fee', array(
             'header' => Mage::helper('M2ePro')->__('Fee'),
             'align' => 'left',
             'width' => '100px',
@@ -60,9 +63,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
             'type' => 'number',
             'sortable' => false,
             'frame_callback' => array($this, 'callbackColumnFee')
-        ));
+            )
+        );
 
-        $this->addColumn('sum', array(
+        $this->addColumn(
+            'sum', array(
             'header' => Mage::helper('M2ePro')->__('Amount'),
             'align' => 'left',
             'width' => '100px',
@@ -70,9 +75,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
             'type' => 'number',
             'sortable' => false,
             'frame_callback' => array($this, 'callbackColumnSum')
-        ));
+            )
+        );
 
-        $this->addColumn('transaction_date', array(
+        $this->addColumn(
+            'transaction_date', array(
             'header'   => Mage::helper('M2ePro')->__('Date'),
             'align'    => 'left',
             'width'    => '150px',
@@ -80,14 +87,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
             'type'     => 'datetime',
             'format'   => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'sortable' => false
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
 
     public function callbackColumnTransactionId($value, $row, $column, $isExport)
     {
-        if (strtolower($this->order->getChildObject()->getPaymentMethod()) != 'paypal') {
+        if (strtolower($this->_order->getChildObject()->getPaymentMethod()) != 'paypal') {
             return $value;
         }
 
@@ -99,14 +107,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
     public function callbackColumnFee($value, $row, $column, $isExport)
     {
         return Mage::getSingleton('M2ePro/Currency')->formatPrice(
-            $this->order->getChildObject()->getCurrency(), $value
+            $this->_order->getChildObject()->getCurrency(), $value
         );
     }
 
     public function callbackColumnSum($value, $row, $column, $isExport)
     {
         return Mage::getSingleton('M2ePro/Currency')->formatPrice(
-            $this->order->getChildObject()->getCurrency(), $value
+            $this->_order->getChildObject()->getCurrency(), $value
         );
     }
 

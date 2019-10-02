@@ -12,9 +12,9 @@ use Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_SourceMode as SourceModeBlock
 class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 {
-    protected $sessionKey = 'walmart_listing_product_add';
+    protected $_sessionKey = 'walmart_listing_product_add';
 
-    protected $listing;
+    protected $_listing;
 
     //########################################
 
@@ -75,8 +75,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         if ($this->getRequest()->getParam('clear')) {
             $this->clear();
-            $this->getRequest()->setParam('clear',null);
-            $this->_redirect('*/*/index',array('_current' => true));
+            $this->getRequest()->setParam('clear', null);
+            $this->_redirect('*/*/index', array('_current' => true));
             return;
         }
 
@@ -104,6 +104,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
                     $this->$action();
                     return;
                 }
+
                 $this->_redirect('*/*/index', array('_current' => true,'step' => 1));
                 break;
             case 3:
@@ -138,7 +139,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     public function addProductsFromList()
     {
-        if (is_null($this->getRequest()->getParam('id'))) {
+        if ($this->getRequest()->getParam('id') === null) {
             $this->_redirect('*/adminhtml_walmart_listing/index');
             return;
         }
@@ -169,7 +170,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     public function addProductsFromCategories()
     {
-        if (is_null($this->getRequest()->getParam('id'))) {
+        if ($this->getRequest()->getParam('id') === null) {
             $this->_redirect('*/adminhtml_walmart_listing/index');
             return;
         }
@@ -189,13 +190,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $selectedProductsIds = !isset($tempSession['products_ids']) ? array() : $tempSession['products_ids'];
 
         if ($this->getRequest()->isXmlHttpRequest()) {
-
             if ($this->getRequest()->getParam('current_category_id')) {
                 $this->setSessionValue('current_category_id', $this->getRequest()->getParam('current_category_id'));
             }
 
             $this->loadLayout();
-            /* @var $grid Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Category_Grid */
+            /** @var $grid Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Category_Grid */
             $grid = $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_walmart_listing_product_category_grid');
 
@@ -212,19 +212,22 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $gridContainer = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add_sourceCategory');
         $this->_addContent($gridContainer);
 
-        /* @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
-        $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_category_tree', '', array(
+        /** @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
+        $treeBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_walmart_listing_category_tree', '', array(
             'tree_settings' => array(
                 'show_products_amount' => true,
                 'hide_products_this_listing' => true
             )
-        ));
+            )
+        );
 
-        if (is_null($this->getSessionValue('current_category_id'))) {
+        if ($this->getSessionValue('current_category_id') === null) {
             $currentNode = $treeBlock->getRoot()->getChildren()->getIterator()->current();
             if (!$currentNode) {
                 throw new Ess_M2ePro_Model_Exception('No Categories found');
             }
+
             $this->setSessionValue('current_category_id', $currentNode->getId());
         }
 
@@ -267,12 +270,14 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             return $this->_redirect('*/adminhtml_walmart_listing/view', array('id' => $listingId));
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Walmart_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $collection->getSelect()->columns(array(
+        $collection->getSelect()->columns(
+            array(
             'id' => 'main_table.id'
-        ));
+            )
+        );
         $collection->getSelect()->where(
             "`main_table`.`id` IN (?) AND `second_table`.`template_category_id` IS NULL",
             $additionalData['adding_listing_products_ids']
@@ -285,6 +290,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         if (isset($additionalData['source']) && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER) {
             $this->deleteListingOthers();
         }
+
         //--
 
         $this->review();
@@ -324,9 +330,11 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             return;
         }
 
-        return $this->_redirect('*/adminhtml_walmart_listing/view', array(
+        return $this->_redirect(
+            '*/adminhtml_walmart_listing/view', array(
             'id' => $listingId
-        ));
+            )
+        );
     }
 
     public function viewListingAndListAction()
@@ -338,10 +346,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             return;
         }
 
-        return $this->_redirect('*/adminhtml_walmart_listing/view', array(
+        return $this->_redirect(
+            '*/adminhtml_walmart_listing/view', array(
             'id' => $listingId,
             'do_list' => true
-        ));
+            )
+        );
     }
 
     //########################################
@@ -349,14 +359,14 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
     public function addProductsAction()
     {
         $listingId = $this->getRequest()->getParam('listing_id');
-        $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing',$listingId);
+        $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
 
         $productsIds = $this->getRequest()->getParam('products');
         $productsIds = explode(',', $productsIds);
         $productsIds = array_unique($productsIds);
 
         $listingProductIds = array();
-        if (count($productsIds) > 0) {
+        if (!empty($productsIds)) {
             foreach ($productsIds as $productId) {
                 if ($productId == '' || $productsIds[0] == 'true') {
                     continue;
@@ -375,15 +385,16 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $isLastPart = $this->getRequest()->getParam('is_last_part');
         if ($isLastPart == 'yes') {
-
             $listing->setSetting('additional_data', 'adding_listing_products_ids', $tempProducts);
             $listing->save();
 
-            $backUrl = $this->getUrl('*/*/index', array(
+            $backUrl = $this->getUrl(
+                '*/*/index', array(
                 'id' => $listingId,
                 'skip_products_steps' => empty($tempProducts),
                 'step' => 3
-            ));
+                )
+            );
 
             $this->clearSession();
 
@@ -399,9 +410,13 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $tempSession = $this->getSessionValue('source_categories');
         $selectedProductsIds = !isset($tempSession['products_ids']) ? array() : $tempSession['products_ids'];
 
-        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'ids' => $selectedProductsIds
-        )));
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'ids' => $selectedProductsIds
+                )
+            )
+        );
     }
 
     //########################################
@@ -411,26 +426,29 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $this->deleteListingProducts($this->getListing()->getSetting('additional_data', 'adding_listing_products_ids'));
 
         if ($this->getListing()->getSetting('additional_data', 'source') == SourceModeBlock::SOURCE_OTHER) {
-
             $additionalData = $this->getListing()->getSettings('additional_data');
             unset($additionalData['source']);
             $this->getListing()->setSettings('additional_data', $additionalData)->save();
 
-            return $this->_redirect('*/adminhtml_walmart_listing_other/view', array(
+            return $this->_redirect(
+                '*/adminhtml_walmart_listing_other/view', array(
                 'account'     => $this->getListing()->getAccountId(),
                 'marketplace' => $this->getListing()->getMarketplaceId(),
-            ));
+                )
+            );
         }
 
-        $this->_redirect('*/adminhtml_walmart_listing_productAdd/index', array(
+        $this->_redirect(
+            '*/adminhtml_walmart_listing_productAdd/index', array(
             'step'   => 2,
             'id'     => $this->getRequest()->getParam('id')
-        ));
+            )
+        );
     }
 
     // ---------------------------------------
 
-    private function deleteListingProducts($ids)
+    protected function deleteListingProducts($ids)
     {
         $ids = array_map('intval', $ids);
 
@@ -447,6 +465,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         if (empty($listingProductAddIds)) {
             return;
         }
+
         $listingProductAddIds = array_map('intval', $listingProductAddIds);
         $listingProductAddIds = array_diff($listingProductAddIds, $ids);
 
@@ -454,7 +473,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $this->getListing()->save();
     }
 
-    private function deleteListingOthers()
+    protected function deleteListingOthers()
     {
         $listingProductsIds = $this->getListing()->getSetting('additional_data', 'adding_listing_products_ids');
         if (empty($listingProductsIds)) {
@@ -463,7 +482,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $otherProductsIds = array();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->addFieldToFilter('id', array('in' => $listingProductsIds));
         foreach ($collection->getItems() as $listingProduct) {
@@ -477,7 +496,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Other_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Other_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other');
         $collection->addFieldToFilter('id', array('in' => $otherProductsIds));
         foreach ($collection->getItems() as $listingOther) {
@@ -493,13 +512,15 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $tempSession = $this->getSessionValue('source_categories');
         $selectedProductsIds = !isset($tempSession['products_ids']) ? array() : $tempSession['products_ids'];
 
-        /* @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
-        $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_category_tree', '', array(
+        /** @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
+        $treeBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_walmart_listing_category_tree', '', array(
             'tree_settings' => array(
                 'show_products_amount' => true,
                 'hide_products_this_listing' => false
             )
-        ));
+            )
+        );
         $treeBlock->setSelectedIds($selectedProductsIds);
 
         $this->getResponse()->setBody(
@@ -515,15 +536,15 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $checked = $this->getRequest()->getParam('checked_ids');
         $initial = $this->getRequest()->getParam('initial_checked_ids');
 
-        $checked = array_filter(explode(',',$checked));
-        $initial = array_filter(explode(',',$initial));
+        $checked = array_filter(explode(',', $checked));
+        $initial = array_filter(explode(',', $initial));
 
-        $initial = array_values(array_unique(array_merge($initial,$checked)));
-        $all     = array_values(array_unique(array_merge($all,$initial)));
+        $initial = array_values(array_unique(array_merge($initial, $checked)));
+        $all     = array_values(array_unique(array_merge($all, $initial)));
 
         $all = array_flip($all);
 
-        foreach (array_diff($initial,$checked) as $id) {
+        foreach (array_diff($initial, $checked) as $id) {
             unset($all[$id]);
         }
 
@@ -540,13 +561,15 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $tempSession = $this->getSessionValue('source_categories');
         $tempSession['products_ids'] = !isset($tempSession['products_ids']) ? array() : $tempSession['products_ids'];
 
-        /* @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
-        $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_category_tree', '', array(
+        /** @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
+        $treeBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_walmart_listing_category_tree', '', array(
             'tree_settings' => array(
                 'show_products_amount' => true,
                 'hide_products_this_listing' => false
             )
-        ));
+            )
+        );
         $treeBlock->setSelectedIds($tempSession['products_ids']);
 
         $this->getResponse()->setBody($treeBlock->getInfoJson());
@@ -561,11 +584,11 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $tempSession = $this->getSessionValue('source_categories');
         $productsIds = !isset($tempSession['products_ids']) ? array() : $tempSession['products_ids'];
 
-        /* @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
+        /** @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
         $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_category_tree');
         $treeBlock->setSelectedIds($productsIds);
 
-        /* @var $block Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Category_Summary_Grid */
+        /** @var $block Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Category_Summary_Grid */
         $block = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_walmart_listing_product_category_summary_grid');
         $block->setStoreId($this->getListingFromRequest()->getStoreId());
@@ -583,7 +606,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         if (!isset($tempSession['products_ids'])) {
             return;
         }
-        /* @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
+
+        /** @var $treeBlock Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree */
         $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_category_tree');
         $treeBlock->setSelectedIds($tempSession['products_ids']);
 
@@ -596,7 +620,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $tempSession['products_ids'] = array_diff($tempSession['products_ids'], $products);
 
-        $this->setSessionValue('source_categories',$tempSession);
+        $this->setSessionValue('source_categories', $tempSession);
     }
 
     //########################################
@@ -621,7 +645,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             Mage::helper('M2ePro/Data_Session')->setValue(
                 $prefix, $ruleModel->getSerializedFromPost($this->getRequest()->getPost())
             );
-        } elseif (!is_null($ruleParam)) {
+        } elseif ($ruleParam !== null) {
             Mage::helper('M2ePro/Data_Session')->setValue($prefix, array());
         }
 
@@ -638,7 +662,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $id = $this->getRequest()->getParam('id');
 
         $prefix = 'walmart_hide_products_others_listings_';
-        $prefix .= is_null($id) ? 'add' : $id;
+        $prefix .= $id === null ? 'add' : $id;
         $prefix .= '_listing_product';
 
         return $prefix;
@@ -674,7 +698,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $grid->setProductsIds($listingProductsIds);
         $grid->setMagentoCategoryIds($magentoCategoryIds);
         $grid->setMapToTemplateJsFn('selectTemplateCategory');
-        !is_null($createNewTemplateJsFn) && $grid->setCreateNewTemplateJsFn($createNewTemplateJsFn);
+        $createNewTemplateJsFn !== null && $grid->setCreateNewTemplateJsFn($createNewTemplateJsFn);
 
         return $this->getResponse()->setBody($grid->toHtml());
     }
@@ -715,24 +739,29 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
                     $this->setCategoryTemplate($listingProductsIds, $categoryTemplateId);
                 }
 
-                return $this->_redirect('*/adminhtml_walmart_listing_productAdd/index', array(
+                return $this->_redirect(
+                    '*/adminhtml_walmart_listing_productAdd/index', array(
                     '_current' => true,
                     'step' => 4
-                ));
+                    )
+                );
             }
 
             unset($listingAdditionalData['category_template_mode']);
 
             $listing->setData('additional_data', Mage::helper('M2ePro')->jsonEncode($listingAdditionalData))->save();
-
         } elseif ($mode == CategoryTemplateBlock::MODE_CATEGORY) {
-            return $this->_redirect('*/*/categoryTemplateAssignByMagentoCategory', array(
+            return $this->_redirect(
+                '*/*/categoryTemplateAssignByMagentoCategory', array(
                 '_current' => true,
-            ));
+                )
+            );
         } else if ($mode == CategoryTemplateBlock::MODE_MANUALLY) {
-            return $this->_redirect('*/*/categoryTemplateAssignManually', array(
+            return $this->_redirect(
+                '*/*/categoryTemplateAssignManually', array(
                 '_current' => true,
-            ));
+                )
+            );
         }
 
         $this->_forward('index');
@@ -740,7 +769,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     public function categoryTemplateAssignByMagentoCategoryAction()
     {
-        $listingProductsIds = $this->getListing()->getSetting('additional_data','adding_listing_products_ids');
+        $listingProductsIds = $this->getListing()->getSetting('additional_data', 'adding_listing_products_ids');
 
         if (empty($listingProductsIds)) {
             $this->_forward('index');
@@ -764,7 +793,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     public function categoryTemplateAssignManuallyAction()
     {
-        $listingProductsIds = $this->getListing()->getSetting('additional_data','adding_listing_products_ids');
+        $listingProductsIds = $this->getListing()->getSetting('additional_data', 'adding_listing_products_ids');
 
         if (empty($listingProductsIds)) {
             $this->_forward('index');
@@ -813,43 +842,51 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     public function checkCategoryTemplateProductsAction()
     {
-        $listingProductsIds = $this->getListing()->getSetting('additional_data','adding_listing_products_ids');
+        $listingProductsIds = $this->getListing()->getSetting('additional_data', 'adding_listing_products_ids');
 
-        /** @var Ess_M2ePro_Model_Mysql4_Walmart_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $collection->getSelect()->columns(array(
+        $collection->getSelect()->columns(
+            array(
             'id' => 'main_table.id'
-        ));
+            )
+        );
         $collection->getSelect()->where(
             "`main_table`.`id` IN (?) AND `second_table`.`template_category_id` IS NULL", $listingProductsIds
         );
 
         $failedProductsIds = $collection->getColumnValues('id');
 
-        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'validation'      => count($failedProductsIds) == 0,
-            'total_count'     => count($listingProductsIds),
-            'failed_count'    => count($failedProductsIds),
-            'failed_products' => $failedProductsIds
-        )));
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'validation'      => empty($failedProductsIds),
+                'total_count'     => count($listingProductsIds),
+                'failed_count'    => count($failedProductsIds),
+                'failed_products' => $failedProductsIds
+                )
+            )
+        );
     }
 
     //########################################
 
     public function resetCategoryTemplateAction()
     {
-        $listingProductsIds = $this->getListing()->getSetting('additional_data','adding_listing_products_ids');
+        $listingProductsIds = $this->getListing()->getSetting('additional_data', 'adding_listing_products_ids');
 
         $this->setCategoryTemplate($listingProductsIds, NULL);
 
         $this->getListing()->setSetting('additional_data', 'adding_category_templates_data', array());
         $this->getListing()->save();
 
-        return $this->_redirect('*/adminhtml_walmart_listing_productAdd/index', array(
+        return $this->_redirect(
+            '*/adminhtml_walmart_listing_productAdd/index', array(
             '_current' => true,
             'step' => 3
-        ));
+            )
+        );
     }
 
     //########################################
@@ -862,7 +899,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
         $productsIds = array_chunk($productsIds, 1000);
         foreach ($productsIds as $productsIdsChunk) {
-            $connWrite->update($tableWalmartListingProduct, array(
+            $connWrite->update(
+                $tableWalmartListingProduct, array(
                     'template_category_id' => $templateId
                 ), '`listing_product_id` IN ('.implode(',', $productsIdsChunk).')'
             );
@@ -876,20 +914,20 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
         $sessionData = $this->getSessionValue();
         $sessionData[$key] = $value;
 
-        Mage::helper('M2ePro/Data_Session')->setValue($this->sessionKey, $sessionData);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, $sessionData);
 
         return $this;
     }
 
     protected function getSessionValue($key = NULL)
     {
-        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->sessionKey);
+        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey);
 
-        if (is_null($sessionData)) {
+        if ($sessionData === null) {
             $sessionData = array();
         }
 
-        if (is_null($key)) {
+        if ($key === null) {
             return $sessionData;
         }
 
@@ -898,9 +936,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
 
     // ---------------------------------------
 
-    private function clearSession()
+    protected function clearSession()
     {
-        Mage::helper('M2ePro/Data_Session')->setValue($this->sessionKey, NULL);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, NULL);
     }
 
     //########################################
@@ -915,11 +953,11 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
-            $this->listing = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing', $listingId);
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing', $listingId);
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################
@@ -928,7 +966,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_ProductAddController
      * @return Ess_M2ePro_Model_Walmart_Listing
      * @throws Exception
      */
-    private function getListingFromRequest()
+    protected function getListingFromRequest()
     {
         if (!$listingId = $this->getRequest()->getParam('id')) {
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');

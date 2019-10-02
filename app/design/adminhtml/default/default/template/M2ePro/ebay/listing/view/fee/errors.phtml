@@ -1,4 +1,14 @@
 <?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Fee_Errors */
+
 $errors = $this->getErrors();
 
 $showWarnings = false;
@@ -8,7 +18,9 @@ foreach ($errors as $error) {
         break;
     }
 }
+
 ?>
+
 <style type="text/css">
     #errors-buttons {
         padding: 10px 0 !important;

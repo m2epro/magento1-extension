@@ -15,10 +15,10 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item
      */
     public function getOriginalPrice()
     {
-        $price = $this->item->getPrice();
+        $price = $this->_item->getPrice();
 
         if (($this->getProxyOrder()->isTaxModeNone() && $this->hasTax()) || $this->isVatTax()) {
-            $price += $this->item->getTaxAmount();
+            $price += $this->_item->getTaxAmount();
         }
 
         return $price;
@@ -29,7 +29,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item
      */
     public function getOriginalQty()
     {
-        return $this->item->getQtyPurchased();
+        return $this->_item->getQtyPurchased();
     }
 
     //########################################
@@ -39,14 +39,14 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item
      */
     public function getTaxRate()
     {
-        return $this->item->getTaxRate();
+        return $this->_item->getTaxRate();
     }
 
     //########################################
 
     public function getWasteRecyclingFee()
     {
-        return $this->item->getWasteRecyclingFee();
+        return $this->_item->getWasteRecyclingFee();
     }
 
     //########################################
@@ -56,13 +56,14 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item
      */
     public function getAdditionalData()
     {
-        if (count($this->additionalData) == 0) {
-            $this->additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items'][] = array(
-                'item_id' => $this->item->getItemId(),
-                'transaction_id' => $this->item->getTransactionId()
+        if (empty($this->_additionalData)) {
+            $this->_additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items'][] = array(
+                'item_id' => $this->_item->getItemId(),
+                'transaction_id' => $this->_item->getTransactionId()
             );
         }
-        return $this->additionalData;
+
+        return $this->_additionalData;
     }
 
     //########################################

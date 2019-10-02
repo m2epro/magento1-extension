@@ -56,7 +56,8 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
 
     protected function _prepareColumns()
     {
-        $this->addColumn('listing_id', array(
+        $this->addColumn(
+            'listing_id', array(
             'header'       => Mage::helper('M2ePro')->__('ID'),
             'align'        => 'right',
             'type'         => 'number',
@@ -64,9 +65,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
             'index'        => 'listing_id',
             'filter_index' => 'listing_id',
             'frame_callback' => array($this, 'callbackColumnId')
-        ));
+            )
+        );
 
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'       => Mage::helper('M2ePro')->__('Title'),
             'align'        => 'left',
             'type'         => 'text',
@@ -74,9 +77,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
             'index'        => 'title',
             'filter_index' => 'main_table.title',
             'frame_callback' => array($this, 'callbackColumnTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('store_name', array(
+        $this->addColumn(
+            'store_name', array(
             'header'        => Mage::helper('M2ePro')->__('Store View'),
             'align'        => 'left',
             'type'         => 'text',
@@ -85,9 +90,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnStore')
-        ));
+            )
+        );
 
-        $this->addColumn('products_total_count', array(
+        $this->addColumn(
+            'products_total_count', array(
             'header'        => Mage::helper('M2ePro')->__('Total Items'),
             'align'        => 'right',
             'type'         => 'number',
@@ -95,9 +102,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
             'index'        => 'products_total_count',
             'filter_index' => 'products_total_count',
             'frame_callback' => array($this, 'callbackColumnSourceTotalItems')
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'       => Mage::helper('M2ePro')->__('Actions'),
             'align'        => 'left',
             'type'         => 'text',
@@ -105,7 +114,8 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Moving_Grid extends Mage_Adminhtml_Bloc
             'filter'       => false,
             'sortable'     => false,
             'frame_callback' => array($this, 'callbackColumnActions'),
-        ));
+            )
+        );
     }
 
     //########################################
@@ -212,14 +222,16 @@ HTML;
         $componentMode = Mage::helper('M2ePro/Data_Global')->getValue('componentMode');
 
         // ---------------------------------------
-        $newListingUrl = $this->getUrl('*/adminhtml_'.strtolower($componentMode).'_listing_create/index', array(
+        $newListingUrl = $this->getUrl(
+            '*/adminhtml_'.strtolower($componentMode).'_listing_create/index', array(
             'step' => 1,
             'clear' => 1,
             'account_id' => Mage::helper('M2ePro/Data_Global')->getValue('accountId'),
             'marketplace_id' => Mage::helper('M2ePro/Data_Global')->getValue('marketplaceId'),
             'creation_mode' => Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY,
             'component' => $componentMode
-        ));
+            )
+        );
 
         $data = array(
             'id'    => 'listingProductMoving_addNew_listing_button',

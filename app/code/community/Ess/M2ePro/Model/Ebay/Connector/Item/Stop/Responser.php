@@ -22,9 +22,9 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Stop_Responser
     {
         parent::eventAfterExecuting();
 
-        if (!empty($this->params['params']['remove'])) {
+        if (!empty($this->_params['params']['remove'])) {
             $removeHandler = Mage::getModel(
-                'M2ePro/Listing_Product_RemoveHandler', array('listing_product' => $this->listingProduct)
+                'M2ePro/Listing_Product_RemoveHandler', array('listing_product' => $this->_listingProduct)
             );
             $removeHandler->process();
         }
@@ -35,7 +35,6 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Stop_Responser
     protected function processCompleted(array $data = array(), array $params = array())
     {
         if (!empty($data['already_stop'])) {
-
             $this->getResponseObject()->processSuccess($data, $params);
 
             // M2ePro_TRANSLATIONS
@@ -47,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Stop_Responser
             );
 
             $this->getLogger()->logListingProductMessage(
-                $this->listingProduct, $message
+                $this->_listingProduct, $message
             );
 
             return;

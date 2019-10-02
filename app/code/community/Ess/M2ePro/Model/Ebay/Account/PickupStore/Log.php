@@ -30,20 +30,22 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore_Log extends Ess_M2ePro_Model_Log
 
     //########################################
 
-    public function addMessage($accountPickupStoreStateId,
-                               $actionId = NULL,
-                               $action = NULL,
-                               $description = NULL,
-                               $type = NULL,
-                               $priority = NULL)
-    {
+    public function addMessage(
+        $accountPickupStoreStateId,
+        $actionId = null,
+        $action = null,
+        $description = null,
+        $type = null,
+        $priority = null
+    ) {
         $dataForAdd = $this->makeDataForAdd(
             $accountPickupStoreStateId,
             $actionId,
             $action,
             $description,
             $type,
-            $priority);
+            $priority
+        );
 
         $this->createMessage($dataForAdd);
     }
@@ -67,43 +69,44 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore_Log extends Ess_M2ePro_Model_Log
             ->save();
     }
 
-    protected function makeDataForAdd($accountPickupStoreStateId,
-                                      $actionId = NULL,
-                                      $action = NULL,
-                                      $description = NULL,
-                                      $type = NULL,
-                                      $priority = NULL,
-                                      array $additionalData = array())
-    {
+    protected function makeDataForAdd(
+        $accountPickupStoreStateId,
+        $actionId = null,
+        $action = null,
+        $description = null,
+        $type = null,
+        $priority = null,
+        array $additionalData = array()
+    ) {
         $dataForAdd = array();
 
         $dataForAdd['account_pickup_store_state_id'] = (int)$accountPickupStoreStateId;
 
-        if (!is_null($actionId)) {
+        if ($actionId !== null) {
             $dataForAdd['action_id'] = (int)$actionId;
         } else {
-            $dataForAdd['action_id'] = NULL;
+            $dataForAdd['action_id'] = null;
         }
 
-        if (!is_null($action)) {
+        if ($action !== null) {
             $dataForAdd['action'] = (int)$action;
         } else {
             $dataForAdd['action'] = self::ACTION_UNKNOWN;
         }
 
-        if (!is_null($description)) {
+        if ($description !== null) {
             $dataForAdd['description'] = $description;
         } else {
-            $dataForAdd['description'] = NULL;
+            $dataForAdd['description'] = null;
         }
 
-        if (!is_null($type)) {
+        if ($type !== null) {
             $dataForAdd['type'] = (int)$type;
         } else {
             $dataForAdd['type'] = self::TYPE_NOTICE;
         }
 
-        if (!is_null($priority)) {
+        if ($priority !== null) {
             $dataForAdd['priority'] = (int)$priority;
         } else {
             $dataForAdd['priority'] = self::PRIORITY_LOW;

@@ -8,45 +8,45 @@
 
 class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    /** @var Ess_M2ePro_Model_Listing_Product_Variation[] $variations */
-    private $variations = array();
+    /** @var Ess_M2ePro_Model_Listing_Product_Variation[] $_variations */
+    protected $_variations = array();
 
-    private $maxAppliedQtyValue = NULL;
+    protected $_maxAppliedQtyValue = null;
 
     /** @var Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_QtyCalculator */
-    private $qtyCalculator = NULL;
+    protected $_qtyCalculator = null;
 
-    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore[] $accountPickupStores */
-    private $accountPickupStores = array();
+    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore[] $_accountPickupStores */
+    protected $_accountPickupStores = array();
 
-    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_State[] $accountPickupStoreStateItems */
-    private $accountPickupStoreStateItems = array();
+    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_State[] $_accountPickupStoreStateItems */
+    protected $_accountPickupStoreStateItems = array();
 
     //########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
     public function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     public function setMaxAppliedQtyValue($value)
     {
-        $this->maxAppliedQtyValue = $value;
+        $this->_maxAppliedQtyValue = $value;
         return $this;
     }
 
     public function getMaxAppliedQtyValue()
     {
-        return $this->maxAppliedQtyValue;
+        return $this->_maxAppliedQtyValue;
     }
 
     //########################################
@@ -93,7 +93,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
     //########################################
 
-    private function calculateValues()
+    protected function calculateValues()
     {
         $calculatedValues = array();
 
@@ -107,7 +107,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
                     $fullSettings = $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->getQtySource();
                 }
 
-                $fullSettingsHash = md5(Mage::helper('M2ePro')->jsonEncode($fullSettings));
+                $fullSettingsHash = sha1(Mage::helper('M2ePro')->jsonEncode($fullSettings));
                 if (isset($fullSettingsCache[$fullSettingsHash])) {
                     $calculatedValues[] = array(
                         'sku' => $sku,
@@ -122,8 +122,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
                     'value'     => $fullSettings['value'],
                     'attribute' => $fullSettings['attribute'],
                 );
-
-                $sourceSettingsHash = md5(Mage::helper('M2ePro')->jsonEncode($sourceSettings));
+ 
+                $sourceSettingsHash = sha1(Mage::helper('M2ePro')->jsonEncode($sourceSettings));
 
                 $bufferedValue = NULL;
                 if (isset($sourceSettingsCache[$sourceSettingsHash])) {
@@ -147,7 +147,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
         return $calculatedValues;
     }
 
-    private function prepareCalculatedValues(array $calculatedValues)
+    protected function prepareCalculatedValues(array $calculatedValues)
     {
         $preparedUpdateValues = array();
         $preparedCreateValues = array();
@@ -157,7 +157,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
                 $calculatedValue['sku'], $calculatedValue['account_pickup_store_id']
             );
 
-            if (is_null($stateItem)) {
+            if ($stateItem === null) {
                 $preparedCreateValues[] = array(
                     'sku'                     => $calculatedValue['sku'],
                     'account_pickup_store_id' => $calculatedValue['account_pickup_store_id'],
@@ -175,7 +175,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
                 continue;
             }
 
-            if (is_null($this->getMaxAppliedQtyValue())) {
+            if ($this->getMaxAppliedQtyValue() === null) {
                 $preparedUpdateValues[$calculatedValue['qty']][] = array(
                     'sku' => $calculatedValue['sku'],
                     'account_pickup_store_id' => $calculatedValue['account_pickup_store_id'],
@@ -202,7 +202,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
         );
     }
 
-    private function applyCalculatedValues(array $calculatedValues)
+    protected function applyCalculatedValues(array $calculatedValues)
     {
         $resource = Mage::getSingleton('core/resource');
         $connWrite = $resource->getConnection('core_write');
@@ -247,7 +247,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
     //########################################
 
-    private function isDeleted()
+    protected function isDeleted()
     {
         $skus = $this->getSkus();
 
@@ -276,9 +276,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
     //########################################
 
-    private function calculateQty($sku, Ess_M2ePro_Model_Ebay_Account_PickupStore $accountPickupStore,
-                                  $bufferedValue = NULL)
-    {
+    protected function calculateQty(
+        $sku,
+        Ess_M2ePro_Model_Ebay_Account_PickupStore $accountPickupStore,
+        $bufferedValue = null
+    ) {
         if (!$this->getEbayListingProduct()->isVariationsReady()) {
             return $this->getQtyCalculator()->getLocationProductValue($accountPickupStore, $bufferedValue);
         }
@@ -288,7 +290,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
         );
     }
 
-    private function calculateClearQty($sku, Ess_M2ePro_Model_Ebay_Account_PickupStore $accountPickupStore)
+    protected function calculateClearQty($sku, Ess_M2ePro_Model_Ebay_Account_PickupStore $accountPickupStore)
     {
         if (!$this->getEbayListingProduct()->isVariationsReady()) {
             return $this->getQtyCalculator()->getClearLocationProductValue($accountPickupStore);
@@ -301,7 +303,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
     //########################################
 
-    private function getSkus()
+    protected function getSkus()
     {
         $skus = array();
 
@@ -332,10 +334,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
     // ---------------------------------------
 
-    private function getAccountPickupStores()
+    protected function getAccountPickupStores()
     {
-        if (!empty($this->accountPickupStores)) {
-            return $this->accountPickupStores;
+        if (!empty($this->_accountPickupStores)) {
+            return $this->_accountPickupStores;
         }
 
         $collection = Mage::getResourceModel('M2ePro/Ebay_Listing_Product_PickupStore_Collection');
@@ -343,30 +345,30 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
         $accountPickupStoreIds = array_unique($collection->getColumnValues('account_pickup_store_id'));
         if (empty($accountPickupStoreIds)) {
-            return $this->accountPickupStores = array();
+            return $this->_accountPickupStores = array();
         }
 
         $accountPickupStoreCollection = Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_Collection');
         $accountPickupStoreCollection->addFieldToFilter('id', array('in' => $accountPickupStoreIds));
 
-        return $this->accountPickupStores = $accountPickupStoreCollection->getItems();
+        return $this->_accountPickupStores = $accountPickupStoreCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function getAccountPickupStoreStateItems()
+    protected function getAccountPickupStoreStateItems()
     {
-        if (!empty($this->accountPickupStoreStateItems)) {
-            return $this->accountPickupStoreStateItems;
+        if (!empty($this->_accountPickupStoreStateItems)) {
+            return $this->_accountPickupStoreStateItems;
         }
 
         $collection = Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_State_Collection');
         $collection->addFieldToFilter('sku', array('in' => $this->getSkus()));
 
-        return $this->accountPickupStoreStateItems = $collection->getItems();
+        return $this->_accountPickupStoreStateItems = $collection->getItems();
     }
 
-    private function getAccountPickupStoreStateItem($sku, $accountPickupStoreId)
+    protected function getAccountPickupStoreStateItem($sku, $accountPickupStoreId)
     {
         foreach ($this->getAccountPickupStoreStateItems() as $stateItem) {
             if ($stateItem->getSku() != $sku) {
@@ -385,18 +387,18 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
     // ---------------------------------------
 
-    private function getVariations()
+    protected function getVariations()
     {
-        if (!empty($this->variations)) {
-            return $this->variations;
+        if (!empty($this->_variations)) {
+            return $this->_variations;
         }
 
-        return $this->variations = $this->getListingProduct()->getVariations(
+        return $this->_variations = $this->getListingProduct()->getVariations(
             true, array('status' => Ess_M2ePro_Model_Listing_Product::STATUS_LISTED)
         );
     }
 
-    private function getVariation($sku)
+    protected function getVariation($sku)
     {
         foreach ($this->getVariations() as $variation) {
             if ($variation->getChildObject()->getOnlineSku() != $sku) {
@@ -411,16 +413,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
 
     //########################################
 
-    private function getQtyCalculator()
+    protected function getQtyCalculator()
     {
-        if (!is_null($this->qtyCalculator)) {
-            return $this->qtyCalculator;
+        if ($this->_qtyCalculator !== null) {
+            return $this->_qtyCalculator;
         }
 
-        $this->qtyCalculator = Mage::getModel('M2ePro/Ebay_Listing_Product_PickupStore_QtyCalculator');
-        $this->qtyCalculator->setProduct($this->getListingProduct());
+        $this->_qtyCalculator = Mage::getModel('M2ePro/Ebay_Listing_Product_PickupStore_QtyCalculator');
+        $this->_qtyCalculator->setProduct($this->getListingProduct());
 
-        return $this->qtyCalculator;
+        return $this->_qtyCalculator;
     }
 
     //########################################

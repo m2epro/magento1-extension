@@ -24,13 +24,13 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Revise_Responser
     {
         parent::eventAfterExecuting();
 
-        if ($this->isSuccess) {
+        if ($this->_isSuccess) {
             return;
         }
 
-        $additionalData = $this->listingProduct->getAdditionalData();
+        $additionalData = $this->_listingProduct->getAdditionalData();
         $additionalData['need_full_synchronization_template_recheck'] = true;
-        $this->listingProduct->setSettings('additional_data', $additionalData)->save();
+        $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
     }
 
     // ########################################

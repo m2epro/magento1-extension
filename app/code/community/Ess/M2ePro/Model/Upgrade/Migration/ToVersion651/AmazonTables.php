@@ -21,9 +21,10 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_AmazonTables extends Ess_M
 
     //########################################
 
-    private function marketplace()
+    protected function marketplace()
     {
-        $this->installer->getTableModifier('amazon_marketplace')
+        $this->_installer
+            ->getTableModifier('amazon_marketplace')
             ->addColumn(
                 'is_business_available', 'tinyint(2) UNSIGNED NOT NULL', 0,
                 'is_merchant_fulfillment_available', true, false
@@ -38,32 +39,34 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_AmazonTables extends Ess_M
             )
             ->commit();
 
-        $this->installer->getConnection()->update(
-            $this->installer->getTablesObject()->getFullName('amazon_marketplace'),
+        $this->_installer->getConnection()->update(
+            $this->_installer->getTablesObject()->getFullName('amazon_marketplace'),
             array('is_business_available' => 1),
             array('marketplace_id IN (?)' => array(23, 25, 28, 29, 26, 30, 31))
         );
 
-        $this->installer->getConnection()->update(
-            $this->installer->getTablesObject()->getFullName('amazon_marketplace'),
+        $this->_installer->getConnection()->update(
+            $this->_installer->getTablesObject()->getFullName('amazon_marketplace'),
             array('is_vat_calculation_service_available' => 1),
             array('marketplace_id IN (?)' => array(25, 26, 28, 30, 31))
         );
 
-        $this->installer->getConnection()->update(
-            $this->installer->getTablesObject()->getFullName('amazon_marketplace'),
+        $this->_installer->getConnection()->update(
+            $this->_installer->getTablesObject()->getFullName('amazon_marketplace'),
             array('is_product_tax_code_policy_available' => 1),
             array('marketplace_id IN (?)' => array(25, 28, 26, 30, 31))
         );
 
-        $query = $this->installer->getConnection()->query("
+        $query = $this->_installer->getConnection()->query(
+            "
 SELECT * FROM {$this->getFullTableName('marketplace')} WHERE `id` IN (34, 35, 36)
-        ");
+        "
+        );
 
         $rows = $query->fetchAll(PDO::FETCH_ASSOC);
         if (empty($rows)) {
-
-            $this->installer->run(<<<SQL
+            $this->_installer->run(
+                <<<SQL
 
 INSERT INTO `m2epro_marketplace` VALUES
   (34, 9, 'Mexico', 'MX', 'amazon.com.mx', 0, 10, 'America', 'amazon',
@@ -82,26 +85,30 @@ SQL
             );
         }
 
-        $this->installer->getConnection()->update(
-            $this->installer->getFullTableName('amazon_marketplace'),
+        $this->_installer->getConnection()->update(
+            $this->_installer->getFullTableName('amazon_marketplace'),
             array('is_new_asin_available' => 1),
             array('marketplace_id = ?' => 34)
         );
 
-        $this->installer->getTableModifier('amazon_marketplace')
-            ->addColumn('is_automatic_token_retrieving_available', 'TINYINT(2) UNSIGNED NOT NULL', 0,
-                        'is_product_tax_code_policy_available');
+        $this->_installer
+            ->getTableModifier('amazon_marketplace')
+            ->addColumn(
+                'is_automatic_token_retrieving_available', 'TINYINT(2) UNSIGNED NOT NULL', 0,
+                'is_product_tax_code_policy_available'
+            );
 
-        $this->installer->getConnection()->update(
+        $this->_installer->getConnection()->update(
             $this->getFullTableName('amazon_marketplace'),
             array('is_automatic_token_retrieving_available' => 1),
             array('marketplace_id IN (?)' => array(24, 25, 26, 28, 29, 30, 31, 34, 35))
         );
     }
 
-    private function account()
+    protected function account()
     {
-        $this->installer->getTableModifier('amazon_account')
+        $this->_installer
+            ->getTableModifier('amazon_account')
             ->addColumn(
                 'is_vat_calculation_service_enabled', 'TINYINT(2) UNSIGNED NOT NULL', 0,
                 'magento_orders_settings', false, false
@@ -114,13 +121,17 @@ SQL
             ->commit();
     }
 
-    private function listings()
+    protected function listings()
     {
-        $this->installer->getTableModifier('amazon_listing_product')
+        $this->_installer
+            ->getTableModifier('amazon_listing_product')
             ->dropColumn('template_shipping_override_id', true, false)
-            ->addColumn('template_shipping_id', 'INT(11) UNSIGNED', 'NULL', 'template_description_id', true, false)
-            ->changeColumn('is_afn_channel', 'TINYINT(2) UNSIGNED NOT NULL', 0, NULL, false)
-            ->changeColumn('search_settings_data', 'LONGTEXT', 'NULL', NULL, false)
+            ->addColumn(
+                'template_shipping_id', 'INT(11) UNSIGNED', 'NULL', 'template_description_id',
+                true, false
+            )
+            ->changeColumn('is_afn_channel', 'TINYINT(2) UNSIGNED NOT NULL', 0, null, false)
+            ->changeColumn('search_settings_data', 'LONGTEXT', 'NULL', null, false)
             ->addColumn(
                 'variation_parent_afn_state', 'SMALLINT(4) UNSIGNED', 'NULL',
                 'is_general_id_owner', true, false
@@ -161,18 +172,21 @@ SQL
         $lockItemTable = $this->getFullTableName('lock_item');
         $amazonProcessingListSkuTable = $this->getFullTableName('amazon_listing_product_action_processing_list_sku');
 
-        $skuQueueLockItemsStmt = $this->installer->getConnection()->query("
+        $skuQueueLockItemsStmt = $this->_installer->getConnection()->query(
+            "
 SELECT * FROM {$lockItemTable} WHERE `nick` LIKE 'amazon_list_skus_queue_%';
-");
+"
+        );
 
-        $amazonAccountsIds = $this->installer->getConnection()->query("
+        $amazonAccountsIds = $this->_installer->getConnection()->query(
+            "
 SELECT `id` FROM {$accountsTable} WHERE `component_mode` = 'amazon';
-")->fetchAll(PDO::FETCH_COLUMN);
+"
+        )->fetchAll(PDO::FETCH_COLUMN);
 
         $lockItemsIds = array();
 
         while ($lockItemData = $skuQueueLockItemsStmt->fetch(PDO::FETCH_ASSOC)) {
-
             $lockItemsIds[] = $lockItemData['id'];
 
             $accountId = str_replace('amazon_list_skus_queue_', '', $lockItemData['nick']);
@@ -195,26 +209,31 @@ SELECT `id` FROM {$accountsTable} WHERE `component_mode` = 'amazon';
                 );
             }
 
-            $this->installer->getConnection()->insertMultiple(
+            $this->_installer->getConnection()->insertMultiple(
                 $amazonProcessingListSkuTable, $insertData
             );
         }
 
         if (!empty($lockItemsIds)) {
-            $this->installer->getConnection()->delete(
+            $this->_installer->getConnection()->delete(
                 $lockItemTable,
                 array('id IN (?)' => array_unique($lockItemsIds))
             );
         }
 
-        $this->installer->getTableModifier('amazon_listing_product_repricing')
-            ->changeColumn('is_online_disabled', 'TINYINT(2) UNSIGNED NOT NULL', '0', NULL, false)
-            ->addColumn('is_online_inactive', 'TINYINT(2) UNSIGNED NOT NULL', '0', 'is_online_disabled', true, false)
+        $this->_installer
+            ->getTableModifier('amazon_listing_product_repricing')
+            ->changeColumn('is_online_disabled', 'TINYINT(2) UNSIGNED NOT NULL', '0', null, false)
             ->addColumn(
-                'last_updated_regular_price', 'DECIMAL(12, 4) UNSIGNED', 'NULL', 'online_max_price', false, false
+                'is_online_inactive', 'TINYINT(2) UNSIGNED NOT NULL', '0', 'is_online_disabled', true, false
             )
             ->addColumn(
-                'last_updated_min_price', 'DECIMAL(12, 4) UNSIGNED', 'NULL', 'last_updated_regular_price', false, false
+                'last_updated_regular_price', 'DECIMAL(12, 4) UNSIGNED', 'NULL', 'online_max_price', false,
+                false
+            )
+            ->addColumn(
+                'last_updated_min_price', 'DECIMAL(12, 4) UNSIGNED', 'NULL', 'last_updated_regular_price',
+                false, false
             )
             ->addColumn(
                 'last_updated_max_price', 'DECIMAL(12, 4) UNSIGNED', 'NULL', 'last_updated_min_price', false, false
@@ -224,13 +243,16 @@ SELECT `id` FROM {$accountsTable} WHERE `component_mode` = 'amazon';
             )
             ->commit();
 
-        $this->installer->getTableModifier('amazon_listing_other')
+        $this->_installer
+            ->getTableModifier('amazon_listing_other')
             ->addColumn(
-                'is_repricing_inactive', 'TINYINT(2) UNSIGNED NOT NULL', '0', 'is_repricing_disabled', true, false
+                'is_repricing_inactive', 'TINYINT(2) UNSIGNED NOT NULL', '0', 'is_repricing_disabled',
+                true, false
             )
             ->commit();
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 UPDATE `m2epro_amazon_listing_product_repricing`
 SET `is_online_inactive` = 0;
 
@@ -251,31 +273,33 @@ SQL
 
     }
 
-    private function templates()
+    protected function templates()
     {
-        $this->installer->getTableModifier('amazon_template_synchronization')
+        $this->_installer
+            ->getTableModifier('amazon_template_synchronization')
             ->dropColumn('relist_send_data', true, false)
             ->dropColumn('revise_change_description_template', true, false)
             ->dropColumn('revise_change_product_tax_code_template', true, false)
             ->dropColumn('revise_change_shipping_override_template', true, false)
             ->addColumn(
-                'stop_mode', 'TINYINT(2) UNSIGNED NOT NULL', NULL, 'relist_qty_calculated_value_max', false, false
+                'stop_mode', 'TINYINT(2) UNSIGNED NOT NULL', null, 'relist_qty_calculated_value_max', false, false
             )
             ->commit();
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 UPDATE `m2epro_amazon_template_synchronization`
 SET `stop_mode` = 1
 WHERE (`stop_status_disabled`+`stop_out_off_stock`+`stop_qty_magento`+`stop_qty_calculated`) > 0;
 SQL
         );
 
-        $this->installer->getTableModifier('amazon_template_selling_format')
-            ->renameColumn('price_vat_percent', 'regular_price_vat_percent');
+        $this->_installer->getTableModifier('amazon_template_selling_format')
+                         ->renameColumn('price_vat_percent', 'regular_price_vat_percent');
 
-        $this->installer->getTableModifier('amazon_template_selling_format')
-
-            ->changeColumn('regular_price_vat_percent', 'FLOAT UNSIGNED', 'NULL', NULL, false)
+        $this->_installer
+            ->getTableModifier('amazon_template_selling_format')
+            ->changeColumn('regular_price_vat_percent', 'FLOAT UNSIGNED', 'NULL', null, false)
             ->renameColumn(
                 'price_mode', 'regular_price_mode', false, false
             )
@@ -321,7 +345,6 @@ SQL
             ->renameColumn(
                 'sale_price_end_date_custom_attribute', 'regular_sale_price_end_date_custom_attribute', false, false
             )
-
             ->addColumn(
                 'is_regular_customer_allowed', 'TINYINT(2) UNSIGNED NOT NULL', 1, 'qty_max_posted_value', false, false
             )
@@ -330,20 +353,20 @@ SQL
                 'is_regular_customer_allowed', false, false
             )
             ->addColumn(
-                'business_price_mode', 'TINYINT(2) UNSIGNED NOT NULL', NULL,
+                'business_price_mode', 'TINYINT(2) UNSIGNED NOT NULL', null,
                 'regular_price_vat_percent', false, false
             )
             ->addColumn(
-                'business_price_custom_attribute', 'VARCHAR(255) NOT NULL', NULL,
+                'business_price_custom_attribute', 'VARCHAR(255) NOT NULL', null,
                 'business_price_mode', false, false
             )
             ->addColumn(
-                'business_price_coefficient', 'VARCHAR(255) NOT NULL', NULL,
+                'business_price_coefficient', 'VARCHAR(255) NOT NULL', null,
                 'business_price_custom_attribute', false, false
             )
             ->addColumn(
                 'business_price_variation_mode', 'TINYINT(2) UNSIGNED NOT NULL',
-                NULL, 'business_price_coefficient', false, false
+                null, 'business_price_coefficient', false, false
             )
             ->addColumn(
                 'business_price_vat_percent', 'FLOAT UNSIGNED', 'NULL',
@@ -351,11 +374,11 @@ SQL
             )
             ->addColumn(
                 'business_discounts_mode', 'TINYINT(2) UNSIGNED NOT NULL',
-                NULL, 'business_price_vat_percent', false, false
+                null, 'business_price_vat_percent', false, false
             )
             ->addColumn(
                 'business_discounts_tier_coefficient', 'VARCHAR(255) NOT NULL',
-                NULL, 'business_discounts_mode', false, false
+                null, 'business_discounts_mode', false, false
             )
             ->addColumn(
                 'business_discounts_tier_customer_group_id', 'INT(11) UNSIGNED',
@@ -364,15 +387,17 @@ SQL
             ->dropIndex('price_variation_mode', false)
             ->commit();
 
-        $this->installer->getTableModifier('amazon_template_description_definition')
+        $this->_installer
+            ->getTableModifier('amazon_template_description_definition')
             ->addColumn('msrp_rrp_mode', 'TINYINT(2) UNSIGNED', '0', 'number_of_items_custom_attribute', false, false)
-            ->addColumn('msrp_rrp_custom_attribute', 'VARCHAR(255)', NULL, 'msrp_rrp_mode', false, false)
+            ->addColumn('msrp_rrp_custom_attribute', 'VARCHAR(255)', null, 'msrp_rrp_mode', false, false)
             ->commit();
     }
 
-    private function orders()
+    protected function orders()
     {
-        $this->installer->getTableModifier('amazon_order')
+        $this->_installer
+            ->getTableModifier('amazon_order')
             ->addColumn('is_business', 'TINYINT(2) UNSIGNED NOT NULL', '0', 'is_prime', true, false)
             ->addColumn('seller_order_id', 'VARCHAR(255)', 'NULL', 'amazon_order_id', true, false)
             ->addIndex('purchase_create_date', false)

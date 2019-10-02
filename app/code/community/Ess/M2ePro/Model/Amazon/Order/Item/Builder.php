@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Builder extends Mage_Core_Model_Abstrac
     /**
      * @return Ess_M2ePro_Model_Order_Item
      */
-    private function createOrderItem()
+    protected function createOrderItem()
     {
         $existItem = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order_Item')
             ->addFieldToFilter('amazon_order_item_id', $this->getData('amazon_order_item_id'))

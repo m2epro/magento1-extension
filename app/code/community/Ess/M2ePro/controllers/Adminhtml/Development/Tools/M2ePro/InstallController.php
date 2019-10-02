@@ -20,7 +20,7 @@ class Ess_M2ePro_Adminhtml_Development_Tools_M2ePro_InstallController
     {
         $history = Mage::getModel('M2ePro/Registry')->load('/installation/versions_history/', 'key')
                                                     ->getValueFromJson();
-        if (count($history) <= 0) {
+        if (empty($history)) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('Installation History is not available.'));
         }
 
@@ -50,12 +50,12 @@ HTML;
         $previousItemDate = $history[0]['date'];
 
         foreach ($history as $item) {
-
             !$item['from'] && $item['from'] = '--';
 
             if ((strtotime($previousItemDate) - strtotime($item['from'])) > 360) {
                 $tdClass = $tdClass != 'color-second' ? 'color-second' : 'color-first';
             }
+
             $previousItemDate = $item['date'];
 
             $html .= <<<HTML
@@ -81,11 +81,10 @@ HTML;
     public function recurringUpdateAction()
     {
         if ($this->getRequest()->getParam('upgrade')) {
-
             $version = $this->getRequest()->getParam('version');
-            $version = str_replace(array(','),'.',$version);
+            $version = str_replace(array(','), '.', $version);
 
-            if (!version_compare('3.2.0',$version,'<=')) {
+            if (!version_compare('3.2.0', $version, '<=')) {
                 $this->_getSession()->addError('Extension upgrade can work only from 3.2.0 version.');
                 $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageToolsTabUrl());
                 return;
@@ -113,10 +112,12 @@ HTML;
 
         $urlPhpInfo = Mage::helper('adminhtml')->getUrl('*/*/*', array('upgrade' => 'yes'));
 
-        return $this->getResponse()->setBody('<form method="GET" action="'.$urlPhpInfo.'">
+        return $this->getResponse()->setBody(
+            '<form method="GET" action="'.$urlPhpInfo.'">
                 From version: <input type="text" name="version" value="3.2.0" />
                 <input type="submit" title="Upgrade Now!" onclick="return confirm(\'Are you sure?\');" />
-              </form>');
+              </form>'
+        );
     }
 
     //########################################
@@ -128,11 +129,11 @@ HTML;
     public function checkFilesValidityAction()
     {
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('files','get','info');
+        $connectorObj = $dispatcherObject->getVirtualConnector('files', 'get', 'info');
         $dispatcherObject->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
 
-        if (count($responseData) <= 0) {
+        if (empty($responseData)) {
             return $this->getResponse()->setBody(
                 $this->getEmptyResultsHtml('No files info for this M2E Pro version on server.')
             );
@@ -142,7 +143,6 @@ HTML;
 
         $baseDir = Mage::getBaseDir() . '/';
         foreach ($responseData['files_info'] as $info) {
-
             if (!is_file($baseDir . $info['path'])) {
                 $problems[] = array(
                     'path' => $info['path'],
@@ -154,16 +154,16 @@ HTML;
             $fileContent = trim(file_get_contents($baseDir . $info['path']));
             $fileContent = str_replace(array("\r\n","\n\r",PHP_EOL), chr(10), $fileContent);
 
-            if (md5($fileContent) != $info['hash']) {
+            if (Zend_Crypt::hash('md5', $fileContent) !== $info['hash']) {
                 $problems[] = array(
-                    'path' => $info['path'],
+                    'path'   => $info['path'],
                     'reason' => 'Hash mismatch'
                 );
                 continue;
             }
         }
 
-        if (count($problems) <= 0) {
+        if (empty($problems)) {
             return $this->getResponse()->setBody('<h2 style="margin: 20px 0 0 10px">All files are valid.</span></h2>');
         }
 
@@ -183,8 +183,10 @@ HTML;
     </tr>
 HTML;
         foreach ($problems as $item) {
-            $url = Mage::helper('adminhtml')->getUrl('*/*/filesDiff',
-                                                     array('filePath' => base64_encode($item['path'])));
+            $url = Mage::helper('adminhtml')->getUrl(
+                '*/*/filesDiff',
+                array('filePath' => base64_encode($item['path']))
+            );
 
             $html .= <<<HTML
 <tr>
@@ -203,7 +205,7 @@ HTML;
         }
 
         $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%',count($problems),$html));
+        return $this->getResponse()->setBody(str_replace('%count%', count($problems), $html));
     }
 
     /**
@@ -215,8 +217,10 @@ HTML;
         $tablesInfo = Mage::helper('M2ePro/Module_Database_Structure')->getTablesInfo();
 
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('tables','get','diff',
-                                                               array('tables_info' => json_encode($tablesInfo)));
+        $connectorObj = $dispatcherObject->getVirtualConnector(
+            'tables', 'get', 'diff',
+            array('tables_info' => json_encode($tablesInfo))
+        );
 
         $dispatcherObject->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
@@ -227,7 +231,7 @@ HTML;
             );
         }
 
-        if (count($responseData['diff']) <= 0) {
+        if (empty($responseData['diff'])) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('All Tables are valid.'));
         }
 
@@ -250,7 +254,6 @@ HTML;
 
         foreach ($responseData['diff'] as $tableName => $checkResult) {
             foreach ($checkResult as $resultRow) {
-
                 $additionalInfo = '';
                 $actionsHtml    = '';
 
@@ -263,7 +266,6 @@ HTML;
 
                 if (isset($resultInfo['diff_data'])) {
                     foreach ($resultInfo['diff_data'] as $diffCode => $diffValue) {
-
                         $additionalInfo .= "<b>{$diffCode}</b>: '{$diffValue}'. ";
                         $additionalInfo .= "<b>original:</b> '{$resultInfo['original_data'][$diffCode]}'.";
                         $additionalInfo .= "<br/>";
@@ -278,21 +280,18 @@ HTML;
                 if (empty($resultInfo['current_data']) ||
                     (isset($diffData['type']) || isset($diffData['default']) ||
                      isset($diffData['null']) || isset($diffData['extra']))) {
-
                     $urlParams['mode'] = 'properties';
                     $url = $this->getUrl('*/*/fixColumn', $urlParams);
                     $actionsHtml .= "<a href=\"{$url}\">Fix Properties</a>";
                 }
 
                 if (isset($diffData['key'])) {
-
                     $urlParams['mode'] = 'index';
                     $url = $this->getUrl('*/*/fixColumn', $urlParams);
                     $actionsHtml .= "<a href=\"{$url}\">Fix Index</a>";
                 }
 
                 if (empty($resultInfo['original_data']) && !empty($resultInfo['current_data'])) {
-
                     $urlParams['mode'] = 'drop';
                     $urlParams['column_info'] = Mage::helper('M2ePro')->jsonEncode($resultInfo['current_data']);
                     $url = $this->getUrl('*/*/fixColumn', $urlParams);
@@ -311,7 +310,7 @@ HTML;
         }
 
         $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%',count($responseData['diff']),$html));
+        return $this->getResponse()->setBody(str_replace('%count%', count($responseData['diff']), $html));
     }
 
     /**
@@ -321,7 +320,7 @@ HTML;
     public function checkConfigsValidityAction()
     {
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('configs','get','info');
+        $connectorObj = $dispatcherObject->getVirtualConnector('configs', 'get', 'info');
         $dispatcherObject->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
 
@@ -335,7 +334,6 @@ HTML;
         $currentData = array();
 
         foreach ($originalData as $tableName => $configInfo) {
-
             $currentData[$tableName] = Mage::helper('M2ePro/Module_Database_Structure')
                                                 ->getConfigSnapshot($tableName);
         }
@@ -344,7 +342,6 @@ HTML;
 
         foreach ($originalData as $tableName => $configInfo) {
             foreach ($configInfo as $codeHash => $item) {
-
                 if (array_key_exists($codeHash, $currentData[$tableName])) {
                     continue;
                 }
@@ -357,7 +354,6 @@ HTML;
 
         foreach ($currentData as $tableName => $configInfo) {
             foreach ($configInfo as $codeHash => $item) {
-
                 if (array_key_exists($codeHash, $originalData[$tableName])) {
                     continue;
                 }
@@ -368,7 +364,7 @@ HTML;
             }
         }
 
-        if (count($differenses) <= 0) {
+        if (empty($differenses)) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('All Configs are valid.'));
         }
 
@@ -391,21 +387,21 @@ HTML;
 HTML;
 
         foreach ($differenses as $index => $row) {
-
             if ($row['solution'] == 'insert') {
-
-                $url = $this->getUrl('*/adminhtml_development_database/addTableRow', array(
+                $url = $this->getUrl(
+                    '*/adminhtml_development_database/addTableRow', array(
                     'table'  => $row['table'],
                     'model'  => Mage::helper('M2ePro/Module_Database_Structure')->getTableModel($row['table']),
-                ));
-
+                    )
+                );
             } else {
-
-                $url = $this->getUrl('*/adminhtml_development_database/deleteTableRows', array(
+                $url = $this->getUrl(
+                    '*/adminhtml_development_database/deleteTableRows', array(
                     'table'  => $row['table'],
                     'model'  => Mage::helper('M2ePro/Module_Database_Structure')->getTableModel($row['table']),
                     'ids'    => $row['item']['id']
-                ));
+                    )
+                );
             }
 
             $actionWord = $row['solution'] == 'insert' ? 'Insert' : 'Drop';
@@ -423,9 +419,9 @@ new Ajax.Request( '{$url}' , {
     parameters : formData
 });
 JS;
-            $group = is_null($row['item']['group']) ? 'null' : $row['item']['group'];
-            $key   = is_null($row['item']['key'])   ? 'null' : $row['item']['key'];
-            $value = is_null($row['item']['value']) ? 'null' : $row['item']['value'];
+            $group = $row['item']['group'] === null ? 'null' : $row['item']['group'];
+            $key   = $row['item']['key'] === null ? 'null' : $row['item']['key'];
+            $value = $row['item']['value'] === null ? 'null' : $row['item']['value'];
 
         $html .= <<<HTML
 <tr>
@@ -452,7 +448,7 @@ HTML;
         }
 
         $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%',count($differenses),$html));
+        return $this->getResponse()->setBody(str_replace('%count%', count($differenses), $html));
     }
 
     // ---------------------------------------
@@ -497,8 +493,10 @@ HTML;
         );
 
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('files','get','diff',
-                                                               $params);
+        $connectorObj = $dispatcherObject->getVirtualConnector(
+            'files', 'get', 'diff',
+            $params
+        );
 
         $dispatcherObject->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
@@ -529,7 +527,7 @@ HTML;
     {
         $unWritableDirectories = Mage::helper('M2ePro/Module')->getUnWritableDirectories();
 
-        if (count ($unWritableDirectories) <= 0) {
+        if (empty($unWritableDirectories)) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('No UnWritable Directories'));
         }
 
@@ -547,7 +545,6 @@ HTML;
     </tr>
 HTML;
         foreach ($unWritableDirectories as $item) {
-
             $html .= <<<HTML
 <tr>
     <td>{$item}</td>
@@ -556,7 +553,7 @@ HTML;
         }
 
         $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%',count($unWritableDirectories),$html));
+        return $this->getResponse()->setBody(str_replace('%count%', count($unWritableDirectories), $html));
     }
 
     /**
@@ -578,7 +575,7 @@ HTML;
 
     //########################################
 
-    private function getEmptyResultsHtml($messageText)
+    protected function getEmptyResultsHtml($messageText)
     {
         $backUrl = Mage::helper('M2ePro/View_Development')->getPageToolsTabUrl();
 

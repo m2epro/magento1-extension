@@ -41,12 +41,14 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Product_Rule extends Mage_Adminhtml_Blo
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'rule_form',
             'action'  => '',
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $this->setForm($form);
 

@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_Block_Widget_Grid
 {
-    /** @var $order Ess_M2ePro_Model_Order */
-    protected $order = null;
+    /** @var $_order Ess_M2ePro_Model_Order */
+    protected $_order = null;
 
     //########################################
 
@@ -32,16 +32,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_B
         $this->_defaultLimit = 200;
         // ---------------------------------------
 
-        $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
     }
 
     protected function _prepareCollection()
     {
         $collection = Mage::helper('M2ePro/Component_Amazon')
             ->getCollection('Order_Item')
-            ->addFieldToFilter('order_id', $this->order->getId());
+            ->addFieldToFilter('order_id', $this->_order->getId());
 
-        $stockId = Mage::helper('M2ePro/Magento_Store')->getStockId($this->order->getStore());
+        $stockId = Mage::helper('M2ePro/Magento_Store')->getStockId($this->_order->getStore());
 
         $collection->getSelect()->joinLeft(
             array(
@@ -59,15 +59,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_B
 
     protected function _prepareColumns()
     {
-        $this->addColumn('product_id', array(
+        $this->addColumn(
+            'product_id', array(
             'header'    => Mage::helper('M2ePro')->__('Product'),
             'align'     => 'left',
             'width'     => '*',
             'index'     => 'product_id',
             'frame_callback' => array($this, 'callbackColumnProduct')
-        ));
+            )
+        );
 
-        $this->addColumn('stock_availability', array(
+        $this->addColumn(
+            'stock_availability', array(
             'header'=> Mage::helper('M2ePro')->__('Stock Availability'),
             'width' => '100px',
             'index' => 'is_in_stock',
@@ -79,75 +82,92 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Item extends Mage_Adminhtml_B
                 0 => Mage::helper('M2ePro')->__('Out of Stock')
             ),
             'frame_callback' => array($this, 'callbackColumnStockAvailability')
-        ));
+            )
+        );
 
-        $this->addColumn('original_price', array(
+        $this->addColumn(
+            'original_price', array(
             'header'    => Mage::helper('M2ePro')->__('Original Price'),
             'align'     => 'left',
             'width'     => '80px',
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnOriginalPrice')
-        ));
+            )
+        );
 
-        $this->addColumn('qty_purchased', array(
+        $this->addColumn(
+            'qty_purchased', array(
             'header'    => Mage::helper('M2ePro')->__('QTY'),
             'align'     => 'left',
             'width'     => '80px',
             'index'     => 'qty_purchased'
-        ));
+            )
+        );
 
-        $this->addColumn('price', array(
+        $this->addColumn(
+            'price', array(
             'header'    => Mage::helper('M2ePro')->__('Price'),
             'align'     => 'left',
             'width'     => '80px',
             'index'     => 'price',
             'frame_callback' => array($this, 'callbackColumnPrice')
-        ));
+            )
+        );
 
-        $this->addColumn('discount_amount', array(
+        $this->addColumn(
+            'discount_amount', array(
             'header'    => Mage::helper('M2ePro')->__('Promotions'),
             'align'     => 'left',
             'width'     => '80px',
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnDiscountAmount')
-        ));
+            )
+        );
 
-        if (Mage::getResourceModel('M2ePro/Amazon_Order')->hasGifts($this->order->getId())) {
-            $this->addColumn('gift_price', array(
+        if (Mage::getResourceModel('M2ePro/Amazon_Order')->hasGifts($this->_order->getId())) {
+            $this->addColumn(
+                'gift_price', array(
                 'header'    => Mage::helper('M2ePro')->__('Gift Wrap Price'),
                 'align'     => 'left',
                 'width'     => '80px',
                 'index'     => 'gift_price',
                 'frame_callback' => array($this, 'callbackColumnGiftPrice')
-            ));
+                )
+            );
 
-            $this->addColumn('gift_options', array(
+            $this->addColumn(
+                'gift_options', array(
                 'header'    => Mage::helper('M2ePro')->__('Gift Options'),
                 'align'     => 'left',
                 'width'     => '250px',
                 'filter'    => false,
                 'sortable'  => false,
                 'frame_callback' => array($this, 'callbackColumnGiftOptions')
-            ));
+                )
+            );
         }
 
-        $this->addColumn('tax_percent', array(
+        $this->addColumn(
+            'tax_percent', array(
             'header'         => Mage::helper('M2ePro')->__('Tax Percent'),
             'align'          => 'left',
             'width'          => '80px',
             'filter'         => false,
             'sortable'       => false,
             'frame_callback' => array($this, 'callbackColumnTaxPercent')
-        ));
+            )
+        );
 
-        $this->addColumn('row_total', array(
+        $this->addColumn(
+            'row_total', array(
             'header'    => Mage::helper('M2ePro')->__('Row Total'),
             'align'     => 'left',
             'width'     => '80px',
             'frame_callback' => array($this, 'callbackColumnRowTotal')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -186,7 +206,7 @@ HTML;
         } else {
             $itemLinkText = Mage::helper('M2ePro')->__('View on Amazon');
             $itemUrl = Mage::helper('M2ePro/Component_Amazon')->getItemUrl(
-                $row->getGeneralId(), $this->order->getData('marketplace_id')
+                $row->getGeneralId(), $this->_order->getData('marketplace_id')
             );
 
             $amazonLink = <<<HTML
@@ -196,7 +216,13 @@ HTML;
 
         $productLink = '';
         if ($productId = $row->getData('product_id')) {
-            $productUrl = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productId));
+            $productUrl = $this->getUrl(
+                'adminhtml/catalog_product/edit',
+                array(
+                    'id'    => $productId,
+                    'store' => $row->getOrder()->getStoreId()
+                )
+            );
             $productLink = ' | <a href="'.$productUrl.'" target="_blank">'.Mage::helper('M2ePro')->__('View').'</a>';
         }
 
@@ -205,7 +231,6 @@ HTML;
 
         $editLink = '';
         if (!$row->getProductId() || $row->getMagentoProduct()->isProductWithVariations()) {
-
             if (!$row->getProductId()) {
                 $action = Mage::helper('M2ePro')->__('Map to Magento Product');
             } else {
@@ -245,7 +270,7 @@ HTML;
 
     public function callbackColumnStockAvailability($value, $row, $column, $isExport)
     {
-        if (is_null($row->getData('is_in_stock'))) {
+        if ($row->getData('is_in_stock') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -272,7 +297,7 @@ HTML;
     {
         $currency = $row->getData('currency');
         if (empty($currency)) {
-            $currency = $this->order->getMarketplace()->getChildObject()->getDefaultCurrency();
+            $currency = $this->_order->getMarketplace()->getChildObject()->getDefaultCurrency();
         }
 
         return Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $row->getData('price'));
@@ -282,7 +307,7 @@ HTML;
     {
         $currency = $row->getData('currency');
         if (empty($currency)) {
-            $currency = $this->order->getMarketplace()->getChildObject()->getDefaultCurrency();
+            $currency = $this->_order->getMarketplace()->getChildObject()->getDefaultCurrency();
         }
 
         return Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $row->getData('gift_price'));
@@ -294,7 +319,7 @@ HTML;
 
         $currency = $row->getData('currency');
         if (empty($currency)) {
-            $currency = $this->order->getMarketplace()->getChildObject()->getDefaultCurrency();
+            $currency = $this->_order->getMarketplace()->getChildObject()->getDefaultCurrency();
         }
 
         $discountDetails = $row->getData('discount_details');
@@ -336,7 +361,7 @@ HTML;
 
     public function callbackColumnTaxPercent($value, $row, $column, $isExport)
     {
-        $rate = $this->order->getChildObject()->getProductPriceTaxRate();
+        $rate = $this->_order->getChildObject()->getProductPriceTaxRate();
         if (empty($rate)) {
             return '0%';
         }
@@ -352,7 +377,7 @@ HTML;
 
         $currency = $row->getData('currency');
         if (empty($currency)) {
-            $currency = $this->order->getMarketplace()->getChildObject()->getDefaultCurrency();
+            $currency = $this->_order->getMarketplace()->getChildObject()->getDefaultCurrency();
         }
 
         $price = $aOrderItem->getPrice() + $aOrderItem->getGiftPrice() + $aOrderItem->getTaxAmount();

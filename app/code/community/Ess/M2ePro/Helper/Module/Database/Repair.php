@@ -19,14 +19,12 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         $totalBrokenTables = 0;
 
         foreach ($horizontalTables as $parentTable => $childrenTables) {
-
             if ($brokenItemsCount = $this->getBrokenRecordsInfo($parentTable, true)) {
                 $brokenParentTables[$parentTable] = $brokenItemsCount;
                 $totalBrokenTables++;
             }
 
             foreach ($childrenTables as $childrenTable) {
-
                 if ($brokenItemsCount = $this->getBrokenRecordsInfo($childrenTable, true)) {
                     $brokenChildrenTables[$childrenTable] = $brokenItemsCount;
                     $totalBrokenTables++;
@@ -51,7 +49,6 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
 
         foreach ($allTables as $parentTable => $childTables) {
             foreach ($childTables as $component => $childTable) {
-
                 if (!in_array($table, array($parentTable, $childTable))) {
                     continue;
                 }
@@ -65,29 +62,36 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
                 $childIdColumn  = Mage::helper('M2ePro/Module_Database_Structure')->getIdColumn($childTable);
 
                 if ($table == $parentTable) {
-
                     $stmtQuery = $connRead->select()
-                        ->from(array('parent' => $parentTablePrefix),
-                               $returnOnlyCount ? new Zend_Db_Expr('count(*) as `count_total`')
-                                                : array('id' => $parentIdColumn))
-                        ->joinLeft(array('child' => $childTablePrefix),
-                                   '`parent`.`'.$parentIdColumn.'` = `child`.`'.$childIdColumn.'`',
-                                   array())
-                        ->where('`parent`.`component_mode` = \''.$component.'\' OR
+                        ->from(
+                            array('parent' => $parentTablePrefix),
+                            $returnOnlyCount ? new Zend_Db_Expr('count(*) as `count_total`')
+                            : array('id' => $parentIdColumn)
+                        )
+                        ->joinLeft(
+                            array('child' => $childTablePrefix),
+                            '`parent`.`'.$parentIdColumn.'` = `child`.`'.$childIdColumn.'`',
+                            array()
+                        )
+                        ->where(
+                            '`parent`.`component_mode` = \''.$component.'\' OR
                                 (`parent`.`component_mode` NOT IN (?) OR `parent`.`component_mode` IS NULL)',
-                                Mage::helper('M2ePro/Component')->getComponents())
+                            Mage::helper('M2ePro/Component')->getComponents()
+                        )
                         ->where('`child`.`'.$childIdColumn.'` IS NULL')
                         ->query();
-
                 } else if ($table == $childTable) {
-
                     $stmtQuery = $connRead->select()
-                        ->from(array('child' => $childTablePrefix),
-                                     $returnOnlyCount ? new \Zend_Db_Expr('count(*) as `count_total`')
-                                                      : array('id' => $childIdColumn))
-                        ->joinLeft(array('parent' => $parentTablePrefix),
-                                   "`child`.`{$childIdColumn}` = `parent`.`{$parentIdColumn}`",
-                                    array())
+                        ->from(
+                            array('child' => $childTablePrefix),
+                            $returnOnlyCount ? new \Zend_Db_Expr('count(*) as `count_total`')
+                            : array('id' => $childIdColumn)
+                        )
+                        ->joinLeft(
+                            array('parent' => $parentTablePrefix),
+                            "`child`.`{$childIdColumn}` = `parent`.`{$parentIdColumn}`",
+                            array()
+                        )
                         ->where('`parent`.`'.$parentIdColumn.'` IS NULL')
                         ->query();
                 }
@@ -117,30 +121,29 @@ class Ess_M2ePro_Helper_Module_Database_Repair extends Mage_Core_Helper_Abstract
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
         foreach ($tables as $table) {
-
             $brokenIds = $this->getBrokenRecordsInfo($table);
-            if (count($brokenIds) <= 0) {
+            if (empty($brokenIds)) {
                 continue;
             }
-            $brokenIds = array_slice($brokenIds,0,50000);
+
+            $brokenIds = array_slice($brokenIds, 0, 50000);
 
             $tableWithPrefix = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table);
             $idColumnName = Mage::helper('M2ePro/Module_Database_Structure')->getIdColumn($table);
 
-            foreach (array_chunk($brokenIds,1000) as $brokenIdsPart) {
-
-                if (count($brokenIdsPart) <= 0) {
+            foreach (array_chunk($brokenIds, 1000) as $brokenIdsPart) {
+                if (empty($brokenIdsPart)) {
                     continue;
                 }
 
                 $connWrite->delete(
                     $tableWithPrefix,
-                    '`'.$idColumnName.'` IN ('.implode (',',$brokenIdsPart).')'
+                    '`'.$idColumnName.'` IN ('.implode(',', $brokenIdsPart).')'
                 );
             }
 
             $logTemp = "Table: {$table} ## Amount: ".count($brokenIds);
-            Mage::log($logTemp, null, 'm2epro_repair_tables.log',true);
+            Mage::log($logTemp, null, 'm2epro_repair_tables.log', true);
         }
     }
 

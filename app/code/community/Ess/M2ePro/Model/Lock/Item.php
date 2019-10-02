@@ -27,7 +27,10 @@ class Ess_M2ePro_Model_Lock_Item extends Ess_M2ePro_Model_Abstract
         return false;
     }
 
-    public function deleteProcessingLocks($tag = false, $processingId = false) {}
+    public function deleteProcessingLocks($tag = false, $processingId = false)
+    {
+        return null;
+    }
 
     //########################################
 

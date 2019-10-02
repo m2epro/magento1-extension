@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process extends Ess_M
 
     //########################################
 
-    private function processEbay()
+    protected function processEbay()
     {
         /** @var Ess_M2ePro_Model_StopQueue[] $items */
         $items = $this->getNotProcessedItems(Ess_M2ePro_Helper_Component_Ebay::NICK);
@@ -83,7 +83,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process extends Ess_M
         $this->markItemsAsProcessed($processedItemsIds);
     }
 
-    private function processAmazon()
+    protected function processAmazon()
     {
         /** @var Ess_M2ePro_Model_StopQueue[] $items */
         $items = $this->getNotProcessedItems(Ess_M2ePro_Helper_Component_Amazon::NICK);
@@ -113,7 +113,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process extends Ess_M
             );
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountsCollection */
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountsCollection */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         $accountsCollection->addFieldToFilter('server_hash', array_keys($accountsRequestData));
 
@@ -129,7 +129,6 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process extends Ess_M
                     $accountObject->getChildObject()->getMerchantId(),
                     Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED
                 ) <= 0) {
-
                 continue;
             }
 
@@ -157,9 +156,9 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process extends Ess_M
 
     //########################################
 
-    private function getNotProcessedItems($component)
+    protected function getNotProcessedItems($component)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_StopQueue_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_StopQueue_Collection $collection */
         $collection = Mage::getModel('M2ePro/StopQueue')->getCollection();
         $collection->addFieldToFilter('is_processed', 0);
         $collection->addFieldToFilter('component_mode', $component);
@@ -167,7 +166,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process extends Ess_M
         return $collection->getItems();
     }
 
-    private function markItemsAsProcessed(array $itemsIds)
+    protected function markItemsAsProcessed(array $itemsIds)
     {
         if (empty($itemsIds)) {
             return;

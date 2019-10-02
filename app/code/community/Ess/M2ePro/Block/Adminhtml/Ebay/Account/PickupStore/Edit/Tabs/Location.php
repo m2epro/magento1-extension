@@ -29,8 +29,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit_Tabs_Location ext
         $tempMarketplaces = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace')
             ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
             ->addFieldToFilter('is_in_store_pickup', 1)
-            ->setOrder('sorder','ASC')
-            ->setOrder('title','ASC')
+            ->setOrder('sorder', 'ASC')
+            ->setOrder('title', 'ASC')
             ->toArray();
 
         $marketplaceList =  !empty($tempMarketplaces['items']) ? $tempMarketplaces['items'] : array();
@@ -60,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit_Tabs_Location ext
         );
 
         $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if(is_null($model)) {
+        if ($model === null) {
             return $default;
         }
 

@@ -102,14 +102,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Other_Grid
     protected function getColumnProductTitleAdditionalHtml($row)
     {
         $sku = $row->getData('sku');
-        if (is_null($sku) && !is_null($row->getData('product_id'))) {
-
+        if ($sku === null && $row->getData('product_id') !== null) {
             $sku = Mage::getModel('M2ePro/Magento_Product')
                 ->setProductId($row->getData('product_id'))
                 ->getSku();
         }
 
-        if (is_null($sku)) {
+        if ($sku === null) {
             $sku = '<i style="color:gray;">' . Mage::helper('M2ePro')->__('receiving') . '...</i>';
         } else if ($sku === '') {
             $sku = '<i style="color:gray;">' . Mage::helper('M2ePro')->__('none') . '</i>';
@@ -122,7 +121,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Other_Grid
 
     public function callbackColumnIsInStock($value, $row, $column, $isExport)
     {
-        if (is_null($row->getData('is_in_stock'))) {
+        if ($row->getData('is_in_stock') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -136,13 +135,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Other_Grid
         $altTitle  = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Go to Listing'));
         $iconSrc   = $this->getSkinUrl('M2ePro/images/goto_listing.png');
 
-        $manageUrl = $this->getUrl('*/adminhtml_ebay_listing_other/view/', array(
+        $manageUrl = $this->getUrl(
+            '*/adminhtml_ebay_listing_other/view/', array(
             'account'     => $row->getData('account_id'),
             'marketplace' => $row->getData('marketplace_id'),
             'filter'      => base64_encode(
                 'item_id=' . $row->getData('item_id')
             )
-        ));
+            )
+        );
 
         return <<<HTML
 <div style="float:right; margin:5px 15px 0 0;">
@@ -190,8 +191,10 @@ HTML;
             return;
         }
 
-        $collection->addFieldToFilter(new \Zend_Db_Expr(
-            'second_table.online_qty - second_table.online_qty_sold'), $cond
+        $collection->addFieldToFilter(
+            new \Zend_Db_Expr(
+                'second_table.online_qty - second_table.online_qty_sold'
+            ), $cond
         );
     }
 

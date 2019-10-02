@@ -21,15 +21,17 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_ChangeProcessor
 
     public function getTrackingAttributes()
     {
-        return array_unique(array_merge(
-            $this->getTitleTrackingAttributes(),
-            $this->getSubtitleTrackingAttributes(),
-            $this->getDescriptionTrackingAttributes(),
-            $this->getImagesTrackingAttributes(),
-            $this->getCategoriesTrackingAttributes(),
-            $this->getShippingTrackingAttributes(),
-            $this->getOtherTrackingAttributes()
-        ));
+        return array_unique(
+            array_merge(
+                $this->getTitleTrackingAttributes(),
+                $this->getSubtitleTrackingAttributes(),
+                $this->getDescriptionTrackingAttributes(),
+                $this->getImagesTrackingAttributes(),
+                $this->getCategoriesTrackingAttributes(),
+                $this->getShippingTrackingAttributes(),
+                $this->getOtherTrackingAttributes()
+            )
+        );
     }
 
     public function getInstructionsDataByAttributes(array $attributes)
@@ -186,22 +188,26 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_ChangeProcessor
         );
 
         $calculatedShippingObject = $shippingTemplate->getCalculatedShipping();
-        if (!is_null($calculatedShippingObject)) {
-            $attributes = array_merge($attributes, array_merge(
-                $calculatedShippingObject->getPackageSizeAttributes(),
-                $calculatedShippingObject->getDimensionAttributes(),
-                $calculatedShippingObject->getWeightAttributes()
-            ));
+        if ($calculatedShippingObject !== null) {
+            $attributes = array_merge(
+                $attributes, array_merge(
+                    $calculatedShippingObject->getPackageSizeAttributes(),
+                    $calculatedShippingObject->getDimensionAttributes(),
+                    $calculatedShippingObject->getWeightAttributes()
+                )
+            );
         }
 
         /** @var Ess_M2ePro_Model_Ebay_Template_Shipping_Service[] $services */
         $services = $shippingTemplate->getServices(true);
         foreach ($services as $service) {
-            $attributes = array_merge($attributes, array_merge(
-                $service->getCostAttributes(),
-                $service->getCostAdditionalAttributes(),
-                $service->getCostSurchargeAttributes()
-            ));
+            $attributes = array_merge(
+                $attributes, array_merge(
+                    $service->getCostAttributes(),
+                    $service->getCostAdditionalAttributes(),
+                    $service->getCostSurchargeAttributes()
+                )
+            );
         }
 
         return array_unique($attributes);
@@ -234,7 +240,7 @@ class Ess_M2ePro_Model_Ebay_Magento_Product_ChangeProcessor
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Product
      */
-    private function getEbayListingProduct()
+    protected function getEbayListingProduct()
     {
         return $this->getListingProduct()->getChildObject();
     }

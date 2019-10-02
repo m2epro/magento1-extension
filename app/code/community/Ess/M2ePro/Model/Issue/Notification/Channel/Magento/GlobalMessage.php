@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Issue_Notification_Channel_Magento_GlobalMessage
         $dataForAdd = array(
             'title'       => $issue->getTitle(),
             'description' => strip_tags($issue->getText()),
-            'url'         => !is_null($issue->getUrl()) ? $issue->getUrl()
+            'url'         => $issue->getUrl() !== null ? $issue->getUrl()
                                                         : 'https://m2epro.com/?' . sha1($issue->getTitle()),
             'severity'    => isset($typesMapping[$issue->getType()]) ? $typesMapping[$issue->getType()]
                                                                      : AdminNotification::SEVERITY_CRITICAL,

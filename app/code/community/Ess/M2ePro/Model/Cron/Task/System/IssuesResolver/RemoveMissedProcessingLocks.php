@@ -15,7 +15,7 @@ class Ess_M2ePro_Model_Cron_Task_System_IssuesResolver_RemoveMissedProcessingLoc
 
     protected function performActions()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Processing_Lock_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Processing_Lock_Collection $collection */
         $collection = Mage::getResourceModel('M2ePro/Processing_Lock_Collection');
         $collection->getSelect()->joinLeft(
             array('p' => Mage::getResourceModel('M2ePro/Processing')->getMainTable()),

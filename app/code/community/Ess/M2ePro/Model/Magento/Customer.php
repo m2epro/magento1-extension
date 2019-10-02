@@ -10,14 +10,14 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
 {
     const FAKE_EMAIL_POSTFIX = '@dummy.email';
 
-    /** @var $customer Mage_Customer_Model_Customer */
-    private $customer = NULL;
+    /** @var $_customer Mage_Customer_Model_Customer */
+    protected $_customer = null;
 
     //########################################
 
     public function getCustomer()
     {
-        return $this->customer;
+        return $this->_customer;
     }
 
     //########################################
@@ -32,24 +32,24 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
          * Can be disabled here:
          * Customers -> Customer Configuration -> Create new account options -> Automatic Assignment to Customer Group
          */
-        $this->customer = Mage::getModel('customer/customer')
-            ->setData('firstname', $this->getData('customer_firstname'))
-            ->setData('middlename', $this->getData('customer_middlename'))
-            ->setData('lastname', $this->getData('customer_lastname'))
-            ->setData('website_id', $this->getData('website_id'))
-            ->setData('group_id', $this->getData('group_id'))
-            ->setData('email', $this->getData('email'));
+        $this->_customer = Mage::getModel('customer/customer')
+                               ->setData('firstname', $this->getData('customer_firstname'))
+                               ->setData('middlename', $this->getData('customer_middlename'))
+                               ->setData('lastname', $this->getData('customer_lastname'))
+                               ->setData('website_id', $this->getData('website_id'))
+                               ->setData('group_id', $this->getData('group_id'))
+                               ->setData('email', $this->getData('email'));
 
-        if ($this->customer->isConfirmationRequired()) {
-            $this->customer->setData('confirmation', $password);
+        if ($this->_customer->isConfirmationRequired()) {
+            $this->_customer->setData('confirmation', $password);
         } else {
-            $this->customer->setForceConfirmed(true);
+            $this->_customer->setForceConfirmed(true);
         }
 
-        $this->customer->setPassword($password);
-        $this->customer->save();
+        $this->_customer->setPassword($password);
+        $this->_customer->save();
 
-        $this->customer->setOrigData();
+        $this->_customer->setOrigData();
 
         // Add customer address
         // do not replace setCustomerId with setData('customer_id', ..)
@@ -65,7 +65,7 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
             ->setData('telephone', $this->getData('telephone'))
             ->setData('street', $this->getData('street'))
             ->setData('company', $this->getData('company'))
-            ->setCustomerId($this->customer->getId())
+            ->setCustomerId($this->_customer->getId())
             ->setIsDefaultBilling(true)
             ->setIsDefaultShipping(true);
 
@@ -105,7 +105,7 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
 
     // ---------------------------------------
 
-    private function addAttributeToGroup($attributeId, $attributeSetId, $attributeGroupId)
+    protected function addAttributeToGroup($attributeId, $attributeSetId, $attributeGroupId)
     {
         $resource = Mage::getSingleton('core/resource');
         $connWrite = $resource->getConnection('core_write');
@@ -123,7 +123,7 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
         );
     }
 
-    private function getDefaultAttributeSetId()
+    protected function getDefaultAttributeSetId()
     {
         $resource = Mage::getSingleton('core/resource');
         $connRead = $resource->getConnection('core_read');
@@ -138,7 +138,7 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
         return $connRead->fetchOne($select);
     }
 
-    private function getDefaultAttributeGroupId($attributeSetId)
+    protected function getDefaultAttributeGroupId($attributeSetId)
     {
         $resource = Mage::getSingleton('core/resource');
         $connRead = $resource->getConnection('core_read');

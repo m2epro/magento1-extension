@@ -1,58 +1,66 @@
 <?php
-    /**
-     * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Configuration
-     */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $cachedData = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue('amazon_merchant_fulfillment_data');
-    if (!$cachedData) {
-        $cachedData = array();
-    }
+// @codingStandardsIgnoreFile
 
-    $defaults = array(
-        'must_arrive_by_date'          => '',
-        'declared_value'               => $this->getData('declared_value'),
-        'ship_from_address_phone'      => '',
-        'package_dimension_source'     => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE,
-        'package_dimension_predefined' => '',
-        'package_dimension_length'     => '',
-        'package_dimension_width'      => '',
-        'package_dimension_height'     => '',
-        'package_dimension_measure'    => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES,
-        'package_weight'               => '',
-        'package_weight_measure'       => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES,
+/**
+ * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Configuration
+ */
+
+$cachedData = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue('amazon_merchant_fulfillment_data');
+if (!$cachedData) {
+    $cachedData = array();
+}
+
+$defaults = array(
+    'must_arrive_by_date'          => '',
+    'declared_value'               => $this->getData('declared_value'),
+    'ship_from_address_phone'      => '',
+    'package_dimension_source'     => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_SOURCE_NONE,
+    'package_dimension_predefined' => '',
+    'package_dimension_length'     => '',
+    'package_dimension_width'      => '',
+    'package_dimension_height'     => '',
+    'package_dimension_measure'    => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DIMENSION_MEASURE_INCHES,
+    'package_weight'               => '',
+    'package_weight_measure'       => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::WEIGHT_MEASURE_OUNCES,
+);
+
+if ($this->getData('delivery_date_to') !== null) {
+    $mustArriveByDate = new DateTime($this->getData('delivery_date_to'));
+    $defaults['must_arrive_by_date'] = $mustArriveByDate->format('Y-m-d');
+}
+
+if (empty($cachedData)) {
+    $userData = $this->getUserData();
+    $shippingOriginData = $this->getShippingOriginData();
+
+    $customerName = array();
+    isset($userData['lastname'])  && $customerName[] = $userData['lastname'];
+    isset($userData['firstname']) && $customerName[] = $userData['firstname'];
+
+    $defaultsCachedData = array(
+        'ship_from_address_name'           => implode(' ', $customerName),
+        'ship_from_address_email'          => isset($userData['email']) ? $userData['email'] : '',
+        'ship_from_address_country'        => $shippingOriginData['country_id'],
+        'ship_from_address_region_state'   => $shippingOriginData['region_id'],
+        'ship_from_address_postal_code'    => $shippingOriginData['postal_code'],
+        'ship_from_address_city'           => $shippingOriginData['city'],
+        'ship_from_address_address_line_1' => $shippingOriginData['street_line1'],
+        'ship_from_address_address_line_2' => $shippingOriginData['street_line2'],
+
+        'delivery_experience' => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE,
+        'carrier_will_pickup' => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_NO
     );
 
-    if (!is_null($this->getData('delivery_date_to'))) {
-        $mustArriveByDate = new DateTime($this->getData('delivery_date_to'));
-        $defaults['must_arrive_by_date'] = $mustArriveByDate->format('Y-m-d');
-    }
-
-    if (empty($cachedData)) {
-        $userData = $this->getUserData();
-        $shippingOriginData = $this->getShippingOriginData();
-
-        $customerName = array();
-        isset($userData['lastname'])  && $customerName[] = $userData['lastname'];
-        isset($userData['firstname']) && $customerName[] = $userData['firstname'];
-
-        $defaultsCachedData = array(
-            'ship_from_address_name'           => implode(' ', $customerName),
-            'ship_from_address_email'          => isset($userData['email']) ? $userData['email'] : '',
-            'ship_from_address_country'        => $shippingOriginData['country_id'],
-            'ship_from_address_region_state'   => $shippingOriginData['region_id'],
-            'ship_from_address_postal_code'    => $shippingOriginData['postal_code'],
-            'ship_from_address_city'           => $shippingOriginData['city'],
-            'ship_from_address_address_line_1' => $shippingOriginData['street_line1'],
-            'ship_from_address_address_line_2' => $shippingOriginData['street_line2'],
-
-            'delivery_experience' => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::DELIVERY_EXPERIENCE_WITHOUT_SIGNATURE,
-            'carrier_will_pickup' => Ess_M2ePro_Helper_Component_Amazon_MerchantFulfillment::CARRIER_WILL_PICK_UP_NO
-        );
-
-        $formData = array_merge($defaults, $defaultsCachedData);
-    } else {
-        $formData = array_merge($defaults, $cachedData);
-    }
+    $formData = array_merge($defaults, $defaultsCachedData);
+} else {
+    $formData = array_merge($defaults, $cachedData);
+}
 
 ?>
 

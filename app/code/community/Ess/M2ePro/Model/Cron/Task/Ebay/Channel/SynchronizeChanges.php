@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges extends Ess_M2e
 
     //########################################
 
-    private function processItemsChanges()
+    protected function processItemsChanges()
     {
         $itemsProcessor = Mage::getModel('M2ePro/Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor');
 
@@ -43,14 +43,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges extends Ess_M2e
         $itemsProcessor->setSynchronizationLog($synchronizationLog);
 
         $operationHistory = $this->getOperationHistory()->getParentObject();
-        if (!is_null($operationHistory)) {
+        if ($operationHistory !== null) {
             $itemsProcessor->setReceiveChangesToDate($operationHistory->getData('start_date'));
         }
 
         $itemsProcessor->process();
     }
 
-    private function processOrdersChanges()
+    protected function processOrdersChanges()
     {
         $ordersProcessor = Mage::getModel('M2ePro/Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor');
 
@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges extends Ess_M2e
         $ordersProcessor->setSynchronizationLog($synchronizationLog);
 
         $operationHistory = $this->getOperationHistory()->getParentObject();
-        if (!is_null($operationHistory)) {
+        if ($operationHistory !== null) {
             $ordersProcessor->setReceiveOrdersToDate($operationHistory->getData('start_date'));
         }
 

@@ -11,9 +11,9 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
     const BACKUP_PREFIX = 'bv630_';
 
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
-    private $forceAllSteps = false;
+    protected $_forceAllSteps = false;
 
     //########################################
 
@@ -22,7 +22,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
      */
     public function getInstaller()
     {
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -30,14 +30,14 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
+        $this->_installer = $installer;
     }
 
     // ---------------------------------------
 
     public function setForceAllSteps($value = true)
     {
-        $this->forceAllSteps = $value;
+        $this->_forceAllSteps = $value;
     }
 
     //########################################
@@ -47,12 +47,12 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
         $tableName = str_replace('m2epro_', '', $originalTableName);
         $tableName = 'm2epro_' . self::BACKUP_PREFIX . $tableName;
 
-        return $this->installer->getTable($tableName);
+        return $this->_installer->getTable($tableName);
     }
 
     //########################################
 
-    /*
+    /**
 
         ALTER TABLE m2epro_amazon_listing_product
             CHANGE COLUMN template_new_product_id template_description_id int(11) UNSIGNED DEFAULT NULL,
@@ -196,19 +196,19 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
 
     //########################################
 
-    private function isNeedToSkip()
+    protected function isNeedToSkip()
     {
-        if ($this->forceAllSteps) {
+        if ($this->_forceAllSteps) {
             return false;
         }
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $oldSpecific = $this->installer->getTable('m2epro_amazon_template_new_product_specific');
-        $newSpecific = $this->installer->getTable('m2epro_amazon_template_description_specific');
+        $oldSpecific = $this->_installer->getTable('m2epro_amazon_template_new_product_specific');
+        $newSpecific = $this->_installer->getTable('m2epro_amazon_template_description_specific');
 
-        if (!$this->installer->tableExists($oldSpecific) &&
-            $this->installer->tableExists($newSpecific) &&
+        if (!$this->_installer->tableExists($oldSpecific) &&
+            $this->_installer->tableExists($newSpecific) &&
             $connection->tableColumnExists($newSpecific, 'template_description_id') !== false) {
             return true;
         }
@@ -218,18 +218,19 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_DescriptionTemplate
 
     //########################################
 
-    private function saveWizardNecessaryData()
+    protected function saveWizardNecessaryData()
     {
-        $marketplace = $this->installer->getTable('m2epro_marketplace');
-        $templateNewProduct = $this->installer->getTable('m2epro_amazon_template_new_product');
+        $marketplace = $this->_installer->getTable('m2epro_marketplace');
+        $templateNewProduct = $this->_installer->getTable('m2epro_amazon_template_new_product');
 
-        if (!$this->installer->tableExists($templateNewProduct)) {
+        if (!$this->_installer->tableExists($templateNewProduct)) {
             return;
         }
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $result = $connection->query(<<<SQL
+        $result = $connection->query(
+            <<<SQL
 
         SELECT `main_table`.`title`,
                `main_table`.`category_path`,
@@ -250,7 +251,8 @@ SQL
         $dateForInsert = $connection->quote(date('Y-m-d H:i:s', gmdate('U')));
         $dataForInsert = $connection->quote(json_encode($dataForInsert));
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
         INSERT INTO `m2epro_registry` (`key`, `value`, update_date, create_date)
         VALUES ('{$registryKey}', {$dataForInsert}, {$dateForInsert}, {$dateForInsert});
@@ -259,46 +261,46 @@ SQL
 );
     }
 
-    private function backupTables()
+    protected function backupTables()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $originalTable = $this->installer->getTable('m2epro_ebay_template_description');
+        $originalTable = $this->_installer->getTable('m2epro_ebay_template_description');
         $backupTable   = $this->getBackupTableName('m2epro_ebay_template_description');
 
-        if ($this->installer->tableExists($originalTable) && !$this->installer->tableExists($backupTable)) {
+        if ($this->_installer->tableExists($originalTable) && !$this->_installer->tableExists($backupTable)) {
             $connection->query("RENAME TABLE {$originalTable} TO {$backupTable}");
         }
 
-        $originalTable = $this->installer->getTable('m2epro_amazon_template_new_product');
+        $originalTable = $this->_installer->getTable('m2epro_amazon_template_new_product');
         $backupTable   = $this->getBackupTableName('m2epro_amazon_template_new_product');
 
-        if ($this->installer->tableExists($originalTable) && !$this->installer->tableExists($backupTable)) {
+        if ($this->_installer->tableExists($originalTable) && !$this->_installer->tableExists($backupTable)) {
             $connection->query("RENAME TABLE {$originalTable} TO {$backupTable}");
         }
 
-        $originalTable = $this->installer->getTable('m2epro_amazon_template_new_product_description');
+        $originalTable = $this->_installer->getTable('m2epro_amazon_template_new_product_description');
         $backupTable   = $this->getBackupTableName('m2epro_amazon_template_new_product_description');
 
-        if ($this->installer->tableExists($originalTable) && !$this->installer->tableExists($backupTable)) {
+        if ($this->_installer->tableExists($originalTable) && !$this->_installer->tableExists($backupTable)) {
             $connection->query("RENAME TABLE {$originalTable} TO {$backupTable}");
         }
 
-        $originalTable = $this->installer->getTable('m2epro_amazon_template_new_product_specific');
+        $originalTable = $this->_installer->getTable('m2epro_amazon_template_new_product_specific');
         $backupTable   = $this->getBackupTableName('m2epro_amazon_template_new_product_specific');
 
-        if ($this->installer->tableExists($originalTable) && !$this->installer->tableExists($backupTable)) {
+        if ($this->_installer->tableExists($originalTable) && !$this->_installer->tableExists($backupTable)) {
             $connection->query("RENAME TABLE {$originalTable} TO {$backupTable}");
         }
     }
 
     //########################################
 
-    private function processListingProduct()
+    protected function processListingProduct()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_listing_product');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_listing_product');
         $tempTableIndexList = $connection->getIndexList($tempTable);
 
         if (isset($tempTableIndexList[strtoupper('template_new_product_id')])) {
@@ -306,8 +308,8 @@ SQL
         }
 
         if ($connection->tableColumnExists($tempTable, 'template_new_product_id') !== false) {
-
-            $this->installer->run(<<<SQL
+            $this->_installer->run(
+                <<<SQL
 
     UPDATE `m2epro_amazon_listing_product`
     SET template_new_product_id = NULL;
@@ -331,9 +333,10 @@ SQL
 
     //########################################
 
-    private function processGeneralTemplates()
+    protected function processGeneralTemplates()
     {
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
 CREATE TABLE IF NOT EXISTS `m2epro_template_description` (
     id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -353,9 +356,10 @@ SQL
         );
     }
 
-    private function processEbayTemplates()
+    protected function processEbayTemplates()
     {
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
 CREATE TABLE IF NOT EXISTS `m2epro_ebay_template_description` (
   template_description_id INT(11) UNSIGNED NOT NULL,
@@ -398,27 +402,27 @@ COLLATE utf8_general_ci;
 SQL
         );
 
-        $descriptionTable     = $this->installer->getTable('m2epro_template_description');
-        $ebayDescriptionTable = $this->installer->getTable('m2epro_ebay_template_description');
+        $descriptionTable     = $this->_installer->getTable('m2epro_template_description');
+        $ebayDescriptionTable = $this->_installer->getTable('m2epro_ebay_template_description');
         $backupTable          = $this->getBackupTableName('m2epro_ebay_template_description');
 
-        if (!$this->installer->tableExists($backupTable) ||
-            !$this->installer->tableExists($ebayDescriptionTable) ||
-            !$this->installer->tableExists($descriptionTable)) {
-
+        if (!$this->_installer->tableExists($backupTable) ||
+            !$this->_installer->tableExists($ebayDescriptionTable) ||
+            !$this->_installer->tableExists($descriptionTable)) {
             return;
         }
 
         $tempQuery = "SELECT * FROM `{$descriptionTable}` WHERE `component_mode` = 'ebay'";
-        $tempRow = $this->installer->getConnection()
-                                   ->query($tempQuery)
-                                   ->fetch();
+        $tempRow = $this->_installer->getConnection()
+                                    ->query($tempQuery)
+                                    ->fetch();
 
         if ($tempRow !== false) {
             return;
         }
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
 INSERT INTO `m2epro_template_description`
 SELECT
@@ -467,9 +471,10 @@ SQL
         );
     }
 
-    private function processAmazonTemplates()
+    protected function processAmazonTemplates()
     {
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
 CREATE TABLE IF NOT EXISTS `m2epro_amazon_template_description` (
   template_description_id INT(11) UNSIGNED NOT NULL,

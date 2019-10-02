@@ -24,12 +24,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Synchronization_Edit_Form extends Mage_
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -93,7 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Synchronization_Edit_Form extends Mage_
     public function isShowReviseAll()
     {
         return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/synchronization/revise_total/','show'
+            '/view/synchronization/revise_total/', 'show'
         );
     }
 

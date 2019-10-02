@@ -16,12 +16,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Validator
         $params = $this->getParams();
         if (!isset($params['out_of_stock_control_current_state']) ||
             !isset($params['out_of_stock_control_result'])) {
-
             throw new Ess_M2ePro_Model_Exception_Logic('Miss required parameters.');
         }
 
         if (!$this->getListingProduct()->isRevisable()) {
-
             // M2ePro_TRANSLATIONS
             // Item is not Listed or not available
             $this->addMessage('Item is not Listed or not available');
@@ -34,7 +32,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Validator
         }
 
         if ($this->getEbayListingProduct()->isVariationsReady()) {
-
             if (!$this->validateVariationsOptions()) {
                 return false;
             }

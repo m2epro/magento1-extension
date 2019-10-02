@@ -11,14 +11,14 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstrac
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager
      */
-    private $variationManager = NULL;
+    protected $_variationManager = null;
 
-    private $isCacheEnabled = false;
+    protected $_isCacheEnabled = false;
 
     //########################################
 
@@ -27,8 +27,8 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstrac
      */
     public function setVariationManager(Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager)
     {
-        $this->variationManager = $variationManager;
-        $this->listingProduct = $variationManager->getListingProduct();
+        $this->_variationManager = $variationManager;
+        $this->_listingProduct   = $variationManager->getListingProduct();
     }
 
     /**
@@ -36,7 +36,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstrac
      */
     public function getVariationManager()
     {
-        return $this->variationManager;
+        return $this->_variationManager;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstrac
      */
     public function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     /**
@@ -100,7 +100,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstrac
      */
     public function isCacheEnabled()
     {
-        return $this->isCacheEnabled;
+        return $this->_isCacheEnabled;
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstrac
      */
     public function enableCache()
     {
-        $this->isCacheEnabled = true;
+        $this->_isCacheEnabled = true;
 
         $this->getMagentoProduct()->enableCache();
         $this->getActualMagentoProduct()->enableCache();
@@ -121,7 +121,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Abstrac
      */
     public function disableCache()
     {
-        $this->isCacheEnabled = false;
+        $this->_isCacheEnabled = false;
 
         $this->getMagentoProduct()->disableCache();
         $this->getActualMagentoProduct()->disableCache();

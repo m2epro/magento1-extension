@@ -18,12 +18,14 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_ChangeProcessor
 
     public function getTrackingAttributes()
     {
-        return array_unique(array_merge(
-            $this->getQtyTrackingAttributes(),
-            $this->getDetailsTrackingAttributes(),
-            $this->getImagesTrackingAttributes(),
-            $this->getRepricingTrackingAttributes()
-        ));
+        return array_unique(
+            array_merge(
+                $this->getQtyTrackingAttributes(),
+                $this->getDetailsTrackingAttributes(),
+                $this->getImagesTrackingAttributes(),
+                $this->getRepricingTrackingAttributes()
+            )
+        );
     }
 
     public function getInstructionsDataByAttributes(array $attributes)
@@ -123,27 +125,20 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_ChangeProcessor
                     $descriptionDefinitionTemplate->getNumberOfItemsAttributes(),
                     $descriptionDefinitionTemplate->getItemPackageQuantityAttributes(),
                     $descriptionDefinitionTemplate->getDescriptionAttributes(),
-
                     $descriptionDefinitionTemplate->getBulletPointsAttributes(),
                     $descriptionDefinitionTemplate->getSearchTermsAttributes(),
                     $descriptionDefinitionTemplate->getTargetAudienceAttributes(),
-
                     $descriptionDefinitionTemplate->getManufacturerAttributes(),
                     $descriptionDefinitionTemplate->getManufacturerPartNumberAttributes(),
-
                     $descriptionDefinitionTemplate->getMsrpRrpAttributes(),
-
                     $descriptionDefinitionTemplate->getItemDimensionsVolumeAttributes(),
                     $descriptionDefinitionTemplate->getItemDimensionsVolumeUnitOfMeasureAttributes(),
                     $descriptionDefinitionTemplate->getItemDimensionsWeightAttributes(),
                     $descriptionDefinitionTemplate->getItemDimensionsWeightUnitOfMeasureAttributes(),
-
                     $descriptionDefinitionTemplate->getPackageDimensionsVolumeAttributes(),
                     $descriptionDefinitionTemplate->getPackageDimensionsVolumeUnitOfMeasureAttributes(),
-
                     $descriptionDefinitionTemplate->getPackageWeightAttributes(),
                     $descriptionDefinitionTemplate->getPackageWeightUnitOfMeasureAttributes(),
-
                     $descriptionDefinitionTemplate->getShippingWeightAttributes(),
                     $descriptionDefinitionTemplate->getShippingWeightUnitOfMeasureAttributes()
                 )
@@ -228,7 +223,7 @@ class Ess_M2ePro_Model_Amazon_Magento_Product_ChangeProcessor
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product
      */
-    private function getAmazonListingProduct()
+    protected function getAmazonListingProduct()
     {
         return $this->getListingProduct()->getChildObject();
     }

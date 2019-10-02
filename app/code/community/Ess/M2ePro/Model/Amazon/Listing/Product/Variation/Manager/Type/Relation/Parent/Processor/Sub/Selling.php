@@ -13,7 +13,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 {
     //########################################
 
-    protected function check() {}
+    protected function check()
+    {
+        return null;
+    }
 
     protected function execute()
     {
@@ -28,7 +31,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         $repricingManaged = $repricingNotManaged = $afnCount = $totalCount = 0;
 
         foreach ($this->getProcessor()->getTypeModel()->getChildListingsProducts() as $listingProduct) {
-
             if ($listingProduct->isNotListed() || $listingProduct->isBlocked()) {
                 continue;
             }
@@ -39,7 +41,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             $amazonListingProduct = $listingProduct->getChildObject();
 
             if ($amazonListingProduct->isRepricingUsed()) {
-
                 $isRepricing = Product::IS_REPRICING_YES;
 
                 if($amazonListingProduct->isRepricingManaged()) {
@@ -50,10 +51,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             }
 
             if ($amazonListingProduct->isAfnChannel()) {
-
                 $isAfn = Product::IS_AFN_CHANNEL_YES;
                 $afnCount++;
-
             } else {
                 $qty = (int)$qty + (int)$amazonListingProduct->getOnlineQty();
             }
@@ -62,11 +61,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             $actualOnlineRegularPrice = $amazonListingProduct->getOnlineRegularPrice();
 
             if ($regularSalePrice > 0) {
-
                 $startDateTimestamp = strtotime($amazonListingProduct->getOnlineRegularSalePriceStartDate());
                 $endDateTimestamp   = strtotime($amazonListingProduct->getOnlineRegularSalePriceEndDate());
 
-                $currentTimestamp = strtotime(Mage::helper('M2ePro')->getCurrentGmtDate(false,'Y-m-d 00:00:00'));
+                $currentTimestamp = strtotime(Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d 00:00:00'));
 
                 if ($currentTimestamp >= $startDateTimestamp &&
                     $currentTimestamp <= $endDateTimestamp &&
@@ -76,11 +74,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
                 }
             }
 
-            if (is_null($regularPrice) || $regularPrice > $actualOnlineRegularPrice) {
+            if ($regularPrice === null || $regularPrice > $actualOnlineRegularPrice) {
                 $regularPrice = $actualOnlineRegularPrice;
             }
 
-            if (is_null($businessPrice) || $businessPrice > $amazonListingProduct->getOnlineBusinessPrice()) {
+            if ($businessPrice === null || $businessPrice > $amazonListingProduct->getOnlineBusinessPrice()) {
                 $businessPrice = $amazonListingProduct->getOnlineBusinessPrice();
             }
         }
@@ -94,7 +92,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         ($totalOnRepricing > 0)            && $repricingState = Product::VARIATION_PARENT_IS_REPRICING_STATE_PARTIAL;
         ($totalOnRepricing == $totalCount) && $repricingState = Product::VARIATION_PARENT_IS_REPRICING_STATE_ALL_YES;
 
-        $this->getProcessor()->getListingProduct()->addData(array(
+        $this->getProcessor()->getListingProduct()->addData(
+            array(
             'online_qty'                       => $qty,
             'online_regular_price'             => $regularPrice,
             'online_business_price'            => $businessPrice,
@@ -102,7 +101,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             'is_repricing'                     => $isRepricing,
             'variation_parent_afn_state'       => $afnState,
             'variation_parent_repricing_state' => $repricingState
-        ));
+            )
+        );
 
         $this->getProcessor()->getListingProduct()->setSetting(
             'additional_data', 'repricing_managed_count', $repricingManaged

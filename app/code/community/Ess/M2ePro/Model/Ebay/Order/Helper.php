@@ -59,7 +59,6 @@ class Ess_M2ePro_Model_Ebay_Order_Helper
     public function getPaymentStatus($paymentMethod, $paymentDate, $paymentStatusEbay)
     {
         if ($paymentMethod == self::EBAY_PAYMENT_METHOD_NONE) {
-
             if ($paymentDate) {
                 return Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED;
             }
@@ -67,9 +66,7 @@ class Ess_M2ePro_Model_Ebay_Order_Helper
             if ($paymentStatusEbay == self::EBAY_PAYMENT_STATUS_SUCCEEDED) {
                 return Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_NOT_SELECTED;
             }
-
         } else {
-
             if ($paymentStatusEbay == self::EBAY_PAYMENT_STATUS_SUCCEEDED) {
                 return $paymentDate
                     ? Ess_M2ePro_Model_Ebay_Order::PAYMENT_STATUS_COMPLETED

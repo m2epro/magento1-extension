@@ -10,6 +10,8 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 {
     const NICK  = 'ebay';
 
+    const MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK = 'ebay_marketplace_synchronization';
+
     const MARKETPLACE_US     = 1;
     const MARKETPLACE_MOTORS = 9;
     const MARKETPLACE_AU = 4;
@@ -37,7 +39,8 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getHumanTitleByListingProductStatus($status) {
+    public function getHumanTitleByListingProductStatus($status)
+    {
         $statuses = array(
             Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED => Mage::helper('M2ePro')->__('Not Listed'),
             Ess_M2ePro_Model_Listing_Product::STATUS_LISTED     => Mage::helper('M2ePro')->__('Listed'),
@@ -75,14 +78,14 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     public function isObject($modelName, $value, $field = NULL)
     {
         $mode = Mage::helper('M2ePro/Component')->getComponentMode($modelName, $value, $field);
-        return !is_null($mode) && $mode == self::NICK;
+        return $mode !== null && $mode == self::NICK;
     }
 
     // ---------------------------------------
 
     public function getModel($modelName)
     {
-        return Mage::helper('M2ePro/Component')->getComponentModel(self::NICK,$modelName);
+        return Mage::helper('M2ePro/Component')->getComponentModel(self::NICK, $modelName);
     }
 
     public function getObject($modelName, $value, $field = NULL)
@@ -104,10 +107,11 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getItemUrl($ebayItemId,
-                               $accountMode = Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION,
-                               $marketplaceId = NULL)
-    {
+    public function getItemUrl(
+        $ebayItemId,
+        $accountMode = Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION,
+        $marketplaceId = null
+    ) {
         $marketplaceId = (int)$marketplaceId;
         if ($marketplaceId <= 0 || $marketplaceId == self::MARKETPLACE_MOTORS) {
             $marketplaceId = self::MARKETPLACE_US;
@@ -128,6 +132,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
         if ($accountMode == Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX) {
             $domain = 'sandbox.'.$domain;
         }
+
         return 'http://myworld.'.$domain.'/'.(string)$ebayMemberId;
     }
 
@@ -164,7 +169,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
         $ebayItem  = $readConnection->quoteInto('?', $ebayItem);
         $accountId = $readConnection->quoteInto('?', $accountId);
 
-        /** @var $collection Ess_M2ePro_Model_Mysql4_Listing_Product_Collection */
+        /** @var $collection Ess_M2ePro_Model_Resource_Listing_Product_Collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
         $collection->getSelect()->join(
             array('mei' => Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable()),
@@ -239,21 +244,27 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
         $set = array();
         foreach ($options['set'] as $optionTitle => $optionsSet) {
             foreach ($optionsSet as $singleOptionKey => $singleOption) {
-                $set[trim($optionTitle)][$singleOptionKey] = trim(Mage::helper('M2ePro')->reduceWordsInString(
-                    $singleOption, self::VARIATION_OPTION_LABEL_MAX_LENGTH
-                ));
+                $set[trim($optionTitle)][$singleOptionKey] = trim(
+                    Mage::helper('M2ePro')->reduceWordsInString(
+                        $singleOption, self::VARIATION_OPTION_LABEL_MAX_LENGTH
+                    )
+                );
             }
         }
+
         $options['set'] = $set;
 
         foreach ($options['variations'] as &$variation) {
             foreach ($variation as &$singleOption) {
-                $singleOption['option'] = trim(Mage::helper('M2ePro')->reduceWordsInString(
-                    $singleOption['option'], self::VARIATION_OPTION_LABEL_MAX_LENGTH
-                ));
+                $singleOption['option'] = trim(
+                    Mage::helper('M2ePro')->reduceWordsInString(
+                        $singleOption['option'], self::VARIATION_OPTION_LABEL_MAX_LENGTH
+                    )
+                );
                 $singleOption['attribute'] = trim($singleOption['attribute']);
             }
         }
+
         unset($singleOption);
         unset($variation);
 
@@ -261,6 +272,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
            foreach ($options['additional']['attributes'] as $code => &$title) {
                $title = trim($title);
            }
+
            unset($title);
        }
 
@@ -271,9 +283,11 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     {
         foreach ($options as &$singleOption) {
             if ($singleOption instanceof Mage_Catalog_Model_Product) {
-                $reducedName = trim(Mage::helper('M2ePro')->reduceWordsInString(
-                    $singleOption->getName(), self::VARIATION_OPTION_LABEL_MAX_LENGTH
-                ));
+                $reducedName = trim(
+                    Mage::helper('M2ePro')->reduceWordsInString(
+                        $singleOption->getName(), self::VARIATION_OPTION_LABEL_MAX_LENGTH
+                    )
+                );
                 $singleOption->setData('name', $reducedName);
 
                 continue;
@@ -281,9 +295,11 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
             foreach ($singleOption['values'] as &$singleOptionValue) {
                 foreach ($singleOptionValue['labels'] as &$singleOptionLabel) {
-                    $singleOptionLabel = trim(Mage::helper('M2ePro')->reduceWordsInString(
-                        $singleOptionLabel, self::VARIATION_OPTION_LABEL_MAX_LENGTH
-                    ));
+                    $singleOptionLabel = trim(
+                        Mage::helper('M2ePro')->reduceWordsInString(
+                            $singleOptionLabel, self::VARIATION_OPTION_LABEL_MAX_LENGTH
+                        )
+                    );
                 }
             }
         }
@@ -336,7 +352,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     // -----------------------------------------
 
-    private function getEbayDateTimeObject($time)
+    protected function getEbayDateTimeObject($time)
     {
         $dateTime = NULL;
 
@@ -348,7 +364,7 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
             $dateTime = new DateTime($time, new DateTimeZone('UTC'));
         }
 
-        if (is_null($dateTime)) {
+        if ($dateTime === null) {
             throw new Ess_M2ePro_Model_Exception('eBay DateTime object is null');
         }
 

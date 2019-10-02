@@ -8,18 +8,18 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
 {
-    protected $listingProductPickupStoreStateId;
+    protected $_listingProductPickupStoreStateId;
 
     //########################################
 
     public function setListingProductPickupStoreStateId($listingProductPickupStoreStateId)
     {
-        $this->listingProductPickupStoreStateId = $listingProductPickupStoreStateId;
+        $this->_listingProductPickupStoreStateId = $listingProductPickupStoreStateId;
     }
 
     public function getListingProductPickupStoreStateId()
     {
-        return $this->listingProductPickupStoreStateId;
+        return $this->_listingProductPickupStoreStateId;
     }
 
     //########################################
@@ -58,7 +58,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M
 
     protected function _prepareColumns()
     {
-        $this->addColumn('action', array(
+        $this->addColumn(
+            'action', array(
             'header'    => Mage::helper('M2ePro')->__('Action'),
             'align'     => 'left',
             'width'     => '150px',
@@ -67,27 +68,33 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M
             'sortable'  => false,
             'filter_index' => 'action',
             'options' => $this->getActionTitles()
-        ));
+            )
+        );
 
-        $this->addColumn('location_id', array(
+        $this->addColumn(
+            'location_id', array(
             'header'    => Mage::helper('M2ePro')->__('Name / Location ID'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'location_id',
             'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('description', array(
+        $this->addColumn(
+            'description', array(
             'header'    => Mage::helper('M2ePro')->__('Description'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'description',
             'filter_index' => 'main_table.description',
             'frame_callback' => array($this, 'callbackDescription')
-        ));
+            )
+        );
 
-        $this->addColumn('type', array(
+        $this->addColumn(
+            'type', array(
             'header'=> Mage::helper('M2ePro')->__('Type'),
             'width' => '80px',
             'index' => 'type',
@@ -96,15 +103,18 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Log_Grid extends Ess_M
             'sortable'  => false,
             'options' => $this->getLogTypeList(),
             'frame_callback' => array($this, 'callbackColumnType')
-        ));
+            )
+        );
 
-        $this->addColumn('create_date', array(
+        $this->addColumn(
+            'create_date', array(
             'header'    => Mage::helper('M2ePro')->__('Creation Date'),
             'align'     => 'left',
             'type'      => 'datetime',
             'index'     => 'create_date',
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -191,10 +201,12 @@ HTML;
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/logGridAjax', array(
+        return $this->getUrl(
+            '*/*/logGridAjax', array(
             '_current' => true,
             'listing_product_pickup_store_state' => $this->getListingProductPickupStoreStateId()
-        ));
+            )
+        );
     }
 
     public function getRowUrl($row)

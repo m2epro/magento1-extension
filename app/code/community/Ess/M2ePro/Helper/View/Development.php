@@ -46,37 +46,37 @@ class Ess_M2ePro_Helper_View_Development extends Mage_Core_Helper_Abstract
 
     public function getPageAboutTabUrl(array $params = array())
     {
-        return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_ABOUT)));
+        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_ABOUT)));
     }
 
     public function getPageInspectionTabUrl(array $params = array())
     {
-        return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_INSPECTION)));
+        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_INSPECTION)));
     }
 
     public function getPageDatabaseTabUrl(array $params = array())
     {
-        return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_DATABASE)));
+        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_DATABASE)));
     }
 
     public function getPageToolsTabUrl(array $params = array())
     {
-        return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_TOOLS)));
+        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_TOOLS)));
     }
 
     public function getPageModuleTabUrl(array $params = array())
     {
-        return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_MODULE)));
+        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_MODULE)));
     }
 
     public function getPageCronTabUrl(array $params = array())
     {
-        return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_CRON)));
+        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_CRON)));
     }
 
     public function getPageDebugTabUrl(array $params = array())
     {
-        return $this->getPageUrl(array_merge($params,array('tab' => self::TAB_DEBUG)));
+        return $this->getPageUrl(array_merge($params, array('tab' => self::TAB_DEBUG)));
     }
 
     //########################################

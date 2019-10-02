@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs extends Ess_M2ePro_Model_Cr
 
     //########################################
 
-    private function clearSystemLog()
+    protected function clearSystemLog()
     {
         $this->clearSystemLogByAmount();
         $this->clearSystemLogByTime();
@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs extends Ess_M2ePro_Model_Cr
 
     // ---------------------------------------
 
-    private function clearSystemLogByAmount()
+    protected function clearSystemLogByAmount()
     {
         $resource = Mage::getSingleton('core/resource');
         $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_system_log');
@@ -64,10 +64,10 @@ class Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs extends Ess_M2ePro_Model_Cr
                               ->query()
                               ->fetchAll(Zend_Db::FETCH_COLUMN);
 
-        $writeConnection->delete($tableName, 'id IN ('.implode(',',$ids).')');
+        $writeConnection->delete($tableName, 'id IN ('.implode(',', $ids).')');
     }
 
-    private function clearSystemLogByTime()
+    protected function clearSystemLogByTime()
     {
         $resource = Mage::getSingleton('core/resource');
         $tableName =Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_system_log');
@@ -78,7 +78,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs extends Ess_M2ePro_Model_Cr
         $dateTime->modify('-'.self::SYSTEM_LOG_MAX_DAYS.' days');
         $minDate = $dateTime->format('Y-m-d 00:00:00');
 
-        $writeConnection->delete($tableName,"create_date < '{$minDate}'");
+        $writeConnection->delete($tableName, "create_date < '{$minDate}'");
     }
 
     //########################################

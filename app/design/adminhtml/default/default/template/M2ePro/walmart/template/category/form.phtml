@@ -1,5 +1,14 @@
 <?php
-    /** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit_Form */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit_Form */
+
 ?>
 
 <?php
@@ -23,6 +32,18 @@
     );
 
     $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
+
+    if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add %component_name% Category Policy',
+                Mage::helper('M2ePro/Component_Walmart')->getTitle()
+            )
+        );
+    } else {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add Category Policy')
+        );
+    }
     
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
@@ -63,7 +84,7 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Category Policy' => Mage::helper('M2ePro')->__('Add Category Policy'),
+        'Add Category Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
 
         'Change Category' => Mage::helper('M2ePro')->__('Change Category'),
         'Not Selected'    => Mage::helper('M2ePro')->__('Not Selected'),

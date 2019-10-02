@@ -14,18 +14,17 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
 
     protected function performActions()
     {
-        if (is_null($this->getLastProcessedProductId())) {
+        if ($this->getLastProcessedProductId() === null) {
             $this->setLastProcessedProductId($this->getLastProductId());
         }
 
-        if (count($products = $this->getProducts()) <= 0) {
+        if (empty($products = $this->getProducts())) {
             return;
         }
 
         $tempIndex = 0;
 
         foreach ($products as $product) {
-
             $this->processCategoriesActions($product);
             $this->processGlobalActions($product);
             $this->processWebsiteActions($product);
@@ -41,7 +40,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
 
     //########################################
 
-    private function processCategoriesActions(Mage_Catalog_Model_Product $product)
+    protected function processCategoriesActions(Mage_Catalog_Model_Product $product)
     {
         $productCategories = $product->getCategoryIds();
 
@@ -64,7 +63,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
         }
     }
 
-    private function processGlobalActions(Mage_Catalog_Model_Product $product)
+    protected function processGlobalActions(Mage_Catalog_Model_Product $product)
     {
         /** @var Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Global $object */
         $object = Mage::getModel('M2ePro/Listing_Auto_Actions_Mode_Global');
@@ -72,7 +71,7 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
         $object->synch();
     }
 
-    private function processWebsiteActions(Mage_Catalog_Model_Product $product)
+    protected function processWebsiteActions(Mage_Catalog_Model_Product $product)
     {
         /** @var Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Website $object */
         $object = Mage::getModel('M2ePro/Listing_Auto_Actions_Mode_Website');
@@ -89,25 +88,29 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
 
     //########################################
 
-    private function getLastProductId()
+    protected function getLastProductId()
     {
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                          Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
 
         $collection->getSelect()->order('entity_id DESC')->limit(1);
         return (int)$collection->getLastItem()->getId();
     }
 
-    private function getProducts()
+    protected function getProducts()
     {
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                          Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
 
         $collection->addFieldToFilter('entity_id', array('gt' => (int)$this->getLastProcessedProductId()));
         $collection->addAttributeToSelect('visibility');
-        $collection->setOrder('entity_id','asc');
+        $collection->setOrder('entity_id', 'asc');
         $collection->getSelect()->limit(100);
 
         return $collection->getItems();
@@ -115,12 +118,12 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
 
     // ---------------------------------------
 
-    private function getLastProcessedProductId()
+    protected function getLastProcessedProductId()
     {
         return $this->getRegistryValue('/magento/product/detect_directly_added/last_magento_product_id/');
     }
 
-    private function setLastProcessedProductId($magentoProductId)
+    protected function setLastProcessedProductId($magentoProductId)
     {
         $this->setRegistryValue(
             '/magento/product/detect_directly_added/last_magento_product_id/', (int)$magentoProductId

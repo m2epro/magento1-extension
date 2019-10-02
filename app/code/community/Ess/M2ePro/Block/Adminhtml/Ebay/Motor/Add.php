@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    private $motorsType = null;
+    protected $_motorsType = null;
 
-    private $productGridId = null;
+    protected $_productGridId = null;
 
     //########################################
 
@@ -22,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
 
     protected function _beforeToHtml()
     {
-        if (is_null($this->motorsType)) {
+        if ($this->_motorsType === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Compatibility type was not set.');
         }
 
@@ -80,33 +80,33 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
     public function wasInstructionShown()
     {
         return Mage::helper('M2ePro/Module')->getCacheConfig()
-                    ->getGroupValue('/ebay/motors/','was_instruction_shown') != false;
+                    ->getGroupValue('/ebay/motors/', 'was_instruction_shown') != false;
     }
 
     //########################################
 
     public function setMotorsType($type)
     {
-        $this->motorsType = $type;
+        $this->_motorsType = $type;
         return $this;
     }
 
     public function getMotorsType()
     {
-        return $this->motorsType;
+        return $this->_motorsType;
     }
 
     // ---------------------------------------
 
     public function setProductGridId($gridId)
     {
-        $this->productGridId = $gridId;
+        $this->_productGridId = $gridId;
         return $this;
     }
 
     public function getProductGridId()
     {
-        return $this->productGridId;
+        return $this->_productGridId;
     }
 
     // ---------------------------------------
@@ -130,7 +130,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
                                                  : $this->getEpidRecordColumns();
     }
 
-    private function getEpidRecordColumns()
+    protected function getEpidRecordColumns()
     {
        return array(
            array(
@@ -185,7 +185,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
        );
     }
 
-    private function getKtypeRecordColumns()
+    protected function getKtypeRecordColumns()
     {
         return array(
             array(

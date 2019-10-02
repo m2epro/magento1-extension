@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_StopQueue extends Ess_M2ePro_Model_Abstract
 
     // ---------------------------------------
 
-    private function getRequestData(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    protected function getRequestData(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         $data = array();
 

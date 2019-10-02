@@ -28,17 +28,17 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByIdentifier_Requester
 
     protected function getQuery()
     {
-        return $this->params['query'];
+        return $this->_params['query'];
     }
 
     protected function getQueryType()
     {
-        return $this->params['query_type'];
+        return $this->_params['query_type'];
     }
 
     protected function getVariationBadParentModifyChildToSimple()
     {
-        return $this->params['variation_bad_parent_modify_child_to_simple'];
+        return $this->_params['variation_bad_parent_modify_child_to_simple'];
     }
 
     // ########################################

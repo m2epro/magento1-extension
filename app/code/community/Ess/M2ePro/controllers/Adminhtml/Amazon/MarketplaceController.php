@@ -9,8 +9,6 @@
 class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
 {
-    const SYNCHRONIZATION_LOCK_ITEM_NICK = 'amazon_marketplace_synchronization';
-
     //########################################
 
     protected function _initAction()
@@ -60,12 +58,14 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
         foreach ($marketplaces as $marketplace) {
             $newStatus = $this->getRequest()->getParam('status_'.$marketplace->getId());
 
-            if (is_null($newStatus)) {
+            if ($newStatus === null) {
                  continue;
             }
+
             if ($marketplace->getStatus() == $newStatus) {
                 continue;
             }
+
             $marketplace->setData('status', $newStatus)->save();
         }
     }
@@ -78,11 +78,13 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
 
         $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id');
         /** @var Ess_M2ePro_Model_Marketplace $marketplace */
-        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace',$marketplaceId);
+        $marketplace = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace', $marketplaceId);
 
-        $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
-        ));
+        $lockItemManager = Mage::getModel(
+            'M2ePro/Lock_Item_Manager', array(
+            'nick' => Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
+            )
+        );
 
         if ($lockItemManager->isExist()) {
             return;
@@ -90,10 +92,12 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
 
         $lockItemManager->create();
 
-        $progressManager = Mage::getModel('M2ePro/Lock_Item_Progress', array(
+        $progressManager = Mage::getModel(
+            'M2ePro/Lock_Item_Progress', array(
             'lock_item_manager' => $lockItemManager,
             'progress_nick'     => $marketplace->getTitle() . ' Marketplace',
-        ));
+            )
+        );
 
         $synchronization = Mage::getModel('M2ePro/Amazon_Marketplace_Synchronization');
         $synchronization->setMarketplace($marketplace);
@@ -108,9 +112,11 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
     {
         $response = array();
 
-        $lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array(
-            'nick' => self::SYNCHRONIZATION_LOCK_ITEM_NICK,
-        ));
+        $lockItemManager = Mage::getModel(
+            'M2ePro/Lock_Item_Manager', array(
+            'nick' => Ess_M2ePro_Helper_Component_Amazon::MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK,
+            )
+        );
 
         if (!$lockItemManager->isExist()) {
             $response['mode'] = 'inactive';

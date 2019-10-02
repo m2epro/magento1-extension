@@ -26,11 +26,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_MainAbstract extends Ess_M2ePro
 
         if ($this->isNeedSkipButton()) {
             $url = $this->getUrl('*/*/skip');
-            $this->_addButton('skip', array(
+            $this->_addButton(
+                'skip', array(
                 'label'     => Mage::helper('M2ePro')->__('Skip Wizard'),
                 'onclick'   => 'WizardHandlerObj.skip(\''.$url.'\')',
                 'class'     => 'skip'
-            ));
+                )
+            );
         }
 
         $this->setTemplate('widget/form/container.phtml');

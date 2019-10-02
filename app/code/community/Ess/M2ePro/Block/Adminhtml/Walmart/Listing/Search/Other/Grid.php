@@ -119,7 +119,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Other_Grid
     {
         $title = $row->getData('name');
 
-        if (is_null($title) || $title === '') {
+        if ($title === null || $title === '') {
             $value = '<i style="color:gray;">receiving...</i>';
         } else {
             $value = '<span>' .Mage::helper('M2ePro')->escapeHtml($title). '</span>';
@@ -127,7 +127,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Other_Grid
 
         $sku = $row->getData('sku');
         if (!empty($sku)) {
-
             $sku = Mage::helper('M2ePro')->escapeHtml($sku);
             $skuWord = Mage::helper('M2ePro')->__('SKU');
 
@@ -144,7 +143,7 @@ HTML;
     {
         /** @var Ess_M2ePro_Model_Listing_Other $listingOther */
         $listingOther = Mage::helper('M2ePro/Component_Walmart')
-            ->getObject('Listing_Other',$row->getData('listing_other_id'));
+            ->getObject('Listing_Other', $row->getData('listing_other_id'));
 
         $statusChangeReasons = $listingOther->getChildObject()->getStatusChangeReasons();
 
@@ -157,13 +156,15 @@ HTML;
         $altTitle = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Go to Listing'));
         $iconSrc = $this->getSkinUrl('M2ePro/images/goto_listing.png');
 
-        $manageUrl = $this->getUrl('*/adminhtml_walmart_listing_other/view/', array(
+        $manageUrl = $this->getUrl(
+            '*/adminhtml_walmart_listing_other/view/', array(
             'account'     => $row->getData('account_id'),
             'marketplace' => $row->getData('marketplace_id'),
             'filter'      => base64_encode(
                 'title=' . $row->getData('online_sku')
             )
-        ));
+            )
+        );
 
         $html = <<<HTML
 <div style="float:right; margin:5px 15px 0 0;">
@@ -176,7 +177,7 @@ HTML;
 
     public function callbackColumnIsInStock($value, $row, $column, $isExport)
     {
-        if (is_null($row->getData('is_in_stock'))) {
+        if ($row->getData('is_in_stock') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -185,7 +186,7 @@ HTML;
 
     public function callbackColumnPrice($value, $row, $column, $isExport)
     {
-        if (is_null($value) || $value === '' ||
+        if ($value === null || $value === '' ||
             ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
              !$row->getData('is_online_price_invalid')))
         {
@@ -252,7 +253,6 @@ HTML;
         $condition = '';
 
         if (isset($value['from']) || isset($value['to'])) {
-
             if (isset($value['from']) && $value['from'] != '') {
                 $condition = 'second_table.online_price >= \'' . (float)$value['from'] . '\'';
             }
@@ -261,6 +261,7 @@ HTML;
                 if (isset($value['from']) && $value['from'] != '') {
                     $condition .= ' AND ';
                 }
+
                 $condition .= 'second_table.online_price <= \'' . (float)$value['to'] . '\'';
             }
         }
@@ -305,6 +306,7 @@ SQL;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $quoted = $collection->getConnection()->quote($value['to']);
             $where .= 'second_table.online_qty <= ' . $quoted;
         }

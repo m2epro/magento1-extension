@@ -23,7 +23,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Synchronization_Log_Grid
         );
 
         if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-
             $excludeTitles[Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER] = '';
             $excludeTitles[Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS] = '';
         }

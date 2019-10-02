@@ -8,11 +8,11 @@
 
 class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager
 {
-    protected $component;
-    protected $entityType;
+    protected $_component;
+    protected $_entityType;
 
     /** @var Ess_M2ePro_Model_Servicing_Task_Analytics_Registry  */
-    protected $registry;
+    protected $_registry;
 
     //########################################
 
@@ -22,12 +22,12 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager
             throw new Exception('component or entityType was not provided.');
         }
 
-        $this->component  = $args['component'];
-        $this->entityType = $args['entityType'];
+        $this->_component  = $args['component'];
+        $this->_entityType = $args['entityType'];
 
-        $this->registry = Mage::getSingleton('M2ePro/Servicing_Task_Analytics_Registry');
+        $this->_registry = Mage::getSingleton('M2ePro/Servicing_Task_Analytics_Registry');
 
-        is_null($this->getLastId()) && $this->initLastEntityId();
+        $this->getLastId() === null && $this->initLastEntityId();
     }
 
     protected function initLastEntityId()
@@ -56,13 +56,13 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager
     }
 
     /**
-     * @return Ess_M2ePro_Model_Mysql4_Collection_Abstract $collection
+     * @return Ess_M2ePro_Model_Resource_Collection_Abstract $collection
      */
-    private function getCollection()
+    protected function getCollection()
     {
-        $model = Mage::getModel('M2ePro/'.$this->entityType);
+        $model = Mage::getModel('M2ePro/'.$this->_entityType);
         if ($model instanceof Ess_M2ePro_Model_Component_Parent_Abstract) {
-            $model = Mage::helper('M2ePro/Component')->getComponentModel($this->component, $this->entityType);
+            $model = Mage::helper('M2ePro/Component')->getComponentModel($this->_component, $this->_entityType);
         }
 
         return $model->getCollection();
@@ -79,24 +79,24 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager
 
     public function getLastProcessedId()
     {
-        return $this->registry->getProgressData($this->getEntityKey(), 'last_processed_id');
+        return $this->_registry->getProgressData($this->getEntityKey(), 'last_processed_id');
     }
 
     public function setLastProcessedId($id)
     {
-        return $this->registry->setProgressData($this->getEntityKey(), 'last_processed_id', (int)$id);
+        return $this->_registry->setProgressData($this->getEntityKey(), 'last_processed_id', (int)$id);
     }
 
     // ---------------------------------------
 
     public function getLastId()
     {
-        return $this->registry->getProgressData($this->getEntityKey(), 'last_id');
+        return $this->_registry->getProgressData($this->getEntityKey(), 'last_id');
     }
 
     public function setLastId($id)
     {
-        return $this->registry->setProgressData($this->getEntityKey(), 'last_id', (int)$id);
+        return $this->_registry->setProgressData($this->getEntityKey(), 'last_id', (int)$id);
     }
 
     // ---------------------------------------
@@ -110,17 +110,17 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager
 
     public function getEntityType()
     {
-        return $this->entityType;
+        return $this->_entityType;
     }
 
     public function getComponent()
     {
-        return $this->component;
+        return $this->_component;
     }
 
     public function getEntityKey()
     {
-        return $this->component .'::'. $this->entityType;
+        return $this->_component . '::' . $this->_entityType;
     }
 
     //########################################

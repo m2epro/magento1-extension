@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Observer_Listing_Product_Save_After extends Ess_M2ePro_Mo
 
     //########################################
 
-    private function processIndexer(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    protected function processIndexer(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         if (!$listingProduct->isComponentModeEbay() && !$listingProduct->isComponentModeAmazon()) {
             return;
@@ -51,12 +51,14 @@ class Ess_M2ePro_Model_Observer_Listing_Product_Save_After extends Ess_M2ePro_Mo
         }
 
         /** @var Ess_M2ePro_Model_Indexer_Listing_Product_Parent_Manager $manager */
-        $manager = Mage::getModel('M2ePro/Indexer_Listing_Product_Parent_Manager',
-                                  array($listingProduct->getListing()));
+        $manager = Mage::getModel(
+            'M2ePro/Indexer_Listing_Product_Parent_Manager',
+            array($listingProduct->getListing())
+        );
         $manager->markInvalidated();
     }
 
-    private function processEbayItemUUID(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    protected function processEbayItemUUID(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         if (!$listingProduct->isComponentModeEbay()) {
             return;
@@ -82,10 +84,12 @@ class Ess_M2ePro_Model_Observer_Listing_Product_Save_After extends Ess_M2ePro_Mo
 
         // The Child object is already saved in Resource Model on _afterSave()
         $childObject = Mage::getModel('M2ePro/Ebay_Listing_Product');
-        $childObject->addData(array(
+        $childObject->addData(
+            array(
             'listing_product_id' => $ebayListingProduct->getId(),
             'item_uuid'          => $ebayListingProduct->generateItemUUID()
-        ));
+            )
+        );
 
         $ebayListingProduct->getResource()->save($childObject);
     }

@@ -31,7 +31,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtm
 
         if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode() &&
             Mage::helper('M2ePro/View_Ebay')->is3rdPartyShouldBeShown()) {
-
             $this->addTab(self::TAB_ID_LISTING_OTHER, $this->prepareTabListingOther());
         }
 

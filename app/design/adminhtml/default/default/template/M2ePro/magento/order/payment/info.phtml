@@ -1,4 +1,15 @@
-<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info */ ?>
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info */
+
+?>
 
 <table>
     <?php if ($this->getPaymentMethod() != '') { ?>
@@ -32,7 +43,7 @@
                 $message = Mage::helper('M2ePro')->__('%channel_title% Final Fee', $this->getChannelTitle());
             ?>
             <td style="width: 200px;"><?php echo Mage::helper('M2ePro')->__($message) ?>:</td>
-            <td><strong><?php echo !is_null($this->getOrder()) ? $this->getOrder()->formatPrice($this->getChannelFinalFee()) : $this->getChannelFinalFee(); ?></strong></td>
+            <td><strong><?php echo $this->getOrder() !== null ? $this->getOrder()->formatPrice($this->getChannelFinalFee()) : $this->getChannelFinalFee(); ?></strong></td>
         </tr>
     <?php } ?>
     <?php if ($this->getCashOnDeliveryCost() > 0) { ?>
@@ -41,7 +52,7 @@
             $message = Mage::helper('M2ePro')->__('Cash On Delivery Cost');
             ?>
             <td style="width: 200px;"><?php echo Mage::helper('M2ePro')->__($message) ?>:</td>
-            <td><strong><?php echo !is_null($this->getOrder()) ? $this->getOrder()->formatPrice($this->getCashOnDeliveryCost()) : $this->getCashOnDeliveryCost(); ?></strong></td>
+            <td><strong><?php echo $this->getOrder() !== null ? $this->getOrder()->formatPrice($this->getCashOnDeliveryCost()) : $this->getCashOnDeliveryCost(); ?></strong></td>
         </tr>
     <?php } ?>
     <?php if ($this->getTaxId() != ''): ?>
@@ -75,8 +86,8 @@
                                         <?php echo $transaction['transaction_id']; ?>
                                     <?php } ?>
                                 </td>
-                                <td><?php echo !is_null($this->getOrder()) ? $this->getOrder()->formatPrice($transaction['fee']) : $transaction['fee']; ?></td>
-                                <td><?php echo !is_null($this->getOrder()) ? $this->getOrder()->formatPrice($transaction['sum']) : $transaction['sum']; ?></td>
+                                <td><?php echo $this->getOrder() !== null ? $this->getOrder()->formatPrice($transaction['fee']) : $transaction['fee']; ?></td>
+                                <td><?php echo $this->getOrder() !== null ? $this->getOrder()->formatPrice($transaction['sum']) : $transaction['sum']; ?></td>
                                 <td><?php echo Mage::helper('core')->formatDate($transaction['transaction_date'], 'medium', true); ?></td>
                             </tr>
                         <?php } ?>

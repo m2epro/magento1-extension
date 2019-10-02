@@ -42,14 +42,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
 
     protected function performActions()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('other_listings_synchronization',
-            Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES);
+        $accountsCollection->addFieldToFilter(
+            'other_listings_synchronization',
+            Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+        );
 
         $accounts = $accountsCollection->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -60,18 +62,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
             $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
 
             if (!$this->isLockedAccount($account)) {
-
                 $this->getOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
                     'Process Account '.$account->getTitle()
                 );
 
                 try {
-
                     $this->executeUpdateInventoryDataAccount($account);
-
                 } catch (Exception $exception) {
-
                     $message = Mage::helper('M2ePro')->__(
                         'The "Update 3rd Party Listings" Action for eBay Account "%account%" was completed with error.',
                         $account->getTitle()
@@ -90,14 +88,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
 
     //########################################
 
-    private function executeUpdateInventoryDataAccount(Ess_M2ePro_Model_Account $account)
+    protected function executeUpdateInventoryDataAccount(Ess_M2ePro_Model_Account $account)
     {
         $sinceTime = $account->getData('other_listings_last_synchronization');
 
         if (empty($sinceTime)) {
-
             $marketplaceCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace');
-            $marketplaceCollection->addFieldToFilter('status',Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
+            $marketplaceCollection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
             $marketplace = $marketplaceCollection->getFirstItem();
 
             if (!$marketplace->getId()) {
@@ -124,12 +121,12 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
 
     //########################################
 
-    private function getChangesByAccount(Ess_M2ePro_Model_Account $account, $sinceTime)
+    protected function getChangesByAccount(Ess_M2ePro_Model_Account $account, $sinceTime)
     {
         $nextSinceTime = new DateTime($sinceTime, new DateTimeZone('UTC'));
 
         $operationHistory = $this->getOperationHistory()->getParentObject('synchronization');
-        if (!is_null($operationHistory)) {
+        if ($operationHistory !== null) {
             $toTime = new DateTime($operationHistory->getData('start_date'), new DateTimeZone('UTC'));
         } else {
             $toTime = new DateTime('now', new DateTimeZone('UTC'));
@@ -157,7 +154,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
         $nextSinceTime->modify('-1 day');
 
         if ($previousSinceTime->format('U') < $nextSinceTime->format('U')) {
-
             $response = $this->receiveChangesFromEbay(
                 $account,
                 array('since_time'=>$nextSinceTime->format('Y-m-d H:i:s'), 'to_time' => $toTime->format('Y-m-d H:i:s'))
@@ -174,7 +170,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
         $nextSinceTime->modify('-2 hours');
 
         if ($previousSinceTime->format('U') < $nextSinceTime->format('U')) {
-
             $response = $this->receiveChangesFromEbay(
                 $account,
                 array('since_time'=>$nextSinceTime->format('Y-m-d H:i:s'), 'to_time' => $toTime->format('Y-m-d H:i:s'))
@@ -188,12 +183,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
         return array();
     }
 
-    private function receiveChangesFromEbay(Ess_M2ePro_Model_Account $account, array $paramsConnector = array())
+    protected function receiveChangesFromEbay(Ess_M2ePro_Model_Account $account, array $paramsConnector = array())
     {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('item','get','changes',
-                                                            $paramsConnector,NULL,
-                                                            NULL,$account->getId());
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'item', 'get', 'changes',
+            $paramsConnector, NULL,
+            NULL, $account->getId()
+        );
 
         $dispatcherObj->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
@@ -207,14 +204,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
         return $responseData;
     }
 
-    private function processResponseMessages(array $messages)
+    protected function processResponseMessages(array $messages)
     {
         /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
         $messagesSet->init($messages);
 
         foreach ($messagesSet->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -232,7 +228,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
 
     //########################################
 
-    private function prepareSinceTime($sinceTime)
+    protected function prepareSinceTime($sinceTime)
     {
         $minTime = new DateTime('now', new DateTimeZone('UTC'));
         $minTime->modify("-1 month");
@@ -245,7 +241,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
         return $sinceTime;
     }
 
-    private function isLockedAccount(Ess_M2ePro_Model_Account $account)
+    protected function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
         /** @var $lockItem Ess_M2ePro_Model_Lock_Item_Manager */
         $lockItemManager = Mage::getModel(

@@ -1,19 +1,28 @@
 <?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    //------------------------------
-    $urls = array();
+// @codingStandardsIgnoreFile
 
-    $store = Mage::helper('M2ePro/Data_Global')->getValue('ebay_store');
-    $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_Initialization */
 
-    $path = 'adminhtml_ebay_template/isTitleUnique';
-    $urls[$path] = $this->getUrl('*/' . $path);
+//------------------------------
+$urls = array();
 
-    $path = 'adminhtml_ebay_template/edit';
-    $urls[$path] = $this->getUrl('*/adminhtml_ebay_template/edit', array('wizard' => (bool)$this->getRequest()->getParam('wizard', false)));
+$store = Mage::helper('M2ePro/Data_Global')->getValue('ebay_store');
+$marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
 
-    $urls = json_encode($urls);
-    //------------------------------
+$path = 'adminhtml_ebay_template/isTitleUnique';
+$urls[$path] = $this->getUrl('*/' . $path);
+
+$path = 'adminhtml_ebay_template/edit';
+$urls[$path] = $this->getUrl('*/adminhtml_ebay_template/edit', array('wizard' => (bool)$this->getRequest()->getParam('wizard', false)));
+
+$urls = json_encode($urls);
+//------------------------------
 
 ?>
 <script type="text/javascript">

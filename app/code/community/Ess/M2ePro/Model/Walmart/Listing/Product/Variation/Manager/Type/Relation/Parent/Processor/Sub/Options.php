@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 
     protected function check()
     {
-        if (count($this->getProcessor()->getTypeModel()->getChildListingsProducts()) <= 0) {
+        if (empty($this->getProcessor()->getTypeModel()->getChildListingsProducts())) {
             return;
         }
 
@@ -61,11 +61,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 
     //########################################
 
-    private function canCreateNewProductChildren()
+    protected function canCreateNewProductChildren()
     {
         $productOptions = $this->getProcessor()->getTypeModel()->getNotRemovedUnusedProductOptions();
 
-        if (count($productOptions) <= 0) {
+        if (empty($productOptions)) {
             return false;
         }
 
@@ -83,7 +83,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
         return true;
     }
 
-    private function deleteBrokenChildren()
+    protected function deleteBrokenChildren()
     {
         foreach ($this->getProcessor()->getTypeModel()->getChildListingsProducts() as $childListingProduct) {
             /** @var Ess_M2ePro_Model_Listing_Product $childListingProduct */
@@ -108,13 +108,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
         }
     }
 
-    private function matchNewChildren()
+    protected function matchNewChildren()
     {
         $productOptions    = $this->getProcessor()->getTypeModel()->getNotRemovedUnusedProductOptions();
         $matchedAttributes = $this->getProcessor()->getTypeModel()->getMatchedAttributes();
 
         foreach ($productOptions as $productOption) {
-
             $channelOption = array();
             foreach ($productOption as $attribute => $value) {
                 $channelOption[$matchedAttributes[$attribute]] = $value;
@@ -124,7 +123,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
         }
     }
 
-    private function setMatchedAttributesToChildren()
+    protected function setMatchedAttributesToChildren()
     {
         foreach ($this->getProcessor()->getTypeModel()->getChildListingsProducts() as $childListingProduct) {
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartChildListingProduct */

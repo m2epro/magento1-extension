@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Order getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Amazon_Order getResource()
+ * @method Ess_M2ePro_Model_Resource_Amazon_Order getResource()
  */
 class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
 {
@@ -23,11 +23,9 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     const STATUS_CANCELED            = 5;
     const STATUS_INVOICE_UNCONFIRMED = 6;
 
-    //########################################
+    protected $_subTotalPrice = null;
 
-    private $subTotalPrice = NULL;
-
-    private $grandTotalPrice = NULL;
+    protected $_grandTotalPrice = null;
 
     //########################################
 
@@ -200,6 +198,10 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             return 0;
         }
 
+        if ($this->getSubtotalPrice() - $this->getPromotionDiscountAmount() <= 0) {
+            return 0;
+        }
+
         $taxRate = ($taxAmount / ($this->getSubtotalPrice() - $this->getPromotionDiscountAmount())) * 100;
 
         return round($taxRate, 4);
@@ -212,6 +214,10 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     {
         $taxAmount = $this->getShippingPriceTaxAmount();
         if ($taxAmount <= 0) {
+            return 0;
+        }
+
+        if ($this->getShippingPrice() - $this->getShippingDiscountAmount() <= 0) {
             return 0;
         }
 
@@ -391,11 +397,11 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      */
     public function getSubtotalPrice()
     {
-        if (is_null($this->subTotalPrice)) {
-            $this->subTotalPrice = $this->getResource()->getItemsTotal($this->getId());
+        if ($this->_subTotalPrice === null) {
+            $this->_subTotalPrice = $this->getResource()->getItemsTotal($this->getId());
         }
 
-        return $this->subTotalPrice;
+        return $this->_subTotalPrice;
     }
 
     /**
@@ -403,17 +409,17 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      */
     public function getGrandTotalPrice()
     {
-        if (is_null($this->grandTotalPrice)) {
-            $this->grandTotalPrice = $this->getSubtotalPrice();
-            $this->grandTotalPrice += $this->getProductPriceTaxAmount();
-            $this->grandTotalPrice += $this->getShippingPrice();
-            $this->grandTotalPrice += $this->getShippingPriceTaxAmount();
-            $this->grandTotalPrice += $this->getGiftPriceTaxAmount();
-            $this->grandTotalPrice -= $this->getPromotionDiscountAmount();
-            $this->grandTotalPrice -= $this->getShippingDiscountAmount();
+        if ($this->_grandTotalPrice === null) {
+            $this->_grandTotalPrice = $this->getSubtotalPrice();
+            $this->_grandTotalPrice += $this->getProductPriceTaxAmount();
+            $this->_grandTotalPrice += $this->getShippingPrice();
+            $this->_grandTotalPrice += $this->getShippingPriceTaxAmount();
+            $this->_grandTotalPrice += $this->getGiftPriceTaxAmount();
+            $this->_grandTotalPrice -= $this->getPromotionDiscountAmount();
+            $this->_grandTotalPrice -= $this->getShippingDiscountAmount();
         }
 
-        return round($this->grandTotalPrice, 2);
+        return round($this->_grandTotalPrice, 2);
     }
 
     //########################################
@@ -439,7 +445,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
 
         $channelItems = $this->getParentObject()->getChannelItems();
 
-        if (count($channelItems) == 0) {
+        if (empty($channelItems)) {
             // 3rd party order
             // ---------------------------------------
             $storeId = $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();
@@ -453,6 +459,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
                 $firstChannelItem = reset($channelItems);
                 $storeId = $firstChannelItem->getStoreId();
             }
+
             // ---------------------------------------
         }
 
@@ -524,9 +531,11 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         }
 
         if ($this->isFulfilledByAmazon() && !$this->getAmazonAccount()->isMagentoOrdersFbaStockEnabled()) {
-            Mage::dispatchEvent('m2epro_amazon_fba_magento_order_place_after', array(
+            Mage::dispatchEvent(
+                'm2epro_amazon_fba_magento_order_place_after', array(
                 'magento_order' => $this->getParentObject()->getMagentoOrder()
-            ));
+                )
+            );
         }
     }
 
@@ -550,7 +559,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();
-        if (is_null($magentoOrder)) {
+        if ($magentoOrder === null) {
             return false;
         }
 
@@ -608,7 +617,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();
-        if (is_null($magentoOrder)) {
+        if ($magentoOrder === null) {
             return false;
         }
 
@@ -692,7 +701,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         );
 
         if (!empty($trackingDetails['carrier_code'])) {
-
             $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Amazon')->getCarrierTitle(
                 $trackingDetails['carrier_code'],
                 isset($trackingDetails['carrier_title']) ? $trackingDetails['carrier_title'] : ''
@@ -700,7 +708,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         }
 
         if (!empty($trackingDetails['carrier_title'])) {
-
             if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
                 !empty($trackingDetails['shipping_method']))
             {
@@ -738,7 +745,6 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
            ->getFirstItem();
 
         if (!$change->getId() || !empty($trackingDetails['tracking_number'])) {
-
             $change::create($orderId, $action, $creatorType, $component, $params);
             return true;
         }
@@ -761,6 +767,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
                     continue 2;
                 }
             }
+
             unset($existingItem);
             $existingParams['items'][] = $newItem;
         }
@@ -812,7 +819,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
         $creatorType = $this->getParentObject()->getLog()->getInitiator();
         $component   = Ess_M2ePro_Helper_Component_Amazon::NICK;
 
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Change_Collection $changeCollection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Change_Collection $changeCollection */
         $changeCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
         $changeCollection->addFieldToFilter('order_id', $orderId);
         $changeCollection->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING);

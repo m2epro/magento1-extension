@@ -8,8 +8,8 @@
 
 abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    private $listingId = null;
-    private $motorsType = null;
+    protected $_listingId  = null;
+    protected $_motorsType = null;
 
     //########################################
 
@@ -36,26 +36,26 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Grid extends Mage_
 
     public function setListingId($marketplaceId)
     {
-        $this->listingId = $marketplaceId;
+        $this->_listingId = $marketplaceId;
         return $this;
     }
 
     public function getListingId()
     {
-        return $this->listingId;
+        return $this->_listingId;
     }
 
     //----------------------------------------
 
     public function setMotorsType($motorsType)
     {
-        $this->motorsType = $motorsType;
+        $this->_motorsType = $motorsType;
         return $this;
     }
 
     public function getMotorsType()
     {
-        return $this->motorsType;
+        return $this->_motorsType;
     }
 
     //########################################
@@ -74,29 +74,37 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Grid extends Mage_
 
         // Set mass-action
         //--------------------------------
-        $this->getMassactionBlock()->addItem('select', array(
+        $this->getMassactionBlock()->addItem(
+            'select', array(
             'label'   => Mage::helper('M2ePro')->__('Select'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('setNote', array(
+        $this->getMassactionBlock()->addItem(
+            'setNote', array(
             'label'   => Mage::helper('M2ePro')->__('Set Note'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('resetNote', array(
+        $this->getMassactionBlock()->addItem(
+            'resetNote', array(
             'label'   => Mage::helper('M2ePro')->__('Reset Note'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('saveAsGroup', array(
+        $this->getMassactionBlock()->addItem(
+            'saveAsGroup', array(
             'label'   => Mage::helper('M2ePro')->__('Save As Group'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         //--------------------------------
 
         return parent::_prepareMassaction();
@@ -231,15 +239,19 @@ $('save_filter_btn').addClassName('disabled');
 JS;
         }
 
-        $urls = Mage::helper('M2ePro')->jsonEncode(array(
+        $urls = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'adminhtml_ebay_motor/getItemsCountAlertPopupContent' => $this->getUrl(
                 '*/adminhtml_ebay_motor/getItemsCountAlertPopupContent'
             )
-        ));
+            )
+        );
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Attention' => Mage::helper('M2ePro')->__('Attention')
-        ));
+            )
+        );
 
         $constants = Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Ebay_Motors');
 

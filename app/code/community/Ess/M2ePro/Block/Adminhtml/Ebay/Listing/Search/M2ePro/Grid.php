@@ -32,9 +32,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_M2ePro_Grid
 
     protected function _prepareCollection()
     {
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                           Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
 
         $collection->getSelect()->distinct();
         $collection->setListingProductModeOn();
@@ -43,9 +45,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_M2ePro_Grid
         $collection->addAttributeToSelect('name');
 
         $collection->setStoreId(Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID);
-        $collection->joinStockItem(array(
+        $collection->joinStockItem(
+            array(
             'is_in_stock' => 'is_in_stock'
-        ));
+            )
+        );
 
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
@@ -150,7 +154,6 @@ HTML;
         $listingProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product', $listingProductId);
 
         if ($listingProduct->getChildObject()->isVariationsReady()) {
-
             $additionalData    = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
             $productAttributes = array_keys($additionalData['variations_sets']);
             $productAttributes = implode(', ', $productAttributes);
@@ -172,14 +175,16 @@ HTML;
         $altTitle  = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Go to Listing'));
         $iconSrc   = $this->getSkinUrl('M2ePro/images/goto_listing.png');
 
-        $manageUrl = $this->getUrl('*/adminhtml_ebay_listing/view/', array(
+        $manageUrl = $this->getUrl(
+            '*/adminhtml_ebay_listing/view/', array(
             'view_mode' => Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View::VIEW_MODE_EBAY,
             'id'        => $row->getData('listing_id'),
             'filter'    => base64_encode(
                 'product_id[from]='.(int)$row->getData('entity_id')
                 .'&product_id[to]='.(int)$row->getData('entity_id')
             )
-        ));
+            )
+        );
 
         return <<<HTML
 <div style="float:right; margin:5px 15px 0 0;">
@@ -239,7 +244,6 @@ HTML;
         $onlineQty = 'elp.online_qty - elp.online_qty_sold';
 
         if (isset($cond['from']) || isset($cond['to'])) {
-
             if (isset($cond['from']) && $cond['from'] != '') {
                 $value = $collection->getConnection()->quote($cond['from']);
                 $where .= "{$onlineQty} >= {$value}";
@@ -249,6 +253,7 @@ HTML;
                 if (isset($cond['from']) && $cond['from'] != '') {
                     $where .= ' AND ';
                 }
+
                 $value = $collection->getConnection()->quote($cond['to']);
                 $where .= "{$onlineQty} <= {$value}";
             }
@@ -279,12 +284,12 @@ HTML;
 
         if (is_array($value) && isset($value['value'])) {
             $collection->addFieldToFilter($index, (int)$value['value']);
-        } elseif (!is_array($value) && !is_null($value)) {
+        } elseif (!is_array($value) && $value !== null) {
             $collection->addFieldToFilter($index, (int)$value);
         }
 
         if (is_array($value) && isset($value['is_duplicate'])) {
-            $collection->addFieldToFilter('is_duplicate' , 1);
+            $collection->addFieldToFilter('is_duplicate', 1);
         }
     }
 
@@ -305,7 +310,6 @@ HTML;
     {
         $collection = $this->getCollection();
         if ($collection) {
-
             $columnIndex = $column->getFilterIndex() ? $column->getFilterIndex() : $column->getIndex();
 
             if ($columnIndex == 'online_qty') {
@@ -316,6 +320,7 @@ HTML;
                 $collection->setOrder($columnIndex, strtoupper($column->getDir()));
             }
         }
+
         return $this;
     }
 

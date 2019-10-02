@@ -12,23 +12,22 @@ class Ess_M2ePro_Model_Observer_Magento_Configuration_Init extends Ess_M2ePro_Mo
 
     public function process()
     {
-        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
             return $this->disableAllConfig();
         }
 
-        if (!Mage::helper('M2ePro/Module')->isReadyToWork() ||
-            (
-                Mage::helper('M2ePro/Module_Maintenance')->isEnabled() &&
-                !Mage::helper('M2ePro/Module_Maintenance')->isOwner()
-            )
-        ) {
+        if (Mage::helper('M2ePro/Module')->isDisabled()) {
+            return $this->moduleDisabledConfig();
+        }
+
+        if (!Mage::helper('M2ePro/Module')->isReadyToWork()) {
             return $this->disablePartialConfig();
         }
     }
 
     // ---------------------------------------
 
-    private function disableAllConfig()
+    protected function disableAllConfig()
     {
         /** @var Varien_Simplexml_Config $config */
         $config = $this->getEvent()->getData('config');
@@ -40,7 +39,7 @@ class Ess_M2ePro_Model_Observer_Magento_Configuration_Init extends Ess_M2ePro_Mo
         }
     }
 
-    private function disablePartialConfig()
+    protected function moduleDisabledConfig()
     {
         /** @var Varien_Simplexml_Config $config */
         $config = $this->getEvent()->getData('config');
@@ -51,7 +50,30 @@ class Ess_M2ePro_Model_Observer_Magento_Configuration_Init extends Ess_M2ePro_Mo
         }
 
         foreach ($sections as $section) {
+            if ($section->tab != 'm2epro') {
+                continue;
+            }
 
+            if (strtolower(trim($section->label)) == 'advanced') {
+                continue;
+            }
+
+            $dom = dom_import_simplexml($section);
+            $dom->parentNode->removeChild($dom);
+        }
+    }
+
+    protected function disablePartialConfig()
+    {
+        /** @var Varien_Simplexml_Config $config */
+        $config = $this->getEvent()->getData('config');
+        $sections = $config->getXpath('//sections/*[@module="M2ePro"]');
+
+        if (!$sections) {
+            return;
+        }
+
+        foreach ($sections as $section) {
             if ($section->tab != 'm2epro') {
                 continue;
             }
@@ -65,7 +87,7 @@ class Ess_M2ePro_Model_Observer_Magento_Configuration_Init extends Ess_M2ePro_Mo
         }
     }
 
-    private function isSectionAllowed($sectionName)
+    protected function isSectionAllowed($sectionName)
     {
         $sectionName = strtolower(trim($sectionName));
         if (in_array($sectionName, array('channels', 'advanced'))) {

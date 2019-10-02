@@ -30,17 +30,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace extends Mage_Adminhtml_Block_W
         $this->removeButton('reset');
         $this->removeButton('back');
 
-        $this->_addButton('run_update_all', array(
+        $this->_addButton(
+            'run_update_all', array(
             'label'     => Mage::helper('M2ePro')->__('Update All Now'),
             'onclick'   => 'MarketplaceHandlerObj.updateAction()',
             'class'     => 'save update_all_marketplaces'
-        ));
+            )
+        );
 
-        $this->_addButton('run_save_and_synch', array(
+        $this->_addButton(
+            'run_save_and_synch', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'MarketplaceHandlerObj.saveAction();',
             'class'     => 'save save_and_update_marketplaces'
-        ));
+            )
+        );
     }
 
     //########################################

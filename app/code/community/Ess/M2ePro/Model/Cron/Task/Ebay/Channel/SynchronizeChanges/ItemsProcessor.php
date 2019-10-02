@@ -18,24 +18,24 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
     const INCREASE_SINCE_TIME_BY               = 2;
     const INCREASE_SINCE_TIME_MIN_INTERVAL_SEC = 10;
 
-    private $logsActionId = NULL;
+    protected $_logsActionId = null;
 
     /** @var Ess_M2ePro_Model_Synchronization_Log */
-    private $synchronizationLog = NULL;
+    protected $_synchronizationLog = null;
 
-    private $receiveChangesToDate = NULL;
+    protected $_receiveChangesToDate = null;
 
     //####################################
 
     public function setSynchronizationLog(Ess_M2ePro_Model_Synchronization_Log $log)
     {
-        $this->synchronizationLog = $log;
+        $this->_synchronizationLog = $log;
         return $this;
     }
 
     public function setReceiveChangesToDate($toDate)
     {
-        $this->receiveChangesToDate = $toDate;
+        $this->_receiveChangesToDate = $toDate;
         return $this;
     }
 
@@ -57,14 +57,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         $accounts = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account')->getItems();
 
         foreach ($accounts as $account) {
-
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
-                $this->synchronizationLog->addMessage(
+                $this->_synchronizationLog->addMessage(
                     Mage::helper('M2ePro')->__($exception->getMessage()),
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
@@ -77,7 +73,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     // ---------------------------------------
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $changesByAccount = $this->getChangesByAccount($account);
 
@@ -90,14 +86,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         );
 
         foreach ($changesByAccount['items'] as $change) {
-
-            /* @var $listingProduct Ess_M2ePro_Model_Listing_Product */
+            /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
 
             $listingProduct = Mage::helper('M2ePro/Component_Ebay')->getListingProductByEbayItem(
                 $change['id'], $account->getId()
             );
 
-            if (is_null($listingProduct)) {
+            if ($listingProduct === null) {
                 continue;
             }
 
@@ -131,7 +126,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
                 $listingProduct->addData($dataForUpdate)->save();
             } else {
-
                 $listingProductVariations = $listingProduct->getVariations(true);
 
                 $this->processVariationChanges($listingProduct, $listingProductVariations, $change['variations']);
@@ -156,20 +150,18 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     //########################################
 
-    private function getChangesByAccount(Ess_M2ePro_Model_Account $account)
+    protected function getChangesByAccount(Ess_M2ePro_Model_Account $account)
     {
         $now = new DateTime('now', new DateTimeZone('UTC'));
 
         $sinceTime = $this->prepareSinceTime($account->getData('defaults_last_synchronization'));
         $toTime    = clone $now;
 
-        if (!is_null($this->receiveChangesToDate)) {
-
-            $toTime = $this->receiveChangesToDate;
+        if ($this->_receiveChangesToDate !== null) {
+            $toTime = $this->_receiveChangesToDate;
             $toTime = new DateTime($toTime, new DateTimeZone('UTC'));
 
             if ($sinceTime->getTimestamp() >= $toTime->getTimestamp()) {
-
                 $sinceTime = clone $toTime;
                 $sinceTime->modify('- 1 minute');
             }
@@ -190,7 +182,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         // -- to many changes are received. try to receive changes for the latest day
         $currentInterval = $toTime->diff($sinceTime);
         if ($currentInterval->days >= 1) {
-
             $sinceTime = clone $toTime;
             $sinceTime->modify('-1 day');
 
@@ -206,12 +197,12 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
                 return (array)$response;
             }
         }
+
         // --
 
         // -- to many changes are received. increase the sinceData step by step by 2
         $iteration = 0;
         do {
-
             $iteration++;
 
             $offset = ceil(($toTime->getTimestamp() - $sinceTime->getTimestamp()) / self::INCREASE_SINCE_TIME_BY);
@@ -240,7 +231,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             if ($response) {
                 return (array)$response;
             }
-
         } while ($iteration <= self::INCREASE_SINCE_TIME_MAX_ATTEMPTS);
         // --
 
@@ -249,9 +239,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     //########################################
 
-    private function receiveChangesFromEbay(Ess_M2ePro_Model_Account $account,
-                                            array $paramsConnector = array(), $tryNumber = 0)
-    {
+    protected function receiveChangesFromEbay(
+        Ess_M2ePro_Model_Account $account,
+        array $paramsConnector = array(),
+        $tryNumber = 0
+    ) {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'item', 'get', 'changes',
@@ -265,7 +257,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         $responseData = $connectorObj->getResponseData();
 
         if (!isset($responseData['items']) || !isset($responseData['to_time'])) {
-
             $logData = array(
                 'params'            => $paramsConnector,
                 'account_id'        => $account->getId(),
@@ -280,14 +271,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         return $responseData;
     }
 
-    private function processResponseMessages(array $messages)
+    protected function processResponseMessages(array $messages)
     {
         /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
         $messagesSet->init($messages);
 
         foreach ($messagesSet->getEntities() as $message) {
-
             if ($message->getCode() == 21917062) {
                 continue;
             }
@@ -299,7 +289,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             $logType = $message->isError() ? Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
                 : Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
 
-            $this->synchronizationLog->addMessage(
+            $this->_synchronizationLog->addMessage(
                 Mage::helper('M2ePro')->__($message->getText()),
                 $logType,
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
@@ -309,7 +299,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     //########################################
 
-    private function getProductDatesChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
+    protected function getProductDatesChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
     {
         return array(
             'start_date' => Mage::helper('M2ePro/Component_Ebay')->timeToString($change['startTime']),
@@ -317,7 +307,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         );
     }
 
-    private function getProductStatusChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
+    protected function getProductStatusChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
     {
         $data = array();
 
@@ -328,38 +318,26 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
              $change['listingStatus'] == self::EBAY_STATUS_ENDED) &&
              $listingProduct->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN &&
              $qty == $qtySold) {
-
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_SOLD;
-
         } else if ($change['listingStatus'] == self::EBAY_STATUS_COMPLETED) {
-
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
-
         } else if ($change['listingStatus'] == self::EBAY_STATUS_ENDED) {
-
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_FINISHED;
-
         } else if ($change['listingStatus'] == self::EBAY_STATUS_ACTIVE &&
                    $qty - $qtySold <= 0) {
-
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN;
-
         } else if ($change['listingStatus'] == self::EBAY_STATUS_ACTIVE) {
-
             $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_LISTED;
         }
 
         $accountOutOfStockControl = $listingProduct->getAccount()->getChildObject()->getOutOfStockControl(true);
 
         if (isset($change['out_of_stock'])) {
-
             $data['additional_data'] = array('out_of_stock_control' => (bool)$change['out_of_stock']);
-
         } elseif ($data['status'] == Ess_M2ePro_Model_Listing_Product::STATUS_HIDDEN &&
-            !is_null($accountOutOfStockControl) && !$accountOutOfStockControl) {
-
+                  $accountOutOfStockControl !== null && !$accountOutOfStockControl) {
             // Listed Hidden Status can be only for GTC items
-            if (is_null($listingProduct->getChildObject()->getOnlineDuration())) {
+            if ($listingProduct->getChildObject()->getOnlineDuration() === null) {
                 $data['online_duration'] = Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC;
             }
 
@@ -382,11 +360,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
             // M2ePro_TRANSLATIONS
             // Item Status was successfully changed from "%from%" to "%to%" .
-            $this->logReportChange($listingProduct, Mage::helper('M2ePro')->__(
-                'Item Status was successfully changed from "%from%" to "%to%" .',
-                $statusChangedFrom,
-                $statusChangedTo
-            ));
+            $this->logReportChange(
+                $listingProduct, Mage::helper('M2ePro')->__(
+                    'Item Status was successfully changed from "%from%" to "%to%" .',
+                    $statusChangedFrom,
+                    $statusChangedTo
+                )
+            );
         }
 
         $this->addInstruction(
@@ -396,7 +376,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         return $data;
     }
 
-    private function getProductQtyChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
+    protected function getProductQtyChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
     {
         $data = array();
 
@@ -421,11 +401,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             $ebayListingProduct->getOnlineQtySold() != $data['online_qty_sold']) {
             // M2ePro_TRANSLATIONS
             // Item QTY was successfully changed from %from% to %to% .
-            $this->logReportChange($listingProduct, Mage::helper('M2ePro')->__(
-                'Item QTY was successfully changed from %from% to %to% .',
-                ($ebayListingProduct->getOnlineQty() - $ebayListingProduct->getOnlineQtySold()),
-                ($data['online_qty'] - $data['online_qty_sold'])
-            ));
+            $this->logReportChange(
+                $listingProduct, Mage::helper('M2ePro')->__(
+                    'Item QTY was successfully changed from %from% to %to% .',
+                    ($ebayListingProduct->getOnlineQty() - $ebayListingProduct->getOnlineQtySold()),
+                    ($data['online_qty'] - $data['online_qty_sold'])
+                )
+            );
 
             $this->addInstruction(
                 $listingProduct, Ess_M2ePro_Model_Ebay_Listing_Product::INSTRUCTION_TYPE_CHANNEL_QTY_CHANGED, 80
@@ -437,7 +419,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     // ---------------------------------------
 
-    private function getSimpleProductPriceChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
+    protected function getSimpleProductPriceChanges(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
     {
         $data = array();
 
@@ -455,15 +437,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         $listingType = $this->getActualListingType($listingProduct, $change);
 
         if ($listingType == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_FIXED) {
-
             if ($ebayListingProduct->getOnlineCurrentPrice() != $data['online_current_price']) {
                 // M2ePro_TRANSLATIONS
                 // Item Price was successfully changed from %from% to %to% .
-                $this->logReportChange($listingProduct, Mage::helper('M2ePro')->__(
-                    'Item Price was successfully changed from %from% to %to% .',
-                    $ebayListingProduct->getOnlineCurrentPrice(),
-                    $data['online_current_price']
-                ));
+                $this->logReportChange(
+                    $listingProduct, Mage::helper('M2ePro')->__(
+                        'Item Price was successfully changed from %from% to %to% .',
+                        $ebayListingProduct->getOnlineCurrentPrice(),
+                        $data['online_current_price']
+                    )
+                );
 
                 $this->addInstruction(
                     $listingProduct, Ess_M2ePro_Model_Ebay_Listing_Product::INSTRUCTION_TYPE_CHANNEL_PRICE_CHANGED, 60
@@ -481,9 +464,10 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
      * @param Ess_M2ePro_Model_Listing_Product_Variation[] $variations
      * @return array
      */
-    private function getVariationProductPriceChanges(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                                     array $variations)
-    {
+    protected function getVariationProductPriceChanges(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        array $variations
+    ) {
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
 
@@ -500,7 +484,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
                 continue;
             }
 
-            if (!is_null($onlineCurrentPrice) && $ebayVariation->getOnlinePrice() >= $onlineCurrentPrice) {
+            if ($onlineCurrentPrice !== null && $ebayVariation->getOnlinePrice() >= $onlineCurrentPrice) {
                 continue;
             }
 
@@ -512,11 +496,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     //########################################
 
-    private function processVariationChanges(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                             array $listingProductVariations, array $changeVariations)
-    {
+    protected function processVariationChanges(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        array $listingProductVariations,
+        array $changeVariations
+    ) {
         $variationsSnapshot = $this->getVariationsSnapshot($listingProductVariations);
-        if (count($variationsSnapshot) <= 0) {
+        if (empty($variationsSnapshot)) {
             return;
         }
 
@@ -525,8 +511,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
         foreach ($changeVariations as $changeVariation) {
             foreach ($variationsSnapshot as $variationSnapshot) {
-
-                if (!$this->isVariationEqualWithChange($listingProduct,$changeVariation,$variationSnapshot)) {
+                if (!$this->isVariationEqualWithChange($listingProduct, $changeVariation, $variationSnapshot)) {
                     continue;
                 }
 
@@ -549,7 +534,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
                 if ($ebayVariation->getOnlineQty() != $updateData['online_qty'] ||
                     $ebayVariation->getOnlineQtySold() != $updateData['online_qty_sold']) {
-
                     $hasVariationQtyChanges = true;
                     $isVariationChanged     = true;
                 }
@@ -564,9 +548,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         }
 
         if ($hasVariationPriceChanges) {
-            $this->logReportChange($listingProduct, Mage::helper('M2ePro')->__(
-                'Price of some Variations was successfully changed.'
-            ));
+            $this->logReportChange(
+                $listingProduct, Mage::helper('M2ePro')->__(
+                    'Price of some Variations was successfully changed.'
+                )
+            );
 
             $this->addInstruction(
                 $listingProduct, Ess_M2ePro_Model_Ebay_Listing_Product::INSTRUCTION_TYPE_CHANNEL_PRICE_CHANGED, 60
@@ -574,9 +560,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         }
 
         if ($hasVariationQtyChanges) {
-            $this->logReportChange($listingProduct, Mage::helper('M2ePro')->__(
-                'QTY of some Variations was successfully changed.'
-            ));
+            $this->logReportChange(
+                $listingProduct, Mage::helper('M2ePro')->__(
+                    'QTY of some Variations was successfully changed.'
+                )
+            );
 
             $this->addInstruction(
                 $listingProduct, Ess_M2ePro_Model_Ebay_Listing_Product::INSTRUCTION_TYPE_CHANNEL_QTY_CHANGED, 80
@@ -590,24 +578,23 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
      * @param Ess_M2ePro_Model_Listing_Product_Variation[] $variations
      * @return array
      */
-    private function getVariationsSnapshot(array $variations)
+    protected function getVariationsSnapshot(array $variations)
     {
         $variationIds = array();
         foreach ($variations as $variation) {
             $variationIds[] = $variation->getId();
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Variation_Option_Collection $optionCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Variation_Option_Collection $optionCollection */
         $optionCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product_Variation_Option');
         $optionCollection->addFieldToFilter('listing_product_variation_id', array('in' => $variationIds));
 
         $snapshot = array();
 
         foreach ($variations as $variation) {
-
             $options = $optionCollection->getItemsByColumnValue('listing_product_variation_id', $variation->getId());
 
-            if (count($options) <= 0) {
+            if (empty($options)) {
                 continue;
             }
 
@@ -620,9 +607,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         return $snapshot;
     }
 
-    private function isVariationEqualWithChange(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                                array $changeVariation, array $variationSnapshot)
-    {
+    protected function isVariationEqualWithChange(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        array $changeVariation,
+        array $variationSnapshot
+    ) {
         if (count($variationSnapshot['options']) != count($changeVariation['specifics'])) {
             return false;
         }
@@ -644,7 +633,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             $haveOption = false;
 
             foreach ($changeVariation['specifics'] as $changeVariationOption=>$changeVariationValue) {
-
                 if ($variationSnapshotOptionName == trim($changeVariationOption) &&
                     $variationSnapshotOptionValue == trim($changeVariationValue))
                 {
@@ -663,10 +651,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     //########################################
 
-    private function prepareSinceTime($sinceTime)
+    protected function prepareSinceTime($sinceTime)
     {
         if (empty($sinceTime)) {
-
             $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
             $sinceTime->modify('-5 seconds');
 
@@ -694,23 +681,23 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     // ---------------------------------------
 
-    private function getLogsActionId()
+    protected function getLogsActionId()
     {
-        if (is_null($this->logsActionId)) {
-            $this->logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+        if ($this->_logsActionId === null) {
+            $this->_logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
         }
-        return $this->logsActionId;
+
+        return $this->_logsActionId;
     }
 
-    private function getActualListingType(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
+    protected function getActualListingType(Ess_M2ePro_Model_Listing_Product $listingProduct, array $change)
     {
         $validEbayValues = array(
             Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General::LISTING_TYPE_AUCTION,
             Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General::LISTING_TYPE_FIXED
         );
 
-        if (isset($change['listingType']) && in_array($change['listingType'],$validEbayValues)) {
-
+        if (isset($change['listingType']) && in_array($change['listingType'], $validEbayValues)) {
             switch ($change['listingType']) {
                 case Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General::LISTING_TYPE_AUCTION:
                     $result = Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION;
@@ -719,7 +706,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
                     $result = Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_FIXED;
                     break;
             }
-
         } else {
             $result = $listingProduct->getChildObject()->getListingType();
         }
@@ -729,20 +715,22 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
     //########################################
 
-    private function addInstruction(Ess_M2ePro_Model_Listing_Product $listingProduct, $type, $priority)
+    protected function addInstruction(Ess_M2ePro_Model_Listing_Product $listingProduct, $type, $priority)
     {
         $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
-        $instruction->setData(array(
+        $instruction->setData(
+            array(
             'listing_product_id' => $listingProduct->getId(),
             'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
             'type'               => $type,
             'initiator'          => self::INSTRUCTION_INITIATOR,
             'priority'           => $priority,
-        ));
+            )
+        );
         $instruction->save();
     }
 
-    private function logReportChange(Ess_M2ePro_Model_Listing_Product $listingProduct, $logMessage)
+    protected function logReportChange(Ess_M2ePro_Model_Listing_Product $listingProduct, $logMessage)
     {
         if (empty($logMessage)) {
             return;

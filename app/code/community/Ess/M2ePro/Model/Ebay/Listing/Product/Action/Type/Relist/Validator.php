@@ -14,7 +14,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Validator
     public function validate()
     {
         if (!$this->getListingProduct()->isRelistable()) {
-
             // M2ePro_TRANSLATIONS
             // The Item either is Listed, or not Listed yet or not available
             $this->addMessage('The Item either is Listed, or not Listed yet or not available');
@@ -27,7 +26,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Validator
         }
 
         if ($this->getEbayListingProduct()->isVariationsReady()) {
-
             if (!$this->validateVariationsOptions()) {
                 return false;
             }

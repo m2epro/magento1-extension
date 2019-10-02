@@ -38,11 +38,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_Marketpl
         $step = 'marketplace';
         $buttonBlock = $this->getLayout()
                         ->createBlock('adminhtml/widget_button')
-                        ->setData(array(
+                        ->setData(
+                            array(
                             'label'   => Mage::helper('M2ePro')->__('Proceed'),
                             'onclick' => 'WizardInstallationAmazonMarketplaceHandlerObj.proceedAction(\''.$step.'\');',
                             'class' => 'process_marketplace_button'
-                        ));
+                            )
+                        );
         $this->setChild('process_marketplace_button', $buttonBlock);
         // ---------------------------------------
 

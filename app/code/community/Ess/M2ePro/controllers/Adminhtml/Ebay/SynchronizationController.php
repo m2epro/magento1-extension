@@ -42,12 +42,12 @@ class Ess_M2ePro_Adminhtml_Ebay_SynchronizationController extends Ess_M2ePro_Con
     public function indexAction()
     {
         $this->_initAction()
-             ->_addContent(
-                 $this->getLayout()->createBlock(
-                     'M2ePro/adminhtml_ebay_configuration', '',
-                     array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_SYNCHRONIZATION)
-                 )
-             )->renderLayout();
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_ebay_configuration', '',
+                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_SYNCHRONIZATION)
+                )
+            )->renderLayout();
     }
 
     //########################################
@@ -71,7 +71,9 @@ class Ess_M2ePro_Adminhtml_Ebay_SynchronizationController extends Ess_M2ePro_Con
             ->getSize();
 
         // M2ePro_TRANSLATIONS
-        // eBay 3rd Party Listings are being downloaded now. They will be available soon in %menu_root%. You can continue working with M2E Pro.
+        // eBay 3rd Party Listings are being downloaded now.
+        // They will be available soon in %menu_root%.
+        // You can continue working with M2E Pro.
         if ($synchronizationEbayOtherListingsProcessing > 0) {
             $warningMessages[] = Mage::helper('M2ePro')->__(
                 'eBay 3rd Party Listings are being downloaded now. ' .
@@ -81,9 +83,13 @@ class Ess_M2ePro_Adminhtml_Ebay_SynchronizationController extends Ess_M2ePro_Con
             );
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'messages' => $warningMessages
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'messages' => $warningMessages
+                )
+            )
+        );
     }
 
     //########################################
@@ -114,9 +120,13 @@ class Ess_M2ePro_Adminhtml_Ebay_SynchronizationController extends Ess_M2ePro_Con
 
         $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
 
-        $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'start_date' => Mage::app()->getLocale()->date(strtotime($startDate))->toString($format)
-        )));
+        $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'start_date' => Mage::app()->getLocale()->date(strtotime($startDate))->toString($format)
+                )
+            )
+        );
     }
 
     //########################################

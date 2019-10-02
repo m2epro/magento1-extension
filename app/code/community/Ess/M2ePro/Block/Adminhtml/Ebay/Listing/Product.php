@@ -29,11 +29,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
         // Set header text
         // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products", $componentName);
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                "%component_name% / Select Products",
+                Mage::helper('M2ePro/Component_Ebay')->getTitle()
+            );
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__("Select Products");
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -53,28 +56,35 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
             $url = Mage::helper('M2ePro')->getBackUrl();
         }
 
-        $this->_addButton('back', array(
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'class'     => 'back',
             'onclick'   => 'setLocation(\''.$url.'\')'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
         if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            $this->_addButton('auto_action', array(
+            $this->_addButton(
+                'auto_action', array(
                 'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
                 'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
-            ));
+                )
+            );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('continue', array(
+        $this->_addButton(
+            'continue', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'class'     => 'scalable next',
             'onclick'   => 'ListingProductAddHandlerObj.continue();'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -104,7 +114,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
 
     //########################################
 
-    private function getVideoTutorialHtml()
+    protected function getVideoTutorialHtml()
     {
         $videoId = 'iBEiQ8Ilya8';
         if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
@@ -131,7 +141,7 @@ HTML;
 
     //########################################
 
-    private function getAutoactionPopupHtml()
+    protected function getAutoactionPopupHtml()
     {
         $helper = Mage::helper('M2ePro');
 
@@ -171,7 +181,7 @@ HTML;
 
     //########################################
 
-    private function getSettingsPopupHtml()
+    protected function getSettingsPopupHtml()
     {
         $helper = Mage::helper('M2ePro');
 
@@ -198,7 +208,8 @@ JS;
         // ---------------------------------------
 
         // M2ePro_TRANSLATIONS
-        // Choose <b>Yes</b> if you want to override the Default Settings for this M2E Pro Listing and to choose Different Settings for certain Products.
+        // Choose <b>Yes</b> if you want to override the Default Settings for this M2E Pro Listing
+        // and to choose Different Settings for certain Products.
         return <<<HTML
 <div id="settings_popup_content" style="display: none">
     <div style="margin: 10px; height: 150px">

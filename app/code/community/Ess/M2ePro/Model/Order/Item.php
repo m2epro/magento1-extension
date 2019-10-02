@@ -6,8 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Order_Item as AmazonOrderItem;
+use Ess_M2ePro_Model_Ebay_Order_Item as EbayOrderItem;
+use Ess_M2ePro_Model_Walmart_Order_Item as WalmartOrderItem;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Order_Item|Ess_M2ePro_Model_Ebay_Order_Item|Ess_M2ePro_Model_Walmart_Order_Item getChildObject()
+ * @method AmazonOrderItem|EbayOrderItem|WalmartOrderItem getChildObject()
  */
 class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -17,14 +21,14 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
     // Order Import does not support product type: %type%.
 
     /** @var Ess_M2ePro_Model_Order */
-    private $order = NULL;
+    protected $_order = null;
 
     /** @var Ess_M2ePro_Model_Magento_Product */
-    private $magentoProduct = NULL;
+    protected $_magentoProduct = null;
 
-    private $proxy = NULL;
+    protected $_proxy = null;
 
-    private static $supportedProductTypes = array(
+    private static $_supportedProductTypes = array(
         Mage_Catalog_Model_Product_Type::TYPE_SIMPLE,
         Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE,
         Mage_Catalog_Model_Product_Type::TYPE_GROUPED,
@@ -61,7 +65,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             return false;
         }
 
-        $this->order = NULL;
+        $this->_order = NULL;
 
         $this->deleteChildInstance();
         $this->delete();
@@ -130,7 +134,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
      */
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
-        $this->order = $order;
+        $this->_order = $order;
         return $this;
     }
 
@@ -140,12 +144,12 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
      */
     public function getOrder()
     {
-        if (is_null($this->order)) {
-            $this->order = Mage::helper('M2ePro/Component')
-                ->getComponentObject($this->getComponentMode(), 'Order', $this->getOrderId());
+        if ($this->_order === null) {
+            $this->_order = Mage::helper('M2ePro/Component')
+                                ->getComponentObject($this->getComponentMode(), 'Order', $this->getOrderId());
         }
 
-        return $this->order;
+        return $this->_order;
     }
 
     //########################################
@@ -153,21 +157,22 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
     public function setProduct($product)
     {
         if (!$product instanceof Mage_Catalog_Model_Product) {
-            $this->magentoProduct = null;
+            $this->_magentoProduct = null;
             return $this;
         }
 
-        if (is_null($this->magentoProduct)) {
-            $this->magentoProduct = Mage::getModel('M2ePro/Magento_Product');
+        if ($this->_magentoProduct === null) {
+            $this->_magentoProduct = Mage::getModel('M2ePro/Magento_Product');
         }
-        $this->magentoProduct->setProduct($product);
+
+        $this->_magentoProduct->setProduct($product);
 
         return $this;
     }
 
     public function getProduct()
     {
-        if (is_null($this->getProductId())) {
+        if ($this->getProductId() === null) {
             return NULL;
         }
 
@@ -176,29 +181,29 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
 
     public function getMagentoProduct()
     {
-        if (is_null($this->getProductId())) {
-            return NULL;
+        if ($this->getProductId() === null) {
+            return null;
         }
 
-        if (is_null($this->magentoProduct)) {
-            $this->magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-            $this->magentoProduct
+        if ($this->_magentoProduct === null) {
+            $this->_magentoProduct = Mage::getModel('M2ePro/Magento_Product');
+            $this->_magentoProduct
                 ->setStoreId($this->getOrder()->getStoreId())
                 ->setProductId($this->getProductId());
         }
 
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     //########################################
 
     public function getProxy()
     {
-        if (is_null($this->proxy)) {
-            $this->proxy = $this->getChildObject()->getProxy();
+        if ($this->_proxy === null) {
+            $this->_proxy = $this->getChildObject()->getProxy();
         }
 
-        return $this->proxy;
+        return $this->_proxy;
     }
 
     //########################################
@@ -207,7 +212,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
     {
         $channelItem = $this->getChildObject()->getChannelItem();
 
-        if (is_null($channelItem)) {
+        if ($channelItem === null) {
             return $this->getOrder()->getStoreId();
         }
 
@@ -217,7 +222,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             return $storeId;
         }
 
-        if (is_null($this->getProductId())) {
+        if ($this->getProductId() === null) {
             return Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
         }
 
@@ -259,11 +264,11 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
      */
     public function associateWithProduct()
     {
-        if (is_null($this->getProductId()) || !$this->getMagentoProduct()->exists()) {
+        if ($this->getProductId() === null || !$this->getMagentoProduct()->exists()) {
             $this->assignProduct($this->getChildObject()->getAssociatedProductId());
         }
 
-        if (!in_array($this->getMagentoProduct()->getTypeId(), self::$supportedProductTypes)) {
+        if (!in_array($this->getMagentoProduct()->getTypeId(), self::$_supportedProductTypes)) {
             $message = Mage::helper('M2ePro/Module_Log')->encodeDescription(
                 'Order Import does not support Product type: %type%.', array(
                     'type' => $this->getMagentoProduct()->getTypeId()
@@ -288,7 +293,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
      * @throws LogicException
      * @throws Exception
      */
-    private function associateVariationWithOptions()
+    protected function associateVariationWithOptions()
     {
         $variationChannelOptions = $this->getChildObject()->getVariationChannelOptions();
         $magentoProduct   = $this->getMagentoProduct();
@@ -309,7 +314,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         if (!empty($variationChannelOptions)) {
             $matchingHash = Ess_M2ePro_Model_Order_Matching::generateHash($variationChannelOptions);
 
-            /** @var Ess_M2ePro_Model_Mysql4_Order_Matching_Collection $matchingCollection */
+            /** @var Ess_M2ePro_Model_Resource_Order_Matching_Collection $matchingCollection */
             $matchingCollection = Mage::getModel('M2ePro/Order_Matching')->getCollection();
             $matchingCollection->addFieldToFilter('product_id', $this->getProductId());
             $matchingCollection->addFieldToFilter('component', $this->getComponentMode());
@@ -338,7 +343,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $existOptionsIds = array_keys($existOptions);
         $foundOptionsIds = array_keys($productDetails['associated_options']);
 
-        if (count($existOptions) == 0 && count($existProducts) == 0) {
+        if (empty($existOptions) && empty($existProducts)) {
             // options mapping invoked for the first time, use found options
             $this->setAssociatedOptions($productDetails['associated_options']);
 
@@ -351,7 +356,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             return;
         }
 
-        if (count(array_diff($foundOptionsIds, $existOptionsIds)) > 0) {
+        if (!empty(array_diff($foundOptionsIds, $existOptionsIds))) {
             // options were already mapped, but not all of them
             throw new Ess_M2ePro_Model_Exception_Logic('Selected Options do not match the Product Options.');
         }
@@ -362,7 +367,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
      * @return array
      * @throws Ess_M2ePro_Model_Exception
      */
-    private function getAssociatedProductDetails(Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    protected function getAssociatedProductDetails(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         if (!$magentoProduct->getTypeId()) {
             return array();
@@ -435,8 +440,8 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             throw new Ess_M2ePro_Model_Exception_Logic('Product does not exist.');
         }
 
-        if (count($associatedProducts) == 0
-            || (!$magentoProduct->isGroupedType() && count($associatedOptions) == 0)
+        if (empty($associatedProducts)
+            || (!$magentoProduct->isGroupedType() && empty($associatedOptions))
         ) {
             throw new InvalidArgumentException('Required Options were not selected.');
         }

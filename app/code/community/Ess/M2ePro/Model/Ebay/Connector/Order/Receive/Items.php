@@ -23,12 +23,12 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
     public function getRequestData()
     {
         $data = array(
-            'from_update_date' => $this->params['from_update_date'],
-            'to_update_date' => $this->params['to_update_date']
+            'from_update_date' => $this->_params['from_update_date'],
+            'to_update_date' => $this->_params['to_update_date']
         );
 
-        if (!empty($this->params['job_token'])) {
-            $data['job_token'] = $this->params['job_token'];
+        if (!empty($this->_params['job_token'])) {
+            $data['job_token'] = $this->_params['job_token'];
         }
 
         return $data;
@@ -42,14 +42,10 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
         $cacheConfigGroup = '/ebay/synchronization/orders/receive/timeout';
 
         try {
-
             parent::process();
-
         } catch (Ess_M2ePro_Model_Exception_Connection $exception) {
-
             $data = $exception->getAdditionalData();
             if (!empty($data['curl_error_number']) && $data['curl_error_number'] == CURLE_OPERATION_TIMEOUTED) {
-
                 $fails = (int)$cacheConfig->getGroupValue($cacheConfigGroup, 'fails');
                 $fails++;
 
@@ -57,10 +53,10 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
                 $rise += self::TIMEOUT_RISE_ON_ERROR;
 
                 if ($fails >= self::TIMEOUT_ERRORS_COUNT_TO_RISE && $rise <= self::TIMEOUT_RISE_MAX_VALUE) {
-
                     $fails = 0;
                     $cacheConfig->setGroupValue($cacheConfigGroup, 'rise', $rise);
                 }
+
                 $cacheConfig->setGroupValue($cacheConfigGroup, 'fails', $fails);
             }
 

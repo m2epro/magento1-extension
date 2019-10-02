@@ -10,21 +10,21 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 {
     //########################################
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = null;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    private $marketplaceId = null;
+    protected $_marketplaceId = null;
 
-    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent $typeModel */
-    private $typeModel = null;
+    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent $_typeModel */
+    protected $_typeModel = null;
 
-    /** @var Ess_M2ePro_Model_Template_Description $descriptionTemplate */
-    private $descriptionTemplate = null;
+    /** @var Ess_M2ePro_Model_Template_Description $_descriptionTemplate */
+    protected $_descriptionTemplate = null;
 
     /** @var Ess_M2ePro_Model_Walmart_Template_Category $descriptionTemplate */
-    private $walmartCategoryTemplate = null;
+    protected $_walmartCategoryTemplate = null;
 
-    private $possibleChannelAttributes = null;
+    protected $_possibleChannelAttributes = null;
 
     //########################################
 
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     /**
@@ -50,7 +50,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function setListingProduct($listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -58,7 +58,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 
     public function process()
     {
-        if (is_null($this->listingProduct)) {
+        if ($this->_listingProduct === null) {
             throw new Ess_M2ePro_Model_Exception('Listing Product was not set.');
         }
 
@@ -68,14 +68,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
             $this->getProcessorModel($processor)->process();
         }
 
-        $this->listingProduct->setData('variation_parent_need_processor', 0);
+        $this->_listingProduct->setData('variation_parent_need_processor', 0);
 
-        $this->listingProduct->save();
+        $this->_listingProduct->save();
     }
 
     //########################################
 
-    private function getSortedProcessors()
+    protected function getSortedProcessors()
     {
         return array(
             'Template',
@@ -91,7 +91,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      * @param  string $processorName
      * @return Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_Abstract
      */
-    private function getProcessorModel($processorName)
+    protected function getProcessorModel($processorName)
     {
         $model = Mage::getModel(
             'M2ePro/Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Sub_'.$processorName
@@ -127,13 +127,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getTypeModel()
     {
-        if (!is_null($this->typeModel)) {
-            return $this->typeModel;
+        if ($this->_typeModel !== null) {
+            return $this->_typeModel;
         }
 
-        return $this->typeModel = $this->getWalmartListingProduct()
-            ->getVariationManager()
-            ->getTypeModel();
+        return $this->_typeModel = $this->getWalmartListingProduct()
+                                        ->getVariationManager()
+                                        ->getTypeModel();
     }
 
     //########################################
@@ -164,11 +164,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getDescriptionTemplate()
     {
-        if (!is_null($this->descriptionTemplate)) {
-            return $this->descriptionTemplate;
+        if ($this->_descriptionTemplate !== null) {
+            return $this->_descriptionTemplate;
         }
 
-        return $this->descriptionTemplate = $this->getWalmartListingProduct()->getDescriptionTemplate();
+        return $this->_descriptionTemplate = $this->getWalmartListingProduct()->getDescriptionTemplate();
     }
 
     /**
@@ -186,11 +186,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getWalmartCategoryTemplate()
     {
-        if (!is_null($this->walmartCategoryTemplate)) {
-            return $this->walmartCategoryTemplate;
+        if ($this->_walmartCategoryTemplate !== null) {
+            return $this->_walmartCategoryTemplate;
         }
 
-        return $this->walmartCategoryTemplate = $this->getWalmartListingProduct()->getCategoryTemplate();
+        return $this->_walmartCategoryTemplate = $this->getWalmartListingProduct()->getCategoryTemplate();
     }
 
     //########################################
@@ -200,8 +200,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getPossibleChannelAttributes()
     {
-        if (!is_null($this->possibleChannelAttributes)) {
-            return $this->possibleChannelAttributes;
+        if ($this->_possibleChannelAttributes !== null) {
+            return $this->_possibleChannelAttributes;
         }
 
         $possibleChannelAttributes = Mage::getModel('M2ePro/Walmart_Marketplace_Details')
@@ -210,7 +210,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
                 $this->getWalmartCategoryTemplate()->getProductDataNick()
             );
 
-        return $this->possibleChannelAttributes = $possibleChannelAttributes;
+        return $this->_possibleChannelAttributes = $possibleChannelAttributes;
     }
 
     /**
@@ -218,11 +218,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getMarketplaceId()
     {
-        if (!is_null($this->marketplaceId)) {
-            return $this->marketplaceId;
+        if ($this->_marketplaceId !== null) {
+            return $this->_marketplaceId;
         }
 
-        return $this->marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
+        return $this->_marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
     }
 
     //########################################

@@ -14,7 +14,6 @@ class Ess_M2ePro_Model_Issue_Notification_Channel_Magento_Session
     public function addMessage(Ess_M2ePro_Model_Issue_Object $issue)
     {
         switch ($issue->getType()) {
-
             case Mage_Core_Model_Message::NOTICE:
                 Mage::getSingleton('adminhtml/session')->addNotice($issue->getText());
                 break;
@@ -32,9 +31,11 @@ class Ess_M2ePro_Model_Issue_Notification_Channel_Magento_Session
                 break;
 
             default;
-                throw new Ess_M2ePro_Model_Exception_Logic(sprintf(
-                    'Unsupported message type [%s]', $issue->getType()
-                ));
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    sprintf(
+                        'Unsupported message type [%s]', $issue->getType()
+                    )
+                );
         }
     }
 

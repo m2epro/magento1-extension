@@ -24,12 +24,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_SellingFormat_Edit_Form extends
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -42,21 +44,25 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_SellingFormat_Edit_Form extends
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'onclick' => 'AmazonTemplateSellingFormatHandlerObj.addRow(\'fixed\');',
                 'class' => 'add add_discount_rule_button'
-            ));
+                )
+            );
         $this->setChild('add_custom_value_discount_rule_button', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Remove'),
                 'onclick' => 'AmazonTemplateSellingFormatHandlerObj.removeRow(this);',
                 'class' => 'delete icon-btn remove_discount_rule_button'
-            ));
+                )
+            );
         $this->setChild('remove_discount_rule_button', $buttonBlock);
         // ---------------------------------------
 

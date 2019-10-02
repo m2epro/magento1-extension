@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Source
 {
     /**
-     * @var Ess_M2ePro_Model_Magento_Product $magentoProduct
+     * @var Ess_M2ePro_Model_Magento_Product $_magentoProduct
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var Ess_M2ePro_Model_Amazon_Template_ProductTaxCode $productTaxCodeTemplateModel
+     * @var Ess_M2ePro_Model_Amazon_Template_ProductTaxCode $_productTaxCodeTemplateModel
      */
-    private $productTaxCodeTemplateModel = null;
+    protected $_productTaxCodeTemplateModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Source
      */
     public function setProductTaxCodeTemplate(Ess_M2ePro_Model_Amazon_Template_ProductTaxCode $instance)
     {
-        $this->productTaxCodeTemplateModel = $instance;
+        $this->_productTaxCodeTemplateModel = $instance;
         return $this;
     }
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Source
      */
     public function getProductTaxCodeTemplate()
     {
-        return $this->productTaxCodeTemplateModel;
+        return $this->_productTaxCodeTemplateModel;
     }
 
     //########################################

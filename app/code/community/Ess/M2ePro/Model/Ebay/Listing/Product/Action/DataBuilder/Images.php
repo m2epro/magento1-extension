@@ -25,7 +25,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
         $galleryImages = $this->getEbayListingProduct()->getDescriptionTemplateSource()->getGalleryImages();
 
         foreach ($galleryImages as $image) {
-
             if (!$image->getUrl()) {
                 continue;
             }
@@ -47,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
             'images' => $data,
         );
 
-        if (!$this->isVariationItem) {
+        if (!$this->_isVariationItem) {
             return $result;
         }
 
@@ -58,7 +57,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
 
     //########################################
 
-    private function getVariationImage()
+    protected function getVariationImage()
     {
         $attributeLabels = array();
 
@@ -70,14 +69,14 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
             $attributeLabels = array(Ess_M2ePro_Model_Magento_Product_Variation::GROUPED_PRODUCT_ATTRIBUTE_LABEL);
         }
 
-        if (count($attributeLabels) <= 0) {
+        if (empty($attributeLabels)) {
             return array();
         }
 
         return $this->getImagesDataByAttributeLabels($attributeLabels);
     }
 
-    private function getConfigurableImagesAttributeLabels()
+    protected function getConfigurableImagesAttributeLabels()
     {
         $descriptionTemplate = $this->getEbayListingProduct()->getEbayDescriptionTemplate();
 
@@ -117,13 +116,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
             $configurableAttribute->setStoteId($product->getStoreId());
 
             foreach ($attributes as $attribute) {
-
                 if ((int)$attribute->getAttributeId() == (int)$configurableAttribute->getAttributeId()) {
-
                     $attributeLabels = array();
                     foreach ($attribute->getStoreLabels() as $storeLabel) {
                         $attributeLabels[] = trim($storeLabel);
                     }
+
                     $attributeLabels[] = trim($configurableAttribute->getData('label'));
                     $attributeLabels[] = trim($attribute->getFrontendLabel());
 
@@ -135,7 +133,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
         }
 
         if (empty($attributeLabels)) {
-
             $this->addNotFoundAttributesMessages(
                 Mage::helper('M2ePro')->__('Change Images for Attribute'),
                 $attributes
@@ -147,7 +144,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
         return $attributeLabels;
     }
 
-    private function getImagesDataByAttributeLabels(array $attributeLabels)
+    protected function getImagesDataByAttributeLabels(array $attributeLabels)
     {
         $images = array();
         $imagesLinks = array();
@@ -189,7 +186,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
                     ->getVariationImages();
 
                 foreach ($optionImages as $image) {
-
                     if (!$image->getUrl()) {
                         continue;
                     }
@@ -199,7 +195,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Images
                     }
 
                     if (!isset($images[$image->getHash()])) {
-
                         $imagesLinks[$optionValue][] = $image->getUrl();
                         $images[$image->getHash()] = $image;
                     }

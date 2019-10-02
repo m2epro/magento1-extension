@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Ktype_Grid
 
     protected function _prepareCollection()
     {
-        $collection = new Ess_M2ePro_Model_Mysql4_Ebay_Motor_Ktypes_Collection('ktype');
+        $collection = new Ess_M2ePro_Model_Resource_Ebay_Motor_Ktypes_Collection('ktype');
 
         $this->setCollection($collection);
 
@@ -24,56 +24,69 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Ktype_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('ktype', array(
+        $this->addColumn(
+            'ktype', array(
             'header' => Mage::helper('M2ePro')->__('kType'),
             'align'  => 'left',
             'type'   => 'text',
             'index'  => 'ktype',
             'width'  => '100px',
             'frame_callback' => array($this, 'callbackColumnIdentifier')
-        ));
+            )
+        );
 
-        $this->addColumn('make', array(
+        $this->addColumn(
+            'make', array(
             'header' => Mage::helper('M2ePro')->__('Make'),
             'align'  => 'left',
             'type'   => 'text',
             'index'  => 'make',
             'width'  => '150px'
-        ));
+            )
+        );
 
-        $this->addColumn('model', array(
+        $this->addColumn(
+            'model', array(
             'header' => Mage::helper('M2ePro')->__('Model'),
             'align'  => 'left',
             'type'   => 'text',
             'index'  => 'model',
             'width'  => '150px'
-        ));
+            )
+        );
 
-        $this->addColumn('variant', array(
+        $this->addColumn(
+            'variant', array(
             'header' => Mage::helper('M2ePro')->__('Variant'),
             'align'  => 'left',
             'type'   => 'text',
             'index'  => 'variant',
             'width'  => '150px'
-        ));
+            )
+        );
 
-        $this->addColumn('body_style', array(
+        $this->addColumn(
+            'body_style', array(
             'header' => Mage::helper('M2ePro')->__('Body Style'),
             'align'  => 'left',
             'type'   => 'text',
             'index'  => 'body_style',
             'width'  => '150px'
-        ));
+            )
+        );
 
-        $this->addColumn('type', array(
+        $this->addColumn(
+            'type', array(
             'header' => Mage::helper('M2ePro')->__('Type'),
             'align'  => 'left',
             'type'   => 'text',
             'index'  => 'type',
             'width'  => '150px'
-        ));
+            )
+        );
 
-        $this->addColumn('year', array(
+        $this->addColumn(
+            'year', array(
             'header' => Mage::helper('M2ePro')->__('Year'),
             'align'  => 'left',
             'type'   => 'text',
@@ -82,16 +95,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Ktype_Grid
             'filter_index' => 'from_year',
             'frame_callback'            => array($this, 'callbackYearColumn'),
             'filter_condition_callback' => array($this, 'yearColumnFilter'),
-        ));
+            )
+        );
 
-        $this->addColumn('engine', array(
+        $this->addColumn(
+            'engine', array(
             'header' => Mage::helper('M2ePro')->__('Engine'),
             'align'  => 'left',
             'type'   => 'text',
             'index'  => 'engine',
             'width'  => '100px',
             'frame_callback' => array($this, 'callbackNullableColumn')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

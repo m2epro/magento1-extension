@@ -9,13 +9,13 @@
 abstract class Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTemplate_Checker_Abstract
 {
     /** @var Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTemplate_Checker_Input */
-    protected $input = NULL;
+    protected $_input = null;
 
     //########################################
 
     public function setInput(Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTemplate_Checker_Input $input)
     {
-        $this->input = $input;
+        $this->_input = $input;
         return $this;
     }
 
@@ -41,7 +41,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTempl
             return;
         }
 
-        $additionalData = $this->input->getListingProduct()->getAdditionalData();
+        $additionalData = $this->_input->getListingProduct()->getAdditionalData();
 
         $existedProperties = array();
         if (!empty($additionalData['recheck_properties'])) {
@@ -51,7 +51,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTempl
         $properties = array_unique(array_merge($existedProperties, $properties));
 
         $additionalData['recheck_properties'] = $properties;
-        $this->input->getListingProduct()->setSettings('additional_data', $additionalData)->save();
+        $this->_input->getListingProduct()->setSettings('additional_data', $additionalData)->save();
     }
 
     //########################################

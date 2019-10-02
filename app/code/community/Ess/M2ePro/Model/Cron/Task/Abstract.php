@@ -10,21 +10,21 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 {
     const NICK = NULL;
 
-    private $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
+    protected $_initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
 
     /**
      * @var Ess_M2ePro_Model_Lock_Item_Manager
      */
-    private $lockItemManager = NULL;
+    protected $_lockItemManager = null;
 
     /**
      * @var Ess_M2ePro_Model_Cron_OperationHistory
      */
-    private $operationHistory       = NULL;
+    protected $_operationHistory = null;
     /**
      * @var Ess_M2ePro_Model_Cron_OperationHistory
      */
-    private $parentOperationHistory = NULL;
+    protected $_parentOperationHistory = null;
 
     //########################################
 
@@ -43,7 +43,6 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
         $result = true;
 
         try {
-
             Mage::dispatchEvent(
                 Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_START_EVENT_NAME,
                 array('progress_nick' => $this->getNick())
@@ -51,7 +50,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
             $tempResult = $this->performActions();
 
-            if (!is_null($tempResult) && !$tempResult) {
+            if ($tempResult !== null && !$tempResult) {
                 $result = false;
             }
 
@@ -61,17 +60,17 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
             );
 
             $this->getLockItemManager()->activate();
-
         } catch (Exception $exception) {
-
             $result = false;
 
-            $this->getOperationHistory()->addContentData('exceptions', array(
+            $this->getOperationHistory()->addContentData(
+                'exceptions', array(
                 'message' => $exception->getMessage(),
                 'file'    => $exception->getFile(),
                 'line'    => $exception->getLine(),
                 'trace'   => $exception->getTraceAsString(),
-            ));
+                )
+            );
 
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
@@ -101,12 +100,12 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
     public function setInitiator($value)
     {
-        $this->initiator = (int)$value;
+        $this->_initiator = (int)$value;
     }
 
     public function getInitiator()
     {
-        return $this->initiator;
+        return $this->_initiator;
     }
 
     // ---------------------------------------
@@ -117,7 +116,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     public function setLockItemManager(Ess_M2ePro_Model_Lock_Item_Manager $lockItemManager)
     {
-        $this->lockItemManager = $lockItemManager;
+        $this->_lockItemManager = $lockItemManager;
         return $this;
     }
 
@@ -126,7 +125,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     public function getLockItemManager()
     {
-        return $this->lockItemManager;
+        return $this->_lockItemManager;
     }
 
     // ---------------------------------------
@@ -137,7 +136,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     public function setParentOperationHistory(Ess_M2ePro_Model_Cron_OperationHistory $object)
     {
-        $this->parentOperationHistory = $object;
+        $this->_parentOperationHistory = $object;
         return $this;
     }
 
@@ -146,7 +145,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     public function getParentOperationHistory()
     {
-        return $this->parentOperationHistory;
+        return $this->_parentOperationHistory;
     }
 
     // ---------------------------------------
@@ -157,7 +156,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     protected function getSynchronizationLog()
     {
         $synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $synchronizationLog->setInitiator($this->initiator);
+        $synchronizationLog->setInitiator($this->_initiator);
         $synchronizationLog->setOperationHistoryId($this->getOperationHistory()->getId());
 
         return $synchronizationLog;
@@ -189,12 +188,12 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
     protected function updateLastAccess()
     {
-        $this->setConfigValue('last_access',Mage::helper('M2ePro')->getCurrentGmtDate());
+        $this->setConfigValue('last_access', Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 
     protected function updateLastRun()
     {
-        $this->setConfigValue('last_run',Mage::helper('M2ePro')->getCurrentGmtDate());
+        $this->setConfigValue('last_run', Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 
     // ---------------------------------------
@@ -220,11 +219,11 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     protected function getOperationHistory()
     {
-        if (!is_null($this->operationHistory)) {
-            return $this->operationHistory;
+        if ($this->_operationHistory !== null) {
+            return $this->_operationHistory;
         }
 
-        return $this->operationHistory = Mage::getModel('M2ePro/Cron_OperationHistory');
+        return $this->_operationHistory = Mage::getModel('M2ePro/Cron_OperationHistory');
     }
 
     // ---------------------------------------
@@ -244,7 +243,7 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     {
         $lastRun = $this->getConfigValue('last_run');
 
-        if (is_null($lastRun)) {
+        if ($lastRun === null) {
             return true;
         }
 
@@ -258,12 +257,14 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
     protected function processTaskException(Exception $exception)
     {
-        $this->getOperationHistory()->addContentData('exceptions', array(
+        $this->getOperationHistory()->addContentData(
+            'exceptions', array(
             'message' => $exception->getMessage(),
             'file'    => $exception->getFile(),
             'line'    => $exception->getLine(),
             'trace'   => $exception->getTraceAsString(),
-        ));
+            )
+        );
 
         $this->getSynchronizationLog()->addMessage(
             Mage::helper('M2ePro')->__($exception->getMessage()),
@@ -276,12 +277,14 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
     protected function processTaskAccountException($message, $file, $line, $trace = null)
     {
-        $this->getOperationHistory()->addContentData('exceptions', array(
+        $this->getOperationHistory()->addContentData(
+            'exceptions', array(
             'message' => $message,
             'file'    => $file,
             'line'    => $line,
             'trace'   => $trace,
-        ));
+            )
+        );
 
         $this->getSynchronizationLog()->addMessage(
             $message,

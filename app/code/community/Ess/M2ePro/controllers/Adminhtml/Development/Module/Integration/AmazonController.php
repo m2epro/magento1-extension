@@ -12,12 +12,60 @@ class Ess_M2ePro_Adminhtml_Development_Module_Integration_AmazonController
     //########################################
 
     /**
+     * @title "Reset 3rd Party"
+     * @description "Clear all 3rd party items for all Accounts"
+     */
+    public function resetOtherListingsAction()
+    {
+        $listingOther = Mage::getModel('M2ePro/Listing_Other');
+        $amazonListingOther = Mage::getModel('M2ePro/Amazon_Listing_Other');
+
+        $stmt = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other')->getSelect()->query();
+
+        $SKUs = array();
+        foreach ($stmt as $row) {
+            $listingOther->setData($row);
+            $amazonListingOther->setData($row);
+
+            $listingOther->setChildObject($amazonListingOther);
+            $amazonListingOther->setParentObject($listingOther);
+            $SKUs[] = $amazonListingOther->getSku();
+
+            $listingOther->deleteInstance();
+        }
+
+        $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix('m2epro_amazon_item');
+        $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
+        foreach (array_chunk($SKUs, 1000) as $chunkSKUs) {
+            $writeConnection->delete($tableName, array('sku IN (?)' => $chunkSKUs));
+        }
+
+        $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
+        $accountsCollection->addFieldToFilter(
+            'other_listings_synchronization',
+            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+        );
+
+        foreach ($accountsCollection->getItems() as $account) {
+            $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($account->getAdditionalData());
+            unset(
+                $additionalData['is_amazon_other_listings_full_items_data_already_received'],
+                $additionalData['last_other_listing_products_synchronization']
+            );
+            $account->setSettings('additional_data', $additionalData)->save();
+        }
+
+        $this->_getSession()->addSuccess('Successfully removed.');
+        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
+    }
+
+    /**
      * @title "Show Duplicates [listing_id/sku]"
      * @description "[MAX(id) will be saved]"
      */
     public function showAmazonDuplicatesAction()
     {
-        /* @var $writeConnection Varien_Db_Adapter_Pdo_Mysql */
+        /** @var $writeConnection Varien_Db_Adapter_Pdo_Mysql */
         $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
         $structureHelper = Mage::helper('M2ePro/Module_Database_Structure');
 
@@ -27,27 +75,37 @@ class Ess_M2ePro_Adminhtml_Development_Module_Integration_AmazonController
 
         $subQuery = $writeConnection
             ->select()
-            ->from(array('malp' => $alp),
-                   array('general_id','sku'))
-            ->joinInner(array('mlp' => $lp),
-                        'mlp.id = malp.listing_product_id',
-                        array('listing_id',
+            ->from(
+                array('malp' => $alp),
+                array('general_id','sku')
+            )
+            ->joinInner(
+                array('mlp' => $lp),
+                'mlp.id = malp.listing_product_id',
+                array('listing_id',
                               'product_id',
                               new Zend_Db_Expr('COUNT(product_id) - 1 AS count_of_duplicates'),
                               new Zend_Db_Expr('MAX(mlp.id) AS save_this_id'),
-                        ))
+                )
+            )
             ->group(array('mlp.listing_id', 'malp.sku'))
             ->having(new Zend_Db_Expr('count_of_duplicates > 0'));
 
         $query = $writeConnection
             ->select()
-            ->from(array('malp' => $alp),
-                   array('listing_product_id'))
-            ->joinInner(array('mlp' => $lp),
-                        'mlp.id = malp.listing_product_id',
-                        array('status'))
-            ->joinInner(array('templ_table' => $subQuery),
-                        'malp.sku = templ_table.sku AND mlp.listing_id = templ_table.listing_id')
+            ->from(
+                array('malp' => $alp),
+                array('listing_product_id')
+            )
+            ->joinInner(
+                array('mlp' => $lp),
+                'mlp.id = malp.listing_product_id',
+                array('status')
+            )
+            ->joinInner(
+                array('templ_table' => $subQuery),
+                'malp.sku = templ_table.sku AND mlp.listing_id = templ_table.listing_id'
+            )
             ->where('malp.listing_product_id <> templ_table.save_this_id')
             ->query();
 
@@ -55,9 +113,7 @@ class Ess_M2ePro_Adminhtml_Development_Module_Integration_AmazonController
         $duplicated = array();
 
         while ($row = $query->fetch()) {
-
             if ((bool)$this->getRequest()->getParam('remove', false)) {
-
                 $writeConnection->delete(
                     $lp, array('id = ?' => $row['listing_product_id'])
                 );
@@ -77,8 +133,7 @@ class Ess_M2ePro_Adminhtml_Development_Module_Integration_AmazonController
             $duplicated[$row['save_this_id']] = $row;
         }
 
-        if (count($duplicated) <= 0) {
-
+        if (empty($duplicated)) {
             $message = 'There are no duplicates.';
             $removed > 0 && $message .= ' Removed: ' . $removed;
 
@@ -126,7 +181,7 @@ HTML;
 
     //########################################
 
-    private function getEmptyResultsHtml($messageText)
+    protected function getEmptyResultsHtml($messageText)
     {
         $backUrl = Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl();
 

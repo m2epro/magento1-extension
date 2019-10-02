@@ -11,22 +11,22 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    protected $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     /**
      * @var array
      */
-    protected $cachedData = array();
+    protected $_cachedData = array();
 
     /**
      * @var array
      */
-    protected $params = array();
+    protected $_params = array();
 
     /**
      * @var array
      */
-    private $warningMessages = array();
+    protected $_warningMessages = array();
 
     //########################################
 
@@ -36,7 +36,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -48,7 +48,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
      */
     public function setCachedData(array $data)
     {
-        $this->cachedData = $data;
+        $this->_cachedData = $data;
         return $this;
     }
 
@@ -60,7 +60,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
      */
     public function setParams(array $params = array())
     {
-        $this->params = $params;
+        $this->_params = $params;
         return $this;
     }
 
@@ -125,7 +125,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
      */
     protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     /**
@@ -182,16 +182,19 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
 
         foreach ($attributes as $attribute) {
             $attributesTitles[] = Mage::helper('M2ePro/Magento_Attribute')
-                ->getAttributeLabel($attribute,
-                    $this->getListing()->getStoreId());
+                ->getAttributeLabel(
+                    $attribute,
+                    $this->getListing()->getStoreId()
+                );
         }
+
         // M2ePro_TRANSLATIONS
         // %attribute_title%: Attribute(s) %attributes% were not found in this Product and its value was not sent.
         $this->addWarningMessage(
             Mage::helper('M2ePro')->__(
                 '%attribute_title%: Attribute(s) %attributes% were not found'.
                 ' in this Product and its value was not sent.',
-                Mage::helper('M2ePro')->__($title), implode(',',$attributesTitles)
+                Mage::helper('M2ePro')->__($title), implode(',', $attributesTitles)
             )
         );
     }
@@ -200,7 +203,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
 
     protected function addWarningMessage($message)
     {
-        $this->warningMessages[md5($message)] = $message;
+        $this->_warningMessages[sha1($message)] = $message;
         return $this;
     }
 
@@ -209,7 +212,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Abstra
      */
     public function getWarningMessages()
     {
-        return $this->warningMessages;
+        return $this->_warningMessages;
     }
 
     //########################################

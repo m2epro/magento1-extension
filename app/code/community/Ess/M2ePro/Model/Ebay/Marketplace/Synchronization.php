@@ -9,22 +9,22 @@
 class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 {
     /** @var Ess_M2ePro_Model_Marketplace */
-    private $marketplace = NULL;
+    protected $_marketplace = null;
 
     /** @var Ess_M2ePro_Model_Lock_Item_Progress */
-    private $progressManager = NULL;
+    protected $_progressManager = null;
 
     //########################################
 
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $marketplace)
     {
-        $this->marketplace = $marketplace;
+        $this->_marketplace = $marketplace;
         return $this;
     }
 
     public function setProgressManager(Ess_M2ePro_Model_Lock_Item_Progress $progressManager)
     {
-        $this->progressManager = $progressManager;
+        $this->_progressManager = $progressManager;
         return $this;
     }
 
@@ -32,21 +32,21 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
     public function process()
     {
-        $this->progressManager->setPercentage(0);
+        $this->_progressManager->setPercentage(0);
 
         $this->processDetails();
 
-        $this->progressManager->setPercentage(10);
+        $this->_progressManager->setPercentage(10);
 
         $this->processCategories();
 
-        $this->progressManager->setPercentage(30);
+        $this->_progressManager->setPercentage(30);
 
         if ($this->getEbayMarketplace()->isEpidEnabled()) {
             $this->processEpids();
         }
 
-        $this->progressManager->setPercentage(70);
+        $this->_progressManager->setPercentage(70);
 
         if ($this->getEbayMarketplace()->isKtypeEnabled()) {
             $this->processKtypes();
@@ -54,22 +54,24 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('marketplace');
 
-        $this->progressManager->setPercentage(100);
+        $this->_progressManager->setPercentage(100);
     }
 
     //########################################
 
-    private function processDetails()
+    protected function processDetails()
     {
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('marketplace','get','info',
-            array('include_details' => 1),'info',
-            $this->marketplace->getId(),NULL);
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'marketplace', 'get', 'info',
+            array('include_details' => 1), 'info',
+            $this->_marketplace->getId(), NULL
+        );
 
         $dispatcherObj->process($connectorObj);
         $details = $connectorObj->getResponseData();
 
-        if (is_null($details)) {
+        if ($details === null) {
             return;
         }
 
@@ -85,12 +87,12 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
         // Save marketplaces
         // ---------------------------------------
-        $connWrite->delete($tableMarketplaces, array('marketplace_id = ?' => $this->marketplace->getId()));
+        $connWrite->delete($tableMarketplaces, array('marketplace_id = ?' => $this->_marketplace->getId()));
 
         $helper = Mage::helper('M2ePro/Data');
 
         $insertData = array(
-            'marketplace_id'                  => $this->marketplace->getId(),
+            'marketplace_id'                  => $this->_marketplace->getId(),
             'client_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : NULL,
             'server_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : NULL,
             'dispatch'                        => $helper->jsonEncode($details['dispatch']),
@@ -114,11 +116,11 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
         // Save shipping
         // ---------------------------------------
-        $connWrite->delete($tableShipping, array('marketplace_id = ?' => $this->marketplace->getId()));
+        $connWrite->delete($tableShipping, array('marketplace_id = ?' => $this->_marketplace->getId()));
 
         foreach ($details['shipping'] as $data) {
             $insertData = array(
-                'marketplace_id'   => $this->marketplace->getId(),
+                'marketplace_id'   => $this->_marketplace->getId(),
                 'ebay_id'          => $data['ebay_id'],
                 'title'            => $data['title'],
                 'category'         => $helper->jsonEncode($data['category']),
@@ -129,10 +131,11 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             );
             $connWrite->insert($tableShipping, $insertData);
         }
+
         // ---------------------------------------
     }
 
-    private function processCategories()
+    protected function processCategories()
     {
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
@@ -141,20 +144,22 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             'm2epro_ebay_dictionary_category'
         );
 
-        $connWrite->delete($tableCategories,array('marketplace_id = ?' => $this->marketplace->getId()));
+        $connWrite->delete($tableCategories, array('marketplace_id = ?' => $this->_marketplace->getId()));
 
         $partNumber = 1;
 
         for ($i = 0; $i < 100; $i++) {
             $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-            $connectorObj  = $dispatcherObj->getVirtualConnector('marketplace','get','categories',
+            $connectorObj  = $dispatcherObj->getVirtualConnector(
+                'marketplace', 'get', 'categories',
                 array('part_number' => $partNumber),
-                NULL,$this->marketplace->getId());
+                NULL, $this->_marketplace->getId()
+            );
 
             $dispatcherObj->process($connectorObj);
             $response = $connectorObj->getResponseData();
 
-            if (is_null($response) || empty($response['data'])) {
+            if ($response === null || empty($response['data'])) {
                 break;
             }
 
@@ -169,11 +174,10 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             $helper = Mage::helper('M2ePro/Data');
 
             for ($categoryIndex = 0; $categoryIndex < $categoriesCount; $categoryIndex++) {
-
                 $data = $response['data'][$categoryIndex];
 
                 $insertData[] = array(
-                    'marketplace_id'     => $this->marketplace->getId(),
+                    'marketplace_id'     => $this->_marketplace->getId(),
                     'category_id'        => $data['category_id'],
                     'parent_category_id' => $data['parent_id'],
                     'title'              => $data['title'],
@@ -190,13 +194,13 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
             $partNumber = $response['next_part'];
 
-            if (is_null($partNumber)) {
+            if ($partNumber === null) {
                 break;
             }
         }
     }
 
-    private function processEpids()
+    protected function processEpids()
     {
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
@@ -205,9 +209,11 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
         );
 
         $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
-        $scope = $helper->getEpidsScopeByType($helper->getEpidsTypeByMarketplace(
-            $this->marketplace->getId()
-        ));
+        $scope = $helper->getEpidsScopeByType(
+            $helper->getEpidsTypeByMarketplace(
+                $this->_marketplace->getId()
+            )
+        );
 
         $connWrite->delete(
             $tableMotorsEpids,
@@ -221,16 +227,18 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
         for ($i = 0; $i < 100; $i++) {
             $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-            $connectorObj = $dispatcherObj->getVirtualConnector('marketplace','get','motorsEpids',
+            $connectorObj = $dispatcherObj->getVirtualConnector(
+                'marketplace', 'get', 'motorsEpids',
                 array(
-                    'marketplace' => $this->marketplace->getNativeId(),
+                    'marketplace' => $this->_marketplace->getNativeId(),
                     'part_number' => $partNumber
-                ));
+                )
+            );
 
             $dispatcherObj->process($connectorObj);
             $response = $connectorObj->getResponseData();
 
-            if (is_null($response) || empty($response['data'])) {
+            if ($response === null || empty($response['data'])) {
                 break;
             }
 
@@ -248,12 +256,13 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             $itemsForInsert = array();
 
             $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
-            $scope = $helper->getEpidsScopeByType($helper->getEpidsTypeByMarketplace(
-                $this->marketplace->getId()
-            ));
+            $scope = $helper->getEpidsScopeByType(
+                $helper->getEpidsTypeByMarketplace(
+                    $this->_marketplace->getId()
+                )
+            );
 
             for ($epidIndex = 0; $epidIndex < $totalCountItems; $epidIndex++) {
-
                 $item = $response['data']['items'][$epidIndex];
                 $temporaryIds[] = $item['ePID'];
 
@@ -270,23 +279,24 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
                 );
 
                 if (count($itemsForInsert) >= 100 || $epidIndex >= ($totalCountItems - 1)) {
-
                     $connWrite->insertMultiple($tableMotorsEpids, $itemsForInsert);
-                    $connWrite->delete($tableMotorsEpids, array('is_custom = ?' => 1,
-                                                                'epid IN (?)'   => $temporaryIds));
+                    $connWrite->delete(
+                        $tableMotorsEpids, array('is_custom = ?' => 1,
+                        'epid IN (?)'   => $temporaryIds)
+                    );
                     $itemsForInsert = $temporaryIds = array();
                 }
             }
 
             $partNumber = $response['next_part'];
 
-            if (is_null($partNumber)) {
+            if ($partNumber === null) {
                 break;
             }
         }
     }
 
-    private function processKtypes()
+    protected function processKtypes()
     {
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
@@ -299,14 +309,16 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
         for ($i = 0; $i < 100; $i++) {
             $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-            $connectorObj = $dispatcherObj->getVirtualConnector('marketplace','get','motorsKtypes',
+            $connectorObj = $dispatcherObj->getVirtualConnector(
+                'marketplace', 'get', 'motorsKtypes',
                 array('part_number' => $partNumber),
-                NULL,$this->marketplace->getId());
+                NULL, $this->_marketplace->getId()
+            );
 
             $dispatcherObj->process($connectorObj);
             $response = $connectorObj->getResponseData();
 
-            if (is_null($response) || empty($response['data'])) {
+            if ($response === null || empty($response['data'])) {
                 break;
             }
 
@@ -325,7 +337,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             $itemsForInsert = array();
 
             for ($ktypeIndex = 0; $ktypeIndex < $totalCountItems; $ktypeIndex++) {
-
                 $item = $response['data']['items'][$ktypeIndex];
 
                 $temporaryIds[] = (int)$item['ktype'];
@@ -342,17 +353,18 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
                 );
 
                 if (count($itemsForInsert) >= 100 || $ktypeIndex >= ($totalCountItems - 1)) {
-
                     $connWrite->insertMultiple($tableMotorsKtype, $itemsForInsert);
-                    $connWrite->delete($tableMotorsKtype, array('is_custom = ?' => 1,
-                                                                'ktype IN (?)'  => $temporaryIds));
+                    $connWrite->delete(
+                        $tableMotorsKtype, array('is_custom = ?' => 1,
+                        'ktype IN (?)'  => $temporaryIds)
+                    );
                     $itemsForInsert = $temporaryIds = array();
                 }
             }
 
             $partNumber = $response['next_part'];
 
-            if (is_null($partNumber)) {
+            if ($partNumber === null) {
                 break;
             }
         }
@@ -363,9 +375,9 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
     /**
      * @return Ess_M2ePro_Model_Ebay_Marketplace
      */
-    private function getEbayMarketplace()
+    protected function getEbayMarketplace()
     {
-        return $this->marketplace->getChildObject();
+        return $this->_marketplace->getChildObject();
     }
 
     //########################################

@@ -23,11 +23,11 @@ class Ess_M2ePro_Model_Ebay_Connector_Dispatcher
         $name   != '' && $className .= '_'.$name;
 
         if (is_int($marketplace) || is_string($marketplace)) {
-            $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace',(int)$marketplace);
+            $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', (int)$marketplace);
         }
 
         if (is_int($account) || is_string($account)) {
-            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account',(int)$account);
+            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', (int)$account);
         }
 
         /** @var Ess_M2ePro_Model_Connector_Command_Abstract $connectorObject */
@@ -40,26 +40,32 @@ class Ess_M2ePro_Model_Ebay_Connector_Dispatcher
     public function getCustomConnector($modelName, array $params = array(), $marketplace = NULL, $account = NULL)
     {
         if (is_int($marketplace) || is_string($marketplace)) {
-            $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace',(int)$marketplace);
+            $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', (int)$marketplace);
         }
 
         if (is_int($account) || is_string($account)) {
-            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account',(int)$account);
+            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', (int)$account);
         }
 
         $className = 'Ess_M2ePro_Model_'.$modelName;
 
         /** @var Ess_M2ePro_Model_Connector_Command_Abstract $connectorObject */
-        $connectorObject = new $className($params,  $marketplace, $account);
+        $connectorObject = new $className($params, $marketplace, $account);
         $connectorObject->setProtocol($this->getProtocol());
 
         return $connectorObject;
     }
 
-    public function getVirtualConnector($entity, $type, $name,
-                                        array $requestData = array(), $responseDataKey = NULL,
-                                        $marketplace = NULL, $account = NULL, $requestTimeOut = NULL)
-    {
+    public function getVirtualConnector(
+        $entity,
+        $type,
+        $name,
+        array $requestData = array(),
+        $responseDataKey = null,
+        $marketplace = null,
+        $account = null,
+        $requestTimeOut = null
+    ) {
         return $this->getCustomVirtualConnector(
             'Connector_Command_RealTime_Virtual',
             $entity, $type, $name,
@@ -68,15 +74,22 @@ class Ess_M2ePro_Model_Ebay_Connector_Dispatcher
         );
     }
 
-    public function getCustomVirtualConnector($modelName, $entity, $type, $name,
-                                              array $requestData = array(), $responseDataKey = NULL,
-                                              $marketplace = NULL, $account = NULL, $requestTimeOut = NULL)
-    {
+    public function getCustomVirtualConnector(
+        $modelName,
+        $entity,
+        $type,
+        $name,
+        array $requestData = array(),
+        $responseDataKey = null,
+        $marketplace = null,
+        $account = null,
+        $requestTimeOut = null
+    ) {
         $virtualConnector = Mage::getModel('M2ePro/'.$modelName);
         $virtualConnector->setProtocol($this->getProtocol());
         $virtualConnector->setCommand(array($entity, $type, $name));
         $virtualConnector->setResponseDataKey($responseDataKey);
-        !is_null($requestTimeOut) && $virtualConnector->setRequestTimeOut($requestTimeOut);
+        $requestTimeOut !== null && $virtualConnector->setRequestTimeOut($requestTimeOut);
 
         if (is_int($marketplace) || is_string($marketplace)) {
             $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', (int)$marketplace);
@@ -108,7 +121,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Dispatcher
 
     //####################################
 
-    private function getProtocol()
+    protected function getProtocol()
     {
         return Mage::getModel('M2ePro/Ebay_Connector_Protocol');
     }

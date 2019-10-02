@@ -58,7 +58,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
         $id = $this->getRequest()->getParam('id');
 
         try {
-            $model = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',$id);
+            $model = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing', $id);
         } catch (LogicException $e) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Listing does not exist.'));
             return $this->_redirect('*/adminhtml_ebay_listing/index');
@@ -127,7 +127,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
             $insertData = array();
             foreach ($productsIds as $productId) {
                 foreach ($storesIds as $storeId) {
-
                     $key = $productId . '|' . $storeId;
                     if (in_array($key, $existData)) {
                         continue;
@@ -155,9 +154,13 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
             );
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'messages' => $messages
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'messages' => $messages
+                )
+            )
+        );
     }
 
     public function unassignAction()
@@ -179,7 +182,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
         $tableEbayListingProductPickupStore = Mage::getResourceModel('M2ePro/Ebay_Listing_Product_PickupStore')
                                                     ->getMainTable();
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $connWrite->delete($tableEbayListingProductPickupStore,
+        $connWrite->delete(
+            $tableEbayListingProductPickupStore,
             '`id` IN ('.implode(',', $listingProductPickupStoreIds).')'
         );
 
@@ -195,7 +199,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
             return false;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Ebay_Listing_Product_PickupStore_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Listing_Product_PickupStore_Collection $collection */
         $collection = Mage::getModel('M2ePro/Ebay_Listing_Product_PickupStore')->getCollection();
         $collection->addFieldToFilter('main_table.id', array('in' => $listingProductPickupStoreIds));
         $collection->getSelect()->join(
@@ -237,7 +241,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
         $pickupStoreStateTable = Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_State')
                                        ->getMainTable();
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $connWrite->update($pickupStoreStateTable,
+        $connWrite->update(
+            $pickupStoreStateTable,
             array('is_deleted' => 1),
             '`id` IN ('.implode(',', $idsForDelete).')'
         );
@@ -262,10 +267,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
         $wrapper->setChild('help', $helpBlock);
         $wrapper->setChild('products', $gridBlock);
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'data' => $wrapper->toHtml(),
-            'messages' => array(),
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'data' => $wrapper->toHtml(),
+                'messages' => array(),
+                )
+            )
+        );
     }
 
     public function productsStepGridAction()
@@ -305,10 +314,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
         $wrapper->setChild('stores', $gridBlock);
         // ---------------------------------------
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'data' => $wrapper->toHtml(),
-            'messages' => array(),
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'data' => $wrapper->toHtml(),
+                'messages' => array(),
+                )
+            )
+        );
     }
 
     public function storesStepGridAction()
@@ -334,19 +347,27 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
                                                     ->getParam('listing_product_pickup_store_state');
 
         if (empty($listingProductPickupStoreState)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'messages' => array(Mage::helper('M2ePro')->__('You should provide correct parameters.')),
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'messages' => array(Mage::helper('M2ePro')->__('You should provide correct parameters.')),
+                    )
+                )
+            );
         }
 
         $logGrid = $this->loadLayout()->getLayout()
             ->createBlock('M2ePro/adminhtml_ebay_account_pickupStore_log_grid');
         $logGrid->setListingProductPickupStoreStateId($listingProductPickupStoreState);
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'data' => $logGrid->toHtml(),
-            'messages' => array()
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'data' => $logGrid->toHtml(),
+                'messages' => array()
+                )
+            )
+        );
     }
 
     public function logGridAjaxAction()
@@ -383,7 +404,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStoreController
             Mage::helper('M2ePro/Data_Session')->setValue(
                 $prefix, $ruleModel->getSerializedFromPost($this->getRequest()->getPost())
             );
-        } elseif (!is_null($ruleParam)) {
+        } elseif ($ruleParam !== null) {
             Mage::helper('M2ePro/Data_Session')->setValue($prefix, array());
         }
 

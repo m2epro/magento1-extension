@@ -13,13 +13,13 @@ class Ess_M2ePro_Model_Walmart_Template_Description_AffectedListingsProducts
 
     public function getObjects(array $filters = array())
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Collection $listingCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Collection $listingCollection */
         $listingCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing');
-        $listingCollection->addFieldToFilter('template_description_id', $this->model->getId());
+        $listingCollection->addFieldToFilter('template_description_id', $this->_model->getId());
         $listingCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingCollection->getSelect()->columns('id');
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('listing_id', array('in' => $listingCollection->getSelect()));
 
@@ -32,13 +32,13 @@ class Ess_M2ePro_Model_Walmart_Template_Description_AffectedListingsProducts
 
     public function getData($columns = '*', array $filters = array())
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Collection $listingCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Collection $listingCollection */
         $listingCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing');
-        $listingCollection->addFieldToFilter('template_description_id', $this->model->getId());
+        $listingCollection->addFieldToFilter('template_description_id', $this->_model->getId());
         $listingCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingCollection->getSelect()->columns('id');
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('listing_id', array('in' => $listingCollection->getSelect()));
 
@@ -56,13 +56,13 @@ class Ess_M2ePro_Model_Walmart_Template_Description_AffectedListingsProducts
 
     public function getIds(array $filters = array())
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Collection $listingCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Collection $listingCollection */
         $listingCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing');
-        $listingCollection->addFieldToFilter('template_description_id', $this->model->getId());
+        $listingCollection->addFieldToFilter('template_description_id', $this->_model->getId());
         $listingCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $listingCollection->getSelect()->columns('id');
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('listing_id', array('in' => $listingCollection->getSelect()));
 

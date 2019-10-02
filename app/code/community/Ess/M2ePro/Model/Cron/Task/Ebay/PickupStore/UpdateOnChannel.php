@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_UpdateOnChannel extends Ess_M2
 
     //########################################
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $collection = Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_State_Collection');
         $collection->getSelect()->where('(is_deleted = 1) OR (target_qty != online_qty)');

@@ -50,7 +50,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
 
     //########################################
 
-    private function insertAttributes($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    protected function insertAttributes($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         preg_match_all("/#([a-z_0-9]+?)#/", $text, $matches);
 
@@ -61,7 +61,6 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         $search = array();
         $replace = array();
         foreach ($matches[1] as $attributeCode) {
-
             $value = $magentoProduct->getAttributeValue($attributeCode);
 
             if (!is_array($value) && $value != '') {
@@ -75,6 +74,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
                     $store = Mage::app()->getStore($storeId);
                     $value = $store->formatPrice($value, false);
                 }
+
                 $search[] = '#' . $attributeCode . '#';
                 $replace[] = $value;
             } else {
@@ -88,7 +88,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         return $text;
     }
 
-    private function insertImages($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    protected function insertImages($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         preg_match_all("/#image\[(.*?)\]#/", $text, $matches);
 
@@ -103,7 +103,6 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         $replace = array();
 
         foreach ($matches[0] as $key => $match) {
-
             $tempImageAttributes = explode(',', $matches[1][$key]);
             $realImageAttributes = array();
             for ($i=0;$i<6;$i++) {
@@ -148,7 +147,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         return $text;
     }
 
-    private function insertMediaGalleries($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
+    protected function insertMediaGalleries($text, Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
         preg_match_all("/#media_gallery\[(.*?)\]#/", $text, $matches);
 
@@ -177,7 +176,6 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
 
             $galleryImagesLinks = array();
             foreach ($magentoProduct->getGalleryImages($imagesQty) as $image) {
-
                 if (!$image->getUrl()) {
                     continue;
                 }
@@ -186,7 +184,6 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
             }
 
             if (!count($galleryImagesLinks)) {
-
                 $search = $matches[0];
                 $replace = '';
                 break;
@@ -228,7 +225,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
 
     // ---------------------------------------
 
-    private function normalizeDescription($str)
+    protected function normalizeDescription($str)
     {
         // Trim whitespace
         if (($str = trim($str)) === '') {
@@ -243,14 +240,14 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         $str = preg_replace('~[ \t]+$~m', '', $str);
 
         // The following regexes only need to be executed if the string contains html
-        if ($html_found = (strpos($str, '<') !== false)) {
+        if ($htmlFound = (strpos($str, '<') !== false)) {
             // Elements that should not be surrounded by p tags
-            $no_p  = '(?:p|div|h[1-6r]|ul|ol|li|blockquote|d[dlt]|pre|t[dhr]|t(?:able|body|foot|head)|';
-            $no_p .= 'c(?:aption|olgroup)|form|s(?:elect|tyle)|a(?:ddress|rea)|ma(?:p|th))';
+            $nop  = '(?:p|div|h[1-6r]|ul|ol|li|blockquote|d[dlt]|pre|t[dhr]|t(?:able|body|foot|head)|';
+            $nop .= 'c(?:aption|olgroup)|form|s(?:elect|tyle)|a(?:ddress|rea)|ma(?:p|th))';
 
             // Put at least two linebreaks before and after $no_p elements
-            $str = preg_replace('~^<' . $no_p . '[^>]*+>~im', "\n$0", $str);
-            $str = preg_replace('~</' . $no_p . '\s*+>$~im', "$0\n", $str);
+            $str = preg_replace('~^<' . $nop . '[^>]*+>~im', "\n$0", $str);
+            $str = preg_replace('~</' . $nop . '\s*+>$~im', "$0\n", $str);
         }
 
         // Do the <p> magic!
@@ -258,15 +255,15 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         $str = preg_replace('~\n{2,}~', "</p>\n\n<p>", $str);
 
         // The following regexes only need to be executed if the string contains html
-        if ($html_found !== false) {
+        if ($htmlFound !== false) {
             // Remove p tags around $no_p elements
-            $str = preg_replace('~<p>(?=</?' . $no_p . '[^>]*+>)~i', '', $str);
-            $str = preg_replace('~(</?' . $no_p . '[^>]*+>)</p>~i', '$1', $str);
+            $str = preg_replace('~<p>(?=</?' . $nop . '[^>]*+>)~i', '', $str);
+            $str = preg_replace('~(</?' . $nop . '[^>]*+>)</p>~i', '$1', $str);
         }
 
         // Convert single linebreaks to <br/>
-        $br = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/renderer/description/','convert_linebreaks');
-        if (is_null($br) || (bool)(int)$br === true) {
+        $br = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/renderer/description/', 'convert_linebreaks');
+        if ($br === null || (bool)(int)$br === true) {
             $str = preg_replace('~(?<!\n)\n(?!\n)~', "<br/>\n", $str);
         }
 

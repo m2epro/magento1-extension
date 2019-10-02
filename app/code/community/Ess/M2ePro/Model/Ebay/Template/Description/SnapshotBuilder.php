@@ -13,10 +13,10 @@ class Ess_M2ePro_Model_Ebay_Template_Description_SnapshotBuilder
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
 
         foreach ($data as &$value) {
-            !is_null($value) && !is_array($value) && $value = (string)$value;
+            $value !== null && !is_array($value) && $value = (string)$value;
         }
 
         return $data;

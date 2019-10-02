@@ -35,16 +35,19 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header'    => Mage::helper('M2ePro')->__('ID'),
             'align'     => 'right',
             'width'     => '100px',
             'type'      => 'number',
             'index'     => 'id',
             'filter_index' => 'main_table.id'
-        ));
+            )
+        );
 
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'    => Mage::helper('M2ePro')->__('Title / Info'),
             'align'     => 'left',
             'type'      => 'text',
@@ -52,9 +55,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
             'filter_index' => 'main_table.title',
             'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('products_total_count', array(
+        $this->addColumn(
+            'products_total_count', array(
             'header'    => Mage::helper('M2ePro')->__('Total Items'),
             'align'     => 'right',
             'width'     => '100px',
@@ -62,9 +67,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
             'index'     => 'products_total_count',
             'filter_index' => 'main_table.products_total_count',
             'frame_callback' => array($this, 'callbackColumnTotalProducts')
-        ));
+            )
+        );
 
-        $this->addColumn('products_active_count', array(
+        $this->addColumn(
+            'products_active_count', array(
             'header'    => Mage::helper('M2ePro')->__('Active Items'),
             'align'     => 'right',
             'width'     => '100px',
@@ -72,9 +79,11 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
             'index'     => 'products_active_count',
             'filter_index' => 'main_table.products_active_count',
             'frame_callback' => array($this, 'callbackColumnListedProducts')
-        ));
+            )
+        );
 
-        $this->addColumn('products_inactive_count', array(
+        $this->addColumn(
+            'products_inactive_count', array(
             'header'    => Mage::helper('M2ePro')->__('Inactive Items'),
             'align'     => 'right',
             'width'     => '100px',
@@ -82,11 +91,13 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
             'index'     => 'products_inactive_count',
             'filter_index' => 'main_table.products_inactive_count',
             'frame_callback' => array($this, 'callbackColumnInactiveProducts')
-        ));
+            )
+        );
 
         $this->setColumns();
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'left',
             'width'     => '150px',
@@ -98,12 +109,16 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
             'renderer'  => 'M2ePro/adminhtml_grid_column_renderer_action',
             'group_order' => $this->getGroupOrder(),
             'actions'     => $this->getColumnActionsItems()
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
 
-    protected function setColumns() {}
+    protected function setColumns()
+    {
+        return null;
+    }
 
     //########################################
 
@@ -112,7 +127,10 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
         return $value;
     }
 
-    protected function callbackFilterTitle($collection, $column) {}
+    protected function callbackFilterTitle($collection, $column)
+    {
+        return null;
+    }
 
     // ---------------------------------------
 
@@ -135,7 +153,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Grid extends Mage_Adminhtml_Block_Widge
 
     protected function getColumnValue($value)
     {
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             $value = Mage::helper('M2ePro')->__('N/A');
         } else if ($value <= 0) {
             $value = '<span style="color: red;">0</span>';

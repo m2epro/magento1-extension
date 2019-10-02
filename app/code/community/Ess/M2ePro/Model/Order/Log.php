@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
 {
     /** @var int|null  */
-    protected $initiator = NULL;
+    protected $_initiator = null;
 
     //########################################
 
@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
      */
     public function setInitiator($initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN)
     {
-        $this->initiator = (int)$initiator;
+        $this->_initiator = (int)$initiator;
         return $this;
     }
 
@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
      */
     public function getInitiator()
     {
-        return $this->initiator;
+        return $this->_initiator;
     }
 
     // ########################################
@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
 
     protected function createMessage($dataForAdd)
     {
-        $dataForAdd['initiator'] = $this->initiator ? $this->initiator : Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
+        $dataForAdd['initiator'] = $this->_initiator ? $this->_initiator : Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
         $dataForAdd['component_mode'] = $this->getComponentMode();
 
         $this->isObjectNew(true);

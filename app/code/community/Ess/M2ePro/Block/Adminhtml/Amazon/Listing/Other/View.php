@@ -29,6 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -42,21 +43,25 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         // ---------------------------------------
 
         // ---------------------------------------
-        if (!is_null($this->getRequest()->getParam('back'))) {
+        if ($this->getRequest()->getParam('back') !== null) {
             $url = Mage::helper('M2ePro')->getBackUrl();
-            $this->_addButton('back', array(
-                'label'   => Mage::helper('M2ePro')->__('Back'),
-                'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
-                'class'   => 'back'
-            ));
+            $this->_addButton(
+                'back', array(
+                    'label'   => Mage::helper('M2ePro')->__('Back'),
+                    'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                    'class'   => 'back'
+                )
+            );
         }
 
         $url = $this->getUrl('*/adminhtml_amazon_log/listingOther');
-        $this->_addButton('view_log', array(
-            'label'     => Mage::helper('M2ePro')->__('View Log'),
-            'onclick'   => 'window.open(\''.$url.'\')',
-            'class'     => 'button_link'
-        ));
+        $this->_addButton(
+            'view_log', array(
+                'label'   => Mage::helper('M2ePro')->__('View Log'),
+                'onclick' => 'window.open(\'' . $url . '\')',
+                'class'   => 'button_link'
+            )
+        );
         // ---------------------------------------
 
     }
@@ -70,7 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
 
         // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_other_view_header','',
+            'M2ePro/adminhtml_listing_other_view_header', '',
             array(
                 'account' => Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', $accountId),
                 'marketplace' => Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Marketplace', $marketplaceId)
@@ -112,9 +117,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
 
         $successfullyMappedMessage = $helper->escapeJs($helper->__('Product was successfully Mapped.'));
 
-        $createListing = $helper->escapeJs($helper->__(
-            'Listings, which have the same Marketplace and Account were not found.'
-        ));
+        $createListing = $helper->escapeJs(
+            $helper->__(
+                'Listings, which have the same Marketplace and Account were not found.'
+            )
+        );
         $createListing .= $helper->escapeJs($helper->__('Would you like to create one with Default Settings ?'));
         $popupTitle = $helper->escapeJs($helper->__('Moving Amazon Items'));
 
@@ -141,7 +148,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $errorWord = $helper->escapeJs($helper->__('Error'));
         $closeWord = $helper->escapeJs($helper->__('Close'));
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
 
             'Mapping Product' => $helper->__('Mapping Product'),
             'Product does not exist.' => $helper->__('Product does not exist.'),
@@ -157,17 +165,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
                 'Item was not Mapped as the chosen %product_id% Simple Product has Custom Options.'
             )
 
-        ));
+            )
+        );
 
-        $urls = Mage::helper('M2ePro')->jsonEncode(array(
+        $urls = Mage::helper('M2ePro')->jsonEncode(
+            array(
 
-            'adminhtml_amazon_log/listingOther' => $this->getUrl('*/adminhtml_amazon_log/listingOther',array(
+            'adminhtml_amazon_log/listingOther' => $this->getUrl(
+                '*/adminhtml_amazon_log/listingOther', array(
                 'back' => $helper->makeBackUrlParam('*/adminhtml_amazon_listing_other/index')
-            )),
+                )
+            ),
 
-            'adminhtml_listing_other_mapping/map' => $this->getUrl('*/adminhtml_listing_other_mapping/map'),
-
-        ));
+            'adminhtml_listing_other_mapping/map' => $this->getUrl('*/adminhtml_listing_other_mapping/map')
+            )
+        );
 
         $javascriptsMain = <<<HTML
 <script type="text/javascript">

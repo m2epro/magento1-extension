@@ -8,10 +8,10 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_Block_Widget_Grid
 {
-    /** @var $order Ess_M2ePro_Model_Order */
-    protected $order = null;
+    /** @var $_order Ess_M2ePro_Model_Order */
+    protected $_order = null;
 
-    protected $itemSkuToWalmartItemCache;
+    protected $_itemSkuToWalmartItemCache;
 
     //########################################
 
@@ -34,16 +34,16 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
         $this->_defaultLimit = 200;
         // ---------------------------------------
 
-        $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
     }
 
     protected function _prepareCollection()
     {
         $collection = Mage::helper('M2ePro/Component_Walmart')
             ->getCollection('Order_Item')
-            ->addFieldToFilter('order_id', $this->order->getId());
+            ->addFieldToFilter('order_id', $this->_order->getId());
 
-        $stockId = Mage::helper('M2ePro/Magento_Store')->getStockId($this->order->getStore());
+        $stockId = Mage::helper('M2ePro/Magento_Store')->getStockId($this->_order->getStore());
 
         $collection->getSelect()->joinLeft(
             array(
@@ -61,15 +61,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
 
     protected function _prepareColumns()
     {
-        $this->addColumn('product_id', array(
+        $this->addColumn(
+            'product_id', array(
             'header'    => Mage::helper('M2ePro')->__('Product'),
             'align'     => 'left',
             'width'     => '*',
             'index'     => 'product_id',
             'frame_callback' => array($this, 'callbackColumnProduct')
-        ));
+            )
+        );
 
-        $this->addColumn('stock_availability', array(
+        $this->addColumn(
+            'stock_availability', array(
             'header'=> Mage::helper('M2ePro')->__('Stock Availability'),
             'width' => '100px',
             'index' => 'is_in_stock',
@@ -81,47 +84,58 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
                 0 => Mage::helper('M2ePro')->__('Out of Stock')
             ),
             'frame_callback' => array($this, 'callbackColumnStockAvailability')
-        ));
+            )
+        );
 
-        $this->addColumn('original_price', array(
+        $this->addColumn(
+            'original_price', array(
             'header'    => Mage::helper('M2ePro')->__('Original Price'),
             'align'     => 'left',
             'width'     => '80px',
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnOriginalPrice')
-        ));
+            )
+        );
 
-        $this->addColumn('qty', array(
+        $this->addColumn(
+            'qty', array(
             'header'    => Mage::helper('M2ePro')->__('QTY'),
             'align'     => 'left',
             'width'     => '80px',
             'index'     => 'qty'
-        ));
+            )
+        );
 
-        $this->addColumn('price', array(
+        $this->addColumn(
+            'price', array(
             'header'    => Mage::helper('M2ePro')->__('Price'),
             'align'     => 'left',
             'width'     => '80px',
             'index'     => 'price',
             'frame_callback' => array($this, 'callbackColumnPrice')
-        ));
+            )
+        );
 
-        $this->addColumn('tax_percent', array(
+        $this->addColumn(
+            'tax_percent', array(
             'header'         => Mage::helper('M2ePro')->__('Tax Percent'),
             'align'          => 'left',
             'width'          => '80px',
             'filter'         => false,
             'sortable'       => false,
             'frame_callback' => array($this, 'callbackColumnTaxPercent')
-        ));
+            )
+        );
 
-        $this->addColumn('row_total', array(
+        $this->addColumn(
+            'row_total', array(
             'header'    => Mage::helper('M2ePro')->__('Row Total'),
             'align'     => 'left',
             'width'     => '80px',
             'frame_callback' => array($this, 'callbackColumnRowTotal')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -134,13 +148,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
         $skus = $this->getCollection()->getColumnValues('sku');
 
         // ---------------------------------------
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->joinListingTable();
 
         $collection->addFieldToFilter('sku', array('in' => $skus));
-        $collection->addFieldToFilter('account_id', $this->order->getAccountId());
-        $collection->addFieldToFilter('marketplace_id', $this->order->getMarketplaceId());
+        $collection->addFieldToFilter('account_id', $this->_order->getAccountId());
+        $collection->addFieldToFilter('marketplace_id', $this->_order->getMarketplaceId());
 
         foreach ($collection->getItems() as $item) {
             /**@var Ess_M2ePro_Model_Listing_Product $item */
@@ -151,15 +165,16 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
                 $cache[$sku] = $itemId;
             }
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Other_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Other_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other');
 
         $collection->addFieldToFilter('sku', array('in' => $skus));
-        $collection->addFieldToFilter('account_id', $this->order->getAccountId());
-        $collection->addFieldToFilter('marketplace_id', $this->order->getMarketplaceId());
+        $collection->addFieldToFilter('account_id', $this->_order->getAccountId());
+        $collection->addFieldToFilter('marketplace_id', $this->_order->getMarketplaceId());
 
         foreach ($collection->getItems() as $item) {
             /**@var Ess_M2ePro_Model_Listing_Other $item */
@@ -170,9 +185,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order_View_Item extends Mage_Adminhtml_
                 $cache[$sku] = $itemId;
             }
         }
+
         // ---------------------------------------
 
-        $this->itemSkuToWalmartItemCache = $cache;
+        $this->_itemSkuToWalmartItemCache = $cache;
 
         return parent::_afterLoadCollection();
     }
@@ -200,10 +216,9 @@ HTML;
         }
 
         $itemLink = '';
-        if (!empty($this->itemSkuToWalmartItemCache[$row->getSku()])) {
-
+        if (!empty($this->_itemSkuToWalmartItemCache[$row->getSku()])) {
             $itemUrl = Mage::helper('M2ePro/Component_Walmart')->getItemUrl(
-                $this->itemSkuToWalmartItemCache[$row->getSku()], $this->order->getMarketplaceId()
+                $this->_itemSkuToWalmartItemCache[$row->getSku()], $this->_order->getMarketplaceId()
             );
 
             $itemLink .= '<a href="'.$itemUrl.'" target="_blank">'.Mage::helper('M2ePro')->__('View on Walmart').'</a>';
@@ -211,7 +226,12 @@ HTML;
 
         $productLink = '';
         if ($productId = $row->getData('product_id')) {
-            $productUrl = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productId));
+            $productUrl = $this->getUrl(
+                'adminhtml/catalog_product/edit', array(
+                'id'    => $productId,
+                'store' => $row->getOrder()->getStoreId()
+                )
+            );
             !empty($itemLink) && $itemLink .= ' | ';
             $productLink .= '<a href="'.$productUrl.'" target="_blank">'.Mage::helper('M2ePro')->__('View').'</a>';
         }
@@ -221,7 +241,6 @@ HTML;
 
         $editLink = '';
         if (!$row->getProductId() || $row->getMagentoProduct()->isProductWithVariations()) {
-
             if (!$row->getProductId()) {
                 $action = Mage::helper('M2ePro')->__('Map to Magento Product');
             } else {
@@ -262,7 +281,7 @@ HTML;
 
     public function callbackColumnStockAvailability($value, $row, $column, $isExport)
     {
-        if (is_null($row->getData('is_in_stock'))) {
+        if ($row->getData('is_in_stock') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -289,7 +308,7 @@ HTML;
     {
         $currency = $row->getData('currency');
         if (empty($currency)) {
-            $currency = $this->order->getMarketplace()->getChildObject()->getDefaultCurrency();
+            $currency = $this->_order->getMarketplace()->getChildObject()->getDefaultCurrency();
         }
 
         return Mage::getSingleton('M2ePro/Currency')->formatPrice($currency, $row->getData('price'));
@@ -297,7 +316,7 @@ HTML;
 
     public function callbackColumnTaxPercent($value, $row, $column, $isExport)
     {
-        $rate = $this->order->getChildObject()->getProductPriceTaxRate();
+        $rate = $this->_order->getChildObject()->getProductPriceTaxRate();
         if (empty($rate)) {
             return '0%';
         }
@@ -313,7 +332,7 @@ HTML;
 
         $currency = $row->getData('currency');
         if (empty($currency)) {
-            $currency = $this->order->getMarketplace()->getChildObject()->getDefaultCurrency();
+            $currency = $this->_order->getMarketplace()->getChildObject()->getDefaultCurrency();
         }
 
         $price = $aOrderItem->getPrice();

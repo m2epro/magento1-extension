@@ -28,12 +28,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
         parent::_beforeToHtml();
 
         // ---------------------------------------
-        if(is_null($this->getData('fulfillment_not_wizard'))) {
+        if ($this->getData('fulfillment_not_wizard') !== null) {
             $breadcrumb = $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment_breadcrumb');
             $breadcrumb->setData('step', 3);
             $this->setChild('breadcrumb', $breadcrumb);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------

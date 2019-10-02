@@ -26,15 +26,16 @@ class Ess_M2ePro_Model_Walmart_Order_CreditMemo_Handler extends Ess_M2ePro_Model
 
     //########################################
 
-    private function getItemsToRefund(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $creditmemo)
+    protected function getItemsToRefund(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Creditmemo $creditmemo)
     {
         $itemsForCancel = array();
 
         foreach ($creditmemo->getAllItems() as $creditmemoItem) {
             /** @var Mage_Sales_Model_Order_Creditmemo_Item $creditmemoItem */
 
-            $additionalData = $creditmemoItem->getOrderItem()->getAdditionalData();
-            $additionalData = is_string($additionalData) ? @unserialize($additionalData) : array();
+            $additionalData = Mage::helper('M2ePro')->unserialize(
+                $creditmemoItem->getOrderItem()->getAdditionalData()
+            );
 
             if (!isset($additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items']) ||
                 !is_array($additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items'])) {
@@ -45,7 +46,6 @@ class Ess_M2ePro_Model_Walmart_Order_CreditMemo_Handler extends Ess_M2ePro_Model
 
             $dataSize = count($additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items']);
             for ($i = 0; $i < $dataSize; $i++) {
-
                 $data = $additionalData[Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER]['items'][$i];
                 if ($qtyAvailable <= 0 || !isset($data['order_item_id'])) {
                     continue;
@@ -58,7 +58,7 @@ class Ess_M2ePro_Model_Walmart_Order_CreditMemo_Handler extends Ess_M2ePro_Model
 
                 /** @var Ess_M2ePro_Model_Order_Item $item */
                 $item = $order->getItemsCollection()->getItemByColumnValue('walmart_order_item_id', $orderItemId);
-                if (is_null($item)) {
+                if ($item === null) {
                     continue;
                 }
 
@@ -67,7 +67,6 @@ class Ess_M2ePro_Model_Walmart_Order_CreditMemo_Handler extends Ess_M2ePro_Model
                  */
                 $mergedOrderItems = $item->getChildObject()->getMergedWalmartOrderItemIds();
                 while ($mergedOrderItemId = array_shift($mergedOrderItems)) {
-
                     if (!isset($data['refunded_qty'][$mergedOrderItemId])) {
                         $orderItemId = $mergedOrderItemId;
                         break;
@@ -92,6 +91,14 @@ class Ess_M2ePro_Model_Walmart_Order_CreditMemo_Handler extends Ess_M2ePro_Model
                 $price = $creditmemoItem->getPriceInclTax();
                 $tax   = $creditmemoItem->getTaxAmount();
 
+                if ($price > $item->getChildObject()->getPrice()) {
+                    $price = $item->getChildObject()->getPrice();
+                }
+
+                if ($tax > $item->getChildObject()->getTaxAmount()) {
+                    $tax = $item->getChildObject()->getTaxAmount();
+                }
+
                 $itemsForCancel[] = array(
                     'item_id'  => $orderItemId,
                     'qty'      => $itemQty,
@@ -110,7 +117,9 @@ class Ess_M2ePro_Model_Walmart_Order_CreditMemo_Handler extends Ess_M2ePro_Model
                 $mergedOrderItemId && $i--;
             }
 
-            $creditmemoItem->getOrderItem()->setAdditionalData(serialize($additionalData));
+            $creditmemoItem->getOrderItem()->setAdditionalData(
+                Mage::helper('M2ePro')->serialize($additionalData)
+            );
             $creditmemoItem->getOrderItem()->save();
         }
 

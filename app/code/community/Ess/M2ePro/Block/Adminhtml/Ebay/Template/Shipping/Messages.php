@@ -18,9 +18,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages
         $messages = array();
 
         // ---------------------------------------
-        if (!is_null($message = $this->getCurrencyConversionMessage())) {
+        $message = $this->getCurrencyConversionMessage();
+        if ($message !== null) {
             $messages[self::TYPE_CURRENCY_CONVERSION] = $message;
         }
+
         // ---------------------------------------
 
         $messages = array_merge($messages, parent::getMessages());
@@ -32,11 +34,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages
 
     public function getCurrencyConversionMessage($marketplaceCurrency = null)
     {
-        if (is_null($this->getMarketplace())) {
-            return NULL;
+        if ($this->getMarketplace() === null) {
+            return null;
         }
 
-        if (is_null($marketplaceCurrency)) {
+        if ($marketplaceCurrency === null) {
             $marketplaceCurrency = $this->getMarketplace()->getChildObject()->getCurrency();
         }
 
@@ -62,7 +64,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages
             );
 
             // M2ePro_TRANSLATIONS
-            // Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a> for Store View "%store_path%" of your Magento. Currency conversion will not be performed.
+            // Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a>
+            // for Store View "%store_path%" of your Magento. Currency conversion will not be performed.
             $messageText =
                 Mage::helper('M2ePro')->__(
                     'Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a> '
@@ -81,7 +84,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages
                 );
 
             // M2ePro_TRANSLATIONS
-            // There is no rate for "%currency_from%-%currency_to%" in <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento. Currency conversion will not be performed.
+            // There is no rate for "%currency_from%-%currency_to%" in
+            // <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.
+            // Currency conversion will not be performed.
             if ($rate == 0) {
                 $messageText =
                     Mage::helper('M2ePro')->__(
@@ -94,13 +99,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages
                     );
             } else {
                 // M2ePro_TRANSLATIONS
-                // There is a rate %value% for "%currency_from%-%currency_to%" in <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento. Currency conversion will be performed automatically.
+                // There is a rate %value% for "%currency_from%-%currency_to%" in
+                // <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.
+                // Currency conversion will be performed automatically.
                 $message =
                     Mage::helper('M2ePro')->__(
                         'There is a rate %value% for "%currency_from%-%currency_to%" in'
                         . ' <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.'
-                        . ' Currency conversion will be performed automatically.'
-                        ,
+                        . ' Currency conversion will be performed automatically.',
                         $rate,
                         $this->getStore()->getBaseCurrencyCode(),
                         $marketplaceCurrency,
@@ -111,7 +117,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Messages
             }
         }
 
-        if (is_null($messageText)) {
+        if ($messageText === null) {
             return NULL;
         }
 
@@ -142,7 +148,7 @@ HTML;
 
     protected function canDisplayCurrencyConversionMessage($marketplaceCurrency)
     {
-        if (is_null($this->getStore())) {
+        if ($this->getStore() === null) {
             return false;
         }
 
@@ -162,7 +168,6 @@ HTML;
                 $attributes = array_merge($attributes, $service->getUsedAttributes());
             }
         } else {
-
             $shippingCostAttributes = $template->getData('shipping_cost_attribute');
 
             if (!empty($shippingCostAttributes)) {

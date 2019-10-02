@@ -10,9 +10,7 @@ class Ess_M2ePro_Helper_Magento_Product extends Mage_Core_Helper_Abstract
 {
     const SKU_MAX_LENGTH = 64;
 
-    //########################################
-
-    private $cacheLoadedProducts = array();
+    protected $_cacheLoadedProducts = array();
 
     //########################################
 
@@ -25,16 +23,16 @@ class Ess_M2ePro_Helper_Magento_Product extends Mage_Core_Helper_Abstract
         $productId = (int)$product;
         $cacheKey = $productId.'_'.(string)$storeId;
 
-        if (isset($this->cacheLoadedProducts[$cacheKey])) {
-            return $this->cacheLoadedProducts[$cacheKey];
+        if (isset($this->_cacheLoadedProducts[$cacheKey])) {
+            return $this->_cacheLoadedProducts[$cacheKey];
         }
 
         /** @var Mage_Catalog_Model_Product $product */
         $product = Mage::getModel('catalog/product');
-        !is_null($storeId) && $product->setStoreId((int)$storeId);
+        $storeId !== null && $product->setStoreId((int)$storeId);
         $product->load($productId);
 
-        return $this->cacheLoadedProducts[$cacheKey] = $product;
+        return $this->_cacheLoadedProducts[$cacheKey] = $product;
     }
 
     /**
@@ -66,7 +64,7 @@ class Ess_M2ePro_Helper_Magento_Product extends Mage_Core_Helper_Abstract
             $configurableAssociatedProducts = array();
 
             foreach ($associatedProducts as $productIds) {
-                if (count($configurableAssociatedProducts) == 0) {
+                if (empty($configurableAssociatedProducts)) {
                     $configurableAssociatedProducts = $productIds;
                 } else {
                     $configurableAssociatedProducts = array_intersect($configurableAssociatedProducts, $productIds);
@@ -74,8 +72,10 @@ class Ess_M2ePro_Helper_Magento_Product extends Mage_Core_Helper_Abstract
             }
 
             if (count($configurableAssociatedProducts) != 1) {
-                throw new Ess_M2ePro_Model_Exception_Logic('There is no associated Product found for
-                    Configurable Product.');
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There is no associated Product found for
+                    Configurable Product.'
+                );
             }
 
             return $configurableAssociatedProducts;

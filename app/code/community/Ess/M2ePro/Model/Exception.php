@@ -8,15 +8,15 @@
 
 class Ess_M2ePro_Model_Exception extends Exception
 {
-    protected $additionalData = array();
-    protected $sendToServer = NULL;
+    protected $_additionalData = array();
+    protected $_sendToServer   = null;
 
     //########################################
 
     public function __construct($message = "", $additionalData = array(), $code = 0, $sendToServer = true)
     {
-        $this->additionalData = $additionalData;
-        $this->sendToServer = $sendToServer;
+        $this->_additionalData = $additionalData;
+        $this->_sendToServer   = $sendToServer;
 
         parent::__construct($message, $code, null);
     }
@@ -25,12 +25,12 @@ class Ess_M2ePro_Model_Exception extends Exception
 
     public function getAdditionalData()
     {
-        return $this->additionalData;
+        return $this->_additionalData;
     }
 
     public function setAdditionalData($additionalData)
     {
-        $this->additionalData = $additionalData;
+        $this->_additionalData = $additionalData;
         return $this;
     }
 
@@ -38,12 +38,12 @@ class Ess_M2ePro_Model_Exception extends Exception
 
     public function setSendToServer($value)
     {
-        $this->sendToServer = (bool)$value;
+        $this->_sendToServer = (bool)$value;
     }
 
     public function isSendToServer()
     {
-        return $this->sendToServer;
+        return $this->_sendToServer;
     }
 
     //########################################

@@ -8,20 +8,20 @@
 
 abstract class Ess_M2ePro_Model_Servicing_Task
 {
-    private $params = array();
-    private $initiator;
+    protected $_params = array();
+    protected $_initiator;
 
     //########################################
 
     public function setInitiator($initiator)
     {
-        $this->initiator = $initiator;
+        $this->_initiator = $initiator;
         return $this;
     }
 
     public function getInitiator()
     {
-        return $this->initiator;
+        return $this->_initiator;
     }
 
     //########################################
@@ -38,7 +38,7 @@ abstract class Ess_M2ePro_Model_Servicing_Task
      */
     public function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     /**
@@ -46,7 +46,7 @@ abstract class Ess_M2ePro_Model_Servicing_Task
      */
     public function setParams(array $params = array())
     {
-        $this->params = $params;
+        $this->_params = $params;
     }
 
     //########################################

@@ -42,9 +42,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Refund extends Ess_M2ePro_Model_C
     /**
      * @return Ess_M2ePro_Model_Order_Change[]
      */
-    private function getOrdersChangesForProcess()
+    protected function getOrdersChangesForProcess()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Change_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Change_Collection $collection */
         $collection = Mage::getResourceModel('M2ePro/Order_Change_Collection');
         $collection->addFieldToFilter('component', Ess_M2ePro_Helper_Component_Walmart::NICK);
         $collection->addFieldToFilter('action', Ess_M2ePro_Model_Order_Change::ACTION_REFUND);

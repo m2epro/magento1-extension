@@ -19,7 +19,6 @@ class Ess_M2ePro_Model_Observer_Magento_Configuration extends Ess_M2ePro_Model_O
         }
 
         switch (Mage::app()->getRequest()->getParam('section')) {
-
             case Ess_M2ePro_Helper_View_Configuration::CONFIG_SECTION_COMPONENTS;
                 $controllerName = 'adminhtml_configuration_components';
                 $action = 'save';

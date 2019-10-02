@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Observer_Ebay_Order_Item extends Ess_M2ePro_Model_Observe
         /** @var Mage_Catalog_Model_Product $product */
         $product = $this->getEvent()->getData('product');
 
-        /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $listingOtherCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $listingOtherCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
         $listingOtherCollection->addFieldToFilter('account_id', $orderItem->getOrder()->getAccountId());
         $listingOtherCollection->addFieldToFilter('marketplace_id', $orderItem->getOrder()->getMarketplaceId());
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Observer_Ebay_Order_Item extends Ess_M2ePro_Model_Observe
             /** @var Ess_M2ePro_Model_Listing_Other $otherListing */
             $otherListing = reset($otherListings);
 
-            if (!is_null($otherListing->getProductId())) {
+            if ($otherListing->getProductId() !== null) {
                 return;
             }
 

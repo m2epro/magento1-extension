@@ -11,27 +11,27 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
     /**
      * @var array
      */
-    private $params = array();
+    protected $_params = array();
 
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator
      */
-    private $configurator = NULL;
+    protected $_configurator = null;
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
-    protected $requestData = NULL;
+    protected $_requestData = null;
 
     /**
      * @var array
      */
-    protected $requestMetaData = array();
+    protected $_requestMetaData = array();
 
     //########################################
 
@@ -41,7 +41,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
 
     public function setParams(array $params = array())
     {
-        $this->params = $params;
+        $this->_params = $params;
     }
 
     /**
@@ -49,7 +49,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
      */
     protected function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     // ---------------------------------------
@@ -59,7 +59,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $object)
     {
-        $this->listingProduct = $object;
+        $this->_listingProduct = $object;
     }
 
     /**
@@ -67,7 +67,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
      */
     protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ---------------------------------------
@@ -77,7 +77,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
      */
     public function setConfigurator(Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $object)
     {
-        $this->configurator = $object;
+        $this->_configurator = $object;
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
      */
     protected function getConfigurator()
     {
-        return $this->configurator;
+        return $this->_configurator;
     }
 
     // ---------------------------------------
@@ -95,7 +95,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
      */
     public function setRequestData(Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData $object)
     {
-        $this->requestData = $object;
+        $this->_requestData = $object;
     }
 
     /**
@@ -103,23 +103,23 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
      */
     protected function getRequestData()
     {
-        return $this->requestData;
+        return $this->_requestData;
     }
 
     // ---------------------------------------
 
     public function getRequestMetaData($key = NULL)
     {
-        if (!is_null($key)) {
-            return isset($this->requestMetaData[$key]) ? $this->requestMetaData[$key] : NULL;
+        if ($key !== null) {
+            return isset($this->_requestMetaData[$key]) ? $this->_requestMetaData[$key] : NULL;
         }
 
-        return $this->requestMetaData;
+        return $this->_requestMetaData;
     }
 
     public function setRequestMetaData($value)
     {
-        $this->requestMetaData = $value;
+        $this->_requestMetaData = $value;
         return $this;
     }
 
@@ -201,8 +201,8 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
 
     protected function appendStatusChangerValue($data)
     {
-        if (isset($this->params['status_changer'])) {
-            $data['status_changer'] = (int)$this->params['status_changer'];
+        if (isset($this->_params['status_changer'])) {
+            $data['status_changer'] = (int)$this->_params['status_changer'];
         }
 
         return $data;
@@ -293,6 +293,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
         if (!$this->getRequestData()->getIsNeedSkuUpdate()) {
             return $data;
         }
+
+        $walmartItem = $this->getListingProduct()->getChildObject()->getWalmartItem();
+        $walmartItem->setData('sku', $this->getRequestData()->getSku());
+        $walmartItem->save();
 
         $data['sku'] = $this->getRequestData()->getSku();
 

@@ -12,14 +12,15 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Requester
     /**
      * @var Ess_M2ePro_Model_Account|null
      */
-    protected $account = NULL;
+    protected $_account;
 
     //########################################
 
-    public function __construct(array $params = array(),
-                                Ess_M2ePro_Model_Account $account = NULL)
-    {
-        $this->account = $account;
+    public function __construct(
+        array $params = array(),
+        Ess_M2ePro_Model_Account $account = null
+    ) {
+        $this->_account = $account;
         parent::__construct($params);
     }
 
@@ -30,9 +31,10 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Requester
         $request = parent::buildRequestInstance();
 
         $requestData = $request->getData();
-        if (!is_null($this->account)) {
-            $requestData['account'] = $this->account->getChildObject()->getServerHash();
+        if ($this->_account !== null) {
+            $requestData['account'] = $this->_account->getChildObject()->getServerHash();
         }
+
         $request->setData($requestData);
 
         return $request;
@@ -44,8 +46,8 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Requester
     {
         $params = parent::getProcessingParams();
 
-        if (!is_null($this->account)) {
-            $params['account_id'] = $this->account->getId();
+        if ($this->_account !== null) {
+            $params['account_id'] = $this->_account->getId();
         }
 
         return $params;
@@ -55,8 +57,8 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Requester
     {
         $params = parent::getResponserParams();
 
-        if (!is_null($this->account)) {
-            $params['account_id'] = $this->account->getId();
+        if ($this->_account !== null) {
+            $params['account_id'] = $this->_account->getId();
         }
 
         return $params;

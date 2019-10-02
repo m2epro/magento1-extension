@@ -19,31 +19,31 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
     const PROGRESS_SET_DETAILS_EVENT_NAME     = 'm2epro_cron_progress_set_details';
     const PROGRESS_STOP_EVENT_NAME            = 'm2epro_cron_progress_stop';
 
-    private $initiator = null;
+    protected $_initiator = null;
 
-    private $allowedTasks = NULL;
-
-    /**
-     * @var Ess_M2ePro_Model_Cron_OperationHistory
-     */
-    private $operationHistory = NULL;
+    protected $_allowedTasks = null;
 
     /**
      * @var Ess_M2ePro_Model_Cron_OperationHistory
      */
-    private $parentOperationHistory = NULL;
+    protected $_operationHistory = null;
+
+    /**
+     * @var Ess_M2ePro_Model_Cron_OperationHistory
+     */
+    protected $_parentOperationHistory = null;
 
     //########################################
 
     public function setInitiator($initiator)
     {
-        $this->initiator = $initiator;
+        $this->_initiator = $initiator;
         return $this;
     }
 
     public function getInitiator()
     {
-        return $this->initiator;
+        return $this->_initiator;
     }
 
     // ---------------------------------------
@@ -54,7 +54,7 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
      */
     public function setAllowedTasks(array $tasks)
     {
-        $this->allowedTasks = $tasks;
+        $this->_allowedTasks = $tasks;
         return $this;
     }
 
@@ -63,11 +63,11 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
      */
     public function getAllowedTasks()
     {
-        if (!is_null($this->allowedTasks)) {
-            return $this->allowedTasks;
+        if ($this->_allowedTasks !== null) {
+            return $this->_allowedTasks;
         }
 
-        return $this->allowedTasks = array(
+        return $this->_allowedTasks = array(
             Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders::NICK,
             Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs::NICK,
             Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial::NICK,
@@ -149,7 +149,7 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
      */
     public function setParentOperationHistory(Ess_M2ePro_Model_Cron_OperationHistory $operationHistory)
     {
-        $this->parentOperationHistory = $operationHistory;
+        $this->_parentOperationHistory = $operationHistory;
         return $this;
     }
 
@@ -158,7 +158,7 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
      */
     public function getParentOperationHistory()
     {
-        return $this->parentOperationHistory;
+        return $this->_parentOperationHistory;
     }
 
     //########################################
@@ -172,19 +172,18 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
         $this->beforeStart();
 
         try {
-
             $result = $this->processTasks();
-
         } catch (Exception $exception) {
-
             $result = false;
 
-            $this->getOperationHistory()->addContentData('exceptions', array(
+            $this->getOperationHistory()->addContentData(
+                'exceptions', array(
                 'message' => $exception->getMessage(),
                 'file'    => $exception->getFile(),
                 'line'    => $exception->getLine(),
                 'trace'   => $exception->getTraceAsString(),
-            ));
+                )
+            );
 
             Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
@@ -202,13 +201,17 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
      */
     protected function getTaskObject($taskNick)
     {
-        $taskNick = preg_replace_callback('/_([a-z])/i', function($matches) {
+        $taskNick = preg_replace_callback(
+            '/_([a-z])/i', function($matches) {
             return ucfirst($matches[1]);
-        }, $taskNick);
+            }, $taskNick
+        );
 
-        $taskNick = preg_replace_callback('/\/([a-z])/i', function($matches) {
+        $taskNick = preg_replace_callback(
+            '/\/([a-z])/i', function($matches) {
             return '_' . ucfirst($matches[1]);
-        }, $taskNick);
+            }, $taskNick
+        );
 
         $taskNick = ucfirst($taskNick);
 
@@ -271,11 +274,11 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
      */
     protected function getOperationHistory()
     {
-        if (!is_null($this->operationHistory)) {
-            return $this->operationHistory;
+        if ($this->_operationHistory !== null) {
+            return $this->_operationHistory;
         }
 
-        return $this->operationHistory = Mage::getModel('M2ePro/Cron_OperationHistory');
+        return $this->_operationHistory = Mage::getModel('M2ePro/Cron_OperationHistory');
     }
 
     protected function makeLockItemShutdownFunction(Ess_M2ePro_Model_Lock_Item_Manager $lockItemManager)
@@ -287,10 +290,11 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
 
         $id = $lockItem->getId();
 
-        register_shutdown_function(function() use ($id)
-        {
+        register_shutdown_function(
+            function() use ($id)
+            {
             $error = error_get_last();
-            if (is_null($error) || !in_array((int)$error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
+            if ($error === null || !in_array((int)$error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR))) {
                 return;
             }
 
@@ -298,7 +302,8 @@ abstract class Ess_M2ePro_Model_Cron_Strategy_Abstract
             if ($lockItem->getId()) {
                 $lockItem->delete();
             }
-        });
+            }
+        );
     }
 
     //########################################

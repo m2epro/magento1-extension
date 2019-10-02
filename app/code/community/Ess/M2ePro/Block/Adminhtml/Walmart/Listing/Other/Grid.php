@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
-    protected $cacheData = array();
+    protected $_cacheData = array();
 
     //########################################
 
@@ -49,15 +49,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('account', array(
+        $this->addColumn(
+            'account', array(
             'header'    => Mage::helper('M2ePro')->__('Account'),
             'align'     => 'left',
             'type'      => 'text',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnAccount')
-        ));
+            )
+        );
 
-        $this->addColumn('products_total_count', array(
+        $this->addColumn(
+            'products_total_count', array(
             'header'    => Mage::helper('M2ePro')->__('Total Items'),
             'align'     => 'right',
             'width'     => '100px',
@@ -66,9 +69,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
             'filter_index' => 'main_table.products_total_count',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnTotalProducts')
-        ));
+            )
+        );
 
-        $this->addColumn('products_active_count', array(
+        $this->addColumn(
+            'products_active_count', array(
             'header'    => Mage::helper('M2ePro')->__('Active Items'),
             'align'     => 'right',
             'width'     => '100px',
@@ -77,9 +82,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
             'filter_index' => 'main_table.products_active_count',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnListedProducts')
-        ));
+            )
+        );
 
-        $this->addColumn('products_inactive_count', array(
+        $this->addColumn(
+            'products_inactive_count', array(
             'header'    => Mage::helper('M2ePro')->__('Inactive Items'),
             'align'     => 'right',
             'width'     => '100px',
@@ -88,15 +95,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
             'filter_index' => 'main_table.products_inactive_count',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnInactiveProducts')
-        ));
+            )
+        );
 
-        $this->addColumnAfter('marketplace', array(
+        $this->addColumnAfter(
+            'marketplace', array(
             'header'    => Mage::helper('M2ePro')->__('Marketplace'),
             'align'     => 'left',
             'type'      => 'text',
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnMarketplace')
-        ), 'account');
+            ), 'account'
+        );
 
         return parent::_prepareColumns();
     }
@@ -106,7 +116,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
     public function callbackColumnAccount($value, $row, $column, $isExport)
     {
         $accountTitle = Mage::helper('M2ePro/Component')
-            ->getCachedUnknownObject('Account',$row->getData('account_id'))
+            ->getCachedUnknownObject('Account', $row->getData('account_id'))
             ->getTitle();
         return Mage::helper('M2ePro')->escapeHtml($accountTitle);
     }
@@ -114,7 +124,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
     public function callbackColumnMarketplace($value, $row, $column, $isExport)
     {
         $marketplaceTitle = Mage::helper('M2ePro/Component_Walmart')
-            ->getCachedObject('Marketplace',$row->getData('marketplace_id'))
+            ->getCachedObject('Marketplace', $row->getData('marketplace_id'))
             ->getTitle();
         return Mage::helper('M2ePro')->escapeHtml($marketplaceTitle);
     }
@@ -125,9 +135,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
         $marketplaceId = $row->getMarketplaceId();
         $key = $accountId . ',' . $marketplaceId;
 
-        $value = $this->cacheData[$key]['total_items'];
+        $value = $this->_cacheData[$key]['total_items'];
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             $value = Mage::helper('M2ePro')->__('N/A');
         } else if ($value <= 0) {
             $value = '<span style="color: red;">0</span>';
@@ -142,9 +152,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
         $marketplaceId = $row->getMarketplaceId();
         $key = $accountId . ',' . $marketplaceId;
 
-        $value = $this->cacheData[$key]['active_items'];
+        $value = $this->_cacheData[$key]['active_items'];
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             $value = Mage::helper('M2ePro')->__('N/A');
         } else if ($value <= 0) {
             $value = '<span style="color: red;">0</span>';
@@ -159,9 +169,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
         $marketplaceId = $row->getMarketplaceId();
         $key = $accountId . ',' . $marketplaceId;
 
-        $value = $this->cacheData[$key]['inactive_items'];
+        $value = $this->_cacheData[$key]['inactive_items'];
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             $value = Mage::helper('M2ePro')->__('N/A');
         } else if ($value <= 0) {
             $value = '<span style="color: red;">0</span>';
@@ -174,47 +184,53 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_Grid
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/adminhtml_walmart_listing_other/view', array(
+        return $this->getUrl(
+            '*/adminhtml_walmart_listing_other/view', array(
             'account' => $row->getData('account_id'),
             'marketplace' => $row->getData('marketplace_id'),
-            'back'=>Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_walmart_listing/index', array(
+            'back'=>Mage::helper('M2ePro')->makeBackUrlParam(
+                '*/adminhtml_walmart_listing/index', array(
                 'tab' => Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings::TAB_ID_LISTING_OTHER,
-            ))
-        ));
+                )
+            )
+            )
+        );
     }
 
     //########################################
 
     protected function prepareCacheData()
     {
-        $this->cacheData = array();
+        $this->_cacheData = array();
 
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $collection->getSelect()->columns(array(
+        $collection->getSelect()->columns(
+            array(
             'count' => new \Zend_Db_Expr('COUNT(id)'),
             'account_id',
             'marketplace_id',
             'status'
-        ));
+            )
+        );
         $collection->getSelect()->group(array('account_id','marketplace_id','status'));
 
         foreach ($collection->getItems() as $item) {
-
             $key = $item->getData('account_id') . ',' . $item->getData('marketplace_id');
 
-            empty($this->cacheData[$key]) && ($this->cacheData[$key] = array(
+            empty($this->_cacheData[$key]) && ($this->_cacheData[$key] = array(
                 'total_items' => 0,
                 'active_items' => 0,
                 'inactive_items' => 0
             ));
 
             if ($item->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_LISTED) {
-                $this->cacheData[$key]['active_items'] += (int)$item['count'];
+                $this->_cacheData[$key]['active_items'] += (int)$item['count'];
             } else {
-                $this->cacheData[$key]['inactive_items'] += (int)$item['count'];
+                $this->_cacheData[$key]['inactive_items'] += (int)$item['count'];
             }
-            $this->cacheData[$key]['total_items'] += (int)$item['count'];
+
+            $this->_cacheData[$key]['total_items'] += (int)$item['count'];
         }
     }
 

@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Model_Walmart_Marketplace_Details
 {
-    private $marketplaceId = null;
+    protected $_marketplaceId = null;
 
-    private $productData = array();
+    protected $_productData = array();
 
     //########################################
 
@@ -21,11 +21,11 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Details
      */
     public function setMarketplaceId($marketplaceId)
     {
-        if ($this->marketplaceId === $marketplaceId) {
+        if ($this->_marketplaceId === $marketplaceId) {
             return $this;
         }
 
-        $this->marketplaceId = $marketplaceId;
+        $this->_marketplaceId = $marketplaceId;
         $this->load();
 
         return $this;
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Details
      */
     public function getProductData()
     {
-       return $this->productData;
+       return $this->_productData;
     }
 
     /**
@@ -47,18 +47,18 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Details
      */
     public function getVariationAttributes($productDataNick)
     {
-        if (!isset($this->productData[$productDataNick])) {
+        if (!isset($this->_productData[$productDataNick])) {
             return array();
         }
 
-        return (array)$this->productData[$productDataNick]['variation_attributes'];
+        return (array)$this->_productData[$productDataNick]['variation_attributes'];
     }
 
     //########################################
 
-    private function load()
+    protected function load()
     {
-        if (is_null($this->marketplaceId)) {
+        if ($this->_marketplaceId === null) {
             throw new Ess_M2ePro_Model_Exception('Marketplace was not set.');
         }
 
@@ -69,7 +69,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Details
 
         $data = $connRead->select()
             ->from($table)
-            ->where('marketplace_id = ?', (int)$this->marketplaceId)
+            ->where('marketplace_id = ?', (int)$this->_marketplaceId)
             ->query()
             ->fetch();
 
@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Details
             throw new Ess_M2ePro_Model_Exception('Marketplace not found or not synchronized');
         }
 
-        $this->productData    = Mage::helper('M2ePro')->jsonDecode($data['product_data']);
+        $this->_productData = Mage::helper('M2ePro')->jsonDecode($data['product_data']);
     }
 
     //########################################

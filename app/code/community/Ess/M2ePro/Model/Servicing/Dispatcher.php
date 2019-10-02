@@ -10,33 +10,33 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 {
     const DEFAULT_INTERVAL = 3600;
 
-    private $params = array();
-    private $forceTasksRunning = false;
-    private $initiator;
+    protected $_params            = array();
+    protected $_forceTasksRunning = false;
+    protected $_initiator;
 
     //########################################
 
     public function getForceTasksRunning()
     {
-        return $this->forceTasksRunning;
+        return $this->_forceTasksRunning;
     }
 
     public function setForceTasksRunning($value)
     {
-        $this->forceTasksRunning = (bool)$value;
+        $this->_forceTasksRunning = (bool)$value;
     }
 
     // ---------------------------------------
 
     public function setInitiator($initiator)
     {
-        $this->initiator = $initiator;
+        $this->_initiator = $initiator;
         return $this;
     }
 
     public function getInitiator()
     {
-        return $this->initiator;
+        return $this->_initiator;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
      */
     public function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     /**
@@ -54,7 +54,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
      */
     public function setParams(array $params = array())
     {
-        $this->params = $params;
+        $this->_params = $params;
     }
 
     //########################################
@@ -64,7 +64,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         $timeLastUpdate = $this->getLastUpdateTimestamp();
 
         if ($this->getInitiator() !== Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER &&
-            !is_null($minInterval) &&
+            $minInterval !== null &&
             $timeLastUpdate + (int)$minInterval > Mage::helper('M2ePro')->getCurrentGmtDate(true)) {
             return false;
         }
@@ -87,8 +87,10 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
 
         $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-        $connectorObj = $dispatcherObject->getVirtualConnector('servicing','update','data',
-                                                               $this->getRequestData($taskCodes));
+        $connectorObj = $dispatcherObject->getVirtualConnector(
+            'servicing', 'update', 'data',
+            $this->getRequestData($taskCodes)
+        );
 
         $dispatcherObject->process($connectorObj);
         $responseData = $connectorObj->getResponseData();
@@ -97,20 +99,19 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
             return false;
         }
 
-        $this->dispatchResponseData($responseData,$taskCodes);
+        $this->dispatchResponseData($responseData, $taskCodes);
 
         return true;
     }
 
     //########################################
 
-    private function getRequestData(array $taskCodes)
+    protected function getRequestData(array $taskCodes)
     {
         $requestData = array();
 
         foreach ($this->getRegisteredTasks() as $taskName) {
-
-            if (!in_array($taskName,$taskCodes)) {
+            if (!in_array($taskName, $taskCodes)) {
                 continue;
             }
 
@@ -126,11 +127,10 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
         return $requestData;
     }
 
-    private function dispatchResponseData(array $responseData, array $taskCodes)
+    protected function dispatchResponseData(array $responseData, array $taskCodes)
     {
         foreach ($this->getRegisteredTasks() as $taskName) {
-
-            if (!in_array($taskName,$taskCodes)) {
+            if (!in_array($taskName, $taskCodes)) {
                 continue;
             }
 
@@ -147,11 +147,13 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 
     //########################################
 
-    private function getTaskModel($taskName)
+    protected function getTaskModel($taskName)
     {
-        $taskName = preg_replace_callback('/_([a-z])/i', function($matches) {
+        $taskName = preg_replace_callback(
+            '/_([a-z])/i', function($matches) {
             return ucfirst($matches[1]);
-        }, $taskName);
+            }, $taskName
+        );
 
         /** @var $taskModel Ess_M2ePro_Model_Servicing_Task */
         $taskModel = Mage::getModel('M2ePro/Servicing_Task_'.ucfirst($taskName));
@@ -204,23 +206,25 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 
     // ---------------------------------------
 
-    private function getLastUpdateTimestamp()
+    protected function getLastUpdateTimestamp()
     {
         $lastUpdateDate = Mage::helper('M2ePro/Module')->getCacheConfig()
-                            ->getGroupValue('/servicing/','last_update_time');
+                            ->getGroupValue('/servicing/', 'last_update_time');
 
-        if (is_null($lastUpdateDate)) {
+        if ($lastUpdateDate === null) {
             return Mage::helper('M2ePro')->getCurrentGmtDate(true) - 3600*24*30;
         }
 
-        return Mage::helper('M2ePro')->getDate($lastUpdateDate,true);
+        return Mage::helper('M2ePro')->getDate($lastUpdateDate, true);
     }
 
-    private function setLastUpdateDateTime()
+    protected function setLastUpdateDateTime()
     {
         Mage::helper('M2ePro/Module')->getCacheConfig()
-            ->setGroupValue('/servicing/', 'last_update_time',
-                            Mage::helper('M2ePro')->getCurrentGmtDate());
+            ->setGroupValue(
+                '/servicing/', 'last_update_time',
+                Mage::helper('M2ePro')->getCurrentGmtDate()
+            );
     }
 
     //########################################

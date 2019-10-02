@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      *
      * @var array
      */
-    private static $transOpStr = array(
+    private static $_transOpStr = array(
         '=' => self::OP_EQ,
         '==' => self::OP_EQ,
         '<' => self::OP_LT,
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      *
      * @var array
      */
-    private static $transOpInt = array(
+    private static $_transOpInt = array(
         self::OP_EQ => '==',
         self::OP_LT => '<',
         self::OP_LE => '<=',
@@ -56,13 +56,13 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
     );
 
     /** @var string */
-    protected $operator;
+    protected $_operator;
 
     /** @var string */
-    protected $version;
+    protected $_version;
 
     /** @var string */
-    protected $prettyString;
+    protected $_prettyString;
 
     /**
      * @param Ess_M2ePro_Model_Requirements_Semver_Constraint_ConstraintInterface $provider
@@ -84,7 +84,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      */
     public function setPrettyString($prettyString)
     {
-        $this->prettyString = $prettyString;
+        $this->_prettyString = $prettyString;
     }
 
     /**
@@ -92,8 +92,8 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      */
     public function getPrettyString()
     {
-        if ($this->prettyString) {
-            return $this->prettyString;
+        if ($this->_prettyString) {
+            return $this->_prettyString;
         }
 
         return $this->__toString();
@@ -106,7 +106,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      */
     public static function getSupportedOperators()
     {
-        return array_keys(self::$transOpStr);
+        return array_keys(self::$_transOpStr);
     }
 
     /**
@@ -119,16 +119,18 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      */
     public function __construct($operator, $version)
     {
-        if (!isset(self::$transOpStr[$operator])) {
-            throw new \InvalidArgumentException(sprintf(
-                'Invalid operator "%s" given, expected one of: %s',
-                $operator,
-                implode(', ', self::getSupportedOperators())
-            ));
+        if (!isset(self::$_transOpStr[$operator])) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Invalid operator "%s" given, expected one of: %s',
+                    $operator,
+                    implode(', ', self::getSupportedOperators())
+                )
+            );
         }
 
-        $this->operator = self::$transOpStr[$operator];
-        $this->version = $version;
+        $this->_operator = self::$_transOpStr[$operator];
+        $this->_version  = $version;
     }
 
     /**
@@ -143,12 +145,14 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      */
     public function versionCompare($a, $b, $operator, $compareBranches = false)
     {
-        if (!isset(self::$transOpStr[$operator])) {
-            throw new \InvalidArgumentException(sprintf(
-                'Invalid operator "%s" given, expected one of: %s',
-                $operator,
-                implode(', ', self::getSupportedOperators())
-            ));
+        if (!isset(self::$_transOpStr[$operator])) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Invalid operator "%s" given, expected one of: %s',
+                    $operator,
+                    implode(', ', self::getSupportedOperators())
+                )
+            );
         }
 
         $aIsBranch = 'dev-' === substr($a, 0, 4);
@@ -174,34 +178,36 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      */
     public function matchSpecific(Constraint $provider, $compareBranches = false)
     {
-        $noEqualOp = str_replace('=', '', self::$transOpInt[$this->operator]);
-        $providerNoEqualOp = str_replace('=', '', self::$transOpInt[$provider->operator]);
+        $noEqualOp = str_replace('=', '', self::$_transOpInt[$this->_operator]);
+        $providerNoEqualOp = str_replace('=', '', self::$_transOpInt[$provider->_operator]);
 
-        $isEqualOp = self::OP_EQ === $this->operator;
-        $isNonEqualOp = self::OP_NE === $this->operator;
-        $isProviderEqualOp = self::OP_EQ === $provider->operator;
-        $isProviderNonEqualOp = self::OP_NE === $provider->operator;
+        $isEqualOp = self::OP_EQ === $this->_operator;
+        $isNonEqualOp = self::OP_NE === $this->_operator;
+        $isProviderEqualOp = self::OP_EQ === $provider->_operator;
+        $isProviderNonEqualOp = self::OP_NE === $provider->_operator;
 
         // '!=' operator is match when other operator is not '==' operator or version is not match
         // these kinds of comparisons always have a solution
         if ($isNonEqualOp || $isProviderNonEqualOp) {
             return !$isEqualOp && !$isProviderEqualOp
-                || $this->versionCompare($provider->version, $this->version, '!=', $compareBranches);
+                || $this->versionCompare($provider->_version, $this->_version, '!=', $compareBranches);
         }
 
         // an example for the condition is <= 2.0 & < 1.0
         // these kinds of comparisons always have a solution
-        if ($this->operator !== self::OP_EQ && $noEqualOp === $providerNoEqualOp) {
+        if ($this->_operator !== self::OP_EQ && $noEqualOp === $providerNoEqualOp) {
             return true;
         }
 
-        if ($this->versionCompare($provider->version, $this->version,
-                                  self::$transOpInt[$this->operator], $compareBranches)) {
+        if ($this->versionCompare(
+            $provider->_version, $this->_version,
+            self::$_transOpInt[$this->_operator], $compareBranches
+        )) {
             // special case, e.g. require >= 1.0 and provide < 1.0
             // 1.0 >= 1.0 but 1.0 is outside of the provided interval
-            if ($provider->version === $this->version
-                && self::$transOpInt[$provider->operator] === $providerNoEqualOp
-                && self::$transOpInt[$this->operator] !== $noEqualOp) {
+            if ($provider->_version === $this->_version
+                && self::$_transOpInt[$provider->_operator] === $providerNoEqualOp
+                && self::$_transOpInt[$this->_operator] !== $noEqualOp) {
                 return false;
             }
 
@@ -216,7 +222,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
      */
     public function __toString()
     {
-        return self::$transOpInt[$this->operator] . ' ' . $this->version;
+        return self::$_transOpInt[$this->_operator] . ' ' . $this->_version;
     }
 
     public function getVersion()
@@ -224,6 +230,6 @@ class Ess_M2ePro_Model_Requirements_Semver_Constraint_Constraint
         $replace = Ess_M2ePro_Model_Requirements_Semver_VersionParser::$stabilities;
         $replace[] = '-';
 
-        return str_replace($replace, '', $this->version);
+        return str_replace($replace, '', $this->_version);
     }
 }

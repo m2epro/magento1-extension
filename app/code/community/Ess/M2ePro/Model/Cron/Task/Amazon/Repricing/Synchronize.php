@@ -52,15 +52,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
 
         foreach ($accounts as $account) {
             if ($this->isPossibleToSynchronizeGeneral($account)) {
-
                 $this->synchronizeGeneral($account);
-
             }
 
             if ($this->isPossibleToSynchronizeActualPrice($account)) {
-
                 $this->synchronizeActualPrice($account);
-
             }
         }
     }
@@ -70,10 +66,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     /**
      * @param Ess_M2ePro_Model_Account $account
      */
-    private function synchronizeGeneral($account)
+    protected function synchronizeGeneral($account)
     {
         // Listing Products
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->getSelect()->joinLeft(
             array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
@@ -85,10 +81,12 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         $listingProductCollection->addFieldToFilter('second_table.online_regular_price', array('notnull' => true));
 
         $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $listingProductCollection->getSelect()->columns(array(
+        $listingProductCollection->getSelect()->columns(
+            array(
             'id'   => 'main_table.id',
             'sku'  => 'second_table.sku'
-        ));
+            )
+        );
 
         $lastListingProductId = $this->getAccountData($account, self::REGISTRY_GENERAL_LAST_LISTING_PRODUCT_ID);
         $listingProductCollection->getSelect()->where('main_table.id > ?', $lastListingProductId);
@@ -96,15 +94,17 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         $listingProductCollection->getSelect()->order('id ASC');
 
         // Listing Others
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other_Collection $listingOtherCollection */
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Other_Collection $listingOtherCollection */
         $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
         $listingOtherCollection->addFieldToFilter('account_id', $account->getId());
 
         $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $listingOtherCollection->getSelect()->columns(array(
+        $listingOtherCollection->getSelect()->columns(
+            array(
             'id'   => 'main_table.id',
             'sku'  => 'second_table.sku'
-        ));
+            )
+        );
 
         $lastListingOtherId = $this->getAccountData($account, self::REGISTRY_GENERAL_LAST_LISTING_OTHER_ID);
         $listingOtherCollection->getSelect()->where('main_table.id > ?', $lastListingOtherId);
@@ -125,6 +125,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         foreach ($listingProducts as $listingProduct) {
             $skus[] = $listingProduct['sku'];
         }
+
         foreach ($listingOthers as $listingOther) {
             $skus[] = $listingOther['sku'];
         }
@@ -142,6 +143,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
                     $listingProducts[count($listingProducts) - 1]['id']
                 );
             }
+
             if (!empty($listingOthers)) {
                 $this->setAccountData(
                     $account,
@@ -155,10 +157,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     /**
      * @param Ess_M2ePro_Model_Account $account
      */
-    private function synchronizeActualPrice($account)
+    protected function synchronizeActualPrice($account)
     {
         // Listing Products
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->getSelect()->joinLeft(
             array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
@@ -177,10 +179,12 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         $listingProductCollection->addFieldToFilter('alpr.is_online_disabled', 0);
 
         $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $listingProductCollection->getSelect()->columns(array(
+        $listingProductCollection->getSelect()->columns(
+            array(
             'id'   => 'main_table.id',
             'sku'  => 'second_table.sku'
-        ));
+            )
+        );
 
         $lastListingProductId = $this->getAccountData($account, self::REGISTRY_ACTUAL_PRICE_LAST_LISTING_PRODUCT_ID);
         $listingProductCollection->getSelect()->where('main_table.id > ?', $lastListingProductId);
@@ -188,17 +192,19 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         $listingProductCollection->getSelect()->order('id ASC');
 
         // Listing Others
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Other_Collection $listingOtherCollection */
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Other_Collection $listingOtherCollection */
         $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
         $listingOtherCollection->addFieldToFilter('account_id', $account->getId());
         $listingOtherCollection->addFieldToFilter('is_repricing', 1);
         $listingOtherCollection->addFieldToFilter('is_repricing_disabled', 0);
 
         $listingOtherCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
-        $listingOtherCollection->getSelect()->columns(array(
+        $listingOtherCollection->getSelect()->columns(
+            array(
             'id'   => 'main_table.id',
             'sku'  => 'second_table.sku'
-        ));
+            )
+        );
 
         $lastListingOtherId = $this->getAccountData($account, self::REGISTRY_ACTUAL_PRICE_LAST_LISTING_OTHER_ID);
         $listingOtherCollection->getSelect()->where('main_table.id > ?', $lastListingOtherId);
@@ -219,6 +225,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         foreach ($listingProducts as $listingProduct) {
             $skus[] = $listingProduct['sku'];
         }
+
         foreach ($listingOthers as $listingOther) {
             $skus[] = $listingOther['sku'];
         }
@@ -236,6 +243,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
                     $listingProducts[count($listingProducts) - 1]['id']
                 );
             }
+
             if (!empty($listingOthers)) {
                 $this->setAccountData(
                     $account,
@@ -251,7 +259,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     /**
      * @return bool
      */
-    private function isPossibleToSynchronizeGeneral($account)
+    protected function isPossibleToSynchronizeGeneral($account)
     {
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
 
@@ -261,12 +269,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         $lastListingProductId = $this->getAccountData($account, self::REGISTRY_GENERAL_LAST_LISTING_PRODUCT_ID);
         $lastListingOtherId = $this->getAccountData($account, self::REGISTRY_GENERAL_LAST_LISTING_OTHER_ID);
 
-        if (!is_null($lastListingProductId) || !is_null($lastListingOtherId)) {
+        if ($lastListingProductId !== null || $lastListingOtherId !== null) {
             return true;
         }
 
         if ($currentTimeStamp > $startDate + self::SYNCHRONIZE_GENERAL_INTERVAL) {
-
             $this->setAccountData(
                 $account,
                 self::REGISTRY_GENERAL_START_DATE,
@@ -285,7 +292,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     /**
      * @return bool
      */
-    private function isPossibleToSynchronizeActualPrice($account)
+    protected function isPossibleToSynchronizeActualPrice($account)
     {
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
 
@@ -295,12 +302,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         $lastListingProductId = $this->getAccountData($account, self::REGISTRY_ACTUAL_PRICE_LAST_LISTING_PRODUCT_ID);
         $lastListingOtherId = $this->getAccountData($account, self::REGISTRY_ACTUAL_PRICE_LAST_LISTING_OTHER_ID);
 
-        if (!is_null($lastListingProductId) || !is_null($lastListingOtherId)) {
+        if ($lastListingProductId !== null || $lastListingOtherId !== null) {
             return true;
         }
 
         if ($currentTimeStamp > $startDate + self::SYNCHRONIZE_ACTUAL_PRICE_INTERVAL) {
-
             $this->setAccountData(
                 $account,
                 self::REGISTRY_ACTUAL_PRICE_START_DATE,
@@ -321,9 +327,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
     /**
      * @return Ess_M2ePro_Model_Account[]
      */
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountCollection */
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
         $accountCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         $accountCollection->getSelect()->joinInner(
             array('aar' => Mage::getResourceModel('M2ePro/Amazon_Account_Repricing')->getMainTable()),
@@ -334,17 +340,17 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize
         return $accountCollection->getItems();
     }
 
-    private function getAccountData($account, $key)
+    protected function getAccountData($account, $key)
     {
         return $this->getRegistryValue($key . $account->getId() . '/');
     }
 
-    private function setAccountData($account, $key, $value)
+    protected function setAccountData($account, $key, $value)
     {
         $this->setRegistryValue($key . $account->getId() . '/', $value);
     }
 
-    private function deleteAccountData($account, $key)
+    protected function deleteAccountData($account, $key)
     {
         $this->deleteRegistryValue($key . $account->getId() . '/');
     }

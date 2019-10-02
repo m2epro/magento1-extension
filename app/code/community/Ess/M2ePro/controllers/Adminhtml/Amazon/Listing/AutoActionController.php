@@ -9,8 +9,8 @@
 class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
     extends Ess_M2ePro_Controller_Adminhtml_Amazon_MainController
 {
-    /** @var Ess_M2ePro_Model_Listing $listing */
-    private $listing = null;
+    /** @var Ess_M2ePro_Model_Listing $_listing */
+    protected $_listing = null;
 
     //########################################
 
@@ -130,6 +130,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
                 $listingData['auto_global_adding_add_not_visible'] = $data['auto_global_adding_add_not_visible'];
             }
         }
+
         // ---------------------------------------
 
         // mode website
@@ -147,6 +148,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
                 $listingData['auto_website_adding_add_not_visible'] = $data['auto_website_adding_add_not_visible'];
             }
         }
+
         // ---------------------------------------
 
         // mode category
@@ -175,6 +177,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
                 $category->save();
             }
         }
+
         // ---------------------------------------
 
         $listing->addData($listingData)->save();
@@ -265,9 +268,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
             $collection->addFieldToFilter('id', array('neq' => $groupId));
         }
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(
-            array('unique' => !(bool)$collection->getSize())
-        ));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array('unique' => !(bool)$collection->getSize())
+            )
+        );
     }
 
     //########################################
@@ -280,17 +285,17 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
 
     //########################################
 
-    private function getListing()
+    protected function getListing()
     {
-        if (is_null($this->listing)) {
-            $this->listing = Mage::helper('M2ePro/Component')
-                ->getCachedUnknownObject('Listing', $this->getRequest()->getParam('listing_id'));
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component')
+                                  ->getCachedUnknownObject('Listing', $this->getRequest()->getParam('listing_id'));
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
-    private function getComponent()
+    protected function getComponent()
     {
         return $this->getRequest()->getParam('component');
     }

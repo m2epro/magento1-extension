@@ -33,7 +33,7 @@ class Ess_M2ePro_Block_Adminhtml_RequirementsPopup extends Mage_Adminhtml_Block_
             'style' => 'float:right;'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('requirements_popup_close',$buttonBlock);
+        $this->setChild('requirements_popup_close', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------

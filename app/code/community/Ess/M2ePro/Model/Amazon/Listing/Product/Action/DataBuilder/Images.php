@@ -19,10 +19,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Images
 
         $links = array();
         foreach ($this->getAmazonListingProduct()->getListingSource()->getGalleryImages() as $image) {
-
             if (!$image->getUrl()) {
                 continue;
             }
+
             $links[] = $image->getUrl();
         }
 
@@ -31,7 +31,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Images
         );
 
         if ($this->getAmazonListingProduct()->isExistDescriptionTemplate()) {
-
             $amazonDescriptionTemplate = $this->getAmazonListingProduct()->getAmazonDescriptionTemplate();
             $definitionSource = $amazonDescriptionTemplate->getDefinitionTemplate()->getSource(
                 $this->getAmazonListingProduct()->getActualMagentoProduct()
@@ -39,24 +38,25 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Images
 
             $links = array();
             foreach ($definitionSource->getGalleryImages() as $image) {
-
                 if (!$image->getUrl()) {
                     continue;
                 }
+
                 $links[] = $image->getUrl();
             }
+
             $images['product'] = $links;
 
             if ($this->getVariationManager()->isRelationChildType()) {
-
                 $links = array();
                 foreach ($definitionSource->getVariationDifferenceImages() as $image) {
-
                     if (!$image->getUrl()) {
                         continue;
                     }
+
                     $links[] = $image->getUrl();
                 }
+
                 $images['variation_difference'] = $links;
             }
         }

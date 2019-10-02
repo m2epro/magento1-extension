@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_ReserveCancel
     {
         $permittedAccounts = $this->getPermittedAccounts();
 
-        if (count($permittedAccounts) <= 0) {
+        if (empty($permittedAccounts)) {
             return;
         }
 
@@ -47,11 +47,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_ReserveCancel
             // ---------------------------------------
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Reserve Cancellation" Action for Amazon Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -69,16 +66,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_ReserveCancel
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         foreach ($this->getOrdersForRelease($account) as $order) {
             /** @var Ess_M2ePro_Model_Order $order */
@@ -88,9 +85,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_ReserveCancel
 
     //########################################
 
-    private function getOrdersForRelease(Ess_M2ePro_Model_Account $account)
+    protected function getOrdersForRelease(Ess_M2ePro_Model_Account $account)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')
             ->getCollection('Order')
             ->addFieldToFilter('account_id', $account->getId())

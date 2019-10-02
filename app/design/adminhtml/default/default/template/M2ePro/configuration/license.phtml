@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Configuration_License_Form */
+
+?>
+
 <div id="block_notice_configuration_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Billing Info'); ?>">
     <?php
     $urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
@@ -177,7 +190,7 @@
                                         </span>
 
                                         <?php if (!$this->licenseData['valid']['domain'] &&
-                                                  !is_null($this->licenseData['connection']['domain'])): ?>
+                                                  $this->licenseData['connection']['domain'] !== null): ?>
                                             <span> (<?php echo Mage::helper('M2ePro')->__('Your Domain') . ': ' . Mage::helper('M2ePro')->escapeHtml($this->licenseData['connection']['domain']);?>)</span>
                                         <?php endif;?>
                                     </td>
@@ -198,7 +211,7 @@
                                         </span>
 
                                         <?php if (!$this->licenseData['valid']['ip'] &&
-                                            !is_null($this->licenseData['connection']['ip'])): ?>
+                                                  $this->licenseData['connection']['ip'] !== null): ?>
                                             <span> (<?php echo Mage::helper('M2ePro')->__('Your IP') . ': ' . Mage::helper('M2ePro')->escapeHtml($this->licenseData['connection']['ip']);?>)</span>
                                         <?php endif;?>
 

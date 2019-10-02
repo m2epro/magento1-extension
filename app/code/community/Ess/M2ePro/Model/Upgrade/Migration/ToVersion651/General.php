@@ -21,90 +21,91 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_General extends Ess_M2ePro
 
     //########################################
 
-   private function listings()
+   protected function listings()
    {
-       $this->installer->getTableModifier('stop_queue')
-           ->dropColumn('item_data')
-           ->dropColumn('account_hash')
-           ->dropColumn('marketplace_id')
-           ->addColumn('additional_data', 'TEXT', NULL, 'is_processed');
+       $this->_installer->getTableModifier('stop_queue')
+                        ->dropColumn('item_data')
+                        ->dropColumn('account_hash')
+                        ->dropColumn('marketplace_id')
+                        ->addColumn('additional_data', 'TEXT', NULL, 'is_processed');
 
-       if ($this->installer->getTableModifier('listing_product')->isColumnExists('synch_reasons')) {
-
+       if ($this->_installer->getTableModifier('listing_product')->isColumnExists('synch_reasons')) {
            $listingProductTable = $this->getFullTableName('listing_product');
-           $queryStmt = $this->installer->getConnection()->query(<<<SQL
+        $queryStmt = $this->_installer->getConnection()->query(
+            <<<SQL
 SELECT `id`, `synch_reasons`
 FROM {$listingProductTable}
 WHERE `synch_reasons` LIKE '%shippingOverrideTemplate%';
 SQL
-           );
+        );
 
            while ($row = $queryStmt->fetch()) {
-
                $reasons = explode(',', $row['synch_reasons']);
                $reasons =  array_unique(array_filter($reasons));
 
-               array_walk($reasons, function (&$el){
+            array_walk(
+                $reasons, function (&$el){
                    $el = str_replace('shippingOverrideTemplate', 'shippingTemplate', $el);
-               });
+                }
+            );
                $reasons = implode(',', $reasons);
 
-               $this->installer->getConnection()->query(<<<SQL
+            $this->_installer->getConnection()->query(
+                <<<SQL
 UPDATE {$listingProductTable}
 SET `synch_reasons` = '{$reasons}'
 WHERE `id` = {$row['id']}
 SQL
-               );
+            );
            }
        }
    }
 
-   private function orders()
+   protected function orders()
    {
-       $this->installer->getTableModifier('order')
-           ->addColumn(
-               'magento_order_creation_failure', 'TINYINT(2) UNSIGNED NOT NULL', '0',
-               'magento_order_id', true, false
-           )
-           ->addColumn(
-               'magento_order_creation_fails_count', 'TINYINT(2) UNSIGNED NOT NULL', '0',
-               'magento_order_creation_failure', true, false
-           )
-           ->addColumn(
-               'magento_order_creation_latest_attempt_date', 'DATETIME', NULL,
-               'magento_order_creation_fails_count', true, false
-           )
-           ->commit();
-   }
-
-   private function templates()
-   {
-       $this->installer->getTableModifier('template_synchronization')
-           ->dropColumn('revise_change_listing', true, false)
-           ->dropColumn('revise_change_selling_format_template', true, false)
+       $this->_installer
+            ->getTableModifier('order')
+            ->addColumn(
+                'magento_order_creation_failure', 'TINYINT(2) UNSIGNED NOT NULL', '0', 'magento_order_id', true, false
+            )
+            ->addColumn(
+                'magento_order_creation_fails_count', 'TINYINT(2) UNSIGNED NOT NULL', '0',
+                'magento_order_creation_failure', true, false
+            )
+            ->addColumn(
+                'magento_order_creation_latest_attempt_date', 'DATETIME', null,
+                'magento_order_creation_fails_count', true, false
+            )
             ->commit();
    }
 
-   private function wizards()
+   protected function templates()
+   {
+       $this->_installer->getTableModifier('template_synchronization')
+                        ->dropColumn('revise_change_listing', true, false)
+                        ->dropColumn('revise_change_selling_format_template', true, false)
+                        ->commit();
+   }
+
+   protected function wizards()
    {
        $wizardTable = $this->getFullTableName('wizard');
        $tempQuery = <<<SQL
 SELECT * FROM {$wizardTable} WHERE `nick` = 'removedEbay3rdParty';
 SQL;
-       $tempRow = $this->installer->getConnection()->query($tempQuery)->fetch();
+       $tempRow = $this->_installer->getConnection()->query($tempQuery)->fetch();
        if ($tempRow === false) {
-
            $wizardStatus = 3;
 
-           if ($this->installer->getTablesObject()->isExists('synchronization_config')) {
-
+           if ($this->_installer->getTablesObject()->isExists('synchronization_config')) {
                $tempTable = $this->getFullTableName('synchronization_config');
-               $queryStmt = $this->installer->getConnection()->query(<<<SQL
+            $queryStmt = $this->_installer->getConnection()->query(
+                <<<SQL
 SELECT `value` FROM {$tempTable} WHERE
     (`group` = '/ebay/other_listing/synchronization/' AND `key` = 'mode') OR
     (`group` = '/ebay/other_listing/source/');
 SQL
-               );
+            );
 
                while ($mode = $queryStmt->fetchColumn()) {
                    if ($mode == 1) {
@@ -114,28 +115,29 @@ SQL
                }
            }
 
-           $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
 SELECT 'removedEbay3rdParty', 'ebay', {$wizardStatus}, NULL, 0, MAX( `priority` )+1 FROM `m2epro_wizard`;
 SQL
-           );
+        );
        }
 
-       $select = $this->installer->getConnection()->select()
-           ->from($this->installer->getTablesObject()->getFullName('listing_product'), 'id')
-           ->where('component_mode = ?', 'buy')
-           ->where('status != ?', 0);
+       $select = $this->_installer->getConnection()->select()
+                                  ->from($this->_installer->getTablesObject()->getFullName('listing_product'), 'id')
+                                  ->where('component_mode = ?', 'buy')
+                                  ->where('status != ?', 0);
 
-       if (count($this->installer->getConnection()->fetchCol($select)) > 0) {
+       if (!empty($this->_installer->getConnection()->fetchCol($select))) {
            $removedBuyWizardStatus = 0;
        } else {
            $removedBuyWizardStatus = 3;
        }
 
-       $select = $this->installer->getConnection()->select()
-           ->from($this->installer->getTablesObject()->getFullName('wizard'));
+       $select = $this->_installer->getConnection()->select()
+                                  ->from($this->_installer->getTablesObject()->getFullName('wizard'));
 
-       $oldWizardsData = $this->installer->getConnection()->fetchAll($select);
+       $oldWizardsData = $this->_installer->getConnection()->fetchAll($select);
 
        $newWizardsData = array(
            'installationEbay' => array(
@@ -213,32 +215,34 @@ SQL
            $newWizardsData[$oldWizardData['nick']]['step']   = $oldWizardData['step'];
        }
 
-       $this->installer->run(<<<SQL
+    $this->_installer->run(
+        <<<SQL
 TRUNCATE TABLE `m2epro_wizard`;
 SQL
-       );
+    );
 
-       $this->installer->getConnection()->insertMultiple(
-           $this->installer->getTablesObject()->getFullName('wizard'),
-           array_values($newWizardsData)
-       );
+    $this->_installer->getConnection()->insertMultiple(
+        $this->_installer->getTablesObject()->getFullName('wizard'),
+        array_values($newWizardsData)
+    );
    }
 
-   private function instructions()
+   protected function instructions()
    {
-       $listingProductTable = $this->installer->getTablesObject()->getFullName('listing_product');
-       $instructionTable    = $this->installer->getTablesObject()->getFullName('listing_product_instruction');
+       $listingProductTable = $this->_installer->getTablesObject()->getFullName('listing_product');
+       $instructionTable    = $this->_installer->getTablesObject()->getFullName('listing_product_instruction');
 
-       if ($this->installer->getTablesObject()->isExists('product_change')) {
+       if ($this->_installer->getTablesObject()->isExists('product_change')) {
+           $productChangeTable = $this->_installer->getTablesObject()->getFullName('product_change');
 
-           $productChangeTable = $this->installer->getTablesObject()->getFullName('product_change');
-
-           $changedProductsListingsProductsData = $this->installer->getConnection()->query("
+        $changedProductsListingsProductsData = $this->_installer->getConnection()->query(
+            "
 SELECT `lp`.`id`, `lp`.`component_mode`, `pc`.`attribute`
 FROM `{$listingProductTable}` AS `lp`
 LEFT JOIN `{$productChangeTable}` AS `pc` ON `pc`.`product_id` = `lp`.`product_id`
 WHERE `pc`.`product_id` IS NOT NULL
-")->fetchAll(PDO::FETCH_ASSOC);
+"
+        )->fetchAll(PDO::FETCH_ASSOC);
 
            $instructionsInsertData = array();
 
@@ -263,21 +267,22 @@ WHERE `pc`.`product_id` IS NOT NULL
            $instructionsInsertDataParts = array_chunk($instructionsInsertData, 1000);
 
            foreach ($instructionsInsertDataParts as $instructionsInsertDataPart) {
-               $this->installer->getConnection()->insertMultiple($instructionTable, $instructionsInsertDataPart);
+               $this->_installer->getConnection()->insertMultiple($instructionTable, $instructionsInsertDataPart);
            }
 
-           $this->installer->getConnection()->dropTable($productChangeTable);
+           $this->_installer->getConnection()->dropTable($productChangeTable);
        }
 
        // ---------------------------------------
 
-       if ($this->installer->getTableModifier('listing_product')->isColumnExists('synch_status')) {
-
-           $synchStatusNeedListingsProductsData = $this->installer->getConnection()->query("
+       if ($this->_installer->getTableModifier('listing_product')->isColumnExists('synch_status')) {
+        $synchStatusNeedListingsProductsData = $this->_installer->getConnection()->query(
+            "
 SELECT `id`, `component_mode`
 FROM `{$listingProductTable}`
 WHERE `synch_status` = 1 AND `status` IN (2, 6);
-")->fetchAll(PDO::FETCH_ASSOC);
+"
+        )->fetchAll(PDO::FETCH_ASSOC);
 
            $instructionsInsertData = array();
 
@@ -302,16 +307,16 @@ WHERE `synch_status` = 1 AND `status` IN (2, 6);
            $instructionsInsertDataParts = array_chunk($instructionsInsertData, 1000);
 
            foreach ($instructionsInsertDataParts as $instructionsInsertDataPart) {
-               $this->installer->getConnection()->insertMultiple($instructionTable, $instructionsInsertDataPart);
+               $this->_installer->getConnection()->insertMultiple($instructionTable, $instructionsInsertDataPart);
            }
 
-           $this->installer->getTableModifier('listing_product')
-               ->dropColumn('tried_to_list', true, false)
-               ->dropColumn('synch_status', true, false)
-               ->dropColumn('synch_reasons', true, false)
-               ->dropColumn('need_synch_rules_check', true, false)
-               ->dropColumn('synch_rules_check_data', true, false)
-               ->commit();
+           $this->_installer->getTableModifier('listing_product')
+                            ->dropColumn('tried_to_list', true, false)
+                            ->dropColumn('synch_status', true, false)
+                            ->dropColumn('synch_reasons', true, false)
+                            ->dropColumn('need_synch_rules_check', true, false)
+                            ->dropColumn('synch_rules_check_data', true, false)
+                            ->commit();
        }
    }
 

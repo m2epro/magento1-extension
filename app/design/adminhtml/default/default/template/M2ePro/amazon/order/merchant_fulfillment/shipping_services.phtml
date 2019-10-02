@@ -1,9 +1,18 @@
 <?php
-    /**
-     * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_ShippingServices
-     */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $shippingServices = $this->getData('shipping_services');
+// @codingStandardsIgnoreFile
+
+/**
+ * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_ShippingServices
+ */
+
+$shippingServices = $this->getData('shipping_services');
+
 ?>
 
 <style>
@@ -77,7 +86,7 @@
 
 <div id="fulfillment_form_container">
 
-    <?php if(!is_null($this->getData('error_message'))): ?>
+    <?php if($this->getData('error_message') !== null): ?>
         <div>
             <ul class="messages">
                 <li class="warning-msg">

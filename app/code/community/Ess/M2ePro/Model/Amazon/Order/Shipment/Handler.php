@@ -45,15 +45,16 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
      *
      * @return array
      */
-    private function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
+    protected function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
     {
         $itemsToShip = array();
 
         foreach ($shipment->getAllItems() as $shipmentItem) {
             /** @var Mage_Sales_Model_Order_Shipment_Item $shipmentItem */
 
-            $additionalData = $shipmentItem->getOrderItem()->getAdditionalData();
-            $additionalData = is_string($additionalData) ? @unserialize($additionalData) : array();
+            $additionalData = Mage::helper('M2ePro')->unserialize(
+                $shipmentItem->getOrderItem()->getAdditionalData()
+            );
 
             //--
             if (isset($additionalData[Helper::CUSTOM_IDENTIFIER]['shipments'][$shipmentItem->getId()])) {
@@ -62,6 +63,7 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
                 );
                 continue;
             }
+
             //--
 
             if (!isset($additionalData[Helper::CUSTOM_IDENTIFIER]['items']) ||
@@ -80,7 +82,7 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
                 /** @var Ess_M2ePro_Model_Order_Item $item */
                 $orderItemId = $data['order_item_id'];
                 $item = $order->getItemsCollection()->getItemByColumnValue('amazon_order_item_id', $orderItemId);
-                if (is_null($item)) {
+                if ($item === null) {
                     continue;
                 }
 
@@ -106,12 +108,15 @@ class Ess_M2ePro_Model_Amazon_Order_Shipment_Handler extends Ess_M2ePro_Model_Or
                 $qtyAvailable -= $itemQty;
                 $data['shipped_qty'][$orderItemId] = $itemQty;
             }
+
             unset($data);
 
             $itemsToShip = array_merge($itemsToShip, $shipmentItems);
             $additionalData[Helper::CUSTOM_IDENTIFIER]['shipments'][$shipmentItem->getId()] = $shipmentItems;
 
-            $shipmentItem->getOrderItem()->setAdditionalData(serialize($additionalData));
+            $shipmentItem->getOrderItem()->setAdditionalData(
+                Mage::helper('M2ePro')->serialize($additionalData)
+            );
             $shipmentItem->getOrderItem()->save();
         }
 

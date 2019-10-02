@@ -43,7 +43,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
     {
         $accounts = Mage::helper('M2ePro/Component_Walmart')->getCollection('Account')->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -59,13 +59,11 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             );
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
                 // M2ePro_TRANSLATIONS
-                // The "Update Blocked Listings Products" Action for Walmart Account: "%account%" was completed with error.
+                // The "Update Blocked Listings Products" Action for Walmart Account: "%account%"
+                // was completed with error.
                 $message = 'The "Update Blocked Listings Products" Action for Walmart Account "%account%"';
                 $message .= ' was completed with error.';
                 $message = Mage::helper('M2ePro')->__($message, $account->getTitle());
@@ -82,12 +80,12 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
 
     //########################################
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::getModel('M2ePro/Listing')->getCollection();
-        $collection->addFieldToFilter('component_mode',Ess_M2ePro_Helper_Component_Walmart::NICK);
-        $collection->addFieldToFilter('account_id',(int)$account->getId());
+        $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
+        $collection->addFieldToFilter('account_id', (int)$account->getId());
 
         if (!$collection->getSize()) {
             return;
@@ -112,14 +110,13 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
 
         $notReceivedIds = array();
         while ($existingItem = $stmtTemp->fetch()) {
-
             if (in_array($existingItem['wpid'], $wpids)) {
                 continue;
             }
 
             $notReceivedItem = $existingItem;
 
-            if (!in_array((int)$notReceivedItem['id'],$notReceivedIds)) {
+            if (!in_array((int)$notReceivedItem['id'], $notReceivedIds)) {
                 $statusChangedFrom = Mage::helper('M2ePro/Component_Walmart')
                     ->getHumanTitleByListingProductStatus($notReceivedItem['status']);
                 $statusChangedTo = Mage::helper('M2ePro/Component_Walmart')
@@ -154,6 +151,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
 
             $notReceivedIds[] = (int)$notReceivedItem['id'];
         }
+
         $notReceivedIds = array_unique($notReceivedIds);
 
         $mainBind = array(
@@ -171,13 +169,13 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         $listingProductMainTable = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
         $listingProductChildTable = Mage::getResourceModel('M2ePro/Walmart_Listing_Product')->getMainTable();
 
-        $chunckedIds = array_chunk($notReceivedIds,1000);
+        $chunckedIds = array_chunk($notReceivedIds, 1000);
         foreach ($chunckedIds as $partIds) {
-            $where = '`id` IN ('.implode(',',$partIds).')';
-            $connWrite->update($listingProductMainTable,$mainBind,$where);
+            $where = '`id` IN ('.implode(',', $partIds).')';
+            $connWrite->update($listingProductMainTable, $mainBind, $where);
 
-            $where = '`listing_product_id` IN ('.implode(',',$partIds).')';
-            $connWrite->update($listingProductChildTable,$childBind,$where);
+            $where = '`listing_product_id` IN ('.implode(',', $partIds).')';
+            $connWrite->update($listingProductChildTable, $childBind, $where);
         }
 
         if (!empty($parentIdsForProcessing)) {
@@ -187,7 +185,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
 
     protected function getPdoStatementExistingListings(Ess_M2ePro_Model_Account $account)
     {
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->getSelect()->join(
             array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
@@ -196,10 +194,12 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         );
 
         $collection->addFieldToFilter('l.account_id', (int)$account->getId());
-        $collection->addFieldToFilter('status',array('nin' => array(
+        $collection->addFieldToFilter(
+            'status', array('nin' => array(
             Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED,
             Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED
-        )));
+            ))
+        );
         $collection->addFieldToFilter('is_variation_parent', array('neq' => 1));
         $collection->addFieldToFilter('is_missed_on_channel', array('neq' => 1));
 
@@ -214,7 +214,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
 
         $collection->getSelect()
             ->reset(Zend_Db_Select::COLUMNS)
-            ->columns(array(
+            ->columns(
+                array(
                  'main_table.id',
                  'main_table.status',
                  'main_table.listing_id',
@@ -222,7 +223,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
                  'second_table.wpid',
                  'second_table.is_variation_product',
                  'second_table.variation_parent_id'
-            ));
+                )
+            );
 
         return $collection->getSelect()->__toString();
     }
@@ -235,7 +237,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $parentListingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $parentListingProductCollection */
         $parentListingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $parentListingProductCollection->addFieldToFilter('id', array('in' => array_unique($parentIds)));
 

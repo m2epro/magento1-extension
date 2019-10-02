@@ -21,7 +21,9 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
              ->addJs('M2ePro/Order/Debug.js')
              ->addJs('M2ePro/Order/Handler.js')
              ->addJs('M2ePro/Order/Edit/ItemHandler.js')
-             ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js');
+             ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
+             ->addJs('M2ePro/GridHandler.js')
+             ->addJs('M2ePro/Order/NoteHandler.js');
 
         $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
 
@@ -96,61 +98,80 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
 
     public function createMagentoOrderAction()
     {
-        $id = $this->getRequest()->getParam('id');
-        $force = $this->getRequest()->getParam('force');
+        $ids = $this->getRequestIds();
+        $isForce = (bool)$this->getRequest()->getParam('force');
+        $warnings = 0;
+        $errors = 0;
 
-        /** @var $order Ess_M2ePro_Model_Order */
-        $order = Mage::helper('M2ePro/Component_Walmart')->getObject('Order', (int)$id);
-        $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
+        foreach ($ids as $id) {
 
-        // M2ePro_TRANSLATIONS
-        // Magento Order is already created for this Walmart Order.
-        if (!is_null($order->getMagentoOrderId()) && $force != 'yes') {
-            $message = 'Magento Order is already created for this Walmart Order. ' .
-                       'Press Create Order Button to create new one.';
+            /** @var $order Ess_M2ePro_Model_Order */
+            $order = Mage::helper('M2ePro/Component_Walmart')->getObject('Order', (int)$id);
+            $order->getLog()->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_USER);
 
+            if ($order->getMagentoOrderId() !== null && !$isForce) {
+                $warnings++;
+                continue;
+            }
+
+            // Create magento order
+            // ---------------------------------------
+            try {
+                $order->createMagentoOrder($isForce);
+            } catch (Exception $e) {
+                $errors++;
+            }
+
+            // ---------------------------------------
+
+            // Create invoice
+            // ---------------------------------------
+            if ($order->getChildObject()->canCreateInvoice()) {
+                $order->createInvoice();
+            }
+
+            // ---------------------------------------
+
+            // Create shipment
+            // ---------------------------------------
+            if ($order->getChildObject()->canCreateShipment()) {
+                $order->createShipment();
+            }
+
+            // ---------------------------------------
+
+            // ---------------------------------------
+            $order->updateMagentoOrderStatus();
+            // ---------------------------------------
+        }
+
+        if (!$errors && !$warnings) {
+            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento order(s) were created.'));
+        }
+
+        if ($errors) {
+            $this->getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    '%count% Magento order(s) were not created. Please <a target="_blank" href="%url%">view Log</a>
+                for the details.',
+                    $errors, $this->getUrl('*/adminhtml_walmart_log/order')
+                )
+            );
+        }
+
+        if ($warnings) {
             $this->_getSession()->addWarning(
-                Mage::helper('M2ePro')->__($message)
+                Mage::helper('M2ePro')->__(
+                    '%count% Magento order(s) are already created for the selected Walmart order(s).', $warnings
+                )
             );
-            $this->_redirect('*/*/view', array('id' => $id));
-            return;
         }
 
-        // Create magento order
-        // ---------------------------------------
-        try {
-            $order->createMagentoOrder();
-            $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Magento Order was created.'));
-        } catch (Exception $e) {
-            $message = Mage::helper('M2ePro')->__(
-                'Magento Order was not created. Reason: %error_message%',
-                Mage::helper('M2ePro/Module_Log')->decodeDescription($e->getMessage())
-            );
-            $this->_getSession()->addError($message);
+        if (count($ids) == 1) {
+            $this->_redirect('*/*/view', array('id' => $ids[0]));
+        } else {
+            $this->_redirect('*/*/index');
         }
-        // ---------------------------------------
-
-        // Create invoice
-        // ---------------------------------------
-        if ($order->getChildObject()->canCreateInvoice()) {
-            $result = $order->createInvoice();
-            $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Invoice was created.'));
-        }
-        // ---------------------------------------
-
-        // Create shipment
-        // ---------------------------------------
-        if ($order->getChildObject()->canCreateShipment()) {
-            $result = $order->createShipment();
-            $result && $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Shipment was created.'));
-        }
-        // ---------------------------------------
-
-        // ---------------------------------------
-        $order->updateMagentoOrderStatus();
-        // ---------------------------------------
-
-        $this->_redirect('*/*/view', array('id' => $id));
     }
 
     //########################################
@@ -233,14 +254,13 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
-
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Order(s).'));
             $this->_redirect('*/*/index');
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Collection $ordersCollection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Collection $ordersCollection */
         $ordersCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Order')
             ->addFieldToFilter('id', array('in' => $ids));
 
@@ -256,7 +276,6 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
                 ->setOrderFilter($order->getMagentoOrderId());
 
             if ($shipmentsCollection->getSize() === 0) {
-
                 $order->getChildObject()->updateShippingStatus(array()) ? $hasSucceeded = true
                                                                         : $hasFailed = true;
                 continue;
@@ -278,46 +297,20 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
         }
 
         if (!$hasFailed && $hasSucceeded) {
-
             $this->_getSession()->addSuccess(
                 Mage::helper('M2ePro')->__('Updating Walmart Order(s) Status to Shipped in Progress...')
             );
-
         } elseif ($hasFailed && !$hasSucceeded) {
-
             $this->_getSession()->addError(
                 Mage::helper('M2ePro')->__('Walmart Order(s) can not be updated for Shipped Status.')
             );
-
         } elseif ($hasFailed && $hasSucceeded) {
-
             $this->_getSession()->addError(
                 Mage::helper('M2ePro')->__('Some of Walmart Order(s) can not be updated for Shipped Status.')
             );
         }
 
         $this->_redirectUrl($this->_getRefererUrl());
-    }
-
-    //########################################
-
-    public function goToWalmartAction()
-    {
-        $magentoOrderId = $this->getRequest()->getParam('magento_order_id');
-
-        /** @var $order Ess_M2ePro_Model_Order */
-        $order = Mage::helper('M2ePro/Component_Walmart')->getModel('Order')->load($magentoOrderId, 'magento_order_id');
-
-        if (is_null($order->getId())) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__('Order does not exist.'));
-            return $this->_redirect('*/adminhtml_walmart_order/index');
-        }
-
-        $url = Mage::helper('M2ePro/Component_Walmart')->getOrderUrl(
-            $order->getChildObject()->getWalmartOrderId(), $order->getMarketplaceId()
-        );
-
-        return $this->_redirectUrl($url);
     }
 
     //########################################

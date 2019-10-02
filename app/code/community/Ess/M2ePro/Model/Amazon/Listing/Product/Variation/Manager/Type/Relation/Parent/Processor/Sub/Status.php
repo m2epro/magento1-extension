@@ -11,17 +11,22 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 {
     //########################################
 
-    protected function check() {}
+    protected function check()
+    {
+        return null;
+    }
 
     protected function execute()
     {
         $childListingProducts = $this->getProcessor()->getTypeModel()->getChildListingsProducts();
 
         if (!$this->getProcessor()->isGeneralIdSet() || empty($childListingProducts)) {
-            $this->getProcessor()->getListingProduct()->addData(array(
+            $this->getProcessor()->getListingProduct()->addData(
+                array(
                 'status'                   => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED,
                 'variation_child_statuses' => null,
-            ));
+                )
+            );
 
             return;
         }
@@ -55,7 +60,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
                 continue;
             }
 
-            if (is_null($sameStatus)) {
+            if ($sameStatus === null) {
                 $sameStatus = $childStatus;
                 continue;
             }
@@ -65,16 +70,18 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             }
         }
 
-        if ($isStatusSame && !is_null($sameStatus) &&
+        if ($isStatusSame && $sameStatus !== null &&
             $sameStatus != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED
         ) {
             $resultStatus = $sameStatus;
         }
 
-        $this->getProcessor()->getListingProduct()->addData(array(
-            'status'                   => $resultStatus,
-            'variation_child_statuses' => Mage::helper('M2ePro')->jsonEncode($childStatuses),
-        ));
+        $this->getProcessor()->getListingProduct()->addData(
+            array(
+                'status'                   => $resultStatus,
+                'variation_child_statuses' => Mage::helper('M2ePro')->jsonEncode($childStatuses),
+            )
+        );
     }
 
     //########################################

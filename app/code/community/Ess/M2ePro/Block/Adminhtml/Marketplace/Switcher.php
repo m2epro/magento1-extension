@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_Adminhtml_Component_Switcher
 {
-    protected $paramName = 'marketplace';
+    protected $_paramName = 'marketplace';
 
     //########################################
 
@@ -28,17 +28,17 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
             ->setOrder('component_mode', 'ASC')
             ->setOrder('sorder', 'ASC');
 
-        if (!is_null($this->componentMode)) {
+        if ($this->componentMode !== null) {
             $collection->addFieldToFilter('component_mode', $this->componentMode);
         }
 
         if (!$collection->getSize()) {
-            $this->items = array();
+            $this->_items = array();
             return;
         }
 
         if ($collection->getSize() < 2) {
-            $this->hasDefaultOption = false;
+            $this->_hasDefaultOption = false;
             $this->setIsDisabled(true);
         }
 
@@ -54,6 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
                 if (isset($componentTitles[$marketplace->getComponentMode()])) {
                     $label = $componentTitles[$marketplace->getComponentMode()];
                 }
+
                 $items[$marketplace->getComponentMode()]['label'] = $label;
             }
 
@@ -63,7 +64,7 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
             );
         }
 
-        $this->items = $items;
+        $this->_items = $items;
     }
 
     //########################################

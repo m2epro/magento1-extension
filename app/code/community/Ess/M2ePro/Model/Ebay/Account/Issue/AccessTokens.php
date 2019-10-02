@@ -22,8 +22,7 @@ class Ess_M2ePro_Model_Ebay_Account_Issue_AccessTokens extends Ess_M2ePro_Model_
 
         $messagesData = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue(self::CACHE_KEY);
         if ($messagesData === false) {
-
-            /* @var $accounts Ess_M2ePro_Model_Mysql4_Account_Collection */
+            /** @var $accounts Ess_M2ePro_Model_Resource_Account_Collection */
             $accounts = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
             $accounts->addFieldToFilter('token_session', array('notnull' => true));
 
@@ -52,13 +51,12 @@ class Ess_M2ePro_Model_Ebay_Account_Issue_AccessTokens extends Ess_M2ePro_Model_
 
     //########################################
 
-    private function getTradingApiTokenMessages(Ess_M2ePro_Model_Account $account)
+    protected function getTradingApiTokenMessages(Ess_M2ePro_Model_Account $account)
     {
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentTimezoneDate(true);
         $tokenExpirationTimeStamp = strtotime($account->getChildObject()->getTokenExpiredDate());
 
         if ($tokenExpirationTimeStamp < $currentTimeStamp) {
-
             $textToTranslate = <<<TEXT
 Attention! The API token for "%account_title%" eBay Account is expired. The inventory and order synchronization
 with eBay marketplace cannot be maintained until you grant M2E Pro the access token.<br>
@@ -71,7 +69,6 @@ then click Agree to generate a new access token.<br>
 Account Configuration.
 TEXT;
             if ($account->getChildObject()->getSellApiTokenSession()) {
-
                 $textToTranslate = <<<TEXT
 Attention! The Trading API token for "%account_title%" eBay Account is expired. The inventory and order synchronization
 with eBay marketplace cannot be maintained until you grant M2E Pro the access token.<br>
@@ -87,7 +84,7 @@ TEXT;
 
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account is
-                expired. Please click here to generate a new access token.',
+                expired. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
             $tempMessage = Mage::helper('M2ePro')->__(
@@ -95,15 +92,17 @@ TEXT;
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
-            $editHash = md5(self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
-                            Mage_Core_Model_Message::ERROR.__METHOD__);
+            $editHash = sha1(
+                self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
+                Mage_Core_Model_Message::ERROR.__METHOD__
+            );
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 
@@ -116,7 +115,6 @@ TEXT;
         }
 
         if (($currentTimeStamp + 60*60*24*10) >= $tokenExpirationTimeStamp) {
-
             $textToTranslate = <<<TEXT
 Attention! The API token for "%account_title%" eBay Account expires on %date%.
 It needs to be renewed to maintain the inventory and order synchronization with eBay marketplace.<br>
@@ -129,7 +127,6 @@ then click Agree to generate a new access token.<br>
 Account Configuration.
 TEXT;
             if ($account->getChildObject()->getSellApiTokenSession()) {
-
                 $textToTranslate = <<<TEXT
 Attention! The Trading API token for "%account_title%" eBay Account expires on %date%.
 It needs to be renewed to maintain the inventory and order synchronization with eBay marketplace.<br>
@@ -146,7 +143,7 @@ TEXT;
             $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account
-                is to expire. Please click here to generate a new access token.',
+                is to expire. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
 
@@ -156,15 +153,17 @@ TEXT;
                 Mage::app()->getLocale()->date($tokenExpirationTimeStamp)->toString($format),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
-            $editHash = md5(self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
-                            Mage_Core_Model_Message::NOTICE.__METHOD__);
+            $editHash = sha1(
+                self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
+                Mage_Core_Model_Message::NOTICE.__METHOD__
+            );
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 
@@ -179,7 +178,7 @@ TEXT;
         return array();
     }
 
-    private function getSellApiTokenMessages(Ess_M2ePro_Model_Account $account)
+    protected function getSellApiTokenMessages(Ess_M2ePro_Model_Account $account)
     {
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentTimezoneDate(true);
         $tokenExpirationTimeStamp = strtotime($account->getChildObject()->getSellApiTokenExpiredDate());
@@ -189,7 +188,6 @@ TEXT;
         }
 
         if ($tokenExpirationTimeStamp < $currentTimeStamp) {
-
             $textToTranslate = <<<TEXT
 Attention! The Sell API token for "%account_title%" eBay Account is expired. The inventory and order synchronization
 with eBay marketplace cannot be maintained until you grant M2E Pro the access token.<br>
@@ -204,7 +202,7 @@ TEXT;
 
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account is
-                expired. Please click here to generate a new access token.',
+                expired. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
             $tempMessage = Mage::helper('M2ePro')->__(
@@ -212,15 +210,17 @@ TEXT;
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
-            $editHash = md5(self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
-                            Mage_Core_Model_Message::ERROR.__METHOD__);
+            $editHash = sha1(
+                self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
+                Mage_Core_Model_Message::ERROR.__METHOD__
+            );
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 
@@ -233,7 +233,6 @@ TEXT;
         }
 
         if (($currentTimeStamp + 60*60*24*10) >= $tokenExpirationTimeStamp) {
-
             $textToTranslate = <<<TEXT
 Attention! The Sell API token for "%account_title%" eBay Account expires on %date%.
 It needs to be renewed to maintain the inventory and order synchronization with eBay marketplace.<br>
@@ -247,7 +246,7 @@ Account Configuration.
 TEXT;
             $tempTitle = Mage::helper('M2ePro')->__(
                 'Attention! M2E Pro needs to be reauthorized: the API token for "%account_title%" eBay Account
-                is to expire. Please click here to generate a new access token.',
+                is to expire. Please generate a new access token.',
                 Mage::helper('M2ePro')->escapeHtml($account->getTitle())
             );
 
@@ -258,15 +257,17 @@ TEXT;
                 Mage::app()->getLocale()->date($tokenExpirationTimeStamp)->toString($format),
                 Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
                 Mage::helper('adminhtml')->getUrl(
-                    '*/adminhtml_ebay_account/edit', array('id' => $account->getId())
+                    'M2ePro/adminhtml_ebay_account/edit', array('id' => $account->getId())
                 )
             );
 
-            $editHash = md5(self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
-                            Mage_Core_Model_Message::NOTICE.__METHOD__);
+            $editHash = sha1(
+                self::CACHE_KEY.$account->getId().$tokenExpirationTimeStamp.
+                Mage_Core_Model_Message::NOTICE.__METHOD__
+            );
 
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_account/edit',
+                'M2ePro/adminhtml_ebay_account/edit',
                 array('id' => $account->getId(), '_query' => array('hash' => $editHash))
             );
 

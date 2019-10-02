@@ -14,7 +14,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Component_Switcher extends Ess_M2ePro_
     {
         $label = trim($label);
 
-        if (is_null($this->getData('component_mode'))) {
+        if ($this->getData('component_mode') === null) {
             return trim(preg_replace(array('/%component%/', '/\s{2,}/'), ' ', $label));
         }
 
@@ -36,11 +36,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Component_Switcher extends Ess_M2ePro_
 
     public function getParamName()
     {
-        if (is_null($this->getData('component_mode'))) {
+        if ($this->getData('component_mode') === null) {
             return parent::getParamName();
         }
 
-        return $this->getData('component_mode') . ucfirst($this->paramName);
+        return $this->getData('component_mode') . ucfirst($this->_paramName);
     }
 
     public function getSwitchCallback()

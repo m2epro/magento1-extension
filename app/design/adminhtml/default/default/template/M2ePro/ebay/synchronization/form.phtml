@@ -1,4 +1,13 @@
 <?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Synchronization_Edit_Form */
 
 $translations = array();
 
@@ -62,7 +71,7 @@ $translations = json_encode($translations);
 
             editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
 
-            <?php if (!is_null($this->getChildBlockId())) { ?>
+            <?php if ($this->getChildBlockId() !== null) { ?>
             <?php
                 $childBlockId = Mage::helper('M2ePro')->escapeJs($this->getChildBlockId());
                 $destinationBlockId = Mage::helper('M2ePro')->escapeJs($this->getId());

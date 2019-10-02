@@ -40,9 +40,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
         $serverRequestToken = $repricingAction->sendLinkActionData($backUrl);
 
         if ($serverRequestToken === false) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__(
-                'M2E Pro cannot to connect to the Amazon Repricing Service. Please try again later.'
-            ));
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'M2E Pro cannot to connect to the Amazon Repricing Service. Please try again later.'
+                )
+            );
             return $this->indexAction();
         }
 
@@ -72,14 +74,15 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
         $this->addRepricingMessages($messages);
 
         if ($status == '1') {
-
             $accountRepricingModel = Mage::getModel('M2ePro/Amazon_Account_Repricing');
 
-            $accountRepricingModel->setData(array(
+            $accountRepricingModel->setData(
+                array(
                 'account_id' => $accountId,
                 'email' => $email,
                 'token' => $token
-            ));
+                )
+            );
 
             $accountRepricingModel->save();
 
@@ -88,9 +91,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
             $repricing->run();
         }
 
-        return $this->_redirectUrl($this->getUrl('*/adminhtml_amazon_account/edit', array(
-            'id' => $accountId
-        )).'#repricing');
+        return $this->_redirectUrl(
+            $this->getUrl(
+                '*/adminhtml_amazon_account/edit', array(
+                'id' => $accountId
+                )
+            ).'#repricing'
+        );
     }
 
     //----------------------------------------
@@ -117,9 +124,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
         $serverRequestToken = $repricingAction->sendUnlinkActionData($backUrl);
 
         if ($serverRequestToken === false) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__(
-                'M2E Pro cannot to connect to the Amazon Repricing Service. Please try again later.'
-            ));
+            $this->_getSession()->addError(
+                Mage::helper('M2ePro')->__(
+                    'M2E Pro cannot to connect to the Amazon Repricing Service. Please try again later.'
+                )
+            );
             return $this->indexAction();
         }
 
@@ -182,9 +191,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
         $account = Mage::helper('M2ePro/Component_Amazon')->getModel('Account')->load($accountId);
 
         if ($accountId && !$account->getId()) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'error' => Mage::helper('M2ePro')->__('Account does not exist.')
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'error' => Mage::helper('M2ePro')->__('Account does not exist.')
+                    )
+                )
+            );
         }
 
         $result = array();
@@ -195,14 +208,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
             $repricingSynchronization = Mage::getModel('M2ePro/Amazon_Repricing_Synchronization_General', $account);
 
             if ($repricingSynchronization->run()) {
-
                 $result['success'] = Mage::helper('M2ePro')->__(
                     'Repricing Synchronization performed successfully.'
                 );
 
                 $result['repricing_total_products'] = $account->getChildObject()->getRepricing()->getTotalProducts();
 
-                /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Collection $collection */
+                /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Collection $collection */
                 $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
 
                 $collection->getSelect()->join(
@@ -216,7 +228,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
                 $collection->getSelect()->where("`l`.`account_id` = ?", $account->getId());
 
                 $result['m2epro_repricing_total_products'] = $collection->getSize();
-
             } else {
                 $result['error'] = Mage::helper('M2ePro')->__(
                     'Repricing Synchronization performed with errors. More details can be found
@@ -224,7 +235,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
                     $this->getUrl('*/adminhtml_amazon_log/synchronization')
                 );
             }
-
         } catch (Exception $e) {
             $result['error'] = $e->getMessage();
         }
@@ -234,10 +244,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Account_RepricingController
 
     //########################################
 
-    private function addRepricingMessages($messages)
+    protected function addRepricingMessages($messages)
     {
         foreach ($messages as $message) {
-
             if ($message['type'] == 'notice') {
                 $this->_getSession()->addNotice($message['text']);
             }

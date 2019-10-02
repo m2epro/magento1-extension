@@ -11,14 +11,14 @@ use Ess_M2ePro_Model_Walmart_Template_SellingFormat as WalmartSellingFormat;
 class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
 {
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $sellingFormatTemplateModel Ess_M2ePro_Model_Template_Sellingformat
+     * @var $_sellingFormatTemplateModel Ess_M2ePro_Model_Template_Sellingformat
      */
-    private $sellingFormatTemplateModel = null;
+    protected $_sellingFormatTemplateModel = null;
 
     //########################################
 
@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
      */
     public function setSellingFormatTemplate(Ess_M2ePro_Model_Template_SellingFormat $instance)
     {
-        $this->sellingFormatTemplateModel = $instance;
+        $this->_sellingFormatTemplateModel = $instance;
         return $this;
     }
 
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
      */
     public function getSellingFormatTemplate()
     {
-        return $this->sellingFormatTemplateModel;
+        return $this->_sellingFormatTemplateModel;
     }
 
     /**

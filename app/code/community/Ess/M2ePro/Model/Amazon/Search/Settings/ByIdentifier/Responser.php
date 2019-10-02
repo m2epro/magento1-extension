@@ -54,12 +54,14 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByIdentifier_Responser
         /** @var Ess_M2ePro_Model_Amazon_Search_Settings $settingsSearch */
         $settingsSearch = Mage::getModel('M2ePro/Amazon_Search_Settings');
         $settingsSearch->setListingProduct($this->getListingProduct());
-        $settingsSearch->setStep($this->params['step']);
+        $settingsSearch->setStep($this->_params['step']);
         if (!empty($responseData)) {
-            $settingsSearch->setStepData(array(
-                'params' => $this->params,
-                'result' => $responseData,
-            ));
+            $settingsSearch->setStepData(
+                array(
+                    'params' => $this->_params,
+                    'result' => $responseData,
+                )
+            );
         }
 
         $settingsSearch->process();

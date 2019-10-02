@@ -37,6 +37,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
                 Mage::helper('M2ePro')->jsonEncode($data['merged_walmart_order_item_ids'])
             );
         }
+
         // ---------------------------------------
     }
 
@@ -52,7 +53,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item_Builder extends Mage_Core_Model_Abstra
     /**
      * @return Ess_M2ePro_Model_Order_Item
      */
-    private function createOrderItem()
+    protected function createOrderItem()
     {
         $existItem = Mage::helper('M2ePro/Component_Walmart')->getCollection('Order_Item')
             ->addFieldToFilter('walmart_order_item_id', $this->getData('walmart_order_item_id'))

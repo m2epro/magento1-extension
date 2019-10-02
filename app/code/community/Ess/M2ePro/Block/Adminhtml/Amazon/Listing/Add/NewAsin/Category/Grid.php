@@ -10,7 +10,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category_Grid
     extends Ess_M2ePro_Block_Adminhtml_Category_Grid
 {
     /** @var Ess_M2ePro_Model_Listing */
-    private $listing = NULL;
+    protected $_listing;
 
     //########################################
 
@@ -37,13 +37,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category_Grid
 
     protected function _prepareCollection()
     {
-        /* @var $collection Mage_Catalog_Model_Resource_Category_Collection */
+        /** @var $collection Mage_Catalog_Model_Resource_Category_Collection */
         $collection = Mage::getModel('catalog/category')->getCollection();
         $collection->addAttributeToSelect('name');
 
-        $collection->addFieldToFilter(array(
-            array('attribute' => 'entity_id', 'in' => array_keys($this->getData('categories_data')))
-        ));
+        $collection->addFieldToFilter(
+            array(
+                array('attribute' => 'entity_id', 'in' => array_keys($this->getData('categories_data')))
+            )
+        );
 
         $this->setCollection($collection);
 
@@ -54,32 +56,38 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('magento_category', array(
-            'header'    => Mage::helper('M2ePro')->__('Magento Category'),
-            'align'     => 'left',
-            'width'     => '500px',
-            'type'      => 'text',
-            'index'     => 'name',
-            'filter'    => false,
-            'sortable'  => false,
-            'frame_callback' => array($this, 'callbackColumnMagentoCategory')
-        ));
+        $this->addColumn(
+            'magento_category',
+            array(
+                'header'         => Mage::helper('M2ePro')->__('Magento Category'),
+                'align'          => 'left',
+                'width'          => '500px',
+                'type'           => 'text',
+                'index'          => 'name',
+                'filter'         => false,
+                'sortable'       => false,
+                'frame_callback' => array($this, 'callbackColumnMagentoCategory')
+            )
+        );
 
-        $this->addColumn('description_template', array(
-            'header'    => Mage::helper('M2ePro')->__('Description Policy'),
-            'align'     => 'left',
-            'width'     => '*',
-            'sortable'  => false,
-            'type'      => 'options',
-            'index'     => 'description_template_id',
-            'filter_index' => 'description_template_id',
-            'options'   => array(
-                1 => Mage::helper('M2ePro')->__('Description Policy Selected'),
-                0 => Mage::helper('M2ePro')->__('Description Policy Not Selected')
-            ),
-            'frame_callback' => array($this, 'callbackColumnDescriptionTemplateCallback'),
-            'filter_condition_callback' => array($this, 'callbackColumnDescriptionTemplateFilterCallback')
-        ));
+        $this->addColumn(
+            'description_template',
+            array(
+                'header'                    => Mage::helper('M2ePro')->__('Description Policy'),
+                'align'                     => 'left',
+                'width'                     => '*',
+                'sortable'                  => false,
+                'type'                      => 'options',
+                'index'                     => 'description_template_id',
+                'filter_index'              => 'description_template_id',
+                'options'                   => array(
+                    1 => Mage::helper('M2ePro')->__('Description Policy Selected'),
+                    0 => Mage::helper('M2ePro')->__('Description Policy Not Selected')
+                ),
+                'frame_callback'            => array($this, 'callbackColumnDescriptionTemplateCallback'),
+                'filter_condition_callback' => array($this, 'callbackColumnDescriptionTemplateFilterCallback')
+            )
+        );
 
         $actionsColumn = array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
@@ -120,15 +128,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category_Grid
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('setDescriptionTemplateByCategory', array(
-            'label' => Mage::helper('M2ePro')->__('Set Description Policy'),
-            'url'   => ''
-        ));
+        $this->getMassactionBlock()->addItem(
+            'setDescriptionTemplateByCategory',
+            array(
+                'label' => Mage::helper('M2ePro')->__('Set Description Policy'),
+                'url'   => ''
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('resetDescriptionTemplateByCategory', array(
-            'label' => Mage::helper('M2ePro')->__('Reset Description Policy'),
-            'url'   => ''
-        ));
+        $this->getMassactionBlock()->addItem(
+            'resetDescriptionTemplateByCategory',
+            array(
+                'label' => Mage::helper('M2ePro')->__('Reset Description Policy'),
+                'url'   => ''
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -155,9 +169,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_Category_Grid
 HTML;
         }
 
-        $templateDescriptionEditUrl = $this->getUrl('*/adminhtml_amazon_template_description/edit', array(
-            'id' => $descriptionTemplateId
-        ));
+        $templateDescriptionEditUrl = $this->getUrl(
+            '*/adminhtml_amazon_template_description/edit', array(
+                'id' => $descriptionTemplateId
+            )
+        );
 
         /** @var Ess_M2ePro_Model_Amazon_Template_Description $descriptionTemplate */
         $descriptionTemplate = Mage::helper('M2ePro/Component_Amazon')
@@ -203,10 +219,12 @@ HTML;
     protected function _toHtml()
     {
         $addErrorJs = '';
-        if (count($this->getData('categories_data')) > 0) {
+        if (!empty($this->getData('categories_data'))) {
             $errorMessage = Mage::helper('M2ePro')
-                                ->__("To proceed, the category data must be specified.
-                                Please select a relevant Description Policy for at least one Magento Category. ");
+                                ->__(
+                                    "To proceed, the category data must be specified.
+                                Please select a relevant Description Policy for at least one Magento Category. "
+                                );
             $isNotExistProductsWithDescriptionTemplate = (int)$this->isNotExistProductsWithDescriptionTemplate(
                 $this->getData('description_templates_data')
             );
@@ -242,14 +260,15 @@ HTML;
 
         if (count($this->getData('categories_data')) === 0) {
             $msg = Mage::helper('M2ePro')
-                       ->__('Magento Category is not provided for the products you are currently adding.
-                       Please go back and select a different option to assign Channel category to your products.');
+                    ->__(
+                        'Magento Category is not provided for the products you are currently adding.
+                       Please go back and select a different option to assign Channel category to your products.'
+                    );
 
             $addErrorJs .= <<<JS
 MagentoMessageObj.addError(`{$msg}`);
 $('save_and_go_to_listing_view').addClassName('disabled').disable();
 JS;
-
         }
 
         $javascriptsMain = <<<HTML
@@ -278,24 +297,24 @@ HTML;
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
-            $this->listing = Mage::helper('M2ePro/Component_Amazon')
-                ->getObject('Listing', $listingId);
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Amazon')
+                                  ->getObject('Listing', $listingId);
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################
 
-    private function prepareDataByCategories()
+    protected function prepareDataByCategories()
     {
         $listingProductsIds = $this->getListing()
                                    ->getSetting('additional_data', 'adding_new_asin_listing_products_ids');
 
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')
             ->getCollection('Listing_Product')
-            ->addFieldToFilter('id',array('in' => $listingProductsIds));
+            ->addFieldToFilter('id', array('in' => $listingProductsIds));
 
         $productsIds = array();
         $descriptionTemplatesIds = array();
@@ -303,6 +322,7 @@ HTML;
             $productsIds[$item['id']] = $item['product_id'];
             $descriptionTemplatesIds[$item['id']] = $item['template_description_id'];
         }
+
         $productsIds = array_unique($productsIds);
 
         $categoriesIds = Mage::helper('M2ePro/Magento_Category')->getLimitedCategoriesByProducts(
@@ -313,9 +333,11 @@ HTML;
         $categoriesData = array();
 
         foreach ($categoriesIds as $categoryId) {
-            /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-            $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                              Mage::getModel('catalog/product')->getResource());
+            /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+            $collection = Mage::getConfig()->getModelInstance(
+                'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+                Mage::getModel('catalog/product')->getResource()
+            );
 
             $collection->setListing($this->getListing());
             $collection->setStoreId($this->getListing()->getStoreId());
@@ -344,7 +366,7 @@ HTML;
 
     //########################################
 
-    private function isNotExistProductsWithDescriptionTemplate($descriptionTemplatesData)
+    protected function isNotExistProductsWithDescriptionTemplate($descriptionTemplatesData)
     {
         if (empty($descriptionTemplatesData)) {
             return true;

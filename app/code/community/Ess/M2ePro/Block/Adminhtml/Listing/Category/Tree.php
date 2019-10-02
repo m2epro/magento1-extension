@@ -8,11 +8,11 @@
 
 class Ess_M2ePro_Block_Adminhtml_Listing_Category_Tree extends Mage_Adminhtml_Block_Catalog_Category_Abstract
 {
-    private $_selectedCategories = array();
+    protected $_selectedCategories = array();
 
-    private $_highlightedCategories = array();
+    protected $_highlightedCategories = array();
 
-    private $_callback = null;
+    protected $_callback = null;
 
     //########################################
 

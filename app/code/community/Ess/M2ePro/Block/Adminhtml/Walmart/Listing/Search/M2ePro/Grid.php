@@ -6,12 +6,10 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor as ListProcessor;
-
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_M2ePro_Grid
     extends Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid
 {
-    private $lockedDataCache = array();
+    protected $_lockedDataCache = array();
 
     //########################################
 
@@ -36,9 +34,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_M2ePro_Grid
 
     protected function _prepareCollection()
     {
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                           Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
 
         $collection->getSelect()->distinct();
         $collection->setListingProductModeOn();
@@ -47,9 +47,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_M2ePro_Grid
         $collection->addAttributeToSelect('name');
 
         $collection->setStoreId(Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID);
-        $collection->joinStockItem(array(
+        $collection->joinStockItem(
+            array(
             'is_in_stock' => 'is_in_stock'
-        ));
+            )
+        );
 
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
@@ -122,8 +124,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_M2ePro_Grid
         $listingTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('listing_title'));
         strlen($listingTitle) > 50 && $listingTitle = substr($listingTitle, 0, 50) . '...';
 
-        $listingUrl = $this->getUrl('*/adminhtml_walmart_listing/view',
-                                    array('id' => $row->getData('listing_id')));
+        $listingUrl = $this->getUrl(
+            '*/adminhtml_walmart_listing/view',
+            array('id' => $row->getData('listing_id'))
+        );
 
         $value = <<<HTML
 <span>{$title}</span>
@@ -148,7 +152,6 @@ HTML;
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
 
         if ($variationManager->isVariationParent()) {
-
             $productAttributes = $variationManager->getTypeModel()->getProductAttributes();
 
             $virtualProductAttributes = $variationManager->getTypeModel()->getVirtualProductAttributes();
@@ -161,19 +164,16 @@ HTML;
             } else {
                 foreach ($productAttributes as $attribute) {
                     if (in_array($attribute, array_keys($virtualProductAttributes))) {
-
                         $attributesStr .= '<span style="border-bottom: 2px dotted grey">' . $attribute .
                             ' (' . $virtualProductAttributes[$attribute] . ')</span>, ';
-
                     } else if (in_array($attribute, array_keys($virtualChannelAttributes))) {
-
                         $attributesStr .= '<span>' . $attribute .
                             ' (' . $virtualChannelAttributes[$attribute] . ')</span>, ';
-
                     } else {
                         $attributesStr .= $attribute . ', ';
                     }
                 }
+
                 $attributesStr = rtrim($attributesStr, ', ');
             }
 
@@ -187,12 +187,10 @@ HTML;
         if ($variationManager->isIndividualType() &&
             $variationManager->getTypeModel()->isVariationProductMatched()
         ) {
-
             $optionsStr = '';
             $productOptions = $variationManager->getTypeModel()->getProductOptions();
 
             foreach ($productOptions as $attribute => $option) {
-
                 $attribute = Mage::helper('M2ePro')->escapeHtml($attribute);
                 !$option && $option = '--';
                 $option = Mage::helper('M2ePro')->escapeHtml($option);
@@ -242,7 +240,6 @@ HTML;
         $variationsStatuses = $row->getData('variation_child_statuses');
 
         if (empty($variationsStatuses)) {
-
             return $this->getProductStatus($row, $sNotListed) .
                    $this->getScheduledTag($row) .
                    $this->getLockedTag($row);
@@ -257,7 +254,6 @@ HTML;
         isset($variationsStatuses[$sBlocked])   && $sortedStatuses[$sBlocked]   = $variationsStatuses[$sBlocked];
 
         foreach ($sortedStatuses as $status => $productsCount) {
-
             if (empty($productsCount)) {
                 continue;
             }
@@ -275,13 +271,15 @@ HTML;
         $altTitle = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Go to Listing'));
         $iconSrc  = $this->getSkinUrl('M2ePro/images/goto_listing.png');
 
-        $manageUrl = $this->getUrl('*/adminhtml_walmart_listing/view/',array(
+        $manageUrl = $this->getUrl(
+            '*/adminhtml_walmart_listing/view/', array(
             'id' => $row->getData('listing_id'),
             'filter' => base64_encode(
                 'product_id[from]='.(int)$row->getData('entity_id')
                 .'&product_id[to]='.(int)$row->getData('entity_id')
             )
-        ));
+            )
+        );
 
         $html = <<<HTML
 <div style="float:right; margin:5px 15px 0 0;">
@@ -296,7 +294,6 @@ HTML;
     {
         if ((!$row->getData('is_variation_parent') &&
             $row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED)) {
-
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
@@ -316,7 +313,6 @@ HTML;
             ->getDefaultCurrency();
 
         if ($row->getData('is_variation_parent')) {
-
             $iconHelpPath    = $this->getSkinUrl('M2ePro/images/i_logo.png');
             $toolTipIconPath = $this->getSkinUrl('M2ePro/images/i_icon.png');
 
@@ -352,16 +348,14 @@ HTML;
 
     // ----------------------------------------
 
-    private function getLockedTag($row)
+    protected function getLockedTag($row)
     {
         $html = '';
         $childCount = 0;
 
         $tempLocks = $this->getLockedData($row);
         foreach ($tempLocks['object_locks'] as $lock) {
-
             switch ($lock->getTag()) {
-
                 case 'list_action':
                     $html .= '<br/><span style="color: #605fff">[List in Progress...]</span>';
                     break;
@@ -402,24 +396,26 @@ HTML;
         return $html;
     }
 
-    private function getLockedData($row)
+    protected function getLockedData($row)
     {
         $listingProductId = $row->getData('id');
-        if (!isset($this->lockedDataCache[$listingProductId])) {
-            $objectLocks = Mage::getModel('M2ePro/Listing_Product')->load($listingProductId)->getProcessingLocks();
+        if (!isset($this->_lockedDataCache[$listingProductId])) {
+            $objectLocks = Mage::getModel('M2ePro/Listing_Product')->load(
+                $listingProductId
+            )->getProcessingLocks();
             $tempArray = array(
                 'object_locks' => $objectLocks,
-                'in_action' => !empty($objectLocks),
+                'in_action'    => !empty($objectLocks),
             );
-            $this->lockedDataCache[$listingProductId] = $tempArray;
+            $this->_lockedDataCache[$listingProductId] = $tempArray;
         }
 
-        return $this->lockedDataCache[$listingProductId];
+        return $this->_lockedDataCache[$listingProductId];
     }
 
     // ---------------------------------------
 
-    private function getScheduledTag($row)
+    protected function getScheduledTag($row)
     {
         $html = '';
 
@@ -433,7 +429,6 @@ HTML;
         }
 
         switch ($scheduledAction->getActionType()) {
-
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:
                 $html .= '<br/><span style="color: #605fff">[List is Scheduled...]</span>';
                 break;
@@ -465,7 +460,6 @@ HTML;
                         }
 
                         if ($configurator->isDetailsAllowed()) {
-
                             $params = $additionalData['params'];
 
                             if (isset($params['changed_sku'])) {
@@ -487,7 +481,6 @@ HTML;
                 } else {
                     $html .= '<br/><span style="color: #605fff">[Revise is Scheduled...]</span>';
                 }
-
                 break;
 
             case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:
@@ -500,7 +493,6 @@ HTML;
 
             default:
                 break;
-
         }
 
         return $html;
@@ -586,6 +578,7 @@ SQL;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $quoted = $collection->getConnection()->quote($value['to']);
             $where .= 'online_qty <= ' . $quoted;
         }
@@ -604,7 +597,6 @@ SQL;
         $condition = '';
 
         if (isset($value['from']) || isset($value['to'])) {
-
             if (isset($value['from']) && $value['from'] != '') {
                 $condition = 'wlp.online_price >= \'' . (float)$value['from'] . '\'';
             }
@@ -613,6 +605,7 @@ SQL;
                 if (isset($value['from']) && $value['from'] != '') {
                     $condition .= ' AND ';
                 }
+
                 $condition .= 'wlp.online_price <= \'' . (float)$value['to'] . '\'';
             }
         }

@@ -40,32 +40,40 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/removeAddedProducts', array(
-            'id' => $listingId,
-            '_current' => true
-        ));
-        $this->_addButton('back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'ListingGridHandlerObj.back_click(\'' . $url . '\')',
-            'class'     => 'back'
-        ));
+        $url = $this->getUrl(
+            '*/*/removeAddedProducts', array(
+                'id'       => $listingId,
+                '_current' => true
+            )
+        );
+        $this->_addButton(
+            'back', array(
+                'label'   => Mage::helper('M2ePro')->__('Back'),
+                'onclick' => 'ListingGridHandlerObj.back_click(\'' . $url . '\')',
+                'class'   => 'back'
+            )
+        );
 
         // ---------------------------------------
-        $this->_addButton('auto_action', array(
-            'label'     => Mage::helper('M2ePro')->__('Edit Search Settings'),
-            'onclick'   => 'ListingGridHandlerObj.editSearchSettings(\'' .
-                Mage::helper('M2ePro')->__('Listing Search Settings') . '\' ,' .
-                $this->getListing()->getId() .
-            ');'
-        ));
+        $this->_addButton(
+            'auto_action', array(
+                'label'   => Mage::helper('M2ePro')->__('Edit Search Settings'),
+                'onclick' => 'ListingGridHandlerObj.editSearchSettings(\'' .
+                             Mage::helper('M2ePro')->__('Listing Search Settings') . '\' ,' .
+                             $this->getListing()->getId() .
+                             ');'
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('save_and_go_to_listing_view', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'onclick'   => 'ListingGridHandlerObj.checkSearchResults('.$listingId.')',
-            'class'     => 'scalable next'
-        ));
+        $this->_addButton(
+            'save_and_go_to_listing_view', array(
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'onclick' => 'ListingGridHandlerObj.checkSearchResults(' . $listingId . ')',
+                'class'   => 'scalable next'
+            )
+        );
         // ---------------------------------------
     }
 
@@ -76,7 +84,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 
@@ -112,17 +120,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin
         $taskCompletedSuccessMessage = $helper->escapeJs(
             $helper->__('"%task_title%" Task was successfully submitted to be processed.')
         );
-        $taskCompletedWarningMessage = $helper->escapeJs($helper->__(
-            '"%task_title%" Task was completed with warnings.
+        $taskCompletedWarningMessage = $helper->escapeJs(
+            $helper->__(
+                '"%task_title%" Task was completed with warnings.
             <a target="_blank" href="%url%">View Log</a> for the details.'
-        ));
-        $taskCompletedErrorMessage = $helper->escapeJs($helper->__(
-            '"%task_title%" Task was completed with errors.
+            )
+        );
+        $taskCompletedErrorMessage = $helper->escapeJs(
+            $helper->__(
+                '"%task_title%" Task was completed with errors.
             <a target="_blank" href="%url%">View Log</a> for the details.'
-        ));
+            )
+        );
 
-        $sendingDataToAmazonMessage = $helper->escapeJs($helper->__(
-                'Sending %product_title% Product(s) data on Amazon.')
+        $sendingDataToAmazonMessage = $helper->escapeJs(
+            $helper->__(
+                'Sending %product_title% Product(s) data on Amazon.'
+            )
         );
 
         $selectItemsMessage = $helper->escapeJs(
@@ -162,7 +176,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin
         $searchAsinManual = $this->getUrl('*/adminhtml_amazon_listing/searchAsinManual');
         $getSearchAsinMenu = $this->getUrl('*/adminhtml_amazon_listing/getSearchAsinMenu');
         $suggestedAsinGridHmtl = $this->getUrl('*/adminhtml_amazon_listing/getSuggestedAsinGrid');
-        $getCategoriesByAsin = $this->getUrl('*/adminhtml_amazon_listing/getCategoriesByAsin');
         $searchAsinAuto = $this->getUrl('*/adminhtml_amazon_listing/searchAsinAuto');
         $getProductsSearchStatus = $this->getUrl('*/adminhtml_amazon_listing/getProductsSearchStatus');
         $mapToAsin = $this->getUrl('*/adminhtml_amazon_listing/mapToAsin');
@@ -179,13 +192,17 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin
         $viewSearchSettings = $this->getUrl('*/adminhtml_amazon_listing_productAdd/viewSearchSettings');
         $saveSearchSettings = $this->getUrl('*/adminhtml_amazon_listing_productAdd/saveSearchSettings');
 
-        $checkSearchResults = $this->getUrl('*/adminhtml_amazon_listing_productAdd/checkSearchResults', array(
-            'id' => $this->getListing()->getId()
-        ));
+        $checkSearchResults = $this->getUrl(
+            '*/adminhtml_amazon_listing_productAdd/checkSearchResults', array(
+                'id' => $this->getListing()->getId()
+            )
+        );
 
-        $showNewAsinStep = $this->getUrl('*/adminhtml_amazon_listing_productAdd/showNewAsinStep', array(
-            'id' => $this->getListing()->getId()
-        ));
+        $showNewAsinStep = $this->getUrl(
+            '*/adminhtml_amazon_listing_productAdd/showNewAsinStep', array(
+                'id' => $this->getListing()->getId()
+            )
+        );
 
         $addProductsUrl = $this->getUrl(
             '*/adminhtml_amazon_listing_productAdd/addProducts'
@@ -240,7 +257,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SearchAsin
     M2ePro.url.searchAsinAuto = '{$searchAsinAuto}';
     M2ePro.url.getProductsSearchStatus = '{$getProductsSearchStatus}';
     M2ePro.url.suggestedAsinGrid = '{$suggestedAsinGridHmtl}';
-    M2ePro.url.getCategoriesByAsin = '{$getCategoriesByAsin}';
     M2ePro.url.mapToAsin = '{$mapToAsin}';
     M2ePro.url.unmapFromAsin = '{$unmapFromAsin}';
     M2ePro.url.mapToNewAsin = '{$mapToNewAsin}';
@@ -277,7 +293,8 @@ HTML;
 
         // ---------------------------------------
         $notCompletedPopup = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_amazon_listing_add_searchAsin_notCompleted');
+            'M2ePro/adminhtml_amazon_listing_add_searchAsin_notCompleted'
+        );
         // ---------------------------------------
 
         return $notCompletedPopup->toHtml() .
@@ -296,7 +313,7 @@ HTML;
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component_Amazon')
                 ->getObject('Listing', $listingId)->getChildObject();
         }

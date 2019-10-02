@@ -12,14 +12,22 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
     const MESSAGE_TYPE_ERROR = 'error';
     const MESSAGE_TYPE_WARNING = 'warning';
 
-    protected $warningsCalculated = false;
+    protected $_warningsCalculated = false;
 
-    protected $childListingProducts = null;
-    protected $currentProductVariations = null;
+    protected $_childListingProducts;
+    protected $_currentProductVariations;
+
+    protected $_messages = array();
 
     // ---------------------------------------
 
-    protected $listingProductId;
+    protected $_listingProductId;
+
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
+
+    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+    protected $_listingProductTypeModel;
 
     //########################################
 
@@ -38,7 +46,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
@@ -47,18 +55,17 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
 
-    protected $messages = array();
     /**
      * @param array $message
      */
     public function addMessage($message, $type = self::MESSAGE_TYPE_ERROR)
     {
-        $this->messages[] = array(
+        $this->_messages[] = array(
             'type' => $type,
             'msg' => $message
         );
@@ -68,20 +75,20 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
      */
     public function setMessages($messages)
     {
-        $this->messages = $messages;
+        $this->_messages = $messages;
     }
     /**
      * @return array
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this->_messages;
     }
 
     public function getMessagesType()
     {
         $type = self::MESSAGE_TYPE_WARNING;
-        foreach ($this->messages as $message) {
+        foreach ($this->_messages as $message) {
             if ($message['type'] === self::MESSAGE_TYPE_ERROR)     {
                 $type = $message['type'];
                 break;
@@ -93,40 +100,34 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
 
     // ---------------------------------------
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
-
     /**
      * @return Ess_M2ePro_Model_Listing_Product|null
      */
     public function getListingProduct()
     {
-        if (is_null($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Walmart')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if ($this->_listingProduct === null) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Walmart')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ---------------------------------------
-
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProductTypeModel;
 
     /**
      * @return Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent|null
      */
     public function getListingProductTypeModel()
     {
-        if (is_null($this->listingProductTypeModel)) {
+        if ($this->_listingProductTypeModel === null) {
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
             $walmartListingProduct = $this->getListingProduct()->getChildObject();
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent $typeModel */
-            $this->listingProductTypeModel = $walmartListingProduct->getVariationManager()->getTypeModel();
+            $this->_listingProductTypeModel = $walmartListingProduct->getVariationManager()->getTypeModel();
         }
 
-        return $this->listingProductTypeModel;
+        return $this->_listingProductTypeModel;
     }
 
     // ---------------------------------------
@@ -162,14 +163,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_S
 </li>
 HTML;
         }
+
         return $warnings;
     }
 
     public function calculateWarnings()
     {
-        if (!$this->warningsCalculated) {
-
-            $this->warningsCalculated = true;
+        if (!$this->_warningsCalculated) {
+            $this->_warningsCalculated = true;
 
             if (!$this->getListingProductTypeModel()->hasChannelAttributes()) {
                 $this->addMessage(
@@ -188,7 +189,6 @@ HTML;
                     self::MESSAGE_TYPE_ERROR
                 );
             }
-
         }
     }
 
@@ -233,9 +233,11 @@ HTML;
 
     public function getDescriptionTemplateLink()
     {
-        $url = $this->getUrl('*/adminhtml_walmart_template_description/edit', array(
+        $url = $this->getUrl(
+            '*/adminhtml_walmart_template_description/edit', array(
             'id' => $this->getListingProduct()->getChildObject()->getTemplateDescriptionId()
-        ));
+            )
+        );
 
         $templateTitle = $this->getListingProduct()->getChildObject()->getDescriptionTemplate()->getTitle();
 
@@ -277,6 +279,7 @@ HTML;
         if ($this->hasMatchedAttributes()) {
             return $this->getListingProductTypeModel()->getMatchedAttributes();
         }
+
         return $this->getMatcherAttributes()->getMatchedAttributes();
     }
 
@@ -331,6 +334,7 @@ HTML;
         if ($this->isInAction() ) {
             return false;
         }
+
         if ($this->hasMatchedAttributes()) {
             $typeModel = $this->getListingProductTypeModel();
 
@@ -348,17 +352,17 @@ HTML;
 
     public function getChildListingProducts()
     {
-        if (!is_null($this->childListingProducts)) {
-            return $this->childListingProducts;
+        if ($this->_childListingProducts !== null) {
+            return $this->_childListingProducts;
         }
 
-        return $this->childListingProducts = $this->getListingProductTypeModel()->getChildListingsProducts();
+        return $this->_childListingProducts = $this->getListingProductTypeModel()->getChildListingsProducts();
     }
 
     public function getCurrentProductVariations()
     {
-        if (!is_null($this->currentProductVariations)) {
-            return $this->currentProductVariations;
+        if ($this->_currentProductVariations !== null) {
+            return $this->_currentProductVariations;
         }
 
         $magentoProductVariations = $this->getListingProduct()
@@ -378,7 +382,7 @@ HTML;
             $productVariations[] = $productOption;
         }
 
-        return $this->currentProductVariations = $productVariations;
+        return $this->_currentProductVariations = $productVariations;
     }
 
     public function getCurrentChannelVariations()
@@ -403,6 +407,7 @@ HTML;
                 if (!isset($attributesOptions[$attr])) {
                     $attributesOptions[$attr] = array();
                 }
+
                 if (!in_array($option, $attributesOptions[$attr])) {
                     $attributesOptions[$attr][] = $option;
                 }

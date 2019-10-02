@@ -35,20 +35,20 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     const INSTRUCTION_INITIATOR = 'public_services_sql_change_processor';
 
-    private $preventDuplicatesMode = true;
+    protected $_preventDuplicatesMode = true;
 
-    private $changesData = array();
+    protected $_changesData = array();
 
     //########################################
 
     public function enablePreventDuplicatesMode()
     {
-        $this->preventDuplicatesMode = true;
+        $this->_preventDuplicatesMode = true;
     }
 
     public function disablePreventDuplicatesMode()
     {
-        $this->preventDuplicatesMode = false;
+        $this->_preventDuplicatesMode = false;
     }
 
     //########################################
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
     {
         $instructionsData = $this->getInstructionsData();
 
-        if ($this->preventDuplicatesMode) {
+        if ($this->_preventDuplicatesMode) {
             $instructionsData = $this->filterExistedInstructions($instructionsData);
         }
 
@@ -73,7 +73,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
      */
     public function flushChanges()
     {
-        $this->changesData = array();
+        $this->_changesData = array();
         return $this;
     }
 
@@ -111,9 +111,13 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     //----------------------------------------
 
-    public function markProductAttributeChanged($productId, $attributeCode, $storeId,
-                                                $valueOld = null, $valueNew = null)
-    {
+    public function markProductAttributeChanged(
+        $productId,
+        $attributeCode,
+        $storeId,
+        $valueOld = null,
+        $valueNew = null
+    ) {
         throw new Ess_M2ePro_Model_Exception_Logic('Method is not supported.');
     }
 
@@ -121,7 +125,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     public function markProductChanged($productId)
     {
-        $this->changesData[] = array(
+        $this->_changesData[] = array(
             'product_id'       => (int)$productId,
             'instruction_type' => self::INSTRUCTION_TYPE_PRODUCT_CHANGED,
         );
@@ -130,7 +134,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     public function markStatusChanged($productId)
     {
-        $this->changesData[] = array(
+        $this->_changesData[] = array(
             'product_id'       => (int)$productId,
             'instruction_type' => self::INSTRUCTION_TYPE_STATUS_CHANGED,
         );
@@ -139,7 +143,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     public function markQtyChanged($productId)
     {
-        $this->changesData[] = array(
+        $this->_changesData[] = array(
             'product_id'       => (int)$productId,
             'instruction_type' => self::INSTRUCTION_TYPE_QTY_CHANGED,
         );
@@ -148,7 +152,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     public function markPriceChanged($productId)
     {
-        $this->changesData[] = array(
+        $this->_changesData[] = array(
             'product_id'       => (int)$productId,
             'instruction_type' => self::INSTRUCTION_TYPE_PRICE_CHANGED,
         );
@@ -157,15 +161,15 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
 
     //########################################
 
-    private function getInstructionsData()
+    protected function getInstructionsData()
     {
-        if (empty($this->changesData)) {
+        if (empty($this->_changesData)) {
             return array();
         }
 
         $productInstructionTypes = array();
 
-        foreach ($this->changesData as $changeData) {
+        foreach ($this->_changesData as $changeData) {
             $productId = (int)$changeData['product_id'];
 
             $productInstructionTypes[$productId][] = $changeData['instruction_type'];
@@ -224,7 +228,7 @@ class Ess_M2ePro_Model_PublicServices_Product_SqlChange
         return $instructionsData;
     }
 
-    private function filterExistedInstructions(array $instructionsData)
+    protected function filterExistedInstructions(array $instructionsData)
     {
         $indexedInstructionsData = array();
 

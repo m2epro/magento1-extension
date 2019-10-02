@@ -27,11 +27,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SourceProduct
         // Set header text
         // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
-            $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__("%component_name% / Select Products", $componentName);
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                "%component_name% / Select Products",
+                Mage::helper('M2ePro/Component_Amazon')->getTitle()
+            );
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__("Select Products");
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -45,34 +48,43 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SourceProduct
         // ---------------------------------------
 
         // ---------------------------------------
-        if (is_null($this->getRequest()->getParam('back'))) {
-            $url = $this->getUrl('*/adminhtml_amazon_listing_productAdd/index', array(
-                '_current' => true,
-                'step' => 1,
-                'clear' => 1
-            ));
+        if ($this->getRequest()->getParam('back') === null) {
+            $url = $this->getUrl(
+                '*/adminhtml_amazon_listing_productAdd/index', array(
+                    '_current' => true,
+                    'step'     => 1,
+                    'clear'    => 1
+                )
+            );
         } else {
             $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_amazon_listing/index');
         }
-        $this->_addButton('back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'onclick'   => 'ProductGridHandlerObj.back_click(\'' . $url . '\')',
-            'class'     => 'back'
-        ));
+
+        $this->_addButton(
+            'back', array(
+                'label'   => Mage::helper('M2ePro')->__('Back'),
+                'onclick' => 'ProductGridHandlerObj.back_click(\'' . $url . '\')',
+                'class'   => 'back'
+            )
+        );
 
         // ---------------------------------------
-        $this->_addButton('auto_action', array(
-            'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
-            'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
-        ));
+        $this->_addButton(
+            'auto_action', array(
+                'label'   => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
+                'onclick' => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('save_and_go_to_listing_view', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'onclick'   => 'ProductGridHandlerObj.save_click(\'view\')',
-            'class'     => 'scalable next'
-        ));
+        $this->_addButton(
+            'save_and_go_to_listing_view', array(
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'onclick' => 'ProductGridHandlerObj.save_click(\'view\')',
+                'class'   => 'scalable next'
+            )
+        );
         // ---------------------------------------
     }
 
@@ -83,7 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SourceProduct
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 
@@ -98,12 +110,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_SourceProduct
         /** @var $helper Ess_M2ePro_Helper_Data */
         $helper = Mage::helper('M2ePro');
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Auto Add/Remove Rules' => $helper->__('Auto Add/Remove Rules'),
             'Based on Magento Categories' => $helper->__('Based on Magento Categories'),
             'You must select at least 1 Category.' => $helper->__('You must select at least 1 Category.'),
             'Rule with the same Title already exists.' => $helper->__('Rule with the same Title already exists.')
-        ));
+            )
+        );
 
         $js = <<<HTML
 <script type="text/javascript">

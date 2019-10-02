@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Translation_Connector_Dispatcher
         $name   != '' && $className .= '_'.$name;
 
         if (is_int($account) || is_string($account)) {
-            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account',(int)$account);
+            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', (int)$account);
         }
 
         /** @var Ess_M2ePro_Model_Connector_Command_Abstract $connectorObject */
@@ -36,22 +36,26 @@ class Ess_M2ePro_Model_Translation_Connector_Dispatcher
     public function getCustomConnector($modelName, array $params = array(), $account = NULL)
     {
         if (is_int($account) || is_string($account)) {
-            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account',(int)$account);
+            $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', (int)$account);
         }
 
         $className = 'Ess_M2ePro_Model_'.$modelName;
 
         /** @var Ess_M2ePro_Model_Connector_Command_Abstract $connectorObject */
-        $connectorObject = new $className($params,  $account);
+        $connectorObject = new $className($params, $account);
         $connectorObject->setProtocol($this->getProtocol());
 
         return $connectorObject;
     }
 
-    public function getVirtualConnector($entity, $type, $name,
-                                        array $requestData = array(), $responseDataKey = NULL,
-                                        $account = NULL)
-    {
+    public function getVirtualConnector(
+        $entity,
+        $type,
+        $name,
+        array $requestData = array(),
+        $responseDataKey = null,
+        $account = null
+    ) {
         $virtualConnector = Mage::getModel('M2ePro/Connector_Command_RealTime_Virtual');
         $virtualConnector->setProtocol($this->getProtocol());
         $virtualConnector->setCommand(array($entity, $type, $name));
@@ -79,7 +83,7 @@ class Ess_M2ePro_Model_Translation_Connector_Dispatcher
 
     //####################################
 
-    private function getProtocol()
+    protected function getProtocol()
     {
         return Mage::getModel('M2ePro/Translation_Connector_Protocol');
     }

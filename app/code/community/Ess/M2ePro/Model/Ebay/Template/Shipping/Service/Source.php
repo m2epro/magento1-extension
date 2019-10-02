@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
 {
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $shippingServiceTemplateModel Ess_M2ePro_Model_Ebay_Template_Shipping_Service
+     * @var $_shippingServiceTemplateModel Ess_M2ePro_Model_Ebay_Template_Shipping_Service
      */
-    private $shippingServiceTemplateModel = null;
+    protected $_shippingServiceTemplateModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
      */
     public function setShippingServiceTemplate(Ess_M2ePro_Model_Ebay_Template_Shipping_Service $instance)
     {
-        $this->shippingServiceTemplateModel = $instance;
+        $this->_shippingServiceTemplateModel = $instance;
         return $this;
     }
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
      */
     public function getShippingServiceTemplate()
     {
-        return $this->shippingServiceTemplateModel;
+        return $this->_shippingServiceTemplateModel;
     }
 
     //########################################
@@ -83,9 +83,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
                 break;
         }
 
-        is_string($result) && $result = str_replace(',','.',$result);
+        is_string($result) && $result = str_replace(',', '.', $result);
 
-        return round((float)$result,2);
+        return round((float)$result, 2);
     }
 
     /**
@@ -111,9 +111,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
                 break;
         }
 
-        is_string($result) && $result = str_replace(',','.',$result);
+        is_string($result) && $result = str_replace(',', '.', $result);
 
-        return round((float)$result,2);
+        return round((float)$result, 2);
     }
 
     /**
@@ -139,16 +139,16 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
                 break;
         }
 
-        is_string($result) && $result = str_replace(',','.',$result);
+        is_string($result) && $result = str_replace(',', '.', $result);
 
-        return round((float)$result,2);
+        return round((float)$result, 2);
     }
 
     // ---------------------------------------
 
     protected function getMagentoProductAttributeValue($attributeCode, $store)
     {
-        if (is_null($store)) {
+        if ($store === null) {
             return $this->getMagentoProduct()->getAttributeValue($attributeCode);
         }
 

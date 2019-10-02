@@ -15,7 +15,7 @@ class Ess_M2ePro_Model_Magento_Translate extends Mage_Core_Model_Translate
 
     const MODULE_NAME = 'Ess_M2ePro';
 
-    protected $mode;
+    protected $_mode;
 
     //########################################
 
@@ -24,14 +24,14 @@ class Ess_M2ePro_Model_Magento_Translate extends Mage_Core_Model_Translate
      */
     protected function setMode($mode)
     {
-        $this->mode = $mode;
+        $this->_mode = $mode;
     }
     /**
      * @return mixed
      */
     protected function getMode()
     {
-        return $this->mode;
+        return $this->_mode;
     }
 
     public function __construct($mode = self::TRANSLATE_MODE_CUSTOM)
@@ -46,9 +46,11 @@ class Ess_M2ePro_Model_Magento_Translate extends Mage_Core_Model_Translate
             return Mage::app()->getTranslator()->init(self::TRANSLATE_AREA, $forceReload);
         }
 
-        $this->setConfig(array(
+        $this->setConfig(
+            array(
             self::CONFIG_KEY_AREA => self::TRANSLATE_AREA
-        ));
+            )
+        );
 
         $this->_translateInline = Mage::getSingleton('core/translate_inline')
             ->isAllowed($area=='adminhtml' ? 'admin' : null);
@@ -60,6 +62,7 @@ class Ess_M2ePro_Model_Magento_Translate extends Mage_Core_Model_Translate
                     return $this;
                 }
             }
+
             Mage::app()->removeCache($this->getCacheId());
         }
 

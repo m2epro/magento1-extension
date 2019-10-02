@@ -34,6 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_Tabs extends Mage_Adminht
         if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
             $this->addTab(self::TAB_ID_GENERAL, $this->prepareTabGeneral());
         }
+
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
         $this->addTab(self::TAB_ID_MARKETPLACE, $this->prepareTabMarketplace());
         $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
@@ -93,7 +94,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_Tabs extends Mage_Adminht
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_SYNCHRONIZATION) {
-
             $tab['content'] = $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_walmart_synchronization_help')->toHtml();
 

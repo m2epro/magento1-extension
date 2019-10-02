@@ -41,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
 
         $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_payment');
 
-        if (is_null($template)) {
+        if ($template === null) {
             return '';
         }
 
@@ -54,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
     {
         $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_payment');
 
-        if (is_null($template)) {
+        if ($template === null) {
             return array();
         }
 
@@ -86,6 +86,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
             $default['pay_pal_mode'] = 1;
             $default['pay_pal_email_address'] = $payPalConfig->business_account;
         }
+
         // ---------------------------------------
 
         return $default;

@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_SnapshotBuilder
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
 
         if (empty($data)) {
             return array();

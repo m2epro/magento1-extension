@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
 
     protected function performActions()
     {
-        /** @var $accounts Ess_M2ePro_Model_Mysql4_Amazon_Account_Collection */
+        /** @var $accounts Ess_M2ePro_Model_Resource_Amazon_Account_Collection */
         $accounts = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
 
         // Getting accounts with enabled feature
@@ -39,7 +39,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
             /** @var $account Ess_M2ePro_Model_Account */
 
             if ($account->getChildObject()->isMagentoOrdersNumberApplyToAmazonOrderEnable()) {
-
                 $enabledAccountIds[] = $account->getId();
                 $enabledMerchantIds[] = $account->getChildObject()->getMerchantId();
             }
@@ -59,7 +58,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
         $enabledMerchantIds = array_unique($enabledMerchantIds);
 
         foreach ($enabledMerchantIds as $enabledMerchantId) {
-            /** @var $ordersCollection Ess_M2ePro_Model_Mysql4_Order_Collection */
+            /** @var $ordersCollection Ess_M2ePro_Model_Resource_Order_Collection */
             $ordersCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
 
             $ordersCollection->addFieldToFilter('main_table.account_id', array('in' => $enabledAccountIds));
@@ -117,12 +116,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
             // Sending update requests
             /** @var Ess_M2ePro_Model_Amazon_Connector_Dispatcher $dispatcherObject */
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('orders','update','sellerOrderId',
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'orders', 'update', 'sellerOrderId',
                 array(
                     'orders' => $orders,
                     'accounts' => array_unique($accounts),
                     'ignore_processing_request' => 1
-                ));
+                )
+            );
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
 
@@ -133,7 +134,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
                 $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
 
                 foreach ($ordersToUpdate as $orderId => $orderData) {
-                    $connWrite->update($amazonOrderTable,
+                    $connWrite->update(
+                        $amazonOrderTable,
                         array(
                             'seller_order_id' => $orderData['seller_order_id']
                         ),

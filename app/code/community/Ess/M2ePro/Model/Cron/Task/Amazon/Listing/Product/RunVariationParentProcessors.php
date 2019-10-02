@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_RunVariationParentProces
 
     protected function performActions()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('is_variation_parent', 1);
         $listingProductCollection->addFieldToFilter('variation_parent_need_processor', 1);

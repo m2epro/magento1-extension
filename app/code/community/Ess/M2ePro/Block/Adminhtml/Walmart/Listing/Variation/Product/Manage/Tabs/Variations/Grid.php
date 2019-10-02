@@ -11,11 +11,16 @@ use Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_Processor as ListProces
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_Variations_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
-    protected $childListingProducts = null;
-    protected $currentProductVariations = null;
-    protected $usedProductVariations = null;
+    protected $_childListingProducts     = null;
+    protected $_currentProductVariations = null;
+    protected $_usedProductVariations    = null;
 
-    protected $listingProductId;
+    protected $_listingProductId;
+
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
+
+    protected $_lockedDataCache = array();
 
     //########################################
 
@@ -24,34 +29,27 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
     }
     /**
      * @return mixed
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
-
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
 
     protected function getListingProduct()
     {
-        if (empty($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Walmart')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if (empty($this->_listingProduct)) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Walmart')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
-
-    // ---------------------------------------
-
-    private $lockedDataCache = array();
 
     //########################################
 
@@ -74,18 +72,21 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
     {
         // Get collection
         // ---------------------------------------
-        /** @var Ess_M2ePro_Model_Mysql4_Walmart_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->getSelect()->distinct();
-        $collection->getSelect()->where("`second_table`.`variation_parent_id` = ?",(int)$this->getListingProductId());
+        $collection->getSelect()->where("`second_table`.`variation_parent_id` = ?", (int)$this->getListingProductId());
         // ---------------------------------------
 
-        $collection->getSelect()->columns(array(
+        $collection->getSelect()->columns(
+            array(
             'online_price' => 'second_table.online_price'
-        ));
+            )
+        );
 
         $collection->getSelect()->joinLeft(
-            new Zend_Db_Expr('(
+            new Zend_Db_Expr(
+                '(
                 SELECT
                     mlpv.listing_product_id,
                     GROUP_CONCAT(`mlpvo`.`attribute`, \'==\', `mlpvo`.`product_id` SEPARATOR \'||\') as products_ids
@@ -94,7 +95,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                     '` AS `mlpvo` ON (`mlpvo`.`listing_product_variation_id`=`mlpv`.`id`)
                 WHERE `mlpv`.`component_mode` = \'walmart\'
                 GROUP BY `mlpv`.`listing_product_id`
-            )'),
+            )'
+            ),
             'main_table.id=t.listing_product_id',
             array(
                 'products_ids' => 'products_ids',
@@ -124,7 +126,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             $channelAttributes = array();
         }
 
-        $this->addColumn('product_options', array(
+        $this->addColumn(
+            'product_options', array(
             'header'    => Mage::helper('M2ePro')->__('Magento Variation'),
             'align'     => 'left',
             'width' => '200px',
@@ -135,9 +138,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             'filter'   => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
             'options' => $productAttributes,
             'filter_condition_callback' => array($this, 'callbackProductOptions')
-        ));
+            )
+        );
 
-        $this->addColumn('channel_options', array(
+        $this->addColumn(
+            'channel_options', array(
             'header'    => Mage::helper('M2ePro')->__('Walmart Variation'),
             'align'     => 'left',
             'width' => '200px',
@@ -148,9 +153,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             'filter'   => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
             'options' => $channelAttributes,
             'filter_condition_callback' => array($this, 'callbackChannelOptions')
-        ));
+            )
+        );
 
-        $this->addColumn('sku', array(
+        $this->addColumn(
+            'sku', array(
             'header' => Mage::helper('M2ePro')->__('SKU'),
             'align' => 'left',
             'width' => '150px',
@@ -158,9 +165,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             'index' => 'sku',
             'filter_index' => 'sku',
             'frame_callback' => array($this, 'callbackColumnWalmartSku')
-        ));
+            )
+        );
 
-        $this->addColumn('gtin', array(
+        $this->addColumn(
+            'gtin', array(
             'header' => Mage::helper('M2ePro')->__('GTIN'),
             'align' => 'left',
             'width' => '150px',
@@ -168,9 +177,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             'index' => 'gtin',
             'filter_index' => 'gtin',
             'frame_callback' => array($this, 'callbackColumnGtin')
-        ));
+            )
+        );
 
-        $this->addColumn('online_qty', array(
+        $this->addColumn(
+            'online_qty', array(
             'header' => Mage::helper('M2ePro')->__('QTY'),
             'align' => 'right',
             'width' => '70px',
@@ -179,7 +190,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
             'filter_index' => 'online_qty',
             'frame_callback' => array($this, 'callbackColumnAvailableQty'),
             'filter_condition_callback' => array($this, 'callbackFilterQty')
-        ));
+            )
+        );
 
         $priceColumn = array(
             'header' => Mage::helper('M2ePro')->__('Price'),
@@ -212,7 +224,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         );
 
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'],true)) {
+        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'], true)) {
             $statusColumn['filter'] = 'M2ePro/adminhtml_walmart_grid_column_filter_status';
         }
 
@@ -237,51 +249,65 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         );
         $this->getMassactionBlock()->setGroups($groups);
 
-        $this->getMassactionBlock()->addItem('list', array(
+        $this->getMassactionBlock()->addItem(
+            'list', array(
             'label'    => Mage::helper('M2ePro')->__('List Item(s)'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
+            ), 'actions'
+        );
 
-        $this->getMassactionBlock()->addItem('revise', array(
+        $this->getMassactionBlock()->addItem(
+            'revise', array(
             'label'    => Mage::helper('M2ePro')->__('Revise Item(s)'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
+            ), 'actions'
+        );
 
-        $this->getMassactionBlock()->addItem('relist', array(
+        $this->getMassactionBlock()->addItem(
+            'relist', array(
             'label'    => Mage::helper('M2ePro')->__('Relist Item(s)'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
+            ), 'actions'
+        );
 
-        $this->getMassactionBlock()->addItem('stop', array(
+        $this->getMassactionBlock()->addItem(
+            'stop', array(
             'label'    => Mage::helper('M2ePro')->__('Stop Item(s)'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
+            ), 'actions'
+        );
 
-        $this->getMassactionBlock()->addItem('stopAndRemove', array(
+        $this->getMassactionBlock()->addItem(
+            'stopAndRemove', array(
             'label'    => Mage::helper('M2ePro')->__('Stop on Channel / Remove from Listing'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
+            ), 'actions'
+        );
 
-        $this->getMassactionBlock()->addItem('deleteAndRemove', array(
+        $this->getMassactionBlock()->addItem(
+            'deleteAndRemove', array(
             'label'    => Mage::helper('M2ePro')->__('Retire on Channel / Remove from Listing'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'actions');
+            ), 'actions'
+        );
 
         // ---------------------------------------
 
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'],true)) {
-            $this->getMassactionBlock()->addItem('resetProducts', array(
+        if (Mage::helper('M2ePro/View_Walmart')->isResetFilterShouldBeShown($listingData['id'], true)) {
+            $this->getMassactionBlock()->addItem(
+                'resetProducts', array(
                 'label'    => Mage::helper('M2ePro')->__('Reset Inactive (Blocked) Item(s)'),
                 'url'      => '',
                 'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-            ), 'other');
+                ), 'other'
+            );
         }
 
         // ---------------------------------------
@@ -311,7 +337,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
             $matchedAttributes = $typeModel->getParentTypeModel()->getMatchedAttributes();
             if (!empty($matchedAttributes)) {
-
                 $sortedOptions = array();
 
                 foreach ($matchedAttributes as $magentoAttr => $walmartAttr) {
@@ -328,8 +353,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                 $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => reset($productsIds)));
                 $html .= '<a href="' . $url . '" target="_blank">';
             }
-            foreach ($productOptions as $attribute => $option) {
 
+            foreach ($productOptions as $attribute => $option) {
                 $style = '';
                 if (in_array($attribute, $virtualProductAttributes)) {
                     $style = 'border-bottom: 2px dotted grey';
@@ -348,14 +373,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                     $html .= $optionHtml . '<br/>';
                 }
             }
+
             if (!$uniqueProductsIds) {
                 $html .= '</a>';
             }
+
             $html .= '</div>';
         }
 
         if ($this->canChangeProductVariation($row)) {
-
             $listingProductId = $row->getId();
             $attributes = array_keys($typeModel->getParentTypeModel()->getMatchedAttributes());
             $variationsTree = $this->getProductVariationsTree($row, $attributes);
@@ -396,7 +422,6 @@ HTML;
         $options = $typeModel->getChannelOptions();
 
         if (!empty($matchedAttributes)) {
-
             $sortedOptions = array();
 
             foreach ($matchedAttributes as $magentoAttr => $walmartAttr) {
@@ -452,7 +477,7 @@ HTML;
 
     public function callbackColumnWalmartSku($value, $row, $column, $isExport)
     {
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             $value = Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -555,6 +580,7 @@ HTML;
             {
                 $htmlAdditional .= "<div class='separator-line'></div>";
             }
+
             $identifierCode  = Mage::helper('M2ePro')->__($title);
             $identifierValue = Mage::helper('M2ePro')->escapeHtml($value);
 
@@ -572,7 +598,6 @@ HTML;
         }
 
         if ($htmlAdditional != '') {
-
             $html .= <<<HTML
 <span style="float:right;">
     <img class="tool-tip-image"
@@ -601,7 +626,7 @@ HTML;
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        if (is_null($qty) || $qty === '' ||
+        if ($qty === null || $qty === '' ||
             ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
              !$row->getData('is_online_price_invalid')))
         {
@@ -623,7 +648,7 @@ HTML;
 
         $onlinePrice  = $row->getData('online_price');
 
-        if (is_null($onlinePrice) || $onlinePrice === '' ||
+        if ($onlinePrice === null || $onlinePrice === '' ||
             ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
              !$row->getData('is_online_price_invalid')))
         {
@@ -632,7 +657,7 @@ HTML;
 
         $marketplaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
         $currency = Mage::helper('M2ePro/Component_Walmart')
-            ->getCachedObject('Marketplace',$marketplaceId)
+            ->getCachedObject('Marketplace', $marketplaceId)
             ->getChildObject()
             ->getDefaultCurrency();
 
@@ -654,11 +679,10 @@ HTML;
         $html = $this->getViewLogIconHtml($row);
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product',$listingProductId);
+        $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product', $listingProductId);
 
         $synchNote = $listingProduct->getSetting('additional_data', 'synch_template_list_rules_note');
         if (!empty($synchNote)) {
-
             $synchNote = Mage::helper('M2ePro/View')->getModifiedLogMessage($synchNote);
 
             if (empty($html)) {
@@ -682,7 +706,6 @@ HTML;
         }
 
         switch ($row->getData('status')) {
-
             case Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED:
                 $html .= '<span style="color: gray;">' . $value . '</span>';
                 break;
@@ -705,7 +728,7 @@ HTML;
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         $listingProduct = Mage::helper('M2ePro/Component_Walmart')
-            ->getObject('Listing_Product',$listingProductId);
+            ->getObject('Listing_Product', $listingProductId);
 
         $statusChangeReasons = $listingProduct->getChildObject()->getStatusChangeReasons();
 
@@ -724,7 +747,7 @@ HTML;
                $this->getLockedTag($row);
     }
 
-    private function getScheduledTag($row)
+    protected function getScheduledTag($row)
     {
         $html = '';
 
@@ -738,7 +761,6 @@ HTML;
         }
 
         switch ($scheduledAction->getActionType()) {
-
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:
                 $html .= '<br/><span style="color: #605fff">[List is Scheduled...]</span>';
                 break;
@@ -770,7 +792,6 @@ HTML;
                         }
 
                         if ($configurator->isDetailsAllowed()) {
-
                             $params = $additionalData['params'];
 
                             if (isset($params['changed_sku'])) {
@@ -792,7 +813,6 @@ HTML;
                 } else {
                     $html .= '<br/><span style="color: #605fff">[Revise is Scheduled...]</span>';
                 }
-
                 break;
 
             case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:
@@ -805,21 +825,18 @@ HTML;
 
             default:
                 break;
-
         }
 
         return $html;
     }
 
-    private function getLockedTag($row)
+    protected function getLockedTag($row)
     {
         $html = '';
 
         $tempLocks = $this->getLockedData($row);
         foreach ($tempLocks['object_locks'] as $lock) {
-
             switch ($lock->getTag()) {
-
                 case 'list_action':
                     $html .= '<br/><span style="color: #605fff">[Listing...]</span>';
                     break;
@@ -852,19 +869,21 @@ HTML;
         return $html;
     }
 
-    private function getLockedData($row)
+    protected function getLockedData($row)
     {
         $listingProductId = $row->getData('id');
-        if (!isset($this->lockedDataCache[$listingProductId])) {
-            $objectLocks = Mage::getModel('M2ePro/Listing_Product')->load($row->getData('id'))->getProcessingLocks();
+        if (!isset($this->_lockedDataCache[$listingProductId])) {
+            $objectLocks = Mage::getModel('M2ePro/Listing_Product')->load(
+                $row->getData('id')
+            )->getProcessingLocks();
             $tempArray = array(
                 'object_locks' => $objectLocks,
-                'in_action' => !empty($objectLocks),
+                'in_action'    => !empty($objectLocks),
             );
-            $this->lockedDataCache[$listingProductId] = $tempArray;
+            $this->_lockedDataCache[$listingProductId] = $tempArray;
         }
 
-        return $this->lockedDataCache[$listingProductId];
+        return $this->_lockedDataCache[$listingProductId];
     }
 
     // ---------------------------------------
@@ -929,6 +948,7 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $where .= 'online_qty <= ' . (int)$value['to'];
         }
 
@@ -946,7 +966,6 @@ HTML;
         $condition = '';
 
         if (isset($value['from']) || isset($value['to'])) {
-
             if (isset($value['from']) && $value['from'] != '') {
                 $condition = 'second_table.online_price >= \'' . (float)$value['from'] . '\'';
             }
@@ -955,6 +974,7 @@ HTML;
                 if (isset($value['from']) && $value['from'] != '') {
                     $condition .= ' AND ';
                 }
+
                 $condition .= 'second_table.online_price <= \'' . (float)$value['to'] . '\'';
             }
         }
@@ -972,7 +992,6 @@ HTML;
         }
 
         if (is_array($value) && isset($value['value']) || is_string($value)) {
-
             if (is_string($value)) {
                 $status = (int)$value;
             } else {
@@ -983,7 +1002,7 @@ HTML;
         }
 
         if (is_array($value) && isset($value['is_reset'])) {
-            $collection->addFieldToFilter($index , Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)
+            $collection->addFieldToFilter($index, Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED)
                        ->addFieldToFilter('is_online_price_invalid', 0);
         }
     }
@@ -1023,11 +1042,10 @@ HTML;
         $lastActionId = false;
 
         foreach ($logRows as $row) {
-
             $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
-                if (count($tempActionRows) > 0) {
+                if (!empty($tempActionRows)) {
                     $actionsRows[] = array(
                         'type' => $this->getMainTypeForActionId($tempActionRows),
                         'date' => $this->getMainDateForActionId($tempActionRows),
@@ -1037,12 +1055,14 @@ HTML;
                     );
                     $tempActionRows = array();
                 }
+
                 $lastActionId = $row['action_id'];
             }
+
             $tempActionRows[] = $row;
         }
 
-        if (count($tempActionRows) > 0) {
+        if (!empty($tempActionRows)) {
             $actionsRows[] = array(
                 'type' => $this->getMainTypeForActionId($tempActionRows),
                 'date' => $this->getMainDateForActionId($tempActionRows),
@@ -1052,13 +1072,14 @@ HTML;
             );
         }
 
-        if (count($actionsRows) <= 0) {
+        if (empty($actionsRows)) {
             return '';
         }
 
         foreach ($actionsRows as &$actionsRow) {
-            usort($actionsRow['items'], function($a, $b)
-            {
+            usort(
+                $actionsRow['items'], function($a, $b)
+                {
                 $sortOrder = array(
                     Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 1,
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 2,
@@ -1066,7 +1087,8 @@ HTML;
                 );
 
                 return $sortOrder[$a["type"]] > $sortOrder[$b["type"]];
-            });
+                }
+            );
         }
 
         $tips = array(
@@ -1081,14 +1103,16 @@ HTML;
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
         );
 
-        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
+        $summary = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_grid_summary', '', array(
             'entity_id' => (int)$listingProduct->getId(),
             'rows' => $actionsRows,
             'tips' => $tips,
             'icons' => $icons,
             'view_help_handler' => 'ListingGridHandlerObj.viewItemHelp',
             'hide_help_handler' => 'ListingGridHandlerObj.hideItemHelp',
-        ));
+            )
+        );
 
         return $summary->toHtml();
     }
@@ -1158,6 +1182,7 @@ HTML;
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
                 break;
             }
+
             if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
             }
@@ -1182,6 +1207,7 @@ HTML;
             $html.= $this->getResetFilterButtonHtml();
             $html.= $this->getSearchButtonHtml();
         }
+
         return $html;
     }
 
@@ -1198,10 +1224,9 @@ HTML;
         return parent::getMassactionBlockHtml();
     }
 
-    private function getAddNewChildButtonsHtml()
+    protected function getAddNewChildButtonsHtml()
     {
         if ($this->isNewChildAllowed()) {
-
             // ---------------------------------------
             $data = array(
                 'label'   => Mage::helper('adminhtml')->__('Add New Child Product'),
@@ -1212,7 +1237,6 @@ HTML;
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
             $this->setChild('add_new_child_button', $buttonBlock);
             // ---------------------------------------
-
         }
 
         return $this->getChildHtml('add_new_child_button');
@@ -1282,9 +1306,11 @@ HTML;
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/adminhtml_walmart_listing_variation_product_manage/viewVariationsGridAjax', array(
+        return $this->getUrl(
+            '*/adminhtml_walmart_listing_variation_product_manage/viewVariationsGridAjax', array(
             '_current' => true
-        ));
+            )
+        );
     }
 
     public function getRowUrl($row)
@@ -1305,10 +1331,12 @@ HTML;
         $urls = array();
 
         $path = 'adminhtml_walmart_log/listingProduct';
-        $urls[$path] = $this->getUrl('*/' . $path, array(
+        $urls[$path] = $this->getUrl(
+            '*/' . $path, array(
             'channel' => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'back'=>$helper->makeBackUrlParam('*/adminhtml_walmart_listing/view',array('id' => $listingId))
-        ));
+            'back'=>$helper->makeBackUrlParam('*/adminhtml_walmart_listing/view', array('id' => $listingId))
+            )
+        );
 
         $urls['adminhtml_walmart_listing/getEditSkuPopup'] = $this->getUrl(
             '*/adminhtml_walmart_listing/getEditSkuPopup'
@@ -1328,17 +1356,20 @@ HTML;
         );
 
         $urls['adminhtml_walmart_listing_variation_product_manage/createNewChild'] = $this->getUrl(
-            '*/adminhtml_walmart_listing_variation_product_manage/createNewChild');
+            '*/adminhtml_walmart_listing_variation_product_manage/createNewChild'
+        );
 
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
 
         $component = Ess_M2ePro_Helper_Component_Walmart::NICK;
 
-        $logViewUrl = $this->getUrl('*/adminhtml_walmart_log/listing', array(
+        $logViewUrl = $this->getUrl(
+            '*/adminhtml_walmart_log/listing', array(
             'id' =>$listingId,
             'back'=>$helper->makeBackUrlParam('*/adminhtml_walmart_listing/view', array('id' => $listingId))
-        ));
+            )
+        );
 
         $checkLockListing = $this->getUrl('*/adminhtml_listing/checkLockListing', array('component' => $component));
         $lockListingNow = $this->getUrl('*/adminhtml_listing/lockListingNow', array('component' => $component));
@@ -1354,7 +1385,8 @@ HTML;
         $runResetProducts = $this->getUrl('*/adminhtml_walmart_listing/runResetProducts');
 
         $setChildListingProductOptions = $this->getUrl(
-            '*/adminhtml_walmart_listing_variation_product_manage/setChildListingProductOptions');
+            '*/adminhtml_walmart_listing_variation_product_manage/setChildListingProductOptions'
+        );
 
         $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
         $taskCompletedSuccessMessage = $helper->escapeJs(
@@ -1363,19 +1395,25 @@ HTML;
         $taskRealtimeCompletedSuccessMessage = $helper->escapeJs(
             $helper->__('"%task_title%" Task was completed successfully.')
         );
-        $taskCompletedWarningMessage = $helper->escapeJs($helper->__(
-            '"%task_title%" Task was completed with warnings.
+        $taskCompletedWarningMessage = $helper->escapeJs(
+            $helper->__(
+                '"%task_title%" Task was completed with warnings.
             <a target="_blank" href="%url%">View Log</a> for the details.'
-        ));
-        $taskCompletedErrorMessage = $helper->escapeJs($helper->__(
-            '"%task_title%" Task was completed with errors.
+            )
+        );
+        $taskCompletedErrorMessage = $helper->escapeJs(
+            $helper->__(
+                '"%task_title%" Task was completed with errors. 
             <a target="_blank" href="%url%">View Log</a> for the details.'
-        ));
+            )
+        );
 
         $lockedObjNoticeMessage = $helper->escapeJs($helper->__('Some Walmart request(s) are being processed now.'));
-        $sendingDataToWalmartMessage = $helper->escapeJs($helper->__(
+        $sendingDataToWalmartMessage = $helper->escapeJs(
+            $helper->__(
                 'Sending %product_title% Product(s) data on Walmart.'
-            ));
+            )
+        );
         $viewAllProductLogMessage = $helper->escapeJs($helper->__('View All Product Log.'));
 
         $listingLockedMessage = $helper->escapeJs(
@@ -1383,25 +1421,41 @@ HTML;
         );
         $listingEmptyMessage = $helper->escapeJs($helper->__('Listing is empty.'));
 
-        $listingAllItemsMessage = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')
-            ->__('Listing All Items On Walmart'));
-        $listingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')
-            ->__('Listing Selected Items On Walmart'));
-        $revisingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')
-            ->__('Revising Selected Items On Walmart'));
-        $relistingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')
-            ->__('Relisting Selected Items On Walmart'));
-        $stoppingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')
-            ->__('Stopping Selected Items On Walmart'));
+        $listingAllItemsMessage = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')
+            ->__('Listing All Items On Walmart')
+        );
+        $listingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')
+            ->__('Listing Selected Items On Walmart')
+        );
+        $revisingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')
+            ->__('Revising Selected Items On Walmart')
+        );
+        $relistingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')
+            ->__('Relisting Selected Items On Walmart')
+        );
+        $stoppingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')
+            ->__('Stopping Selected Items On Walmart')
+        );
         $stoppingAndRemovingSelectedItemsMessage = Mage::helper('M2ePro')
-            ->escapeJs(Mage::helper('M2ePro')
-                ->__('Stopping On Walmart And Removing From Listing Selected Items'));
+            ->escapeJs(
+                Mage::helper('M2ePro')
+                ->__('Stopping On Walmart And Removing From Listing Selected Items')
+            );
         $deletingAndRemovingSelectedItemsMessage = Mage::helper('M2ePro')
-            ->escapeJs(Mage::helper('M2ePro')
-                ->__('Retiring From Walmart And Removing from Listing Selected Items'));
+            ->escapeJs(
+                Mage::helper('M2ePro')
+                ->__('Retiring From Walmart And Removing from Listing Selected Items')
+            );
         $resetBlockedProductsMessage = Mage::helper('M2ePro')
-            ->escapeJs(Mage::helper('M2ePro')
-                ->__('Reset Inactive (Blocked) Items'));
+            ->escapeJs(
+                Mage::helper('M2ePro')
+                ->__('Reset Inactive (Blocked) Items')
+            );
 
         $selectItemsMessage = $helper->escapeJs($helper->__('Please select Items.'));
         $selectActionMessage = $helper->escapeJs($helper->__('Please select Action.'));
@@ -1421,11 +1475,13 @@ HTML;
         $mapToTemplateDescription = $this->getUrl('*/adminhtml_walmart_listing/mapToTemplateDescription');
         $unmapFromTemplateDescription = $this->getUrl('*/adminhtml_walmart_listing/unmapFromTemplateDescription');
         $validateProductsForTemplateDescriptionAssign = $this->getUrl(
-            '*/adminhtml_walmart_listing/validateProductsForTemplateDescriptionAssign');
+            '*/adminhtml_walmart_listing/validateProductsForTemplateDescriptionAssign'
+        );
         $viewTemplateDescriptionsGrid = $this->getUrl('*/adminhtml_walmart_listing/viewTemplateDescriptionsGrid');
         $templateDescriptionPopupTitle = $helper->escapeJs($helper->__('Assign Description Policy for Products'));
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Edit SKU'         => $helper->__('Edit SKU'),
             'Edit Identifiers' => $helper->__('Edit Identifiers'),
 
@@ -1445,7 +1501,8 @@ HTML;
             'SKU contains the special characters that are not allowed by Walmart.' => $helper->__(
                 'Hyphen (-), space ( ), and period (.) are not allowed by Walmart. Please use a correct format.'
             )
-        ));
+            )
+        );
 
         $javascriptMain = <<<HTML
 <script type="text/javascript">
@@ -1618,7 +1675,7 @@ HTML;
 
     //########################################
 
-    private function canChangeProductVariation(Ess_M2ePro_Model_Listing_Product $childListingProduct)
+    protected function canChangeProductVariation(Ess_M2ePro_Model_Listing_Product $childListingProduct)
     {
         if (!$this->hasUnusedProductVariation()) {
             return false;
@@ -1650,9 +1707,11 @@ HTML;
 
     protected function getTemplateDescriptionLinkHtml($listingProduct)
     {
-        $templateDescriptionEditUrl = $this->getUrl('*/adminhtml_walmart_template_description/edit', array(
+        $templateDescriptionEditUrl = $this->getUrl(
+            '*/adminhtml_walmart_template_description/edit', array(
             'id' => $listingProduct->getChildObject()->getTemplateDescriptionId()
-        ));
+            )
+        );
 
         $helper = Mage::helper('M2ePro');
         $templateTitle = $listingProduct->getChildObject()->getDescriptionTemplate()->getTitle();
@@ -1666,7 +1725,7 @@ HTML;
 HTML;
     }
 
-    private function getStatusChangeReasons($statusChangeReasons)
+    protected function getStatusChangeReasons($statusChangeReasons)
     {
         if (empty($statusChangeReasons)) {
             return '';
@@ -1713,10 +1772,10 @@ HTML;
 
         $firstAttribute = key($variationsSetsSorted);
 
-        return $this->prepareVariations($firstAttribute,$unusedVariations,$variationsSetsSorted);
+        return $this->prepareVariations($firstAttribute, $unusedVariations, $variationsSetsSorted);
     }
 
-    private function prepareVariations($currentAttribute,$unusedVariations,$variationsSets,$filters = array())
+    protected function prepareVariations($currentAttribute,$unusedVariations,$variationsSets,$filters = array())
     {
         $return = false;
 
@@ -1726,16 +1785,14 @@ HTML;
         $currentAttributePosition = $temp[$currentAttribute];
 
         if ($currentAttributePosition != $lastAttributePosition) {
-
             $temp = array_keys($variationsSets);
             $nextAttribute = $temp[$currentAttributePosition + 1];
 
             foreach ($variationsSets[$currentAttribute] as $option) {
-
                 $filters[$currentAttribute] = $option;
 
                 $result = $this->prepareVariations(
-                    $nextAttribute,$unusedVariations,$variationsSets,$filters
+                    $nextAttribute, $unusedVariations, $variationsSets, $filters
                 );
 
                 if (!$result) {
@@ -1755,9 +1812,7 @@ HTML;
         $return = false;
         foreach ($unusedVariations as $key => $magentoVariation) {
             foreach ($magentoVariation as $attribute => $option) {
-
                 if ($attribute == $currentAttribute) {
-
                     if (count($variationsSets) != 1) {
                         continue;
                     }
@@ -1802,8 +1857,8 @@ HTML;
     public function getCurrentProductVariations()
     {
 
-        if (!is_null($this->currentProductVariations)) {
-            return $this->currentProductVariations;
+        if ($this->_currentProductVariations !== null) {
+            return $this->_currentProductVariations;
         }
 
         $magentoProductVariations = $this->getListingProduct()
@@ -1823,20 +1878,20 @@ HTML;
             $productVariations[] = $productOption;
         }
 
-        return $this->currentProductVariations = $productVariations;
+        return $this->_currentProductVariations = $productVariations;
     }
 
     public function getUsedProductVariations()
     {
-        if (is_null($this->usedProductVariations)) {
-            $this->usedProductVariations = $this->getListingProduct()
-                ->getChildObject()
-                ->getVariationManager()
-                ->getTypeModel()
-                ->getUsedProductOptions();
+        if ($this->_usedProductVariations === null) {
+            $this->_usedProductVariations = $this->getListingProduct()
+                                                 ->getChildObject()
+                                                 ->getVariationManager()
+                                                 ->getTypeModel()
+                                                 ->getUsedProductOptions();
         }
 
-        return $this->usedProductVariations;
+        return $this->_usedProductVariations;
     }
 
     //########################################
@@ -1854,12 +1909,12 @@ HTML;
 
     public function getChildListingProducts()
     {
-        if (!is_null($this->childListingProducts)) {
-            return $this->childListingProducts;
+        if ($this->_childListingProducts !== null) {
+            return $this->_childListingProducts;
         }
 
-        return $this->childListingProducts = $this->getListingProduct()->getChildObject()
-            ->getVariationManager()->getTypeModel()->getChildListingsProducts();
+        return $this->_childListingProducts = $this->getListingProduct()->getChildObject()
+                                                   ->getVariationManager()->getTypeModel()->getChildListingsProducts();
     }
 
     public function getAttributesVariationsSets($variations)
@@ -1871,6 +1926,7 @@ HTML;
                 if (!isset($attributesOptions[$attr])) {
                     $attributesOptions[$attr] = array();
                 }
+
                 if (!in_array($option, $attributesOptions[$attr])) {
                     $attributesOptions[$attr][] = $option;
                 }
@@ -1882,7 +1938,7 @@ HTML;
 
     //########################################
 
-    private function parseGroupedData($data)
+    protected function parseGroupedData($data)
     {
         $result = array();
 

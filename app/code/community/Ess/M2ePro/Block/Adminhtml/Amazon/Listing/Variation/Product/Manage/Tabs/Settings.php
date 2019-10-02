@@ -12,15 +12,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Se
     const MESSAGE_TYPE_ERROR = 'error';
     const MESSAGE_TYPE_WARNING = 'warning';
 
-    protected $warningsCalculated = false;
+    protected $_messages           = array();
+    protected $_warningsCalculated = false;
 
-    protected $channelThemes = null;
-    protected $childListingProducts = null;
-    protected $currentProductVariations = null;
+    protected $_channelThemes;
+    protected $_childListingProducts;
+    protected $_currentProductVariations;
 
-    // ---------------------------------------
+    /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute $matcherAttribute */
+    protected $_matcherAttributes;
 
-    protected $listingProductId;
+    protected $_listingProductId;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
+    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
+    protected $_listingProductTypeModel;
 
     //########################################
 
@@ -39,27 +45,27 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Se
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
+
     /**
      * @return mixed
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
 
-    protected $messages = array();
     /**
      * @param array $message
      */
     public function addMessage($message, $type = self::MESSAGE_TYPE_ERROR)
     {
-        $this->messages[] = array(
+        $this->_messages[] = array(
             'type' => $type,
             'msg' => $message
         );
@@ -69,21 +75,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Se
      */
     public function setMessages($messages)
     {
-        $this->messages = $messages;
+        $this->_messages = $messages;
     }
     /**
      * @return array
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this->_messages;
     }
 
     public function getMessagesType()
     {
         $type = self::MESSAGE_TYPE_WARNING;
-        foreach ($this->messages as $message) {
-            if ($message['type'] === self::MESSAGE_TYPE_ERROR)     {
+        foreach ($this->_messages as $message) {
+            if ($message['type'] === self::MESSAGE_TYPE_ERROR) {
                 $type = $message['type'];
                 break;
             }
@@ -94,59 +100,50 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Se
 
     // ---------------------------------------
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
-
     /**
      * @return Ess_M2ePro_Model_Listing_Product|null
      */
     public function getListingProduct()
     {
-        if (is_null($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Amazon')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if ($this->_listingProduct === null) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Amazon')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ---------------------------------------
-
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProductTypeModel;
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent|null
      */
     public function getListingProductTypeModel()
     {
-        if (is_null($this->listingProductTypeModel)) {
+        if ($this->_listingProductTypeModel === null) {
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
             $amazonListingProduct = $this->getListingProduct()->getChildObject();
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent $typeModel */
-            $this->listingProductTypeModel = $amazonListingProduct->getVariationManager()->getTypeModel();
+            $this->_listingProductTypeModel = $amazonListingProduct->getVariationManager()->getTypeModel();
         }
 
-        return $this->listingProductTypeModel;
+        return $this->_listingProductTypeModel;
     }
 
     // ---------------------------------------
-
-    /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute $matcherAttribute */
-    protected $matcherAttributes;
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute
      */
     public function getMatcherAttributes()
     {
-        if (empty($this->matcherAttributes)) {
-            $this->matcherAttributes = Mage::getModel('M2ePro/Amazon_Listing_Product_Variation_Matcher_Attribute');
-            $this->matcherAttributes->setMagentoProduct($this->getListingProduct()->getMagentoProduct());
-            $this->matcherAttributes->setDestinationAttributes($this->getDestinationAttributes());
+        if (empty($this->_matcherAttributes)) {
+            $this->_matcherAttributes = Mage::getModel('M2ePro/Amazon_Listing_Product_Variation_Matcher_Attribute');
+            $this->_matcherAttributes->setMagentoProduct($this->getListingProduct()->getMagentoProduct());
+            $this->_matcherAttributes->setDestinationAttributes($this->getDestinationAttributes());
         }
 
-        return $this->matcherAttributes;
+        return $this->_matcherAttributes;
     }
 
     // ---------------------------------------
@@ -163,23 +160,25 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs_Se
 </li>
 HTML;
         }
+
         return $warnings;
     }
 
     public function calculateWarnings()
     {
-        if (!$this->warningsCalculated) {
-
-            $this->warningsCalculated = true;
+        if (!$this->_warningsCalculated) {
+            $this->_warningsCalculated = true;
 
             if (!$this->hasGeneralId() && $this->isGeneralIdOwner()) {
                 if (!$this->hasChannelTheme() || !$this->hasMatchedAttributes()) {
                     $this->addMessage(
                         Mage::helper('M2ePro')
-                            ->__('Creation of New Parent-Child Product is impossible because Variation Theme
+                            ->__(
+                                'Creation of New Parent-Child Product is impossible because Variation Theme
                                   or correspondence between Magento Product Attributes and Amazon Product Attributes
                                   was not set. Please, specify a Variation Theme or correspondence between
-                                  Variation Attributes.'),
+                                  Variation Attributes.'
+                            ),
                         self::MESSAGE_TYPE_ERROR
                     );
                 }
@@ -194,6 +193,7 @@ HTML;
                         self::MESSAGE_TYPE_ERROR
                     );
                 }
+
                 if ($this->isGeneralIdOwner() && !$this->hasChannelTheme()) {
                     $this->addMessage(
                         Mage::helper('M2ePro')->__(
@@ -286,9 +286,11 @@ HTML;
 
     public function getDescriptionTemplateLink()
     {
-        $url = $this->getUrl('*/adminhtml_amazon_template_description/edit', array(
-            'id' => $this->getListingProduct()->getChildObject()->getTemplateDescriptionId()
-        ));
+        $url = $this->getUrl(
+            '*/adminhtml_amazon_template_description/edit', array(
+                'id' => $this->getListingProduct()->getChildObject()->getTemplateDescriptionId()
+            )
+        );
 
         $templateTitle = $this->getListingProduct()->getChildObject()->getDescriptionTemplate()->getTitle();
 
@@ -311,8 +313,8 @@ HTML;
 
     public function getChannelThemes()
     {
-        if (!is_null($this->channelThemes)) {
-            return $this->channelThemes;
+        if ($this->_channelThemes !== null) {
+            return $this->_channelThemes;
         }
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
@@ -342,7 +344,7 @@ HTML;
             }
         }
 
-        return $this->channelThemes = array_merge($usedThemes, $channelThemes);
+        return $this->_channelThemes = array_merge($usedThemes, $channelThemes);
     }
 
     public function getChannelThemeAttr()
@@ -392,6 +394,7 @@ HTML;
         if ($this->hasMatchedAttributes()) {
             return $this->getListingProductTypeModel()->getMatchedAttributes();
         }
+
         return $this->getMatcherAttributes()->getMatchedAttributes();
     }
 
@@ -400,6 +403,7 @@ HTML;
         if (!$this->hasGeneralId() && $this->isGeneralIdOwner() && $this->hasChannelTheme()) {
             return $this->getChannelThemeAttr();
         }
+
         return array_keys($this->getListingProductTypeModel()->getChannelAttributesSets());
     }
 
@@ -449,6 +453,7 @@ HTML;
         if ($this->isInAction() ) {
             return false;
         }
+
         if ($this->hasMatchedAttributes()) {
             $typeModel = $this->getListingProductTypeModel();
 
@@ -466,17 +471,17 @@ HTML;
 
     public function getChildListingProducts()
     {
-        if (!is_null($this->childListingProducts)) {
-            return $this->childListingProducts;
+        if ($this->_childListingProducts !== null) {
+            return $this->_childListingProducts;
         }
 
-        return $this->childListingProducts = $this->getListingProductTypeModel()->getChildListingsProducts();
+        return $this->_childListingProducts = $this->getListingProductTypeModel()->getChildListingsProducts();
     }
 
     public function getCurrentProductVariations()
     {
-        if (!is_null($this->currentProductVariations)) {
-            return $this->currentProductVariations;
+        if ($this->_currentProductVariations !== null) {
+            return $this->_currentProductVariations;
         }
 
         $magentoProductVariations = $this->getListingProduct()
@@ -496,7 +501,7 @@ HTML;
             $productVariations[] = $productOption;
         }
 
-        return $this->currentProductVariations = $productVariations;
+        return $this->_currentProductVariations = $productVariations;
     }
 
     public function getCurrentChannelVariations()
@@ -521,6 +526,7 @@ HTML;
                 if (!isset($attributesOptions[$attr])) {
                     $attributesOptions[$attr] = array();
                 }
+
                 if (!in_array($option, $attributesOptions[$attr])) {
                     $attributesOptions[$attr][] = $option;
                 }

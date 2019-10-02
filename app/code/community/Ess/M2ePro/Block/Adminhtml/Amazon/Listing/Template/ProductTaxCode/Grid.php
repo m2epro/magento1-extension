@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
-    protected $productsIds;
+    protected $_productsIds;
 
     //########################################
 
@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode_Grid
      */
     public function setProductsIds($productsIds)
     {
-        $this->productsIds = $productsIds;
+        $this->_productsIds = $productsIds;
     }
 
     /**
@@ -45,7 +45,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode_Grid
      */
     public function getProductsIds()
     {
-        return $this->productsIds;
+        return $this->_productsIds;
     }
 
     // ---------------------------------------
@@ -54,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode_Grid
     {
         $this->setNoTemplatesText();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Template_ProductTaxCode_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Template_ProductTaxCode_Collection $collection */
         $collection = Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode')->getCollection();
         $this->setCollection($collection);
 
@@ -63,37 +63,44 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
-            'header'       => Mage::helper('M2ePro')->__('Title'),
-            'align'        => 'left',
-            'type'         => 'text',
-            'index'        => 'title',
-            'filter_index' => 'title',
-            'sortable'     => true,
-            'frame_callback' => array($this, 'callbackColumnTitle')
-        ));
+        $this->addColumn(
+            'title', array(
+                'header'         => Mage::helper('M2ePro')->__('Title'),
+                'align'          => 'left',
+                'type'           => 'text',
+                'index'          => 'title',
+                'filter_index'   => 'title',
+                'sortable'       => true,
+                'frame_callback' => array($this, 'callbackColumnTitle')
+            )
+        );
 
-        $this->addColumn('action', array(
-            'header'       => Mage::helper('M2ePro')->__('Action'),
-            'align'        => 'left',
-            'type'         => 'number',
-            'width'        => '55px',
-            'index'        => 'id',
-            'filter'       => false,
-            'sortable'     => false,
-            'frame_callback' => array($this, 'callbackColumnAction')
-        ));
+        $this->addColumn(
+            'action', array(
+                'header'         => Mage::helper('M2ePro')->__('Action'),
+                'align'          => 'left',
+                'type'           => 'number',
+                'width'          => '55px',
+                'index'          => 'id',
+                'filter'         => false,
+                'sortable'       => false,
+                'frame_callback' => array($this, 'callbackColumnAction')
+            )
+        );
     }
 
     protected function _prepareLayout()
     {
-        $this->setChild('refresh_button',
+        $this->setChild(
+            'refresh_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
-                ->setData(array(
-                    'id' => 'productTaxCode_template_refresh_btn',
-                    'label'     => Mage::helper('M2ePro')->__('Refresh'),
-                    'onclick'   => "ListingGridHandlerObj.templateProductTaxCodeHandler.loadGrid()"
-                ))
+                ->setData(
+                    array(
+                        'id'      => 'productTaxCode_template_refresh_btn',
+                        'label'   => Mage::helper('M2ePro')->__('Refresh'),
+                        'onclick' => "ListingGridHandlerObj.templateProductTaxCodeHandler.loadGrid()"
+                    )
+                )
         );
 
         return parent::_prepareLayout();
@@ -117,9 +124,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_ProductTaxCode_Grid
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        $templateEditUrl = $this->getUrl('*/adminhtml_amazon_template_productTaxCode/edit', array(
-            'id' => $row->getData('id')
-        ));
+        $templateEditUrl = $this->getUrl(
+            '*/adminhtml_amazon_template_productTaxCode/edit', array(
+                'id' => $row->getData('id')
+            )
+        );
 
         $title = Mage::helper('M2ePro')->escapeHtml($value);
 
@@ -185,9 +194,11 @@ HTML;
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/adminhtml_amazon_template_productTaxCode/viewGrid', array(
-            '_current' => true
-        ));
+        return $this->getUrl(
+            '*/adminhtml_amazon_template_productTaxCode/viewGrid', array(
+                '_current' => true
+            )
+        );
     }
 
     public function getRowUrl($row)

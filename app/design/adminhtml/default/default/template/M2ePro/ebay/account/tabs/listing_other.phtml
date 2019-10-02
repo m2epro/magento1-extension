@@ -1,23 +1,34 @@
 <?php
-    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
-        ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray()
-        : array();
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $key = 'other_listings_mapping_settings';
-    if (isset($formData[$key])) {
-        $formData[$key] = (array)json_decode($formData[$key],true);
-    }
+// @codingStandardsIgnoreFile
 
-    $helper = Mage::helper('M2ePro');
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_ListingOther */
 
-    $defaults = array(
-        'other_listings_synchronization' => Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES,
-        'other_listings_mapping_mode' => Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_MODE_NO,
-        'other_listings_mapping_settings' => array()
-    );
-    $formData = array_merge($defaults, $formData);
+$formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
+    ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray()
+    : array();
 
-    $isEdit = !!$this->getRequest()->getParam('id');
+$key = 'other_listings_mapping_settings';
+if (isset($formData[$key])) {
+    $formData[$key] = (array)json_decode($formData[$key],true);
+}
+
+$helper = Mage::helper('M2ePro');
+
+$defaults = array(
+    'other_listings_synchronization' => Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES,
+    'other_listings_mapping_mode' => Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_MAPPING_MODE_NO,
+    'other_listings_mapping_settings' => array()
+);
+$formData = array_merge($defaults, $formData);
+
+$isEdit = !!$this->getRequest()->getParam('id');
+
 ?>
 
 <script type="text/javascript">

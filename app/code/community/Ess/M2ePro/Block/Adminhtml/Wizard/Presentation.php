@@ -16,10 +16,12 @@ abstract class Ess_M2ePro_Block_Adminhtml_Wizard_Presentation extends Ess_M2ePro
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => 'Proceed',
                 'onclick' => 'setLocation(\''.$url.'\');',
-            ));
+                )
+            );
 
         $this->setChild('continue_button', $buttonBlock);
 

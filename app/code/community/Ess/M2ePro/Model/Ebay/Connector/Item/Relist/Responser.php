@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
             );
 
             $this->getLogger()->logListingProductMessage(
-                $this->listingProduct, $message
+                $this->_listingProduct, $message
             );
 
             return;
@@ -45,9 +45,8 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
     {
         $responseMessages = $this->getResponse()->getMessages()->getEntities();
 
-        if (!$this->listingProduct->getAccount()->getChildObject()->isModeSandbox() &&
+        if (!$this->_listingProduct->getAccount()->getChildObject()->isModeSandbox() &&
             $this->isEbayApplicationErrorAppeared($responseMessages)) {
-
             $this->markAsPotentialDuplicate();
 
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -57,11 +56,10 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
             );
 
-            $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
         }
 
         if ($this->isConditionErrorAppeared($responseMessages)) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 Mage::helper('M2ePro')->__(
@@ -70,22 +68,21 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
             );
 
-            $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
 
-            $additionalData = $this->listingProduct->getAdditionalData();
+            $additionalData = $this->_listingProduct->getAdditionalData();
             $additionalData['is_need_relist_condition'] = true;
 
-            $this->listingProduct
+            $this->_listingProduct
                 ->setSettings('additional_data', $additionalData)
                 ->save();
         }
 
         if ($this->getStatusChanger() == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH &&
             $this->isItemCanNotBeAccessed($responseMessages)) {
-
             $itemId = null;
-            if (isset($this->params['product']['request']['item_id'])) {
-                $itemId = $this->params['product']['request']['item_id'];
+            if (isset($this->_params['product']['request']['item_id'])) {
+                $itemId = $this->_params['product']['request']['item_id'];
             }
 
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -98,19 +95,18 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
             );
 
-            $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
 
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $this->processAdditionalAction(
                 Ess_M2ePro_Model_Listing_Product::ACTION_LIST, $configurator,
-                array('skip_check_the_same_product_already_listed_ids' => array($this->listingProduct->getId()))
+                array('skip_check_the_same_product_already_listed_ids' => array($this->_listingProduct->getId()))
             );
         }
 
         if ($this->getStatusChanger() == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_SYNCH &&
             (!$this->getConfigurator()->isExcludingMode()) &&
             $this->isNewRequiredSpecificNeeded($responseMessages)) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'eBay Category assigned to this Item requires the Product Identifier to be specified
@@ -119,13 +115,13 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
             );
 
-            $this->getLogger()->logListingProductMessage($this->listingProduct, $message);
+            $this->getLogger()->logListingProductMessage($this->_listingProduct, $message);
 
             $configurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
             $this->processAdditionalAction($this->getActionType(), $configurator);
         }
 
-        $additionalData = $this->listingProduct->getAdditionalData();
+        $additionalData = $this->_listingProduct->getAdditionalData();
 
         if ($this->isVariationErrorAppeared($responseMessages) &&
             $this->getRequestDataObject()->hasVariations() &&
@@ -142,7 +138,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
             $this->processDuplicateByEbayEngine($message);
         }
 
-        $additionalData = $this->listingProduct->getAdditionalData();
+        $additionalData = $this->_listingProduct->getAdditionalData();
         if (empty($additionalData['skipped_action_configurator_data'])) {
             return;
         }
@@ -151,10 +147,12 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
         $configurator->setData($additionalData['skipped_action_configurator_data']);
 
         $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
-        $scheduledActionManager->addReviseAction($this->listingProduct, $configurator, false, $this->params['params']);
+        $scheduledActionManager->addReviseAction(
+            $this->_listingProduct, $configurator, false, $this->_params['params']
+        );
 
         unset($additionalData['skipped_action_configurator_data']);
-        $this->listingProduct->setSettings('additional_data', $additionalData)->save();
+        $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
 
         parent::eventAfterExecuting();
     }

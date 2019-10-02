@@ -58,7 +58,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
                 )
             );
         } catch (Exception $exception) {
-
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($exception->getMessage()),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -75,7 +74,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
 
     //########################################
 
-    private function sendData($command, array $offersData, $backUrl)
+    protected function sendData($command, array $offersData, $backUrl)
     {
         if (empty($offersData)) {
             return false;
@@ -93,13 +92,14 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
                             'params' => array()
                         )
                     ),
-                    'data' => Mage::helper('M2ePro')->jsonEncode(array(
+                    'data' => Mage::helper('M2ePro')->jsonEncode(
+                        array(
                         'offers' => $offersData,
-                    ))
+                        )
+                    )
                 )
             );
         } catch (Exception $exception) {
-
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($exception->getMessage()),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -125,9 +125,9 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
      * @throws Ess_M2ePro_Model_Exception
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    private function getOffersData(array $listingProductIds, $alreadyOnRepricing = false)
+    protected function getOffersData(array $listingProductIds, $alreadyOnRepricing = false)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->getSelect()->joinLeft(
             array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
@@ -190,7 +190,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Action_Product extends Ess_M2ePro_Model_
         foreach ($listingsProducts as $listingProduct) {
             $listingProductRepricingObject = $repricingCollection->getItemById($listingProduct->getId());
 
-            if (is_null($listingProductRepricingObject)) {
+            if ($listingProductRepricingObject === null) {
                 $listingProductRepricingObject = Mage::getModel('M2ePro/Amazon_Listing_Product_Repricing');
             }
 

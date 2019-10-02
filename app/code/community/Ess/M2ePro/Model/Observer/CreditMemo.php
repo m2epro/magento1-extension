@@ -21,12 +21,11 @@ class Ess_M2ePro_Model_Observer_CreditMemo extends Ess_M2ePro_Model_Observer_Abs
             $order = Mage::helper('M2ePro/Component')->getUnknownObject(
                 'Order', $magentoOrderId, 'magento_order_id'
             );
-
         } catch (Exception $e) {
             return;
         }
 
-        if (is_null($order)) {
+        if ($order === null) {
             return;
         }
 

@@ -36,11 +36,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore extends Mage_Adminhtml
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('add', array(
+        $this->_addButton(
+            'add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Store'),
             'onclick'   => 'setLocation(\''.$this->getUrl('*/adminhtml_ebay_accountPickupStore/new').'\');',
             'class'     => 'add'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

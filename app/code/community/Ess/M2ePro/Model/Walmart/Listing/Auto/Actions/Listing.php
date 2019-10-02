@@ -21,9 +21,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
             return;
         }
 
-        $listingsProducts = $this->getListing()->getProducts(true,array('product_id'=>(int)$product->getId()));
+        $listingsProducts = $this->getListing()->getProducts(true, array('product_id'=>(int)$product->getId()));
 
-        if (count($listingsProducts) <= 0) {
+        if (empty($listingsProducts)) {
             return;
         }
 
@@ -31,7 +31,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
         $parentsForRemove = array();
 
         foreach ($listingsProducts as $listingProduct) {
-
             if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
                 return;
             }
@@ -47,7 +46,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
             }
 
             try {
-
                 $instructionType = self::INSTRUCTION_TYPE_STOP;
 
                 if ($deletingMode == Ess_M2ePro_Model_Listing::DELETING_MODE_STOP_REMOVE) {
@@ -55,16 +53,18 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
                 }
 
                 $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
-                $instruction->setData(array(
+                $instruction->setData(
+                    array(
                     'listing_product_id' => $listingProduct->getId(),
                     'component'          => $listingProduct->getComponentMode(),
                     'type'               => $instructionType,
                     'initiator'          => self::INSTRUCTION_INITIATOR,
                     'priority'           => $listingProduct->isStoppable() ? 60 : 0,
-                ));
+                    )
+                );
                 $instruction->save();
-
-            } catch (Exception $exception) {}
+            } catch (Exception $exception) {
+            }
         }
 
         if (empty($parentsForRemove)) {
@@ -84,16 +84,19 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
      * @param Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function addProductByCategoryGroup(Mage_Catalog_Model_Product $product,
-                                              Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup)
-    {
+    public function addProductByCategoryGroup(
+        Mage_Catalog_Model_Product $product,
+        Ess_M2ePro_Model_Listing_Auto_Category_Group $categoryGroup
+    ) {
         $logData = array(
             'reason'     => __METHOD__,
             'rule_id'    => $categoryGroup->getId(),
             'rule_title' => $categoryGroup->getTitle(),
         );
-        $listingProduct = $this->getListing()->addProduct($product, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                                                          false, true, $logData);
+        $listingProduct = $this->getListing()->addProduct(
+            $product, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
+            false, true, $logData
+        );
 
         if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
             return;
@@ -119,8 +122,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
         $logData = array(
             'reason' => __METHOD__,
         );
-        $listingProduct = $this->getListing()->addProduct($product, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                                                          false, true, $logData);
+        $listingProduct = $this->getListing()->addProduct(
+            $product, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
+            false, true, $logData
+        );
 
         if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
             return;
@@ -148,8 +153,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Auto_Actions_Listing extends Ess_M2ePro_M
         $logData = array(
             'reason' => __METHOD__,
         );
-        $listingProduct = $this->getListing()->addProduct($product, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                                                          false, true, $logData);
+        $listingProduct = $this->getListing()->addProduct(
+            $product, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
+            false, true, $logData
+        );
 
         if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
             return;

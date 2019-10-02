@@ -43,7 +43,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Add_EntityResponser
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     //########################################

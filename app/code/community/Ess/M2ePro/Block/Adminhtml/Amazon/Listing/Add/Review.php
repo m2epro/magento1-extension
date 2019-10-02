@@ -19,7 +19,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Review extends Ess_M2ePro_Bl
         $this->setId('listingProductReview');
         // ---------------------------------------
 
-        $this->_headerText = Mage::helper('M2ePro')->__('Congratulations');
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                '%component_name% / Congratulations',
+                Mage::helper('M2ePro/Component_Amazon')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("Congratulations");
+        }
 
         $this->setTemplate('M2ePro/amazon/listing/add/review.phtml');
     }
@@ -44,7 +51,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Review extends Ess_M2ePro_Bl
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 
@@ -53,34 +60,42 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Review extends Ess_M2ePro_Bl
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/viewListing', array(
-            '_current' => true,
-            'id' => $this->getRequest()->getParam('id')
-        ));
+        $url = $this->getUrl(
+            '*/*/viewListing', array(
+                '_current' => true,
+                'id'       => $this->getRequest()->getParam('id')
+            )
+        );
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                'label'   => Mage::helper('M2ePro')->__('Review Your Products'),
-                'onclick' => 'setLocation(\''.$url.'\');',
-                'class' => 'save'
-            ));
+            ->setData(
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Review Your Products'),
+                    'onclick' => 'setLocation(\'' . $url . '\');',
+                    'class'   => 'save'
+                )
+            );
         $this->setChild('review', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/viewListingAndList', array(
-            '_current' => true,
-            'id' => $this->getRequest()->getParam('id')
-        ));
+        $url = $this->getUrl(
+            '*/*/viewListingAndList', array(
+                '_current' => true,
+                'id'       => $this->getRequest()->getParam('id')
+            )
+        );
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                'label'   => Mage::helper('M2ePro')->__('List Added Products Now'),
-                'onclick' => 'setLocation(\''.$url.'\');',
-                'class' => 'save'
-            ));
+            ->setData(
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('List Added Products Now'),
+                    'onclick' => 'setLocation(\'' . $url . '\');',
+                    'class'   => 'save'
+                )
+            );
         $this->setChild('list', $buttonBlock);
         // ---------------------------------------
     }

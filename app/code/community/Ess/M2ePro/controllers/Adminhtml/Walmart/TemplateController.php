@@ -73,8 +73,7 @@ class Ess_M2ePro_Adminhtml_Walmart_TemplateController
         $id   = $this->getRequest()->getParam('id');
         $type = $this->getPreparedTemplateType($this->getRequest()->getParam('type'));
 
-        if (is_null($id) || empty($type)) {
-
+        if ($id === null || empty($type)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('You should provide correct parameters.'));
             return $this->_redirect('*/*/index');
         }
@@ -89,14 +88,12 @@ class Ess_M2ePro_Adminhtml_Walmart_TemplateController
         $ids  = $this->getRequestIds();
         $type = $this->getPreparedTemplateType($this->getRequest()->getParam('type'));
 
-        if (count($ids) == 0) {
-
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             return $this->_redirect('*/*/index');
         }
 
         if (empty($type)) {
-
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('You should provide correct parameters.'));
             return $this->_redirect('*/*/index');
         }
@@ -127,7 +124,7 @@ class Ess_M2ePro_Adminhtml_Walmart_TemplateController
 
     //########################################
 
-    private function getPreparedTemplateType($type)
+    protected function getPreparedTemplateType($type)
     {
         $templateTypes = array(
             Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_CATEGORY        => 'category',
@@ -140,7 +137,7 @@ class Ess_M2ePro_Adminhtml_Walmart_TemplateController
         return isset($templateTypes[$type]) ? $templateTypes[$type] : null;
     }
 
-    private function getTemplateModel($type, $id)
+    protected function getTemplateModel($type, $id)
     {
         if ($type == 'category') {
             return Mage::getModel('M2ePro/Walmart_Template_Category')->load($id);

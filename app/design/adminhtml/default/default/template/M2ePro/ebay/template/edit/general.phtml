@@ -1,37 +1,47 @@
 <?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $attributeSets = Mage::helper('M2ePro/Magento_AttributeSet')->getAll(Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS);
-    $urls = json_encode(array(
-        'adminhtml_ebay_template/getTemplateHtml' => $this->getUrl(
-            '*/adminhtml_ebay_template/getTemplateHtml',
-            array(
-                'account_id' => NULL,
-                'id' => $this->getTemplateId(),
-                'nick' => $this->getTemplateNick(),
-                'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE,
-                'data_force' => true
-            )
-        ),
-        'adminhtml_ebay_template/isTitleUnique' => $this->getUrl(
-            '*/adminhtml_ebay_template/isTitleUnique',
-            array(
-                'id' => $this->getTemplateId(),
-                'nick' => $this->getTemplateNick()
-            )
-        ),
-        'deleteAction' => $this->getUrl(
-            '*/adminhtml_ebay_template/delete',
-            array(
-                'id' => $this->getTemplateId(),
-                'nick' => $this->getTemplateNick()
-            )
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit_General */
+
+$attributeSets = Mage::helper('M2ePro/Magento_AttributeSet')->getAll(Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS);
+$urls = json_encode(array(
+    'adminhtml_ebay_template/getTemplateHtml' => $this->getUrl(
+        '*/adminhtml_ebay_template/getTemplateHtml',
+        array(
+            'account_id' => NULL,
+            'id' => $this->getTemplateId(),
+            'nick' => $this->getTemplateNick(),
+            'mode' => Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE,
+            'data_force' => true
         )
-    ));
+    ),
+    'adminhtml_ebay_template/isTitleUnique' => $this->getUrl(
+        '*/adminhtml_ebay_template/isTitleUnique',
+        array(
+            'id' => $this->getTemplateId(),
+            'nick' => $this->getTemplateNick()
+        )
+    ),
+    'deleteAction' => $this->getUrl(
+        '*/adminhtml_ebay_template/delete',
+        array(
+            'id' => $this->getTemplateId(),
+            'nick' => $this->getTemplateNick()
+        )
+    )
+));
 
-    $translations = json_encode(array(
-        'Policy Title is not unique.' => Mage::helper('M2ePro')->__('Policy Title is not unique.'),
-        'Do not show any more' => Mage::helper('M2ePro')->__('Do not show any more'),
-    ));
+$translations = json_encode(array(
+    'Policy Title is not unique.' => Mage::helper('M2ePro')->__('Policy Title is not unique.'),
+    'Do not show any more' => Mage::helper('M2ePro')->__('Do not show any more'),
+));
+
 ?>
 
 <script type="text/javascript">

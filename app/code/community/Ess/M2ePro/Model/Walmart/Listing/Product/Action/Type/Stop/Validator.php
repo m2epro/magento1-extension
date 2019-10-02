@@ -43,13 +43,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Validator
         }
 
         if (!$this->getListingProduct()->isListed() || !$this->getListingProduct()->isStoppable()) {
-
             if (empty($params['remove'])) {
-
                 // M2ePro_TRANSLATIONS
                 // Item is not Listed or not available
                 $this->addMessage('Item is not active or not available');
-
             } else {
                 $removeHandler = Mage::getModel(
                     'M2ePro/Walmart_Listing_Product_RemoveHandler',

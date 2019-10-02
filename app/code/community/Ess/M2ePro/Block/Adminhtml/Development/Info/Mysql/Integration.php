@@ -26,17 +26,18 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
 
     public function getInfoTables()
     {
-        $tablesData = array_merge($this->getGeneralTables(),
-                                  $this->getEbayTables(),
-                                  $this->getAmazonTables(),
-                                  $this->getWalmartTables());
+        $tablesData = array_merge(
+            $this->getGeneralTables(),
+            $this->getEbayTables(),
+            $this->getAmazonTables(),
+            $this->getWalmartTables()
+        );
 
         $helper = Mage::helper('M2ePro/Module_Database_Structure');
 
         $tablesInfo = array();
         foreach ($tablesData as $category => $tables) {
             foreach ($tables as $tableName) {
-
                 $tablesInfo[$category][$tableName] = array(
                     'count' => 0, 'url'   => '#'
                 );
@@ -57,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
 
     //########################################
 
-    private function getGeneralTables()
+    protected function getGeneralTables()
     {
         return array(
             'General' => array(
@@ -69,7 +70,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
         );
     }
 
-    private function getAmazonTables()
+    protected function getAmazonTables()
     {
         return array(
             'Amazon' => array(
@@ -82,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
         );
     }
 
-    private function getEbayTables()
+    protected function getEbayTables()
     {
         return array(
             'Ebay' => array(
@@ -95,7 +96,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Integration extends Mage
         );
     }
 
-    private function getWalmartTables()
+    protected function getWalmartTables()
     {
         return array(
             'Walmart' => array(

@@ -238,7 +238,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option extends Ess_M2ePro_
         $simpleAttributes = $this->getListingProduct()->getMagentoProduct()->getProduct()->getOptions();
 
         foreach ($simpleAttributes as $tempAttribute) {
-
             if (!(bool)(int)$tempAttribute->getData('is_require')) {
                 continue;
             }
@@ -262,7 +261,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option extends Ess_M2ePro_
             }
 
             foreach ($tempAttribute->getValues() as $tempOption) {
-
                 $optionName = strtolower($this->getParentObject()->getOption());
 
                 $tempOptionTitles = array(
@@ -277,7 +275,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option extends Ess_M2ePro_
                     continue;
                 }
 
-                if (!is_null($tempOption->getData('sku')) && $tempOption->getData('sku') !== false) {
+                if ($tempOption->getData('sku') !== null && $tempOption->getData('sku') !== false) {
                     $tempSku = $tempOption->getData('sku');
                 }
 
@@ -293,9 +291,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Option extends Ess_M2ePro_
     protected function prepareOptionTitles($optionTitles)
     {
         foreach ($optionTitles as &$optionTitle) {
-            $optionTitle = trim(Mage::helper('M2ePro')->reduceWordsInString(
-                $optionTitle, Ess_M2ePro_Helper_Component_Ebay::VARIATION_OPTION_LABEL_MAX_LENGTH
-            ));
+            $optionTitle = trim(
+                Mage::helper('M2ePro')->reduceWordsInString(
+                    $optionTitle, Ess_M2ePro_Helper_Component_Ebay::VARIATION_OPTION_LABEL_MAX_LENGTH
+                )
+            );
         }
 
         return $optionTitles;

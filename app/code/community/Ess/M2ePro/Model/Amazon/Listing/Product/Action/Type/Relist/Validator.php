@@ -29,11 +29,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Validator
         }
 
         if ($this->getAmazonListingProduct()->isAfnChannel()) {
-
             // M2ePro_TRANSLATIONS
-            // Relist Action for FBA Items is impossible as their Quantity is unknown. You can run Revise Action for such Items, but the Quantity value will be ignored.
-            $this->addMessage('Relist Action for FBA Items is impossible as their Quantity is unknown. You can run
-            Revise Action for such Items, but the Quantity value will be ignored.');
+            // Relist Action for FBA Items is impossible as their Quantity is unknown. You can run
+            // Revise Action for such Items, but the Quantity value will be ignored.
+            $this->addMessage(
+                'Relist Action for FBA Items is impossible as their Quantity is unknown. You can run
+                Revise Action for such Items, but the Quantity value will be ignored.'
+            );
 
             return false;
         }
@@ -47,7 +49,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Validator
         }
 
         if (!$this->getListingProduct()->isStopped() || !$this->getListingProduct()->isRelistable()) {
-
             // M2ePro_TRANSLATIONS
             // The Item either is Listed, or not Listed yet or not available
             $this->addMessage(

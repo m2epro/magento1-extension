@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Walmart_Order_ShippingAddress extends Ess_M2ePro_Model_Or
     public function getRawData()
     {
         return array(
-            'buyer_name'     => $this->order->getChildObject()->getBuyerName(),
+            'buyer_name'     => $this->_order->getChildObject()->getBuyerName(),
             'email'          => $this->getBuyerEmail(),
             'recipient_name' => $this->getData('recipient_name'),
             'country_id'     => $this->getData('country_code'),
@@ -29,12 +29,12 @@ class Ess_M2ePro_Model_Walmart_Order_ShippingAddress extends Ess_M2ePro_Model_Or
         );
     }
 
-    private function getBuyerEmail()
+    protected function getBuyerEmail()
     {
-        $email = $this->order->getData('buyer_email');
+        $email = $this->_order->getData('buyer_email');
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $email = str_replace(' ', '-', strtolower($this->order->getChildObject()->getBuyerName()));
+            $email = str_replace(' ', '-', strtolower($this->_order->getChildObject()->getBuyerName()));
             $email = mb_convert_encoding($email, "ASCII");
             $email .= Ess_M2ePro_Model_Magento_Customer::FAKE_EMAIL_POSTFIX;
         }
@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Walmart_Order_ShippingAddress extends Ess_M2ePro_Model_Or
         return $email;
     }
 
-    private function getPostalCode()
+    protected function getPostalCode()
     {
         $postalCode = $this->getData('postal_code');
 
@@ -53,7 +53,7 @@ class Ess_M2ePro_Model_Walmart_Order_ShippingAddress extends Ess_M2ePro_Model_Or
         return $postalCode;
     }
 
-    private function getPhone()
+    protected function getPhone()
     {
         $phone = $this->getData('phone');
 

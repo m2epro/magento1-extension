@@ -68,14 +68,12 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
         $channel = $this->getRequest()->getParam('channel');
 
-        if (!is_null($channel) && $channel !== 'all') {
-
+        if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Amazon::NICK) {
                 $this->setPageHelpLink(NULL, NULL, "x/foIVAQ");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-ListingsLog', $channel);
             }
-
         } else {
             $this->setComponentPageHelpLink('Logs#Logs-ListingsLog');
         }
@@ -166,14 +164,12 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
         $channel = $this->getRequest()->getParam('channel');
 
-        if (!is_null($channel) && $channel !== 'all') {
-
+        if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Amazon::NICK) {
                 $this->setPageHelpLink(NULL, NULL, "x/foIVAQ");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-3rdPartyListingsLog', $channel);
             }
-
         } else {
             $this->setComponentPageHelpLink('Logs#Logs-3rdPartyListingsLog');
         }
@@ -195,9 +191,11 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
 
         $response = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_amazon_listing_other_log_grid', '', array(
+            ->createBlock(
+                'M2ePro/adminhtml_amazon_listing_other_log_grid', '', array(
                 'channel' => $this->getRequest()->getParam('channel')
-            ))->toHtml();
+                )
+            )->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -209,23 +207,23 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
         $channel = $this->getRequest()->getParam('channel');
 
-        if (!is_null($channel) && $channel !== 'all') {
-
+        if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Amazon::NICK) {
                 $this->setPageHelpLink(NULL, NULL, "x/foIVAQ");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-SynchronizationLog', $channel);
             }
-
         } else {
             $this->setComponentPageHelpLink('Logs#Logs-SynchronizationLog');
         }
 
         $this->_title(Mage::helper('M2ePro')->__('Synchronization Log'))
-             ->_addContent($this->getLayout()->createBlock(
-                 'M2ePro/adminhtml_amazon_log', '',
-                 array('active_tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs::TAB_ID_SYNCHRONIZATION)
-             ))
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_amazon_log', '',
+                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs::TAB_ID_SYNCHRONIZATION)
+                )
+            )
              ->renderLayout();
     }
 
@@ -244,31 +242,33 @@ class Ess_M2ePro_Adminhtml_Amazon_LogController
 
         $channel = $this->getRequest()->getParam('channel');
 
-        if (!is_null($channel) && $channel !== 'all') {
-
+        if ($channel !== null && $channel !== 'all') {
             if ($channel == Ess_M2ePro_Helper_Component_Amazon::NICK) {
                 $this->setPageHelpLink(NULL, NULL, "x/foIVAQ");
             } else {
                 $this->setComponentPageHelpLink('Logs#Logs-OrdersLog', $channel);
             }
-
         } else {
             $this->setComponentPageHelpLink('Logs#Logs-OrdersLog');
         }
 
         $this->_title(Mage::helper('M2ePro')->__('Orders Log'))
-             ->_addContent($this->getLayout()->createBlock(
-                 'M2ePro/adminhtml_amazon_log', '',
-                 array('active_tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs::TAB_ID_ORDER)
-             ))
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_amazon_log', '',
+                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Amazon_Log_Tabs::TAB_ID_ORDER)
+                )
+            )
              ->renderLayout();
     }
 
     public function orderGridAction()
     {
-        $grid = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_order_log_grid', '', array(
+        $grid = $this->loadLayout()->getLayout()->createBlock(
+            'M2ePro/adminhtml_order_log_grid', '', array(
             'channel' => $this->getRequest()->getParam('channel')
-        ));
+            )
+        );
         $this->getResponse()->setBody($grid->toHtml());
     }
 

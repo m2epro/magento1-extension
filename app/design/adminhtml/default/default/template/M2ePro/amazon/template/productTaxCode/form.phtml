@@ -1,32 +1,53 @@
 <?php
-    /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_ProductTaxCode_Edit_Form */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    /** @var Ess_M2ePro_Model_Amazon_Template_ProductTaxCode $model */
-    $model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+// @codingStandardsIgnoreFile
 
-    $formData = array();
-    if ($model) {
-        $formData = $model->toArray();
-    }
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_ProductTaxCode_Edit_Form */
 
-    $default = array(
-        'title'         => '',
+/** @var Ess_M2ePro_Model_Amazon_Template_ProductTaxCode $model */
+$model = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        'product_tax_code_mode' => '',
-        'product_tax_code_value' => '',
-        'product_tax_code_attribute' => '',
+$formData = array();
+if ($model) {
+    $formData = $model->toArray();
+}
+
+$default = array(
+    'title'         => '',
+
+    'product_tax_code_mode' => '',
+    'product_tax_code_value' => '',
+    'product_tax_code_attribute' => '',
+);
+
+$formData = array_merge($default, $formData);
+
+if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+    $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+        Mage::helper('M2ePro')->__('Add %component_name% Product Tax Code Policy',
+            Mage::helper('M2ePro/Component_Amazon')->getTitle()
+        )
     );
-
-    $formData = array_merge($default, $formData);
-
-    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
-    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
-
-    $attributes = $magentoAttributeHelper->getGeneralFromAllAttributeSets();
-
-    $attributesByInputTypes = array(
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($attributes, array('text', 'select'))
+} else {
+    $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+        Mage::helper('M2ePro')->__('Add Product Tax Code Policy')
     );
+}
+
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+$attributes = $magentoAttributeHelper->getGeneralFromAllAttributeSets();
+
+$attributesByInputTypes = array(
+    'text_select' => $magentoAttributeHelper->filterByInputTypes($attributes, array('text', 'select'))
+);
+
 ?>
 
 <script type="text/javascript">
@@ -50,7 +71,7 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Product Tax Code Policy' => Mage::helper('M2ePro')->__('Add Product Tax Code Policy'),
+        'Add Product Tax Code Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
         'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
     )); ?>);
 
@@ -70,16 +91,12 @@
 
 </script>
 
-<?php
-    // todo "more info" link must be added when develop branch becomes "public"
-?>
 <div id="block_notice_amazon_template_product_tax_code" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Product Tax Code Policy'); ?>">
     <?php
         echo Mage::helper('M2ePro')->__(
-        'The <strong>Product Tax Code Policy</strong> allows applying Amazon Product Tax Codes to your Channel Offers via M2E Pro. With a Product Tax Code applied the VAT exclusive prices will be shown to B2B customers.<br />
-         Choose the required Product Tax Code from the Tax Collection of your Amazon Seller Account and specify its value within M2E Pro Product Tax Code Policy.<br />
-         <strong>Note:</strong> You have to be enrolled in VAT Calculation Service.<br />
-         <strong>Note:</strong> M2E Pro Product Tax Code Policy can be used for the <strong>UK</strong>, <strong>DE</strong> marketplaces only.'
+        'Product Tax Code Policy allows applying Amazon Product Tax Codes to your offers via M2E Pro. With a Product Tax Code applied the VAT-exclusive prices will be shown to B2B customers<br /><br />
+         More details can be found <a href="%url%" target="_blank">here</a>.',
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/FoFaAQ')
     ); ?>
 </div>
 

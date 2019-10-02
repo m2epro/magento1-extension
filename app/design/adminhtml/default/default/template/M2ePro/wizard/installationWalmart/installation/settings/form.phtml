@@ -1,28 +1,36 @@
 <?php
-    /** @var Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Settings_Form $showWarning */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $showWarning = false;
-    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
-    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+// @codingStandardsIgnoreFile
 
-    $attributesByInputTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
-    );
+/** @var Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Settings_Form $this */
 
-    $generalAttributesByInputTypes = array(
-        'boolean' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('boolean')),
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
-        'text_date' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('general_attributes'), array('text', 'date', 'datetime')
-        ),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('general_attributes'), array('text', 'select')
-        ),
-        'text_images' => $magentoAttributeHelper->filterByInputTypes(
-            $this->getData('general_attributes'),
-            array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
-        )
-    );
+$showWarning = false;
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+
+$attributesByInputTypes = array(
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+);
+
+$generalAttributesByInputTypes = array(
+    'boolean' => $magentoAttributeHelper->filterByInputTypes($this->getData('all_attributes'), array('boolean')),
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->getData('general_attributes'), array('text')),
+    'text_date' => $magentoAttributeHelper->filterByInputTypes(
+        $this->getData('general_attributes'), array('text', 'date', 'datetime')
+    ),
+    'text_select' => $magentoAttributeHelper->filterByInputTypes(
+        $this->getData('general_attributes'), array('text', 'select')
+    ),
+    'text_images' => $magentoAttributeHelper->filterByInputTypes(
+        $this->getData('general_attributes'),
+        array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
+    )
+);
 ?>
 
 <script type="text/javascript">

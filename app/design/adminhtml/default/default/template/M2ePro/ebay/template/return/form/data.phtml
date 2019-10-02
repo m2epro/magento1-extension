@@ -1,11 +1,19 @@
 <?php
-    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data $this */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $formData = $this->getFormData();
-    $default = $this->getDefault();
+// @codingStandardsIgnoreFile
 
-    $formData = array_merge($default, $formData);
-    $marketplaceData = $this->getMarketplaceData();
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data $this */
+
+$formData = $this->getFormData();
+$default = $this->getDefault();
+
+$formData = array_merge($default, $formData);
+$marketplaceData = $this->getMarketplaceData();
 
 ?>
 

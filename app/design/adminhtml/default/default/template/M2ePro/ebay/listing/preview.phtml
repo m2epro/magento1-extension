@@ -1,4 +1,12 @@
 <?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
 /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview $this */
 
 $images = $this->getImages();
@@ -452,7 +460,7 @@ $variations = $this->getVariations();
         <?php
 
         $previousProduct = $this->getProductShortInfo(Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview::PREVIOUS);
-        if (!is_null($previousProduct)):
+        if ($previousProduct !== null):
             ?>
             <div>
                 <?php echo "<a href='{$previousProduct['url']}'>&leftarrow; {$previousProduct['title']} (ID: {$previousProduct['id']})</a>"; ?>
@@ -474,7 +482,7 @@ $variations = $this->getVariations();
     <div class="pagination_right">
         <?php
         $nextProduct = $this->getProductShortInfo(Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Preview::NEXT);
-        if (!is_null($nextProduct)): ?>
+        if ($nextProduct !== null): ?>
             <div>
                 <?php echo "<a href='{$nextProduct['url']}'>{$nextProduct['title']} (ID: {$nextProduct['id']}) &rightarrow;</a>"; ?>
             </div>
@@ -596,7 +604,7 @@ $variations = $this->getVariations();
     $currency = "{$this->getCurrency()} {$this->getCurrencySymbol()}";
     $price = $this->getPrice($variations);
 
-    if(!is_null($price['price']) && $qty):
+    if($price['price'] !== null && $qty):
 
     ?>
 
@@ -769,7 +777,7 @@ $variations = $this->getVariations();
         <?php
         $dispatchTime = $this->getShippingDispatchTime();
 
-        if (!is_null($dispatchTime)):
+        if ($dispatchTime !== null):
             ?>
             <div>
                 <span class="field_title"><?php echo Mage::helper('M2ePro')->__('Dispatch Time'); ?>:</span>
@@ -793,7 +801,7 @@ $variations = $this->getVariations();
 
         $shippingInternationalType = $this->getShippingInternationalType();
 
-        if (!is_null($shippingInternationalType)):
+        if ($shippingInternationalType !== null):
             ?>
 
             <div class="field_group"><?php echo Mage::helper('M2ePro')->__('International Shipping'); ?></div>

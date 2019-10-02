@@ -37,10 +37,13 @@ class Ess_M2ePro_Model_M2ePro_Connector_Dispatcher
      * @param string|null $responseDataKey
      * @return Ess_M2ePro_Model_Connector_Command_RealTime_Virtual
      */
-    public function getVirtualConnector($entity, $type, $name,
-                                        array $requestData = array(),
-                                        $responseDataKey = NULL)
-    {
+    public function getVirtualConnector(
+        $entity,
+        $type,
+        $name,
+        array $requestData = array(),
+        $responseDataKey = null
+    ) {
         $virtualConnector = Mage::getModel('M2ePro/Connector_Command_RealTime_Virtual');
         $virtualConnector->setProtocol($this->getProtocol());
         $virtualConnector->setCommand(array($entity, $type, $name));
@@ -60,7 +63,7 @@ class Ess_M2ePro_Model_M2ePro_Connector_Dispatcher
 
     //####################################
 
-    private function getProtocol()
+    protected function getProtocol()
     {
         return Mage::getModel('M2ePro/M2ePro_Connector_Protocol');
     }

@@ -9,11 +9,11 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
-    protected $listingProductId;
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
+    protected $_listingProductId;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
 
-    protected $pickupStoreId;
+    protected $_pickupStoreId;
 
     //########################################
 
@@ -22,14 +22,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
     }
     /**
      * @return mixed
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
@@ -39,12 +39,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     protected function getListingProduct()
     {
-        if (empty($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Ebay')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if (empty($this->_listingProduct)) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Ebay')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ---------------------------------------
@@ -54,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     public function setPickupStoreId($pickupStoreId)
     {
-        $this->pickupStoreId = $pickupStoreId;
+        $this->_pickupStoreId = $pickupStoreId;
     }
 
     /**
@@ -62,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     public function getPickupStoreId()
     {
-        return $this->pickupStoreId;
+        return $this->_pickupStoreId;
     }
 
     //########################################
@@ -86,9 +86,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
     {
         // Get collection
         // ---------------------------------------
-        /** @var Ess_M2ePro_Model_Mysql4_Ebay_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product_Variation');
-        $collection->getSelect()->where('main_table.listing_product_id = ?',(int)$this->getListingProductId());
+        $collection->getSelect()->where('main_table.listing_product_id = ?', (int)$this->getListingProductId());
         $collection->getSelect()->group('main_table.id');
         // ---------------------------------------
 
@@ -173,7 +173,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
 
     protected function _prepareColumns()
     {
-        $this->addColumn('variation', array(
+        $this->addColumn(
+            'variation', array(
             'header' => Mage::helper('M2ePro')->__('Magento Variation'),
             'align' => 'left',
             'sortable' => false,
@@ -183,27 +184,33 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
             'filter' => 'M2ePro/adminhtml_grid_column_filter_attributesOptions',
             'options' => $this->getVariationsAttributes(),
             'filter_condition_callback' => array($this, 'callbackFilterVariations')
-        ));
+            )
+        );
 
-        $this->addColumn('online_sku', array(
+        $this->addColumn(
+            'online_sku', array(
             'header'    => Mage::helper('M2ePro')->__('SKU'),
             'align'     => 'left',
             'width'     => '300px',
             'index'     => 'online_sku',
             'filter_index' => 'online_sku',
             'frame_callback' => array($this, 'callbackColumnOnlineSku')
-        ));
+            )
+        );
 
-        $this->addColumn('store_online_qty', array(
+        $this->addColumn(
+            'store_online_qty', array(
             'header'    => Mage::helper('M2ePro')->__('Available QTY'),
             'align'     => 'right',
             'type'      => 'number',
             'width'     => '100px',
             'index'     => 'store_online_qty',
             'frame_callback' => array($this, 'callbackColumnStoreOnlineQty')
-        ));
+            )
+        );
 
-        $this->addColumn('availability', array(
+        $this->addColumn(
+            'availability', array(
             'header'    => Mage::helper('M2ePro')->__('Availability'),
             'align'     => 'right',
             'width'     => '100px',
@@ -217,9 +224,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
             'frame_callback' => array($this, 'callbackColumnOnlineAvailability'),
             'filter_condition_callback' => array($this, 'callbackFilterOnlineAvailability')
 
-        ));
+            )
+        );
 
-        $this->addColumn('store_log', array(
+        $this->addColumn(
+            'store_log', array(
             'header'    => Mage::helper('M2ePro')->__('Logs'),
             'align'     => 'left',
             'type'      => 'text',
@@ -228,7 +237,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnLog'),
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -246,6 +256,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
             $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => reset($productsIds)));
             $html .= '<a href="' . $url . '" target="_blank">';
         }
+
         foreach ($attributes as $attribute => $option) {
             $optionHtml = '<b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
                 '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option);
@@ -257,9 +268,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
                 $html .= $optionHtml . '<br/>';
             }
         }
+
         if (!$uniqueProductsIds) {
             $html .= '</a>';
         }
+
         $html .= '</div>';
 
         return $html;
@@ -268,11 +281,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
     public function callbackColumnOnlineSku($value, $row, $column, $isExport)
     {
         if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED &&
-            (is_null($value) || $value === '')) {
+            ($value === null || $value === '')) {
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -282,11 +295,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
     public function callbackColumnStoreOnlineQty($value, $row, $column, $isExport)
     {
         if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED &&
-            (is_null($value) || $value === '')) {
+            ($value === null || $value === '')) {
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        if (is_null($value) || $value === '' || $row->getData('is_added')) {
+        if ($value === null || $value === '' || $row->getData('is_added')) {
             $value =  Mage::helper('M2ePro')->__('Adding to Store');
         }
 
@@ -306,7 +319,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
         }
 
         $qty = $row->getData('store_online_qty');
-        if (is_null($qty) || $row->getData('is_added')) {
+        if ($qty === null || $row->getData('is_added')) {
             return Mage::helper('M2ePro')->__('Adding to Store');
         }
 
@@ -360,11 +373,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
         $lastActionId = false;
 
         foreach ($logRows as $row) {
-
             $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
-                if (count($tempActionRows) > 0) {
+                if (!empty($tempActionRows)) {
                     $actionsRows[] = array(
                         'type' => $this->getMainTypeForActionId($tempActionRows),
                         'date' => $this->getMainDateForActionId($tempActionRows),
@@ -374,12 +386,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
                     );
                     $tempActionRows = array();
                 }
+
                 $lastActionId = $row['action_id'];
             }
+
             $tempActionRows[] = $row;
         }
 
-        if (count($tempActionRows) > 0) {
+        if (!empty($tempActionRows)) {
             $actionsRows[] = array(
                 'type' => $this->getMainTypeForActionId($tempActionRows),
                 'date' => $this->getMainDateForActionId($tempActionRows),
@@ -389,13 +403,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
             );
         }
 
-        if (count($actionsRows) <= 0) {
+        if (empty($actionsRows)) {
             return '';
         }
 
         foreach ($actionsRows as &$actionsRow) {
-            usort($actionsRow['items'], function($a, $b)
-            {
+            usort(
+                $actionsRow['items'], function($a, $b)
+                {
                 $sortOrder = array(
                     Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 1,
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 2,
@@ -403,7 +418,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
                 );
 
                 return $sortOrder[$a["type"]] > $sortOrder[$b["type"]];
-            });
+                }
+            );
         }
 
         $tips = array(
@@ -418,20 +434,24 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
         );
 
-        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
+        $summary = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_grid_summary', '', array(
             'entity_id' => (int)$columnId,
             'rows' => $actionsRows,
             'tips' => $tips,
             'icons' => $icons,
             'view_help_handler' => 'EbayListingPickupStoreGridHandlerObj.viewItemHelp',
             'hide_help_handler' => 'EbayListingPickupStoreGridHandlerObj.hideItemHelp',
-        ));
+            )
+        );
 
         $pickupStoreState = Mage::getModel('M2ePro/Ebay_Account_PickupStore_State')
             ->load($stateId);
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Log For Sku' => Mage::helper('M2ePro')->__('Log For Sku (%s%)', $pickupStoreState->getSku())
-        ));
+            )
+        );
 
         $html = "<script>M2ePro.translator.add({$translations});</script>";
 
@@ -469,6 +489,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
                 break;
             }
+
             if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
             }
@@ -606,9 +627,9 @@ HTML;
 
     //########################################
 
-    private function getVariationsAttributes()
+    protected function getVariationsAttributes()
     {
-        if (is_null($this->variationAttributes)) {
+        if ($this->variationAttributes === null) {
             $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
             $tableVariation = Mage::helper('M2ePro/Module_Database_Structure')
                 ->getTableNameWithPrefix('m2epro_listing_product_variation');
@@ -632,7 +653,7 @@ HTML;
         return $this->variationAttributes;
     }
 
-    private function parseGroupedData($data)
+    protected function parseGroupedData($data)
     {
         $result = array();
 

@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Stop_Response
     public function processAlreadyStopped(array $response, array $responseParams = array())
     {
         $responseParams['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT;
-        $this->processSuccess($response,$responseParams);
+        $this->processSuccess($response, $responseParams);
     }
 
     //########################################
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Stop_Response
                 'add' => 0
             );
 
-            if ($variation->getChildObject()->isListed()) {
+            if ($variation->getChildObject()->isListed() || $variation->getChildObject()->isHidden()) {
                 $data['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED;
             }
 

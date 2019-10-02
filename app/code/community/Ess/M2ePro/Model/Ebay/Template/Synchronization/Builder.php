@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
 
     // ---------------------------------------
 
-    private function prepareListData(array $data)
+    protected function prepareListData(array $data)
     {
         $prepared = array();
 
@@ -103,7 +103,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         return $prepared;
     }
 
-    private function prepareReviseData(array $data)
+    protected function prepareReviseData(array $data)
     {
         $prepared = array(
             'revise_update_qty' => 1,
@@ -171,7 +171,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         return $prepared;
     }
 
-    private function prepareRelistData(array $data)
+    protected function prepareRelistData(array $data)
     {
         $prepared = array();
 
@@ -218,7 +218,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         return $prepared;
     }
 
-    private function prepareStopData(array $data)
+    protected function prepareStopData(array $data)
     {
         $prepared = array();
 

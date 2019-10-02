@@ -44,10 +44,13 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         $this->loadAttributeOptions()->loadOperatorOptions()->loadValueOptions();
 
         if ($options = $this->getAttributeOptions()) {
-            foreach ($options as $attr=>$dummy) { $this->setAttribute($attr); break; }
+            foreach ($options as $attr=>$dummy) { $this->setAttribute($attr); break; 
+            }
         }
+
         if ($options = $this->getOperatorOptions()) {
-            foreach ($options as $operator=>$dummy) { $this->setOperator($operator); break; }
+            foreach ($options as $operator=>$dummy) { $this->setOperator($operator); break; 
+            }
         }
     }
 
@@ -70,6 +73,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             );
             $this->_arrayInputTypes = array('multiselect', 'grid');
         }
+
         return $this->_defaultOperatorInputByType;
     }
 
@@ -95,6 +99,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                 '!()' => Mage::helper('rule')->__('is not one of')
             );
         }
+
         return $this->_defaultOperatorOptions;
     }
 
@@ -147,6 +152,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         if (is_string($xml)) {
             $xml = simplexml_load_string($xml);
         }
+
         $arr = (array)$xml;
         $this->loadArray($arr);
         return $this;
@@ -171,6 +177,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         foreach ($this->getAttributeOption() as $k=>$v) {
             $opt[] = array('value'=>$k, 'label'=>$v);
         }
+
         return $opt;
     }
 
@@ -198,6 +205,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         if (null === $this->_inputType) {
             return 'string';
         }
+
         return $this->_inputType;
     }
 
@@ -214,6 +222,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                 $opt[] = array('value' => $k, 'label' => $v);
             }
         }
+
         return $opt;
     }
 
@@ -234,9 +243,11 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         if ($this->hasValueOption()) {
             $valueOption = (array) $this->getValueOption();
         }
+
         foreach ($valueOption as $k => $v) {
             $opt[] = array('value' => $k, 'label' => $v);
         }
+
         return $opt;
     }
 
@@ -252,8 +263,10 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             if ($this->isArrayOperatorType() && is_string($value)) {
                 $value = preg_split('#\s*[,;]\s*#', $value, null, PREG_SPLIT_NO_EMPTY);
             }
+
             $this->setValueParsed($value);
         }
+
         return $this->getData('value_parsed');
     }
 
@@ -275,18 +288,21 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         if ($this->getInputType()=='date' && !$this->getIsValueParsed()) {
             // date format intentionally hard-coded
             $this->setValue(
-                Mage::app()->getLocale()->date($this->getData('value'),
-                    Varien_Date::DATE_INTERNAL_FORMAT, null, false)->toString(Varien_Date::DATE_INTERNAL_FORMAT)
+                Mage::app()->getLocale()->date(
+                    $this->getData('value'),
+                    Varien_Date::DATE_INTERNAL_FORMAT, null, false
+                )->toString(Varien_Date::DATE_INTERNAL_FORMAT)
             );
             $this->setIsValueParsed(true);
         }
+
         return $this->getData('value');
     }
 
     public function getValueName()
     {
         $value = $this->getValue();
-        if (is_null($value) || '' === $value) {
+        if ($value === null || '' === $value) {
             return '...';
         }
 
@@ -306,15 +322,18 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                             }
                         }
                     }
+
                     if ($o['value'] == $value) {
                         return $o['label'];
                     }
                 }
             }
         }
+
         if (!empty($valueArr)) {
             $value = implode(', ', $valueArr);
         }
+
         return $value;
     }
 
@@ -354,12 +373,14 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
 
     public function getTypeElement()
     {
-        return $this->getForm()->addField($this->getPrefix() . '__' . $this->getId() . '__type', 'hidden', array(
+        return $this->getForm()->addField(
+            $this->getPrefix() . '__' . $this->getId() . '__type', 'hidden', array(
             'name'    => 'rule[' . $this->getPrefix() . '][' . $this->getId() . '][type]',
             'value'   => $this->getType(),
             'no_span' => true,
             'class'   => 'hidden',
-        ));
+            )
+        );
     }
 
     public function getTypeElementHtml()
@@ -369,18 +390,21 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
 
     public function getAttributeElement()
     {
-        if (is_null($this->getAttribute())) {
+        if ($this->getAttribute() === null) {
             foreach ($this->getAttributeOption() as $k => $v) {
                 $this->setAttribute($k);
                 break;
             }
         }
-        return $this->getForm()->addField($this->getPrefix().'__'.$this->getId().'__attribute', 'select', array(
+
+        return $this->getForm()->addField(
+            $this->getPrefix().'__'.$this->getId().'__attribute', 'select', array(
             'name'=>'rule['.$this->getPrefix().']['.$this->getId().'][attribute]',
             'values'=>$this->getAttributeSelectOptions(),
             'value'=>$this->getAttribute(),
             'value_name'=>$this->getAttributeName(),
-        ))->setRenderer(Mage::getBlockSingleton('rule/editable'));
+            )
+        )->setRenderer(Mage::getBlockSingleton('rule/editable'));
     }
 
     public function getAttributeElementHtml()
@@ -397,7 +421,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
     public function getOperatorElement()
     {
         $options = $this->getOperatorSelectOptions();
-        if (is_null($this->getOperator())) {
+        if ($this->getOperator() === null) {
             foreach ($options as $option) {
                 $this->setOperator($option['value']);
                 break;
@@ -406,12 +430,14 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
 
         $elementId   = sprintf('%s__%s__operator', $this->getPrefix(), $this->getId());
         $elementName = sprintf('rule[%s][%s][operator]', $this->getPrefix(), $this->getId());
-        $element     = $this->getForm()->addField($elementId, 'select', array(
+        $element     = $this->getForm()->addField(
+            $elementId, 'select', array(
             'name'          => $elementName,
             'values'        => $options,
             'value'         => $this->getOperator(),
             'value_name'    => $this->getOperatorName(),
-        ));
+            )
+        );
         $element->setRenderer(Mage::getBlockSingleton('rule/editable'));
 
         return $element;
@@ -438,6 +464,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         if (strpos($this->getValueElementType(), '/')!==false) {
             return Mage::getBlockSingleton($this->getValueElementType());
         }
+
         return Mage::getBlockSingleton('rule/editable');
     }
 
@@ -456,7 +483,9 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             $elementParams['input_format'] = Varien_Date::DATE_INTERNAL_FORMAT;
             $elementParams['format']       = Varien_Date::DATE_INTERNAL_FORMAT;
         }
-        return $this->getForm()->addField($this->getPrefix().'__'.$this->getId().'__value',
+
+        return $this->getForm()->addField(
+            $this->getPrefix().'__'.$this->getId().'__value',
             $this->getValueElementType(),
             $elementParams
         )->setRenderer($this->getValueElementRenderer());
@@ -495,6 +524,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
         if ($url) {
             $html = '<div class="rule-chooser" url="' . $url . '"></div>';
         }
+
         return $html;
     }
 
@@ -563,7 +593,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                     $result = $this->_compareValues($validatedValue, $value);
                 }
             }
-            break;
+                break;
 
             case '<=': case '>':
             if (!is_scalar($validatedValue)) {
@@ -571,7 +601,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             } else {
                 $result = $validatedValue <= $value;
             }
-            break;
+                break;
 
             case '>=': case '<':
             if (!is_scalar($validatedValue)) {
@@ -579,12 +609,12 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             } else {
                 $result = $validatedValue >= $value;
             }
-            break;
+                break;
 
             case '{}': case '!{}':
             if (is_scalar($validatedValue) && is_array($value)) {
                 foreach ($value as $item) {
-                    if (stripos($validatedValue,$item)!==false) {
+                    if (stripos($validatedValue, $item)!==false) {
                         $result = true;
                         break;
                     }
@@ -603,7 +633,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                     $result = $this->_compareValues($value, $validatedValue, false);
                 }
             }
-            break;
+                break;
 
             case '()': case '!()':
             if (is_array($validatedValue)) {
@@ -617,7 +647,7 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
                     }
                 }
             }
-            break;
+                break;
         }
 
         if ('!=' == $op || '>' == $op || '<' == $op || '!{}' == $op || '!()' == $op) {
@@ -644,11 +674,13 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Abstract
             if ($strict) {
                 $validatePattern = '^' . $validatePattern . '$';
             }
+
             try {
                 $result = (bool)preg_match('~' . $validatePattern . '~iu', $value);
             } catch (Exception $e) {
                 return false;
             }
+
             return $result;
         }
     }

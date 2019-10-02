@@ -41,17 +41,17 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
         $this->cronGet = 'GET '.$baseUrl.'cron.php';
 
         $cronLastRunTime = Mage::helper('M2ePro/Module_Cron')->getLastRun();
-        if (!is_null($cronLastRunTime)) {
+        if ($cronLastRunTime !== null) {
             $this->cronLastRunTime = $cronLastRunTime;
-            $this->cronIsNotWorking = Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(12,true);
+            $this->cronIsNotWorking = Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(12, true);
         }
 
         $cronServiceIps = array();
 
         for ($i = 1; $i < 100; $i++) {
-            $serviceHostName = $moduleConfig->getGroupValue('/cron/service/','hostname_'.$i);
+            $serviceHostName = $moduleConfig->getGroupValue('/cron/service/', 'hostname_'.$i);
 
-            if (is_null($serviceHostName)) {
+            if ($serviceHostName === null) {
                 break;
             }
 
@@ -60,8 +60,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_Cron
 
         $this->cronServiceIps = implode(', ', $cronServiceIps);
 
-        $this->isMagentoCronDisabled = (bool)(int)$moduleConfig->getGroupValue('/cron/magento/','disabled');
-        $this->isServiceCronDisabled = (bool)(int)$moduleConfig->getGroupValue('/cron/service/','disabled');
+        $this->isMagentoCronDisabled = (bool)(int)$moduleConfig->getGroupValue('/cron/magento/', 'disabled');
+        $this->isServiceCronDisabled = (bool)(int)$moduleConfig->getGroupValue('/cron/service/', 'disabled');
 
         return parent::_beforeToHtml();
     }

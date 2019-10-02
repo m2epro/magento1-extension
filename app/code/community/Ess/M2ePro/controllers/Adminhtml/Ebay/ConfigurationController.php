@@ -37,9 +37,10 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
     public function indexAction()
     {
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_configuration', '',
-                array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_GENERAL)
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_ebay_configuration', '',
+                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_GENERAL)
                 )
             )->renderLayout();
     }
@@ -50,11 +51,12 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
         $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
 
-        $this->_addContent($this->getLayout()->createBlock(
-                    'M2ePro/adminhtml_ebay_configuration', '',
-                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_GLOBAL)
-                )
-            )->renderLayout();
+        $this->_addContent(
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_ebay_configuration', '',
+                array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_GLOBAL)
+            )
+        )->renderLayout();
     }
 
     public function saveAction()
@@ -95,18 +97,20 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         if ($motorsEpidsMotorAttribute = $this->getRequest()->getParam('motors_epids_motor_attribute')) {
             $motorsAttributes[] = $motorsEpidsMotorAttribute;
         }
+
         if ($motorsEpidsUkAttribute = $this->getRequest()->getParam('motors_epids_uk_attribute')) {
             $motorsAttributes[] = $motorsEpidsUkAttribute;
         }
+
         if ($motorsEpidsDeAttribute = $this->getRequest()->getParam('motors_epids_de_attribute')) {
             $motorsAttributes[] = $motorsEpidsDeAttribute;
         }
+
         if ($motorsKtypesAttribute = $this->getRequest()->getParam('motors_ktypes_attribute')) {
             $motorsAttributes[] = $motorsKtypesAttribute;
         }
 
         if (count($motorsAttributes) != count(array_unique($motorsAttributes))) {
-
             $this->_getSession()->addError(
                 Mage::helper('M2ePro')->__('Motors Attributes can not be the same.')
             );
@@ -164,7 +168,6 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         $tableName = $helper->getDictionaryTable($motorsType);
 
         foreach ($csvData as $csvRow) {
-
             if (!$insertsData = $this->getPreparedInsertData($csvRow, $existedItems)) {
                 continue;
             }
@@ -203,7 +206,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
     //########################################
 
-    private function getExistedMotorsItems()
+    protected function getExistedMotorsItems()
     {
         $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
         $motorsType = $this->getRequest()->getParam('motors_type');
@@ -228,7 +231,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         return $result;
     }
 
-    private function getPreparedInsertData($csvRow, $existedItems)
+    protected function getPreparedInsertData($csvRow, $existedItems)
     {
         $helper = Mage::helper('M2ePro/Component_Ebay_Motors');
 
@@ -240,7 +243,6 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         }
 
         if ($motorsType == Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_KTYPE) {
-
             if (strlen($csvRow['ktype']) > 10) {
                 return false;
             }
@@ -265,7 +267,6 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
         $requiredColumns = array('epid','product_type','make','model','year');
         foreach ($requiredColumns as $columnName) {
-
             if (!isset($csvRow[$columnName])) {
                 return false;
             }

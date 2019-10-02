@@ -8,14 +8,14 @@
 
 class Ess_M2ePro_Model_Connector_Connection_Response
 {
-    private $data = array();
+    protected $_data = array();
 
-    /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messages */
-    private $messages = NULL;
+    /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $_messages */
+    protected $_messages;
 
-    private $resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS;
+    protected $_resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS;
 
-    private $requestTime = NULL;
+    protected $_requestTime;
 
     // ########################################
 
@@ -28,11 +28,10 @@ class Ess_M2ePro_Model_Connector_Connection_Response
             !isset($response['response']['result']['messages']) ||
             !is_array($response['response']['result']['messages']) ||
             !isset($response['response']['result']['type'])) {
-
             throw new Ess_M2ePro_Model_Exception_Connection_InvalidResponse('Invalid Response Format.');
         }
 
-        $this->data = $response['data'];
+        $this->_data = $response['data'];
 
         $this->initMessages($response['response']['result']['messages']);
         $this->initResultType($response['response']['result']['type']);
@@ -40,7 +39,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
 
     public function initFromPreparedResponse(array $data = array(), array $messagesData = array(), $resultType = NULL)
     {
-        $this->data = $data;
+        $this->_data = $data;
 
         $this->initMessages($messagesData);
         $this->initResultType($resultType);
@@ -50,52 +49,52 @@ class Ess_M2ePro_Model_Connector_Connection_Response
 
     public function getResult()
     {
-        return $this->resultType;
+        return $this->_resultType;
     }
 
     public function getMessages()
     {
-        return $this->messages;
+        return $this->_messages;
     }
 
     public function getData()
     {
-        return $this->data;
+        return $this->_data;
     }
 
     // ########################################
 
     public function isResultError()
     {
-        return $this->resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR;
+        return $this->_resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR;
     }
 
     public function isResultWarning()
     {
-        return $this->resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING;
+        return $this->_resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING;
     }
 
     public function isResultSuccess()
     {
-        return $this->resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS;
+        return $this->_resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS;
     }
 
     public function isResultNotice()
     {
-        return $this->resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_NOTICE;
+        return $this->_resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_NOTICE;
     }
 
     // ########################################
 
     public function setRequestTime($requestTime)
     {
-        $this->requestTime = $requestTime;
+        $this->_requestTime = $requestTime;
         return $this;
     }
 
     public function getRequestTime()
     {
-        return $this->requestTime;
+        return $this->_requestTime;
     }
 
     // ########################################
@@ -107,7 +106,6 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         }
 
         foreach ($this->getMessages()->getErrorEntities() as $message) {
-
             if (!$message->isSenderSystem()) {
                 continue;
             }
@@ -122,30 +120,30 @@ class Ess_M2ePro_Model_Connector_Connection_Response
 
     // ########################################
 
-    private function initMessages(array $messagesData)
+    protected function initMessages(array $messagesData)
     {
-        $this->messages = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
-        $this->messages->init($messagesData);
+        $this->_messages = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
+        $this->_messages->init($messagesData);
     }
 
-    private function initResultType($resultType = NULL)
+    protected function initResultType($resultType = null)
     {
-        if (!is_null($resultType)) {
-            $this->resultType = $resultType;
+        if ($resultType !== null) {
+            $this->_resultType = $resultType;
             return;
         }
 
         if ($this->getMessages()->hasErrorEntities()) {
-            $this->resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR;
+            $this->_resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR;
             return;
         }
 
         if ($this->getMessages()->hasWarningEntities()) {
-            $this->resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING;
+            $this->_resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING;
             return;
         }
 
-        $this->resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS;
+        $this->_resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS;
     }
 
     // ########################################

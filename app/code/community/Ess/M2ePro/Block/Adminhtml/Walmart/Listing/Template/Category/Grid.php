@@ -8,12 +8,12 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-    protected $productsIds = array();
-    protected $magentoCategoryIds = array();
-    protected $marketplaceId;
+    protected $_productsIds        = array();
+    protected $_magentoCategoryIds = array();
+    protected $_marketplaceId;
 
-    protected $mapToTemplateJsFn     = 'ListingGridHandlerObj.templateCategoryHandler.mapToTemplateCategory';
-    protected $createNewTemplateJsFn = 'ListingGridHandlerObj.templateCategoryHandler.createTemplateCategoryInNewTab';
+    protected $_mapToTemplateJsFn     = 'ListingGridHandlerObj.templateCategoryHandler.mapToTemplateCategory';
+    protected $_createNewTemplateJsFn = 'ListingGridHandlerObj.templateCategoryHandler.createTemplateCategoryInNewTab';
 
     //########################################
 
@@ -22,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
      */
     public function getMapToTemplateJsFn()
     {
-        return $this->mapToTemplateJsFn;
+        return $this->_mapToTemplateJsFn;
     }
 
     /**
@@ -30,7 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
      */
     public function setMapToTemplateJsFn($mapToTemplateLink)
     {
-        $this->mapToTemplateJsFn = $mapToTemplateLink;
+        $this->_mapToTemplateJsFn = $mapToTemplateLink;
     }
 
     // ---------------------------------------
@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
      */
     public function getCreateNewTemplateJsFn()
     {
-        return $this->createNewTemplateJsFn;
+        return $this->_createNewTemplateJsFn;
     }
 
     /**
@@ -48,7 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
      */
     public function setCreateNewTemplateJsFn($createNewTemplateJsFn)
     {
-        $this->createNewTemplateJsFn = $createNewTemplateJsFn;
+        $this->_createNewTemplateJsFn = $createNewTemplateJsFn;
     }
 
     // ---------------------------------------
@@ -58,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
      */
     public function setProductsIds($productsIds)
     {
-        $this->productsIds = $productsIds;
+        $this->_productsIds = $productsIds;
     }
 
     /**
@@ -66,19 +66,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
      */
     public function getProductsIds()
     {
-        return $this->productsIds;
+        return $this->_productsIds;
     }
 
     // ---------------------------------------
 
     public function setMagentoCategoryIds($magentoCategoryIds)
     {
-        $this->magentoCategoryIds = $magentoCategoryIds;
+        $this->_magentoCategoryIds = $magentoCategoryIds;
     }
 
     public function getMagentoCategoryIds()
     {
-        return $this->magentoCategoryIds;
+        return $this->_magentoCategoryIds;
     }
 
     // ---------------------------------------
@@ -105,7 +105,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
     {
         $this->setNoTemplatesText();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Walmart_Template_Category_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Template_Category_Collection $collection */
         $collection = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
         $collection->addFieldToFilter('marketplace_id', $this->getMarketplaceId());
 
@@ -118,7 +118,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'       => Mage::helper('M2ePro')->__('Title'),
             'align'        => 'left',
             'type'         => 'text',
@@ -127,9 +128,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
             'sortable'     => true,
             'filter_condition_callback' => array($this, 'callbackFilterTitle'),
             'frame_callback' => array($this, 'callbackColumnTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('action', array(
+        $this->addColumn(
+            'action', array(
             'header'       => Mage::helper('M2ePro')->__('Action'),
             'align'        => 'left',
             'type'         => 'number',
@@ -138,18 +141,22 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
             'filter'       => false,
             'sortable'     => false,
             'frame_callback' => array($this, 'callbackColumnAction')
-        ));
+            )
+        );
     }
 
     protected function _prepareLayout()
     {
-        $this->setChild('refresh_button',
+        $this->setChild(
+            'refresh_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
-                ->setData(array(
+                ->setData(
+                    array(
                     'id'        => 'category_template_refresh_btn',
                     'label'     => Mage::helper('M2ePro')->__('Refresh'),
                     'onclick'   => $this->getJsObjectName().'.reload()'
-                ))
+                    )
+                )
         );
 
         return parent::_prepareLayout();
@@ -171,9 +178,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Grid extends 
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        $templateCategoryEditUrl = $this->getUrl('*/adminhtml_walmart_template_category/edit', array(
+        $templateCategoryEditUrl = $this->getUrl(
+            '*/adminhtml_walmart_template_category/edit', array(
             'id' => $row->getData('id')
-        ));
+            )
+        );
 
         $title = Mage::helper('M2ePro')->escapeHtml($row->getData('title'));
 
@@ -203,7 +212,7 @@ HTML;
 
     protected function callbackFilterTitle($collection, $column)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Walmart_Template_Category_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Template_Category_Collection $collection */
 
         $value = $column->getFilter()->getValue();
         if ($value == null) {
@@ -263,9 +272,11 @@ HTML;
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/viewTemplateCategoriesGrid', array(
+        return $this->getUrl(
+            '*/*/viewTemplateCategoriesGrid', array(
             '_current' => true
-        ));
+            )
+        );
     }
 
     public function getRowUrl($row)
@@ -277,14 +288,16 @@ HTML;
 
     protected function getMarketplaceId()
     {
-        if (empty($this->marketplaceId)) {
+        if (empty($this->_marketplaceId)) {
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-            $productsIds = $this->getProductsIds();
-            $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product', $productsIds[0]);
-            $this->marketplaceId = $listingProduct->getListing()->getMarketplaceId();
+            $productsIds          = $this->getProductsIds();
+            $listingProduct       = Mage::helper('M2ePro/Component_Walmart')->getObject(
+                'Listing_Product', $productsIds[0]
+            );
+            $this->_marketplaceId = $listingProduct->getListing()->getMarketplaceId();
         }
 
-        return $this->marketplaceId;
+        return $this->_marketplaceId;
     }
 
     // ---------------------------------------
@@ -308,9 +321,11 @@ HTML;
 
     protected function getNewTemplateCategoryUrl()
     {
-        return $this->getUrl('*/adminhtml_walmart_template_category/new', array(
+        return $this->getUrl(
+            '*/adminhtml_walmart_template_category/new', array(
             'marketplace_id' => $this->getMarketplaceId()
-        ));
+            )
+        );
     }
 
     //########################################

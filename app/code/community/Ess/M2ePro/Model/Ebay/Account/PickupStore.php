@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore extends Ess_M2ePro_Model_Compone
             return false;
         }
 
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 

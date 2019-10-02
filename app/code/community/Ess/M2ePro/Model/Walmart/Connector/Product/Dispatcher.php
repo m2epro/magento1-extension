@@ -8,9 +8,7 @@
 
 class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
 {
-    private $logsActionId = NULL;
-
-    private $processingActionsIds = array();
+    protected $_logsActionId = null;
 
     // ########################################
 
@@ -22,15 +20,17 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
      */
     public function process($action, $products, array $params = array())
     {
-        $params = array_merge(array(
+        $params = array_merge(
+            array(
             'status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN
-        ), $params);
+            ), $params
+        );
 
         if (empty($params['logs_action_id'])) {
-            $this->logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
-            $params['logs_action_id'] = $this->logsActionId;
+            $this->_logsActionId      = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+            $params['logs_action_id'] = $this->_logsActionId;
         } else {
-            $this->logsActionId = $params['logs_action_id'];
+            $this->_logsActionId = $params['logs_action_id'];
         }
 
         $products = $this->prepareProducts($products);
@@ -43,14 +43,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
 
     public function getLogsActionId()
     {
-        return (int)$this->logsActionId;
-    }
-
-    //-----------------------------------------
-
-    public function getProcessingActionsIds()
-    {
-
+        return (int)$this->_logsActionId;
     }
 
     // ########################################
@@ -62,14 +55,14 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
      * @throws LogicException
      * @return int
      */
-    protected function processGroupedProducts(array $sortedProductsData,
-                                              $action,
-                                              array $params = array())
-    {
+    protected function processGroupedProducts(
+        array $sortedProductsData,
+        $action,
+        array $params = array()
+    ) {
         $results = array();
 
         foreach ($sortedProductsData as $products) {
-
             if (empty($products)) {
                 continue;
             }
@@ -91,7 +84,6 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
     protected function processProduct(Ess_M2ePro_Model_Listing_Product $product, $action, array $params = array())
     {
         try {
-
             $dispatcher = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
             $connectorName = 'Walmart_Connector_Product_'.$this->getActionNick($action).'_Requester';
 
@@ -102,9 +94,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
             $dispatcher->process($connector);
 
             return $connector->getStatus();
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             $logModel = Mage::getModel('M2ePro/Walmart_Listing_Log');
@@ -120,7 +110,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
                     $product->getProductId(),
                     $product->getId(),
                     $initiator,
-                    $this->logsActionId,
+                    $this->_logsActionId,
                     $action,
                     $exception->getMessage(),
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -144,7 +134,6 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
         $parentsForProcessing = array();
 
         foreach ($products as $listingProduct) {
-
             if (is_numeric($listingProduct)) {
                 if (isset($preparedProducts[(int)$listingProduct])) {
                     continue;
@@ -200,14 +189,14 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
 
         $actionConfigurators = array();
         foreach ($preparedProducts as $id => $listingProduct) {
-            if (is_null($listingProduct->getActionConfigurator())) {
+            if ($listingProduct->getActionConfigurator() === null) {
                 continue;
             }
 
             $actionConfigurators[$id] = $listingProduct->getActionConfigurator();
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('id', array('in' => array_keys($preparedProducts)));
 
@@ -219,7 +208,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
         }
 
         foreach ($actualListingsProducts as $id => $actualListingProduct) {
-            if (is_null($actionConfigurators[$id])) {
+            if ($actionConfigurators[$id] === null) {
                 continue;
             }
 
@@ -296,7 +285,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
 
     // ########################################
 
-    private function getActionNick($action)
+    protected function getActionNick($action)
     {
         switch ($action) {
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:

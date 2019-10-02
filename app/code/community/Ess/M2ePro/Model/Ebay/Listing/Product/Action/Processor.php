@@ -41,7 +41,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
 
     //####################################
 
-    private function removeMissedProcessingActions()
+    protected function removeMissedProcessingActions()
     {
         $actionCollection = Mage::getResourceModel('M2ePro/Ebay_Listing_Product_Action_Processing_Collection');
         $actionCollection->getSelect()->joinLeft(
@@ -63,7 +63,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         }
     }
 
-    private function completeExpiredActions()
+    protected function completeExpiredActions()
     {
         $minimumAllowedDate = new DateTime('now', new DateTimeZone('UTC'));
         $minimumAllowedDate->modify('- '.self::ACTION_MAX_LIFE_TIME.' seconds');
@@ -99,9 +99,9 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
     /**
      * @return Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[]
      */
-    private function getActionsForExecute()
+    protected function getActionsForExecute()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Ebay_Listing_Product_Action_Processing_Collection $actionCollection */
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Listing_Product_Action_Processing_Collection $actionCollection */
         $actionCollection = Mage::getResourceModel('M2ePro/Ebay_Listing_Product_Action_Processing_Collection');
         $limit = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             '/ebay/listing/product/scheduled_actions/', 'max_prepared_actions_count'
@@ -136,7 +136,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
     /**
      * @param Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[] $actions
      */
-    private function executeSerial(array $actions)
+    protected function executeSerial(array $actions)
     {
         /** @var Ess_M2ePro_Model_Ebay_Connector_Dispatcher $dispatcher */
         $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
@@ -191,7 +191,6 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
             );
 
             if ($iteration % 10 == 0) {
-
                 Mage::dispatchEvent(
                     Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,
                     array(
@@ -208,7 +207,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
      * @param Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[] $actions
      * @throws Ess_M2ePro_Model_Exception
      */
-    private function executeParallel(array $actions)
+    protected function executeParallel(array $actions)
     {
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor_Connector_Multiple_Dispatcher $dispatcher */
         $dispatcher = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Processor_Connector_Multiple_Dispatcher');
@@ -225,9 +224,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                 $connectors = array();
 
                 foreach ($actionsPack as $action) {
-
                     try {
-
                         $command = $this->getCommand($action);
 
                         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
@@ -243,7 +240,6 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                         );
 
                         $processedActions++;
-
                     } catch (\Exception $exception) {
                         Mage::helper('M2ePro/Module_Exception')->process($exception);
                         $action->deleteInstance();
@@ -257,7 +253,6 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                 $dispatcher->processMultiple($connectors, true);
 
                 if ($processedActions % 10 == 0) {
-
                     Mage::dispatchEvent(
                         Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,
                         array(
@@ -282,9 +277,10 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                         if ($response->getMessages()->hasSystemErrorEntity()) {
                             $systemErrorsMessages[] = $response->getMessages()->getCombinedSystemErrorsString();
 
-                            if (is_null($isServerInMaintenanceMode) && $response->isServerInMaintenanceMode()) {
+                            if ($isServerInMaintenanceMode === null && $response->isServerInMaintenanceMode()) {
                                 $isServerInMaintenanceMode = true;
                             }
+
                             continue;
                         }
 
@@ -299,10 +295,12 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                 }
 
                 if (!empty($systemErrorsMessages)) {
-                    throw new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
-                        "Internal Server Error(s) [%error_message%]",
-                        $this->getCombinedErrorMessage($systemErrorsMessages)
-                    ), array(), 0, !$isServerInMaintenanceMode);
+                    throw new Ess_M2ePro_Model_Exception(
+                        Mage::helper('M2ePro')->__(
+                            "Internal Server Error(s) [%error_message%]",
+                            $this->getCombinedErrorMessage($systemErrorsMessages)
+                        ), array(), 0, !$isServerInMaintenanceMode
+                    );
                 }
             }
         }
@@ -310,11 +308,11 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
 
     //-----------------------------------------
 
-    private function getCombinedErrorMessage(array $systemErrorsMessages)
+    protected function getCombinedErrorMessage(array $systemErrorsMessages)
     {
         $combinedErrorMessages = array();
         foreach ($systemErrorsMessages as $systemErrorMessage) {
-            $key = md5($systemErrorMessage);
+            $key = sha1($systemErrorMessage);
 
             if (isset($combinedErrorMessages[$key])) {
                 $combinedErrorMessages[$key]["count"] += 1;
@@ -329,7 +327,8 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
 
         $message = "";
         foreach ($combinedErrorMessages as $combinedErrorMessage) {
-            $message .= sprintf("%s (%s)<br>",
+            $message .= sprintf(
+                "%s (%s)<br>",
                 $combinedErrorMessage["message"],
                 $combinedErrorMessage["count"]
             );
@@ -345,13 +344,15 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
      * @param Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[] $actions
      * @return bool
      */
-    private function isActionCanBeAdded(Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing $action, array $actions)
-    {
+    protected function isActionCanBeAdded(
+        Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing $action,
+        array $actions
+    ) {
         if ($this->calculateParallelExecutionTime($actions) < self::MAX_TOTAL_EXECUTION_TIME) {
             return true;
         }
 
-        $groupedActions     = $this->groupForParallelExecution($actions, false);
+        $groupedActions = $this->groupForParallelExecution($actions, false);
         $commandRequestTime = $this->getCommandRequestTime($this->getCommand($action));
 
         if (empty($groupedActions[$commandRequestTime])) {
@@ -371,13 +372,13 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
      * @param Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[] $actions
      * @return bool
      */
-    private function isActionsSetFull(array $actions)
+    protected function isActionsSetFull(array $actions)
     {
         if ($this->calculateParallelExecutionTime($actions) < self::MAX_TOTAL_EXECUTION_TIME) {
             return false;
         }
 
-        foreach($this->groupForParallelExecution($actions, false) as $actionsGroups) {
+        foreach ($this->groupForParallelExecution($actions, false) as $actionsGroups) {
             foreach ($actionsGroups as $actionsGroup) {
                 if (count($actionsGroup) < self::MAX_PARALLEL_EXECUTION_PACK_SIZE) {
                     return false;
@@ -394,7 +395,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
      * @param Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[] $actions
      * @return int
      */
-    private function calculateSerialExecutionTime(array $actions)
+    protected function calculateSerialExecutionTime(array $actions)
     {
         $totalTime = 0;
 
@@ -410,7 +411,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
      * @param Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing[] $actions
      * @return int
      */
-    private function calculateParallelExecutionTime(array $actions)
+    protected function calculateParallelExecutionTime(array $actions)
     {
         $totalTime = 0;
 
@@ -429,7 +430,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
      * @param bool $needDistribute
      * @return array
      */
-    private function groupForParallelExecution(array $actions, $needDistribute = false)
+    protected function groupForParallelExecution(array $actions, $needDistribute = false)
     {
         $groupedByTimeActions = array();
 
@@ -443,7 +444,6 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         $totalSerialExecutionTime = $this->calculateSerialExecutionTime($actions);
 
         foreach ($groupedByTimeActions as $commandRequestTime => $groupActions) {
-
             $packSize = self::MAX_PARALLEL_EXECUTION_PACK_SIZE;
 
             if ($needDistribute) {
@@ -469,7 +469,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
 
     //####################################
 
-    private function getFirstConnectionErrorDate()
+    protected function getFirstConnectionErrorDate()
     {
         $registry = Mage::getModel('M2ePro/Registry');
         $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
@@ -477,7 +477,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         return $registry->getValue();
     }
 
-    private function setFirstConnectionErrorDate($date)
+    protected function setFirstConnectionErrorDate($date)
     {
         $registry = Mage::getModel('M2ePro/Registry');
         $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
@@ -488,7 +488,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         $registry->save();
     }
 
-    private function removeFirstConnectionErrorDate()
+    protected function removeFirstConnectionErrorDate()
     {
         $registry = Mage::getModel('M2ePro/Registry');
         $registry->load(self::FIRST_CONNECTION_ERROR_DATE_REGISTRY_KEY, 'key');
@@ -500,7 +500,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
 
     //####################################
 
-    private function getCommand(Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing $action)
+    protected function getCommand(Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing $action)
     {
         switch ($action->getType()) {
             case Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing::TYPE_LIST:
@@ -520,7 +520,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         }
     }
 
-    private function getCommandRequestTime($command)
+    protected function getCommandRequestTime($command)
     {
         switch ($command) {
             case array('item', 'add', 'single'):
@@ -540,9 +540,11 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
 
     //-----------------------------------------
 
-    private function completeAction(
+    protected function completeAction(
         Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing $action,
-        array $data, array $messages, $requestTime = NULL
+        array $data,
+        array $messages,
+        $requestTime = NULL
     ) {
         $processing = $action->getProcessing();
 
@@ -550,7 +552,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         $processing->setSettings('result_messages', $messages);
         $processing->setData('is_completed', 1);
 
-        if (!is_null($requestTime)) {
+        if ($requestTime !== null) {
             $processingParams = $processing->getParams();
             $processingParams['request_time'] = $requestTime;
             $processing->setSettings('params', $processingParams);

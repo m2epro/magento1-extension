@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_General */
+
+?>
+
 <div id="block_notice_amazon_template_description_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
         'This Tab contains main Settings of Description Policy such as selection of Amazon Category and preparing Description Policy for New ASIN/ISBN Creation. <br/><br/>
@@ -39,6 +52,18 @@
 
     $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
 
+    if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add %component_name% Description Policy',
+                Mage::helper('M2ePro/Component_Amazon')->getTitle()
+            )
+        );
+    } else {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add Description Policy')
+        );
+    }
+
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
@@ -69,7 +94,7 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Description Policy' => Mage::helper('M2ePro')->__('Add Description Policy'),
+        'Add Description Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
 
         'Change Category' => Mage::helper('M2ePro')->__('Change Category'),
         'Not Selected'    => Mage::helper('M2ePro')->__('Not Selected'),

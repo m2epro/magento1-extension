@@ -26,16 +26,17 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Module extends Mage_Admi
 
     public function getInfoTables()
     {
-        $tablesData = array_merge($this->getConfigTables(),
-                                  $this->getLocksAndChangeTables(),
-                                  $this->getAdditionalTables());
+        $tablesData = array_merge(
+            $this->getConfigTables(),
+            $this->getLocksAndChangeTables(),
+            $this->getAdditionalTables()
+        );
 
         $helper = Mage::helper('M2ePro/Module_Database_Structure');
 
         $tablesInfo = array();
         foreach ($tablesData as $category => $tables) {
             foreach ($tables as $tableName) {
-
                 $tablesInfo[$category][$tableName] = array(
                     'count' => 0, 'url'   => '#'
                 );
@@ -56,7 +57,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Module extends Mage_Admi
 
     //########################################
 
-    private function getConfigTables()
+    protected function getConfigTables()
     {
         return array(
             'Config' => array(
@@ -68,7 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Module extends Mage_Admi
         );
     }
 
-    private function getLocksAndChangeTables()
+    protected function getLocksAndChangeTables()
     {
         return array(
             'Additional' => array(
@@ -82,7 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Module extends Mage_Admi
         );
     }
 
-    private function getAdditionalTables()
+    protected function getAdditionalTables()
     {
         return array(
             'Processing' => array(

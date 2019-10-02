@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing extends Mage_Adminhtml_Block_Widget
 {
     public $isRepricingLinked;
-    public $m2eProRepricingProducts;
+    public $repricingProducts;
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Account_Repricing
@@ -45,7 +45,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing extends Mage
             if ($this->isRepricingLinked) {
                 $this->repricingObj = $accountObj->getChildObject()->getRepricing();
 
-                /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Collection $collection */
+                /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Collection $collection */
                 $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
 
                 $collection->getSelect()->join(
@@ -58,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing extends Mage
                 $collection->getSelect()->where("`second_table`.`is_repricing` = 1");
                 $collection->getSelect()->where("`l`.`account_id` = ?", $accountObj->getId());
 
-                $this->m2eProRepricingProducts = $collection->getSize();
+                $this->repricingProducts = $collection->getSize();
             }
         }
 
@@ -68,7 +68,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing extends Mage
             'class'   => 'repricing_refresh'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('repricing_refresh_button',$buttonBlock);
+        $this->setChild('repricing_refresh_button', $buttonBlock);
 
         return parent::_beforeToHtml();
     }

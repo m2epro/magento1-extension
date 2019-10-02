@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Return
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Return
      */
-    private $returnTemplate = NULL;
+    protected $_returnTemplate = null;
 
     //########################################
 
@@ -40,14 +40,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Return
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Return
      */
-    private function getReturnTemplate()
+    protected function getReturnTemplate()
     {
-        if (is_null($this->returnTemplate)) {
-            $this->returnTemplate = $this->getListingProduct()
-                                         ->getChildObject()
-                                         ->getReturnTemplate();
+        if ($this->_returnTemplate === null) {
+            $this->_returnTemplate = $this->getListingProduct()
+                                          ->getChildObject()
+                                          ->getReturnTemplate();
         }
-        return $this->returnTemplate;
+
+        return $this->_returnTemplate;
     }
 
     //########################################

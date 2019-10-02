@@ -1,5 +1,14 @@
 <?php
-    /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_SellingFormat_Edit_Form */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Template_SellingFormat_Edit_Form */
+
 ?>
 <div id="block_notice_amazon_template_selling_format" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Selling Policy'); ?>">
     <?php echo Mage::helper('M2ePro')->__('
@@ -106,6 +115,18 @@
         );
     }
 
+    if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add %component_name% Selling Policy',
+                Mage::helper('M2ePro/Component_Amazon')->getTitle()
+            )
+        );
+    } else {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add Selling Policy')
+        );
+    }
+
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
@@ -164,7 +185,7 @@
         'The Price, at which you want to sell your Product(s) at specific time.' => Mage::helper('M2ePro')->__('The Price, at which you want to sell your Product(s) at specific time.'),
         'The Price, at which you want to sell your Product(s) at specific time.<br/><b>Note:</b> The Final Price is only used for Simple Products.' => Mage::helper('M2ePro')->__('The Price, at which you want to sell your Product(s) at specific time.<br/><b>Note:</b> The Final Price is only used for Simple Products.'),
 
-        'Add Selling Policy' => Mage::helper('M2ePro')->__('Add Selling Policy'),
+        'Add Selling Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
         'The specified Title is already used for other Policy. Policy Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Policy. Policy Title must be unique.'),
         'You should select Attribute Sets first and press Confirm Button.' => Mage::helper('M2ePro')->__('You should select Attribute Sets first and press Confirm Button.'),
         'Coefficient is not valid.' => Mage::helper('M2ePro')->__('Coefficient is not valid.'),

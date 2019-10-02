@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Servicing_Task_Cron extends Ess_M2ePro_Model_Servicing_Ta
             return true;
         }
 
-        if (is_null($helper->getLastRun())) {
+        if ($helper->getLastRun() === null) {
             return true;
         }
 
@@ -40,15 +40,13 @@ class Ess_M2ePro_Model_Servicing_Task_Cron extends Ess_M2ePro_Model_Servicing_Ta
         }
 
         if ($helper->isRunnerMagento()) {
-
             $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
             $lastTypeChange = $helper->getLastRunnerChange();
             $lastRun = Mage::helper('M2ePro/Module')->getCacheConfig()
                            ->getGroupValue('/servicing/cron/', 'last_run');
 
-            if ((is_null($lastTypeChange) || $currentTimeStamp > strtotime($lastTypeChange) + 86400) &&
-                (is_null($lastRun) || $currentTimeStamp > strtotime($lastRun) + 86400)) {
-
+            if (($lastTypeChange === null || $currentTimeStamp > strtotime($lastTypeChange) + 86400) &&
+                ($lastRun === null || $currentTimeStamp > strtotime($lastRun) + 86400)) {
                 Mage::helper('M2ePro/Module')->getCacheConfig()
                     ->setGroupValue('/servicing/cron/', 'last_run', Mage::helper('M2ePro')->getCurrentGmtDate());
 

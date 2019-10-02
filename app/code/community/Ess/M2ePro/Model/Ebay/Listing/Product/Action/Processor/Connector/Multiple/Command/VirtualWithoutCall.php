@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor_Connector_Multiple_
 
     public function process()
     {
-        if (is_null($this->getConnection()->getResponse())) {
+        if ($this->getConnection()->getResponse() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic(
                 'This object must be processed in Ess_M2ePro_Model_Connector_Connection_Multiple.'
             );

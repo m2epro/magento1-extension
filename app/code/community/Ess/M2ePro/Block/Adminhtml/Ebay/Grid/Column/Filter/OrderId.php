@@ -16,6 +16,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Filter_OrderId
         if (!Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled()) {
             return parent::getHtml();
         }
+
         $isInStorePickup = ($this->getValue('is_in_store_pickup') == 1) ? 'checked="checked"' : '';
 
         $html = '<div class="field-100"><input type="text" name="'.$this->_getHtmlName().'[value]"
@@ -33,7 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Filter_OrderId
 
     public function getValue($index = null)
     {
-        if (is_null($index)) {
+        if ($index === null) {
             $value = $this->getData('value');
             return is_array($value) ? $value : array('value' => $value);
         }
@@ -44,7 +45,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Filter_OrderId
     public function getEscapedValue($index = null)
     {
         $value = $this->getValue($index);
-        if (is_null($index)) {
+        if ($index === null) {
             $value = $value['value'];
         }
 

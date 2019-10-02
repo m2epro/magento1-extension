@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Development_Tabs_Module */
+
+?>
+
 <div class="entry-edit group_container" id="magento_block_development_module_integration">
 
     <div class="development_head_container">
@@ -30,6 +43,18 @@
 
     <div class="fieldset">
         <?php echo $this->getChildHtml('development_module_integration_amazon'); ?>
+    </div>
+
+</div>
+
+<div class="entry-edit group_container" id="magento_block_development_module_integration_walmart">
+
+    <div class="development_head_container">
+        <h4><?php echo Mage::helper('M2ePro')->__('Integration [Walmart]'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <?php echo $this->getChildHtml('development_module_integration_walmart'); ?>
     </div>
 
 </div>

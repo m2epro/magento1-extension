@@ -8,10 +8,10 @@
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model_Component_Abstract
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProductModel */
-    private $listingProductModel = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProductModel */
+    protected $_listingProductModel = null;
 
-    private $regularPriceCache = NULL;
+    protected $_regularPriceCache = null;
 
     //########################################
 
@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProductModel = $listingProduct;
+        $this->_listingProductModel = $listingProduct;
         return $this;
     }
 
@@ -34,11 +34,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
      */
     public function getListingProduct()
     {
-        if (!is_null($this->listingProductModel)) {
-            return $this->listingProductModel;
+        if ($this->_listingProductModel !== null) {
+            return $this->_listingProductModel;
         }
 
-        return $this->listingProductModel = Mage::helper('M2ePro/Component_Amazon')->getObject(
+        return $this->_listingProductModel = Mage::helper('M2ePro/Component_Amazon')->getObject(
             'Listing_Product', $this->getListingProductId()
         );
     }
@@ -189,8 +189,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
 
     public function getRegularPrice()
     {
-        if (!is_null($this->regularPriceCache)) {
-            return $this->regularPriceCache;
+        if ($this->_regularPriceCache !== null) {
+            return $this->_regularPriceCache;
         }
 
         $source        = $this->getAccountRepricing()->getRegularPriceSource();
@@ -220,9 +220,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             $variations = $this->getListingProduct()->getVariations(true);
-            if (count($variations) <= 0) {
+            if (empty($variations)) {
                 throw new Ess_M2ePro_Model_Exception_Logic(
                     'There are no variations for a variation product.',
                     array(
@@ -233,10 +232,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
 
             $variation = reset($variations);
 
-            return $this->regularPriceCache = $calculator->getVariationValue($variation);
+            return $this->_regularPriceCache = $calculator->getVariationValue($variation);
         }
 
-        return $this->regularPriceCache = $calculator->getProductValue();
+        return $this->_regularPriceCache = $calculator->getProductValue();
     }
 
     public function getMinPrice()
@@ -274,9 +273,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             $variations = $this->getListingProduct()->getVariations(true);
-            if (count($variations) <= 0) {
+            if (empty($variations)) {
                 throw new Ess_M2ePro_Model_Exception_Logic(
                     'There are no variations for a variation product.',
                     array(
@@ -328,9 +326,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             $variations = $this->getListingProduct()->getVariations(true);
-            if (count($variations) <= 0) {
+            if (empty($variations)) {
                 throw new Ess_M2ePro_Model_Exception_Logic(
                     'There are no variations for a variation product.',
                     array(
@@ -387,15 +384,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
      * @param int $priceVariationMode
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator
      */
-    private function getPriceCalculator(
+    protected function getPriceCalculator(
         array $source,
-        $sourceModeMapping = NULL,
-        $coefficient = NULL,
-        $priceVariationMode = NULL
+        $sourceModeMapping = null,
+        $coefficient = null,
+        $priceVariationMode = null
     ) {
         /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_Repricing_PriceCalculator');
-        !is_null($sourceModeMapping) && $calculator->setSourceModeMapping($sourceModeMapping);
+        $sourceModeMapping !== null && $calculator->setSourceModeMapping($sourceModeMapping);
         $calculator->setSource($source)->setProduct($this->getListingProduct());
         $calculator->setCoefficient($coefficient);
         $calculator->setPriceVariationMode($priceVariationMode);
@@ -403,11 +400,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
         return $calculator;
     }
 
-    private function calculateModificationValueBasedOnRegular(array $source)
+    protected function calculateModificationValueBasedOnRegular(array $source)
     {
         $regularPrice = $this->getRegularPrice();
         if (empty($regularPrice)) {
-            return NULL;
+            return null;
         }
 
         $value = 0;

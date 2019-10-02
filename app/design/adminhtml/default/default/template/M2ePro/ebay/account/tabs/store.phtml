@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_Store */
+
+?>
+
 <div id="block_notice_ebay_accounts_store" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('eBay Store'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
         'This Page shows the details for the eBay Store you connected to M2E Pro.<br/><br/>
@@ -45,7 +58,7 @@
 
 </script>
 
-<?php if(!is_null($formData['ebay_store_title']) && $formData['ebay_store_title'] != '') { ?>
+<?php if($formData['ebay_store_title'] !== null && $formData['ebay_store_title'] != '') { ?>
 
     <div class="entry-edit" id="magento_block_ebay_accounts_ebay_store_info">
 

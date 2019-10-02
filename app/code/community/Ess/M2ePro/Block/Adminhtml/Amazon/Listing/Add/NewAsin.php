@@ -25,23 +25,38 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin extends Ess_M2ePro_B
         $this->setId('amazonListingAddNewAsin');
         // ---------------------------------------
 
-        $this->_headerText = Mage::helper('M2ePro')->__('New ASIN/ISBN Creation');
+        // Set header text
+        // ---------------------------------------
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                '%component_name% / New ASIN/ISBN Creation',
+                Mage::helper('M2ePro/Component_Amazon')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("New ASIN/ISBN Creation");
+        }
 
-        $url = $this->getUrl('*/*/index', array(
-            'step' => 3,
-            '_current' => true
-        ));
-        $this->_addButton('back', array(
-            'label'     => Mage::helper('M2ePro')->__('Back'),
-            'class'     => 'back',
-            'onclick'   => 'setLocation(\''.$url.'\');'
-        ));
+        $url = $this->getUrl(
+            '*/*/index', array(
+                'step'     => 3,
+                '_current' => true
+            )
+        );
+        $this->_addButton(
+            'back', array(
+                'label'   => Mage::helper('M2ePro')->__('Back'),
+                'class'   => 'back',
+                'onclick' => 'setLocation(\'' . $url . '\');'
+            )
+        );
 
-        $this->_addButton('next', array(
-            'label'     => Mage::helper('M2ePro')->__('Continue'),
-            'class'     => 'scalable next',
-            'onclick'   => "descriptionTemplateModeFormSubmit()"
-        ));
+        $this->_addButton(
+            'next', array(
+                'label'   => Mage::helper('M2ePro')->__('Continue'),
+                'class'   => 'scalable next',
+                'onclick' => "descriptionTemplateModeFormSubmit()"
+            )
+        );
 
         $this->setTemplate('M2ePro/amazon/listing/add/new_asin.phtml');
     }
@@ -64,7 +79,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin extends Ess_M2ePro_B
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 
@@ -73,10 +88,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin extends Ess_M2ePro_B
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                'label'   => Mage::helper('M2ePro')->__('Continue'),
-                'onclick' => '',
-            ));
+            ->setData(
+                array(
+                    'label'   => Mage::helper('M2ePro')->__('Continue'),
+                    'onclick' => '',
+                )
+            );
         $this->setChild('mode_same_remember_pop_up_confirm_button', $buttonBlock);
     }
 
@@ -92,7 +109,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin extends Ess_M2ePro_B
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component_Amazon')
                 ->getObject('Listing', $listingId);
         }
@@ -117,8 +134,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin extends Ess_M2ePro_B
         $mode = self::MODE_SAME;
 
         if (isset($listingAdditionalData['source']) &&
-            $listingAdditionalData['source'] == SourceModeBlock::SOURCE_CATEGORIES)
-        {
+            $listingAdditionalData['source'] == SourceModeBlock::SOURCE_CATEGORIES
+        ) {
             $mode = self::MODE_CATEGORY;
         }
 

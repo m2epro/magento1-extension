@@ -6,8 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Listing_Other as AmazonListingOther;
+use Ess_M2ePro_Model_Ebay_Listing_Other as EbayListingOther;
+use Ess_M2ePro_Model_Walmart_Listing_Other as WalmartListingOther;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Listing_Other|Ess_M2ePro_Model_Ebay_Listing_Other|Ess_M2ePro_Model_Walmart_Listing_Other getChildObject()
+ * @method AmazonListingOther|EbayListingOther|WalmartListingOther getChildObject()
  */
 class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -16,17 +20,17 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
     /**
      * @var Ess_M2ePro_Model_Account
      */
-    private $accountModel = NULL;
+    protected $_accountModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Magento_Product_Cache
      */
-    protected $magentoProductModel = NULL;
+    protected $_magentoProductModel = null;
 
     //########################################
 
@@ -54,9 +58,9 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->accountModel = NULL;
-        $temp && $this->marketplaceModel = NULL;
-        $temp && $this->magentoProductModel = NULL;
+        $temp && $this->_accountModel = null;
+        $temp && $this->_marketplaceModel = null;
+        $temp && $this->_magentoProductModel = null;
         return $temp;
     }
 
@@ -67,13 +71,13 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
      */
     public function getAccount()
     {
-        if (is_null($this->accountModel)) {
-            $this->accountModel = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-                $this->getComponentMode(),'Account',$this->getData('account_id')
+        if ($this->_accountModel === null) {
+            $this->_accountModel = Mage::helper('M2ePro/Component')->getCachedComponentObject(
+                $this->getComponentMode(), 'Account', $this->getData('account_id')
             );
         }
 
-        return $this->accountModel;
+        return $this->_accountModel;
     }
 
     /**
@@ -81,7 +85,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
      */
     public function setAccount(Ess_M2ePro_Model_Account $instance)
     {
-         $this->accountModel = $instance;
+         $this->_accountModel = $instance;
     }
 
     // ---------------------------------------
@@ -91,13 +95,13 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-                $this->getComponentMode(),'Marketplace',$this->getData('marketplace_id')
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component')->getCachedComponentObject(
+                $this->getComponentMode(), 'Marketplace', $this->getData('marketplace_id')
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -105,7 +109,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-         $this->marketplaceModel = $instance;
+         $this->_marketplaceModel = $instance;
     }
 
     // ---------------------------------------
@@ -116,17 +120,17 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
      */
     public function getMagentoProduct()
     {
-        if ($this->magentoProductModel) {
-            return $this->magentoProductModel;
+        if ($this->_magentoProductModel) {
+            return $this->_magentoProductModel;
         }
 
-        if (is_null($this->getProductId())) {
+        if ($this->getProductId() === null) {
             throw new Ess_M2ePro_Model_Exception('Product id is not set');
         }
 
-        return $this->magentoProductModel = Mage::getModel('M2ePro/Magento_Product_Cache')
-                                                    ->setStoreId($this->getChildObject()->getRelatedStoreId())
-                                                    ->setProductId($this->getProductId());
+        return $this->_magentoProductModel = Mage::getModel('M2ePro/Magento_Product_Cache')
+                                                 ->setStoreId($this->getChildObject()->getRelatedStoreId())
+                                                 ->setProductId($this->getProductId());
     }
 
     /**
@@ -134,7 +138,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product_Cache $instance)
     {
-        $this->magentoProductModel = $instance;
+        $this->_magentoProductModel = $instance;
     }
 
     //########################################
@@ -161,7 +165,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
     public function getProductId()
     {
         $temp = $this->getData('product_id');
-        return is_null($temp) ? NULL : (int)$temp;
+        return $temp === null ? NULL : (int)$temp;
     }
 
     public function getAdditionalData()
@@ -286,7 +290,8 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
 
         $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
         $logModel->setComponentMode($this->getComponentMode());
-        $logModel->addProductMessage($this->getId(),
+        $logModel->addProductMessage(
+            $this->getId(),
             $logsInitiator,
             NULL,
             Ess_M2ePro_Model_Listing_Other_Log::ACTION_MAP_LISTING,
@@ -294,7 +299,8 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
             // Item was successfully Mapped
             'Item was successfully Mapped.',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
+            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+        );
     }
 
     /**
@@ -308,7 +314,8 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
 
         $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
         $logModel->setComponentMode($this->getComponentMode());
-        $logModel->addProductMessage($this->getId(),
+        $logModel->addProductMessage(
+            $this->getId(),
             $logsInitiator,
             NULL,
             Ess_M2ePro_Model_Listing_Other_Log::ACTION_UNMAP_LISTING,
@@ -316,7 +323,8 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
             // Item was successfully Unmapped
             'Item was successfully Unmapped.',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
+            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+        );
     }
 
     // ---------------------------------------
@@ -343,7 +351,6 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
         );
 
         if ($listingProduct->getId()) {
-
             $listingLogModel = Mage::getModel('M2ePro/Listing_Log');
             $listingLogModel->setComponentMode($this->getComponentMode());
             $listingLogModel->addProductMessage(

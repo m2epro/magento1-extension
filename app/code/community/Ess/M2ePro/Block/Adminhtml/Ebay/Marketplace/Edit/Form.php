@@ -30,8 +30,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
         /** @var Ess_M2ePro_Model_Marketplace $tempMarketplaces */
         $tempMarketplaces = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace')
             ->setOrder('group_title', 'ASC')
-            ->setOrder('sorder','ASC')
-            ->setOrder('title','ASC')
+            ->setOrder('sorder', 'ASC')
+            ->setOrder('title', 'ASC')
             ->getItems();
 
         $storedStatuses = array();
@@ -47,7 +47,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
         );
 
         foreach ($groupOrder as $key => $groupOrderTitle) {
-
             $groups[$key] = array(
                 'id'           => $idGroup++,
                 'title'        => $groupOrderTitle,
@@ -76,7 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
                     'status'         => $tempMarketplace->getStatus()
                 );
 
-                /* @var $tempMarketplace Ess_M2ePro_Model_Marketplace */
+                /** @var $tempMarketplace Ess_M2ePro_Model_Marketplace */
                 $marketplace = array(
                     'instance' => $tempMarketplace,
                     'params'   => array(
@@ -95,11 +94,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form extends Mage_Adminht
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Update Now'),
                 'onclick' => 'MarketplaceHandlerObj.runSingleSynchronization(this)',
                 'class' => 'run_single_button'
-            ));
+                )
+            );
 
         $this->setChild('run_single_button', $buttonBlock);
 

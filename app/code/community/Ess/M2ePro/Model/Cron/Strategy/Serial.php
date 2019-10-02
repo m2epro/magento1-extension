@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
     /**
      * @var Ess_M2ePro_Model_Lock_Item_Manager
      */
-    private $lockItemManager = NULL;
+    protected $_lockItemManager = null;
 
     //########################################
 
@@ -39,9 +39,11 @@ class Ess_M2ePro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
         $result = true;
 
         /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
-        $transactionalManager = Mage::getModel('M2ePro/Lock_Transactional_Manager', array(
+        $transactionalManager = Mage::getModel(
+            'M2ePro/Lock_Transactional_Manager', array(
             'nick' => self::INITIALIZATION_TRANSACTIONAL_LOCK_NICK
-        ));
+            )
+        );
 
         $transactionalManager->lock();
 
@@ -52,7 +54,7 @@ class Ess_M2ePro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
 
         if ($this->getLockItemManager()->isExist()) {
             if (!$this->getLockItemManager()->isInactiveMoreThanSeconds(
-                    Ess_M2ePro_Model_Lock_Item_Manager::DEFAULT_MAX_INACTIVE_TIME
+                Ess_M2ePro_Model_Lock_Item_Manager::DEFAULT_MAX_INACTIVE_TIME
             )) {
                 $transactionalManager->unlock();
                 return $result;
@@ -81,32 +83,30 @@ class Ess_M2ePro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
 
     // ---------------------------------------
 
-    private function processAllTasks()
+    protected function processAllTasks()
     {
         $result = true;
 
         foreach ($this->getAllowedTasks() as $taskNick) {
-
             try {
-
                 $tempResult = $this->getTaskObject($taskNick)->process();
 
-                if (!is_null($tempResult) && !$tempResult) {
+                if ($tempResult !== null && !$tempResult) {
                     $result = false;
                 }
 
                 $this->getLockItemManager()->activate();
-
             } catch (Exception $exception) {
-
                 $result = false;
 
-                $this->getOperationHistory()->addContentData('exceptions', array(
+                $this->getOperationHistory()->addContentData(
+                    'exceptions', array(
                     'message' => $exception->getMessage(),
                     'file'    => $exception->getFile(),
                     'line'    => $exception->getLine(),
                     'trace'   => $exception->getTraceAsString(),
-                ));
+                    )
+                );
 
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
@@ -122,13 +122,13 @@ class Ess_M2ePro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
      */
     protected function getLockItemManager()
     {
-        if (!is_null($this->lockItemManager)) {
-            return $this->lockItemManager;
+        if ($this->_lockItemManager !== null) {
+            return $this->_lockItemManager;
         }
 
-        $this->lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array('nick' => self::LOCK_ITEM_NICK));
+        $this->_lockItemManager = Mage::getModel('M2ePro/Lock_Item_Manager', array('nick' => self::LOCK_ITEM_NICK));
 
-        return $this->lockItemManager;
+        return $this->_lockItemManager;
     }
 
     /**
@@ -143,9 +143,8 @@ class Ess_M2ePro_Model_Cron_Strategy_Serial extends Ess_M2ePro_Model_Cron_Strate
             );
 
             if ($lockItemManager->isExist()) {
-
                 if ($lockItemManager->isInactiveMoreThanSeconds(
-                        Ess_M2ePro_Model_Lock_Item_Manager::DEFAULT_MAX_INACTIVE_TIME
+                    Ess_M2ePro_Model_Lock_Item_Manager::DEFAULT_MAX_INACTIVE_TIME
                 )) {
                     $lockItemManager->remove();
                     continue;

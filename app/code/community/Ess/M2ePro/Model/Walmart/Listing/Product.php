@@ -20,12 +20,10 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
 
     const PROMOTIONS_MAX_ALLOWED_COUNT = 10;
 
-    //########################################
-
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
      */
-    protected $variationManager = NULL;
+    protected $_variationManager = null;
 
     //########################################
 
@@ -78,7 +76,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
             }
         }
 
-        $this->variationManager = NULL;
+        $this->_variationManager = NULL;
 
         $this->delete();
         return true;
@@ -93,7 +91,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
         $magentoProduct = $this->getMagentoProduct();
 
         if ($magentoProduct->isProductWithVariations() && !$variationManager->isVariationProduct()) {
-
             $this->getParentObject()->setData('is_variation_product', 1);
             $variationManager->setRelationParentType();
             $variationManager->getTypeModel()->resetProductAttributes(false);
@@ -250,14 +247,16 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
 
         if ($this->getMagentoProduct()->isConfigurableType() ||
             $this->getMagentoProduct()->isGroupedType()) {
-
             $variations = $this->getVariations(true);
-            if (count($variations) <= 0) {
-                throw new Ess_M2ePro_Model_Exception_Logic('There are no variations for a variation product.',
-                                                     array(
+            if (empty($variations)) {
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There are no variations for a variation product.',
+                    array(
                                                          'listing_product_id' => $this->getId()
-                                                     ));
+                    )
+                );
             }
+
             $variation  = reset($variations);
             $options    = $variation->getOptions(true);
             $option     = reset($options);
@@ -312,12 +311,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
 
     public function getVariationManager()
     {
-        if (is_null($this->variationManager)) {
-            $this->variationManager = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Manager');
-            $this->variationManager->setListingProduct($this->getParentObject());
+        if ($this->_variationManager === null) {
+            $this->_variationManager = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Manager');
+            $this->_variationManager->setListingProduct($this->getParentObject());
         }
 
-        return $this->variationManager;
+        return $this->_variationManager;
     }
 
     /**
@@ -328,7 +327,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
      */
     public function getVariations($asObjects = false, array $filters = array(), $tryToGetFromStorage = true)
     {
-        return $this->getParentObject()->getVariations($asObjects,$filters,$tryToGetFromStorage);
+        return $this->getParentObject()->getVariations($asObjects, $filters, $tryToGetFromStorage);
     }
 
     //########################################
@@ -571,15 +570,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
     {
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             $variations = $this->getVariations(true);
-            if (count($variations) <= 0) {
-                throw new Ess_M2ePro_Model_Exception_Logic('There are no variations for a variation product.',
+            if (empty($variations)) {
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There are no variations for a variation product.',
                     array(
                         'listing_product_id' => $this->getId()
-                    ));
+                    )
+                );
             }
-            /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+
+            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
             $variation = reset($variations);
 
             return $variation->getChildObject()->getQty($magentoMode);
@@ -604,15 +605,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
     {
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             $variations = $this->getVariations(true);
-            if (count($variations) <= 0) {
-                throw new Ess_M2ePro_Model_Exception_Logic('There are no variations for a variation product.',
-                                                     array(
+            if (empty($variations)) {
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There are no variations for a variation product.',
+                    array(
                                                          'listing_product_id' => $this->getId()
-                                                     ));
+                    )
+                );
             }
-            /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+
+            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
             $variation = reset($variations);
 
             return $variation->getChildObject()->getPrice();
@@ -638,15 +641,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
     {
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             $variations = $this->getVariations(true);
-            if (count($variations) <= 0) {
-                throw new Ess_M2ePro_Model_Exception_Logic('There are no variations for a variation product.',
+            if (empty($variations)) {
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There are no variations for a variation product.',
                     array(
                         'listing_product_id' => $this->getId()
-                    ));
+                    )
+                );
             }
-            /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+
+            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
             $variation = reset($variations);
 
             return $variation->getChildObject()->getMapPrice();
@@ -674,15 +679,17 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-
             $variations = $this->getVariations(true);
-            if (count($variations) <= 0) {
-                throw new Ess_M2ePro_Model_Exception_Logic('There are no variations for a variation product.',
+            if (empty($variations)) {
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There are no variations for a variation product.',
                     array(
                         'listing_product_id' => $this->getId()
-                    ));
+                    )
+                );
             }
-            /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+
+            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
             $variation = reset($variations);
 
             return $variation->getChildObject()->getPromotions();
@@ -701,24 +708,30 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
             /** @var $priceCalculator Ess_M2ePro_Model_Walmart_Listing_Product_PriceCalculator */
             $priceCalculator = Mage::getModel('M2ePro/Walmart_Listing_Product_PriceCalculator');
             $priceCalculator->setSource($promotion->getPriceSource())->setProduct($this->getParentObject());
-            $priceCalculator->setSourceModeMapping(array(
+            $priceCalculator->setSourceModeMapping(
+                array(
                 PriceCalculator::MODE_PRODUCT   => Promotion::PRICE_MODE_PRODUCT,
                 PriceCalculator::MODE_SPECIAL   => Promotion::PRICE_MODE_SPECIAL,
                 PriceCalculator::MODE_ATTRIBUTE => Promotion::PRICE_MODE_ATTRIBUTE,
-            ));
+                )
+            );
             $priceCalculator->setCoefficient($promotion->getPriceCoefficient());
             $priceCalculator->setVatPercent($this->getWalmartSellingFormatTemplate()->getPriceVatPercent());
 
             /** @var $comparisonPriceCalculator Ess_M2ePro_Model_Walmart_Listing_Product_PriceCalculator */
             $comparisonPriceCalculator = Mage::getModel('M2ePro/Walmart_Listing_Product_PriceCalculator');
             $comparisonPriceCalculator->setSource(
-                $promotion->getComparisonPriceSource())->setProduct($this->getParentObject()
+                $promotion->getComparisonPriceSource()
+            )->setProduct(
+                $this->getParentObject()
             );
-            $comparisonPriceCalculator->setSourceModeMapping(array(
+            $comparisonPriceCalculator->setSourceModeMapping(
+                array(
                 PriceCalculator::MODE_PRODUCT   => Promotion::COMPARISON_PRICE_MODE_PRODUCT,
                 PriceCalculator::MODE_SPECIAL   => Promotion::COMPARISON_PRICE_MODE_SPECIAL,
                 PriceCalculator::MODE_ATTRIBUTE => Promotion::COMPARISON_PRICE_MODE_ATTRIBUTE,
-            ));
+                )
+            );
             $comparisonPriceCalculator->setCoefficient($promotion->getComparisonPriceCoefficient());
             $comparisonPriceCalculator->setVatPercent($this->getWalmartSellingFormatTemplate()->getPriceVatPercent());
 

@@ -15,11 +15,11 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
 
     public function getCurrencyConversionMessage($marketplaceCurrency = null)
     {
-        if (is_null($this->getMarketplace())) {
+        if ($this->getMarketplace() === null) {
             return NULL;
         }
 
-        if (is_null($marketplaceCurrency)) {
+        if ($marketplaceCurrency === null) {
             $marketplaceCurrency = $this->getMarketplace()->getChildObject()->getCurrency();
         }
 
@@ -45,16 +45,18 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
             );
 
             // M2ePro_TRANSLATIONS
-            // Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a> for Store View "%store_path%" of your Magento. Currency conversion will not be performed.
+            // Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a>
+            // for Store View "%store_path%" of your Magento.
+            // Currency conversion will not be performed.
             return
                 Mage::helper('M2ePro')->__(
                     'Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a> '
                     . 'for Store View "%store_path%" of your Magento. '
                     . 'Currency conversion will not be performed.',
-                $marketplaceCurrency,
-                $currencySetupUrl,
-                Mage::helper('M2ePro')->escapeHtml($storePath)
-            );
+                    $marketplaceCurrency,
+                    $currencySetupUrl,
+                    Mage::helper('M2ePro')->escapeHtml($storePath)
+                );
         }
 
         $rate = Mage::getSingleton('M2ePro/Currency')
@@ -65,32 +67,35 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
             );
 
         // M2ePro_TRANSLATIONS
-        // There is no rate for "%currency_from%-%currency_to%" in <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento. Currency conversion will not be performed.
+        // There is no rate for "%currency_from%-%currency_to%" in
+        // <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.
+        // Currency conversion will not be performed.
         if ($rate == 0) {
             return
                 Mage::helper('M2ePro')->__(
-                    'There is no rate for "%currency_from%-%currency_to%" in'
-                    . ' <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.'
-                    . ' Currency conversion will not be performed.',
+                    'There is no rate for "%currency_from%-%currency_to%" in '
+                    . '<a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento. '
+                    . 'Currency conversion will not be performed.',
+                    $this->getStore()->getBaseCurrencyCode(),
+                    $marketplaceCurrency,
+                    Mage::helper('adminhtml')->getUrl('adminhtml/system_currency')
+                );
+        }
+
+        // M2ePro_TRANSLATIONS
+        // There is a rate %value% for "%currency_from%-%currency_to%" in
+        // <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.
+        // Currency conversion will be performed automatically.
+        $message =
+            Mage::helper('M2ePro')->__(
+                'There is a rate %value% for "%currency_from%-%currency_to%" in '
+                . '<a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento. '
+                . 'Currency conversion will be performed automatically.',
+                $rate,
                 $this->getStore()->getBaseCurrencyCode(),
                 $marketplaceCurrency,
                 Mage::helper('adminhtml')->getUrl('adminhtml/system_currency')
             );
-        }
-
-        // M2ePro_TRANSLATIONS
-        // There is a rate %value% for "%currency_from%-%currency_to%" in <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento. Currency conversion will be performed automatically.
-        $message =
-            Mage::helper('M2ePro')->__(
-                'There is a rate %value% for "%currency_from%-%currency_to%" in'
-                . ' <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.'
-                . ' Currency conversion will be performed automatically.'
-            ,
-            $rate,
-            $this->getStore()->getBaseCurrencyCode(),
-            $marketplaceCurrency,
-            Mage::helper('adminhtml')->getUrl('adminhtml/system_currency')
-        );
 
         return '<span style="color: #3D6611 !important;">' . $message . '</span>';
     }
@@ -102,9 +107,11 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
         $messages = array();
 
         // ---------------------------------------
-        if (!is_null($message = $this->getCurrencyConversionMessage())) {
+        $message = $this->getCurrencyConversionMessage();
+        if ($message !== null) {
             $messages[self::TYPE_CURRENCY_CONVERSION] = $message;
         }
+
         // ---------------------------------------
 
         $messages = array_merge($messages, parent::getMessages());
@@ -116,7 +123,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
 
     protected function canDisplayCurrencyConversionMessage($marketplaceCurrency)
     {
-        if (is_null($this->getStore())) {
+        if ($this->getStore() === null) {
             return false;
         }
 
@@ -152,7 +159,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
                 break;
         }
 
-        if (is_null($model)) {
+        if ($model === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Policy model is unknown.');
         }
 

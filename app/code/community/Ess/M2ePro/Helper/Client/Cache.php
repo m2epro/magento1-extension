@@ -103,13 +103,11 @@ class Ess_M2ePro_Helper_Client_Cache extends Ess_M2ePro_Helper_Magento_Abstract
             $this->getSlowBackend() != self::BACKEND_TYPE_FILE &&
             $this->getSlowBackend() != self::BACKEND_TYPE_SQLITE &&
             $this->getSlowBackend() != self::BACKEND_TYPE_DB) {
-
             return true;
         }
 
         if (($this->getSlowBackend() == '' || $this->getSlowBackend() == self::BACKEND_TYPE_FILE) &&
             Mage::getConfig()->getNode('global/cache/slow_backend_options')) {
-
             return true;
         }
 

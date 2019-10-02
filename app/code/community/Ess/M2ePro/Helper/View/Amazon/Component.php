@@ -101,7 +101,7 @@ class Ess_M2ePro_Helper_View_Amazon_Component extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    private function removeEbayFromComponentsArray($components)
+    protected function removeEbayFromComponentsArray($components)
     {
         $resultComponents = array();
         foreach ($components as $key => $value) {

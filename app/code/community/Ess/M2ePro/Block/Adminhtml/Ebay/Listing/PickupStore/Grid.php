@@ -10,7 +10,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
     extends Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
 {
     /** @var Ess_M2ePro_Model_Ebay_Listing */
-    protected $listing;
+    protected $_listing;
 
     //########################################
 
@@ -18,14 +18,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
     {
         parent::__construct();
 
-        $this->listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         // Initialization block
         // ---------------------------------------
-        $this->setId('ebayListingPickupStoreGrid'.$this->listing->getId());
+        $this->setId('ebayListingPickupStoreGrid'.$this->_listing->getId());
         // ---------------------------------------
 
-        $this->showAdvancedFilterProductsOption = false;
+        $this->_showAdvancedFilterProductsOption = false;
     }
 
     //########################################
@@ -49,9 +49,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
         // ---------------------------------------
         // Get collection
         // ---------------------------------------
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                          Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
         $collection->setListingProductModeOn()
                    ->setListing($listingData['id'])
                    ->setStoreId($listingData['store_id']);
@@ -141,7 +143,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
         );
 
         $collection->getSelect()->joinLeft(
-            new Zend_Db_Expr('(
+            new Zend_Db_Expr(
+                '(
                 SELECT
                     `mlpv`.`listing_product_id`,
                     `meapss`.`account_pickup_store_id`,
@@ -158,7 +161,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
                     ON (meapss.sku = melpv.online_sku)
                 WHERE `melpv`.`status` != ' . Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED . '
                 GROUP BY `meapss`.`account_pickup_store_id`, `mlpv`.`listing_product_id`
-            )'),
+            )'
+            ),
             'elp.listing_product_id=t.listing_product_id AND t.account_pickup_store_id = meaps.id',
             array(
                 'variations_qty' => 'variations_qty',
@@ -169,7 +173,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
         );
 
         $collection->getSelect()->where(
-            'lp.listing_id = ?',(int)$listingData['id']);
+            'lp.listing_id = ?', (int)$listingData['id']
+        );
         // ---------------------------------------
 
         // Set collection to grid
@@ -191,6 +196,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
                 $collection->setOrder($columnIndex, strtoupper($column->getDir()));
             }
         }
+
         return $this;
     }
 
@@ -198,82 +204,99 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('product_id', array(
-            'header'    => Mage::helper('M2ePro')->__('Product ID'),
-            'align'     => 'right',
-            'width'     => '100px',
-            'type'      => 'number',
-            'index'     => 'entity_id',
-            'frame_callback' => array($this, 'callbackColumnListingProductId'),
-        ));
+        $this->addColumn(
+            'product_id', array(
+                'header'         => Mage::helper('M2ePro')->__('Product ID'),
+                'align'          => 'right',
+                'width'          => '100px',
+                'type'           => 'number',
+                'index'          => 'entity_id',
+                'frame_callback' => array($this, 'callbackColumnListingProductId'),
+            )
+        );
 
-        $this->addColumn('name', array(
-            'header'    => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
-            'align'     => 'left',
-            'type'      => 'text',
-            'index'     => 'online_title',
-            'width'     => '550px',
-            'frame_callback' => array($this, 'callbackColumnTitle'),
-            'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+        $this->addColumn(
+            'name', array(
+                'header'                    => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'online_title',
+                'width'                     => '550px',
+                'frame_callback'            => array($this, 'callbackColumnTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
+            )
+        );
 
-        $this->addColumn('account_pickup_store_id', array(
-            'header'    => Mage::helper('M2ePro')->__('Store Details'),
-            'align'     => 'left',
-            'type'      => 'text',
-            'index'     => 'id',
-            'width'     => '500px',
-            'frame_callback' => array($this, 'callbackColumnPickupStore'),
-            'filter_condition_callback' => array($this, 'callbackFilterPickupStore')
-        ));
+        $this->addColumn(
+            'account_pickup_store_id', array(
+                'header'                    => Mage::helper('M2ePro')->__('Store Details'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'id',
+                'width'                     => '500px',
+                'frame_callback'            => array($this, 'callbackColumnPickupStore'),
+                'filter_condition_callback' => array($this, 'callbackFilterPickupStore')
+            )
+        );
 
-        $this->addColumn('ebay_item_id', array(
-            'header'    => Mage::helper('M2ePro')->__('Item ID'),
-            'align'     => 'left',
-            'width'     => '100px',
-            'type'      => 'text',
-            'index'     => 'item_id',
-            'frame_callback' => array($this, 'callbackColumnEbayItemId')
-        ));
+        $this->addColumn(
+            'ebay_item_id', array(
+                'header'         => Mage::helper('M2ePro')->__('Item ID'),
+                'align'          => 'left',
+                'width'          => '100px',
+                'type'           => 'text',
+                'index'          => 'item_id',
+                'frame_callback' => array($this, 'callbackColumnEbayItemId')
+            )
+        );
 
-        $this->addColumn('pickup_store_product_qty', array(
-            'header'    => Mage::helper('M2ePro')->__('Available QTY'),
-            'align'     => 'left',
-            'width'     => '110px',
-            'type'      => 'number',
-            'sortable'  => (bool)version_compare(Mage::helper('M2ePro/Magento')->getVersion(), '1.4.2', '>='),
-            'index'     => 'pickup_store_product_qty',
-            'frame_callback' => array($this, 'callbackColumnOnlineQty'),
-            'filter_condition_callback' => array($this, 'callbackFilterOnlineQty')
+        $this->addColumn(
+            'pickup_store_product_qty', array(
+                'header'                    => Mage::helper('M2ePro')->__('Available QTY'),
+                'align'                     => 'left',
+                'width'                     => '110px',
+                'type'                      => 'number',
+                'sortable'                  => (bool)version_compare(
+                    Mage::helper('M2ePro/Magento')->getVersion(),
+                    '1.4.2', '>='
+                ),
+                'index'                     => 'pickup_store_product_qty',
+                'frame_callback'            => array($this, 'callbackColumnOnlineQty'),
+                'filter_condition_callback' => array($this, 'callbackFilterOnlineQty')
 
-        ));
+            )
+        );
 
-        $this->addColumn('availability', array(
-            'header'    => Mage::helper('M2ePro')->__('Availability'),
-            'align'     => 'right',
-            'width'     => '110px',
-            'type'      => 'options',
-            'sortable'  => false,
-            'options'   => array(
-                1 => Mage::helper('M2ePro')->__('Yes'),
-                0 => Mage::helper('M2ePro')->__('No')
-            ),
-            'index'     => 'pickup_store_product_qty',
-            'frame_callback' => array($this, 'callbackColumnOnlineAvailability'),
-            'filter_condition_callback' => array($this, 'callbackFilterOnlineAvailability')
+        $this->addColumn(
+            'availability', array(
+                'header'                    => Mage::helper('M2ePro')->__('Availability'),
+                'align'                     => 'right',
+                'width'                     => '110px',
+                'type'                      => 'options',
+                'sortable'                  => false,
+                'options'                   => array(
+                    1 => Mage::helper('M2ePro')->__('Yes'),
+                    0 => Mage::helper('M2ePro')->__('No')
+                ),
+                'index'                     => 'pickup_store_product_qty',
+                'frame_callback'            => array($this, 'callbackColumnOnlineAvailability'),
+                'filter_condition_callback' => array($this, 'callbackFilterOnlineAvailability')
 
-        ));
+            )
+        );
 
-        $this->addColumn('delete_action', array(
-            'header'    => Mage::helper('M2ePro')->__('Logs'),
-            'align'     => 'left',
-            'type'      => 'action',
-            'index'     => 'delete_action',
-            'width'     => '100px',
-            'filter'    => false,
-            'sortable'  => false,
-            'frame_callback' => array($this, 'callbackColumnLog'),
-        ));
+        $this->addColumn(
+            'delete_action', array(
+                'header'         => Mage::helper('M2ePro')->__('Logs'),
+                'align'          => 'left',
+                'type'           => 'action',
+                'index'          => 'delete_action',
+                'width'          => '100px',
+                'filter'         => false,
+                'sortable'       => false,
+                'frame_callback' => array($this, 'callbackColumnLog'),
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -288,13 +311,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
         $this->setMassactionIdField('id');
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
-        $this->getMassactionBlock()->addItem('unassign', array(
+        $this->getMassactionBlock()->addItem(
+            'unassign', array(
             'label'    => Mage::helper('M2ePro')->__('Unassign'),
-            'url'      => $this->getUrl('M2ePro/adminhtml_ebay_listing_pickupStore/unassign/', array(
-                'listing_id' => $this->listing->getId()
-            )),
+            'url'      => $this->getUrl(
+                'M2ePro/adminhtml_ebay_listing_pickupStore/unassign/', array(
+                'listing_id' => $this->_listing->getId()
+                )
+            ),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
 
         return parent::_prepareMassaction();
     }
@@ -303,15 +330,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
     {
         $columnId = 'massaction';
         $massactionColumn = $this->getLayout()->createBlock('adminhtml/widget_grid_column')
-                ->setData(array(
-                    'index'        => $this->getMassactionIdField(),
-                    'filter_index' => $this->getMassactionIdFilter(),
-                    'type'         => 'massaction',
-                    'name'         => $this->getMassactionBlock()->getFormFieldName(),
-                    'align'        => 'center',
-                    'is_system'    => true,
-                    'filter_condition_callback' => array($this, 'callbackFilterCheckboxes')
-                ));
+                ->setData(
+                    array(
+                        'index'                     => $this->getMassactionIdField(),
+                        'filter_index'              => $this->getMassactionIdFilter(),
+                        'type'                      => 'massaction',
+                        'name'                      => $this->getMassactionBlock()->getFormFieldName(),
+                        'align'                     => 'center',
+                        'is_system'                 => true,
+                        'filter_condition_callback' => array($this, 'callbackFilterCheckboxes')
+                    )
+                );
 
         if ($this->getNoFilterMassactionColumn()) {
             $massactionColumn->setData('filter', false);
@@ -339,7 +368,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
 
         $valueHtml = '<span class="product-title-value">' . $title . '</span>';
 
-        if (is_null($sku = $row->getData('sku'))) {
+        $sku = $row->getData('sku');
+        if ($sku === null) {
             $sku = Mage::getModel('M2ePro/Magento_Product')->setProductId($row->getData('catalog_product_id'))
                         ->getSku();
         }
@@ -352,7 +382,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         $listingProduct = Mage::helper('M2ePro/Component_Ebay')
-            ->getCachedObject('Listing_Product',$row->getData('listing_product_id'));
+            ->getCachedObject('Listing_Product', $row->getData('listing_product_id'));
 
         if (!$listingProduct->getChildObject()->isVariationsReady()) {
             return '<div style="padding: 2px 4px;">'.$valueHtml.'</div>';
@@ -396,17 +426,19 @@ HTML;
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getData();
 
-        $url = $this->getUrl('*/adminhtml_ebay_listing/gotoEbay/', array(
-            'item_id' => $value,
-            'account_id' => $listingData['account_id'],
-            'marketplace_id' => $listingData['marketplace_id']
-        ));
+        $url = $this->getUrl(
+            '*/adminhtml_ebay_listing/gotoEbay/', array(
+                'item_id'        => $value,
+                'account_id'     => $listingData['account_id'],
+                'marketplace_id' => $listingData['marketplace_id']
+            )
+        );
         return '<a href="' . $url . '" target="_blank">'.$value.'</a>';
     }
 
@@ -422,15 +454,17 @@ HTML;
         }
 
         $qty = $row->getData('pickup_store_product_qty');
-        if (is_null($qty) || $row->getData('is_added')) {
+        if ($qty === null || $row->getData('is_added')) {
             $qty = Mage::helper('M2ePro')->__('Adding to Store');
         }
 
         $variationsAdded = $row->getData('variations_added');
         $countVariationsInState = $row->getData('count_variations_in_state');
 
-        if (!is_null($countVariationsInState) && !is_null($variationsAdded) &&
-            $countVariationsInState == $variationsAdded) {
+        if ($countVariationsInState !== null
+            && $variationsAdded !== null
+            && $countVariationsInState == $variationsAdded
+        ) {
             $qty = Mage::helper('M2ePro')->__('Adding to Store');
         }
 
@@ -453,8 +487,8 @@ HTML;
         $variationsAdded = $row->getData('variations_added');
         $countVariationsInState = $row->getData('count_variations_in_state');
 
-        if (is_null($qty) || $row->getData('is_added') || (!is_null($countVariationsInState) &&
-            !is_null($variationsAdded) && $countVariationsInState == $variationsAdded)) {
+        if ($qty === null || $row->getData('is_added') || ($countVariationsInState !== null &&
+            $variationsAdded !== null && $countVariationsInState == $variationsAdded)) {
             return Mage::helper('M2ePro')->__('Adding to Store');
         }
 
@@ -483,15 +517,16 @@ HTML;
 
         $region = $row->getData('region');
         $city = $row->getData('city');
-        $address1 = $row->getData('address_1');
-        $address2 = $row->getData('address_2');
+        $addressOne = $row->getData('address_1');
+        $addressTwo = $row->getData('address_2');
 
         $helper = Mage::helper('M2ePro');
 
-        $addressHtml = "{$country}, {$region}, {$city} <br/> {$address1}";
-        if (!empty($address2)) {
-            $addressHtml .= ',' . $address2;
+        $addressHtml = "{$country}, {$region}, {$city} <br/> {$addressOne}";
+        if (!empty($addressTwo)) {
+            $addressHtml .= ',' . $addressTwo;
         }
+
         $addressHtml .= ', ' .$row->getData('postal_code');
 
         return <<<HTML
@@ -524,7 +559,7 @@ HTML
     {
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         $listingProduct = Mage::helper('M2ePro/Component_Ebay')
-            ->getCachedObject('Listing_Product',$row->getData('listing_product_id'));
+            ->getCachedObject('Listing_Product', $row->getData('listing_product_id'));
 
         if ($listingProduct->getChildObject()->isVariationsReady()) {
             return '';
@@ -654,9 +689,11 @@ HTML
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/adminhtml_ebay_listing_pickupStore/pickupStoreGrid', array(
-            '_current' => true
-        ));
+        return $this->getUrl(
+            '*/adminhtml_ebay_listing_pickupStore/pickupStoreGrid', array(
+                '_current' => true
+            )
+        );
     }
 
     //########################################
@@ -690,11 +727,10 @@ HTML
         $lastActionId = false;
 
         foreach ($logRows as $row) {
-
             $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
-                if (count($tempActionRows) > 0) {
+                if (!empty($tempActionRows)) {
                     $actionsRows[] = array(
                         'type' => $this->getMainTypeForActionId($tempActionRows),
                         'date' => $this->getMainDateForActionId($tempActionRows),
@@ -704,12 +740,14 @@ HTML
                     );
                     $tempActionRows = array();
                 }
+
                 $lastActionId = $row['action_id'];
             }
+
             $tempActionRows[] = $row;
         }
 
-        if (count($tempActionRows) > 0) {
+        if (!empty($tempActionRows)) {
             $actionsRows[] = array(
                 'type' => $this->getMainTypeForActionId($tempActionRows),
                 'date' => $this->getMainDateForActionId($tempActionRows),
@@ -719,13 +757,14 @@ HTML
             );
         }
 
-        if (count($actionsRows) <= 0) {
+        if (empty($actionsRows)) {
             return '';
         }
 
         foreach ($actionsRows as &$actionsRow) {
-            usort($actionsRow['items'], function($a, $b)
-            {
+            usort(
+                $actionsRow['items'], function($a, $b)
+                {
                 $sortOrder = array(
                     Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 1,
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 2,
@@ -733,7 +772,8 @@ HTML
                 );
 
                 return $sortOrder[$a["type"]] > $sortOrder[$b["type"]];
-            });
+                }
+            );
         }
 
         $tips = array(
@@ -748,20 +788,24 @@ HTML
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
         );
 
-        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
+        $summary = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_grid_summary', '', array(
             'entity_id' => (int)$columnId,
             'rows' => $actionsRows,
             'tips' => $tips,
             'icons' => $icons,
             'view_help_handler' => 'EbayListingPickupStoreGridHandlerObj.viewItemHelp',
             'hide_help_handler' => 'EbayListingPickupStoreGridHandlerObj.hideItemHelp',
-        ));
+            )
+        );
 
         $pickupStoreState = Mage::getModel('M2ePro/Ebay_Account_PickupStore_State')
             ->load($stateId);
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Log For Sku' => Mage::helper('M2ePro')->__('Log For Sku (%s%)', $pickupStoreState->getSku())
-        ));
+            )
+        );
 
         $html = "<script>M2ePro.translator.add({$translations});</script>";
 
@@ -799,6 +843,7 @@ HTML
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
                 break;
             }
+
             if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
             }
@@ -824,23 +869,29 @@ HTML
 
         $allIdsStr  = implode(',', $allIds);
 
-        $urls = Mage::helper('M2ePro')->jsonEncode(array(
+        $urls = Mage::helper('M2ePro')->jsonEncode(
+            array(
             '*/assign' => $this->getUrl('M2ePro/adminhtml_ebay_listing_pickupStore/assign/'),
             '*/unassign' => $this->getUrl('M2ePro/adminhtml_ebay_listing_pickupStore/unassign/'),
-            '*/pickupStoreGrid' => $this->getUrl('M2ePro/adminhtml_ebay_listing_pickupStore/pickupStoreGrid/', array(
-                'id' => $this->listing->getId()
-            )),
+            '*/pickupStoreGrid' => $this->getUrl(
+                'M2ePro/adminhtml_ebay_listing_pickupStore/pickupStoreGrid/', array(
+                'id' => $this->_listing->getId()
+                )
+            ),
             'variationProduct' => $this->getUrl(
                 'M2ePro/adminhtml_ebay_listing_pickupStore_variation_product_show/variation/'
             ),
             '*/productsStep' => $this->getUrl('M2ePro/adminhtml_ebay_listing_pickupStore/productsStep/'),
             '*/storesStep' => $this->getUrl('M2ePro/adminhtml_ebay_listing_pickupStore/storesStep/'),
             '*/logGrid' => $this->getUrl('M2ePro/adminhtml_ebay_listing_pickupStore/logGrid/'),
-        ));
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+            )
+        );
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Assign Products to Stores' => Mage::helper('M2ePro')->__('Assign Products to Stores'),
             'Log For Sku' => Mage::helper('M2ePro')->__('Log For Sku')
-        ));
+            )
+        );
 
         $css = "<style>
                     #{$this->getId()}_table .massaction-checkbox{

@@ -9,17 +9,17 @@
 class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
     extends Ess_M2ePro_Model_Amazon_Connector_Product_Requester
 {
-    private $generalValidatorObject = NULL;
+    protected $_generalValidatorObject = null;
 
-    private $skuGeneralValidatorObject = NULL;
+    protected $_skuGeneralValidatorObject = null;
 
-    private $skuSearchValidatorObject = NULL;
+    protected $_skuSearchValidatorObject = null;
 
-    private $skuExistenceValidatorObject = NULL;
+    protected $_skuExistenceValidatorObject = null;
 
-    private $listTypeValidatorObject = NULL;
+    protected $_listTypeValidatorObject = null;
 
-    private $validatorsData = array();
+    protected $_validatorsData = array();
 
     // ########################################
 
@@ -29,9 +29,9 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
 
         $additionalData = $listingProduct->getAdditionalData();
         unset($additionalData['synch_template_list_rules_note']);
-        $this->listingProduct->setSettings('additional_data', $additionalData);
+        $this->_listingProduct->setSettings('additional_data', $additionalData);
 
-        $this->listingProduct->save();
+        $this->_listingProduct->save();
 
         return $this;
     }
@@ -96,7 +96,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
 
     // ########################################
 
-    private function validateGeneralRequirements()
+    protected function validateGeneralRequirements()
     {
         $validator = $this->getGeneralValidatorObject();
 
@@ -117,7 +117,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return false;
     }
 
-    private function validateSkuGeneralRequirements()
+    protected function validateSkuGeneralRequirements()
     {
         $validator = $this->getSkuGeneralValidatorObject();
 
@@ -138,7 +138,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return false;
     }
 
-    private function validateSkuSearchRequirements()
+    protected function validateSkuSearchRequirements()
     {
         $validator = $this->getSkuSearchValidatorObject();
 
@@ -159,44 +159,43 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return false;
     }
 
-    private function validateSkuExistenceRequirements()
+    protected function validateSkuExistenceRequirements()
     {
         $sku = $this->getValidatorsData('sku');
 
         try {
-
             $countTriedTemp = 0;
 
             do {
-
                 $countTriedTemp != 0 && sleep(3);
 
                 /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
                 $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-                $connectorObj = $dispatcherObject->getVirtualConnector('product','search','asinBySkus',
-                                                                       array('include_info' => true,
+                $connectorObj = $dispatcherObject->getVirtualConnector(
+                    'product', 'search', 'asinBySkus',
+                    array('include_info' => true,
                                                                              'only_realtime' => true,
                                                                              'items' => array($sku)),
-                                                                       'items',
-                                                                       $this->account->getId());
+                    'items',
+                    $this->_account->getId()
+                );
                 $dispatcherObject->process($connectorObj);
                 $response = $connectorObj->getResponseData();
 
-                if (is_null($response) && $connectorObj->getResponse()->getMessages()->hasErrorEntities()) {
+                if ($response === null && $connectorObj->getResponse()->getMessages()->hasErrorEntities()) {
                     throw new Ess_M2ePro_Model_Exception(
                         $connectorObj->getResponse()->getMessages()->getCombinedErrorsString()
                     );
                 }
+            } while ($response === null && ++$countTriedTemp <= 3);
 
-            } while (is_null($response) && ++$countTriedTemp <= 3);
-
-            if (is_null($response)) {
-                throw new Ess_M2ePro_Model_Exception('Searching of SKU in your inventory on Amazon is not
-                    available now. Please repeat the action later.');
+            if ($response === null) {
+                throw new Ess_M2ePro_Model_Exception(
+                    'Searching of SKU in your inventory on Amazon is not
+                    available now. Please repeat the action later.'
+                );
             }
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
@@ -232,7 +231,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return false;
     }
 
-    private function validateListTypeRequirements()
+    protected function validateListTypeRequirements()
     {
         $validator = $this->getListTypeValidatorObject();
 
@@ -255,18 +254,18 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
 
     // ########################################
 
-    private function getValidatorsData($key = null)
+    protected function getValidatorsData($key = null)
     {
-        if (is_null($key)) {
-            return $this->validatorsData;
+        if ($key === null) {
+            return $this->_validatorsData;
         }
 
-        return isset($this->validatorsData[$key]) ? $this->validatorsData[$key] : null;
+        return isset($this->_validatorsData[$key]) ? $this->_validatorsData[$key] : null;
     }
 
-    private function addValidatorsData(array $data)
+    protected function addValidatorsData(array $data)
     {
-        $this->validatorsData = array_merge($this->validatorsData, $data);
+        $this->_validatorsData = array_merge($this->_validatorsData, $data);
     }
 
     // ########################################
@@ -274,116 +273,116 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_General
      */
-    private function getGeneralValidatorObject()
+    protected function getGeneralValidatorObject()
     {
-        if (is_null($this->generalValidatorObject)) {
+        if ($this->_generalValidatorObject === null) {
 
             /** @var $validator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_General */
             $validator = Mage::getModel(
                 'M2ePro/Amazon_Listing_Product_Action_Type_List_Validator_General'
             );
 
-            $validator->setParams($this->params);
-            $validator->setListingProduct($this->listingProduct);
+            $validator->setParams($this->_params);
+            $validator->setListingProduct($this->_listingProduct);
             $validator->setData($this->getValidatorsData());
-            $validator->setConfigurator($this->listingProduct->getActionConfigurator());
+            $validator->setConfigurator($this->_listingProduct->getActionConfigurator());
 
-            $this->generalValidatorObject = $validator;
+            $this->_generalValidatorObject = $validator;
         }
 
-        return $this->generalValidatorObject;
+        return $this->_generalValidatorObject;
     }
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_General
      */
-    private function getSkuGeneralValidatorObject()
+    protected function getSkuGeneralValidatorObject()
     {
-        if (is_null($this->skuGeneralValidatorObject)) {
+        if ($this->_skuGeneralValidatorObject === null) {
 
             /** @var $validator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_General */
             $validator = Mage::getModel(
                 'M2ePro/Amazon_Listing_Product_Action_Type_List_Validator_Sku_General'
             );
 
-            $validator->setParams($this->params);
-            $validator->setListingProduct($this->listingProduct);
+            $validator->setParams($this->_params);
+            $validator->setListingProduct($this->_listingProduct);
             $validator->setData($this->getValidatorsData());
-            $validator->setConfigurator($this->listingProduct->getActionConfigurator());
+            $validator->setConfigurator($this->_listingProduct->getActionConfigurator());
 
-            $this->skuGeneralValidatorObject = $validator;
+            $this->_skuGeneralValidatorObject = $validator;
         }
 
-        return $this->skuGeneralValidatorObject;
+        return $this->_skuGeneralValidatorObject;
     }
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Search
      */
-    private function getSkuSearchValidatorObject()
+    protected function getSkuSearchValidatorObject()
     {
-        if (is_null($this->skuSearchValidatorObject)) {
+        if ($this->_skuSearchValidatorObject === null) {
 
             /** @var $validator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Search */
             $validator = Mage::getModel(
                 'M2ePro/Amazon_Listing_Product_Action_Type_List_Validator_Sku_Search'
             );
 
-            $validator->setParams($this->params);
-            $validator->setListingProduct($this->listingProduct);
+            $validator->setParams($this->_params);
+            $validator->setListingProduct($this->_listingProduct);
             $validator->setData($this->getValidatorsData());
-            $validator->setConfigurator($this->listingProduct->getActionConfigurator());
+            $validator->setConfigurator($this->_listingProduct->getActionConfigurator());
 
-            $this->skuSearchValidatorObject = $validator;
+            $this->_skuSearchValidatorObject = $validator;
         }
 
-        return $this->skuSearchValidatorObject;
+        return $this->_skuSearchValidatorObject;
     }
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Existence
      */
-    private function getSkuExistenceValidatorObject()
+    protected function getSkuExistenceValidatorObject()
     {
-        if (is_null($this->skuExistenceValidatorObject)) {
+        if ($this->_skuExistenceValidatorObject === null) {
 
             /** @var $validator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Existence */
             $validator = Mage::getModel(
                 'M2ePro/Amazon_Listing_Product_Action_Type_List_Validator_Sku_Existence'
             );
 
-            $validator->setParams($this->params);
-            $validator->setListingProduct($this->listingProduct);
+            $validator->setParams($this->_params);
+            $validator->setListingProduct($this->_listingProduct);
             $validator->setData($this->getValidatorsData());
-            $validator->setConfigurator($this->listingProduct->getActionConfigurator());
+            $validator->setConfigurator($this->_listingProduct->getActionConfigurator());
 
-            $this->skuExistenceValidatorObject = $validator;
+            $this->_skuExistenceValidatorObject = $validator;
         }
 
-        return $this->skuExistenceValidatorObject;
+        return $this->_skuExistenceValidatorObject;
     }
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListType
      */
-    private function getListTypeValidatorObject()
+    protected function getListTypeValidatorObject()
     {
-        if (is_null($this->listTypeValidatorObject)) {
+        if ($this->_listTypeValidatorObject === null) {
 
             /** @var $validator Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_ListType */
             $validator = Mage::getModel(
                 'M2ePro/Amazon_Listing_Product_Action_Type_List_Validator_ListType'
             );
 
-            $validator->setParams($this->params);
-            $validator->setListingProduct($this->listingProduct);
+            $validator->setParams($this->_params);
+            $validator->setListingProduct($this->_listingProduct);
             $validator->setData($this->getValidatorsData());
-            $validator->setConfigurator($this->listingProduct->getActionConfigurator());
+            $validator->setConfigurator($this->_listingProduct->getActionConfigurator());
 
-            $this->listTypeValidatorObject = $validator;
+            $this->_listTypeValidatorObject = $validator;
         }
 
-        return $this->listTypeValidatorObject;
+        return $this->_listTypeValidatorObject;
     }
 
     // ########################################
@@ -393,22 +392,21 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
      */
     protected function getRequestObject()
     {
-        if (is_null($this->requestObject)) {
-
-            /* @var $request Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request */
+        if ($this->_requestObject === null) {
+            /** @var $request Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Request */
             $request = Mage::getModel(
                 'M2ePro/Amazon_Listing_Product_Action_Type_List_Request'
             );
 
-            $request->setParams($this->params);
-            $request->setListingProduct($this->listingProduct);
-            $request->setConfigurator($this->listingProduct->getActionConfigurator());
+            $request->setParams($this->_params);
+            $request->setListingProduct($this->_listingProduct);
+            $request->setConfigurator($this->_listingProduct->getActionConfigurator());
             $request->setCachedData($this->getValidatorsData());
 
-            $this->requestObject = $request;
+            $this->_requestObject = $request;
         }
 
-        return $this->requestObject;
+        return $this->_requestObject;
     }
 
     // ########################################

@@ -1,15 +1,23 @@
-<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form */ ?>
-
 <?php
-    $formData = $this->getFormData();
-    $default  = $this->getDefault();
-    $formData = array_merge($default, $formData);
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    /** @var Ess_M2ePro_Model_Mysql4_Walmart_Template_Category_Collection $collection */
-    $collection = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
-    $collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+// @codingStandardsIgnoreFile
 
-    $categoryTemplates = $collection->getData();
+/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Form */
+
+$formData = $this->getFormData();
+$default  = $this->getDefault();
+$formData = array_merge($default, $formData);
+
+/** @var Ess_M2ePro_Model_Resource_Walmart_Template_Category_Collection $collection */
+$collection = Mage::getModel('M2ePro/Walmart_Template_Category')->getCollection();
+$collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+
+$categoryTemplates = $collection->getData();
 ?>
 
 <script type="text/javascript">

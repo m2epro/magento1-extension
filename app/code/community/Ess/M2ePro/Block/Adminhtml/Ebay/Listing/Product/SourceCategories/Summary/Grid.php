@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
 
     public function setProductsForEachCategory($productsForEachCategory)
     {
-        $this->setData('products_for_each_category',$productsForEachCategory);
+        $this->setData('products_for_each_category', $productsForEachCategory);
         return $this;
     }
 
@@ -24,7 +24,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
 
     public function setProductsIds($productsIds)
     {
-        $this->setData('products_ids',$productsIds);
+        $this->setData('products_ids', $productsIds);
         return $this;
     }
 
@@ -56,18 +56,18 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
 
     protected function _prepareCollection()
     {
-        /* @var $collection Mage_Catalog_Model_Resource_Category_Collection */
+        /** @var $collection Mage_Catalog_Model_Resource_Category_Collection */
         $collection = Mage::getModel('catalog/category')->getCollection();
         $collection->addAttributeToSelect('name');
 
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                              ->select()
-                             ->from(
-                                 Mage::helper('M2ePro/Module_Database_Structure')
+                            ->from(
+                                Mage::helper('M2ePro/Module_Database_Structure')
                                      ->getTableNameWithPrefix('catalog/category_product'),
-                                 'category_id'
-                             )
-                             ->where('`product_id` IN(?)',$this->getProductsIds());
+                                'category_id'
+                            )
+                             ->where('`product_id` IN(?)', $this->getProductsIds());
 
         $collection->getSelect()->where('entity_id IN ('.$dbSelect->__toString().')');
 
@@ -88,9 +88,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
         $this->getMassactionBlock()->setFormFieldName('ids');
         // ---------------------------------------
 
-        $this->getMassactionBlock()->addItem('remove', array(
+        $this->getMassactionBlock()->addItem(
+            'remove', array(
              'label'    => Mage::helper('M2ePro')->__('Remove'),
-        ));
+            )
+        );
 
         // ---------------------------------------
 
@@ -108,7 +110,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
 
     protected function _prepareColumns()
     {
-        $this->addColumn('magento_category', array(
+        $this->addColumn(
+            'magento_category', array(
             'header'    => Mage::helper('M2ePro')->__('Magento Category'),
             'align'     => 'left',
             'type'      => 'text',
@@ -116,9 +119,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnMagentoCategory')
-        ));
+            )
+        );
 
-        $this->addColumn('action', array(
+        $this->addColumn(
+            'action', array(
             'header'    => Mage::helper('M2ePro')->__('Action'),
             'align'     => 'center',
             'width'     => '75px',
@@ -126,7 +131,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Summary_G
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnActions')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -193,10 +199,12 @@ HTML;
 <div style="margin: 15px 0 10px 0">{$help->toHtml()}</div>
 HTML;
 
-        $button = $this->getLayout()->createBlock('adminhtml/widget_button')->setData(array(
+        $button = $this->getLayout()->createBlock('adminhtml/widget_button')->setData(
+            array(
             'label'   => Mage::helper('M2ePro')->__('Close'),
             'onclick' => 'Windows.getFocusedWindow().close()',
-        ));
+            )
+        );
         $afterHtml = <<<HTML
 <div class="clear"></div>
 <div class="right" style="margin-top: 15px">

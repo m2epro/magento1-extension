@@ -9,20 +9,20 @@
 abstract class Ess_M2ePro_Model_Requirements_Renderer_Abstract
 {
     /** @var Ess_M2ePro_Model_Requirements_Checks_Abstract */
-    protected $checkObject;
+    protected $_checkObject;
 
     //########################################
 
     public function __construct(array $args = array())
     {
-        list($this->checkObject) = $args;
+        list($this->_checkObject) = $args;
     }
 
     //########################################
 
     public function getCheckObject()
     {
-        return $this->checkObject;
+        return $this->_checkObject;
     }
 
     //########################################

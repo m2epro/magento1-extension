@@ -58,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Support_Form extends Mage_Adminhtml_Block_Widge
             'id'      => 'send_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('user_voice_search',$buttonBlock);
+        $this->setChild('user_voice_search', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------

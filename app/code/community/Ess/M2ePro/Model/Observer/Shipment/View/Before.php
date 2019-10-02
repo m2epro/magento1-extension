@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Observer_Shipment_View_Before extends Ess_M2ePro_Model_Ob
 
     //########################################
 
-    private function processNewShipment(Mage_Adminhtml_Block_Sales_Order_Shipment_Create $block)
+    protected function processNewShipment(Mage_Adminhtml_Block_Sales_Order_Shipment_Create $block)
     {
         $orderId = $block->getRequest()->getParam('order_id');
         if (empty($orderId)) {
@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Observer_Shipment_View_Before extends Ess_M2ePro_Model_Ob
             return;
         }
 
-        if (is_null($order) || !$order->getId()) {
+        if ($order === null || !$order->getId()) {
             return;
         }
 
@@ -85,7 +85,7 @@ class Ess_M2ePro_Model_Observer_Shipment_View_Before extends Ess_M2ePro_Model_Ob
             ->addItem('js_css', 'prototype/windows/themes/default.css');
     }
 
-    private function processExistShipment(Mage_Adminhtml_Block_Sales_Order_Shipment_View $block)
+    protected function processExistShipment(Mage_Adminhtml_Block_Sales_Order_Shipment_View $block)
     {
         $shipmentId = $block->getRequest()->getParam('shipment_id');
         if (empty($shipmentId)) {
@@ -104,7 +104,7 @@ class Ess_M2ePro_Model_Observer_Shipment_View_Before extends Ess_M2ePro_Model_Ob
             return;
         }
 
-        if (is_null($order) || !$order->getId()) {
+        if ($order === null || !$order->getId()) {
             return;
         }
 

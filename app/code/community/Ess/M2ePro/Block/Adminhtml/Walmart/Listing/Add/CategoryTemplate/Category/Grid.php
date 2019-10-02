@@ -10,7 +10,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category_G
     extends Ess_M2ePro_Block_Adminhtml_Category_Grid
 {
     /** @var Ess_M2ePro_Model_Listing */
-    private $listing = NULL;
+    protected $_listing = null;
 
     //########################################
 
@@ -37,13 +37,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category_G
 
     protected function _prepareCollection()
     {
-        /* @var $collection Mage_Catalog_Model_Resource_Category_Collection */
+        /** @var $collection Mage_Catalog_Model_Resource_Category_Collection */
         $collection = Mage::getModel('catalog/category')->getCollection();
         $collection->addAttributeToSelect('name');
 
-        $collection->addFieldToFilter(array(
+        $collection->addFieldToFilter(
+            array(
             array('attribute' => 'entity_id', 'in' => array_keys($this->getData('categories_data')))
-        ));
+            )
+        );
 
         $this->setCollection($collection);
 
@@ -54,7 +56,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category_G
 
     protected function _prepareColumns()
     {
-        $this->addColumn('magento_category', array(
+        $this->addColumn(
+            'magento_category', array(
             'header'    => Mage::helper('M2ePro')->__('Magento Category'),
             'align'     => 'left',
             'width'     => '500px',
@@ -63,9 +66,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category_G
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnMagentoCategory')
-        ));
+            )
+        );
 
-        $this->addColumn('category_template', array(
+        $this->addColumn(
+            'category_template', array(
             'header'    => Mage::helper('M2ePro')->__('Category Policy'),
             'align'     => 'left',
             'width'     => '*',
@@ -79,7 +84,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category_G
             ),
             'frame_callback' => array($this, 'callbackColumnCategoryTemplateCallback'),
             'filter_condition_callback' => array($this, 'callbackColumnCategoryTemplateFilterCallback')
-        ));
+            )
+        );
 
         $actionsColumn = array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
@@ -116,10 +122,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category_G
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('setCategoryTemplateByCategory', array(
+        $this->getMassactionBlock()->addItem(
+            'setCategoryTemplateByCategory', array(
             'label' => Mage::helper('M2ePro')->__('Set Category Policy'),
             'url'   => ''
-        ));
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -146,9 +154,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category_G
 HTML;
         }
 
-        $templateCategoryEditUrl = $this->getUrl('*/adminhtml_walmart_template_category/edit', array(
+        $templateCategoryEditUrl = $this->getUrl(
+            '*/adminhtml_walmart_template_category/edit', array(
             'id' => $categoryTemplateId
-        ));
+            )
+        );
 
         /** @var Ess_M2ePro_Model_Walmart_Template_Category $categoryTemplate */
         $categoryTemplate = Mage::getModel('M2ePro/Walmart_Template_Category')->load($categoryTemplateId);
@@ -193,10 +203,12 @@ HTML;
     protected function _toHtml()
     {
         $addErrorJs = '';
-        if (count($this->getData('categories_data')) > 0) {
+        if (!empty($this->getData('categories_data'))) {
             $errorMessage = Mage::helper('M2ePro')
-                                ->__("To proceed, the category data must be specified.
-                                Please select a relevant Category Policy for at least one Magento Category.");
+                                ->__(
+                                    "To proceed, the category data must be specified.
+                                Please select a relevant Category Policy for at least one Magento Category."
+                                );
             $isNotExistProductsWithCategoryTemplate = (int)$this->isNotExistProductsWithCategoryTemplate(
                 $this->getData('category_templates_data')
             );
@@ -232,14 +244,15 @@ HTML;
 
         if (count($this->getData('categories_data')) === 0) {
             $msg = Mage::helper('M2ePro')
-                       ->__('Magento Category is not provided for the products you are currently adding.
-                  Please go back and select a different option to assign Channel category to your products.');
+                    ->__(
+                        'Magento Category is not provided for the products you are currently adding.
+                  Please go back and select a different option to assign Channel category to your products.'
+                    );
 
             $addErrorJs .= <<<JS
 MagentoMessageObj.addError(`{$msg}`);
 $('save_and_go_to_listing_view').addClassName('disabled').disable();
 JS;
-
         }
 
         $javascriptsMain = <<<HTML
@@ -268,24 +281,24 @@ HTML;
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
-            $this->listing = Mage::helper('M2ePro/Component_Walmart')
-                ->getObject('Listing', $listingId);
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Walmart')
+                                  ->getObject('Listing', $listingId);
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################
 
-    private function prepareDataByCategories()
+    protected function prepareDataByCategories()
     {
         $listingProductsIds = $this->getListing()
                                    ->getSetting('additional_data', 'adding_listing_products_ids');
 
         $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')
             ->getCollection('Listing_Product')
-            ->addFieldToFilter('id',array('in' => $listingProductsIds));
+            ->addFieldToFilter('id', array('in' => $listingProductsIds));
 
         $productsIds = array();
         $categoryTemplatesIds = array();
@@ -293,6 +306,7 @@ HTML;
             $productsIds[$item['id']] = $item['product_id'];
             $categoryTemplatesIds[$item['id']] = $item['template_category_id'];
         }
+
         $productsIds = array_unique($productsIds);
 
         $categoriesIds = Mage::helper('M2ePro/Magento_Category')->getLimitedCategoriesByProducts(
@@ -303,9 +317,11 @@ HTML;
         $categoriesData = array();
 
         foreach ($categoriesIds as $categoryId) {
-            /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-            $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                              Mage::getModel('catalog/product')->getResource());
+            /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+            $collection = Mage::getConfig()->getModelInstance(
+                'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+                Mage::getModel('catalog/product')->getResource()
+            );
 
             $collection->setListing($this->getListing());
             $collection->setStoreId($this->getListing()->getStoreId());
@@ -334,7 +350,7 @@ HTML;
 
     //########################################
 
-    private function isNotExistProductsWithCategoryTemplate($categoryTemplatesData)
+    protected function isNotExistProductsWithCategoryTemplate($categoryTemplatesData)
     {
         if (empty($categoryTemplatesData)) {
             return true;

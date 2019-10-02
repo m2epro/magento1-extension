@@ -11,10 +11,8 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore_State extends Ess_M2ePro_Model_C
     const IN_STOCK      = 'IN_STOCK';
     const OUT_OF_STOCK  = 'OUT_OF_STOCK';
 
-    //########################################
-
-    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore $accountPickupStore */
-    private $accountPickupStore = NULL;
+    /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore $_accountPickupStore */
+    protected $_accountPickupStore = null;
 
     //########################################
 
@@ -28,11 +26,11 @@ class Ess_M2ePro_Model_Ebay_Account_PickupStore_State extends Ess_M2ePro_Model_C
 
     public function getAccountPickupStore()
     {
-        if (!is_null($this->accountPickupStore)) {
-            return $this->accountPickupStore;
+        if ($this->_accountPickupStore !== null) {
+            return $this->_accountPickupStore;
         }
 
-        return $this->accountPickupStore = Mage::helper('M2ePro')->getCachedObject(
+        return $this->_accountPickupStore = Mage::helper('M2ePro')->getCachedObject(
             'Ebay_Account_PickupStore', $this->getAccountPickupStoreId()
         );
     }

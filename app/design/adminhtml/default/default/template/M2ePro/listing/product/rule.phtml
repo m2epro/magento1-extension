@@ -1,12 +1,23 @@
 <?php
-    $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $suffix = isset($listingData['listing_id']) ? $listingData['listing_id'] : '';
-    $gridJsObjectName = $this->getGridJsObjectName();
+// @codingStandardsIgnoreFile
 
-    $prefix = Mage::helper('M2ePro/Data_Global')->getValue('hide_products_others_listings_prefix');
-    $hideParam = Mage::helper('M2ePro/Data_Session')->getValue($prefix);
-    is_null($hideParam) && $hideParam = true;
+/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_Product_Rule */
+
+$listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+$suffix = isset($listingData['listing_id']) ? $listingData['listing_id'] : '';
+$gridJsObjectName = $this->getGridJsObjectName();
+
+$prefix = Mage::helper('M2ePro/Data_Global')->getValue('hide_products_others_listings_prefix');
+$hideParam = Mage::helper('M2ePro/Data_Session')->getValue($prefix);
+$hideParam === null && $hideParam = true;
+
 ?>
 
 <div class="entry-edit" id="listing_product_rules" style="display: none;" collapseable="no">

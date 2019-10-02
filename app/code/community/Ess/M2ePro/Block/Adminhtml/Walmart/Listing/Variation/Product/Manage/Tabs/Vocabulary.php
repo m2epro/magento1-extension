@@ -9,10 +9,10 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_Vocabulary
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    protected $listingProductId;
+    protected $_listingProductId;
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    protected $listingProduct;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
 
     //########################################
 
@@ -21,8 +21,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         parent::__construct();
 
         $this->setTemplate('M2ePro/walmart/listing/variation/product/manage/tabs/vocabulary.phtml');
-
-        return $this;
     }
 
     //########################################
@@ -33,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
@@ -42,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
@@ -52,12 +50,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function getListingProduct()
     {
-        if (is_null($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component_Walmart')
-                ->getObject('Listing_Product', $this->getListingProductId());
+        if ($this->_listingProduct === null) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component_Walmart')
+                                         ->getObject('Listing_Product', $this->getListingProductId());
         }
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################
@@ -85,9 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
         foreach ($matchedAttributes as $magentoAttr => $channelAttr) {
             foreach ($vocabularyData as $attribute => $attributeData) {
-
                 if (in_array($magentoAttr, $attributeData['names']) || $attribute == $channelAttr) {
-
                     if (!in_array($magentoAttr, $attributeData['names'])) {
                         $fixedAttributes[$magentoAttr][] = $attribute;
                     }
@@ -96,9 +92,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
 
                     if (!empty($attributeData['options'])) {
                         foreach ($magentoProductVariations['set'][$magentoAttr] as $magentoOption) {
-
                             foreach ($attributeData['options'] as $attributeOptions) {
-
                                 if (in_array($magentoOption, $attributeOptions)) {
                                     $localVocabulary[$magentoAttr][$attribute][$magentoOption][] = $attributeOptions;
                                 }
@@ -109,7 +103,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
                     if (!empty($fixedAttributes[$magentoAttr]) &&
                         in_array($attribute, $fixedAttributes[$magentoAttr]) &&
                         empty($localVocabulary[$magentoAttr][$attribute])) {
-
                         unset($localVocabulary[$magentoAttr][$attribute]);
                         if (empty($localVocabulary[$magentoAttr])) {
                             unset($localVocabulary[$magentoAttr]);

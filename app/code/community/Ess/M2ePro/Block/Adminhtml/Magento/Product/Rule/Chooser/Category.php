@@ -19,9 +19,8 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule_Chooser_Category
             'store' => $this->getRequest()->getParam('store', 0)
         );
 
-        if ((is_null($expanded) && Mage::getSingleton('admin/session')->getIsTreeWasExpanded())
+        if (($expanded === null && Mage::getSingleton('admin/session')->getIsTreeWasExpanded())
             || $expanded == true) {
-
             $params['expand_all'] = true;
         }
 

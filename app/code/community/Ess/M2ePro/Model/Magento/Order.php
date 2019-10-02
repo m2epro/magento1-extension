@@ -8,26 +8,26 @@
 
 class Ess_M2ePro_Model_Magento_Order
 {
-    /** @var $quote Mage_Sales_Model_Quote */
-    private $quote = NULL;
+    /** @var $_quote Mage_Sales_Model_Quote */
+    protected $_quote = null;
 
-    /** @var $order Mage_Sales_Model_Order */
-    private $order = NULL;
+    /** @var $_order Mage_Sales_Model_Order */
+    protected $_order = null;
 
-    private $additionalData = array();
+    protected $_additionalData = array();
 
     //########################################
 
     public function __construct(Mage_Sales_Model_Quote $quote)
     {
-        $this->quote = $quote;
+        $this->_quote = $quote;
     }
 
     //########################################
 
     public function setAdditionalData($additionalData)
     {
-        $this->additionalData = $additionalData;
+        $this->_additionalData = $additionalData;
         return $this;
     }
 
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Magento_Order
      */
     public function getOrder()
     {
-        return $this->order;
+        return $this->_order;
     }
 
     //########################################
@@ -48,30 +48,30 @@ class Ess_M2ePro_Model_Magento_Order
         $this->createOrder();
     }
 
-    private function createOrder()
+    protected function createOrder()
     {
         try {
-            $this->order = $this->placeOrder();
+            $this->_order = $this->placeOrder();
         } catch (Exception $e) {
             // Remove ordered items from customer cart
             // ---------------------------------------
-            $this->quote->setIsActive(false)->save();
+            $this->_quote->setIsActive(false)->save();
             // ---------------------------------------
             throw $e;
         }
 
         // Remove ordered items from customer cart
         // ---------------------------------------
-        $this->quote->setIsActive(false)->save();
+        $this->_quote->setIsActive(false)->save();
         // ---------------------------------------
     }
 
-    private function placeOrder()
+    protected function placeOrder()
     {
         if (version_compare(Mage::helper('M2ePro/Magento')->getVersion(false), '1.4.1', '>=')) {
             /** @var $service Mage_Sales_Model_Service_Quote */
-            $service = Mage::getModel('sales/service_quote', $this->quote);
-            $service->setOrderData($this->additionalData);
+            $service = Mage::getModel('sales/service_quote', $this->_quote);
+            $service->setOrderData($this->_additionalData);
             $service->submitAll();
 
             return $service->getOrder();
@@ -83,13 +83,13 @@ class Ess_M2ePro_Model_Magento_Order
         $quoteConverter = Mage::getSingleton('sales/convert_quote');
 
         /** @var $orderObj Mage_Sales_Model_Order */
-        $orderObj = $quoteConverter->addressToOrder($this->quote->getShippingAddress());
+        $orderObj = $quoteConverter->addressToOrder($this->_quote->getShippingAddress());
 
-        $orderObj->setBillingAddress($quoteConverter->addressToOrderAddress($this->quote->getBillingAddress()));
-        $orderObj->setShippingAddress($quoteConverter->addressToOrderAddress($this->quote->getShippingAddress()));
-        $orderObj->setPayment($quoteConverter->paymentToOrderPayment($this->quote->getPayment()));
+        $orderObj->setBillingAddress($quoteConverter->addressToOrderAddress($this->_quote->getBillingAddress()));
+        $orderObj->setShippingAddress($quoteConverter->addressToOrderAddress($this->_quote->getShippingAddress()));
+        $orderObj->setPayment($quoteConverter->paymentToOrderPayment($this->_quote->getPayment()));
 
-        $items = $this->quote->getShippingAddress()->getAllItems();
+        $items = $this->_quote->getShippingAddress()->getAllItems();
 
         foreach ($items as $item) {
             //@var $item Mage_Sales_Model_Quote_Item
@@ -97,10 +97,11 @@ class Ess_M2ePro_Model_Magento_Order
             if ($item->getParentItem()) {
                 $orderItem->setParentItem($orderObj->getItemByQuoteItemId($item->getParentItem()->getId()));
             }
+
             $orderObj->addItem($orderItem);
         }
 
-        $orderObj->addData($this->additionalData);
+        $orderObj->addData($this->_additionalData);
 
         $orderObj->setCanShipPartiallyItem(false);
         $orderObj->place();

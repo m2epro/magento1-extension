@@ -11,13 +11,13 @@ use Ess_M2ePro_Model_Walmart_Order_Item as OrderItem;
 class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Cancel
     extends Ess_M2ePro_Model_Walmart_Order_Action_Handler_Abstract
 {
-    private $params = array();
+    protected $_params = array();
 
     //########################################
 
     public function setParams(array $params)
     {
-        $this->params = $params;
+        $this->_params = $params;
         return $this;
     }
 
@@ -60,14 +60,14 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Cancel
     {
         $resultItems = array();
 
-        foreach ($this->params['items'] as $itemData) {
+        foreach ($this->_params['items'] as $itemData) {
 
             /** @var Ess_M2ePro_Model_Order_Item $orderItem */
             $orderItem = $this->getOrder()->getItemsCollection()->getItemByColumnValue(
                 'walmart_order_item_id', $itemData['item_id']
             );
 
-            if (!is_null($orderItem) &&
+            if ($orderItem !== null &&
                 ($orderItem->getData('status') != OrderItem::STATUS_ACKNOWLEDGED &&
                  $orderItem->getData('status') != OrderItem::STATUS_CREATED))
             {
@@ -95,7 +95,7 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Cancel
 
         $itemsStatuses = array();
 
-        foreach ($this->params['items'] as $itemData) {
+        foreach ($this->_params['items'] as $itemData) {
 
             /** @var Ess_M2ePro_Model_Order_Item $orderItem */
             $orderItem = $this->getOrder()->getItemsCollection()->getItemByColumnValue(
@@ -107,7 +107,7 @@ class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Cancel
              * So walmart_order_item_id of real OrderItem and walmart_order_item_id in request may be different.
              * Real walmart_order_item_id will match with the ID in request when the last item will be cancelled.
              */
-            if (!is_null($orderItem)) {
+            if ($orderItem !== null) {
                 $orderItem->setData('status', OrderItem::STATUS_CANCELLED)->save();
                 $itemsStatuses[$itemData['item_id']] = OrderItem::STATUS_CANCELLED;
             }

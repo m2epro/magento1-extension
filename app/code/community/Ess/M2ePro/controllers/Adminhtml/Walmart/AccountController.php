@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Walmart_Account as Account;
+
 class Ess_M2ePro_Adminhtml_Walmart_AccountController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 {
@@ -117,13 +119,16 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             'title',
             'marketplace_id',
             'consumer_id',
-            'private_key'
+            'client_id',
+            'client_secret',
+            'old_private_key'
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
                 $data[$key] = $post[$key];
             }
         }
+
         // ---------------------------------------
 
         // tab: 3rd party listings
@@ -139,6 +144,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data[$key] = $post[$key];
             }
         }
+
         // ---------------------------------------
 
         // Mapping
@@ -174,25 +180,23 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $mappingSettings = array();
 
         $temp = array(
-            Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT,
-            Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE,
-            Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID,
+            Account::OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT,
+            Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE,
+            Account::OTHER_LISTINGS_MAPPING_SKU_MODE_PRODUCT_ID,
         );
 
         if (isset($tempData['mapping_sku_mode']) && in_array($tempData['mapping_sku_mode'], $temp)) {
-
             $mappingSettings['sku']['mode']     = (int)$tempData['mapping_sku_mode'];
             $mappingSettings['sku']['priority'] = (int)$tempData['mapping_sku_priority'];
 
-            $temp = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE;
-            if ($tempData['mapping_sku_mode'] == $temp) {
+            if ($tempData['mapping_sku_mode'] == Account::OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE) {
                 $mappingSettings['sku']['attribute'] = (string)$tempData['mapping_sku_attribute'];
             }
         }
 
-        $temp1 = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_UPC_MODE_CUSTOM_ATTRIBUTE;
-        if (isset($tempData['mapping_upc_mode']) && $tempData['mapping_upc_mode'] == $temp1) {
-
+        if (isset($tempData['mapping_upc_mode']) &&
+            $tempData['mapping_upc_mode'] == Account::OTHER_LISTINGS_MAPPING_UPC_MODE_CUSTOM_ATTRIBUTE
+        ) {
             $mappingSettings['upc']['mode']     = (int)$tempData['mapping_upc_mode'];
             $mappingSettings['upc']['priority'] = (int)$tempData['mapping_upc_priority'];
 
@@ -202,35 +206,32 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             }
         }
 
-        $temp1 = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_CUSTOM_ATTRIBUTE;
-        if (isset($tempData['mapping_gtin_mode']) && $tempData['mapping_gtin_mode'] == $temp1) {
-
+        if (isset($tempData['mapping_gtin_mode']) &&
+            $tempData['mapping_gtin_mode'] == Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_CUSTOM_ATTRIBUTE
+        ) {
             $mappingSettings['gtin']['mode']     = (int)$tempData['mapping_gtin_mode'];
             $mappingSettings['gtin']['priority'] = (int)$tempData['mapping_gtin_priority'];
 
-            $temp = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_CUSTOM_ATTRIBUTE;
-            if ($tempData['mapping_gtin_mode'] == $temp) {
+            if ($tempData['mapping_gtin_mode'] == Account::OTHER_LISTINGS_MAPPING_GTIN_MODE_CUSTOM_ATTRIBUTE) {
                 $mappingSettings['gtin']['attribute'] = (string)$tempData['mapping_gtin_attribute'];
             }
         }
 
-        $temp1 = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_MODE_CUSTOM_ATTRIBUTE;
-        if (isset($tempData['mapping_wpid_mode']) && $tempData['mapping_wpid_mode'] == $temp1) {
-
+        if (isset($tempData['mapping_wpid_mode']) &&
+            $tempData['mapping_wpid_mode'] == Account::OTHER_LISTINGS_MAPPING_WPID_MODE_CUSTOM_ATTRIBUTE
+        ) {
             $mappingSettings['wpid']['mode']     = (int)$tempData['mapping_wpid_mode'];
             $mappingSettings['wpid']['priority'] = (int)$tempData['mapping_wpid_priority'];
 
-            $temp = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_WPID_MODE_CUSTOM_ATTRIBUTE;
-            if ($tempData['mapping_wpid_mode'] == $temp) {
+            if ($tempData['mapping_wpid_mode'] == Account::OTHER_LISTINGS_MAPPING_WPID_MODE_CUSTOM_ATTRIBUTE) {
                 $mappingSettings['wpid']['attribute'] = (string)$tempData['mapping_wpid_attribute'];
             }
         }
 
-        $temp1 = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT;
-        $temp2 = Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE;
         if (isset($tempData['mapping_title_mode']) &&
-            ($tempData['mapping_title_mode'] == $temp1 ||
-                $tempData['mapping_title_mode'] == $temp2)) {
+            ($tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_DEFAULT ||
+            $tempData['mapping_title_mode'] == Account::OTHER_LISTINGS_MAPPING_TITLE_MODE_CUSTOM_ATTRIBUTE)
+        ) {
             $mappingSettings['title']['mode'] = (int)$tempData['mapping_title_mode'];
             $mappingSettings['title']['priority'] = (int)$tempData['mapping_title_priority'];
             $mappingSettings['title']['attribute'] = (string)$tempData['mapping_title_attribute'];
@@ -259,6 +260,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
             }
         }
+
         // ---------------------------------------
 
         // 3rd party orders settings
@@ -278,6 +280,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
             }
         }
+
         // ---------------------------------------
 
         // order number settings
@@ -298,6 +301,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data['magento_orders_settings'][$tempKey]['prefix'][$key] = $tempSettings[$key];
             }
         }
+
         // ---------------------------------------
 
         // qty reservation
@@ -314,6 +318,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
             }
         }
+
         // ---------------------------------------
 
         // tax settings
@@ -330,6 +335,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
             }
         }
+
         // ---------------------------------------
 
         // customer settings
@@ -362,6 +368,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data['magento_orders_settings'][$tempKey]['notifications'][$key] = true;
             }
         }
+
         // ---------------------------------------
 
         // status mapping settings
@@ -380,6 +387,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
             }
         }
+
         // ---------------------------------------
 
         // invoice/shipment settings
@@ -392,23 +400,24 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
         if (!empty($data['magento_orders_settings']['status_mapping']['mode']) &&
             $data['magento_orders_settings']['status_mapping']['mode'] == $temp) {
-
             $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_INVOICE_MODE_NO;
             if (!isset($post['magento_orders_settings']['invoice_mode'])) {
                 $data['magento_orders_settings']['invoice_mode'] = $temp;
             }
+
             $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_SHIPMENT_MODE_NO;
             if (!isset($post['magento_orders_settings']['shipment_mode'])) {
                 $data['magento_orders_settings']['shipment_mode'] = $temp;
             }
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
         $data['magento_orders_settings'] = Mage::helper('M2ePro')->jsonEncode($data['magento_orders_settings']);
         // ---------------------------------------
 
-        $isEdit = !is_null($id);
+        $isEdit = $id !== null;
 
         // tab: vat calculation service
         // ---------------------------------------
@@ -425,13 +434,14 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         if (empty($data['is_vat_calculation_service_enabled'])) {
             $data['is_magento_invoice_creation_disabled'] = false;
         }
+
         // ---------------------------------------
 
         // Add or update model
         // ---------------------------------------
         $model = Mage::helper('M2ePro/Component_Walmart')->getModel('Account');
-        is_null($id) && $model->setData($data);
-        !is_null($id) && $model->loadInstance($id)->addData($data);
+        $id === null && $model->setData($data);
+        $id !== null && $model->loadInstance($id)->addData($data);
         $oldData = $model->getOrigData();
         $id = $model->save()->getId();
         // ---------------------------------------
@@ -439,7 +449,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
         $model->getChildObject()->save();
 
         try {
-
             // Add or update server
             // ---------------------------------------
 
@@ -451,43 +460,44 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
                 /** @var $dispatcherObject Ess_M2ePro_Model_Walmart_Connector_Dispatcher */
                 $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
 
-                if (!$isEdit) {
-
-                    $params = array(
+                if ($post['marketplace_id'] == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA) {
+                    $requestData = array(
                         'title'            => $post['title'],
                         'marketplace_id'   => (int)$post['marketplace_id'],
+                        'related_store_id' => (int)$post['related_store_id'],
                         'consumer_id'      => $post['consumer_id'],
-                        'private_key'      => $post['private_key'],
-                        'related_store_id' => (int)$post['related_store_id']
+                        'private_key'      => $post['old_private_key']
                     );
-
-                    $connectorObj = $dispatcherObject->getConnector('account', 'add' ,'entityRequester',
-                        $params, $id);
-                    $dispatcherObject->process($connectorObj);
-
                 } else {
-
-                    $newData = array(
+                    $requestData = array(
                         'title'            => $post['title'],
                         'marketplace_id'   => (int)$post['marketplace_id'],
+                        'related_store_id' => (int)$post['related_store_id'],
                         'consumer_id'      => $post['consumer_id'],
-                        'private_key'      => $post['private_key'],
-                        'related_store_id' => (int)$post['related_store_id']
+                        'client_id'        => $post['client_id'],
+                        'client_secret'    => $post['client_secret'],
                     );
+                }
 
-                    $params = array_diff_assoc($newData, $oldData);
+                if (!$isEdit) {
+                    $connectorObj = $dispatcherObject->getConnector(
+                        'account', 'add', 'entityRequester', $requestData, $id
+                    );
+                    $dispatcherObject->process($connectorObj);
+                } else {
+                    $requestData = array_diff_assoc($requestData, $oldData);
 
-                    if (!empty($params)) {
-                        $connectorObj = $dispatcherObject->getConnector('account', 'update' ,'entityRequester',
-                            $params, $id);
+                    if (!empty($requestData)) {
+                        $connectorObj = $dispatcherObject->getConnector(
+                            'account', 'update', 'entityRequester', $requestData, $id
+                        );
                         $dispatcherObject->process($connectorObj);
                     }
                 }
             }
+
             // ---------------------------------------
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             // M2ePro_TRANSLATIONS
@@ -497,23 +507,26 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
             $this->_getSession()->addError($error);
-            $model->deleteInstance();
+
+            if (!$isEdit) {
+                $model->deleteInstance();
+            }
 
             return $this->indexAction();
         }
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Account was successfully saved'));
 
-        /* @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
+        /** @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
-        $routerParams = array('id'=>$id);
+        $routerParams = array('id' => $id);
         if ($wizardHelper->isActive('installationWalmart') &&
             $wizardHelper->getStep('installationWalmart') == 'account') {
             $routerParams['wizard'] = true;
         }
 
-        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list',array(),array('edit'=>$routerParams)));
+        $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit' => $routerParams)));
     }
 
     //########################################
@@ -522,13 +535,13 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select account(s) to remove.'));
             $this->_redirect('*/*/index');
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountCollection */
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
         $accountCollection = Mage::getModel('M2ePro/Account')->getCollection();
         $accountCollection->addFieldToFilter('id', array('in' => $ids));
 
@@ -550,15 +563,14 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             }
 
             try {
-
                 $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
 
-                $connectorObj = $dispatcherObject->getConnector('account','delete','entityRequester',
-                    array(), $account);
+                $connectorObj = $dispatcherObject->getConnector(
+                    'account', 'delete', 'entityRequester',
+                    array(), $account
+                );
                 $dispatcherObject->process($connectorObj);
-
             } catch (Exception $e) {
-
                 $account->deleteProcessings();
                 $account->deleteProcessingLocks();
                 $account->deleteInstance();
@@ -587,40 +599,52 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
     public function checkAuthAction()
     {
-        $consumerId    = $this->getRequest()->getParam('consumer_id');
-        $privateKey    = $this->getRequest()->getParam('private_key');
-        $marketplaceId = $this->getRequest()->getParam('marketplace_id');
+        $consumerId    = $this->getRequest()->getParam('consumer_id', false);
+        $oldPrivateKey = $this->getRequest()->getParam('old_private_key', false);
+        $clientId      = $this->getRequest()->getParam('client_id', false);
+        $clientSecret  = $this->getRequest()->getParam('client_secret', false);
+        $marketplaceId = $this->getRequest()->getParam('marketplace_id', false);
+        $result        = array('result' => null);
 
-        if ($consumerId && $privateKey && $marketplaceId) {
+        /** @var $marketplaceObject Ess_M2ePro_Model_Marketplace */
+        $marketplaceObject = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+            'Marketplace', $marketplaceId
+        );
 
-            $marketplaceNativeId = Mage::helper('M2ePro/Component_Walmart')
-                ->getCachedObject('Marketplace',$marketplaceId)
-                ->getNativeId();
-
-            $params = array(
-                'marketplace' => $marketplaceNativeId,
+        if ($marketplaceId == Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
+            $consumerId && $oldPrivateKey) {
+            $requestData = array(
+                'marketplace' => $marketplaceObject->getNativeId(),
                 'consumer_id' => $consumerId,
-                'private_key' => $privateKey,
+                'private_key' => $oldPrivateKey,
             );
+        } elseif ($marketplaceId != Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_CA &&
+                  $clientId && $clientSecret) {
+            $requestData = array(
+                'marketplace'   => $marketplaceObject->getNativeId(),
+                'client_id'     => $clientId,
+                'client_secret' => $clientSecret,
+                'consumer_id'   => $consumerId
+            );
+        } else {
+            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));
+        }
 
-            try {
+        try {
+            $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
+            $connectorObj = $dispatcherObject->getVirtualConnector('account', 'check', 'access', $requestData);
+            $dispatcherObject->process($connectorObj);
 
-                $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Dispatcher');
-                $connectorObj = $dispatcherObject->getVirtualConnector('account','check','access',$params);
-                $dispatcherObject->process($connectorObj);
+            $response = $connectorObj->getResponseData();
 
-                $response = $connectorObj->getResponseData();
-
-                $result['result'] = isset($response['status']) ? $response['status']
-                                                               : null;
-                if (!empty($response['reason'])) {
-                    $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
-                }
-
-            } catch (Exception $exception) {
-                $result['result'] = false;
-                Mage::helper('M2ePro/Module_Exception')->process($exception);
+            $result['result'] = isset($response['status']) ? $response['status']
+                                                           : null;
+            if (!empty($response['reason'])) {
+                $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
             }
+        } catch (Exception $exception) {
+            $result['result'] = false;
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
         }
 
         return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($result));
@@ -628,13 +652,15 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
     //########################################
 
-    private function getLicenseMessage(Ess_M2ePro_Model_Account $account)
+    protected function getLicenseMessage(Ess_M2ePro_Model_Account $account)
     {
         try {
             $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('account','get','info', array(
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'account', 'get', 'info', array(
                 'account' => $account->getChildObject()->getServerHash()
-            ));
+                )
+            );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();

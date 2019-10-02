@@ -21,15 +21,15 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_NewProcessing extends Ess_
 
         $this->fillUpGroupHash();
 
-        if ($this->installer->getTablesObject()->isExists('processing_request')) {
-            $this->installer->run("DROP TABLE `m2epro_processing_request`");
+        if ($this->_installer->getTablesObject()->isExists('processing_request')) {
+            $this->_installer->run("DROP TABLE `m2epro_processing_request`");
         }
 
-        $this->installer->getTableModifier('processing_lock')
-             ->dropColumn('related_hash', true, true);
+        $this->_installer->getTableModifier('processing_lock')
+                         ->dropColumn('related_hash', true, true);
 
-        $this->installer->getConnection()->delete(
-            $this->installer->getTablesObject()->getFullName('processing_lock'),
+        $this->_installer->getConnection()->delete(
+            $this->_installer->getTablesObject()->getFullName('processing_lock'),
             array('processing_id = ?' => 0)
         );
     }
@@ -38,54 +38,53 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_NewProcessing extends Ess_
 
     public function isCompleted()
     {
-        return !$this->installer->getTablesObject()->isExists('processing_request');
+        return !$this->_installer->getTablesObject()->isExists('processing_request');
     }
 
     //########################################
 
-    private function createStructure()
+    protected function createStructure()
     {
-        if ($this->installer->getTablesObject()->isExists('locked_object') &&
-            !$this->installer->getTablesObject()->isExists('processing_lock')
+        if ($this->_installer->getTablesObject()->isExists('locked_object') &&
+            !$this->_installer->getTablesObject()->isExists('processing_lock')
         ) {
-            $this->installer->run(<<<SQL
+            $this->_installer->run(
+                <<<SQL
 RENAME TABLE `m2epro_locked_object` TO `m2epro_processing_lock`;
 SQL
             );
         }
 
-        $this->installer->getTableModifier('processing_lock')
-            ->addColumn('processing_id', 'INT(11) UNSIGNED NOT NULL', NULL, 'id', true, false)
-            ->dropColumn('description', true, false)
-            ->commit();
+        $this->_installer->getTableModifier('processing_lock')
+                         ->addColumn('processing_id', 'INT(11) UNSIGNED NOT NULL', NULL, 'id', true, false)
+                         ->dropColumn('description', true, false)
+                         ->commit();
 
-        $this->installer->getTableModifier('lock_item')
-            ->dropColumn('kill_now');
+        $this->_installer->getTableModifier('lock_item')
+                         ->dropColumn('kill_now');
     }
 
-    private function migrateProcessings()
+    protected function migrateProcessings()
     {
-        $processingLockTable    = $this->installer->getTablesObject()->getFullName('processing_lock');
-        $processingRequestTable = $this->installer->getTablesObject()->getFullName('processing_request');
+        $processingLockTable    = $this->_installer->getTablesObject()->getFullName('processing_lock');
+        $processingRequestTable = $this->_installer->getTablesObject()->getFullName('processing_request');
 
         $performTypeSingle = 1;
-        $processingRequestsStmt = $this->installer->getConnection()->query("SELECT * FROM {$processingRequestTable}");
+        $processingRequestsStmt = $this->_installer->getConnection()->query("SELECT * FROM {$processingRequestTable}");
 
         while ($prRow = $processingRequestsStmt->fetch()) {
-
             if ($prRow['perform_type'] != $performTypeSingle) {
-
-                $this->installer->getConnection()->delete(
+                $this->_installer->getConnection()->delete(
                     $processingRequestTable, array('id = ?' => $prRow['id'])
                 );
-                $this->installer->getConnection()->delete(
+                $this->_installer->getConnection()->delete(
                     $processingLockTable, array('related_hash = ?' => $prRow['hash'])
                 );
                 continue;
             }
 
             // -- Request Pending Single
-            $this->installer->getConnection()->insert(
+            $this->_installer->getConnection()->insert(
                 $this->getFullTableName('request_pending_single'),
                 array(
                     'component'       => $prRow['component'],
@@ -96,7 +95,7 @@ SQL
                     'create_date'     => $prRow['create_date'],
                 )
             );
-            $requestPendingSingleId = $this->installer->getConnection()->lastInsertId(
+            $requestPendingSingleId = $this->_installer->getConnection()->lastInsertId(
                 $this->getFullTableName('request_pending_single')
             );
             // --
@@ -109,13 +108,13 @@ SQL
                 $this->migrateAmazonOrderProcessing($prRow, $requestPendingSingleId);
             }
 
-            $this->installer->getConnection()->delete($processingRequestTable, array('id = ?' => $prRow['id']));
+            $this->_installer->getConnection()->delete($processingRequestTable, array('id = ?' => $prRow['id']));
         }
     }
 
     // ---------------------------------------
 
-    private function migrateAmazonProductProcessing($processingRow, $requestPendingSingleId)
+    protected function migrateAmazonProductProcessing($processingRow, $requestPendingSingleId)
     {
         $responserParams = (array)json_decode($processingRow['responser_params'], true);
         $modelName = strpos($processingRow['responser_model'], 'List') !== false
@@ -143,26 +142,25 @@ SQL
         $responserModel = str_replace('Multiple', '', $responserModel);
 
         foreach ($responserParams['products'] as $listingProductId => $productData) {
-
             //--
             $configurator = $productData['configurator'];
 
             if (isset($configurator['mode'])) {
-
                 $configurator['mode'] == 'full' ? $configurator['mode'] = 'excluding'
                                                 : $configurator['mode'] = 'including';
             }
 
             if (isset($configurator['allowed_data_types'])) {
-
                 $allowedDataTypes = $configurator['allowed_data_types'];
                 $priceDataTypeIndex = array_search('price', $allowedDataTypes);
                 if ($priceDataTypeIndex !== false) {
                     unset($allowedDataTypes[$priceDataTypeIndex]);
                     $allowedDataTypes[] = 'regular_price';
                 }
+
                 $configurator['allowed_data_types'] = $allowedDataTypes;
             }
+
             //--
 
             //--
@@ -180,7 +178,8 @@ SQL
             // -- Processing
             $processingData = array(
                 'model'  => $modelName,
-                'params' => json_encode(array(
+                'params' => json_encode(
+                    array(
                     'component'            => 'Amazon',
                     'server_hash'          => NULL,
                     'account_id'           => $responserParams['account_id'],
@@ -192,7 +191,8 @@ SQL
                     'requester_params'     => $responserParams['params'],
                     'responser_model_name' => $responserModel,
                     'responser_params'     => $newResponserParams
-                )),
+                    )
+                ),
                 'type'            => 1,
                 'is_completed'    => 0,
                 'expiration_date' => $processingRow['expiration_date'],
@@ -200,12 +200,12 @@ SQL
                 'create_date'     => $processingRow['create_date'],
             );
 
-            $this->installer->getConnection()->insert($this->getFullTableName('processing'), $processingData);
-            $processingId = $this->installer->getConnection()->lastInsertId($this->getFullTableName('processing'));
+            $this->_installer->getConnection()->insert($this->getFullTableName('processing'), $processingData);
+            $processingId = $this->_installer->getConnection()->lastInsertId($this->getFullTableName('processing'));
             // --
 
             // -- Processing Product Action
-            $this->installer->getConnection()->insert(
+            $this->_installer->getConnection()->insert(
                 $this->getFullTableName('amazon_listing_product_action_processing'),
                 array(
                     'listing_product_id'        => $listingProductId,
@@ -222,8 +222,8 @@ SQL
             // --
 
             // -- Processing lock
-            $this->installer->getConnection()->update(
-                $this->installer->getTablesObject()->getFullName('processing_lock'),
+            $this->_installer->getConnection()->update(
+                $this->_installer->getTablesObject()->getFullName('processing_lock'),
                 array('processing_id' => $processingId),
                 array(
                     'related_hash = ?' => $processingRow['hash'],
@@ -234,7 +234,7 @@ SQL
         }
     }
 
-    private function migrateAmazonOrderProcessing($processingRow, $requestPendingSingleId)
+    protected function migrateAmazonOrderProcessing($processingRow, $requestPendingSingleId)
     {
         $requestBody     = (array)json_decode($processingRow['request_body'], true);
         $requestBody     = (array)json_decode($requestBody['data'], true);
@@ -245,7 +245,6 @@ SQL
         }
 
         switch ($processingRow['responser_model']) {
-
             case 'M2ePro/Connector_Amazon_Orders_Refund_ItemsResponser':
                 $actionType         = 'refund';
                 $lockName           = 'refund_order';
@@ -274,13 +273,16 @@ SQL
         foreach ($responserParams as $responserParamsItem) {
             $ordersIds[] = $responserParamsItem['order_id'];
         }
+
         $ordersIds = implode(',', $ordersIds);
 
-        $accountIdsDataStmt = $this->installer->getConnection()->query("
+        $accountIdsDataStmt = $this->_installer->getConnection()->query(
+            "
 SELECT `id`, `account_id`
 FROM `{$this->getFullTableName('order')}`
 WHERE `id` IN ({$ordersIds});
-");
+"
+        );
 
         $orderToAccountMap = array();
         while ($row = $accountIdsDataStmt->fetch()) {
@@ -288,7 +290,6 @@ WHERE `id` IN ({$ordersIds});
         }
 
         foreach ($requestBody['items'] as $requestItem) {
-
             $changeId = $requestItem['id'];
             $responserParamsItem = isset($responserParams[$changeId]) ? $responserParams[$changeId]
                                                                       : array();
@@ -300,7 +301,8 @@ WHERE `id` IN ({$ordersIds});
             // -- Processing
             $processingData = array(
                 'model'  => 'M2ePro/Amazon_Connector_Orders_ProcessingRunner',
-                'params' => json_encode(array(
+                'params' => json_encode(
+                    array(
                     'component'    => 'Amazon',
                     'server_hash'  => NULL,
                     'account_id'   => $accountId,
@@ -316,7 +318,8 @@ WHERE `id` IN ({$ordersIds});
                         'order'      => $responserParamsItem,
                         'account_id' => $accountId
                     ),
-                )),
+                    )
+                ),
                 'type'            => 1,
                 'is_completed'    => 0,
                 'expiration_date' => $processingRow['expiration_date'],
@@ -324,12 +327,12 @@ WHERE `id` IN ({$ordersIds});
                 'create_date'     => $processingRow['create_date'],
             );
 
-            $this->installer->getConnection()->insert($this->getFullTableName('processing'), $processingData);
-            $processingId = $this->installer->getConnection()->lastInsertId($this->getFullTableName('processing'));
+            $this->_installer->getConnection()->insert($this->getFullTableName('processing'), $processingData);
+            $processingId = $this->_installer->getConnection()->lastInsertId($this->getFullTableName('processing'));
             // --
 
             // -- Processing Order Action
-            $this->installer->getConnection()->insert(
+            $this->_installer->getConnection()->insert(
                 $this->getFullTableName('amazon_order_action_processing'),
                 array(
                     'order_id'                  => $responserParamsItem['order_id'],
@@ -344,8 +347,8 @@ WHERE `id` IN ({$ordersIds});
             // --
 
             // -- Processing Lock
-            $this->installer->getConnection()->update(
-                $this->installer->getTablesObject()->getFullName('processing_lock'),
+            $this->_installer->getConnection()->update(
+                $this->_installer->getTablesObject()->getFullName('processing_lock'),
                 array('processing_id' => $processingId),
                 array(
                     'related_hash = ?' => $processingRow['hash'],
@@ -358,20 +361,20 @@ WHERE `id` IN ({$ordersIds});
 
     // ---------------------------------------
 
-    private function fillUpGroupHash()
+    protected function fillUpGroupHash()
     {
-        $stmt = $this->installer->getConnection()->select()
+        $stmt = $this->_installer->getConnection()->select()
             ->from(
-                array('alpap' => $this->installer->getFullTableName('amazon_listing_product_action_processing')),
+                array('alpap' => $this->_installer->getFullTableName('amazon_listing_product_action_processing')),
                 array('id', 'listing_product_id', 'type')
             )
             ->joinLeft(
-                array('lp' => $this->installer->getFullTableName('listing_product')),
+                array('lp' => $this->_installer->getFullTableName('listing_product')),
                 'lp.id = alpap.listing_product_id',
                 array()
             )
             ->joinLeft(
-                array('l' => $this->installer->getFullTableName('listing')),
+                array('l' => $this->_installer->getFullTableName('listing')),
                 'l.id = lp.listing_id',
                 array('account_id')
             )
@@ -395,8 +398,8 @@ WHERE `id` IN ({$ordersIds});
                 foreach ($listingProductIdsGroups as $listingProductIdsGroup) {
                     $groupHash = sha1(microtime());
 
-                    $this->installer->getConnection()->update(
-                        $this->installer->getFullTableName('amazon_listing_product_action_processing'),
+                    $this->_installer->getConnection()->update(
+                        $this->_installer->getFullTableName('amazon_listing_product_action_processing'),
                         array('group_hash' => $groupHash),
                         array('listing_product_id IN (?)' => $listingProductIdsGroup)
                     );

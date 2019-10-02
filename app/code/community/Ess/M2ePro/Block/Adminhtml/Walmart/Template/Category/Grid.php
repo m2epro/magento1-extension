@@ -42,25 +42,30 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Grid extends Mage_Adm
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header'    => Mage::helper('M2ePro')->__('ID'),
             'align'     => 'right',
             'width'     => '100px',
             'type'      => 'number',
             'index'     => 'id',
             'filter_index' => 'main_table.id'
-        ));
+            )
+        );
 
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'    => Mage::helper('M2ePro')->__('Title'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'title',
             'escape'    => true,
             'filter_index' => 'main_table.title'
-        ));
+            )
+        );
 
-        $this->addColumn('create_date', array(
+        $this->addColumn(
+            'create_date', array(
             'header'    => Mage::helper('M2ePro')->__('Creation Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -68,9 +73,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Grid extends Mage_Adm
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'create_date',
             'filter_index' => 'main_table.create_date'
-        ));
+            )
+        );
 
-        $this->addColumn('update_date', array(
+        $this->addColumn(
+            'update_date', array(
             'header'    => Mage::helper('M2ePro')->__('Update Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -78,9 +85,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Grid extends Mage_Adm
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'update_date',
             'filter_index' => 'main_table.update_date'
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'left',
             'width'     => '100px',
@@ -102,7 +111,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Grid extends Mage_Adm
                     'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
                 )
             )
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -117,11 +127,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Grid extends Mage_Adm
 
         // Set delete action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('delete', array(
+        $this->getMassactionBlock()->addItem(
+            'delete', array(
              'label'    => Mage::helper('M2ePro')->__('Delete'),
              'url'      => $this->getUrl('*/*/delete'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();

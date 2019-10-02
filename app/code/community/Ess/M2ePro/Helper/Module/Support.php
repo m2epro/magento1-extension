@@ -72,7 +72,7 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
     public function getVideoTutorialsUrl($component)
     {
-        return $this->getDocumentationUrl($component,'Video+Tutorials');
+        return $this->getDocumentationUrl($component, 'Video+Tutorials');
     }
 
     //########################################

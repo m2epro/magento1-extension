@@ -9,22 +9,22 @@
 class Ess_M2ePro_Model_Listing_Product_Instruction_Handler_Input
 {
     /** @var Ess_M2ePro_Model_Listing_Product */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     /** @var Ess_M2ePro_Model_Listing_Product_Instruction[] */
-    private $instructions = array();
+    protected $_instructions = array();
 
     //########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
     public function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Handler_Input
      */
     public function setInstructions(array $instructions)
     {
-        $this->instructions = $instructions;
+        $this->_instructions = $instructions;
         return $this;
     }
 
@@ -43,7 +43,7 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Handler_Input
 
     public function getInstructions()
     {
-        return $this->instructions;
+        return $this->_instructions;
     }
 
     // ---------------------------------------

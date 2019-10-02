@@ -10,10 +10,10 @@ use Ess_M2ePro_Model_Magento_Attribute_Builder as AttributeBuilder;
 
 class Ess_M2ePro_Block_Adminhtml_General_CreateAttribute extends Mage_Adminhtml_Block_Widget
 {
-    protected $handlerId;
+    protected $_handlerId;
 
-    protected $allowedTypes = array();
-    protected $applyToAllAttributeSets = true;
+    protected $_allowedTypes            = array();
+    protected $_applyToAllAttributeSets = true;
 
     //########################################
 
@@ -33,32 +33,32 @@ class Ess_M2ePro_Block_Adminhtml_General_CreateAttribute extends Mage_Adminhtml_
 
     public function handlerId($value = null)
     {
-        if (is_null($value)) {
-            return $this->handlerId;
+        if ($value === null) {
+            return $this->_handlerId;
         }
 
-        $this->handlerId = $value;
-        return $this->handlerId;
+        $this->_handlerId = $value;
+        return $this->_handlerId;
     }
 
     public function applyToAll($value = null)
     {
-        if (is_null($value)) {
-            return $this->applyToAllAttributeSets;
+        if ($value === null) {
+            return $this->_applyToAllAttributeSets;
         }
 
-        $this->applyToAllAttributeSets = $value;
-        return $this->applyToAllAttributeSets;
+        $this->_applyToAllAttributeSets = $value;
+        return $this->_applyToAllAttributeSets;
     }
 
     public function allowedTypes($value = null)
     {
-        if (is_null($value)) {
-            return count($this->allowedTypes) ? $this->allowedTypes : $this->getAllAvailableTypes();
+        if ($value === null) {
+            return count($this->_allowedTypes) ? $this->_allowedTypes : $this->getAllAvailableTypes();
         }
 
-        $this->allowedTypes = $value;
-        return $this->allowedTypes;
+        $this->_allowedTypes = $value;
+        return $this->_allowedTypes;
     }
 
     // ---------------------------------------

@@ -32,9 +32,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings extends Ess_M2e
     /**
      * @return Ess_M2ePro_Model_Account[]
      */
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountCollection */
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
         $accountCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         $accountCollection->getSelect()->joinInner(
             array('aar' => Mage::getResourceModel('M2ePro/Amazon_Account_Repricing')->getMainTable()),
@@ -44,7 +44,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings extends Ess_M2e
         return $accountCollection->getItems();
     }
 
-    private function processAccount(Ess_M2ePro_Model_Account $acc)
+    protected function processAccount(Ess_M2ePro_Model_Account $acc)
     {
         /** @var Ess_M2ePro_Model_Amazon_Repricing_Updating $repricingUpdating */
         $repricingUpdating        = Mage::getModel('M2ePro/Amazon_Repricing_Updating', $acc);
@@ -53,7 +53,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings extends Ess_M2e
 
         $iteration = 0;
         while (($products = $this->getProcessRequiredProducts($acc)) && $iteration <= self::MAX_COUNT_OF_ITERATIONS) {
-
             $iteration++;
 
             $updatedSkus = $repricingUpdating->process($products);
@@ -75,9 +74,9 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings extends Ess_M2e
      * @param $account Ess_M2ePro_Model_Account
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Repricing[]
      */
-    private function getProcessRequiredProducts(Ess_M2ePro_Model_Account $account)
+    protected function getProcessRequiredProducts(Ess_M2ePro_Model_Account $account)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->getSelect()->joinLeft(
             array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),

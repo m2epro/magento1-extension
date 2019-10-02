@@ -14,7 +14,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
     {
         $helper = Mage::helper('M2ePro');
 
-        $this->addColumn('product_id', array(
+        $this->addColumn(
+            'product_id', array(
             'header'       => $helper->__('Product ID'),
             'align'        => 'right',
             'width'        => '100px',
@@ -23,9 +24,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'filter_index' => 'entity_id',
             'frame_callback' => array($this, 'callbackColumnProductId'),
             'filter_condition_callback' => array($this, 'callbackFilterProductId')
-        ));
+            )
+        );
 
-        $this->addColumn('name', array(
+        $this->addColumn(
+            'name', array(
             'header'         => $helper->__('Product Title / Listing / Product SKU'),
             'align'          => 'left',
             'type'           => 'text',
@@ -33,9 +36,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'filter_index'   => 'name',
             'frame_callback' => array($this, 'callbackColumnProductTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('is_in_stock', array(
+        $this->addColumn(
+            'is_in_stock', array(
             'header'    => $helper->__('Stock Availability'),
             'align'     => 'left',
             'width'     => '90px',
@@ -48,9 +53,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
                 '0' => $helper->__('Out of Stock')
             ),
             'frame_callback' => array($this, 'callbackColumnIsInStock')
-        ));
+            )
+        );
 
-        $this->addColumn('item_id', array(
+        $this->addColumn(
+            'item_id', array(
             'header'       => $helper->__('Item ID'),
             'align'        => 'left',
             'width'        => '100px',
@@ -59,9 +66,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'filter_index' => 'item_id',
             'frame_callback' => array($this, 'callbackColumnEbayItemId'),
             'filter_condition_callback' => array($this, 'callbackFilterItemId')
-        ));
+            )
+        );
 
-        $this->addColumn('online_qty', array(
+        $this->addColumn(
+            'online_qty', array(
             'header'       => $helper->__('Available QTY'),
             'align'        => 'right',
             'width'        => '50px',
@@ -70,9 +79,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'filter_index' => 'online_qty',
             'frame_callback' => array($this, 'callbackColumnOnlineAvailableQty'),
             'filter_condition_callback' => array($this, 'callbackFilterOnlineQty')
-        ));
+            )
+        );
 
-        $this->addColumn('online_qty_sold', array(
+        $this->addColumn(
+            'online_qty_sold', array(
             'header'       => $helper->__('Sold QTY'),
             'align'        => 'right',
             'width'        => '50px',
@@ -80,9 +91,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'index'        => 'online_qty_sold',
             'filter_index' => 'online_qty_sold',
             'frame_callback' => array($this, 'callbackColumnOnlineQtySold')
-        ));
+            )
+        );
 
-        $this->addColumn('price', array(
+        $this->addColumn(
+            'price', array(
             'header'       => $helper->__('Price'),
             'align'        => 'right',
             'width'        => '50px',
@@ -91,7 +104,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'filter_index' => 'online_current_price',
             'frame_callback' => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
-        ));
+            )
+        );
 
         $statusColumn = array(
             'header'       => $helper->__('Status'),
@@ -128,7 +142,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
 
         $this->addColumn('status', $statusColumn);
 
-        $this->addColumn('goto_listing_item', array(
+        $this->addColumn(
+            'goto_listing_item', array(
             'header'    => $helper->__('Manage'),
             'align'     => 'center',
             'width'     => '50px',
@@ -136,7 +151,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnActions')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -145,7 +161,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
-        if (is_null($row->getData('entity_id'))) {
+        if ($row->getData('entity_id') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -156,7 +172,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
         $withoutImageHtml = '<a href="'.$url.'" target="_blank">'.$productId.'</a>';
 
         $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')
-                                                ->getConfig()->getGroupValue('/view/','show_products_thumbnails');
+                                                ->getConfig()->getGroupValue('/view/', 'show_products_thumbnails');
         if (!$showProductsThumbnails) {
             return $withoutImageHtml;
         }
@@ -167,13 +183,13 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
         $magentoProduct->setStoreId($storeId);
 
         $imageResized = $magentoProduct->getThumbnailImage();
-        if (is_null($imageResized)) {
+        if ($imageResized === null) {
             return $withoutImageHtml;
         }
 
         $imageHtml = $productId.'<hr/><img style="max-width: 100px; max-height: 100px;" src="'.
             $imageResized->getUrl().'" />';
-        $withImageHtml = str_replace('>'.$productId.'<','>'.$imageHtml.'<',$withoutImageHtml);
+        $withImageHtml = str_replace('>'.$productId.'<', '>'.$imageHtml.'<', $withoutImageHtml);
 
         return $withImageHtml;
     }
@@ -202,7 +218,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -224,7 +240,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -245,7 +261,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
             return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
         }
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -265,7 +281,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
         $onlineStartPrice   = $row->getData('online_start_price');
         $onlineCurrentPrice = $row->getData('online_current_price');
 
-        if (is_null($onlineCurrentPrice) || $onlineCurrentPrice === '') {
+        if ($onlineCurrentPrice === null || $onlineCurrentPrice === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -277,12 +293,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_Grid extends Mage_
 
         if (strpos($currency, ',') !== false) {
             $currency = Mage::helper('M2ePro/Component_Ebay')
-                ->getCachedObject('Marketplace',$row->getMarketplaceId())
+                ->getCachedObject('Marketplace', $row->getMarketplaceId())
                 ->getChildObject()->getCurrency();
         }
 
         if (!empty($onlineStartPrice)) {
-
             $onlineReservePrice  = $row->getData('online_reserve_price');
             $onlineBuyItNowPrice = $row->getData('online_buyitnow_price');
 
@@ -331,7 +346,6 @@ HTML;
                 $resultHtml = '<span style="color: grey; text-decoration: line-through;">'.$onlineStartStr.'</span>';
                 $resultHtml .= '<br/>'.$intervalHtml.'&nbsp;'.
                     '<span class="product-price-value">'.$onlineCurrentStr.'</span>';
-
             } else {
                 $resultHtml = $intervalHtml.'&nbsp;'.'<span class="product-price-value">'.$onlineStartStr.'</span>';
             }
@@ -345,7 +359,6 @@ HTML;
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
             $listingProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product', $listingProductId);
             if ($listingProduct->getChildObject()->isVariationsReady()) {
-
                 $iconHelpPath    = $this->getSkinUrl('M2ePro/images/i_logo.png');
                 $toolTipIconPath = $this->getSkinUrl('M2ePro/images/i_icon.png');
 
@@ -375,7 +388,6 @@ HTML;
     public function callbackColumnStatus($value, $row, $column, $isExport)
     {
         switch ($row->getData('status')) {
-
             case Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED:
                 $value = '<span style="color: gray;">'.$value.'</span>';
                 break;
@@ -410,7 +422,6 @@ HTML;
 
         $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
         if ($row->getData('is_duplicate') && isset($additionalData['item_duplicate_action_required'])) {
-
             $linkContent = Mage::helper('M2ePro')->__('duplicate');
 
             $value .= <<<HTML
@@ -430,7 +441,6 @@ HTML;
         $scheduledAction = $scheduledActionsCollection->getFirstItem();
 
         switch ($scheduledAction->getActionType()) {
-
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:
                 $value .= '<br/><span style="color: #605fff">[List is Scheduled...]</span>';
                 break;
@@ -501,7 +511,6 @@ HTML;
                 } else {
                     $value .= '<br/><span style="color: #605fff">[Revise is Scheduled...]</span>';
                 }
-
                 break;
 
             case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:
@@ -514,7 +523,6 @@ HTML;
 
             default:
                 break;
-
         }
 
         /** @var Ess_M2ePro_Model_Processing_Lock[] $processingLocks */
@@ -524,9 +532,7 @@ HTML;
         }
 
         foreach ($processingLocks as $lock) {
-
             switch ($lock->getTag()) {
-
                 case 'list_action':
                     $value .= '<br/><span style="color: #605fff">[List in Progress...]</span>';
                     break;
@@ -564,7 +570,7 @@ HTML;
 
     //########################################
 
-    abstract function callbackColumnActions($value, $row, $column, $isExport);
+    public abstract function callbackColumnActions($value, $row, $column, $isExport);
 
     /** @return array() */
     protected abstract function getProcessingLocks($row);

@@ -28,7 +28,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Inventory_Get_Blocked_ItemsResp
             $preparedData['data'] = $responseData['data']['skus'];
         }
 
-        $this->preparedResponseData = $preparedData;
+        $this->_preparedResponseData = $preparedData;
     }
 
     // ########################################

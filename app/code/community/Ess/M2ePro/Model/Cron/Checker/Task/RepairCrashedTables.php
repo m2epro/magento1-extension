@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
     /**
      * @return array
      */
-    private function getTablesForCheck()
+    protected function getTablesForCheck()
     {
         return array(
             'm2epro_operation_history',
@@ -53,22 +53,21 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
     /**
      * @return array
      */
-    private function getCrashedTablesFromLog()
+    protected function getCrashedTablesFromLog()
     {
         $crashedTables = array();
 
         foreach ($this->getCrashedTablesLogRecords() as $row) {
             $table = $this->findTableNameInLog($row['description']);
-            !is_null($table) && $crashedTables[] = $table;
+            $table !== null && $crashedTables[] = $table;
         }
 
         return array_unique($crashedTables);
     }
 
-    private function processRepairTables($tablesForRepair)
+    protected function processRepairTables($tablesForRepair)
     {
         foreach ($tablesForRepair as $table) {
-
             if (!Mage::helper('M2ePro/Module_Database_Structure')->isTableExists($table)) {
                 continue;
             }
@@ -85,7 +84,7 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
      * @param array $tables
      * @return array
      */
-    private function getAlreadyRepairedTables(array $tables)
+    protected function getAlreadyRepairedTables(array $tables)
     {
         $workingTables = array();
         foreach ($tables as $table) {
@@ -98,7 +97,7 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
     /**
      * @param array $tables
      */
-    private function performActionsToAlreadyWorkingTables($tables)
+    protected function performActionsToAlreadyWorkingTables($tables)
     {
         foreach ($tables as $table) {
             $this->unsetTryToRepair($table);
@@ -111,12 +110,13 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
      * @param array $tables
      * @return array
      */
-    private function filterAlreadyTriedToRepairTables($tables)
+    protected function filterAlreadyTriedToRepairTables($tables)
     {
         $filteredTables = array();
         foreach ($tables as $table) {
             !$this->wasTryToRepair($table) && $filteredTables[] = $table;
         }
+
         return $filteredTables;
     }
 
@@ -125,7 +125,7 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
     /**
      * @return array
      */
-    private function getCrashedTablesLogRecords()
+    protected function getCrashedTablesLogRecords()
     {
         $resource = Mage::getSingleton('core/resource');
         $readConnection = $resource->getConnection('core_read');
@@ -151,7 +151,7 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
      * @param string $description
      * @return null|string
      */
-    private function findTableNameInLog($description)
+    protected function findTableNameInLog($description)
     {
         $tablesForPattern = implode('|', $this->getTablesForCheck());
         $pattern = '/`(\w{1,})?('.$tablesForPattern.')\`/i';
@@ -166,13 +166,13 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
 
     //########################################
 
-    private function setTryToRepair($table)
+    protected function setTryToRepair($table)
     {
         Mage::helper('M2ePro/Module')->getCacheConfig()
             ->setGroupValue('/cron/repair_tables/'.$table.'/', 'tried_to_repair', 1);
     }
 
-    private function unsetTryToRepair($table)
+    protected function unsetTryToRepair($table)
     {
         $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
         if ($cacheConfig->getGroupValue('/cron/repair_tables/'.$table.'/', 'tried_to_repair')) {
@@ -184,7 +184,7 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
      * @param string $table
      * @return bool
      */
-    private function wasTryToRepair($table)
+    protected function wasTryToRepair($table)
     {
         return (bool)Mage::helper('M2ePro/Module')->getCacheConfig()
             ->getGroupValue('/cron/repair_tables/'.$table.'/', 'tried_to_repair');

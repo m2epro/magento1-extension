@@ -8,22 +8,22 @@
 
 class Ess_M2ePro_Model_Cron_Strategy_Observer_Progress
 {
-    private $isEnabled = false;
+    protected $_isEnabled = false;
 
     /** @var Ess_M2ePro_Model_Lock_Item_Manager */
-    private $lockItemManager = NULL;
+    protected $_lockItemManager = null;
 
     //########################################
 
     public function enable()
     {
-        $this->isEnabled = true;
+        $this->_isEnabled = true;
         return $this;
     }
 
     public function disable()
     {
-        $this->isEnabled = false;
+        $this->_isEnabled = false;
         return $this;
     }
 
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Cron_Strategy_Observer_Progress
 
     public function setLockItemManager(Ess_M2ePro_Model_Lock_Item_Manager $lockItemManager)
     {
-        $this->lockItemManager = $lockItemManager;
+        $this->_lockItemManager = $lockItemManager;
         return $this;
     }
 
@@ -39,11 +39,11 @@ class Ess_M2ePro_Model_Cron_Strategy_Observer_Progress
 
     public function process(Varien_Event_Observer $eventObserver)
     {
-        if (!$this->isEnabled) {
+        if (!$this->_isEnabled) {
             return;
         }
 
-        if (is_null($this->lockItemManager)) {
+        if ($this->_lockItemManager === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Lock Item Manager was not set.');
         }
 
@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Cron_Strategy_Observer_Progress
 
         $progress = Mage::getModel(
             'M2ePro/Lock_Item_Progress',
-            array('lock_item_manager' => $this->lockItemManager, 'progress_nick' => $progressNick)
+            array('lock_item_manager' => $this->_lockItemManager, 'progress_nick' => $progressNick)
         );
 
         if ($eventName == Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_START_EVENT_NAME) {

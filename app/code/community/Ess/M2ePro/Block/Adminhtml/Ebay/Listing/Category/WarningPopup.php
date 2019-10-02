@@ -42,7 +42,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_WarningPopup extends Mage
             'label'   => Mage::helper('M2ePro')->__('Continue'),
             'onclick' => "{$this->categoryGridJsHandler}.categoryNotSelectedWarningPopupContinueClick();"
         );
-        $this->setChild('continue_button',$this->getLayout()->createBlock('adminhtml/widget_button')->setData($data));
+        $this->setChild('continue_button', $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data));
 
         return $this;
     }

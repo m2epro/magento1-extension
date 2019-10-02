@@ -8,8 +8,8 @@
 
 class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
 {
-    private $request = NULL;
-    private $timeout = NULL;
+    protected $_request = null;
+    protected $_timeout = null;
 
     // ########################################
 
@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
      */
     public function getRequest()
     {
-        return $this->request;
+        return $this->_request;
     }
 
     /**
@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
      */
     public function setRequest(Ess_M2ePro_Model_Connector_Connection_Request $request)
     {
-        $this->request = $request;
+        $this->_request = $request;
         return $this;
     }
 
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
      */
     public function getTimeout()
     {
-        return $this->timeout;
+        return $this->_timeout;
     }
 
     /**
@@ -47,7 +47,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
      */
     public function setTimeout($timeout)
     {
-        $this->timeout = $timeout;
+        $this->_timeout = $timeout;
         return $this;
     }
 

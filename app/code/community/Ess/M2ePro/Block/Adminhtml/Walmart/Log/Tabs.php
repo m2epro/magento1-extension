@@ -8,8 +8,6 @@
 
 class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
 {
-    // ---------------------------------------
-
     const TAB_ID_LISTING            = 'listing';
     const TAB_ID_LISTING_OTHER      = 'listing_other';
     const TAB_ID_ORDER              = 'order';
@@ -17,14 +15,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
 
     //########################################
 
-    protected $logType;
+    protected $_logType;
 
     /**
      * @param string $logType
      */
     public function setLogType($logType)
     {
-        $this->logType = $logType;
+        $this->_logType = $logType;
     }
 
     //########################################
@@ -122,7 +120,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_SYNCHRONIZATION) {
-
             $tab['content'] = $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_walmart_synchronization_log_help')->toHtml();
             $tab['content'] .= $this->getLayout()
@@ -147,9 +144,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
 
     protected function _toHtml()
     {
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Description' => Mage::helper('M2ePro')->__('Description')
-        ));
+            )
+        );
 
         $javascript = <<<JAVASCIRPT
 

@@ -13,18 +13,19 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_SnapshotBuilder
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['business_discounts'] = $this->model->getChildObject()->getBusinessDiscounts();
+        $data['business_discounts'] = $this->_model->getChildObject()->getBusinessDiscounts();
 
         foreach ($data['business_discounts'] as &$businessDiscount) {
             foreach ($businessDiscount as &$value) {
-                !is_null($value) && !is_array($value) && $value = (string)$value;
+                $value !== null && !is_array($value) && $value = (string)$value;
             }
         }
+
         unset($value);
 
         return $data;

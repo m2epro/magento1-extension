@@ -66,22 +66,26 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_License_Co
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Confirm'),
                 'onclick' => '',
                 'id' => 'license_popup_confirm_button'
-            ));
+                )
+            );
         $this->setChild('license_popup_confirm_button', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Sign into eBay'),
                 'onclick' => '',
                 'id' => 'sign_into_ebay_button'
-            ));
+                )
+            );
         $this->setChild('sign_into_ebay_button', $buttonBlock);
         // ---------------------------------------
 
@@ -89,11 +93,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_License_Co
         $url = 'https://scgi.ebay.com/ws/eBayISAPI.dll?RegisterEnterInfo&bizflow=2';
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Register for eBay'),
                 'onclick' => 'window.open(\''.$url.'\',\'_blank\')',
                 'id' => 'register_on_ebay_button'
-            ));
+                )
+            );
         $this->setChild('register_on_ebay_button', $buttonBlock);
         // ---------------------------------------
 

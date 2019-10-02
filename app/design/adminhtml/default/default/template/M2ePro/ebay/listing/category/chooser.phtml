@@ -1,12 +1,23 @@
 <?php
-    $internalData = !is_null($this->getInternalData()) ? $this->getInternalData() : array();
-    $selectCallback = $this->getSelectCallback();
-    $unselectCallback = $this->getUnselectCallback();
-    $attributes = $this->getAttributes();
-    $isInterfaceModeFull = $this->isInterfaceModeFull();
-    $isSingleCategoryMode = $this->isSingleCategoryMode();
-    $singleCategoryType = $this->getSingleCategoryType();
-    $isShowEditLinks = $this->isShowEditLinks();
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser */
+
+$internalData = $this->getInternalData() !== null ? $this->getInternalData() : array();
+$selectCallback = $this->getSelectCallback();
+$unselectCallback = $this->getUnselectCallback();
+$attributes = $this->getAttributes();
+$isInterfaceModeFull = $this->isInterfaceModeFull();
+$isSingleCategoryMode = $this->isSingleCategoryMode();
+$singleCategoryType = $this->getSingleCategoryType();
+$isShowEditLinks = $this->isShowEditLinks();
+
 ?>
 
 <?php if (!$this->_isAjax): ?>

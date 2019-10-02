@@ -17,15 +17,14 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_AffectedListingsProducts
         $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT);
 
         $listingsProducts = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->model->getId(), false
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->_model->getId(), false
         );
 
         $listings = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->model->getId(), false
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->_model->getId(), false
         );
 
         foreach ($listings as $listing) {
-
             $listingAffectedProducts = Mage::getModel('M2ePro/Ebay_Listing_AffectedListingsProducts');
             $listingAffectedProducts->setModel($listing);
 
@@ -49,15 +48,14 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_AffectedListingsProducts
         $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT);
 
         $listingsProducts = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->model->getId(), true, $columns
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->_model->getId(), true, $columns
         );
 
         $listings = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->model->getId(), false
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->_model->getId(), false
         );
 
         foreach ($listings as $listing) {
-
             $listingAffectedProducts = Mage::getModel('M2ePro/Ebay_Listing_AffectedListingsProducts');
             $listingAffectedProducts->setModel($listing);
 
@@ -82,15 +80,14 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_AffectedListingsProducts
         $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT);
 
         $listingsProducts = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->model->getId(), true, array('id')
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->_model->getId(), true, array('id')
         );
 
         $listings = $templateManager->getAffectedOwnerObjects(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->model->getId(), false
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->_model->getId(), false
         );
 
         foreach ($listings as $listing) {
-
             $listingAffectedProducts = Mage::getModel('M2ePro/Ebay_Listing_AffectedListingsProducts');
             $listingAffectedProducts->setModel($listing);
 

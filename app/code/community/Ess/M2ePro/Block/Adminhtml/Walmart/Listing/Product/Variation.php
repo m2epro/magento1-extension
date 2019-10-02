@@ -8,12 +8,12 @@
 
 abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Variation extends Mage_Adminhtml_Block_Widget
 {
-    private $magentoVariationsSets = NULL;
-    private $magentoVariationsCombinations = NULL;
+    protected $_magentoVariationsSets;
+    protected $_magentoVariationsCombinations;
 
-    private $magentoVariationsTree = NULL;
+    protected $_magentoVariationsTree;
 
-    private $listingProduct = NULL;
+    protected $_listingProduct;
 
     //########################################
 
@@ -22,61 +22,61 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Variation exte
      */
     public function getListingProduct()
     {
-        if (is_null($this->listingProduct)) {
-            $this->listingProduct = Mage::helper('M2ePro/Component')->getComponentObject(
+        if ($this->_listingProduct === null) {
+            $this->_listingProduct = Mage::helper('M2ePro/Component')->getComponentObject(
                 Ess_M2ePro_Helper_Component_Walmart::NICK, 'Listing_Product', $this->getListingProductId()
             );
-            $this->listingProduct->getMagentoProduct()->enableCache();
+            $this->_listingProduct->getMagentoProduct()->enableCache();
         }
-        return $this->listingProduct;
+
+        return $this->_listingProduct;
     }
 
     public function getMagentoVariationsSets()
     {
-        if (is_null($this->magentoVariationsSets)) {
-            $temp = $this->getListingProduct()
+        if ($this->_magentoVariationsSets === null) {
+            $temp                         = $this->getListingProduct()
                 ->getMagentoProduct()
                 ->getVariationInstance()
                 ->getVariationsTypeStandard();
-            $this->magentoVariationsSets = $temp['set'];
+            $this->_magentoVariationsSets = $temp['set'];
         }
 
-        return $this->magentoVariationsSets;
+        return $this->_magentoVariationsSets;
     }
 
     public function getMagentoVariationsCombinations()
     {
-        if (is_null($this->magentoVariationsCombinations)) {
-            $temp = $this->getListingProduct()
+        if ($this->_magentoVariationsCombinations === null) {
+            $temp                                 = $this->getListingProduct()
                 ->getMagentoProduct()
                 ->getVariationInstance()
                 ->getVariationsTypeStandard();
-            $this->magentoVariationsCombinations = $temp['variations'];
+            $this->_magentoVariationsCombinations = $temp['variations'];
         }
 
-        return $this->magentoVariationsCombinations;
+        return $this->_magentoVariationsCombinations;
     }
 
     //########################################
 
     public function getMagentoVariationsTree()
     {
-        if (is_null($this->magentoVariationsTree)) {
-
+        if ($this->_magentoVariationsTree === null) {
             $firstAttribute = $this->getMagentoVariationsSets();
             $firstAttribute = key($firstAttribute);
 
-            $this->magentoVariationsTree = $this->prepareVariations(
-                $firstAttribute,$this->getMagentoVariationsCombinations()
+            $this->_magentoVariationsTree = $this->prepareVariations(
+                $firstAttribute, $this->getMagentoVariationsCombinations()
             );
         }
 
-        return $this->magentoVariationsTree;
+        return $this->_magentoVariationsTree;
     }
 
     // ---------------------------------------
 
-    private function prepareVariations($currentAttribute,$magentoVariations,$filters = array())
+    protected function prepareVariations($currentAttribute, $magentoVariations, $filters = array())
     {
         $return = false;
 
@@ -92,16 +92,14 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Variation exte
         $currentAttributePosition = $temp[$currentAttribute];
 
         if ($currentAttributePosition != $lastAttributePosition) {
-
             $temp = array_keys($magentoVariationsSets);
             $nextAttribute = $temp[$currentAttributePosition + 1];
 
             foreach ($magentoVariationsSets[$currentAttribute] as $value) {
-
                 $filters[$currentAttribute] = $value;
 
                 $result = $this->prepareVariations(
-                    $nextAttribute,$magentoVariations,$filters
+                    $nextAttribute, $magentoVariations, $filters
                 );
 
                 if (!$result) {
@@ -117,12 +115,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Product_Variation exte
         $return = false;
         foreach ($magentoVariations as $key => $magentoVariation) {
             foreach ($magentoVariation as $option) {
-
                 $value = $option['option'];
                 $attribute = $option['attribute'];
 
                 if ($attribute == $currentAttribute) {
-
                     if (count($magentoVariationsSets) != 1) {
                         continue;
                     }

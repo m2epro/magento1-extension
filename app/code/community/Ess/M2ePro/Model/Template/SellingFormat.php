@@ -6,8 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Template_SellingFormat as AmazonTemplateSellingFormat;
+use Ess_M2ePro_Model_Ebay_Template_SellingFormat as EbayTemplateSellingFormat;
+use Ess_M2ePro_Model_Walmart_Template_SellingFormat as WalmartTemplateSellingFormat;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Template_SellingFormat|Ess_M2ePro_Model_Ebay_Template_SellingFormat|Ess_M2ePro_Model_Walmart_Template_SellingFormat getChildObject()
+ * @method AmazonTemplateSellingFormat|EbayTemplateSellingFormat|WalmartTemplateSellingFormat getChildObject()
  */
 class Ess_M2ePro_Model_Template_SellingFormat extends Ess_M2ePro_Model_Component_Parent_Abstract
 {

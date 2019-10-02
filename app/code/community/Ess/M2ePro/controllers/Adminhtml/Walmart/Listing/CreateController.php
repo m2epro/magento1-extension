@@ -9,7 +9,7 @@
 class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
     extends Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 {
-    protected $sessionKeyPostfix = '_listing_create';
+    protected $_sessionKeyPostfix = '_listing_create';
 
     //########################################
 
@@ -39,7 +39,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
     public function indexAction()
     {
         if ($this->getRequest()->isPost()) {
-
             $listing = $this->createListing();
 
             if ($this->isCreationModeListingOnly()) {
@@ -48,7 +47,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
             }
 
             return $this->_redirect(
-                '*/adminhtml_walmart_listing_productAdd/index',  array(
+                '*/adminhtml_walmart_listing_productAdd/index', array(
                     'id' => $listing->getId(),
                     'new_listing' => 1
                 )
@@ -73,7 +72,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
         // Validate Templates / Account
         // ---------------------------------------
         $account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Account',(int)$post['account_id']
+            'Account', (int)$post['account_id']
         );
         $selling = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
             'Template_SellingFormat', (int)$post['template_selling_format_id']
@@ -119,7 +118,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
 
     protected function getSessionKey()
     {
-        return 'walmart'.$this->sessionKeyPostfix;
+        return 'walmart'.$this->_sessionKeyPostfix;
     }
 
     //########################################
@@ -127,7 +126,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
     protected function getMarketplaceId()
     {
         $accountObj = Mage::helper('M2ePro/Component')
-            ->getCachedUnknownObject('Account',(int)$this->getSessionValue('account_id'));
+            ->getCachedUnknownObject('Account', (int)$this->getSessionValue('account_id'));
         return (int)$accountObj->getMarketplaceId();
     }
 
@@ -147,11 +146,11 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
     {
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->getSessionKey());
 
-        if (is_null($sessionData)) {
+        if ($sessionData === null) {
             $sessionData = array();
         }
 
-        if (is_null($key)) {
+        if ($key === null) {
             return $sessionData;
         }
 
@@ -160,14 +159,14 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
 
     // ---------------------------------------
 
-    private function clearSession()
+    protected function clearSession()
     {
         Mage::helper('M2ePro/Data_Session')->setValue($this->getSessionKey(), NULL);
     }
 
     //########################################
 
-    private function isCreationModeListingOnly()
+    protected function isCreationModeListingOnly()
     {
         return $this->getRequest()->getParam('creation_mode') ==
             Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY;

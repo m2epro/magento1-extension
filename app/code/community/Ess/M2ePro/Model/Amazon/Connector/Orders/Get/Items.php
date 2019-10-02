@@ -24,18 +24,18 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
     public function getRequestData()
     {
         $accountsAccessTokens = array();
-        foreach ($this->params['accounts'] as $account) {
+        foreach ($this->_params['accounts'] as $account) {
             $accountsAccessTokens[] = $account->getChildObject()->getServerHash();
         }
 
         $data = array(
             'accounts'         => $accountsAccessTokens,
-            'from_update_date' => $this->params['from_update_date'],
-            'to_update_date'   => $this->params['to_update_date']
+            'from_update_date' => $this->_params['from_update_date'],
+            'to_update_date'   => $this->_params['to_update_date']
         );
 
-        if (!empty($this->params['job_token'])) {
-            $data['job_token'] = $this->params['job_token'];
+        if (!empty($this->_params['job_token'])) {
+            $data['job_token'] = $this->_params['job_token'];
         }
 
         return $data;
@@ -49,14 +49,10 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
         $cacheConfigGroup = '/amazon/synchronization/orders/receive/timeout';
 
         try {
-
             parent::process();
-
         } catch (Ess_M2ePro_Model_Exception_Connection $exception) {
-
             $data = $exception->getAdditionalData();
             if (!empty($data['curl_error_number']) && $data['curl_error_number'] == CURLE_OPERATION_TIMEOUTED) {
-
                 $fails = (int)$cacheConfig->getGroupValue($cacheConfigGroup, 'fails');
                 $fails++;
 
@@ -64,10 +60,10 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                 $rise += self::TIMEOUT_RISE_ON_ERROR;
 
                 if ($fails >= self::TIMEOUT_ERRORS_COUNT_TO_RISE && $rise <= self::TIMEOUT_RISE_MAX_VALUE) {
-
                     $fails = 0;
                     $cacheConfig->setGroupValue($cacheConfigGroup, 'rise', $rise);
                 }
+
                 $cacheConfig->setGroupValue($cacheConfigGroup, 'fails', $fails);
             }
 
@@ -109,25 +105,23 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
         }
 
         $accounts = array();
-        foreach ($this->params['accounts'] as $item) {
+        foreach ($this->_params['accounts'] as $item) {
             $accounts[$item->getChildObject()->getServerHash()] = $item;
         }
 
         $preparedOrders = array();
 
         foreach ($responseData['items'] as $accountAccessToken => $ordersData) {
-
             if (empty($accounts[$accountAccessToken])) {
                 continue;
             }
 
             $preparedOrders[$accountAccessToken] = array();
 
-            /* @var $marketplace Ess_M2ePro_Model_Marketplace */
+            /** @var $marketplace Ess_M2ePro_Model_Marketplace */
             $marketplace = $accounts[$accountAccessToken]->getChildObject()->getMarketplace();
 
             foreach ($ordersData as $orderData) {
-
                 $order = array();
 
                 $order['amazon_order_id'] = trim($orderData['id']);
@@ -201,17 +195,17 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
             }
         }
 
-        $this->responseData = array(
+        $this->_responseData = array(
             'items'          => $preparedOrders,
             'to_update_date' => $responseData['to_update_date']
         );
 
         if (!empty($responseData['job_token'])) {
-            $this->responseData['job_token'] = $responseData['job_token'];
+            $this->_responseData['job_token'] = $responseData['job_token'];
         }
     }
 
-    private function parseShippingAddress(array $shippingData, Ess_M2ePro_Model_Marketplace $marketplace)
+    protected function parseShippingAddress(array $shippingData, Ess_M2ePro_Model_Marketplace $marketplace)
     {
         $location = isset($shippingData['location']) ? $shippingData['location'] : array();
         $address  = isset($shippingData['address']) ? $shippingData['address'] : array();

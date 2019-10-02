@@ -91,7 +91,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     //########################################
 
-    private function processExistProduct()
+    protected function processExistProduct()
     {
         $channelAttributes = $this->getProcessor()->getTypeModel()->getChannelAttributes();
 
@@ -100,7 +100,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             ->setMatchedAttributes($this->matchAttributes($channelAttributes), false);
     }
 
-    private function processNewProduct()
+    protected function processNewProduct()
     {
         $channelThemes = $this->getProcessor()->getPossibleThemes();
         $themeAttributes = $channelThemes[$this->getProcessor()->getTypeModel()->getChannelTheme()]['attributes'];
@@ -112,7 +112,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     // ---------------------------------------
 
-    private function matchAttributes($channelAttributes, $canUseDictionary = true)
+    protected function matchAttributes($channelAttributes, $canUseDictionary = true)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute $attributeMatcher */
         $attributeMatcher = Mage::getModel('M2ePro/Amazon_Listing_Product_Variation_Matcher_Attribute');

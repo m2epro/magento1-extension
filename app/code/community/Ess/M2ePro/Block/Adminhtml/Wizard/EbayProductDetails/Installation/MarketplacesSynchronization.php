@@ -32,8 +32,8 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_EbayProductDetails_Installation_Marketpl
         $collectionMarketplaces = $marketplace->getCollection()
                                               ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
                                               ->setOrder('group_title', 'ASC')
-                                              ->setOrder('sorder','ASC')
-                                              ->setOrder('title','ASC');
+                                              ->setOrder('sorder', 'ASC')
+                                              ->setOrder('title', 'ASC');
         $marketplaces = array();
         $marketplacesMovedForSort = array();
 
@@ -41,7 +41,6 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_EbayProductDetails_Installation_Marketpl
             if ($marketplace->getGroupTitle() == 'Asia / Pacific' ||
                 $marketplace->getGroupTitle() == 'Australia Region' ||
                 $marketplace->getGroupTitle() == 'Other') {
-
                 $marketplacesMovedForSort[] = $marketplace->getData();
                 continue;
             }
@@ -52,12 +51,14 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_EbayProductDetails_Installation_Marketpl
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Proceed'),
                 'onclick' => "WizardEbayProductDetails."
                     ."marketplacesSynchronizationAction(this)",
                 'class' => 'process_marketplaces_button'
-            ));
+                )
+            );
 
         $this->setChild('process_marketplaces_synchronization_button', $buttonBlock);
         // ---------------------------------------

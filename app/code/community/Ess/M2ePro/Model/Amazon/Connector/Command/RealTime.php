@@ -11,14 +11,15 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Command_RealTime extends Ess_M2
     /**
      * @var Ess_M2ePro_Model_Account|null
      */
-    protected $account = NULL;
+    protected $_account;
 
     //########################################
 
-    public function __construct(array $params = array(),
-                                Ess_M2ePro_Model_Account $account = NULL)
-    {
-        $this->account = $account;
+    public function __construct(
+        array $params = array(),
+        Ess_M2ePro_Model_Account $account = null
+    ) {
+        $this->_account = $account;
         parent::__construct($params);
     }
 
@@ -29,9 +30,10 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Command_RealTime extends Ess_M2
         $request = parent::buildRequestInstance();
 
         $requestData = $request->getData();
-        if (!is_null($this->account)) {
-            $requestData['account'] = $this->account->getChildObject()->getServerHash();
+        if ($this->_account !== null) {
+            $requestData['account'] = $this->_account->getChildObject()->getServerHash();
         }
+
         $request->setData($requestData);
 
         return $request;

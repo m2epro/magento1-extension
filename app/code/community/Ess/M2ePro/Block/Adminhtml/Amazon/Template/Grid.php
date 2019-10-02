@@ -14,7 +14,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
     const TEMPLATE_DESCRIPTION       = 'description';
     const TEMPLATE_PRODUCT_TAX_CODE  = 'product_tax_code';
 
-    private $enabledMarketplacesCollection = NULL;
+    protected $_enabledMarketplacesCollection;
 
     //########################################
 
@@ -192,101 +192,114 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Grid extends Mage_Adminhtml_Blo
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
-            'header'        => Mage::helper('M2ePro')->__('Details'),
-            'align'         => 'left',
-            'type'          => 'text',
-//            'width'         => '150px',
-            'index'         => 'title',
-            'escape'        => true,
-            'filter_index'  => 'main_table.title',
-            'frame_callback' => array($this, 'callbackColumnTitle'),
-            'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
-
-        $this->addColumn('type', array(
-            'header'        => Mage::helper('M2ePro')->__('Type'),
-            'align'         => 'left',
-            'type'          => 'options',
-            'width'         => '120px',
-            'sortable'      => false,
-            'index'         => 'type',
-            'filter_index'  => 'main_table.type',
-            'options'       => array(
-                self::TEMPLATE_SELLING_FORMAT    => Mage::helper('M2ePro')->__('Selling'),
-                self::TEMPLATE_DESCRIPTION       => Mage::helper('M2ePro')->__('Description'),
-                self::TEMPLATE_SYNCHRONIZATION   => Mage::helper('M2ePro')->__('Synchronization'),
-                self::TEMPLATE_SHIPPING          => Mage::helper('M2ePro')->__('Shipping'),
-                self::TEMPLATE_PRODUCT_TAX_CODE  => Mage::helper('M2ePro')->__('Product Tax Code'),
+        $this->addColumn(
+            'title', array(
+                'header'                    => Mage::helper('M2ePro')->__('Details'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'title',
+                'escape'                    => true,
+                'filter_index'              => 'main_table.title',
+                'frame_callback'            => array($this, 'callbackColumnTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
             )
-        ));
+        );
 
-        $this->addColumn('marketplace', array(
-            'header'        => Mage::helper('M2ePro')->__('Marketplace'),
-            'align'         => 'left',
-            'type'          => 'options',
-            'width'         => '100px',
-            'index'         => 'marketplace_id',
-            'filter_index'  => 'marketplace_id',
-            'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
-            'frame_callback'=> array($this, 'callbackColumnMarketplace'),
-            'options'       => $this->getEnabledMarketplaceTitles()
-        ));
-
-        $this->addColumn('create_date', array(
-            'header'    => Mage::helper('M2ePro')->__('Creation Date'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'type'      => 'datetime',
-            'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'index'     => 'create_date',
-            'filter_index' => 'main_table.create_date'
-        ));
-
-        $this->addColumn('update_date', array(
-            'header'    => Mage::helper('M2ePro')->__('Update Date'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'type'      => 'datetime',
-            'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'index'     => 'update_date',
-            'filter_index' => 'main_table.update_date'
-        ));
-
-        $this->addColumn('actions', array(
-            'header'    => Mage::helper('M2ePro')->__('Actions'),
-            'align'     => 'left',
-            'width'     => '100px',
-            'type'      => 'action',
-            'index'     => 'actions',
-            'filter'    => false,
-            'sortable'  => false,
-            'renderer'  => 'M2ePro/adminhtml_grid_column_renderer_action',
-            'getter'    => 'getTemplateId',
-            'actions'   => array(
-                array(
-                    'caption'   => Mage::helper('M2ePro')->__('Edit'),
-                    'url'       => array(
-                        'base' => '*/adminhtml_amazon_template/edit',
-                        'params' => array(
-                            'type'    => '$type'
-                        )
-                    ),
-                    'field' => 'id'
-                ),
-                array(
-                    'caption'   => Mage::helper('M2ePro')->__('Delete'),
-                    'url'       => array(
-                        'base' => '*/adminhtml_amazon_template/delete',
-                        'params' => array(
-                            'type'    => '$type'
-                        )
-                    ),
-                    'field'   => 'id',
-                    'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+        $this->addColumn(
+            'type', array(
+                'header'       => Mage::helper('M2ePro')->__('Type'),
+                'align'        => 'left',
+                'type'         => 'options',
+                'width'        => '120px',
+                'sortable'     => false,
+                'index'        => 'type',
+                'filter_index' => 'main_table.type',
+                'options'      => array(
+                    self::TEMPLATE_SELLING_FORMAT   => Mage::helper('M2ePro')->__('Selling'),
+                    self::TEMPLATE_DESCRIPTION      => Mage::helper('M2ePro')->__('Description'),
+                    self::TEMPLATE_SYNCHRONIZATION  => Mage::helper('M2ePro')->__('Synchronization'),
+                    self::TEMPLATE_SHIPPING         => Mage::helper('M2ePro')->__('Shipping'),
+                    self::TEMPLATE_PRODUCT_TAX_CODE => Mage::helper('M2ePro')->__('Product Tax Code'),
                 )
             )
-        ));
+        );
+
+        $this->addColumn(
+            'marketplace', array(
+                'header'                    => Mage::helper('M2ePro')->__('Marketplace'),
+                'align'                     => 'left',
+                'type'                      => 'options',
+                'width'                     => '100px',
+                'index'                     => 'marketplace_id',
+                'filter_index'              => 'marketplace_id',
+                'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
+                'frame_callback'            => array($this, 'callbackColumnMarketplace'),
+                'options'                   => $this->getEnabledMarketplaceTitles()
+            )
+        );
+
+        $this->addColumn(
+            'create_date', array(
+                'header'       => Mage::helper('M2ePro')->__('Creation Date'),
+                'align'        => 'left',
+                'width'        => '150px',
+                'type'         => 'datetime',
+                'format'       => Mage::app()->getLocale()
+                                      ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'        => 'create_date',
+                'filter_index' => 'main_table.create_date'
+            )
+        );
+
+        $this->addColumn(
+            'update_date', array(
+                'header'       => Mage::helper('M2ePro')->__('Update Date'),
+                'align'        => 'left',
+                'width'        => '150px',
+                'type'         => 'datetime',
+                'format'       => Mage::app()->getLocale()
+                                      ->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'index'        => 'update_date',
+                'filter_index' => 'main_table.update_date'
+            )
+        );
+
+        $this->addColumn(
+            'actions', array(
+                'header'   => Mage::helper('M2ePro')->__('Actions'),
+                'align'    => 'left',
+                'width'    => '100px',
+                'type'     => 'action',
+                'index'    => 'actions',
+                'filter'   => false,
+                'sortable' => false,
+                'renderer' => 'M2ePro/adminhtml_grid_column_renderer_action',
+                'getter'   => 'getTemplateId',
+                'actions'  => array(
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('Edit'),
+                        'url'     => array(
+                            'base'   => '*/adminhtml_amazon_template/edit',
+                            'params' => array(
+                                'type' => '$type'
+                            )
+                        ),
+                        'field'   => 'id'
+                    ),
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('Delete'),
+                        'url'     => array(
+                            'base'   => '*/adminhtml_amazon_template/delete',
+                            'params' => array(
+                                'type' => '$type'
+                            )
+                        ),
+                        'field'   => 'id',
+                        'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
+                    )
+                )
+            )
+        );
 
         return $this;
     }
@@ -377,21 +390,21 @@ HTML;
 
     //########################################
 
-    private function getEnabledMarketplacesCollection()
+    protected function getEnabledMarketplacesCollection()
     {
-        if (is_null($this->enabledMarketplacesCollection)) {
+        if ($this->_enabledMarketplacesCollection === null) {
             $collection = Mage::getModel('M2ePro/Marketplace')->getCollection();
             $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Amazon::NICK);
             $collection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
             $collection->setOrder('sorder', 'ASC');
 
-            $this->enabledMarketplacesCollection = $collection;
+            $this->_enabledMarketplacesCollection = $collection;
         }
 
-        return $this->enabledMarketplacesCollection;
+        return $this->_enabledMarketplacesCollection;
     }
 
-    private function getEnabledMarketplaceTitles()
+    protected function getEnabledMarketplaceTitles()
     {
         return $this->getEnabledMarketplacesCollection()->toOptionHash();
     }

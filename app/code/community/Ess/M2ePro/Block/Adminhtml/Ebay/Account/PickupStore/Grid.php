@@ -55,24 +55,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Grid extends Mage_Admi
 
     protected function _prepareColumns()
     {
-        $this->addColumn('name', array(
+        $this->addColumn(
+            'name', array(
             'header'    => Mage::helper('M2ePro')->__('Name'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'name',
             'filter_index' => 'main_table.name'
-        ));
+            )
+        );
 
-        $this->addColumn('location_id', array(
+        $this->addColumn(
+            'location_id', array(
             'header'    => Mage::helper('M2ePro')->__('Location ID'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'location_id',
             'escape'    => true,
             'filter_index' => 'main_table.location_id',
-        ));
+            )
+        );
 
-        $this->addColumn('marketplace_id', array(
+        $this->addColumn(
+            'marketplace_id', array(
             'header'    => Mage::helper('M2ePro')->__('Country'),
             'align'     => 'left',
             'width'     => '200px',
@@ -82,9 +87,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Grid extends Mage_Admi
             'filter_index' => 'mm.title',
             'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
             'options' => $this->getEnabledMarketplaceTitles()
-        ));
+            )
+        );
 
-        $this->addColumn('create_date', array(
+        $this->addColumn(
+            'create_date', array(
             'header'    => Mage::helper('M2ePro')->__('Creation Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -92,9 +99,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Grid extends Mage_Admi
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'create_date',
             'filter_index' => 'main_table.create_date'
-        ));
+            )
+        );
 
-        $this->addColumn('update_date', array(
+        $this->addColumn(
+            'update_date', array(
             'header'    => Mage::helper('M2ePro')->__('Update Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -102,9 +111,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Grid extends Mage_Admi
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'update_date',
             'filter_index' => 'main_table.update_date'
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'left',
             'width'     => '100px',
@@ -130,7 +141,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Grid extends Mage_Admi
                     'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
                 )
             )
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -162,7 +174,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Grid extends Mage_Admi
 
     //########################################
 
-    private function getEnabledMarketplaceTitles()
+    protected function getEnabledMarketplaceTitles()
     {
         $marketplaceCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace')
                             ->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK)

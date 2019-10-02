@@ -8,12 +8,12 @@
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = null;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    private $productIdentifiers = array();
+    protected $_productIdentifiers = array();
 
-    private $sku = null;
+    protected $_sku = null;
 
     //########################################
 
@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
      */
     public function setProductIdentifiers(array $productIdentifiers)
     {
-        $this->productIdentifiers = $productIdentifiers;
+        $this->_productIdentifiers = $productIdentifiers;
         return $this;
     }
 
@@ -43,7 +43,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
      */
     public function setSku($sku)
     {
-        $this->sku = $sku;
+        $this->_sku = $sku;
         return $this;
     }
 
@@ -112,7 +112,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
 
     //########################################
 
-    private function validate()
+    protected function validate()
     {
         $listingProduct = $this->getListingProduct();
         if (empty($listingProduct)) {
@@ -132,7 +132,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
 
     //########################################
 
-    private function linkSimpleOrIndividualProduct()
+    protected function linkSimpleOrIndividualProduct()
     {
         $data = array(
             'sku' => $this->getSku(),
@@ -146,7 +146,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
         return true;
     }
 
-    private function linkChildProduct()
+    protected function linkChildProduct()
     {
         $data = array(
             'sku'    => $this->getSku(),
@@ -176,15 +176,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
     /**
      * @return Ess_M2ePro_Model_Listing_Product
      */
-    private function getListingProduct()
+    protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     /**
      * @return Ess_M2ePro_Model_Walmart_Listing_Product
      */
-    private function getWalmartListingProduct()
+    protected function getWalmartListingProduct()
     {
         return $this->getListingProduct()->getChildObject();
     }
@@ -192,22 +192,22 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Linking
     /**
      * @return Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
      */
-    private function getVariationManager()
+    protected function getVariationManager()
     {
         return $this->getWalmartListingProduct()->getVariationManager();
     }
 
     // ---------------------------------------
 
-    private function getProductIdentifiers()
+    protected function getProductIdentifiers()
     {
-        return $this->productIdentifiers;
+        return $this->_productIdentifiers;
     }
 
-    private function getSku()
+    protected function getSku()
     {
-        if (!is_null($this->sku)) {
-            return $this->sku;
+        if ($this->_sku !== null) {
+            return $this->_sku;
         }
 
         return $this->getWalmartListingProduct()->getSku();

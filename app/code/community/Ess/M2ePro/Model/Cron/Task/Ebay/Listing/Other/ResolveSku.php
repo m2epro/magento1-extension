@@ -40,14 +40,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
 
     protected function performActions()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('other_listings_synchronization',
-            Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES);
+        $accountsCollection->addFieldToFilter(
+            'other_listings_synchronization',
+            Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+        );
 
         $accounts = $accountsCollection->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -61,11 +63,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
             );
 
             try {
-
                 $this->updateSkus($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Update SKUs" Action for eBay Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -82,12 +81,12 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
 
     //########################################
 
-    private function updateSkus(Ess_M2ePro_Model_Account $account)
+    protected function updateSkus(Ess_M2ePro_Model_Account $account)
     {
-        /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $listingOtherCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
 
         $listingOtherCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
-        $listingOtherCollection->addFieldToFilter('main_table.account_id',(int)$account->getId());
+        $listingOtherCollection->addFieldToFilter('main_table.account_id', (int)$account->getId());
         $listingOtherCollection->getSelect()->where('`second_table`.`sku` IS NULL');
         $listingOtherCollection->getSelect()->order('second_table.start_date ASC');
         $listingOtherCollection->getSelect()->limit(200);
@@ -103,8 +102,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
 
         if (empty($receivedData['items'])) {
             foreach ($listingOtherCollection->getItems() as $listingOther) {
-                $listingOther->getChildObject()->setData('sku','')->save();
+                $listingOther->getChildObject()->setData('sku', '')->save();
             }
+
             return;
         }
 
@@ -114,8 +114,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
 
     // ---------------------------------------
 
-    private function updateSkusForReceivedItems($listingOtherCollection,Ess_M2ePro_Model_Account $account,array $items)
-    {
+    protected function updateSkusForReceivedItems(
+        $listingOtherCollection,
+        Ess_M2ePro_Model_Account $account,
+        array $items
+    ) {
         /** @var $mappingModel Ess_M2ePro_Model_Ebay_Listing_Other_Mapping */
         $mappingModel = Mage::getModel('M2ePro/Ebay_Listing_Other_Mapping');
 
@@ -128,7 +131,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
                     continue;
                 }
 
-                $listingOther->getChildObject()->setData('sku',(string)$item['sku'])->save();
+                $listingOther->getChildObject()->setData('sku', (string)$item['sku'])->save();
 
                 if ($account->getChildObject()->isOtherListingsMappingEnabled()) {
                     $mappingModel->initialize($account);
@@ -141,14 +144,14 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
     }
 
     // eBay item IDs which were removed can lead to the issue and getting SKU process freezes
-    private function updateSkusForNotReceivedItems($listingOtherCollection, $toTimeReceived)
+    protected function updateSkusForNotReceivedItems($listingOtherCollection, $toTimeReceived)
     {
         foreach ($listingOtherCollection->getItems() as $listingOther) {
 
             /** @var Ess_M2ePro_Model_Ebay_Listing_Other $ebayListingOther */
             $ebayListingOther = $listingOther->getChildObject();
 
-            if (!is_null($ebayListingOther->getSku())) {
+            if ($ebayListingOther->getSku() !== null) {
                 continue;
             }
 
@@ -162,9 +165,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
 
     //########################################
 
-    private function receiveSkusFromEbay(Ess_M2ePro_Model_Account $account, $sinceTime)
+    protected function receiveSkusFromEbay(Ess_M2ePro_Model_Account $account, $sinceTime)
     {
-        $sinceTime = new DateTime($sinceTime,new DateTimeZone('UTC'));
+        $sinceTime = new DateTime($sinceTime, new DateTimeZone('UTC'));
         $sinceTime->modify('-1 minute');
         $sinceTime = $sinceTime->format('Y-m-d H:i:s');
 
@@ -175,9 +178,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
 
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
-            'item','get','all',
-            $inputData,NULL,
-            NULL,$account->getId()
+            'item', 'get', 'all',
+            $inputData, NULL,
+            NULL, $account->getId()
         );
 
         $dispatcherObj->process($connectorObj);

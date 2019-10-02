@@ -1,60 +1,69 @@
 <?php
-    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data $this */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
-    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+// @codingStandardsIgnoreFile
 
-    $attributesByInputTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text')),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'select')),
-        'text_price' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'price')),
-    );
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data $this */
 
-    $formData = $this->getFormData();
-    $default = $this->getDefault();
-    $formData = array_merge($default, $formData);
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-    // checking what mode need to show (simple or advanced)
-    $defaultStrictSettingsForSimpleMode = $default;
+$attributesByInputTypes = array(
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text')),
+    'text_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'select')),
+    'text_price' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'price')),
+);
 
-    // removing ignored options for mode checking
-    $ignoredOptions = array(
-        'duration_mode',
-        'out_of_stock_control',
-        'qty_custom_value',
+$formData = $this->getFormData();
+$default = $this->getDefault();
+$formData = array_merge($default, $formData);
 
-        'fixed_price_mode',
-        'fixed_price_coefficient',
-        'fixed_price_custom_attribute',
+// checking what mode need to show (simple or advanced)
+$defaultStrictSettingsForSimpleMode = $default;
 
-        'best_offer_accept_mode',
-        'best_offer_accept_value',
-        'best_offer_accept_attribute',
-        'best_offer_reject_mode',
-        'best_offer_reject_value',
-        'best_offer_reject_attribute',
+// removing ignored options for mode checking
+$ignoredOptions = array(
+    'duration_mode',
+    'out_of_stock_control',
+    'qty_custom_value',
 
-        'price_discount_map_exposure_type',
+    'fixed_price_mode',
+    'fixed_price_coefficient',
+    'fixed_price_custom_attribute',
 
-        'lot_size_custom_value',
-        'lot_size_attribute'
-    );
+    'best_offer_accept_mode',
+    'best_offer_accept_value',
+    'best_offer_accept_attribute',
+    'best_offer_reject_mode',
+    'best_offer_reject_value',
+    'best_offer_reject_attribute',
 
-    foreach($ignoredOptions as $val) {
-        unset($defaultStrictSettingsForSimpleMode[$val]);
-    }
+    'price_discount_map_exposure_type',
 
-    $showBlockedAdvancedMode = false;
-    if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-        $showBlockedAdvancedMode = !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData));
-    }
+    'lot_size_custom_value',
+    'lot_size_attribute'
+);
 
-    $showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
+foreach($ignoredOptions as $val) {
+    unset($defaultStrictSettingsForSimpleMode[$val]);
+}
 
-    $charitiesDict = $this->getData('charities');
-    $charitySelf = json_decode($formData['charity'], true);
+$showBlockedAdvancedMode = false;
+if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
+    $showBlockedAdvancedMode = !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData));
+}
 
-    $taxCategories = $this->getTaxCategoriesInfo();
+$showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
+
+$charitiesDict = $this->getData('charities');
+$charitySelf = json_decode($formData['charity'], true);
+
+$taxCategories = $this->getTaxCategoriesInfo();
+
 ?>
 
 <script type="text/javascript">
@@ -122,7 +131,7 @@
     M2ePro.formData.qty_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['qty_mode']); ?>';
     M2ePro.formData.qty_modification_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['qty_modification_mode']); ?>';
 
-    <?php if (!is_null($currency = $this->getCurrency())) : ?>
+    <?php if (($currency = $this->getCurrency()) !== null) : ?>
         M2ePro.formData.currency = '<?php echo Mage::app()->getLocale()->currency($currency)->getSymbol(); ?>';
     <?php endif; ?>
 
@@ -814,7 +823,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                             <thead>
                                 <tr class="headings">
                                     <th style="width: 150px"><?php echo Mage::helper('M2ePro')->__('Price'); ?></th>
-                                    <?php if (!is_null($currency)) : ?>
+                                    <?php if ($currency !== null) : ?>
                                         <th style="width: 65px">
                                             <?php echo Mage::helper('M2ePro')->__('Currency'); ?>
                                             <span>
@@ -835,7 +844,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                             <span class="tool-tip-message" style="font-size: 12px; display: none; width: 400px">
                                                 <img src="<?php echo $this->getSkinUrl('M2ePro/images/help.png'); ?>">
                                                 <span>
-                                                    <?php $currencyPlaceholder = is_null($currency) ? Mage::helper('M2ePro')->__('[CURRENCY]') : Mage::app()->getLocale()->currency($currency)->getSymbol(); ?>
+                                                    <?php $currencyPlaceholder = $currency === null ? Mage::helper('M2ePro')->__('[CURRENCY]') : Mage::app()->getLocale()->currency($currency)->getSymbol(); ?>
 
                                                     <?php echo Mage::helper('M2ePro')->__(
                                                         'A value you want the Magento Price to be modified while Listing on eBay.<br/>
@@ -863,7 +872,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label for="fixed_price_mode" id="fixed_price_label"><?php echo Mage::helper('M2ePro')->__('Price'); ?>:</label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value add_rowspan" style="text-align: center; vertical-align: middle;">
                                         <div id="fixed_price_currency_td">
                                             <span><?php echo $currency; ?></span>
@@ -974,7 +983,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label for="start_price_mode"><?php echo Mage::helper('M2ePro')->__('Start Price'); ?>:</label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value" style="text-align: center">
                                         <div id="start_price_currency_td">
                                             <span><?php echo $currency; ?></span>
@@ -1065,7 +1074,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label for="reserve_price_mode"><?php echo Mage::helper('M2ePro')->__('Reserve Price'); ?>:</label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value" style="text-align: center">
                                         <div id="reserve_price_currency_td">
                                             <span><?php echo $currency; ?></span>
@@ -1155,7 +1164,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label for="buyitnow_price_mode"><?php echo Mage::helper('M2ePro')->__('"Buy It Now" Price'); ?>:</label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value" style="text-align: center">
                                         <div id="buyitnow_price_currency_td">
                                             <span><?php echo $currency; ?></span>
@@ -1245,7 +1254,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label><?php echo Mage::helper('M2ePro')->__('Strike-Through Price'); ?>:</label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value" style="text-align: center; vertical-align: middle;" rowspan="2">
                                         <div id="price_discount_stp_currency_td">
                                             <span><?php echo $currency; ?></span>
@@ -1341,7 +1350,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label><?php echo Mage::helper('M2ePro')->__('Minimum Advertised Price'); ?>: </label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value" style="text-align: center; vertical-align: middle; border-width: 0 1px 0px 0 !important;" rowspan="2">
                                         <div id="price_discount_map_currency_td">
                                             <span><?php echo $currency; ?></span>
@@ -1464,7 +1473,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                 $customGroup = false;
                                 $charityPercent = NULL;
 
-                                if (!is_null($charitySelf)) {
+                                if ($charitySelf !== null) {
                                     $customGroup = true;
 
                                     foreach ($charitiesDict as $charity) {
@@ -1476,7 +1485,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                         }
                                     }
 
-                                    if (is_null($charitySelected)) {
+                                    if ($charitySelected === null) {
                                         $charitySelected = $charitySelf['id'];
                                         $charityPercent = $charitySelf['percentage'];
                                     }
@@ -1484,7 +1493,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                             ?>
 
                             <select id="charity_id" name="selling_format[charity_id]">
-                                <option value="0" <?php echo is_null($charitySelected) ? 'selected="selected"' : ''?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
+                                <option value="0" <?php echo $charitySelected === null ? 'selected="selected"' : ''?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                                 <option class="searchNewCharity"><?php echo Mage::helper('M2ePro')->__('Search for Charity Organization') ?></option>
 
                                 <?php if ($customGroup) :?>
@@ -1503,7 +1512,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
                             </select>
 
-                            <?php if (!is_null($charitySelected)) : ?>
+                            <?php if ($charitySelected !== null) : ?>
                                 <input type="hidden" id="charity_name" name="selling_format[charity_name]" value="<?php echo (!empty($charitiesDict) && !empty($charitiesDict[$charitySelected]['name'])) ? $charitiesDict[$charitySelected]['name'] : $charitySelf['name']; ?>">
                             <?php endif; ?>
 
@@ -1515,7 +1524,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                         </td>
                     </tr>
 
-                    <tr class="charity_percent_tr" <?php echo is_null($charitySelected) ? 'style="display:none"' : '' ?>>
+                    <tr class="charity_percent_tr" <?php echo $charitySelected === null ? 'style="display:none"' : '' ?>>
 
                         <td class="label">
                             <label for="charity_percent"><?php echo Mage::helper('M2ePro')->__('Donation Percentage'); ?>: </label>
@@ -1523,7 +1532,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
                         <td class="value" style="width: auto;">
                             <select id="charity_percent" name="selling_format[charity_percentage]" class="select">
-                                <option id="charity_percent_none" value="0" <?php echo is_null($charitySelected) ? '' : 'style="display: none;"'?>> </option>
+                                <option id="charity_percent_none" value="0" <?php echo $charitySelected === null ? '' : 'style="display: none;"'?>> </option>
 
                                 <?php
                                     if ($this->getMarketplaceId() == Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_MOTORS) : ?>
@@ -1536,7 +1545,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                 <?php endforeach; ?>
                             </select>
 
-                            <?php if (!is_null($charityPercent)) :?>
+                            <?php if ($charityPercent !== null) :?>
                                 <input type="hidden" id="charity_percent_self" value="<?php echo $charityPercent ?>">
                             <?php endif; ?>
 
@@ -1550,7 +1559,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
     </div>
 
-<?php elseif (!is_null($charitySelf)) : ?>
+<?php elseif ($charitySelf !== null) : ?>
 
     <input type="hidden" name="selling_format[charity_id]" value="<?php echo $charitySelf['id']; ?>">
     <input type="hidden" name="selling_format[charity_name]" value="<?php echo $charitySelf['name']; ?>">
@@ -1601,7 +1610,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                             <thead>
                                 <tr class="headings">
                                     <th style="width: 160px"><?php echo Mage::helper('M2ePro')->__('Auto Action'); ?></th>
-                                    <?php if (!is_null($currency)) : ?>
+                                    <?php if ($currency !== null) : ?>
                                         <th style="width: 65px"><?php echo Mage::helper('M2ePro')->__('Currency'); ?></th>
                                     <?php endif; ?>
                                     <th style="width: 400px"><?php echo Mage::helper('M2ePro')->__('Value'); ?></th>
@@ -1615,7 +1624,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label for="best_offer_accept_mode"><?php echo Mage::helper('M2ePro')->__('Accept Offers of at Least'); ?>:</label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value" style="text-align: center">
                                         <div id="best_offer_accept_currency_td">
                                             <!--<span>--><?php //echo $currency . ' (' . Mage::app()->getLocale()->currency($currency)->getSymbol() . ')'; ?><!--</span>-->
@@ -1662,7 +1671,7 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                                     <label for="best_offer_reject_mode"><?php echo Mage::helper('M2ePro')->__('Decline Offers Less than'); ?>:</label>
                                 </td>
 
-                                <?php if (!is_null($currency)) : ?>
+                                <?php if ($currency !== null) : ?>
                                     <td class="value" style="text-align: center">
                                         <div id="best_offer_reject_currency_td">
                                             <!--<span>--><?php //echo $currency . ' (' . Mage::app()->getLocale()->currency($currency)->getSymbol() . ')'; ?><!--</span>-->

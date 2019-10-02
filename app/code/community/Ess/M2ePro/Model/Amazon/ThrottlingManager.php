@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Order getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Amazon_Order getResource()
+ * @method Ess_M2ePro_Model_Resource_Amazon_Order getResource()
  */
 class Ess_M2ePro_Model_Amazon_ThrottlingManager
 {
@@ -17,21 +17,21 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
 
     const RESERVED_REQUESTS_REGISTRY_KEY = '/amazon/throttling/reserved_requests/';
 
-    private $availableRequestsCount = array();
+    protected $_availableRequestsCount = array();
 
     //########################################
 
     public function getAvailableRequestsCount($merchantId, $requestType)
     {
-        if (empty($this->availableRequestsCount)) {
-            $this->availableRequestsCount = $this->receiveAvailableRequestsCount();
+        if (empty($this->_availableRequestsCount)) {
+            $this->_availableRequestsCount = $this->receiveAvailableRequestsCount();
         }
 
-        if (!isset($this->availableRequestsCount[$merchantId][$requestType])) {
+        if (!isset($this->_availableRequestsCount[$merchantId][$requestType])) {
             return 0;
         }
 
-        $availableRequestsCount = $this->availableRequestsCount[$merchantId][$requestType];
+        $availableRequestsCount = $this->_availableRequestsCount[$merchantId][$requestType];
 
         $requestsCount = $availableRequestsCount - $this->getReservedRequestsCount($merchantId, $requestType);
 
@@ -40,18 +40,18 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
 
     public function registerRequests($merchantId, $requestType, $requestsCount)
     {
-        if (!isset($this->availableRequestsCount[$merchantId][$requestType])) {
+        if (!isset($this->_availableRequestsCount[$merchantId][$requestType])) {
             return;
         }
 
-        if ($this->availableRequestsCount[$merchantId][$requestType] <= 0) {
+        if ($this->_availableRequestsCount[$merchantId][$requestType] <= 0) {
             return;
         }
 
-        $this->availableRequestsCount[$merchantId][$requestType] -= $requestsCount;
+        $this->_availableRequestsCount[$merchantId][$requestType] -= $requestsCount;
 
-        if ($this->availableRequestsCount[$merchantId][$requestType] <= 0) {
-            $this->availableRequestsCount[$merchantId][$requestType] = 0;
+        if ($this->_availableRequestsCount[$merchantId][$requestType] <= 0) {
+            $this->_availableRequestsCount[$merchantId][$requestType] = 0;
         }
     }
 
@@ -84,10 +84,12 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
 
         $reservedRequests[$merchantId][$requestType] += $requestsCount;
 
-        $registry->setData(array(
+        $registry->setData(
+            array(
             'key'   => self::RESERVED_REQUESTS_REGISTRY_KEY,
             'value' => Mage::helper('M2ePro')->jsonEncode($reservedRequests),
-        ));
+            )
+        );
         $registry->save();
     }
 
@@ -108,18 +110,20 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
             unset($reservedRequests[$merchantId][$requestType]);
         }
 
-        $registry->setData(array(
+        $registry->setData(
+            array(
             'key'   => self::RESERVED_REQUESTS_REGISTRY_KEY,
             'value' => Mage::helper('M2ePro')->jsonEncode($reservedRequests),
-        ));
+            )
+        );
         $registry->save();
     }
 
     //########################################
 
-    private function receiveAvailableRequestsCount()
+    protected function receiveAvailableRequestsCount()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountCollection */
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
         $accountCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
 
         /** @var Ess_M2ePro_Model_Account[] $accounts */

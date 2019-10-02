@@ -40,9 +40,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Archive Old Orders';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -64,9 +66,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Clean Old Logs';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -89,9 +93,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Connector -> CommandPending -> Process Partial';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessPartial::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -113,9 +119,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Connector -> CommandPending -> Process Single';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_ConnectorCommandPending_ProcessSingle::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -138,9 +146,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Servicing -> Synchronize';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_Servicing_Synchronize::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -161,9 +171,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'IssuesResolver -> Remove Missed Processing Locks';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_IssuesResolver_RemoveMissedProcessingLocks::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -185,9 +197,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Processing -> Process Result';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -210,9 +224,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Request Pending -> Process Partial';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -234,9 +250,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Request Pending -> Process Single';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -259,9 +277,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Magento Product -> Detect Directly Added';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -283,9 +303,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Magento Product -> Detect Directly Added';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyDeleted::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -309,9 +331,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Magento -> Global Notifications';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
              Ess_M2ePro_Model_Cron_Task_Magento_GlobalNotifications::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -334,9 +358,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Listing -> Product -> Inspect Direct Changes';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -357,9 +383,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Listing -> Product -> Process Revise Total';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Listing_Product_ProcessReviseTotal::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -380,9 +408,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Listing -> Product -> AutoActions -> Magento Product Websites Updates';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Listing_Product_AutoActions_ProcessMagentoProductWebsitesUpdates::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -403,9 +433,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_SystemController
         $taskTitle = 'Listing -> Product -> StopQueue -> Process';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");

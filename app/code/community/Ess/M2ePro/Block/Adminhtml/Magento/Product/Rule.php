@@ -35,12 +35,14 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule
 
         $fieldset = $form->addFieldset($prefix, array())->setRenderer($renderer);
 
-        $fieldset->addField($prefix . '_field', 'text', array(
+        $fieldset->addField(
+            $prefix . '_field', 'text', array(
             'name' => 'conditions' . $prefix,
             'label' => Mage::helper('M2ePro')->__('Conditions'),
             'title' => Mage::helper('M2ePro')->__('Conditions'),
             'required' => true,
-        ))->setRule($model)->setRenderer(Mage::getBlockSingleton('rule/conditions'));
+            )
+        )->setRule($model)->setRenderer(Mage::getBlockSingleton('rule/conditions'));
 
         $this->setForm($form);
 

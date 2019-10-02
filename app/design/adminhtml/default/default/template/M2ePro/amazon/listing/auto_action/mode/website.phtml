@@ -1,25 +1,28 @@
-<?php /** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website */ ?>
-
 <?php
-    $formData = $this->getFormData();
-    $default  = $this->getDefault();
-    $formData = array_merge($default, $formData);
 
-    /** @var Ess_M2ePro_Model_Mysql4_Amazon_Template_Description_Collection $collection */
-    $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Template_Description');
-    $collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+// @codingStandardsIgnoreFile
 
-    $showCreateNewAsin = 0;
-    $descriptionTemplates = $collection->getData();
+/** @var $this Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Website */
 
-    if (count($descriptionTemplates) > 0) {
-        $showCreateNewAsin = 1;
-    }
+$formData = $this->getFormData();
+$default  = $this->getDefault();
+$formData = array_merge($default, $formData);
 
-    usort($descriptionTemplates, function($a, $b)
-    {
-        return $a["is_new_asin_accepted"] < $b["is_new_asin_accepted"];
-    });
+/** @var Ess_M2ePro_Model_Resource_Amazon_Template_Description_Collection $collection */
+$collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Template_Description');
+$collection->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId());
+
+$showCreateNewAsin = 0;
+$descriptionTemplates = $collection->getData();
+
+if (count($descriptionTemplates) > 0) {
+    $showCreateNewAsin = 1;
+}
+
+usort($descriptionTemplates, function($a, $b)
+{
+    return $a["is_new_asin_accepted"] < $b["is_new_asin_accepted"];
+});
 
 ?>
 

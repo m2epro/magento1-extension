@@ -21,24 +21,18 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
             array(
                 'item_id' => $this->getEbayListingProduct()->getEbayItemIdReal()
             ),
-
             $this->getGeneralData(),
-
             $this->getQtyData(),
             $this->getPriceData(),
-
             $this->getTitleData(),
             $this->getSubtitleData(),
             $this->getDescriptionData(),
             $this->getImagesData(),
-
             $this->getCategoriesData(),
             $this->getPaymentData(),
             $this->getReturnData(),
             $this->getShippingData(),
-
             $this->getVariationsData(),
-
             $this->getOtherData()
         );
 
@@ -78,9 +72,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
                                                ->getOutOfStockControl();
 
         if ($outOfStockControlCurrentState && !$outOfStockControlTemplateState) {
-
             // M2ePro_TRANSLATIONS
-            // Although the Out of Stock Control option is disabled in Selling Policy settings, for this eBay Item it is remain enabled. Disabling of the Out of Stock Control during the Revise action is not supported by eBay. That is why the Out of Stock Control option will still be enabled for this Item on eBay.
+            // Although the Out of Stock Control option is disabled in Selling Policy settings,
+            // for this eBay Item it is remain enabled. Disabling of the Out of Stock Control during the Revise action
+            // is not supported by eBay. That is why the Out of Stock Control option will still be enabled for
+            // this Item on eBay.
             $this->addWarningMessage(
                 'Although the Out of Stock Control option is disabled in Selling Policy settings,
                 for this eBay Item it is remain enabled. Disabling of the Out of Stock Control during the Revise action
@@ -95,7 +91,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         return $data;
     }
 
-    private function processingReplacedAction($data)
+    protected function processingReplacedAction($data)
     {
         $params = $this->getConfigurator()->getParams();
 
@@ -109,10 +105,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         return $data;
     }
 
-    private function insertReplacedActionMessage($replacedAction)
+    protected function insertReplacedActionMessage($replacedAction)
     {
         switch ($replacedAction) {
-
             case Ess_M2ePro_Model_Listing_Product::ACTION_RELIST:
 
                 $this->addWarningMessage(
@@ -120,7 +115,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
                     'for this item.'
                 );
 
-            break;
+                break;
 
             case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:
 
@@ -129,13 +124,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
                     'for this item.'
                 );
 
-            break;
+                break;
         }
 
         return;
     }
 
-    private function modifyQtyByReplacedAction($replacedAction, array $data)
+    protected function modifyQtyByReplacedAction($replacedAction, array $data)
     {
         if ($replacedAction != Ess_M2ePro_Model_Listing_Product::ACTION_STOP) {
             return $data;
@@ -159,7 +154,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
 
     // ---------------------------------------
 
-    private function insertHasSaleFlagToVariations(array $data)
+    protected function insertHasSaleFlagToVariations(array $data)
     {
         if (!isset($data['variation']) || !is_array($data['variation'])) {
             return $data;
@@ -180,7 +175,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         return $data;
     }
 
-    private function removeNodesIfItemHasTheSaleOrBid(array $data)
+    protected function removeNodesIfItemHasTheSaleOrBid(array $data)
     {
         if (!isset($data['title']) && !isset($data['subtitle']) &&
             !isset($data['duration']) && !isset($data['is_private'])) {
@@ -197,27 +192,30 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
             $warningMessageReasons[] = Mage::helper('M2ePro')->__('Title');
             unset($data['title']);
         }
+
         if (isset($data['subtitle']) && $deleteByAuctionFlag) {
             $warningMessageReasons[] = Mage::helper('M2ePro')->__('Subtitle');
             unset($data['subtitle']);
         }
+
         if (isset($data['duration']) && ($deleteByAuctionFlag || $deleteByFixedFlag)) {
             $warningMessageReasons[] = Mage::helper('M2ePro')->__('Duration');
             unset($data['duration']);
         }
+
         if (isset($data['is_private']) && ($deleteByAuctionFlag || $deleteByFixedFlag)) {
             $warningMessageReasons[] = Mage::helper('M2ePro')->__('Private Listing');
             unset($data['is_private']);
         }
 
         if (!empty($warningMessageReasons)) {
-
             // M2ePro_TRANSLATIONS
-            // %field_title% field(s) were ignored because eBay doesn't allow Revise the Item if it has sales, bids for Auction Type or less than 12 hours remain before the Item end.
+            // %field_title% field(s) were ignored because eBay doesn't allow Revise the Item if it has
+            // sales, bids for Auction Type or less than 12 hours remain before the Item end.
             $this->addWarningMessage(
                 Mage::helper('M2ePro')->__(
-                    '%field_title% field(s) were ignored because eBay doesn\'t allow Revise the Item if it has sales, '.
-                    'bids for Auction Type or less than 12 hours remain before the Item end.',
+                    '%field_title% field(s) were ignored because eBay doesn\'t allow Revise the Item if it has ' .
+                    'sales, bids for Auction Type or less than 12 hours remain before the Item end.',
                     implode(', ', $warningMessageReasons)
                 )
             );
@@ -226,10 +224,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         return $data;
     }
 
-    private function removeDurationIfItCanNotBeChanged(array $data)
+    protected function removeDurationIfItCanNotBeChanged(array $data)
     {
         if (isset($data['duration']) && isset($data['bestoffer_mode']) && $data['bestoffer_mode']) {
-
             // M2ePro_TRANSLATIONS
             // Duration field(s) was ignored because eBay doesn't allow Revise the Item if Best Offer is enabled.
             $this->addWarningMessage(
@@ -244,7 +241,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         if (isset($data['duration']) && $data['duration'] == Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC &&
             $this->getEbayListingProduct()->getOnlineDuration() &&
             !$this->getEbayListingProduct()->isOnlineDurationGtc()) {
-
             $this->addWarningMessage(
                 Mage::helper('M2ePro')->__(
                     'Duration value was not sent to eBay, because you are trying to change the Duration of your

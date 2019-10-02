@@ -8,13 +8,13 @@
 
 class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Connector_Connection_Abstract
 {
-    /** @var Ess_M2ePro_Model_Connector_Connection_Request $request */
-    private $request = NULL;
+    /** @var Ess_M2ePro_Model_Connector_Connection_Request $_request */
+    protected $_request = null;
 
-    /** @var Ess_M2ePro_Model_Connector_Connection_Response $response */
-    private $response = NULL;
+    /** @var Ess_M2ePro_Model_Connector_Connection_Response $_response */
+    protected $_response = null;
 
-    private $timeout = 300;
+    protected $_timeout = 300;
 
     // ########################################
 
@@ -38,13 +38,10 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
     protected function processRequestResult(array $result)
     {
         try {
-
-            $this->response = Mage::getModel('M2ePro/Connector_Connection_Response');
-            $this->response->initFromRawResponse($result['body']);
-            $this->response->setRequestTime($this->requestTime);
-
+            $this->_response = Mage::getModel('M2ePro/Connector_Connection_Response');
+            $this->_response->initFromRawResponse($result['body']);
+            $this->_response->setRequestTime($this->_requestTime);
         } catch (Ess_M2ePro_Model_Exception_Connection_InvalidResponse $exception) {
-
             $this->isTryToSwitchEndpointOnError() && Mage::helper('M2ePro/Server')->switchEndpoint();
 
             Mage::helper('M2ePro/Module_Logger')->process($result, 'Invalid Response Format', false);
@@ -63,11 +60,12 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
         }
 
         if ($this->getResponse()->getMessages()->hasSystemErrorEntity()) {
-
-            throw new Ess_M2ePro_Model_Exception(Mage::helper('M2ePro')->__(
-                "Internal Server Error(s) [%error_message%]",
-                $this->getResponse()->getMessages()->getCombinedSystemErrorsString()
-            ), array(), 0, !$this->getResponse()->isServerInMaintenanceMode());
+            throw new Ess_M2ePro_Model_Exception(
+                Mage::helper('M2ePro')->__(
+                    "Internal Server Error(s) [%error_message%]",
+                    $this->getResponse()->getMessages()->getCombinedSystemErrorsString()
+                ), array(), 0, !$this->getResponse()->isServerInMaintenanceMode()
+            );
         }
     }
 
@@ -79,7 +77,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
      */
     public function setRequest(Ess_M2ePro_Model_Connector_Connection_Request $request)
     {
-        $this->request = $request;
+        $this->_request = $request;
         return $this;
     }
 
@@ -88,7 +86,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
      */
     public function getRequest()
     {
-        return $this->request;
+        return $this->_request;
     }
 
     // ----------------------------------------
@@ -99,7 +97,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
      */
     public function setResponse(Ess_M2ePro_Model_Connector_Connection_Response $response)
     {
-        $this->response = $response;
+        $this->_response = $response;
         return $this;
     }
 
@@ -108,7 +106,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
      */
     public function getResponse()
     {
-        return $this->response;
+        return $this->_response;
     }
 
     // ----------------------------------------
@@ -119,7 +117,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
      */
     public function setTimeout($value)
     {
-        $this->timeout = (int)$value;
+        $this->_timeout = (int)$value;
         return $this;
     }
 
@@ -128,7 +126,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
      */
     public function getTimeout()
     {
-        return $this->timeout;
+        return $this->_timeout;
     }
 
     // ########################################

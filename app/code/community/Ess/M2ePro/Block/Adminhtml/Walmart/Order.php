@@ -29,6 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Orders');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -43,20 +44,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
 
         // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_walmart_account/index');
-        $this->_addButton('accounts', array(
+        $this->_addButton(
+            'accounts', array(
             'label'     => Mage::helper('M2ePro')->__('Accounts'),
             'onclick'   => 'setLocation(\'' . $url .'\')',
             'class'     => 'button_link'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_walmart_log/order');
-        $this->_addButton('logs', array(
+        $this->_addButton(
+            'logs', array(
             'label'     => Mage::helper('M2ePro')->__('View Logs'),
             'onclick'   => 'window.open(\'' . $url .'\')',
             'class'     => 'button_link'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -64,16 +69,20 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
 
     public function getGridHtml()
     {
-        $marketplaceFilterBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_marketplace_switcher', '', array(
+        $marketplaceFilterBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_marketplace_switcher', '', array(
             'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'controller_name' => 'adminhtml_walmart_order'
-        ));
+            )
+        );
         $marketplaceFilterBlock->setUseConfirm(false);
 
-        $accountFilterBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_account_switcher', '', array(
+        $accountFilterBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_account_switcher', '', array(
             'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'controller_name' => 'adminhtml_walmart_order'
-        ));
+            )
+        );
         $accountFilterBlock->setUseConfirm(false);
 
         $orderStateSwitcherBlock = $this->getLayout()->createBlock(

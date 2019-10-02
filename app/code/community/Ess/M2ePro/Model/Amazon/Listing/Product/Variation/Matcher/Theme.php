@@ -8,14 +8,14 @@
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
 {
-    /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
-    private $magentoProduct = null;
+    /** @var Ess_M2ePro_Model_Magento_Product $_magentoProduct */
+    protected $_magentoProduct = null;
 
-    private $sourceAttributes = array();
+    protected $_sourceAttributes = array();
 
-    private $themes = array();
+    protected $_themes = array();
 
-    private $matchedTheme = null;
+    protected $_matchedTheme = null;
 
     //########################################
 
@@ -25,8 +25,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $product)
     {
-        $this->magentoProduct   = $product;
-        $this->sourceAttributes = array();
+        $this->_magentoProduct   = $product;
+        $this->_sourceAttributes = array();
 
         return $this;
     }
@@ -39,8 +39,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
      */
     public function setSourceAttributes(array $attributes)
     {
-        $this->sourceAttributes = $attributes;
-        $this->magentoProduct   = null;
+        $this->_sourceAttributes = $attributes;
+        $this->_magentoProduct   = null;
 
         return $this;
     }
@@ -53,7 +53,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
      */
     public function setThemes(array $themes)
     {
-        $this->themes = $themes;
+        $this->_themes = $themes;
         return $this;
     }
 
@@ -64,41 +64,41 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
      */
     public function getMatchedTheme()
     {
-        if (is_null($this->matchedTheme)) {
+        if ($this->_matchedTheme === null) {
             $this->match();
         }
 
-        return $this->matchedTheme;
+        return $this->_matchedTheme;
     }
 
     //########################################
 
-    private function match()
+    protected function match()
     {
         $this->validate();
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute $attributeMatcher */
         $attributeMatcher = Mage::getModel('M2ePro/Amazon_Listing_Product_Variation_Matcher_Attribute');
 
-        if (!is_null($this->magentoProduct)) {
-            if ($this->magentoProduct->isGroupedType()) {
-                $this->matchedTheme = null;
+        if ($this->_magentoProduct !== null) {
+            if ($this->_magentoProduct->isGroupedType()) {
+                $this->_matchedTheme = null;
                 return $this;
             }
 
-            $attributeMatcher->setMagentoProduct($this->magentoProduct);
+            $attributeMatcher->setMagentoProduct($this->_magentoProduct);
         }
 
-        if (!empty($this->sourceAttributes)) {
-            $attributeMatcher->setSourceAttributes($this->sourceAttributes);
+        if (!empty($this->_sourceAttributes)) {
+            $attributeMatcher->setSourceAttributes($this->_sourceAttributes);
             $attributeMatcher->canUseDictionary(false);
         }
 
-        foreach ($this->themes as $themeName => $themeAttributes) {
+        foreach ($this->_themes as $themeName => $themeAttributes) {
             $attributeMatcher->setDestinationAttributes($themeAttributes['attributes']);
 
             if ($attributeMatcher->isAmountEqual() && $attributeMatcher->isFullyMatched()) {
-                $this->matchedTheme = $themeName;
+                $this->_matchedTheme = $themeName;
                 break;
             }
         }
@@ -106,9 +106,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Theme
         return $this;
     }
 
-    private function validate()
+    protected function validate()
     {
-        if (is_null($this->magentoProduct) && empty($this->sourceAttributes)) {
+        if ($this->_magentoProduct === null && empty($this->_sourceAttributes)) {
             throw new Ess_M2ePro_Model_Exception('Magento Product and Channel Attributes were not set.');
         }
     }

@@ -9,13 +9,13 @@
 class Ess_M2ePro_Model_Magento_Order_Shipment_Track
 {
     /** @var $shipment Mage_Sales_Model_Order */
-    private $magentoOrder = NULL;
+    protected $_magentoOrder = null;
 
-    private $supportedCarriers = array();
+    protected $_supportedCarriers = array();
 
-    private $trackingDetails = array();
+    protected $_trackingDetails = array();
 
-    private $tracks = array();
+    protected $_tracks = array();
 
     //########################################
 
@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
      */
     public function setMagentoOrder(Mage_Sales_Model_Order $magentoOrder)
     {
-        $this->magentoOrder = $magentoOrder;
+        $this->_magentoOrder = $magentoOrder;
         return $this;
     }
 
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
      */
     public function setTrackingDetails(array $trackingDetails)
     {
-        $this->trackingDetails = $trackingDetails;
+        $this->_trackingDetails = $trackingDetails;
         return $this;
     }
 
@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
      */
     public function setSupportedCarriers(array $supportedCarriers)
     {
-        $this->supportedCarriers = $supportedCarriers;
+        $this->_supportedCarriers = $supportedCarriers;
         return $this;
     }
 
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
 
     public function getTracks()
     {
-        return $this->tracks;
+        return $this->_tracks;
     }
 
     //########################################
@@ -69,10 +69,10 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
 
     //########################################
 
-    private function prepareTracks()
+    protected function prepareTracks()
     {
         $trackingDetails = $this->getFilteredTrackingDetails();
-        if (count($trackingDetails) == 0) {
+        if (empty($trackingDetails)) {
             return NULL;
         }
 
@@ -83,7 +83,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
         // ---------------------------------------
 
         /** @var $shipment Mage_Sales_Model_Order_Shipment */
-        $shipment = $this->magentoOrder->getShipmentsCollection()->getFirstItem();
+        $shipment = $this->_magentoOrder->getShipmentsCollection()->getFirstItem();
 
         foreach ($trackingDetails as $trackingDetail) {
             /** @var $track Mage_Sales_Model_Order_Shipment_Track */
@@ -93,40 +93,40 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
                   ->setCarrierCode($this->getCarrierCode($trackingDetail['title']));
             $shipment->addTrack($track)->save();
 
-            $this->tracks[] = $track;
+            $this->_tracks[] = $track;
         }
     }
 
     // ---------------------------------------
 
-    private function getFilteredTrackingDetails()
+    protected function getFilteredTrackingDetails()
     {
-        if ($this->magentoOrder->getTracksCollection()->getSize() <= 0) {
-            return $this->trackingDetails;
+        if ($this->_magentoOrder->getTracksCollection()->getSize() <= 0) {
+            return $this->_trackingDetails;
         }
 
         // Filter exist tracks
         // ---------------------------------------
-        foreach ($this->magentoOrder->getTracksCollection() as $track) {
-
-            foreach ($this->trackingDetails as $key => $trackingDetail) {
+        foreach ($this->_magentoOrder->getTracksCollection() as $track) {
+            foreach ($this->_trackingDetails as $key => $trackingDetail) {
                 if ($track->getData('number') == $trackingDetail['number']) {
-                    unset($this->trackingDetails[$key]);
+                    unset($this->_trackingDetails[$key]);
                 }
             }
         }
+
         // ---------------------------------------
 
-        return $this->trackingDetails;
+        return $this->_trackingDetails;
     }
 
     // ---------------------------------------
 
-    private function getCarrierCode($title)
+    protected function getCarrierCode($title)
     {
         $carrierCode = strtolower($title);
 
-        return isset($this->supportedCarriers[$carrierCode]) ? $carrierCode : 'custom';
+        return isset($this->_supportedCarriers[$carrierCode]) ? $carrierCode : 'custom';
     }
 
     //########################################

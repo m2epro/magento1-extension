@@ -11,31 +11,29 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    protected $listingProduct = NULL;
+    protected $_listingProduct = NULL;
 
     /**
      * @var array
      */
-    protected $cachedData = array();
+    protected $_cachedData = array();
 
     /**
      * @var array
      */
-    protected $params = array();
+    protected $_params = array();
 
     /**
      * @var array
      */
-    protected $metaData = array();
+    protected $_metaData = array();
 
     /**
      * @var array
      */
-    private $warningMessages = array();
+    protected $_warningMessages = array();
 
-    // ---------------------------------------
-
-    protected $isVariationItem = false;
+    protected $_isVariationItem = false;
 
     //########################################
 
@@ -45,7 +43,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -57,7 +55,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
      */
     public function setCachedData(array $data)
     {
-        $this->cachedData = $data;
+        $this->_cachedData = $data;
         return $this;
     }
 
@@ -69,7 +67,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
      */
     public function setParams(array $params = array())
     {
-        $this->params = $params;
+        $this->_params = $params;
         return $this;
     }
 
@@ -77,7 +75,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
 
     public function setIsVariationItem($isVariationItem)
     {
-        $this->isVariationItem = $isVariationItem;
+        $this->_isVariationItem = $isVariationItem;
         return $this;
     }
 
@@ -142,7 +140,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
      */
     protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     /**
@@ -189,16 +187,19 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
 
         foreach ($attributes as $attribute) {
             $attributesTitles[] = Mage::helper('M2ePro/Magento_Attribute')
-                                       ->getAttributeLabel($attribute,
-                                                           $this->getListing()->getStoreId());
+                                    ->getAttributeLabel(
+                                        $attribute,
+                                        $this->getListing()->getStoreId()
+                                    );
         }
+
         // M2ePro_TRANSLATIONS
         // %attribute_title%: Attribute(s) %attributes% were not found in this Product and its value was not sent.
         $this->addWarningMessage(
             Mage::helper('M2ePro')->__(
                 '%attribute_title%: Attribute(s) %attributes% were not found'.
                 ' in this Product and its value was not sent.',
-                Mage::helper('M2ePro')->__($title), implode(',',$attributesTitles)
+                Mage::helper('M2ePro')->__($title), implode(',', $attributesTitles)
             )
         );
     }
@@ -207,7 +208,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
 
     protected function addWarningMessage($message)
     {
-        $this->warningMessages[md5($message)] = $message;
+        $this->_warningMessages[sha1($message)] = $message;
         return $this;
     }
 
@@ -216,24 +217,24 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
      */
     public function getWarningMessages()
     {
-        return $this->warningMessages;
+        return $this->_warningMessages;
     }
 
     //########################################
 
     protected function addMetaData($key, $value)
     {
-        $this->metaData[$key] = $value;
+        $this->_metaData[$key] = $value;
     }
 
     public function getMetaData()
     {
-        return $this->metaData;
+        return $this->_metaData;
     }
 
     public function setMetaData($value)
     {
-        $this->metaData = $value;
+        $this->_metaData = $value;
         return $this;
     }
 

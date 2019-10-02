@@ -49,7 +49,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_Header extends Ess_M2ePro_Block_Ad
 
     //########################################
 
-    private function cutLongLines($line)
+    protected function cutLongLines($line)
     {
         if (strlen($line) < 50) {
             return $line;

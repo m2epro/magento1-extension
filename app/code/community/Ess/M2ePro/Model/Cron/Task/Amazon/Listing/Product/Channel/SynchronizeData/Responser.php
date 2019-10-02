@@ -11,8 +11,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 {
     const INSTRUCTION_INITIATOR = 'channel_changes_synchronization';
 
-    protected $logsActionId = NULL;
-    protected $synchronizationLog = NULL;
+    protected $_logsActionId       = null;
+    protected $_synchronizationLog = null;
 
     // ########################################
 
@@ -21,7 +21,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         parent::processResponseMessages();
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -68,11 +67,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     protected function processResponseData()
     {
         try {
-
             $this->updateReceivedListingsProducts();
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             $this->getSynchronizationLog()->addMessage(
@@ -100,7 +96,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $instructionsData = array();
 
         while ($existingItem = $stmtTemp->fetch()) {
-
             if (!isset($responseData['data'][$existingItem['sku']])) {
                 continue;
             }
@@ -139,7 +134,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             $existingAdditionalData = Mage::helper('M2ePro')->jsonDecode($existingItem['additional_data']);
 
             if (!empty($existingAdditionalData['last_synchronization_dates']['qty']) &&
-                !empty($this->params['request_date'])
+                !empty($this->_params['request_date'])
             ) {
                 $lastQtySynchDate = $existingAdditionalData['last_synchronization_dates']['qty'];
 
@@ -150,7 +145,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             }
 
             if (!empty($existingAdditionalData['last_synchronization_dates']['price']) &&
-                !empty($this->params['request_date'])
+                !empty($this->_params['request_date'])
             ) {
                 $lastPriceSynchDate = $existingAdditionalData['last_synchronization_dates']['price'];
 
@@ -161,7 +156,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             }
 
             if (!empty($existingAdditionalData['last_synchronization_dates']['fulfillment_switching']) &&
-                !empty($this->params['request_date'])
+                !empty($this->_params['request_date'])
             ) {
                 $lastFulfilmentSwitchingDate =
                     $existingAdditionalData['last_synchronization_dates']['fulfillment_switching'];
@@ -184,7 +179,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
             $listingProduct = Mage::helper('M2ePro/Component_Amazon')
-                ->getObject('Listing_Product',(int)$existingItem['listing_product_id']);
+                ->getObject('Listing_Product', (int)$existingItem['listing_product_id']);
 
             if ($this->isDataChanged($existingData, $newData, 'status')) {
                 $instructionsData[] = array(
@@ -253,7 +248,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             }
 
             if (isset($newData['status']) && $newData['status'] != $existingData['status']) {
-
                 $newData['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT;
 
                 $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
@@ -309,16 +303,17 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->getSelect()->join(array('l' => $listingTable), 'main_table.listing_id = l.id', array());
 
-        $collection->getSelect()->where('l.account_id = ?',(int)$this->getAccount()->getId());
-        $collection->getSelect()->where('`main_table`.`status` != ?',
-                                        (int)Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED);
+        $collection->getSelect()->where('l.account_id = ?', (int)$this->getAccount()->getId());
+        $collection->getSelect()->where(
+            '`main_table`.`status` != ?',
+            (int)Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED
+        );
         $collection->getSelect()->where("`second_table`.`sku` is not null and `second_table`.`sku` != ''");
         $collection->getSelect()->where("`second_table`.`is_variation_parent` != ?", 1);
 
         $tempColumns = array('second_table.sku');
 
         if ($withData) {
-
             $collection->getSelect()->joinLeft(
                 array(
                     'repricing' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Repricing')->getMainTable()
@@ -361,7 +356,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $parentListingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $parentListingProductCollection */
         $parentListingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $parentListingProductCollection->addFieldToFilter('id', array('in' => array_unique($parentIds)));
 
@@ -386,7 +381,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -401,32 +396,32 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
     protected function getLogsActionId()
     {
-        if (!is_null($this->logsActionId)) {
-            return $this->logsActionId;
+        if ($this->_logsActionId !== null) {
+            return $this->_logsActionId;
         }
 
-        return $this->logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+        return $this->_logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
     }
 
     protected function getSynchronizationLog()
     {
-        if (!is_null($this->synchronizationLog)) {
-            return $this->synchronizationLog;
+        if ($this->_synchronizationLog !== null) {
+            return $this->_synchronizationLog;
         }
 
-        $this->synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $this->synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
-        $this->synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_LISTINGS);
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_LISTINGS);
 
-        return $this->synchronizationLog;
+        return $this->_synchronizationLog;
     }
 
     //-----------------------------------------
 
-    private function isProductInfoOutdated($lastDate)
+    protected function isProductInfoOutdated($lastDate)
     {
         $lastDate = new DateTime($lastDate, new DateTimeZone('UTC'));
-        $requestDate = new DateTime($this->params['request_date'], new DateTimeZone('UTC'));
+        $requestDate = new DateTime($this->_params['request_date'], new DateTimeZone('UTC'));
 
         $lastDate->modify('+1 hour');
 
@@ -435,7 +430,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
     //-----------------------------------------
 
-    private function isDataChanged($existData, $newData, $key)
+    protected function isDataChanged($existData, $newData, $key)
     {
         if (!isset($existData[$key]) || !isset($newData[$key])) {
             return false;

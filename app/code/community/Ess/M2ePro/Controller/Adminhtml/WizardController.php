@@ -10,7 +10,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     extends Ess_M2ePro_Controller_Adminhtml_MainController
 {
     /** @var Ess_M2ePro_Helper_Module_Wizard|null  */
-    protected $wizardHelper = NULL;
+    protected $_wizardHelper = null;
 
     //########################################
 
@@ -48,7 +48,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
             return $this->_redirect('*/*/installation');
         }
 
-        $this->_redirect('*/*/congratulation',array('wizard'=>true));
+        $this->_redirect('*/*/congratulation', array('wizard'=>true));
     }
 
     // ---------------------------------------
@@ -76,7 +76,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         }
 
         return $this->_initAction()
-                    ->_addContent($this->getWizardHelper()->createBlock('installation',$this->getNick()))
+                    ->_addContent($this->getWizardHelper()->createBlock('installation', $this->getNick()))
                     ->renderLayout();
     }
 
@@ -90,7 +90,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         Mage::helper('M2ePro/Magento')->clearMenuCache();
 
         $this->_initAction();
-        $this->_addContent($this->getWizardHelper()->createBlock('congratulation',$this->getNick()));
+        $this->_addContent($this->getWizardHelper()->createBlock('congratulation', $this->getNick()));
         $this->_addNextWizardPresentation();
         $this->renderLayout();
     }
@@ -119,11 +119,11 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
 
     protected function getWizardHelper()
     {
-        if (is_null($this->wizardHelper)) {
-            $this->wizardHelper = Mage::helper('M2ePro/Module_Wizard');
+        if ($this->_wizardHelper === null) {
+            $this->_wizardHelper = Mage::helper('M2ePro/Module_Wizard');
         }
 
-        return $this->wizardHelper;
+        return $this->_wizardHelper;
     }
 
     // ---------------------------------------
@@ -205,36 +205,52 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
     {
         $step = $this->getRequest()->getParam('step');
 
-        if (is_null($step)) {
-            return $this->getResponse()->setBody(json_encode(array(
-                'type' => 'error',
-                'message' => Mage::helper('M2ePro')->__('Step is invalid')
-            )));
+        if ($step === null) {
+            return $this->getResponse()->setBody(
+                json_encode(
+                    array(
+                    'type' => 'error',
+                    'message' => Mage::helper('M2ePro')->__('Step is invalid')
+                    )
+                )
+            );
         }
 
         $this->setStep($step);
 
-        return $this->getResponse()->setBody(json_encode(array(
-            'type' => 'success'
-        )));
+        return $this->getResponse()->setBody(
+            json_encode(
+                array(
+                'type' => 'success'
+                )
+            )
+        );
     }
 
     public function setStatusAction()
     {
         $status = $this->getRequest()->getParam('status');
 
-        if (is_null($status)) {
-            return $this->getResponse()->setBody(json_encode(array(
-                'type' => 'error',
-                'message' => Mage::helper('M2ePro')->__('Status is invalid')
-            )));
+        if ($status === null) {
+            return $this->getResponse()->setBody(
+                json_encode(
+                    array(
+                    'type' => 'error',
+                    'message' => Mage::helper('M2ePro')->__('Status is invalid')
+                    )
+                )
+            );
         }
 
         $this->setStatus($status);
 
-        return $this->getResponse()->setBody(json_encode(array(
-            'type' => 'success'
-        )));
+        return $this->getResponse()->setBody(
+            json_encode(
+                array(
+                'type' => 'success'
+                )
+            )
+        );
     }
 
     //########################################
@@ -244,7 +260,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_WizardController
         $nextWizard = $this->getWizardHelper()->getActiveWizard($this->getCustomViewNick());
         if ($nextWizard) {
             $presentationBlock = $this->getWizardHelper()->createBlock(
-                'presentation',$this->getWizardHelper()->getNick($nextWizard)
+                'presentation', $this->getWizardHelper()->getNick($nextWizard)
             );
             $presentationBlock && $this->_addContent($presentationBlock);
         }

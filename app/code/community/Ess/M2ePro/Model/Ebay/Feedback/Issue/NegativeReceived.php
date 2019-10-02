@@ -27,28 +27,27 @@ class Ess_M2ePro_Model_Ebay_Feedback_Issue_NegativeReceived extends Ess_M2ePro_M
 
         $lastCheckDate = $config->getGroupValue('/view/ebay/feedbacks/notification/', 'last_check');
 
-        if (is_null($lastCheckDate)) {
+        if ($lastCheckDate === null) {
             $config->setGroupValue(
                 '/view/ebay/feedbacks/notification/', 'last_check', Mage::helper('M2ePro')->getCurrentGmtDate()
             );
             return array();
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Ebay_Feedback_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Ebay_Feedback_Collection $collection */
         $collection = Mage::getModel('M2ePro/Ebay_Feedback')->getCollection()
             ->addFieldToFilter('buyer_feedback_date', array('gt' => $lastCheckDate))
             ->addFieldToFilter('buyer_feedback_type', Ess_M2ePro_Model_Ebay_Feedback::TYPE_NEGATIVE);
 
         if ($collection->getSize() > 0) {
-
             $tempMessage = Mage::helper('M2ePro')->__(
                 'New Buyer negative Feedback was received. Go to the <a href="%url%" target="blank">Feedback Page</a>.',
-                Mage::helper('adminhtml')->getUrl('*/adminhtml_ebay_feedback/index')
+                Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_ebay_feedback/index')
             );
 
-            $editHash = md5(self::CACHE_KEY . Mage::helper('M2ePro')->getCurrentGmtDate());
+            $editHash = sha1(self::CACHE_KEY . Mage::helper('M2ePro')->getCurrentGmtDate());
             $messageUrl = Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_feedback/index',
+                'M2ePro/adminhtml_ebay_feedback/index',
                 array('_query' => array('hash' => $editHash))
             );
 
@@ -57,12 +56,14 @@ class Ess_M2ePro_Model_Ebay_Feedback_Issue_NegativeReceived extends Ess_M2ePro_M
             );
 
             return array(
-                Mage::getModel('M2ePro/Issue_Object', array(
+                Mage::getModel(
+                    'M2ePro/Issue_Object', array(
                     Issue::KEY_TYPE  => Mage_Core_Model_Message::NOTICE,
                     Issue::KEY_TITLE => Mage::helper('M2ePro')->__('New Buyer negative Feedback was received.'),
                     Issue::KEY_TEXT  => $tempMessage,
                     Issue::KEY_URL   => $messageUrl
-                ))
+                    )
+                )
             );
         }
 

@@ -8,10 +8,10 @@
 
 class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
 {
-    private $dateEnabledFrom;
-    private $dateEnabledTo;
-    private $dateRealFrom;
-    private $dateRealTo;
+    protected $_dateEnabledFrom;
+    protected $_dateEnabledTo;
+    protected $_dateRealFrom;
+    protected $_dateRealTo;
 
     //########################################
 
@@ -91,46 +91,46 @@ class Ess_M2ePro_Helper_Server_Maintenance extends Mage_Core_Helper_Abstract
 
     public function getDateEnabledFrom()
     {
-        if (is_null($this->dateEnabledFrom)) {
-            $this->dateEnabledFrom = $this->getDateByKey('/server/maintenance/schedule/date/enabled/from/');
+        if ($this->_dateEnabledFrom === null) {
+            $this->_dateEnabledFrom = $this->getDateByKey('/server/maintenance/schedule/date/enabled/from/');
         }
 
-        return $this->dateEnabledFrom;
+        return $this->_dateEnabledFrom;
     }
 
     public function getDateEnabledTo()
     {
-        if (is_null($this->dateEnabledTo)) {
-            $this->dateEnabledTo = $this->getDateByKey('/server/maintenance/schedule/date/enabled/to/');
+        if ($this->_dateEnabledTo === null) {
+            $this->_dateEnabledTo = $this->getDateByKey('/server/maintenance/schedule/date/enabled/to/');
         }
 
-        return $this->dateEnabledTo;
+        return $this->_dateEnabledTo;
     }
 
     public function getDateRealFrom()
     {
-        if (is_null($this->dateRealFrom)) {
-            $this->dateRealFrom = $this->getDateByKey('/server/maintenance/schedule/date/real/from/');
+        if ($this->_dateRealFrom === null) {
+            $this->_dateRealFrom = $this->getDateByKey('/server/maintenance/schedule/date/real/from/');
         }
 
-        return $this->dateRealFrom;
+        return $this->_dateRealFrom;
     }
 
     public function getDateRealTo()
     {
-        if (is_null($this->dateRealTo)) {
-            $this->dateRealTo = $this->getDateByKey('/server/maintenance/schedule/date/real/to/');
+        if ($this->_dateRealTo === null) {
+            $this->_dateRealTo = $this->getDateByKey('/server/maintenance/schedule/date/real/to/');
         }
 
-        return $this->dateRealTo;
+        return $this->_dateRealTo;
     }
 
     //########################################
 
-    private function getDateByKey($key)
+    protected function getDateByKey($key)
     {
         /**  @var $date Ess_M2ePro_Model_Registry */
-        $date = Mage::getModel('M2ePro/Registry')->load($key,'key');
+        $date = Mage::getModel('M2ePro/Registry')->load($key, 'key');
         $value = $date->getValue();
 
         if (empty($value)) {

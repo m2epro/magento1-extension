@@ -36,31 +36,37 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Chooser_Ta
         );
         $isRecentTabsShouldBeShown = $recentBlock->shouldBeShown();
 
-        $isRecentTabsShouldBeShown && $this->addTab(self::TAB_ID_RECENT, array(
+        $isRecentTabsShouldBeShown && $this->addTab(
+            self::TAB_ID_RECENT, array(
             'label'   => Mage::helper('M2ePro')->__('Recently Used'),
             'title'   => Mage::helper('M2ePro')->__('Recently Used'),
             'content' => $recentBlock->toHtml(),
             'active'  => true
-        ));
+            )
+        );
 
         $blockName = 'M2ePro/adminhtml_walmart_template_category_categories_chooser_tabs_browse';
-        $this->addTab(self::TAB_ID_BROWSE, array(
+        $this->addTab(
+            self::TAB_ID_BROWSE, array(
             'label'   => Mage::helper('M2ePro')->__('Browse'),
             'title'   => Mage::helper('M2ePro')->__('Browse'),
             'content' => $this->getLayout()
                               ->createBlock($blockName)
                               ->toHtml(),
             'active'  => $isRecentTabsShouldBeShown ? false : true
-        ));
+            )
+        );
 
         $blockName = 'M2ePro/adminhtml_walmart_template_category_categories_chooser_tabs_search';
-        $this->addTab(self::TAB_ID_SEARCH, array(
+        $this->addTab(
+            self::TAB_ID_SEARCH, array(
             'label'   => Mage::helper('M2ePro')->__('Search'),
             'title'   => Mage::helper('M2ePro')->__('Search'),
             'content' => $this->getLayout()
                               ->createBlock($blockName)
                               ->toHtml()
-        ));
+            )
+        );
 
         return parent::_prepareLayout();
     }

@@ -38,13 +38,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Category_Grid extends Ess
 
     protected function _prepareCollection()
     {
-        /* @var $collection Mage_Catalog_Model_Resource_Category_Collection */
+        /** @var $collection Mage_Catalog_Model_Resource_Category_Collection */
         $collection = Mage::getModel('catalog/category')->getCollection();
         $collection->addAttributeToSelect('name');
 
-        $collection->addFieldToFilter(array(
+        $collection->addFieldToFilter(
+            array(
             array('attribute' => 'entity_id', 'in' => array_keys($this->getCategoriesData()))
-        ));
+            )
+        );
 
         $this->setCollection($collection);
 
@@ -55,7 +57,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Category_Grid extends Ess
 
     protected function _prepareColumns()
     {
-        $this->addColumn('magento_category', array(
+        $this->addColumn(
+            'magento_category', array(
             'header'    => Mage::helper('M2ePro')->__('Magento Category'),
             'align'     => 'left',
             'width'     => '500px',
@@ -64,9 +67,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Category_Grid extends Ess
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnMagentoCategory')
-        ));
+            )
+        );
 
-        $this->addColumn('ebay_categories', array(
+        $this->addColumn(
+            'ebay_categories', array(
             'header'    => Mage::helper('M2ePro')->__('eBay Categories'),
             'align'     => 'left',
             'width'     => '*',
@@ -78,9 +83,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Category_Grid extends Ess
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnEbayCategories'),
             'filter_condition_callback' => array($this, 'callbackFilterEbayCategories')
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'center',
             'width'     => '100px',
@@ -89,7 +96,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Category_Grid extends Ess
             'filter'    => false,
             'renderer'  => 'M2ePro/adminhtml_grid_column_renderer_action',
             'actions'   => $this->getColumnActionsItems()
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -102,21 +110,28 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Category_Grid extends Ess
 
         // Set mass-action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('editCategories', array(
+        $this->getMassactionBlock()->addItem(
+            'editCategories', array(
             'label'    => Mage::helper('M2ePro')->__('Edit All Categories'),
-        ));
+            )
+        );
 
-        $this->getMassactionBlock()->addItem('editPrimaryCategories', array(
+        $this->getMassactionBlock()->addItem(
+            'editPrimaryCategories', array(
             'label' => Mage::helper('M2ePro')->__('Edit Primary Categories'),
             'url'   => '',
-        ));
+            )
+        );
 
         if ($this->listing->getAccount()->getChildObject()->getEbayStoreCategories()) {
-            $this->getMassactionBlock()->addItem('editStorePrimaryCategories', array(
+            $this->getMassactionBlock()->addItem(
+                'editStorePrimaryCategories', array(
                 'label' => Mage::helper('M2ePro')->__('Edit Store Primary Categories'),
                 'url'   => '',
-            ));
+                )
+            );
         }
+
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -161,14 +176,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Category_Grid extends Ess
         );
 
         if (empty($html)) {
-
             $helper = Mage::helper('M2ePro');
 
             $iconSrc = $this->getSkinUrl('M2ePro/images/warning.png');
             $html .= <<<HTML
 <img src="{$iconSrc}" alt="">&nbsp;<span style="font-style: italic; color: gray">{$helper->__('Not Selected')}</span>
 HTML;
-
         }
 
         return $html;
@@ -221,7 +234,7 @@ HTML;
             );
         }
 
-        return $this->renderCategoryInfo($title,$info);
+        return $this->renderCategoryInfo($title, $info);
     }
 
     protected function renderStoreCategoryInfo($title, $data, $key)
@@ -241,7 +254,7 @@ HTML;
             );
         }
 
-        return $this->renderCategoryInfo($title,$info);
+        return $this->renderCategoryInfo($title, $info);
     }
 
     protected function renderCategoryInfo($title, $info)
@@ -307,10 +320,12 @@ HTML;
             );
 
         $path = 'adminhtml_ebay_listing_categorySettings';
-        $urls[$path] = $this->getUrl('*/' . $path, array(
+        $urls[$path] = $this->getUrl(
+            '*/' . $path, array(
             'step' => 3,
             '_current' => true
-        ));
+            )
+        );
 
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
@@ -343,8 +358,10 @@ HTML;
         // ---------------------------------------
 
         $errorMessage = Mage::helper('M2ePro')
-            ->__("To proceed, the category data must be specified.
-                  Please select a relevant Primary eBay Category for at least one Magento Category.");
+            ->__(
+                "To proceed, the category data must be specified.
+                  Please select a relevant Primary eBay Category for at least one Magento Category."
+            );
 
         $categoriesData = $this->getCategoriesData();
         $isAlLeasOneCategorySelected = (int)!$this->isAlLeasOneCategorySelected($categoriesData);
@@ -388,7 +405,7 @@ HTML;
 
     //########################################
 
-    private function isAlLeasOneCategorySelected($categoriesData)
+    protected function isAlLeasOneCategorySelected($categoriesData)
     {
         if (empty($categoriesData)) {
             return false;

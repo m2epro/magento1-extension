@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Template_Description_Edit_Form */
+
+?>
+
 <div id="block_notice_walmart_template_description_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
     <?php echo Mage::helper('M2ePro')->__(
         'Description Policy highlights the key details and features of Product as a physical object that is for sale.
@@ -93,7 +106,19 @@
     !empty($formData['key_features']) && $formData['key_features'] = json_decode($formData['key_features'], true);
     !empty($formData['other_features'])   && $formData['other_features'] = json_decode($formData['other_features'], true);
     !empty($formData['attributes'])    && $formData['attributes'] = json_decode($formData['attributes'], true);
-    
+
+    if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add %component_name% Description Policy',
+                Mage::helper('M2ePro/Component_Walmart')->getTitle()
+            )
+        );
+    } else {
+        $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')->__('Add Description Policy')
+        );
+    }
+
     /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
     $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
     
@@ -134,7 +159,7 @@
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Description Policy' => Mage::helper('M2ePro')->__('Add Description Policy'),
+        'Add Description Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
 
         'Change Category' => Mage::helper('M2ePro')->__('Change Category'),
         'Not Selected'    => Mage::helper('M2ePro')->__('Not Selected'),

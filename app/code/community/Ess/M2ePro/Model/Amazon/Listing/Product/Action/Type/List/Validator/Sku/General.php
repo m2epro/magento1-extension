@@ -19,7 +19,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Gen
         $sku = $this->getSku();
 
         if (empty($sku)) {
-
             // M2ePro_TRANSLATIONS
             // SKU is not provided. Please, check Listing Settings.
             $this->addMessage('SKU is not provided. Please, check Listing Settings.');
@@ -28,7 +27,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Gen
         }
 
         if (strlen($sku) > Ess_M2ePro_Helper_Component_Amazon::SKU_MAX_LENGTH) {
-
             // M2ePro_TRANSLATIONS
             // The length of SKU must be less than 40 characters.
             $this->addMessage('The length of SKU must be less than 40 characters.');
@@ -36,17 +34,17 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Gen
             return false;
         }
 
-        $this->data['sku'] = $sku;
+        $this->_data['sku'] = $sku;
 
         return true;
     }
 
     //########################################
 
-    private function getSku()
+    protected function getSku()
     {
-        if (isset($this->data['sku'])) {
-            return $this->data['sku'];
+        if (isset($this->_data['sku'])) {
+            return $this->_data['sku'];
         }
 
         $sku = $this->getAmazonListingProduct()->getSku();
@@ -58,14 +56,16 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Gen
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()
         ) {
             $variations = $this->getListingProduct()->getVariations(true);
-            if (count($variations) <= 0) {
-                throw new Ess_M2ePro_Model_Exception_Logic('There are no variations for a variation product.',
-                                                     array(
+            if (empty($variations)) {
+                throw new Ess_M2ePro_Model_Exception_Logic(
+                    'There are no variations for a variation product.',
+                    array(
                                                          'listing_product_id' => $this->getListingProduct()->getId()
-                                                     ));
+                    )
+                );
             }
 
-            /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
             $variation = reset($variations);
             $sku = $variation->getChildObject()->getSku();
 

@@ -7,7 +7,7 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Ebay_Template_Return getResource()
+ * @method Ess_M2ePro_Model_Resource_Ebay_Template_Return getResource()
  */
 class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_Abstract
 {
@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     //########################################
 
@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->marketplaceModel = NULL;
+        $temp && $this->_marketplaceModel = NULL;
         return $temp;
     }
 
@@ -79,13 +79,13 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -93,7 +93,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-        $this->marketplaceModel = $instance;
+        $this->_marketplaceModel = $instance;
     }
 
     //########################################

@@ -10,10 +10,10 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
     extends Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Responser
 {
     /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_State[] $pickupStoreStateItems */
-    private $pickupStoreStateItems = array();
+    protected $pickupStoreStateItems = array();
 
     /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_Log $log */
-    private $log = NULL;
+    protected $log = NULL;
 
     //########################################
 
@@ -22,7 +22,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
         parent::__construct($params, $response);
 
         $collection = Mage::getResourceModel('M2ePro/Ebay_Account_PickupStore_State_Collection');
-        $collection->addFieldToFilter('id', array_keys($this->params['pickup_store_state_items']));
+        $collection->addFieldToFilter('id', array_keys($this->_params['pickup_store_state_items']));
 
         $this->pickupStoreStateItems = $collection->getItems();
     }
@@ -96,9 +96,10 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
 
     //########################################
 
-    private function processMessages(Ess_M2ePro_Model_Ebay_Account_PickupStore_State $stateItem,
-                                     Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messages)
-    {
+    protected function processMessages(
+        Ess_M2ePro_Model_Ebay_Account_PickupStore_State $stateItem,
+        Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messages
+    ) {
         foreach ($messages->getEntities() as $message) {
             $this->logMessage($stateItem, $message);
         }
@@ -106,18 +107,20 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
         return !$messages->hasErrorEntities();
     }
 
-    private function processSuccess(Ess_M2ePro_Model_Ebay_Account_PickupStore_State $stateItem)
+    protected function processSuccess(Ess_M2ePro_Model_Ebay_Account_PickupStore_State $stateItem)
     {
-        $stateItemData = $this->params['pickup_store_state_items'][$stateItem->getId()];
+        $stateItemData = $this->_params['pickup_store_state_items'][$stateItem->getId()];
 
         $this->logMessage($stateItem, $this->getSuccessMessage($stateItemData));
 
         if (!$stateItem->isDeleted()) {
-            $stateItem->addData(array(
+            $stateItem->addData(
+                array(
                 'online_qty' => $stateItemData['target_qty'],
                 'is_added'   => 0,
                 'is_deleted' => 0,
-            ));
+                )
+            );
             $stateItem->save();
         } else {
             $stateItem->deleteInstance();
@@ -129,7 +132,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
      * @return Ess_M2ePro_Model_Connector_Connection_Response_Message
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    private function getSuccessMessage(array $stateItemData)
+    protected function getSuccessMessage(array $stateItemData)
     {
         $encodedDescription = NULL;
 
@@ -184,12 +187,13 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
 
     //########################################
 
-    private function logMessage(Ess_M2ePro_Model_Ebay_Account_PickupStore_State $stateItem,
-                                Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
-    {
+    protected function logMessage(
+        Ess_M2ePro_Model_Ebay_Account_PickupStore_State $stateItem,
+        Ess_M2ePro_Model_Connector_Connection_Response_Message $message
+    ) {
         $this->getLog()->addMessage(
             $stateItem->getId(),
-            $this->params['logs_action_id'],
+            $this->_params['logs_action_id'],
             $this->getLogsAction($stateItem),
             $message->getText(),
             $this->getLogsMessageType($message),
@@ -199,7 +203,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
 
     // ---------------------------------------
 
-    private function getLogsAction($stateItemData)
+    protected function getLogsAction($stateItemData)
     {
         if ($stateItemData['is_added']) {
             return Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_ADD_PRODUCT;
@@ -212,7 +216,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
         return Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UPDATE_QTY;
     }
 
-    private function getLogsMessageType(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
+    protected function getLogsMessageType(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
     {
         if ($message->isError()) {
             return Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
@@ -233,7 +237,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
         return Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
     }
 
-    private function getLogsPriority(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
+    protected function getLogsPriority(Ess_M2ePro_Model_Connector_Connection_Response_Message $message)
     {
         if ($message->isError()) {
             return Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH;
@@ -248,9 +252,9 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
 
     //########################################
 
-    private function getLog()
+    protected function getLog()
     {
-        if (!is_null($this->log)) {
+        if ($this->log !== null) {
             return $this->log;
         }
 

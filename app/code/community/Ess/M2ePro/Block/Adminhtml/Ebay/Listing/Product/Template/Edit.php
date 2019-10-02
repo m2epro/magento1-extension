@@ -101,6 +101,7 @@ HTML;
 </script>
 HTML;
         }
+
         // ---------------------------------------
 
         return $html . $tabs->toHtml() . parent::getFormHtml();

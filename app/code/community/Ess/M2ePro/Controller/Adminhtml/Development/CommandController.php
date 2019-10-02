@@ -14,7 +14,10 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Development_CommandController
     /**
      * Allows fill response by echo(), etc.
      */
-    protected function _postDispatch() {}
+    protected function _postDispatch()
+    {
+        return null;
+    }
 
     //########################################
 

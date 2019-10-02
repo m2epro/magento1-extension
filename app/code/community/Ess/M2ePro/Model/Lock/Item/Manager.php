@@ -10,7 +10,7 @@ class Ess_M2ePro_Model_Lock_Item_Manager
 {
     const DEFAULT_MAX_INACTIVE_TIME = 900;
 
-    private $nick = NULL;
+    protected $_nick = null;
 
     //########################################
 
@@ -20,14 +20,14 @@ class Ess_M2ePro_Model_Lock_Item_Manager
             throw new Ess_M2ePro_Model_Exception_Logic('Nick is not defined.');
         }
 
-        $this->nick = $args['nick'];
+        $this->_nick = $args['nick'];
     }
 
     //########################################
 
     public function getNick()
     {
-        return $this->nick;
+        return $this->_nick;
     }
 
     //########################################
@@ -35,12 +35,12 @@ class Ess_M2ePro_Model_Lock_Item_Manager
     public function create($parentNick = NULL)
     {
         $parentLockItem = Mage::getModel('M2ePro/Lock_Item');
-        if (!is_null($parentNick)) {
+        if ($parentNick !== null) {
             $parentLockItem->load($parentNick, 'nick');
         }
 
         $data = array(
-            'nick'      => $this->nick,
+            'nick'      => $this->_nick,
             'parent_id' => $parentLockItem->getId(),
         );
 
@@ -54,7 +54,7 @@ class Ess_M2ePro_Model_Lock_Item_Manager
     public function remove()
     {
         $lockItem = $this->getLockItemObject();
-        if (is_null($lockItem)) {
+        if ($lockItem === null) {
             return false;
         }
 
@@ -78,13 +78,13 @@ class Ess_M2ePro_Model_Lock_Item_Manager
 
     public function isExist()
     {
-        return !is_null($this->getLockItemObject());
+        return $this->getLockItemObject() !== null;
     }
 
     public function isInactiveMoreThanSeconds($maxInactiveInterval)
     {
         $lockItem = $this->getLockItemObject();
-        if (is_null($lockItem)) {
+        if ($lockItem === null) {
             return true;
         }
 
@@ -101,13 +101,15 @@ class Ess_M2ePro_Model_Lock_Item_Manager
     public function activate()
     {
         $lockItem = $this->getLockItemObject();
-        if (is_null($lockItem)) {
-            throw new Ess_M2ePro_Model_Exception(sprintf(
-                'Lock Item with nick "%s" does not exist.', $this->nick
-            ));
+        if ($lockItem === null) {
+            throw new Ess_M2ePro_Model_Exception(
+                sprintf(
+                    'Lock Item with nick "%s" does not exist.', $this->_nick
+                )
+            );
         }
 
-        if (!is_null($lockItem->getParentId())) {
+        if ($lockItem->getParentId() !== null) {
 
             /** @var Ess_M2ePro_Model_Lock_Item $parentLockItem */
             $parentLockItem = Mage::getModel('M2ePro/Lock_Item')->load($lockItem->getParentId());
@@ -132,10 +134,12 @@ class Ess_M2ePro_Model_Lock_Item_Manager
     public function addContentData($key, $value)
     {
         $lockItem = $this->getLockItemObject();
-        if (is_null($lockItem)) {
-            throw new Ess_M2ePro_Model_Exception(sprintf(
-                'Lock Item with nick "%s" does not exist.', $this->nick
-            ));
+        if ($lockItem === null) {
+            throw new Ess_M2ePro_Model_Exception(
+                sprintf(
+                    'Lock Item with nick "%s" does not exist.', $this->_nick
+                )
+            );
         }
 
         $data = $lockItem->getContentData();
@@ -156,10 +160,12 @@ class Ess_M2ePro_Model_Lock_Item_Manager
     public function setContentData(array $data)
     {
         $lockItem = $this->getLockItemObject();
-        if (is_null($lockItem)) {
-            throw new Ess_M2ePro_Model_Exception(sprintf(
-                'Lock Item with nick "%s" does not exist.', $this->nick
-            ));
+        if ($lockItem === null) {
+            throw new Ess_M2ePro_Model_Exception(
+                sprintf(
+                    'Lock Item with nick "%s" does not exist.', $this->_nick
+                )
+            );
         }
 
         $lockItem->setData('data', Mage::helper('M2ePro')->jsonEncode($data));
@@ -173,7 +179,7 @@ class Ess_M2ePro_Model_Lock_Item_Manager
     public function getContentData($key = NULL)
     {
         $lockItem = $this->getLockItemObject();
-        if (is_null($lockItem)) {
+        if ($lockItem === null) {
             return NULL;
         }
 
@@ -182,7 +188,7 @@ class Ess_M2ePro_Model_Lock_Item_Manager
         }
 
         $data = Mage::helper('M2ePro')->jsonDecode($lockItem->getContentData());
-        if (is_null($key)) {
+        if ($key === null) {
             return $data;
         }
 
@@ -198,10 +204,10 @@ class Ess_M2ePro_Model_Lock_Item_Manager
     /**
      * @return Ess_M2ePro_Model_Lock_Item
      */
-    private function getLockItemObject()
+    protected function getLockItemObject()
     {
         $lockItemCollection = Mage::getModel('M2ePro/Lock_Item')->getCollection();
-        $lockItemCollection->addFieldToFilter('nick', $this->nick);
+        $lockItemCollection->addFieldToFilter('nick', $this->_nick);
 
         /** @var Ess_M2ePro_Model_Lock_Item $lockItem */
         $lockItem = $lockItemCollection->getFirstItem();

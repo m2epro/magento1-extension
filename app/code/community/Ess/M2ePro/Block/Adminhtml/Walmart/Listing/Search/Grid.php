@@ -12,7 +12,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
 
     protected function _prepareColumns()
     {
-        $this->addColumn('entity_id', array(
+        $this->addColumn(
+            'entity_id', array(
             'header'       => Mage::helper('M2ePro')->__('Product ID'),
             'align'        => 'right',
             'width'        => '100px',
@@ -21,9 +22,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'filter_index' => 'entity_id',
             'frame_callback' => array($this, 'callbackColumnProductId'),
             'filter_condition_callback' => array($this, 'callbackFilterProductId')
-        ));
+            )
+        );
 
-        $this->addColumn('name', array(
+        $this->addColumn(
+            'name', array(
             'header'         => Mage::helper('M2ePro')->__('Product Title / Listing / Product SKU'),
             'align'          => 'left',
             'type'           => 'text',
@@ -31,9 +34,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'filter_index'   => 'name',
             'frame_callback' => array($this, 'callbackColumnProductTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('is_in_stock', array(
+        $this->addColumn(
+            'is_in_stock', array(
             'header'    => Mage::helper('M2ePro')->__('Stock Availability'),
             'align'     => 'left',
             'width'     => '90px',
@@ -46,9 +51,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
                 '0' => Mage::helper('M2ePro')->__('Out of Stock')
             ),
             'frame_callback' => array($this, 'callbackColumnIsInStock')
-        ));
+            )
+        );
 
-        $this->addColumn('online_sku', array(
+        $this->addColumn(
+            'online_sku', array(
             'header'       => Mage::helper('M2ePro')->__('SKU'),
             'align'        => 'left',
             'width'        => '150px',
@@ -57,9 +64,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'filter_index' => 'online_sku',
             'frame_callback' => array($this, 'callbackColumnWalmartSku'),
             'filter_condition_callback' => array($this, 'callbackFilterOnlineSku')
-        ));
+            )
+        );
 
-        $this->addColumn('gtin', array(
+        $this->addColumn(
+            'gtin', array(
             'header'       => Mage::helper('M2ePro')->__('GTIN'),
             'align'        => 'left',
             'width'        => '150px',
@@ -68,9 +77,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'filter_index' => 'gtin',
             'frame_callback' => array($this, 'callbackColumnGtin'),
             'filter_condition_callback' => array($this, 'callbackFilterGtin')
-        ));
+            )
+        );
 
-        $this->addColumn('online_qty', array(
+        $this->addColumn(
+            'online_qty', array(
             'header'         => Mage::helper('M2ePro')->__('QTY'),
             'align'          => 'right',
             'width'          => '70px',
@@ -79,9 +90,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'filter_index'   => 'online_qty',
             'frame_callback' => array($this, 'callbackColumnAvailableQty'),
             'filter_condition_callback' => array($this, 'callbackFilterQty')
-        ));
+            )
+        );
 
-        $this->addColumn('online_price', array(
+        $this->addColumn(
+            'online_price', array(
             'header'         => Mage::helper('M2ePro')->__('Price'),
             'align'          => 'right',
             'width'          => '110px',
@@ -90,7 +103,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'filter_index'   => 'online_price',
             'frame_callback' => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
-        ));
+            )
+        );
 
         $statusColumn = array(
             'header'       => Mage::helper('M2ePro')->__('Status'),
@@ -119,7 +133,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
 
         $this->addColumn('status', $statusColumn);
 
-        $this->addColumn('goto_listing_item', array(
+        $this->addColumn(
+            'goto_listing_item', array(
             'header'    => Mage::helper('M2ePro')->__('Manage'),
             'align'     => 'center',
             'width'     => '50px',
@@ -127,7 +142,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
             'filter'    => false,
             'sortable'  => false,
             'frame_callback' => array($this, 'callbackColumnActions')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -136,7 +152,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
 
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
-        if (is_null($row->getData('entity_id'))) {
+        if ($row->getData('entity_id') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -147,7 +163,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
         $withoutImageHtml = '<a href="'.$url.'" target="_blank">'.$productId.'</a>';
 
         $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')
-                                                ->getConfig()->getGroupValue('/view/','show_products_thumbnails');
+                                                ->getConfig()->getGroupValue('/view/', 'show_products_thumbnails');
         if (!$showProductsThumbnails) {
             return $withoutImageHtml;
         }
@@ -158,20 +174,20 @@ abstract class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Search_Grid extends Ma
         $magentoProduct->setStoreId($storeId);
 
         $imageResized = $magentoProduct->getThumbnailImage();
-        if (is_null($imageResized)) {
+        if ($imageResized === null) {
             return $withoutImageHtml;
         }
 
         $imageHtml = $productId.'<hr/><img style="max-width: 100px; max-height: 100px;" src="'.
             $imageResized->getUrl().'" />';
-        $withImageHtml = str_replace('>'.$productId.'<','>'.$imageHtml.'<',$withoutImageHtml);
+        $withImageHtml = str_replace('>'.$productId.'<', '>'.$imageHtml.'<', $withoutImageHtml);
 
         return $withImageHtml;
     }
 
     public function callbackColumnWalmartSku($value, $row, $column, $isExport)
     {
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -216,6 +232,7 @@ HTML;
             {
                 $htmlAdditional .= "<div class='separator-line'></div>";
             }
+
             $identifierCode  = Mage::helper('M2ePro')->__($title);
             $identifierValue = Mage::helper('M2ePro')->escapeHtml($value);
 
@@ -254,12 +271,11 @@ HTML;
     public function callbackColumnAvailableQty($value, $row, $column, $isExport)
     {
         if (!$row->getData('is_variation_parent')) {
-
             if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
                 return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
             }
 
-            if (is_null($value) || $value === '' ||
+            if ($value === null || $value === '' ||
                 ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED &&
                  !$row->getData('is_online_price_invalid')))
             {
@@ -284,10 +300,11 @@ HTML;
             if ($childStatus == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
                 continue;
             }
+
             $activeChildrenCount += (int)$count;
         }
 
-        if ($activeChildrenCount == 0 || is_null($value) || $value === '') {
+        if ($activeChildrenCount == 0 || $value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -306,7 +323,6 @@ HTML;
     protected function getProductStatus($row, $status)
     {
         switch ($status) {
-
             case Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED:
                 return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
 

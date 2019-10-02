@@ -177,11 +177,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_C
     {
         $existedRelation = Mage::getSingleton('core/resource')->getConnection('core_read')
             ->select()
-            ->from(array('ai' => Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable()),
-                   array())
-            ->join(array('alp' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable()),
-                   '(`alp`.`sku` = `ai`.`sku`)',
-                   array('alp.listing_product_id'))
+            ->from(
+                array('ai' => Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable()),
+                array()
+            )
+            ->join(
+                array('alp' => Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable()),
+                '(`alp`.`sku` = `ai`.`sku`)',
+                array('alp.listing_product_id')
+            )
             ->where('`ai`.`sku` = ?', $this->getSku())
             ->where('`ai`.`account_id` = ?', $this->getParentObject()->getAccountId())
             ->where('`ai`.`marketplace_id` = ?', $this->getParentObject()->getMarketplaceId())
@@ -193,13 +197,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Other extends Ess_M2ePro_Model_Component_C
         }
 
         Mage::getSingleton('core/resource')->getConnection('core_write')
-            ->delete(Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable(),
-                    array(
+            ->delete(
+                Mage::getResourceModel('M2ePro/Amazon_Item')->getMainTable(),
+                array(
                         '`account_id` = ?' => $this->getParentObject()->getAccountId(),
                         '`marketplace_id` = ?' => $this->getParentObject()->getMarketplaceId(),
                         '`sku` = ?' => $this->getSku(),
                         '`product_id` = ?' => $this->getParentObject()->getProductId()
-                    ));
+                )
+            );
     }
 
     //########################################

@@ -34,7 +34,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_NewAsin_WarningPopup
             'label'   => Mage::helper('M2ePro')->__('Continue'),
             'onclick'   => 'setLocation(\''.$url.'\')',
         );
-        $this->setChild('continue_button',$this->getLayout()->createBlock('adminhtml/widget_button')->setData($data));
+        $this->setChild(
+            'continue_button', $this->getLayout()
+                                                ->createBlock('adminhtml/widget_button')
+            ->setData($data)
+        );
 
         return $this;
     }

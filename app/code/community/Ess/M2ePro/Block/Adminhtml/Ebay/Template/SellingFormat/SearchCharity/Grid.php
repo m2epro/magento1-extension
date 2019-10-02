@@ -50,7 +50,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_SearchCharity_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header'        => Mage::helper('M2ePro')->__('ID'),
             'width'         => '50px',
             'align'         => 'left',
@@ -59,9 +60,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_SearchCharity_Grid
             'escape'        => true,
             'sortable'      => false,
             'filter'        => false,
-        ));
+            )
+        );
 
-        $this->addColumn('name', array(
+        $this->addColumn(
+            'name', array(
             'header'        => Mage::helper('M2ePro')->__('Name'),
             'align'         => 'left',
             'type'          => 'text',
@@ -69,9 +72,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_SearchCharity_Grid
             'escape'        => true,
             'sortable'      => false,
             'filter'        => false,
-        ));
+            )
+        );
 
-        $this->addColumn('action', array(
+        $this->addColumn(
+            'action', array(
             'header'    => Mage::helper('M2ePro')->__('Action'),
             'align'     => 'left',
             'width'     => '50px',
@@ -85,7 +90,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_SearchCharity_Grid
                 )
             ),
             'frame_callback' => array($this, 'callbackColumnActions')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

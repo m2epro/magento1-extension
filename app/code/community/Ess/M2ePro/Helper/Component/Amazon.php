@@ -10,6 +10,8 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
 {
     const NICK  = 'amazon';
 
+    const MARKETPLACE_SYNCHRONIZATION_LOCK_ITEM_NICK = 'amazon_marketplace_synchronization';
+
     const MARKETPLACE_CA = 24;
     const MARKETPLACE_DE = 25;
     const MARKETPLACE_US = 29;
@@ -71,14 +73,14 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     public function isObject($modelName, $value, $field = NULL)
     {
         $mode = Mage::helper('M2ePro/Component')->getComponentMode($modelName, $value, $field);
-        return !is_null($mode) && $mode == self::NICK;
+        return $mode !== null && $mode == self::NICK;
     }
 
     // ---------------------------------------
 
     public function getModel($modelName)
     {
-        return Mage::helper('M2ePro/Component')->getComponentModel(self::NICK,$modelName);
+        return Mage::helper('M2ePro/Component')->getComponentModel(self::NICK, $modelName);
     }
 
     public function getObject($modelName, $value, $field = NULL)
@@ -105,14 +107,14 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         $marketplaceId = (int)$marketplaceId;
         $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;
 
-        $domain = $this->getCachedObject('Marketplace',$marketplaceId)->getUrl();
+        $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
         $applicationName = Mage::helper('M2ePro/Component_Amazon')->getApplicationName();
 
         return 'https://sellercentral.'.
                 $domain.
                 '/gp/mws/registration/register.html?ie=UTF8&*Version*=1&*entries*=0&applicationName='.
                 rawurlencode($applicationName).'&appDevMWSAccountId='.
-                $this->getCachedObject('Marketplace',$marketplaceId)->getDeveloperKey();
+                $this->getCachedObject('Marketplace', $marketplaceId)->getDeveloperKey();
     }
 
     public function getItemUrl($productId, $marketplaceId = NULL)
@@ -120,7 +122,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         $marketplaceId = (int)$marketplaceId;
         $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;
 
-        $domain = $this->getCachedObject('Marketplace',$marketplaceId)->getUrl();
+        $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
 
         return 'http://'.$domain.'/gp/product/'.$productId;
     }
@@ -130,7 +132,7 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
         $marketplaceId = (int)$marketplaceId;
         $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;
 
-        $domain = $this->getCachedObject('Marketplace',$marketplaceId)->getUrl();
+        $domain = $this->getCachedObject('Marketplace', $marketplaceId)->getUrl();
 
         return 'https://sellercentral.'.$domain.'/gp/orders-v2/details/?orderID='.$orderId;
     }
@@ -156,8 +158,6 @@ class Ess_M2ePro_Helper_Component_Amazon extends Mage_Core_Helper_Abstract
     }
 
     // ----------------------------------------
-
-    // ---------------------------------------
 
     public function getCarriers()
     {

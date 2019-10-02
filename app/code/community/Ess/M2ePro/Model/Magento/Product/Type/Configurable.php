@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Magento_Product_Type_Configurable extends Mage_Catalog_Mo
     {
         $collection = parent::getUsedProductCollection($product);
 
-        if (!is_null($this->getStoreFilter($product))) {
+        if ($this->getStoreFilter($product) !== null) {
             $collection->setStoreId($this->getStoreFilter($product));
         }
 

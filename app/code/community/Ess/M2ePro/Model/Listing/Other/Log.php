@@ -38,21 +38,24 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //########################################
 
-    public function addProductMessage($listingOtherId,
-                                      $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-                                      $actionId = NULL,
-                                      $action = NULL,
-                                      $description = NULL,
-                                      $type = NULL,
-                                      $priority = NULL)
-    {
-        $dataForAdd = $this->makeDataForAdd($listingOtherId,
-                                            $initiator,
-                                            $actionId,
-                                            $action,
-                                            $description,
-                                            $type,
-                                            $priority);
+    public function addProductMessage(
+        $listingOtherId,
+        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
+        $actionId = null,
+        $action = null,
+        $description = null,
+        $type = null,
+        $priority = null
+    ) {
+        $dataForAdd = $this->makeDataForAdd(
+            $listingOtherId,
+            $initiator,
+            $actionId,
+            $action,
+            $description,
+            $type,
+            $priority
+        );
 
         $this->createMessage($dataForAdd);
     }
@@ -63,11 +66,12 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
     {
         $filters = array();
 
-        if (!is_null($listingOtherId)) {
+        if ($listingOtherId !== null) {
             $filters['listing_other_id'] = $listingOtherId;
         }
-        if (!is_null($this->componentMode)) {
-            $filters['component_mode'] = $this->componentMode;
+
+        if ($this->_componentMode !== null) {
+            $filters['component_mode'] = $this->_componentMode;
         }
 
         $this->getResource()->clearMessages($filters);
@@ -78,21 +82,20 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
     protected function createMessage($dataForAdd)
     {
         $listingOther = Mage::helper('M2ePro/Component')->getComponentObject(
-            $this->componentMode, 'Listing_Other', $dataForAdd['listing_other_id']
+            $this->_componentMode, 'Listing_Other', $dataForAdd['listing_other_id']
         );
 
         $dataForAdd['title'] = $listingOther->getChildObject()->getTitle();
 
-        if ($this->componentMode == Ess_M2ePro_Helper_Component_Ebay::NICK) {
+        if ($this->_componentMode == Ess_M2ePro_Helper_Component_Ebay::NICK) {
             $dataForAdd['identifier'] = $listingOther->getChildObject()->getItemId();
         }
 
-        if ($this->componentMode == Ess_M2ePro_Helper_Component_Amazon::NICK) {
+        if ($this->_componentMode == Ess_M2ePro_Helper_Component_Amazon::NICK) {
             $dataForAdd['identifier'] = $listingOther->getChildObject()->getGeneralId();
         }
 
-        if ($this->componentMode == Ess_M2ePro_Helper_Component_Walmart::NICK) {
-
+        if ($this->_componentMode == Ess_M2ePro_Helper_Component_Walmart::NICK) {
             $dataForAdd['identifier'] = $listingOther->getChildObject()->getGtin();
 
             if (!empty($dataForAdd['additional_data'])) {
@@ -102,7 +105,7 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
             }
         }
 
-        $dataForAdd['component_mode'] = $this->componentMode;
+        $dataForAdd['component_mode'] = $this->_componentMode;
 
         Mage::getModel('M2ePro/Listing_Other_Log')
                  ->setData($dataForAdd)
@@ -110,18 +113,19 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
                  ->getId();
     }
 
-    protected function makeDataForAdd($listingOtherId,
-                                      $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-                                      $actionId = NULL,
-                                      $action = NULL,
-                                      $description = NULL,
-                                      $type = NULL,
-                                      $priority = NULL,
-                                      array $additionalData = array())
-    {
+    protected function makeDataForAdd(
+        $listingOtherId,
+        $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
+        $actionId = null,
+        $action = null,
+        $description = null,
+        $type = null,
+        $priority = null,
+        array $additionalData = array()
+    ) {
         $dataForAdd = array();
 
-        if (!is_null($listingOtherId)) {
+        if ($listingOtherId !== null) {
             $dataForAdd['listing_other_id'] = (int)$listingOtherId;
         } else {
             $dataForAdd['listing_other_id'] = NULL;
@@ -129,31 +133,31 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
 
         $dataForAdd['initiator'] = $initiator;
 
-        if (!is_null($actionId)) {
+        if ($actionId !== null) {
             $dataForAdd['action_id'] = (int)$actionId;
         } else {
             $dataForAdd['action_id'] = NULL;
         }
 
-        if (!is_null($action)) {
+        if ($action !== null) {
             $dataForAdd['action'] = (int)$action;
         } else {
             $dataForAdd['action'] = self::ACTION_UNKNOWN;
         }
 
-        if (!is_null($description)) {
+        if ($description !== null) {
             $dataForAdd['description'] = $description;
         } else {
             $dataForAdd['description'] = NULL;
         }
 
-        if (!is_null($type)) {
+        if ($type !== null) {
             $dataForAdd['type'] = (int)$type;
         } else {
             $dataForAdd['type'] = self::TYPE_NOTICE;
         }
 
-        if (!is_null($priority)) {
+        if ($priority !== null) {
             $dataForAdd['priority'] = (int)$priority;
         } else {
             $dataForAdd['priority'] = self::PRIORITY_LOW;

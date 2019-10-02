@@ -36,11 +36,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('add', array(
+        $this->_addButton(
+            'add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Policy'),
             'onclick'   => '',
             'class'     => 'add add-button-drop-down'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -55,7 +57,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
-                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT
+                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT,
+                            'back' => true
                         )
                     ),
                     'label' => Mage::helper('M2ePro')->__('Payment')
@@ -64,7 +67,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
-                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING
+                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING,
+                            'back' => true
                         )
                     ),
                     'label' => Mage::helper('M2ePro')->__('Shipping')
@@ -73,7 +77,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
-                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN
+                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN,
+                            'back' => true
                         )
                     ),
                     'label' => Mage::helper('M2ePro')->__('Return')
@@ -82,7 +87,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
-                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT
+                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT,
+                            'back' => true
                         )
                     ),
                     'label' => Mage::helper('M2ePro')->__('Selling')
@@ -91,7 +97,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
-                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION
+                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION,
+                            'back' => true
                         )
                     ),
                     'label' => Mage::helper('M2ePro')->__('Description')
@@ -100,7 +107,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template extends Mage_Adminhtml_Block_Widg
                     'url'   => $this->getUrl(
                         '*/adminhtml_ebay_template/new',
                         array(
-                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION
+                            'nick' => Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION,
+                            'back' => true
                         )
                     ),
                     'label' => Mage::helper('M2ePro')->__('Synchronization')

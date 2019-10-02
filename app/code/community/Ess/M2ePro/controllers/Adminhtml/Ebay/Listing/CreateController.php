@@ -9,7 +9,7 @@
 class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
     extends Ess_M2ePro_Controller_Adminhtml_Ebay_MainController
 {
-    protected $sessionKey = 'ebay_listing_create';
+    protected $_sessionKey = 'ebay_listing_create';
 
     //########################################
 
@@ -84,12 +84,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function stepOne()
+    protected function stepOne()
     {
         if ($this->getRequest()->getParam('clear')) {
             $this->clearSession();
-            $this->getRequest()->setParam('clear',null);
-            $this->_redirect('*/*/index',array('_current' => true, 'step' => 1));
+            $this->getRequest()->setParam('clear', null);
+            $this->_redirect('*/*/index', array('_current' => true, 'step' => 1));
             return;
         }
 
@@ -97,7 +97,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
         // ---------------------------------------
         if ($this->getRequest()->isPost()) {
-
             // save data
             $post = $this->getRequest()->getPost();
 
@@ -108,6 +107,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             ) {
                 $this->clearSession();
             }
+
             // ---------------------------------------
 
             $this->setSessionValue('listing_title', strip_tags($post['title']));
@@ -118,6 +118,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 2));
             return;
         }
+
         // ---------------------------------------
         $listingOnlyMode = Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY;
         if ($this->getRequest()->getParam('creation_mode') == $listingOnlyMode) {
@@ -137,18 +138,18 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function stepTwo()
+    protected function stepTwo()
     {
         // Check exist temp data
         // ---------------------------------------
-        if (is_null($this->getSessionValue('account_id'))
-            ||
-            is_null($this->getSessionValue('marketplace_id'))
+        if ($this->getSessionValue('account_id') === null ||
+            $this->getSessionValue('marketplace_id') === null
         ) {
             $this->clearSession();
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 1));
             return;
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -176,6 +177,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 3));
             return;
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -199,18 +201,18 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function stepThree()
+    protected function stepThree()
     {
         // Check exist temp data
         // ---------------------------------------
-        if (is_null($this->getSessionValue('account_id'))
-            ||
-            is_null($this->getSessionValue('marketplace_id'))
+        if ($this->getSessionValue('account_id') === null ||
+            $this->getSessionValue('marketplace_id') === null
         ) {
             $this->clearSession();
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 1));
             return;
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -239,6 +241,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $this->_redirect('*/*/index', array('_current' => true, 'step' => 4));
             return;
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -262,18 +265,18 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function stepFour()
+    protected function stepFour()
     {
         // Check exist temp data
         // ---------------------------------------
-        if (is_null($this->getSessionValue('account_id'))
-            ||
-            is_null($this->getSessionValue('marketplace_id'))
+        if ($this->getSessionValue('account_id') === null ||
+            $this->getSessionValue('marketplace_id') === null
         ) {
             $this->clearSession();
             $this->_redirect('*/*/index', array('step' => 1,'_current' => true));
             return;
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -307,7 +310,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $this->clearSession();
             // ---------------------------------------
 
-            if ((bool)$this->getRequest()->getParam('wizard',false)) {
+            if ((bool)$this->getRequest()->getParam('wizard', false)) {
                 $this->setWizardStep('productTutorial');
                 return $this->_redirect('*/adminhtml_wizard_installationEbay');
             }
@@ -320,11 +323,11 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
                 )
             );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
         if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-
             // ---------------------------------------
             $synchTemplate = $this->createDefaultSynchronizationTemplate();
             // ---------------------------------------
@@ -342,7 +345,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             $this->clearSession();
             // ---------------------------------------
 
-            if ((bool)$this->getRequest()->getParam('wizard',false)) {
+            if ((bool)$this->getRequest()->getParam('wizard', false)) {
                 $this->setWizardStep('productTutorial');
                 return $this->_redirect('*/adminhtml_wizard_installationEbay');
             }
@@ -355,6 +358,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
                 )
             );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -378,7 +382,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function createDefaultSynchronizationTemplate()
+    protected function createDefaultSynchronizationTemplate()
     {
         $data = Mage::getModel('M2ePro/Ebay_Template_Synchronization')->getDefaultSettingsSimpleMode();
         $data['title'] = $this->getSessionValue('listing_title');
@@ -394,7 +398,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function createListing()
+    protected function createListing()
     {
         $data = array();
         $data['title'] = $this->getSessionValue('listing_title');
@@ -450,7 +454,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function loadTemplatesDataFromSession()
+    protected function loadTemplatesDataFromSession()
     {
         // ---------------------------------------
         $listingTitle = $this->getSessionValue('listing_title');
@@ -458,7 +462,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
         /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader $dataLoader */
         $dataLoader = Mage::getBlockSingleton('M2ePro/adminhtml_ebay_listing_template_switcher_dataLoader');
-        $dataLoader->load(Mage::helper('M2ePro/Data_Session'), array('session_key' => $this->sessionKey));
+        $dataLoader->load(Mage::helper('M2ePro/Data_Session'), array('session_key' => $this->_sessionKey));
         // ---------------------------------------
     }
 
@@ -469,20 +473,20 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         $sessionData = $this->getSessionValue();
         $sessionData[$key] = $value;
 
-        Mage::helper('M2ePro/Data_Session')->setValue($this->sessionKey, $sessionData);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, $sessionData);
 
         return $this;
     }
 
     protected function getSessionValue($key = NULL)
     {
-        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->sessionKey);
+        $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey);
 
-        if (is_null($sessionData)) {
+        if ($sessionData === null) {
             $sessionData = array();
         }
 
-        if (is_null($key)) {
+        if ($key === null) {
             return $sessionData;
         }
 
@@ -491,14 +495,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     //########################################
 
-    private function clearSession()
+    protected function clearSession()
     {
-        Mage::helper('M2ePro/Data_Session')->setValue($this->sessionKey, NULL);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, NULL);
     }
 
     //########################################
 
-    private function setWizardStep($step)
+    protected function setWizardStep($step)
     {
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
 
@@ -506,12 +510,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             return;
         }
 
-        $wizardHelper->setStep(Ess_M2ePro_Helper_View_Ebay::WIZARD_INSTALLATION_NICK,$step);
+        $wizardHelper->setStep(Ess_M2ePro_Helper_View_Ebay::WIZARD_INSTALLATION_NICK, $step);
     }
 
     //########################################
 
-    private function isCreationModeListingOnly()
+    protected function isCreationModeListingOnly()
     {
         return $this->getSessionValue('creation_mode') ===
         Ess_M2ePro_Helper_View::LISTING_CREATION_MODE_LISTING_ONLY;

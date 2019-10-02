@@ -38,7 +38,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         }
     }
 
-    protected function execute() {}
+    protected function execute()
+    {
+        return null;
+    }
 
     //########################################
 }

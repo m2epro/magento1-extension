@@ -52,20 +52,20 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $select = $connRead->select()
-              ->from(
-                  Mage::helper('M2ePro/Module_Database_Structure')
+            ->from(
+                Mage::helper('M2ePro/Module_Database_Structure')
                       ->getTableNameWithPrefix('m2epro_walmart_dictionary_specific')
-              )
+            )
               ->where('marketplace_id = ?', (int)$this->marketplaceId)
               ->where('product_data_nick = ?', $this->productDataNick)
 
-              ->where(
-                  'xml_tag NOT IN (?)',
-                  array(
+            ->where(
+                'xml_tag NOT IN (?)',
+                array(
                       Ess_M2ePro_Model_Walmart_Template_Category_Specific::UNIT_SPECIFIC_CODE,
                       Ess_M2ePro_Model_Walmart_Template_Category_Specific::MEASURE_SPECIFIC_CODE
                   )
-              )
+            )
 
               ->where('xpath LIKE ?', "{$this->currentXpath}/%")
               ->order('title ASC');
@@ -78,13 +78,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
 
         $queryStmt = $select->query();
         while ($row = $queryStmt->fetch()) {
-
             if (in_array($row['xpath'], $this->selectedSpecifics, true)) {
                 continue;
             }
 
             if (in_array($row['xpath'], $this->allRenderedSpecifics, true)) {
-
                 // an already rendered specific can be added again only to parent container directly
                 if (str_replace($this->currentXpath . '/', '', $row['xpath']) !== $row['xml_tag']) {
                     continue;
@@ -105,7 +103,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
             $filteredResult[] = $row;
         }
 
-        usort($filteredResult, function($a, $b) {
+        usort(
+            $filteredResult, function($a, $b) {
 
             if ($a['is_desired'] && !$b['is_desired']) {
                 return -1;
@@ -116,12 +115,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
             }
 
             return $a['title'] == $b['title'] ? 0 : ($a['title'] > $b['title'] ? 1 : -1);
-        });
+            }
+        );
 
         $collection = new Varien_Data_Collection();
         foreach ($filteredResult as $item) {
             $collection->addItem(new Varien_Object($item));
         }
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -129,7 +130,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'         => Mage::helper('M2ePro')->__('Specific'),
             'align'          => 'left',
             'type'           => 'text',
@@ -138,9 +140,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
             'filter'         => false,
             'sortable'       => false,
             'frame_callback' => array($this, 'callbackColumnTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('is_desired', array(
+        $this->addColumn(
+            'is_desired', array(
             'header'         => Mage::helper('M2ePro')->__('Desired'),
             'align'          => 'center',
             'type'           => 'text',
@@ -149,9 +153,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
             'filter'         => false,
             'sortable'       => false,
             'frame_callback' => array($this, 'callbackColumnIsDesired')
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'         => Mage::helper('M2ePro')->__('Action'),
             'align'          => 'center',
             'type'           => 'text',
@@ -159,7 +165,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
             'filter'         => false,
             'sortable'       => false,
             'frame_callback' => array($this, 'callbackColumnActions'),
-        ));
+            )
+        );
     }
 
     //########################################
@@ -170,9 +177,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_A
         $title = Mage::helper('M2ePro')->escapeHtml($title);
 
         $pathParts = explode('/', ltrim($row->getData('xpath'), '/'));
-        array_walk($pathParts, function (&$el) {
+        array_walk(
+            $pathParts, function (&$el) {
             $el = ucfirst(preg_replace('/(?<!^)[A-Z0-9]/', ' $0', $el));
-        });
+            }
+        );
         array_pop($pathParts);
 
         $path = implode(' > ', $pathParts);
@@ -270,9 +279,13 @@ HTML;
 
     // ---------------------------------------
 
-    private function replaceWithDictionaryXpathes(array $xPathes)
+    protected function replaceWithDictionaryXpathes(array $xPathes)
     {
-        return array_map(function($el) { return preg_replace('/-\d+/', '', $el); }, $xPathes);
+        return array_map(
+            function($el) {
+            return preg_replace('/-\d+/', '', $el); 
+            }, $xPathes
+        );
     }
 
     //########################################

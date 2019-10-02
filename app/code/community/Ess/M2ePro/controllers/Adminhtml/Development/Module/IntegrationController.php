@@ -19,7 +19,6 @@ class Ess_M2ePro_Adminhtml_Development_Module_IntegrationController
     {
         $html = '';
         foreach (Mage::helper('M2ePro/Component')->getActiveComponents() as $component) {
-
             $reviseAllStartDate = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
                 "/{$component}/templates/synchronization/revise/total/", 'start_date'
             );
@@ -28,11 +27,9 @@ class Ess_M2ePro_Adminhtml_Development_Module_IntegrationController
                 "/{$component}/templates/synchronization/revise/total/", 'end_date'
             );
 
-            $reviseAllInProcessingState = !is_null(
-                Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
-                    "/{$component}/templates/synchronization/revise/total/", 'last_listing_product_id'
-                )
-            );
+            $reviseAllInProcessingState = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
+                "/{$component}/templates/synchronization/revise/total/", 'last_listing_product_id'
+            ) !== null;
 
             $urlHelper = Mage::helper('adminhtml');
 
@@ -59,11 +56,11 @@ HTML;
             if ($reviseAllInProcessingState) {
                 $html .= "document.getElementById('{$component}_start_date').style.display = 'inline-block';";
             } else {
-
                 if ($reviseAllEndDate) {
                     $html .= "document.getElementById('{$component}_end_date').style.display = 'inline-block';";
                 }
             }
+
             $html.= "</script>";
         }
 
@@ -150,7 +147,6 @@ HTML;
                 $request->setConfigurator($configurator);
 
                 if ($requestType == 'Revise') {
-
                     $outOfStockControlCurrentState  = $elp->getOutOfStockControl();
                     $outOfStockControlTemplateState = $elp->getEbaySellingFormatTemplate()->getOutOfStockControl();
 
@@ -161,10 +157,12 @@ HTML;
                     $outOfStockControlResult = $outOfStockControlCurrentState ||
                                                $elp->getEbayAccount()->getOutOfStockControl();
 
-                    $request->setParams(array(
+                    $request->setParams(
+                        array(
                         'out_of_stock_control_current_state' => $outOfStockControlCurrentState,
                         'out_of_stock_control_result'        => $outOfStockControlResult,
-                    ));
+                        )
+                    );
                 }
 
                 return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
@@ -182,11 +180,13 @@ HTML;
                 $request->setConfigurator($configurator);
 
                 if ($requestType == 'List') {
-                    $request->setCachedData(array(
+                    $request->setCachedData(
+                        array(
                                                     'sku'        => 'placeholder',
                                                     'general_id' => 'placeholder',
                                                     'list_type'  => 'placeholder'
-                                                ));
+                        )
+                    );
                 }
 
                 return $this->getResponse()->setBody('<pre>'.print_r($request->getData(), true).'</pre>');
@@ -212,7 +212,8 @@ HTML;
         $formKey = Mage::getSingleton('core/session')->getFormKey();
         $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
 
-        return $this->getResponse()->setBody(<<<HTML
+        return $this->getResponse()->setBody(
+            <<<HTML
 <form method="get" enctype="multipart/form-data" action="{$actionUrl}">
 
     <div style="margin: 5px 0; width: 400px;">
@@ -252,11 +253,11 @@ HTML
     public function getInspectorDataAction()
     {
         if (!$this->getRequest()->getParam('print')) {
-
             $formKey = Mage::getSingleton('core/session')->getFormKey();
             $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
 
-            return $this->getResponse()->setBody(<<<HTML
+            return $this->getResponse()->setBody(
+                <<<HTML
 <form method="get" enctype="multipart/form-data" action="{$actionUrl}">
 
     <div style="margin: 5px 0; width: 400px;">
@@ -283,7 +284,7 @@ HTML
         $checkerInput = Mage::getModel('M2ePro/Listing_Product_Instruction_SynchronizationTemplate_Checker_Input');
         $checkerInput->setListingProduct($listingProduct);
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Instruction_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection $collection */
         $instructionCollection = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection');
         $instructionCollection->applySkipUntilFilter();
         $instructionCollection->addFieldToFilter('listing_product_id', $listingProduct->getId());
@@ -294,10 +295,10 @@ HTML
             $instruction->setListingProduct($listingProduct);
             $instructions[$instruction->getId()] = $instruction;
         }
+
         $checkerInput->setInstructions($instructions);
 
         if ($listingProduct->getComponentMode() == Ess_M2ePro_Helper_Component_Amazon::NICK) {
-
             $html = '<pre>';
 
             //--
@@ -349,7 +350,6 @@ HTML
         }
 
         if ($listingProduct->getComponentMode() == Ess_M2ePro_Helper_Component_Ebay::NICK) {
-
             $html = '<pre>';
 
             //--
@@ -409,6 +409,56 @@ HTML
             return $this->getResponse()->setBody($html);
         }
 
+        if ($listingProduct->getComponentMode() == Ess_M2ePro_Helper_Component_Walmart::NICK) {
+            $html = '<pre>';
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_NotListed'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>NotListed</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetList: '.json_encode($checker->isMeetListRequirements()).'<br><br>';
+            //--
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_Inactive'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>Inactive</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetRelist: '.json_encode($checker->isMeetRelistRequirements()).'<br><br>';
+            //--
+
+            //--
+            $checker = Mage::getModel(
+                'M2ePro/Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_Active'
+            );
+            $checker->setInput($checkerInput);
+
+            $html .= '<b>Active</b><br>';
+            $html .= 'isAllowed: '.json_encode($checker->isAllowed()).'<br>';
+            $html .= 'isMeetStop: '.json_encode($checker->isMeetStopRequirements()).'<br><br>';
+
+            $html .= 'isMeetReviseQty: '.json_encode($checker->isMeetReviseQtyRequirements()).'<br>';
+            $html .= 'isMeetRevisePrice: '.json_encode($checker->isMeetRevisePriceRequirements()).'<br>';
+            $html .= 'isMeetRevisePromotions: '.json_encode($checker->isMeetRevisePromotionsRequirements()).'<br>';
+            $html .= 'isMeetReviseDetails: '.json_encode($checker->isMeetReviseDetailsRequirements()).'<br>';
+            //--
+
+            //--
+            $magentoProduct = $listingProduct->getMagentoProduct();
+            $html .= 'isStatusEnabled: '.json_encode($magentoProduct->isStatusEnabled()).'<br>';
+            $html .= 'isStockAvailability: '.json_encode($magentoProduct->isStockAvailability()).'<br>';
+            //--
+
+            return $this->getResponse()->setBody($html);
+        }
+
         return $this->getResponse()->setBody('Is not supported');
     }
 
@@ -428,7 +478,6 @@ HTML
             $order =  Mage::helper('M2ePro/Component')->getUnknownObject('Order', $orderId);
 
             if (!$order->getId()) {
-
                 $this->_getSession()->addError('Unable to load order instance.');
                 $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageModuleTabUrl());
                 return;
@@ -476,7 +525,8 @@ HTML
         $formKey = Mage::getSingleton('core/session')->getFormKey();
         $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
 
-        return $this->getResponse()->setBody(<<<HTML
+        return $this->getResponse()->setBody(
+            <<<HTML
 <form method="get" enctype="multipart/form-data" action="{$actionUrl}">
 
     <div style="margin: 5px 0; width: 400px;">
@@ -506,7 +556,6 @@ HTML
     public function searchTroublesWithParallelExecutionAction()
     {
         if (!$this->getRequest()->getParam('print')) {
-
             $formKey = Mage::getSingleton('core/session')->getFormKey();
             $actionUrl = Mage::helper('adminhtml')->getUrl('*/*/*');
 
@@ -559,12 +608,11 @@ HTML;
             /** @var Ess_M2ePro_Model_OperationHistory $item */
             /** @var Ess_M2ePro_Model_OperationHistory $prevItem */
 
-            if (is_null($item->getData('end_date'))) {
+            if ($item->getData('end_date') === null) {
                 continue;
             }
 
-            if (is_null($prevItem)) {
-
+            if ($prevItem === null) {
                 $prevItem = $item;
                 continue;
             }
@@ -573,7 +621,6 @@ HTML;
             $currStart = new DateTime($item->getData('start_date'), new \DateTimeZone('UTC'));
 
             if ($currStart->getTimeStamp() < $prevEnd->getTimeStamp()) {
-
                 $results[$item->getId().'##'.$prevItem->getId()] = array(
                     'curr' => array(
                         'id'    => $item->getId(),
@@ -591,10 +638,12 @@ HTML;
             $prevItem = $item;
         }
 
-        if (count($results) <= 0) {
-            return $this->getResponse()->setBody($this->getEmptyResultsHtml(
-                'There are no troubles with a parallel work of crons.'
-            ));
+        if (empty($results)) {
+            return $this->getResponse()->setBody(
+                $this->getEmptyResultsHtml(
+                    'There are no troubles with a parallel work of crons.'
+                )
+            );
         }
 
         $tableContent = <<<HTML
@@ -612,7 +661,6 @@ HTML;
         $results = array_reverse($results, true);
 
         foreach ($results as $key => $row) {
-
             $currStart = new \DateTime($row['curr']['start'], new \DateTimeZone('UTC'));
             $currEnd   = new \DateTime($row['curr']['end'], new \DateTimeZone('UTC'));
             $currTime = $currEnd->diff($currStart);

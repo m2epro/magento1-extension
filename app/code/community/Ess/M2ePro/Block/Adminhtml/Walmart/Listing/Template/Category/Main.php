@@ -9,8 +9,8 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Main
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    protected $categoryTemplate = false;
-    protected $messages = array();
+    protected $_categoryTemplate = false;
+    protected $_messages         = array();
 
     //########################################
 
@@ -27,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Main
      */
     public function setMessages($messages)
     {
-        $this->messages = $messages;
+        $this->_messages = $messages;
     }
 
     /**
@@ -35,7 +35,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Main
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this->_messages;
     }
 
     //########################################
@@ -45,7 +45,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Main
      */
     public function isCategoryTemplate()
     {
-        return $this->categoryTemplate;
+        return $this->_categoryTemplate;
     }
 
     /**
@@ -53,7 +53,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Main
      */
     public function setCategoryTemplate($categoryTemplate)
     {
-        $this->categoryTemplate = $categoryTemplate;
+        $this->_categoryTemplate = $categoryTemplate;
     }
 
     //########################################
@@ -72,6 +72,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Template_Category_Main
 </ul>
 HTML;
         }
+
         return $warnings;
     }
 

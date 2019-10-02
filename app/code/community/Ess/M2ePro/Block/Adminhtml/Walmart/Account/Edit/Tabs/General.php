@@ -40,7 +40,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit_Tabs_General extends Mage_
                 Mage::helper('M2ePro/Data_Global')->unsetValue('temp_data');
                 Mage::helper('M2ePro/Data_Global')->setValue(
                     'temp_data',
-                    Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Account',$accountId)
+                    Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Account', $accountId)
                 );
             }
         }
@@ -50,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Edit_Tabs_General extends Mage_
         $this->marketplaces = $marketplaces['items'];
 
         $confirm = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_dialog_confirm');
-        $this->setChild('confirm_popup',$confirm);
+        $this->setChild('confirm_popup', $confirm);
 
         return parent::_beforeToHtml();
     }

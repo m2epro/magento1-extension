@@ -36,11 +36,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account extends Mage_Adminhtml_Block_Wid
         $this->removeButton('edit');
 
         // ---------------------------------------
-        $this->_addButton('add', array(
+        $this->_addButton(
+            'add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Account'),
             'onclick'   => 'setLocation(\''.$this->getUrl('*/adminhtml_amazon_account/new').'\');',
             'class'     => 'add'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

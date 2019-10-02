@@ -37,11 +37,13 @@ JS;
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Register and Link to eBay'),
                 'onclick' => $onClick,
                 'class'   => 'start_wizard_button'
-            ));
+                )
+            );
         $this->setChild('start_wizard_button', $buttonBlock);
 
         // ---------------------------------------

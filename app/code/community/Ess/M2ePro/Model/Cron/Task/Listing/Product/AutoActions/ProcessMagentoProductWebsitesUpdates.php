@@ -80,9 +80,9 @@ SQL;
         $connWrite->delete($tableWebsiteUpdate, array('product_id IN (?)' => $productsIds));
     }
 
-    private function getUpdatedProductsData($updatingProductsIds)
+    protected function getUpdatedProductsData($updatingProductsIds)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Magento_Product_Websites_Update_Collection $websiteUpdates */
+        /** @var Ess_M2ePro_Model_Resource_Magento_Product_Websites_Update_Collection $websiteUpdates */
         $websiteUpdates = Mage::getModel('M2ePro/Magento_Product_Websites_Update')->getCollection();
         $websiteUpdates->getSelect()->where('product_id IN (?)', $updatingProductsIds);
 
@@ -97,7 +97,6 @@ SQL;
             /** @var Ess_M2ePro_Model_Magento_Product_Websites_Update $websiteUpdate */
 
             if (empty($updatedProductsData[$websiteUpdate->getProductId()])) {
-
                 $updatedProductsData[$websiteUpdate->getProductId()] = array(
                     $actionAdd => array(),
                     $actionRemove => array()
@@ -107,12 +106,9 @@ SQL;
             $updatedProductData = &$updatedProductsData[$websiteUpdate->getProductId()];
 
             if ($websiteUpdate->getAction() == $actionAdd) {
-
                 $updatedProductData[$actionAdd][] = $websiteUpdate->getWebsiteId();
                 $addedWebsiteIds[] = $websiteUpdate->getWebsiteId();
-
             } else {
-
                 $updatedProductData[$actionRemove][] = $websiteUpdate->getWebsiteId();
                 $deletedWebsiteIds[] = $websiteUpdate->getWebsiteId();
             }
@@ -182,7 +178,7 @@ SQL;
         $websites = $connRead->query($websitesCollection->getSelect())->fetchAll();
 
         foreach ($websites as $website) {
-            if (!is_null($website['listing_id'])) {
+            if ($website['listing_id'] !== null) {
                 $websitesWithListings[] = $website['website_id'];
             }
         }

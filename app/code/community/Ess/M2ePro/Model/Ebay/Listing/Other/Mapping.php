@@ -34,7 +34,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         $otherListingsFiltered = array();
 
         foreach ($otherListings as $otherListing) {
-
             if (!($otherListing instanceof Ess_M2ePro_Model_Listing_Other)) {
                 continue;
             }
@@ -48,7 +47,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             $otherListingsFiltered[] = $otherListing;
         }
 
-        if (count($otherListingsFiltered) <= 0) {
+        if (empty($otherListingsFiltered)) {
             return false;
         }
 
@@ -100,7 +99,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         $mappingSettings = $this->getMappingRulesByPriority();
 
         foreach ($mappingSettings as $type) {
-
             $magentoProductId = NULL;
 
             if ($type == 'sku') {
@@ -115,7 +113,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
                 $magentoProductId = $this->getItemIdMappedMagentoProductId($otherListing);
             }
 
-            if (is_null($magentoProductId)) {
+            if ($magentoProductId === null) {
                 continue;
             }
 
@@ -135,7 +133,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
      */
     protected function getMappingRulesByPriority()
     {
-        if (!is_null($this->mappingSettings)) {
+        if ($this->mappingSettings !== null) {
             return $this->mappingSettings;
         }
 
@@ -145,6 +143,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             if ((int)$value['mode'] == 0) {
                 continue;
             }
+
             for ($i=0;$i<10;$i++) {
                 if (!isset($this->mappingSettings[(int)$value['priority']+$i])) {
                     $this->mappingSettings[(int)$value['priority']+$i] = (string)$key;
@@ -174,7 +173,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         }
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingSkuModeProductId()) {
-
             $productId = trim($otherListing->getChildObject()->getSku());
 
             if (!ctype_digit($productId) || (int)$productId <= 0) {
@@ -200,7 +198,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingSkuAttribute();
         }
 
-        if (is_null($attributeCode)) {
+        if ($attributeCode === null) {
             return NULL;
         }
 
@@ -240,7 +238,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingTitleAttribute();
         }
 
-        if (is_null($attributeCode)) {
+        if ($attributeCode === null) {
             return NULL;
         }
 
@@ -279,7 +277,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingItemIdAttribute();
         }
 
-        if (is_null($attributeCode)) {
+        if ($attributeCode === null) {
             return NULL;
         }
 
@@ -310,12 +308,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
 
     protected function setAccountByOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
     {
-        if (!is_null($this->account) && $this->account->getId() == $otherListing->getAccountId()) {
+        if ($this->account !== null && $this->account->getId() == $otherListing->getAccountId()) {
             return;
         }
 
         $this->account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-            'Account',$otherListing->getAccountId()
+            'Account', $otherListing->getAccountId()
         );
 
         $this->mappingSettings = NULL;

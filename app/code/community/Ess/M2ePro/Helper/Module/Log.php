@@ -23,7 +23,7 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
      */
     public function encodeDescription($string, array $params = array(), array $links = array())
     {
-        if (count($params) <= 0 && count($links) <= 0) {
+        if (empty($params) && empty($links)) {
             return $string;
         }
 
@@ -69,19 +69,18 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
     protected function addPlaceholdersToMessage($string, $params)
     {
         foreach ($params as $key=>$value) {
-
             if (isset($value{0}) && $value{0} == '{') {
                 $tempValueArray = Mage::helper('M2ePro')->jsonDecode($value);
                 is_array($tempValueArray) && $value = $this->decodeDescription($value);
             }
 
             if ($key{0} == '!') {
-                $key = substr($key,1);
+                $key = substr($key, 1);
             } else {
                 $value = Mage::helper('M2ePro')->__($value);
             }
 
-            $string = str_replace('%'.$key.'%',$value,$string);
+            $string = str_replace('%'.$key.'%', $value, $string);
         }
 
         return $string;
@@ -95,32 +94,28 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
         foreach ($links as $link) {
             preg_match('/!\w*_start!/', $resultString, $foundedStartMatches);
 
-            if (count($foundedStartMatches) == 0) {
+            if (empty($foundedStartMatches)) {
                 $readMoreLinks[] = $link;
                 continue;
             } else {
-
                 $startPart = $foundedStartMatches[0];
                 $endPart = str_replace('start', 'end', $startPart);
 
                 $wasFoundEndMatches = strpos($resultString, $endPart);
 
                 if ($wasFoundEndMatches !== false) {
-
                     $openLinkTag = '<a href="' . $link . '" target="_blank">';
                     $closeLinkTag = '</a>';
 
                     $resultString = str_replace($startPart, $openLinkTag, $resultString);
                     $resultString = str_replace($endPart, $closeLinkTag, $resultString);
-
                 } else {
                     $readMoreLinks[] = $link;
                 }
             }
         }
 
-        if (count($readMoreLinks) > 0) {
-
+        if (!empty($readMoreLinks)) {
             foreach ($readMoreLinks as &$link) {
                 $link = '<a href="' . $link . '" target="_blank">' . Mage::helper('M2ePro')->__('here') . '</a>';
             }
@@ -139,7 +134,7 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
     public function getActionTitleByClass($class, $type)
     {
         $class = Mage::getConfig()->getModelClassName($class);
-        $reflectionClass = new ReflectionClass ($class);
+        $reflectionClass = new ReflectionClass($class);
         $tempConstants = $reflectionClass->getConstants();
 
         foreach ($tempConstants as $key => $value) {
@@ -154,7 +149,6 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
     public function getActionsTitlesByClass($class)
     {
         switch ($class) {
-
             case 'Listing_Log':
             case 'Listing_Other_Log':
             case 'Ebay_Account_PickupStore_Log':
@@ -167,12 +161,12 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
         }
 
         $class = Mage::getConfig()->getModelClassName('M2ePro/'.$class);
-        $reflectionClass = new ReflectionClass ($class);
+        $reflectionClass = new ReflectionClass($class);
         $tempConstants = $reflectionClass->getConstants();
 
         $actionsNames = array();
         foreach ($tempConstants as $key => $value) {
-            if (substr($key,0,strlen($prefix)) == $prefix) {
+            if (substr($key, 0, strlen($prefix)) == $prefix) {
                 $actionsNames[$key] = $value;
             }
         }

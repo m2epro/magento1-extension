@@ -84,9 +84,9 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         $this->_initAction()
-             ->_addContent(
-                 $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_category_edit')
-             )
+            ->_addContent(
+                $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_category_edit')
+            )
              ->renderLayout();
     }
 
@@ -112,7 +112,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
 
         $dataForAdd = array();
         foreach ($keys as $key) {
-
             if ($key === 'encoded_data') {
                 continue;
             }
@@ -152,7 +151,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         $this->sortSpecifics($specifics, $post['product_data_nick'], $post['marketplace_id']);
 
         foreach ($specifics as $xpath => $specificData) {
-
             if (!$this->validateSpecificData($specificData)) {
                 continue;
             }
@@ -170,7 +168,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
             $customAttribute = $specificData['mode'] == $specificInstance::DICTIONARY_MODE_CUSTOM_ATTRIBUTE
                 ? $specificData['custom_attribute'] : '';
 
-            $specificInstance->addData(array(
+            $specificInstance->addData(
+                array(
                 'template_category_id' => $id,
                 'xpath'                   => $xpath,
                 'mode'                    => $specificData['mode'],
@@ -179,9 +178,11 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
                 'custom_attribute'        => $customAttribute,
                 'type'                    => $type,
                 'attributes'              => $attributes
-            ));
+                )
+            );
             $specificInstance->save();
         }
+
         // ---------------------------------------
 
         // Is Need Synchronize
@@ -204,14 +205,16 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         // ---------------------------------------
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
-        return $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('index',array(),array('edit'=>array('id'=>$id))));
+        return $this->_redirectUrl(
+            Mage::helper('M2ePro')->getBackUrl('index', array(), array('edit' => array('id' => $id)))
+        );
     }
 
     public function deleteAction()
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             $this->_redirect('*/*/index');
             return;
@@ -260,10 +263,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         }
 
         if ($browseNodeId && $categoryPath) {
-            $editBlock->setSelectedCategory(array(
+            $editBlock->setSelectedCategory(
+                array(
                 'browseNodeId' => $browseNodeId,
                 'categoryPath' => $categoryPath
-            ));
+                )
+            );
         }
 
         $this->getResponse()->setBody($editBlock->toHtml());
@@ -299,8 +304,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         $dbCategoryPath = str_replace(' > ', '>', $this->getRequest()->getPost('category_path'));
 
         foreach ($tempCategories as $category) {
-
-            $tempCategoryPath = !is_null($category['path']) ? $category['path'] .'>'. $category['title']
+            $tempCategoryPath = $category['path'] !== null ? $category['path'] . '>' . $category['title']
                 : $category['title'];
             if ($tempCategoryPath == $dbCategoryPath) {
                 return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($category));
@@ -355,7 +359,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
 
         $sortIndex = 0;
         while ($row = $queryStmt->fetch()) {
-
             $this->formatCategoryRow($row);
             $this->isItOtherCategory($row) ? $tempCategories[10000] = $row
                 : $tempCategories[$sortIndex++] = $row;
@@ -445,7 +448,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
 
         $attributes = array();
         foreach ($variationThemes as $themeName => $themeInfo) {
-
             $attributeName = $themeInfo;
             if (isset($attributes[$attributeName]) && in_array($themeName, $attributes[$attributeName])) {
                 continue;
@@ -459,13 +461,13 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
 
     // ---------------------------------------
 
-    private function formatCategoryRow(&$row)
+    protected function formatCategoryRow(&$row)
     {
-        $row['product_data_nicks'] = !is_null($row['product_data_nicks'])
+        $row['product_data_nicks'] = $row['product_data_nicks'] !== null
             ? (array)Mage::helper('M2ePro')->jsonDecode($row['product_data_nicks']) : array();
     }
 
-    private function isItOtherCategory($row)
+    protected function isItOtherCategory($row)
     {
         $parentTitle = explode('>', $row['path']);
         $parentTitle = array_pop($parentTitle);
@@ -493,7 +495,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
 
         $specifics = array();
         foreach ($tempSpecifics as $tempSpecific) {
-
             $tempSpecific['values']             = (array)$helper->jsonDecode($tempSpecific['values']);
             $tempSpecific['recommended_values'] = (array)$helper->jsonDecode($tempSpecific['recommended_values']);
             $tempSpecific['params']             = (array)$helper->jsonDecode($tempSpecific['params']);
@@ -523,7 +524,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         $this->getResponse()->setBody($gridBlock->toHtml());
     }
 
-    private function prepareGridBlock()
+    protected function prepareGridBlock()
     {
         /** @var Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Specific_Add_Grid $grid */
         $blockName = 'M2ePro/adminhtml_walmart_template_category_categories_specific_add_grid';
@@ -547,7 +548,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         return $grid;
     }
 
-    private function validateSpecificData($specificData)
+    protected function validateSpecificData($specificData)
     {
         if (empty($specificData['mode'])) {
             return false;
@@ -574,7 +575,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         return true;
     }
 
-    private function sortSpecifics(&$specifics, $productData, $marketplaceId)
+    protected function sortSpecifics(&$specifics, $productData, $marketplaceId)
     {
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
@@ -582,7 +583,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
             ->getTableNameWithPrefix('m2epro_walmart_dictionary_specific');
 
         $dictionarySpecifics = $connRead->select()
-            ->from($table,array('id', 'xpath'))
+            ->from($table, array('id', 'xpath'))
             ->where('product_data_nick = ?', $productData)
             ->where('marketplace_id = ?', $marketplaceId)
             ->query()->fetchAll();
@@ -599,19 +600,21 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_CategoryController
         {
             $dictionarySpecifics = Mage::helper('M2ePro/Data_Global')->getValue('dictionary_specifics');
 
-            $aXpathParts = explode('/',$aXpath);
+            $aXpathParts = explode('/', $aXpath);
             foreach ($aXpathParts as &$part) {
-                $part = preg_replace('/\-\d+$/','',$part);
+                $part = preg_replace('/\-\d+$/', '', $part);
             }
-            unset($part);
-            $aXpath = implode('/',$aXpathParts);
 
-            $bXpathParts = explode('/',$bXpath);
-            foreach ($bXpathParts as &$part) {
-                $part = preg_replace('/\-\d+$/','',$part);
-            }
             unset($part);
-            $bXpath = implode('/',$bXpathParts);
+            $aXpath = implode('/', $aXpathParts);
+
+            $bXpathParts = explode('/', $bXpath);
+            foreach ($bXpathParts as &$part) {
+                $part = preg_replace('/\-\d+$/', '', $part);
+            }
+
+            unset($part);
+            $bXpath = implode('/', $bXpathParts);
 
             $aIndex = $dictionarySpecifics[$aXpath];
             $bIndex = $dictionarySpecifics[$bXpath];

@@ -19,7 +19,7 @@ class Ess_M2ePro_Adminhtml_Development_Tools_MagentoController
     {
         $overwrittenModels = Mage::helper('M2ePro/Magento')->getRewrites();
 
-        if (count ($overwrittenModels) <= 0) {
+        if (empty($overwrittenModels)) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('No Overwritten Models'));
         }
 
@@ -38,7 +38,6 @@ class Ess_M2ePro_Adminhtml_Development_Tools_MagentoController
     </tr>
 HTML;
         foreach ($overwrittenModels as $item) {
-
             $html .= <<<HTML
 <tr>
     <td>{$item['from']}</td>
@@ -48,7 +47,7 @@ HTML;
         }
 
         $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%',count($overwrittenModels),$html));
+        return $this->getResponse()->setBody(str_replace('%count%', count($overwrittenModels), $html));
     }
 
     /**
@@ -60,7 +59,7 @@ HTML;
     {
         $localPoolOverwrites = Mage::helper('M2ePro/Magento')->getLocalPoolOverwrites();
 
-        if (count($localPoolOverwrites) <= 0) {
+        if (empty($localPoolOverwrites)) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('No Local Pool Overwrites'));
         }
 
@@ -79,10 +78,8 @@ HTML;
     </tr>
 HTML;
         foreach ($localPoolOverwrites as $item) {
-
             $diffHtml = '';
             if (strpos(strtolower($item), 'm2epro') !== false) {
-
                 $originalPath = str_replace('local', 'community', $item);
                 $url = Mage::helper('adminhtml')->getUrl(
                     '*/adminhtml_development_tools_m2ePro_install/filesDiff',
@@ -101,7 +98,7 @@ HTML;
         }
 
         $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%',count($localPoolOverwrites),$html));
+        return $this->getResponse()->setBody(str_replace('%count%', count($localPoolOverwrites), $html));
     }
 
     /**
@@ -204,7 +201,6 @@ HTML;
 
             $content = explode("\n", $content);
             foreach ($content as $line => $contentRow) {
-
                 if (strpos($contentRow, 'M2ePro/Module_Logger') === false) {
                     continue;
                 }
@@ -217,7 +213,7 @@ HTML;
             }
         }
 
-        if (count($loggers) <= 0) {
+        if (empty($loggers)) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('No M2ePro Loggers'));
         }
 
@@ -255,7 +251,7 @@ HTML;
     {
         $installedModules = Mage::getConfig()->getNode('modules')->asArray();
 
-        if (count($installedModules) <= 0) {
+        if (empty($installedModules)) {
             return $this->getResponse()->setBody($this->getEmptyResultsHtml('No Installed Modules.'));
         }
 
@@ -276,7 +272,6 @@ HTML;
     </tr>
 HTML;
         foreach ($installedModules as $module => $data) {
-
             $status = isset($data['active']) && $data['active'] === 'true'
                 ? '<span style="color: forestgreen">Enabled</span>'
                 : '<span style="color: orangered">Disabled</span>';
@@ -295,7 +290,7 @@ HTML;
         }
 
         $html .= '</table>';
-        return $this->getResponse()->setBody(str_replace('%count%',count($installedModules),$html));
+        return $this->getResponse()->setBody(str_replace('%count%', count($installedModules), $html));
     }
 
     /**
@@ -323,10 +318,8 @@ HTML;
     public function runCompilationAction()
     {
         try {
-
             Mage::getModel('compiler/process')->run();
             $this->_getSession()->addSuccess('The compilation has completed.');
-
         } catch (Exception $e) {
             $this->_getSession()->addError('Compilation error');
         }
@@ -348,7 +341,7 @@ HTML;
 
     //########################################
 
-    private function getEmptyResultsHtml($messageText)
+    protected function getEmptyResultsHtml($messageText)
     {
         $backUrl = Mage::helper('M2ePro/View_Development')->getPageToolsTabUrl();
 

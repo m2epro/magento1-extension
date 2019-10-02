@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_Blocked_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Inventory_Get_Blocked_ItemsResponser
 {
-    protected $logsActionId = NULL;
-    protected $synchronizationLog = NULL;
+    protected $_logsActionId       = null;
+    protected $_synchronizationLog = null;
 
     // ########################################
 
@@ -19,7 +19,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         parent::processResponseMessages();
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -66,11 +65,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     protected function processResponseData()
     {
         try {
-
             $this->updateBlockedListingProducts();
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             $this->getSynchronizationLog()->addMessage(
@@ -102,7 +98,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
         $notReceivedIds = array();
         while ($existingItem = $stmtTemp->fetch()) {
-
             if (in_array($existingItem['sku'], $responseData['data'])) {
                 continue;
             }
@@ -116,7 +111,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                 continue;
             }
 
-            if (!in_array((int)$notReceivedItem['id'],$notReceivedIds)) {
+            if (!in_array((int)$notReceivedItem['id'], $notReceivedIds)) {
                 $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
                     ->getHumanTitleByListingProductStatus($notReceivedItem['status']);
                 $statusChangedTo = Mage::helper('M2ePro/Component_Amazon')
@@ -151,6 +146,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
             $notReceivedIds[] = (int)$notReceivedItem['id'];
         }
+
         $notReceivedIds = array_unique($notReceivedIds);
 
         if (empty($notReceivedIds)) {
@@ -166,10 +162,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
         $listingProductMainTable = Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable();
 
-        $chunckedIds = array_chunk($notReceivedIds,1000);
+        $chunckedIds = array_chunk($notReceivedIds, 1000);
         foreach ($chunckedIds as $partIds) {
-            $where = '`id` IN ('.implode(',',$partIds).')';
-            $connWrite->update($listingProductMainTable,$bind,$where);
+            $where = '`id` IN ('.implode(',', $partIds).')';
+            $connWrite->update($listingProductMainTable, $bind, $where);
         }
 
         if (!empty($parentIdsForProcessing)) {
@@ -181,15 +177,19 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     {
         $listingTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
 
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->getSelect()->join(array('l' => $listingTable), 'main_table.listing_id = l.id', array());
-        $collection->getSelect()->where('l.account_id = ?',(int)$this->getAccount()->getId());
-        $collection->getSelect()->where('second_table.is_variation_parent != ?',1);
-        $collection->getSelect()->where('`main_table`.`status` != ?',
-            (int)Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED);
-        $collection->getSelect()->where('`main_table`.`status` != ?',
-            (int)Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED);
+        $collection->getSelect()->where('l.account_id = ?', (int)$this->getAccount()->getId());
+        $collection->getSelect()->where('second_table.is_variation_parent != ?', 1);
+        $collection->getSelect()->where(
+            '`main_table`.`status` != ?',
+            (int)Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED
+        );
+        $collection->getSelect()->where(
+            '`main_table`.`status` != ?',
+            (int)Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED
+        );
 
         $tempColumns = array('main_table.id','main_table.status','main_table.listing_id',
             'main_table.product_id','main_table.additional_data',
@@ -207,7 +207,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             return;
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $parentListingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $parentListingProductCollection */
         $parentListingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $parentListingProductCollection->addFieldToFilter('id', array('in' => array_unique($parentIds)));
 
@@ -232,7 +232,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -267,32 +267,32 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
     protected function getLogsActionId()
     {
-        if (!is_null($this->logsActionId)) {
-            return $this->logsActionId;
+        if ($this->_logsActionId !== null) {
+            return $this->_logsActionId;
         }
 
-        return $this->logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+        return $this->_logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
     }
 
     protected function getSynchronizationLog()
     {
-        if (!is_null($this->synchronizationLog)) {
-            return $this->synchronizationLog;
+        if ($this->_synchronizationLog !== null) {
+            return $this->_synchronizationLog;
         }
 
-        $this->synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $this->synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
-        $this->synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_LISTINGS);
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_LISTINGS);
 
-        return $this->synchronizationLog;
+        return $this->_synchronizationLog;
     }
 
     //-----------------------------------------
 
-    private function isProductInfoOutdated($lastDate)
+    protected function isProductInfoOutdated($lastDate)
     {
         $lastDate = new DateTime($lastDate, new DateTimeZone('UTC'));
-        $requestDate = new DateTime($this->params['request_date'], new DateTimeZone('UTC'));
+        $requestDate = new DateTime($this->_params['request_date'], new DateTimeZone('UTC'));
 
         $lastDate->modify('+1 hour');
 

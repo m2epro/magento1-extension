@@ -9,11 +9,11 @@
 class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent
     extends Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_LogicalUnit
 {
-    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor $processor */
-    private $processor = null;
+    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor $_processor */
+    protected $_processor = null;
 
-    /** @var Ess_M2ePro_Model_Listing_Product[] $childListingsProducts */
-    private $childListingsProducts = null;
+    /** @var Ess_M2ePro_Model_Listing_Product[] $_childListingsProducts */
+    protected $_childListingsProducts = null;
 
     //########################################
 
@@ -22,13 +22,15 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getProcessor()
     {
-        if (is_null($this->processor)) {
-            $this->processor = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Manager'
-                . '_Type_Relation_Parent_Processor');
-            $this->processor->setListingProduct($this->getListingProduct());
+        if ($this->_processor === null) {
+            $this->_processor = Mage::getModel(
+                'M2ePro/Walmart_Listing_Product_Variation_Manager'
+                . '_Type_Relation_Parent_Processor'
+            );
+            $this->_processor->setListingProduct($this->getListingProduct());
         }
 
-        return $this->processor;
+        return $this->_processor;
     }
 
     /**
@@ -36,8 +38,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
      */
     public function getChildListingsProducts()
     {
-        if ($this->isCacheEnabled() && !is_null($this->childListingsProducts)) {
-            return $this->childListingsProducts;
+        if ($this->isCacheEnabled() && $this->_childListingsProducts !== null) {
+            return $this->_childListingsProducts;
         }
 
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
@@ -56,7 +58,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
             $walmartChildListingProduct->getVariationManager()->getTypeModel()->enableCache();
         }
 
-        return $this->childListingsProducts = $childListingsProducts;
+        return $this->_childListingsProducts = $childListingsProducts;
     }
 
     //########################################
@@ -494,7 +496,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
         return $this->getUnusedOptions($this->getUnusedProductOptions(), $this->getRemovedProductOptions());
     }
 
-    private function getUnusedOptions($currentOptions, $usedOptions)
+    protected function getUnusedOptions($currentOptions, $usedOptions)
     {
         if (empty($currentOptions)) {
             return array();
@@ -507,7 +509,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
         $unusedOptions = array();
 
         foreach ($currentOptions as $id => $currentOption) {
-
             $isExist = false;
             foreach ($usedOptions as $option) {
                 if ($option != $currentOption) {
@@ -530,7 +531,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 
     // ---------------------------------------
 
-    private function getCurrentProductOptions()
+    protected function getCurrentProductOptions()
     {
         $magentoProductVariations = $this->getMagentoProduct()->getVariationInstance()->getVariationsTypeStandard();
 
@@ -576,17 +577,19 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
         $childListingProduct->save();
 
         $instruction = Mage::getModel('M2ePro/Listing_Product_Instruction');
-        $instruction->setData(array(
+        $instruction->setData(
+            array(
             'listing_product_id' => $childListingProduct->getId(),
             'component'          => Ess_M2ePro_Helper_Component_Walmart::NICK,
             'type'               => Ess_M2ePro_Model_Listing::INSTRUCTION_TYPE_PRODUCT_ADDED,
             'initiator'          => Ess_M2ePro_Model_Listing::INSTRUCTION_INITIATOR_ADDING_PRODUCT,
             'priority'           => 70,
-        ));
+            )
+        );
         $instruction->save();
 
         if ($this->isCacheEnabled()) {
-            $this->childListingsProducts[$childListingProduct->getId()] = $childListingProduct;
+            $this->_childListingsProducts[$childListingProduct->getId()] = $childListingProduct;
         }
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartChildListingProduct */
@@ -623,7 +626,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
         }
 
         if ($this->isCacheEnabled()) {
-            unset($this->childListingsProducts[$listingProductId]);
+            unset($this->_childListingsProducts[$listingProductId]);
         }
 
         return true;

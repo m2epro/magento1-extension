@@ -27,7 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_ConflictedModules
 
     protected function isShown()
     {
-        return count(Mage::helper('M2ePro/Magento')->getConflictedModules()) > 0;
+        return !empty(Mage::helper('M2ePro/Magento')->getConflictedModules());
     }
 
     //########################################

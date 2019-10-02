@@ -24,12 +24,12 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     /**
      * @var Ess_M2ePro_Model_Template_Description
      */
-    private $descriptionTemplateModel = NULL;
+    protected $_descriptionTemplateModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Template_Description_Specific_Source[]
      */
-    private $descriptionSpecificSourceModels = array();
+    protected $_descriptionSpecificSourceModels = array();
 
     //########################################
 
@@ -44,8 +44,8 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->descriptionTemplateModel = NULL;
-        $temp && $this->descriptionSpecificSourceModels = array();
+        $temp && $this->_descriptionTemplateModel = null;
+        $temp && $this->_descriptionSpecificSourceModels = array();
         return $temp;
     }
 
@@ -57,14 +57,13 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
      */
     public function getDescriptionTemplate()
     {
-        if (is_null($this->descriptionTemplateModel)) {
-
-            $this->descriptionTemplateModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-                'Template_Description', $this->getTemplateDescriptionId(), NULL, array('template')
+        if ($this->_descriptionTemplateModel === null) {
+            $this->_descriptionTemplateModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
+                'Template_Description', $this->getTemplateDescriptionId(), null, array('template')
             );
         }
 
-        return $this->descriptionTemplateModel;
+        return $this->_descriptionTemplateModel;
     }
 
     /**
@@ -72,7 +71,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
      */
     public function setDescriptionTemplate(Ess_M2ePro_Model_Template_Description $instance)
     {
-        $this->descriptionTemplateModel = $instance;
+        $this->_descriptionTemplateModel = $instance;
     }
 
     /**
@@ -94,17 +93,17 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Specific extends Ess_M2ePro_M
     {
         $productId = $magentoProduct->getProductId();
 
-        if (!empty($this->descriptionSpecificSourceModels[$productId])) {
-            return $this->descriptionSpecificSourceModels[$productId];
+        if (!empty($this->_descriptionSpecificSourceModels[$productId])) {
+            return $this->_descriptionSpecificSourceModels[$productId];
         }
 
-        $this->descriptionSpecificSourceModels[$productId] = Mage::getModel(
+        $this->_descriptionSpecificSourceModels[$productId] = Mage::getModel(
             'M2ePro/Amazon_Template_Description_Specific_Source'
         );
-        $this->descriptionSpecificSourceModels[$productId]->setMagentoProduct($magentoProduct);
-        $this->descriptionSpecificSourceModels[$productId]->setDescriptionSpecificTemplate($this);
+        $this->_descriptionSpecificSourceModels[$productId]->setMagentoProduct($magentoProduct);
+        $this->_descriptionSpecificSourceModels[$productId]->setDescriptionSpecificTemplate($this);
 
-        return $this->descriptionSpecificSourceModels[$productId];
+        return $this->_descriptionSpecificSourceModels[$productId];
     }
 
     //########################################

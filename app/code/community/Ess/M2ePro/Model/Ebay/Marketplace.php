@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     const TRANSLATION_SERVICE_YES_FROM = 2;
     const TRANSLATION_SERVICE_YES_BOTH = 3;
 
-    private $info = NULL;
+    protected $_info = null;
 
     //########################################
 
@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
 
     public function getEbayItems($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Ebay_Item','marketplace_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Ebay_Item', 'marketplace_id', $asObjects, $filters);
     }
 
     //########################################
@@ -271,15 +271,15 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
 
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                              ->select()
-                             ->from($tableCategories,'*')
-                             ->where('`marketplace_id` = ?',(int)$this->getId())
-                             ->where('`category_id` = ?',(int)$categoryId);
+                             ->from($tableCategories, '*')
+                             ->where('`marketplace_id` = ?', (int)$this->getId())
+                             ->where('`category_id` = ?', (int)$categoryId);
 
         $categories = Mage::getResourceModel('core/config')
                                 ->getReadConnection()
                                 ->fetchAll($dbSelect);
 
-        return count($categories) > 0 ? $categories[0] : array();
+        return !empty($categories) ? $categories[0] : array();
     }
 
     public function getChildCategories($parentId)
@@ -289,8 +289,8 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
 
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                              ->select()
-                             ->from($tableCategories,array('category_id','title','is_leaf'))
-                             ->where('`marketplace_id` = ?',(int)$this->getId())
+                             ->from($tableCategories, array('category_id','title','is_leaf'))
+                             ->where('`marketplace_id` = ?', (int)$this->getId())
                              ->order(array('title ASC'));
 
         empty($parentId) ? $dbSelect->where('parent_category_id IS NULL')
@@ -310,8 +310,8 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
      */
     public function getInfo()
     {
-        if (!is_null($this->info)) {
-            return $this->info;
+        if ($this->_info !== null) {
+            return $this->_info;
         }
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
@@ -326,20 +326,20 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
         // table m2epro_ebay_dictionary_marketplace
         // ---------------------------------------
         $dbSelect = $connRead->select()
-                             ->from($tableDictMarketplace,'*')
-                             ->where('`marketplace_id` = ?',(int)$this->getId());
+                             ->from($tableDictMarketplace, '*')
+                             ->where('`marketplace_id` = ?', (int)$this->getId());
         $data = $connRead->fetchRow($dbSelect);
         // ---------------------------------------
 
         if (!$data) {
-            return $this->info = array();
+            return $this->_info = array();
         }
 
         // table m2epro_ebay_dictionary_shipping
         // ---------------------------------------
         $dbSelect = $connRead->select()
-                             ->from($tableDictShipping,'*')
-                             ->where('`marketplace_id` = ?',(int)$this->getId())
+                             ->from($tableDictShipping, '*')
+                             ->where('`marketplace_id` = ?', (int)$this->getId())
                              ->order(array('title ASC'));
         $shippingMethods = $connRead->fetchAll($dbSelect);
         // ---------------------------------------
@@ -350,7 +350,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
 
         $categoryShippingMethods = array();
         foreach ($shippingMethods as $shippingMethod) {
-
             $category = Mage::helper('M2ePro')->jsonDecode($shippingMethod['category']);
 
             if (empty($category)) {
@@ -372,7 +371,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
 
         // ---------------------------------------
 
-        return $this->info = array(
+        return $this->_info = array(
             'dispatch'                   => Mage::helper('M2ePro')->jsonDecode($data['dispatch']),
             'packages'                   => Mage::helper('M2ePro')->jsonDecode($data['packages']),
             'return_policy'              => Mage::helper('M2ePro')->jsonDecode($data['return_policy']),

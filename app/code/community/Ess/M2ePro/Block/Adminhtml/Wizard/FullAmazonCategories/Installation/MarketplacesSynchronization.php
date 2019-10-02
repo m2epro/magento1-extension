@@ -32,18 +32,20 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_FullAmazonCategories_Installation_Market
         $collection = $marketplace->getCollection()
                                   ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
                                   ->setOrder('group_title', 'ASC')
-                                  ->setOrder('sorder','ASC')
-                                  ->setOrder('title','ASC');
+                                  ->setOrder('sorder', 'ASC')
+                                  ->setOrder('title', 'ASC');
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                     'label'   => Mage::helper('M2ePro')->__('Proceed'),
                     'onclick' => "WizardFullAmazonCategories."
                                  ."marketplacesSynchronizationAction(this)",
                     'class' => 'process_marketplaces_button'
-                ));
+                )
+            );
         $this->setChild('process_marketplaces_synchronization_button', $buttonBlock);
         // ---------------------------------------
 

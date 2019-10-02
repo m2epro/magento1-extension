@@ -17,11 +17,13 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
 
     public function getTrackingAttributes()
     {
-        return array_unique(array_merge(
-            $this->getQtyTrackingAttributes(),
-            $this->getPromotionsTrackingAttributes(),
-            $this->getDetailsTrackingAttributes()
-        ));
+        return array_unique(
+            array_merge(
+                $this->getQtyTrackingAttributes(),
+                $this->getPromotionsTrackingAttributes(),
+                $this->getDetailsTrackingAttributes()
+            )
+        );
     }
 
     public function getInstructionsDataByAttributes(array $attributes)
@@ -123,8 +125,8 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
             $walmartSellingFormatTemplate->getAttributesAttributes()
         );
 
-        foreach ($walmartSellingFormatTemplate->getShippingOverrideServices(true) as $shippingOverride) {
-            /** @var Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService $shippingOverride */
+        foreach ($walmartSellingFormatTemplate->getShippingOverrides(true) as $shippingOverride) {
+            /** @var Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride $shippingOverride */
 
             if ($shippingOverride->isCostModeCustomAttribute()) {
                 $trackingAttributes[] = $shippingOverride->getCostAttribute();
@@ -132,7 +134,6 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
         }
 
         if ($this->getWalmartListingProduct()->isExistCategoryTemplate()) {
-
             $categoryTemplate = $this->getWalmartListingProduct()->getCategoryTemplate();
             foreach ($categoryTemplate->getSpecifics(true) as $specific) {
                 /** @var Ess_M2ePro_Model_Walmart_Template_Category_Specific $specific */
@@ -171,7 +172,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
     /**
      * @return Ess_M2ePro_Model_Walmart_Listing_Product
      */
-    private function getWalmartListingProduct()
+    protected function getWalmartListingProduct()
     {
         return $this->getListingProduct()->getChildObject();
     }

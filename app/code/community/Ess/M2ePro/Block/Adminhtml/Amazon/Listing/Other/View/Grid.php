@@ -49,18 +49,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         )->joinLeft(
             array('am' => Mage::getResourceModel('M2ePro/Amazon_Marketplace')->getMainTable()),
             'am.marketplace_id = main_table.marketplace_id',
-            array('currency' => 'am.default_currency'));
+            array('currency' => 'am.default_currency')
+        );
 
         // Add Filter By Account
         if ($this->getRequest()->getParam('account')) {
-            $collection->addFieldToFilter('main_table.account_id',
-                                          $this->getRequest()->getParam('account'));
+            $collection->addFieldToFilter(
+                'main_table.account_id',
+                $this->getRequest()->getParam('account')
+            );
         }
 
         // Add Filter By Marketplace
         if ($this->getRequest()->getParam('marketplace')) {
-            $collection->addFieldToFilter('main_table.marketplace_id',
-                                          $this->getRequest()->getParam('marketplace'));
+            $collection->addFieldToFilter(
+                'main_table.marketplace_id',
+                $this->getRequest()->getParam('marketplace')
+            );
         }
 
         // Set collection to grid
@@ -71,49 +76,57 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
 
     protected function _prepareColumns()
     {
-        $this->addColumn('product_id', array(
-            'header' => Mage::helper('M2ePro')->__('Product ID'),
-            'align'  => 'left',
-            'width'  => '80px',
-            'type'   => 'number',
-            'index'  => 'product_id',
-            'filter_index' => 'product_id',
-            'frame_callback' => array($this, 'callbackColumnProductId'),
-            'filter'   => 'M2ePro/adminhtml_grid_column_filter_productId',
-            'filter_condition_callback' => array($this, 'callbackFilterProductId')
-        ));
+        $this->addColumn(
+            'product_id', array(
+                'header'                    => Mage::helper('M2ePro')->__('Product ID'),
+                'align'                     => 'left',
+                'width'                     => '80px',
+                'type'                      => 'number',
+                'index'                     => 'product_id',
+                'filter_index'              => 'product_id',
+                'frame_callback'            => array($this, 'callbackColumnProductId'),
+                'filter'                    => 'M2ePro/adminhtml_grid_column_filter_productId',
+                'filter_condition_callback' => array($this, 'callbackFilterProductId')
+            )
+        );
 
-        $this->addColumn('title', array(
-            'header'    => Mage::helper('M2ePro')->__('Title / SKU'),
-            'align' => 'left',
-            'type' => 'text',
-            'index' => 'title',
-            'filter_index' => 'second_table.title',
-            'frame_callback' => array($this, 'callbackColumnProductTitle'),
-            'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+        $this->addColumn(
+            'title', array(
+                'header'                    => Mage::helper('M2ePro')->__('Title / SKU'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'title',
+                'filter_index'              => 'second_table.title',
+                'frame_callback'            => array($this, 'callbackColumnProductTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
+            )
+        );
 
-        $this->addColumn('general_id', array(
-            'header' => Mage::helper('M2ePro')->__('ASIN / ISBN'),
-            'align' => 'left',
-            'width' => '120px',
-            'type' => 'text',
-            'index' => 'general_id',
-            'filter_index' => 'general_id',
-            'frame_callback' => array($this, 'callbackColumnGeneralId')
-        ));
+        $this->addColumn(
+            'general_id', array(
+                'header'         => Mage::helper('M2ePro')->__('ASIN / ISBN'),
+                'align'          => 'left',
+                'width'          => '120px',
+                'type'           => 'text',
+                'index'          => 'general_id',
+                'filter_index'   => 'general_id',
+                'frame_callback' => array($this, 'callbackColumnGeneralId')
+            )
+        );
 
-        $this->addColumn('online_qty', array(
-            'header' => Mage::helper('M2ePro')->__('QTY'),
-            'align' => 'right',
-            'width' => '110px',
-            'type' => 'number',
-            'index' => 'online_qty',
-            'filter_index' => 'online_qty',
-            'frame_callback' => array($this, 'callbackColumnAvailableQty'),
-            'filter'   => 'M2ePro/adminhtml_amazon_grid_column_filter_qty',
-            'filter_condition_callback' => array($this, 'callbackFilterQty')
-        ));
+        $this->addColumn(
+            'online_qty', array(
+                'header'                    => Mage::helper('M2ePro')->__('QTY'),
+                'align'                     => 'right',
+                'width'                     => '110px',
+                'type'                      => 'number',
+                'index'                     => 'online_qty',
+                'filter_index'              => 'online_qty',
+                'frame_callback'            => array($this, 'callbackColumnAvailableQty'),
+                'filter'                    => 'M2ePro/adminhtml_amazon_grid_column_filter_qty',
+                'filter_condition_callback' => array($this, 'callbackFilterQty')
+            )
+        );
 
         $priceColumn = array(
             'header' => Mage::helper('M2ePro')->__('Price'),
@@ -132,21 +145,24 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
 
         $this->addColumn('online_price', $priceColumn);
 
-        $this->addColumn('status', array(
-            'header' => Mage::helper('M2ePro')->__('Status'),
-            'width' => '100px',
-            'index' => 'status',
-            'filter_index' => 'main_table.status',
-            'type' => 'options',
-            'sortable' => false,
-            'options' => array(
-                Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN => Mage::helper('M2ePro')->__('Unknown'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_LISTED => Mage::helper('M2ePro')->__('Active'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
-                Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Inactive (Blocked)')
-            ),
-            'frame_callback' => array($this, 'callbackColumnStatus')
-        ));
+        $this->addColumn(
+            'status', array(
+                'header'         => Mage::helper('M2ePro')->__('Status'),
+                'width'          => '100px',
+                'index'          => 'status',
+                'filter_index'   => 'main_table.status',
+                'type'           => 'options',
+                'sortable'       => false,
+                'options'        => array(
+                    Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN => Mage::helper('M2ePro')->__('Unknown'),
+                    Ess_M2ePro_Model_Listing_Product::STATUS_LISTED  => Mage::helper('M2ePro')->__('Active'),
+                    Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
+                    Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')
+                                                                            ->__('Inactive (Blocked)')
+                ),
+                'frame_callback' => array($this, 'callbackColumnStatus')
+            )
+        );
 
         $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
             '*/adminhtml_amazon_listing_other/view',
@@ -157,40 +173,42 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
             )
         );
 
-        $this->addColumn('actions', array(
-            'header'    => Mage::helper('M2ePro')->__('Actions'),
-            'align'     => 'left',
-            'width'     => '70px',
-            'type'      => 'action',
-            'index'     => 'actions',
-            'filter'    => false,
-            'sortable'  => false,
-            'getter'    => 'getId',
-            'actions'   => array(
-                array(
-                    'caption' => Mage::helper('M2ePro')->__('View Log'),
-                    'field'   => 'id',
-                    'url'     => array(
-                        'base'   => '*/adminhtml_amazon_log/listingOther',
-                        'params' => array(
-                            'back' => $backUrl,
-                            'channel' => Ess_M2ePro_Helper_Component_Amazon::NICK
+        $this->addColumn(
+            'actions', array(
+                'header'   => Mage::helper('M2ePro')->__('Actions'),
+                'align'    => 'left',
+                'width'    => '70px',
+                'type'     => 'action',
+                'index'    => 'actions',
+                'filter'   => false,
+                'sortable' => false,
+                'getter'   => 'getId',
+                'actions'  => array(
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('View Log'),
+                        'field'   => 'id',
+                        'url'     => array(
+                            'base'   => '*/adminhtml_amazon_log/listingOther',
+                            'params' => array(
+                                'back'    => $backUrl,
+                                'channel' => Ess_M2ePro_Helper_Component_Amazon::NICK
+                            )
                         )
-                    )
-                ),
-                array(
-                    'caption' => Mage::helper('M2ePro')->__('Clear Log'),
-                    'confirm' => Mage::helper('M2ePro')->__('Are you sure?'),
-                    'field'   => 'id',
-                    'url'     => array(
-                        'base'   => '*/adminhtml_listing_other/clearLog',
-                        'params' => array(
-                            'back' => $backUrl
+                    ),
+                    array(
+                        'caption' => Mage::helper('M2ePro')->__('Clear Log'),
+                        'confirm' => Mage::helper('M2ePro')->__('Are you sure?'),
+                        'field'   => 'id',
+                        'url'     => array(
+                            'base'   => '*/adminhtml_listing_other/clearLog',
+                            'params' => array(
+                                'back' => $backUrl
+                            )
                         )
                     )
                 )
             )
-        ));
+        );
 
         return parent::_prepareColumns();
     }
@@ -203,33 +221,43 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
         $this->getMassactionBlock()->setFormFieldName('ids');
         // ---------------------------------------
 
-        $this->getMassactionBlock()->setGroups(array(
-            'mapping' => Mage::helper('M2ePro')->__('Mapping'),
-            'other'   => Mage::helper('M2ePro')->__('Other')
-        ));
+        $this->getMassactionBlock()->setGroups(
+            array(
+                'mapping' => Mage::helper('M2ePro')->__('Mapping'),
+                'other'   => Mage::helper('M2ePro')->__('Other')
+            )
+        );
 
         // Set mass-action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('autoMapping', array(
+        $this->getMassactionBlock()->addItem(
+            'autoMapping', array(
             'label'   => Mage::helper('M2ePro')->__('Map Item(s) Automatically'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'mapping');
-        $this->getMassactionBlock()->addItem('moving', array(
+            ), 'mapping'
+        );
+        $this->getMassactionBlock()->addItem(
+            'moving', array(
             'label'   => Mage::helper('M2ePro')->__('Move Item(s) to Listing'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'other');
-        $this->getMassactionBlock()->addItem('removing', array(
+            ), 'other'
+        );
+        $this->getMassactionBlock()->addItem(
+            'removing', array(
             'label'   => Mage::helper('M2ePro')->__('Remove Item(s)'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'other');
-        $this->getMassactionBlock()->addItem('unmapping', array(
+            ), 'other'
+        );
+        $this->getMassactionBlock()->addItem(
+            'unmapping', array(
             'label'   => Mage::helper('M2ePro')->__('Unmap Item(s)'),
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-        ), 'mapping');
+            ), 'mapping'
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -245,6 +273,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
             if (strlen($productTitle) > 60) {
                 $productTitle = substr($productTitle, 0, 60) . '...';
             }
+
             $htmlValue = '&nbsp;<a href="javascript:void(0);"
                                     onclick="AmazonListingOtherMappingHandlerObj.openPopUp(\''.
                                         $productTitle.
@@ -255,12 +284,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
             if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
                 $htmlValue .= '<br/>' . $row->getId();
             }
+
             return $htmlValue;
         }
 
         $htmlValue = '&nbsp<a href="'
-                     .$this->getUrl('adminhtml/catalog_product/edit',
-                                    array('id' => $row->getData('product_id')))
+                    .$this->getUrl(
+                        'adminhtml/catalog_product/edit',
+                        array('id' => $row->getData('product_id'))
+                    )
                      .'" target="_blank">'
                      .$row->getData('product_id')
                      .'</a>';
@@ -281,7 +313,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
 
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             $value = '<i style="color:gray;">receiving...</i>';
         } else {
             $value = '<span>' .Mage::helper('M2ePro')->escapeHtml($value). '</span>';
@@ -334,7 +366,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View_Grid extends Mage_Adm
 HTML;
         }
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -355,7 +387,6 @@ HTML;
 
         if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
             (int)$row->getData('is_repricing') == 1) {
-
             $image = 'money';
             $text = Mage::helper('M2ePro')->__(
                 'This Product is used by Amazon Repricing Tool, so its Price cannot be managed via M2E Pro. <br>
@@ -385,7 +416,7 @@ HTML;
 HTML;
         }
 
-        if (is_null($value) || $value === '') {
+        if ($value === null || $value === '') {
             return Mage::helper('M2ePro')->__('N/A') . $html;
         }
 
@@ -394,7 +425,7 @@ HTML;
         }
 
         $currency = Mage::helper('M2ePro/Component_Amazon')
-                                ->getCachedObject('Marketplace',$row->getData('marketplace_id'))
+                                ->getCachedObject('Marketplace', $row->getData('marketplace_id'))
                                 ->getChildObject()
                                 ->getDefaultCurrency();
 
@@ -424,7 +455,6 @@ HTML;
     public function callbackColumnStatus($value, $row, $column, $isExport)
     {
         switch ($row->getData('status')) {
-
             case Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN:
                 $value = '<span style="color: gray;">' . $value . '</span>';
                 break;
@@ -468,6 +498,7 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $where .= 'product_id <= ' . (int)$value['to'];
         }
 
@@ -475,6 +506,7 @@ HTML;
             if (!empty($where)) {
                 $where = '(' . $where . ') AND ';
             }
+
             if ($value['is_mapped']) {
                 $where .= 'product_id IS NOT NULL';
             } else {
@@ -514,6 +546,7 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $where .= 'online_qty <= ' . (int)$value['to'];
         }
 
@@ -521,6 +554,7 @@ HTML;
             if (!empty($where)) {
                 $where = '(' . $where . ') OR ';
             }
+
             $where .= 'is_afn_channel = ' . (int)$value['afn'];
         }
 
@@ -545,15 +579,17 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $where .= 'online_price <= ' . (float)$value['to'];
         }
 
         if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            isset($value['is_repricing']) && $value['is_repricing'] !== '')
-        {
+            isset($value['is_repricing']) && $value['is_repricing'] !== ''
+        ) {
             if (!empty($where)) {
                 $where = '(' . $where . ') OR ';
             }
+
             $where .= 'is_repricing = ' . (int)$value['is_repricing'];
         }
 
@@ -588,11 +624,10 @@ HTML;
         $lastActionId = false;
 
         foreach ($logRows as $row) {
-
             $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
-                if (count($tempActionRows) > 0) {
+                if (!empty($tempActionRows)) {
                     $actionsRows[] = array(
                         'type' => $this->getMainTypeForActionId($tempActionRows),
                         'date' => $this->getMainDateForActionId($tempActionRows),
@@ -602,12 +637,14 @@ HTML;
                     );
                     $tempActionRows = array();
                 }
+
                 $lastActionId = $row['action_id'];
             }
+
             $tempActionRows[] = $row;
         }
 
-        if (count($tempActionRows) > 0) {
+        if (!empty($tempActionRows)) {
             $actionsRows[] = array(
                 'type' => $this->getMainTypeForActionId($tempActionRows),
                 'date' => $this->getMainDateForActionId($tempActionRows),
@@ -617,7 +654,7 @@ HTML;
             );
         }
 
-        if (count($actionsRows) <= 0) {
+        if (empty($actionsRows)) {
             return '';
         }
 
@@ -633,14 +670,16 @@ HTML;
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
         );
 
-        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
-            'entity_id' => $listingOtherId,
-            'rows' => $actionsRows,
-            'tips' => $tips,
-            'icons' => $icons,
-            'view_help_handler' => 'AmazonListingOtherGridHandlerObj.viewItemHelp',
-            'hide_help_handler' => 'AmazonListingOtherGridHandlerObj.hideItemHelp',
-        ));
+        $summary = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_log_grid_summary', '', array(
+                'entity_id'         => $listingOtherId,
+                'rows'              => $actionsRows,
+                'tips'              => $tips,
+                'icons'             => $icons,
+                'view_help_handler' => 'AmazonListingOtherGridHandlerObj.viewItemHelp',
+                'hide_help_handler' => 'AmazonListingOtherGridHandlerObj.hideItemHelp',
+            )
+        );
 
         return $summary->toHtml();
     }
@@ -686,6 +725,7 @@ HTML;
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
                 break;
             }
+
             if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
                 $type = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
             }

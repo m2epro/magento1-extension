@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs_General extends
             'policy_localization' => $this->getData('policy_localization')
         );
         $switcherBlock = $this->getLayout()
-                              ->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher','',$parameters);
+                              ->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher', '', $parameters);
 
         $this->setChild('payment', $switcherBlock);
         // ---------------------------------------
@@ -48,7 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs_General extends
             'policy_localization' => $this->getData('policy_localization')
         );
         $switcherBlock = $this->getLayout()
-                              ->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher','',$parameters);
+                              ->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher', '', $parameters);
 
         $this->setChild('shipping', $switcherBlock);
         // ---------------------------------------
@@ -59,7 +59,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs_General extends
             'policy_localization' => $this->getData('policy_localization')
         );
         $switcherBlock = $this->getLayout()
-                              ->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher','',$parameters);
+                              ->createBlock('M2ePro/adminhtml_ebay_listing_template_switcher', '', $parameters);
 
         $this->setChild('return', $switcherBlock);
         // ---------------------------------------
@@ -75,8 +75,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Tabs_General extends
             . $this->getChildHtml('help')
             . $this->getChildHtml('payment')
             . $this->getChildHtml('shipping')
-            . $this->getChildHtml('return')
-        ;
+            . $this->getChildHtml('return');
     }
 
     //########################################

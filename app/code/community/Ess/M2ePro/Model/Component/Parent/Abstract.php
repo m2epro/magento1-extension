@@ -8,8 +8,8 @@
 
 abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Model_Component_Abstract
 {
-    protected $childMode = NULL;
-    protected $childObject = NULL;
+    protected $_childMode   = null;
+    protected $_childObject = null;
 
     //########################################
 
@@ -35,24 +35,24 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
     public function setChildMode($mode)
     {
         $mode = strtolower((string)$mode);
-        $mode && $this->childMode = $mode;
+        $mode && $this->_childMode = $mode;
         return $this;
     }
 
     public function getChildMode()
     {
-        return $this->childMode;
+        return $this->_childMode;
     }
 
     // ---------------------------------------
 
     public function setChildObject(Ess_M2ePro_Model_Component_Child_Abstract $object)
     {
-        if (is_null($object->getId())) {
+        if ($object->getId() === null) {
             return;
         }
 
-        $this->childObject = $object;
+        $this->_childObject = $object;
     }
 
     /**
@@ -61,18 +61,18 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
      */
     public function getChildObject()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
-        if (!is_null($this->childObject)) {
-            return $this->childObject;
+        if ($this->_childObject !== null) {
+            return $this->_childObject;
         }
 
         $tempMode = NULL;
 
-        if (!is_null($this->childMode)) {
-            $tempMode = $this->childMode;
+        if ($this->_childMode !== null) {
+            $tempMode = $this->_childMode;
         } else {
             $tempMode = $this->getComponentMode();
         }
@@ -81,21 +81,21 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
             throw new Ess_M2ePro_Model_Exception_Logic('Component Mode is not defined.');
         }
 
-        $modelName = str_replace('M2ePro/',ucwords($tempMode).'_',$this->_resourceName);
-        $this->childObject = Mage::helper('M2ePro')->getModel($modelName);
+        $modelName          = str_replace('M2ePro/', ucwords($tempMode).'_', $this->_resourceName);
+        $this->_childObject = Mage::helper('M2ePro')->getModel($modelName);
 
-        $this->childObject->loadInstance($this->getId());
-        $this->childObject->addData($this->getData());
-        $this->childObject->setParentObject($this);
+        $this->_childObject->loadInstance($this->getId());
+        $this->_childObject->addData($this->getData());
+        $this->_childObject->setParentObject($this);
 
-        return $this->childObject;
+        return $this->_childObject;
     }
 
     //########################################
 
     public function getComponentMode()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
@@ -138,7 +138,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
 
     public function isLocked()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
@@ -148,7 +148,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
 
         $childObject = $this->getChildObject();
 
-        if (is_null($childObject)) {
+        if ($childObject === null) {
             return false;
         }
 
@@ -161,7 +161,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
 
     public function deleteInstance()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
@@ -179,13 +179,13 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
 
     protected function deleteChildInstance()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
         $childObject = $this->getChildObject();
 
-        if (is_null($childObject) || !($childObject instanceof Ess_M2ePro_Model_Abstract)) {
+        if ($childObject === null || !($childObject instanceof Ess_M2ePro_Model_Abstract)) {
             return;
         }
 
@@ -196,24 +196,24 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
 
     public function save()
     {
-        if (!is_null($this->childMode) && is_null($this->getData('component_mode'))) {
-            $this->setData('component_mode',$this->childMode);
+        if ($this->_childMode !== null && $this->getData('component_mode') === null) {
+            $this->setData('component_mode', $this->_childMode);
         }
 
-        $temp = parent::save();
-        $this->childObject = NULL;
+        $temp               = parent::save();
+        $this->_childObject = NULL;
         return $temp;
     }
 
     public function delete()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
-        $temp = parent::delete();
-        $this->childMode = NULL;
-        $this->childObject = NULL;
+        $temp               = parent::delete();
+        $this->_childMode   = NULL;
+        $this->_childObject = NULL;
         return $temp;
     }
 
@@ -228,35 +228,39 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
      * @return array
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    protected function getRelatedComponentItems($modelName, $fieldName, $asObjects = false,
-                                                array $filters = array(), array $sort = array())
-    {
-        if (is_null($this->getId())) {
+    protected function getRelatedComponentItems(
+        $modelName,
+        $fieldName,
+        $asObjects = false,
+        array $filters = array(),
+        array $sort = array()
+    ) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
         $tempMode = NULL;
 
-        if (!is_null($this->childMode)) {
-            $tempMode = $this->childMode;
+        if ($this->_childMode !== null) {
+            $tempMode = $this->_childMode;
         } else {
             $tempMode = $this->getComponentMode();
         }
 
-        $tempModel = Mage::helper('M2ePro/Component')->getComponentModel($tempMode,$modelName);
+        $tempModel = Mage::helper('M2ePro/Component')->getComponentModel($tempMode, $modelName);
 
-        if (is_null($tempModel) || !($tempModel instanceof Ess_M2ePro_Model_Abstract)) {
+        if ($tempModel === null || !($tempModel instanceof Ess_M2ePro_Model_Abstract)) {
             return array();
         }
 
-        return $this->getRelatedItems($tempModel,$fieldName,$asObjects,$filters,$sort);
+        return $this->getRelatedItems($tempModel, $fieldName, $asObjects, $filters, $sort);
     }
 
     //########################################
 
     protected function _getResource()
     {
-        if (is_null($this->childMode)) {
+        if ($this->_childMode === null) {
             return parent::_getResource();
         }
 
@@ -265,10 +269,10 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         }
 
         $arguments = array(
-            'child_mode' => $this->childMode
+            'child_mode' => $this->_childMode
         );
 
-        return Mage::getResourceModel($this->_resourceName,$arguments);
+        return Mage::getResourceModel($this->_resourceName, $arguments);
     }
 
     //########################################

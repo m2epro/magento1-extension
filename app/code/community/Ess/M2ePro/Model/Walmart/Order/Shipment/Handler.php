@@ -45,15 +45,14 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_Handler extends Ess_M2ePro_Model_O
      *
      * @return array
      */
-    private function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
+    protected function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
     {
         $itemsToShip = array();
 
         foreach ($shipment->getAllItems() as $shipmentItem) {
             /** @var Mage_Sales_Model_Order_Shipment_Item $shipmentItem */
 
-            $additionalData = $shipmentItem->getOrderItem()->getAdditionalData();
-            $additionalData = is_string($additionalData) ? @unserialize($additionalData) : array();
+            $additionalData = Mage::helper('M2ePro')->unserialize($shipmentItem->getOrderItem()->getAdditionalData());
 
             //--
             if (isset($additionalData[Helper::CUSTOM_IDENTIFIER]['shipments'][$shipmentItem->getId()])) {
@@ -62,6 +61,7 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_Handler extends Ess_M2ePro_Model_O
                 );
                 continue;
             }
+
             //--
 
             if (!isset($additionalData[Helper::CUSTOM_IDENTIFIER]['items']) ||
@@ -74,7 +74,6 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_Handler extends Ess_M2ePro_Model_O
 
             $dataSize = count($additionalData[Helper::CUSTOM_IDENTIFIER]['items']);
             for ($i = 0; $i < $dataSize; $i++) {
-
                 $data = $additionalData[Helper::CUSTOM_IDENTIFIER]['items'][$i];
                 if ($qtyAvailable <= 0 || !isset($data['order_item_id'])) {
                     continue;
@@ -83,7 +82,7 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_Handler extends Ess_M2ePro_Model_O
                 /** @var Ess_M2ePro_Model_Order_Item $item */
                 $orderItemId = $data['order_item_id'];
                 $item = $order->getItemsCollection()->getItemByColumnValue('walmart_order_item_id', $orderItemId);
-                if (is_null($item)) {
+                if ($item === null) {
                     continue;
                 }
 
@@ -92,7 +91,6 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_Handler extends Ess_M2ePro_Model_O
                  */
                 $mergedOrderItems = $item->getChildObject()->getMergedWalmartOrderItemIds();
                 while ($mergedOrderItemId = array_shift($mergedOrderItems)) {
-
                     if (!isset($data['shipped_qty'][$mergedOrderItemId])) {
                         $orderItemId = $mergedOrderItemId;
                         break;
@@ -129,7 +127,9 @@ class Ess_M2ePro_Model_Walmart_Order_Shipment_Handler extends Ess_M2ePro_Model_O
             $itemsToShip = array_merge($itemsToShip, $shipmentItems);
             $additionalData[Helper::CUSTOM_IDENTIFIER]['shipments'][$shipmentItem->getId()] = $shipmentItems;
 
-            $shipmentItem->getOrderItem()->setAdditionalData(serialize($additionalData));
+            $shipmentItem->getOrderItem()->setAdditionalData(
+                Mage::helper('M2ePro')->serialize($additionalData)
+            );
             $shipmentItem->getOrderItem()->save();
         }
 

@@ -32,9 +32,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
 
     protected function _prepareCollection()
     {
-        /* @var $collection Ess_M2ePro_Model_Mysql4_Magento_Product_Collection */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-                                                           Mage::getModel('catalog/product')->getResource());
+        /** @var $collection Ess_M2ePro_Model_Resource_Magento_Product_Collection */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        );
 
         $collection->getSelect()->distinct();
         $collection->setListingProductModeOn();
@@ -43,9 +45,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
         $collection->addAttributeToSelect('name');
 
         $collection->setStoreId(Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID);
-        $collection->joinStockItem(array(
-            'is_in_stock' => 'is_in_stock'
-        ));
+        $collection->joinStockItem(
+            array(
+                'is_in_stock' => 'is_in_stock'
+            )
+        );
 
         $collection->joinTable(
             array('lp' => 'M2ePro/Listing_Product'),
@@ -82,14 +86,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
                 'variation_parent_afn_state'       => 'variation_parent_afn_state',
                 'variation_parent_repricing_state' => 'variation_parent_repricing_state',
 
-                'online_current_price' => new Zend_Db_Expr('IF(
+                'online_current_price' => new Zend_Db_Expr(
+                    'IF(
                     alp.online_regular_sale_price_start_date IS NOT NULL AND
                     alp.online_regular_sale_price_end_date IS NOT NULL AND
                     alp.online_regular_sale_price_start_date <= CURRENT_DATE() AND
                     alp.online_regular_sale_price_end_date >= CURRENT_DATE(),
                     alp.online_regular_sale_price,
                     alp.online_regular_price
-                )')
+                )'
+                )
             ),
             'variation_parent_id IS NULL'
         );
@@ -140,8 +146,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
         $listingTitle = Mage::helper('M2ePro')->escapeHtml($row->getData('listing_title'));
         strlen($listingTitle) > 50 && $listingTitle = substr($listingTitle, 0, 50) . '...';
 
-        $listingUrl = $this->getUrl('*/adminhtml_amazon_listing/view',
-                                    array('id' => $row->getData('listing_id')));
+        $listingUrl = $this->getUrl(
+            '*/adminhtml_amazon_listing/view',
+            array('id' => $row->getData('listing_id'))
+        );
 
         $value = <<<HTML
 <span>{$title}</span>
@@ -166,7 +174,6 @@ HTML;
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
 
         if ($variationManager->isVariationParent()) {
-
             $productAttributes = $variationManager->getTypeModel()->getProductAttributes();
 
             $virtualProductAttributes = $variationManager->getTypeModel()->getVirtualProductAttributes();
@@ -179,19 +186,16 @@ HTML;
             } else {
                 foreach ($productAttributes as $attribute) {
                     if (in_array($attribute, array_keys($virtualProductAttributes))) {
-
                         $attributesStr .= '<span style="border-bottom: 2px dotted grey">' . $attribute .
                             ' (' . $virtualProductAttributes[$attribute] . ')</span>, ';
-
                     } else if (in_array($attribute, array_keys($virtualChannelAttributes))) {
-
                         $attributesStr .= '<span>' . $attribute .
                             ' (' . $virtualChannelAttributes[$attribute] . ')</span>, ';
-
                     } else {
                         $attributesStr .= $attribute . ', ';
                     }
                 }
+
                 $attributesStr = rtrim($attributesStr, ', ');
             }
 
@@ -205,12 +209,10 @@ HTML;
         if ($variationManager->isIndividualType() &&
             $variationManager->getTypeModel()->isVariationProductMatched()
         ) {
-
             $optionsStr = '';
             $productOptions = $variationManager->getTypeModel()->getProductOptions();
 
             foreach ($productOptions as $attribute => $option) {
-
                 $attribute = Mage::helper('M2ePro')->escapeHtml($attribute);
                 !$option && $option = '--';
                 $option = Mage::helper('M2ePro')->escapeHtml($option);
@@ -259,7 +261,6 @@ HTML;
         $variationsStatuses = $row->getData('variation_child_statuses');
 
         if (empty($generalId) || empty($variationsStatuses)) {
-
             return $this->getProductStatus($sNotListed).$this->getScheduledTag($row).$this->getLockedTag($row);
         }
 
@@ -273,7 +274,6 @@ HTML;
         isset($variationsStatuses[$sBlocked])   && $sortedStatuses[$sBlocked]   = $variationsStatuses[$sBlocked];
 
         foreach ($sortedStatuses as $status => $productsCount) {
-
             if (empty($productsCount)) {
                 continue;
             }
@@ -290,13 +290,15 @@ HTML;
         $altTitle = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Go to Listing'));
         $iconSrc  = $this->getSkinUrl('M2ePro/images/goto_listing.png');
 
-        $manageUrl = $this->getUrl('*/adminhtml_amazon_listing/view/',array(
-            'id' => $row->getData('listing_id'),
-            'filter' => base64_encode(
-                'product_id[from]='.(int)$row->getData('entity_id')
-                .'&product_id[to]='.(int)$row->getData('entity_id')
+        $manageUrl = $this->getUrl(
+            '*/adminhtml_amazon_listing/view/', array(
+                'id'     => $row->getData('listing_id'),
+                'filter' => base64_encode(
+                    'product_id[from]=' . (int)$row->getData('entity_id')
+                    . '&product_id[to]=' . (int)$row->getData('entity_id')
+                )
             )
-        ));
+        );
 
         $html = <<<HTML
 <div style="float:right; margin:5px 15px 0 0;">
@@ -321,9 +323,7 @@ HTML;
         $childCount = 0;
 
         foreach ($tempLocks as $lock) {
-
             switch ($lock->getTag()) {
-
                 case 'list_action':
                     $html .= '<br/><span style="color: #605fff">[List in Progress...]</span>';
                     break;
@@ -362,7 +362,6 @@ HTML;
 
                 default:
                     break;
-
             }
         }
 
@@ -373,7 +372,7 @@ HTML;
         return $html;
     }
 
-    private function getScheduledTag($row)
+    protected function getScheduledTag($row)
     {
         $html = '';
 
@@ -388,7 +387,6 @@ HTML;
         }
 
         switch ($scheduledAction->getActionType()) {
-
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:
                 $html .= '<br/><span style="color: #605fff">[List is Scheduled...]</span>';
                 break;
@@ -431,7 +429,6 @@ HTML;
                 } else {
                     $html .= '<br/><span style="color: #605fff">[Revise is Scheduled...]</span>';
                 }
-
                 break;
 
             case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:
@@ -444,7 +441,6 @@ HTML;
 
             default:
                 break;
-
         }
 
         return $html;
@@ -510,6 +506,7 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $quoted = $collection->getConnection()->quote($value['to']);
             $where .= 'online_qty <= ' . $quoted;
         }
@@ -554,7 +551,6 @@ HTML;
         $where = '';
 
         if (isset($cond['from']) || isset($cond['to'])) {
-
             if (isset($cond['from']) && $cond['from'] != '') {
                 $value = $collection->getConnection()->quote($cond['from']);
                 $where .= "{$onlineCurrentPrice} >= {$value}";
@@ -564,14 +560,15 @@ HTML;
                 if (isset($cond['from']) && $cond['from'] != '') {
                     $where .= ' AND ';
                 }
+
                 $value = $collection->getConnection()->quote($cond['to']);
                 $where .= "{$onlineCurrentPrice} <= {$value}";
             }
         }
 
         if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            isset($cond['is_repricing']) && $cond['is_repricing'] !== '')
-        {
+            isset($cond['is_repricing']) && $cond['is_repricing'] !== ''
+        ) {
             if (!empty($where)) {
                 $where = '(' . $where . ') OR ';
             }
@@ -606,7 +603,6 @@ HTML;
     {
         $collection = $this->getCollection();
         if ($collection) {
-
             $columnIndex = $column->getFilterIndex() ? $column->getFilterIndex() : $column->getIndex();
 
             if ($columnIndex == 'online_current_price') {
@@ -625,6 +621,7 @@ HTML;
                 $collection->setOrder($columnIndex, strtoupper($column->getDir()));
             }
         }
+
         return $this;
     }
 

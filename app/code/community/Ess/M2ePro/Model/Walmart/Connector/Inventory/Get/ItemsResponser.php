@@ -33,7 +33,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Inventory_Get_ItemsResponser
             $preparedData['data'][$receivedItem['wpid']] = $receivedItem;
         }
 
-        $this->preparedResponseData = $preparedData;
+        $this->_preparedResponseData = $preparedData;
     }
 
     // ########################################

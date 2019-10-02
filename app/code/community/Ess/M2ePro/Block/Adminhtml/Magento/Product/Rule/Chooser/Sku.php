@@ -51,6 +51,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule_Chooser_Sku
             if (empty($selected)) {
                 $selected = '';
             }
+
             if ($column->getFilter()->getValue()) {
                 $this->getCollection()->addFieldToFilter('sku', array('in'=>$selected));
             } else {
@@ -59,6 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule_Chooser_Sku
         } else {
             parent::_addColumnFilterToCollection($column);
         }
+
         return $this;
     }
 
@@ -80,7 +82,8 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule_Chooser_Sku
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('in_products', array(
+        $this->addColumn(
+            'in_products', array(
             'header_css_class' => 'a-center',
             'type'      => 'checkbox',
             'name'      => 'in_products',
@@ -88,60 +91,73 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule_Chooser_Sku
             'align'     => 'center',
             'index'     => 'sku',
             'use_index' => true,
-        ));
+            )
+        );
 
-        $this->addColumn('entity_id', array(
+        $this->addColumn(
+            'entity_id', array(
             'header'    => Mage::helper('sales')->__('ID'),
             'sortable'  => true,
             'width'     => '60px',
             'index'     => 'entity_id'
-        ));
+            )
+        );
 
-        $this->addColumn('type',
+        $this->addColumn(
+            'type',
             array(
                 'header'=> Mage::helper('catalog')->__('Type'),
                 'width' => '60px',
                 'index' => 'type_id',
                 'type'  => 'options',
                 'options' => Mage::getSingleton('catalog/product_type')->getOptionArray(),
-            ));
+            )
+        );
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
             ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
             ->load()
             ->toOptionHash();
 
-        $this->addColumn('set_name',
+        $this->addColumn(
+            'set_name',
             array(
                 'header'=> Mage::helper('catalog')->__('Attrib. Set Name'),
                 'width' => '100px',
                 'index' => 'attribute_set_id',
                 'type'  => 'options',
                 'options' => $sets,
-            ));
+            )
+        );
 
-        $this->addColumn('chooser_sku', array(
+        $this->addColumn(
+            'chooser_sku', array(
             'header'    => Mage::helper('sales')->__('SKU'),
             'name'      => 'chooser_sku',
             'width'     => '80px',
             'index'     => 'sku'
-        ));
-        $this->addColumn('chooser_name', array(
+            )
+        );
+        $this->addColumn(
+            'chooser_name', array(
             'header'    => Mage::helper('sales')->__('Product Name'),
             'name'      => 'chooser_name',
             'index'     => 'name'
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/getRuleConditionChooserHtml', array(
+        return $this->getUrl(
+            '*/*/getRuleConditionChooserHtml', array(
             '_current'          => true,
             'current_grid_id'   => $this->getId(),
             'collapse'          => null
-        ));
+            )
+        );
     }
 
     protected function _getSelectedProducts()

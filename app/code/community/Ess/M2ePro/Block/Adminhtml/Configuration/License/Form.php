@@ -30,12 +30,14 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'config_edit_form',
             'action'  => $this->getUrl('M2ePro/adminhtml_configuration_license/confirmKey'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -54,7 +56,8 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
     {
         try {
             Mage::helper('M2ePro/Client')->updateBackupConnectionData(true);
-        } catch (Exception $exception) {}
+        } catch (Exception $exception) {
+        }
 
         /** @var Ess_M2ePro_Helper_Module_License $licenseHelper */
         $licenseHelper = Mage::helper('M2ePro/Module_License');
@@ -109,7 +112,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
             'class'   => 'refresh_status'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('refresh_status',$buttonBlock);
+        $this->setChild('refresh_status', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
@@ -119,7 +122,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
             'class'   => 'change_license'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('change_license',$buttonBlock);
+        $this->setChild('change_license', $buttonBlock);
 
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Confirm'),
@@ -127,7 +130,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
             'class'   => 'confirm_key'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('confirm_key',$buttonBlock);
+        $this->setChild('confirm_key', $buttonBlock);
         // ---------------------------------------
 
         return parent::_beforeToHtml();

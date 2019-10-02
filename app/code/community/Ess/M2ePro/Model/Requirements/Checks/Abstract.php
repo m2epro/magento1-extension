@@ -11,7 +11,7 @@ abstract class Ess_M2ePro_Model_Requirements_Checks_Abstract
     const NICK = 'Abstract';
 
     /** @var Ess_M2ePro_Model_Requirements_Semver_VersionParser */
-    protected $versionParser;
+    protected $_versionParser;
 
     //########################################
 
@@ -42,11 +42,11 @@ abstract class Ess_M2ePro_Model_Requirements_Checks_Abstract
 
     public function getVersionParser()
     {
-        if (is_null($this->versionParser)) {
-            $this->versionParser = new Ess_M2ePro_Model_Requirements_Semver_VersionParser();
+        if ($this->_versionParser === null) {
+            $this->_versionParser = new Ess_M2ePro_Model_Requirements_Semver_VersionParser();
         }
 
-        return $this->versionParser;
+        return $this->_versionParser;
     }
 
     //########################################

@@ -18,7 +18,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
     public function getVersion($asArray = false)
     {
         $versionString = Mage::getVersion();
-        return $asArray ? explode('.',$versionString) : $versionString;
+        return $asArray ? explode('.', $versionString) : $versionString;
     }
 
     public function getRevision()
@@ -33,6 +33,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         if ($this->isEnterpriseEdition()) {
             return 'enterprise';
         }
+
         if ($this->isCommunityEdition()) {
             return 'community';
         }
@@ -120,7 +121,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
         $result = array();
         foreach ($conflictedModules as $expression=>$description) {
-
             foreach ($modules as $module => $data) {
                 if (preg_match($expression, $module)) {
                     $result[$module] = array_merge($data, array('description'=>$description));
@@ -136,6 +136,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         if ($this->isCommunityEdition()) {
             return version_compare($this->getVersion(false), '1.4.0.0', '>=');
         }
+
         return true;
     }
 
@@ -156,6 +157,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         if (!$this->isSecretKeyToUrl()) {
             return '';
         }
+
         return Mage::getSingleton('adminhtml/url')->getSecretKey();
     }
 
@@ -173,19 +175,19 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         $minDateTime = Mage::helper('M2ePro')->getDate($minDateTime->format('U'));
 
         $collection = Mage::getModel('cron/schedule')->getCollection();
-        $collection->addFieldToFilter('executed_at',array('gt'=>$minDateTime));
+        $collection->addFieldToFilter('executed_at', array('gt'=>$minDateTime));
 
         return $collection->getSize() > 0;
     }
 
     public function getBaseUrl()
     {
-        return str_replace('index.php/','',Mage::getBaseUrl());
+        return str_replace('index.php/', '', Mage::getBaseUrl());
     }
 
     public function getLocale()
     {
-        $localeComponents = explode('_' , Mage::app()->getLocale()->getLocale());
+        $localeComponents = explode('_', Mage::app()->getLocale()->getLocale());
         return strtolower($localeComponents[0]);
     }
 
@@ -316,7 +318,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
         $overwrites = array();
         foreach ($paths as $path) {
-
             if (!is_dir($path)) {
                 continue;
             }
@@ -338,7 +339,7 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return $result;
     }
 
-    private function isOriginalFileExists($overwritedFilename)
+    protected function isOriginalFileExists($overwritedFilename)
     {
         $unixFormattedPath = str_replace('\\', '/', $overwritedFilename);
 
@@ -366,7 +367,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
     {
         $eventObservers = array();
         foreach ($this->getAreas() as $area) {
-
             $areaNode = Mage::getConfig()->getNode($area);
             if (empty($areaNode)) {
                 continue;
@@ -379,7 +379,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
             foreach ($areaEvents->asArray() as $eventName => $eventData) {
                 foreach ($eventData['observers'] as $observerConfig) {
-
                     $observerName = '#class#::#method#';
 
                     if (!empty($observerConfig['class'])) {

@@ -26,7 +26,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Cron extends Mage_Adminhtml_Bl
 
     protected function _beforeToHtml()
     {
-        $this->setChild('development_cron_system',
+        $this->setChild(
+            'development_cron_system',
             $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_development_tabs_command_group',
                 '',
@@ -34,7 +35,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Cron extends Mage_Adminhtml_Bl
             )
         );
 
-        $this->setChild('development_cron_amazon',
+        $this->setChild(
+            'development_cron_amazon',
             $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_development_tabs_command_group',
                 '',
@@ -42,7 +44,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Cron extends Mage_Adminhtml_Bl
             )
         );
 
-        $this->setChild('development_cron_ebay',
+        $this->setChild(
+            'development_cron_ebay',
             $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_development_tabs_command_group',
                 '',
@@ -50,7 +53,8 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Cron extends Mage_Adminhtml_Bl
             )
         );
 
-        $this->setChild('development_cron_walmart',
+        $this->setChild(
+            'development_cron_walmart',
             $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_development_tabs_command_group',
                 '',

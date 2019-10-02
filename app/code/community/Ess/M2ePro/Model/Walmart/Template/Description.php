@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Template_Description getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Walmart_Template_Description getResource()
+ * @method Ess_M2ePro_Model_Resource_Walmart_Template_Description getResource()
  */
 class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
     /**
      * @var Ess_M2ePro_Model_Walmart_Template_Description_Source[]
      */
-    private $descriptionSourceModels = array();
+    protected $_descriptionSourceModels = array();
 
     //########################################
 
@@ -112,7 +112,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
             return false;
         }
 
-        $this->descriptionSourceModels    = array();
+        $this->_descriptionSourceModels = array();
 
         $this->delete();
         return true;
@@ -128,15 +128,15 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
     {
         $productId = $magentoProduct->getProductId();
 
-        if (!empty($this->descriptionSourceModels[$productId])) {
-            return $this->descriptionSourceModels[$productId];
+        if (!empty($this->_descriptionSourceModels[$productId])) {
+            return $this->_descriptionSourceModels[$productId];
         }
 
-        $this->descriptionSourceModels[$productId] = Mage::getModel('M2ePro/Walmart_Template_Description_Source');
-        $this->descriptionSourceModels[$productId]->setMagentoProduct($magentoProduct);
-        $this->descriptionSourceModels[$productId]->setDescriptionTemplate($this->getParentObject());
+        $this->_descriptionSourceModels[$productId] = Mage::getModel('M2ePro/Walmart_Template_Description_Source');
+        $this->_descriptionSourceModels[$productId]->setMagentoProduct($magentoProduct);
+        $this->_descriptionSourceModels[$productId]->setDescriptionTemplate($this->getParentObject());
 
-        return $this->descriptionSourceModels[$productId];
+        return $this->_descriptionSourceModels[$productId];
     }
 
     //########################################
@@ -583,7 +583,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
      */
     public function getKeyFeaturesTemplate()
     {
-        return !is_null($this->getData('key_features'))
+        return $this->getData('key_features') !== null
             ? Mage::helper('M2ePro')->jsonDecode($this->getData('key_features')) : array();
     }
 
@@ -629,7 +629,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
 
         if ($src['mode'] == self::KEY_FEATURES_MODE_CUSTOM) {
             $match = array();
-            $audience = implode(PHP_EOL,$src['template']);
+            $audience = implode(PHP_EOL, $src['template']);
             preg_match_all('/#([a-zA-Z_0-9]+?)#/', $audience, $match);
             $match && $attributes = $match[1];
         }
@@ -652,7 +652,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
      */
     public function getOtherFeaturesTemplate()
     {
-        return is_null($this->getData('other_features'))
+        return $this->getData('other_features') === null
             ? array() : Mage::helper('M2ePro')->jsonDecode($this->getData('other_features'));
     }
 
@@ -698,7 +698,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
 
         if ($src['mode'] == self::OTHER_FEATURES_MODE_CUSTOM) {
             $match = array();
-            $bullets = implode(PHP_EOL,$src['template']);
+            $bullets = implode(PHP_EOL, $src['template']);
             preg_match_all('/#([a-zA-Z_0-9]+?)#/', $bullets, $match);
             $match && $attributes = $match[1];
         }
@@ -721,7 +721,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
      */
     public function getAttributesTemplate()
     {
-        return is_null($this->getData('attributes'))
+        return $this->getData('attributes') === null
             ? array() : Mage::helper('M2ePro')->jsonDecode($this->getData('attributes'));
     }
 
@@ -773,7 +773,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
                 $templateValues[] = $item['value'];
             }
 
-            $searchTerms = implode(PHP_EOL,$templateValues);
+            $searchTerms = implode(PHP_EOL, $templateValues);
             preg_match_all('/#([a-zA-Z_0-9]+?)#/', $searchTerms, $match);
             $match && $attributes = $match[1];
         }
@@ -1208,26 +1208,25 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
      */
     public function getUsedDetailsAttributes()
     {
-        return array_unique(array_merge(
+        return array_unique(
+            array_merge(
 
-            $this->getTitleAttributes(),
-            $this->getBrandAttributes(),
-            $this->getMultipackQuantityAttributes(),
-            $this->getCountPerPackAttributes(),
-            $this->getModelNumberAttributes(),
-            $this->getTotalCountAttributes(),
-            $this->getDescriptionAttributes(),
-
-            $this->getOtherFeaturesAttributes(),
-            $this->getAttributesAttributes(),
-            $this->getKeyFeaturesAttributes(),
-            $this->getKeywordsAttributes(),
-
-            $this->getManufacturerAttributes(),
-            $this->getManufacturerPartNumberAttributes(),
-
-            $this->getMsrpRrpAttributes()
-        ));
+                $this->getTitleAttributes(),
+                $this->getBrandAttributes(),
+                $this->getMultipackQuantityAttributes(),
+                $this->getCountPerPackAttributes(),
+                $this->getModelNumberAttributes(),
+                $this->getTotalCountAttributes(),
+                $this->getDescriptionAttributes(),
+                $this->getOtherFeaturesAttributes(),
+                $this->getAttributesAttributes(),
+                $this->getKeyFeaturesAttributes(),
+                $this->getKeywordsAttributes(),
+                $this->getManufacturerAttributes(),
+                $this->getManufacturerPartNumberAttributes(),
+                $this->getMsrpRrpAttributes()
+            )
+        );
     }
 
     /**
@@ -1235,11 +1234,13 @@ class Ess_M2ePro_Model_Walmart_Template_Description extends Ess_M2ePro_Model_Com
      */
     public function getUsedImagesAttributes()
     {
-        return array_unique(array_merge(
-            $this->getImageMainAttributes(),
-            $this->getImageVariationDifferenceAttributes(),
-            $this->getGalleryImagesAttributes()
-        ));
+        return array_unique(
+            array_merge(
+                $this->getImageMainAttributes(),
+                $this->getImageVariationDifferenceAttributes(),
+                $this->getGalleryImagesAttributes()
+            )
+        );
     }
 
     //########################################

@@ -24,22 +24,28 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific
 
         $this->setTemplate('M2ePro/ebay/listing/category/same/specific.phtml');
 
-        $this->_addButton('back', array(
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'class'     => 'back',
             'onclick'   => 'setLocation(\'' . $this->getUrl('*/*/*', array('_current' => true, 'step' => 2)) . '\');'
-        ));
+            )
+        );
 
-        $saveUrl = $this->getUrl('*/*/*', array(
+        $saveUrl = $this->getUrl(
+            '*/*/*', array(
             'step' => 3,
             '_current' => true
-        ));
+            )
+        );
 
-        $this->_addButton('save', array(
+        $this->_addButton(
+            'save', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'class'     => 'scalable next',
             'onclick'   => "EbayListingCategorySpecificHandlerObj.submitData('{$saveUrl}');"
-        ));
+            )
+        );
     }
 
     //########################################
@@ -60,7 +66,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific
             'Listing', $this->getRequest()->getParam('listing_id')
         );
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
         $this->setChild('view_header', $viewHeaderBlock);
@@ -98,6 +104,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific
             $attributeLabel = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($categoryValue);
             $this->_selectedCategoryPath = Mage::helper('M2ePro')->__('Magento Attribute') . ' > ' . $attributeLabel;
         }
+
         // ---------------------------------------
     }
 

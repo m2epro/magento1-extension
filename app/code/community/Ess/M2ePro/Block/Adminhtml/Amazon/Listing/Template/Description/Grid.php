@@ -13,19 +13,19 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
     const ACTION_STATUS_VARIATIONS_NOT_SUPPORTED = 2;
     const ACTION_STATUS_READY_TO_BE_ASSIGNED = 3;
 
-    protected $checkNewAsinAccepted = false;
+    protected $_checkNewAsinAccepted = false;
 
-    protected $productsIds = array();
-    protected $magentoCategoryIds = array();
+    protected $_productsIds        = array();
+    protected $_magentoCategoryIds = array();
 
-    protected $marketplaceId;
-    protected $variationProductsIds;
+    protected $_marketplaceId;
+    protected $_variationProductsIds;
 
-    protected $mapToTemplateJsFn = 'ListingGridHandlerObj.templateDescriptionHandler.mapToTemplateDescription';
-    protected $createNewTemplateJsFn =
+    protected $_mapToTemplateJsFn     = 'ListingGridHandlerObj.templateDescriptionHandler.mapToTemplateDescription';
+    protected $_createNewTemplateJsFn =
         'ListingGridHandlerObj.templateDescriptionHandler.createTemplateDescriptionInNewTab';
 
-    protected $cacheData = array();
+    protected $_cacheData = array();
 
     //########################################
 
@@ -34,7 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function getMapToTemplateJsFn()
     {
-        return $this->mapToTemplateJsFn;
+        return $this->_mapToTemplateJsFn;
     }
 
     /**
@@ -42,7 +42,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function setMapToTemplateJsFn($mapToTemplateLink)
     {
-        $this->mapToTemplateJsFn = $mapToTemplateLink;
+        $this->_mapToTemplateJsFn = $mapToTemplateLink;
     }
 
     // ---------------------------------------
@@ -52,7 +52,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function getCreateNewTemplateJsFn()
     {
-        return $this->createNewTemplateJsFn;
+        return $this->_createNewTemplateJsFn;
     }
 
     /**
@@ -60,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function setCreateNewTemplateJsFn($createNewTemplateJsFn)
     {
-        $this->createNewTemplateJsFn = $createNewTemplateJsFn;
+        $this->_createNewTemplateJsFn = $createNewTemplateJsFn;
     }
 
     // ---------------------------------------
@@ -70,7 +70,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function setCheckNewAsinAccepted($checkNewAsinAccepted)
     {
-        $this->checkNewAsinAccepted = $checkNewAsinAccepted;
+        $this->_checkNewAsinAccepted = $checkNewAsinAccepted;
     }
 
     /**
@@ -78,7 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function getCheckNewAsinAccepted()
     {
-        return (bool) $this->checkNewAsinAccepted;
+        return (bool) $this->_checkNewAsinAccepted;
     }
 
     // ---------------------------------------
@@ -88,7 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function setProductsIds($productsIds)
     {
-        $this->productsIds = $productsIds;
+        $this->_productsIds = $productsIds;
     }
 
     /**
@@ -96,19 +96,19 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
      */
     public function getProductsIds()
     {
-        return $this->productsIds;
+        return $this->_productsIds;
     }
 
     // ---------------------------------------
 
     public function setMagentoCategoryIds($magentoCategoryIds)
     {
-        $this->magentoCategoryIds = $magentoCategoryIds;
+        $this->_magentoCategoryIds = $magentoCategoryIds;
     }
 
     public function getMagentoCategoryIds()
     {
-        return $this->magentoCategoryIds;
+        return $this->_magentoCategoryIds;
     }
 
     // ---------------------------------------
@@ -135,7 +135,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
     {
         $this->setNoTemplatesText();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Template_Description_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Template_Description_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Template_Description');
         $collection->addFieldToFilter('marketplace_id', $this->getMarketplaceId());
 
@@ -147,39 +147,37 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
 
     // ---------------------------------------
 
-    private function prepareCacheData()
+    protected function prepareCacheData()
     {
-        $this->cacheData = array();
-        $tempCollection = clone $this->getCollection();
+        $this->_cacheData = array();
+        $tempCollection   = clone $this->getCollection();
 
         foreach ($tempCollection->getItems() as $item) {
             /**@var Ess_M2ePro_Model_Amazon_Template_Description $item */
 
             if (!$this->getCheckNewAsinAccepted()) {
-                $this->cacheData[$item->getId()] = self::ACTION_STATUS_READY_TO_BE_ASSIGNED;
+                $this->_cacheData[$item->getId()] = self::ACTION_STATUS_READY_TO_BE_ASSIGNED;
                 continue;
             }
 
             if (!$item->getData('is_new_asin_accepted')) {
-                $this->cacheData[$item->getId()] = self::ACTION_STATUS_NEW_ASIN_NOT_ACCEPTED;
+                $this->_cacheData[$item->getId()] = self::ACTION_STATUS_NEW_ASIN_NOT_ACCEPTED;
                 continue;
             }
 
             $variationProductsIds = $this->getVariationsProductsIds();
             if (!empty($variationProductsIds)) {
-
                 $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
                 $detailsModel->setMarketplaceId($this->getMarketplaceId());
 
                 $themes = $detailsModel->getVariationThemes($item->getData('product_data_nick'));
                 if (empty($themes)) {
-
-                    $this->cacheData[$item->getId()] = self::ACTION_STATUS_VARIATIONS_NOT_SUPPORTED;
+                    $this->_cacheData[$item->getId()] = self::ACTION_STATUS_VARIATIONS_NOT_SUPPORTED;
                     continue;
                 }
             }
 
-            $this->cacheData[$item->getId()] = self::ACTION_STATUS_READY_TO_BE_ASSIGNED;
+            $this->_cacheData[$item->getId()] = self::ACTION_STATUS_READY_TO_BE_ASSIGNED;
             continue;
         }
     }
@@ -188,60 +186,69 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
-            'header'       => Mage::helper('M2ePro')->__('Title / Category'),
-            'align'        => 'left',
-            'type'         => 'text',
-            'index'        => 'title',
-            'filter_index' => 'title',
-            'sortable'     => true,
-            'filter_condition_callback' => array($this, 'callbackFilterTitle'),
-            'frame_callback' => array($this, 'callbackColumnTitle')
-        ));
+        $this->addColumn(
+            'title', array(
+                'header'                    => Mage::helper('M2ePro')->__('Title / Category'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'title',
+                'filter_index'              => 'title',
+                'sortable'                  => true,
+                'filter_condition_callback' => array($this, 'callbackFilterTitle'),
+                'frame_callback'            => array($this, 'callbackColumnTitle')
+            )
+        );
 
-        $this->addColumn('status', array(
-            'header'       => Mage::helper('M2ePro')->__('Status/Reason'),
-            'align'        => 'left',
-            'type'         => 'options',
-            'options'      => array(
-                self::ACTION_STATUS_NEW_ASIN_NOT_ACCEPTED => Mage::helper('M2ePro')->__(
-                    'New ASIN/ISBN feature is disabled'
+        $this->addColumn(
+            'status', array(
+                'header'       => Mage::helper('M2ePro')->__('Status/Reason'),
+                'align'        => 'left',
+                'type'         => 'options',
+                'options'      => array(
+                    self::ACTION_STATUS_NEW_ASIN_NOT_ACCEPTED => Mage::helper('M2ePro')->__(
+                        'New ASIN/ISBN feature is disabled'
+                    ),
+                    self::ACTION_STATUS_VARIATIONS_NOT_SUPPORTED => Mage::helper('M2ePro')->__(
+                        'Selected Category doesn\'t support Variational Products'
+                    ),
+                    self::ACTION_STATUS_READY_TO_BE_ASSIGNED => Mage::helper('M2ePro')->__(
+                        'Ready to be assigned'
+                    ),
                 ),
-                self::ACTION_STATUS_VARIATIONS_NOT_SUPPORTED => Mage::helper('M2ePro')->__(
-                    'Selected Category doesn\'t support Variational Products'
-                ),
-                self::ACTION_STATUS_READY_TO_BE_ASSIGNED => Mage::helper('M2ePro')->__(
-                    'Ready to be assigned'
-                ),
-            ),
-            'width'        => '140px',
-            'index'        => 'description_template_action_status',
-            'sortable'     => false,
-            'filter_condition_callback' => array($this, 'callbackFilterStatus'),
-            'frame_callback' => array($this, 'callbackColumnStatus')
-        ));
+                'width'        => '140px',
+                'index'        => 'description_template_action_status',
+                'sortable'     => false,
+                'filter_condition_callback' => array($this, 'callbackFilterStatus'),
+                'frame_callback' => array($this, 'callbackColumnStatus')
+            )
+        );
 
-        $this->addColumn('action', array(
-            'header'       => Mage::helper('M2ePro')->__('Action'),
-            'align'        => 'left',
-            'type'         => 'number',
-            'width'        => '55px',
-            'index'        => 'id',
-            'filter'       => false,
-            'sortable'     => false,
-            'frame_callback' => array($this, 'callbackColumnAction')
-        ));
+        $this->addColumn(
+            'action', array(
+                'header'         => Mage::helper('M2ePro')->__('Action'),
+                'align'          => 'left',
+                'type'           => 'number',
+                'width'          => '55px',
+                'index'          => 'id',
+                'filter'         => false,
+                'sortable'       => false,
+                'frame_callback' => array($this, 'callbackColumnAction')
+            )
+        );
     }
 
     protected function _prepareLayout()
     {
-        $this->setChild('refresh_button',
+        $this->setChild(
+            'refresh_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
-                ->setData(array(
-                    'id' => 'description_template_refresh_btn',
-                    'label'     => Mage::helper('M2ePro')->__('Refresh'),
-                    'onclick'   => $this->getJsObjectName().'.reload()'
-                ))
+                ->setData(
+                    array(
+                        'id'      => 'description_template_refresh_btn',
+                        'label'   => Mage::helper('M2ePro')->__('Refresh'),
+                        'onclick' => $this->getJsObjectName() . '.reload()'
+                    )
+                )
         );
 
         return parent::_prepareLayout();
@@ -265,9 +272,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Grid
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        $templateDescriptionEditUrl = $this->getUrl('*/adminhtml_amazon_template_description/edit', array(
-            'id' => $row->getData('id')
-        ));
+        $templateDescriptionEditUrl = $this->getUrl(
+            '*/adminhtml_amazon_template_description/edit', array(
+                'id' => $row->getData('id')
+            )
+        );
 
         $title = Mage::helper('M2ePro')->escapeHtml($row->getData('title'));
 
@@ -286,21 +295,18 @@ HTML;
 
     public function callbackColumnStatus($value, $row, $column, $isExport)
     {
-        $status = $this->cacheData[$row->getId()];
+        $status = $this->_cacheData[$row->getId()];
 
         switch($status) {
-
             case self::ACTION_STATUS_NEW_ASIN_NOT_ACCEPTED:
                 return '<span style="color: #808080;">' .
                     Mage::helper('M2ePro')->__('New ASIN/ISBN feature is disabled') . '</span>';
-                break;
 
             case self::ACTION_STATUS_VARIATIONS_NOT_SUPPORTED:
                 return '<span style="color: #808080;">' .
                     Mage::helper('M2ePro')->__(
                         'Selected Category doesn\'t support Variational Products'
                     ) . '</span>';
-                break;
         }
 
         return '<span style="color: green;">' . Mage::helper('M2ePro')->__('Ready to be assigned') . '</span>';
@@ -315,14 +321,11 @@ HTML;
             $mapToAsin = ',1';
         }
 
-        switch($this->cacheData[$row->getId()]) {
-
+        switch($this->_cacheData[$row->getId()]) {
             case self::ACTION_STATUS_NEW_ASIN_NOT_ACCEPTED:
                 return '<span style="color: #808080;">' . $assignText . '</span>';
-                break;
             case self::ACTION_STATUS_VARIATIONS_NOT_SUPPORTED:
                 return '<span style="color: #808080;">' . $assignText . '</span>';
-                break;
         }
 
         return '<a href="javascript:void(0);"'
@@ -334,7 +337,7 @@ HTML;
 
     protected function callbackFilterTitle($collection, $column)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Template_Description_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Template_Description_Collection $collection */
 
         $value = $column->getFilter()->getValue();
         if ($value == null) {
@@ -348,7 +351,7 @@ HTML;
 
     protected function callbackFilterStatus($collection, $column)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Amazon_Template_Description_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Amazon_Template_Description_Collection $collection */
 
         $value = $column->getFilter()->getValue();
         if ($value == null) {
@@ -358,7 +361,7 @@ HTML;
         foreach ($collection->getItems() as $item) {
             /**@var Ess_M2ePro_Model_Amazon_Template_Description $item */
 
-            if ($this->cacheData[$item->getId()] != $value) {
+            if ($this->_cacheData[$item->getId()] != $value) {
                 $collection->removeItemByKey($item->getId());
             }
         }
@@ -412,12 +415,14 @@ HTML;
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/viewTemplateDescriptionsGrid', array(
-            '_current' => true,
-            '_query' => array(
-                'check_is_new_asin_accepted' => $this->getCheckNewAsinAccepted()
+        return $this->getUrl(
+            '*/*/viewTemplateDescriptionsGrid', array(
+                '_current' => true,
+                '_query'   => array(
+                    'check_is_new_asin_accepted' => $this->getCheckNewAsinAccepted()
+                )
             )
-        ));
+        );
     }
 
     public function getRowUrl($row)
@@ -429,14 +434,16 @@ HTML;
 
     protected function getMarketplaceId()
     {
-        if (empty($this->marketplaceId)) {
+        if (empty($this->_marketplaceId)) {
             /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-            $productsIds = $this->getProductsIds();
-            $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $productsIds[0]);
-            $this->marketplaceId = $listingProduct->getListing()->getMarketplaceId();
+            $productsIds          = $this->getProductsIds();
+            $listingProduct       = Mage::helper('M2ePro/Component_Amazon')->getObject(
+                'Listing_Product', $productsIds[0]
+            );
+            $this->_marketplaceId = $listingProduct->getListing()->getMarketplaceId();
         }
 
-        return $this->marketplaceId;
+        return $this->_marketplaceId;
     }
 
     // ---------------------------------------
@@ -460,20 +467,22 @@ HTML;
 
     protected function getNewTemplateDescriptionUrl()
     {
-        return $this->getUrl('*/adminhtml_amazon_template_description/new', array(
-            'is_new_asin_accepted'  => $this->getCheckNewAsinAccepted(),
-            'marketplace_id'        => $this->getMarketplaceId()
-        ));
+        return $this->getUrl(
+            '*/adminhtml_amazon_template_description/new', array(
+                'is_new_asin_accepted' => $this->getCheckNewAsinAccepted(),
+                'marketplace_id'       => $this->getMarketplaceId()
+            )
+        );
     }
 
     // ---------------------------------------
 
     protected function getVariationsProductsIds()
     {
-        if (is_null($this->variationProductsIds)) {
-            $this->variationProductsIds = array();
+        if ($this->_variationProductsIds === null) {
+            $this->_variationProductsIds = array();
 
-            /** @var Ess_M2ePro_Model_Mysql4_Amazon_Listing_Product_Collection $collection */
+            /** @var Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Collection $collection */
             $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
             $collection->addFieldToFilter('additional_data', array('notnull' => true));
             $collection->addFieldToFilter('id', array('in' => $this->getProductsIds()));
@@ -486,10 +495,10 @@ HTML;
                 )
             );
 
-            $this->variationProductsIds = $collection->getData();
+            $this->_variationProductsIds = $collection->getData();
         }
 
-        return $this->variationProductsIds;
+        return $this->_variationProductsIds;
     }
 
     //########################################

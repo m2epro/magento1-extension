@@ -18,7 +18,10 @@ class Ess_M2ePro_Model_ArchivedEntity extends Ess_M2ePro_Model_Abstract
 
     //########################################
 
-    public function deleteProcessingLocks($tag = false, $processingId = false) {}
+    public function deleteProcessingLocks($tag = false, $processingId = false)
+    {
+        return null;
+    }
 
     //########################################
 

@@ -38,19 +38,23 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category extends Mage_Adminhtm
 
         // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_walmart_listing/index');
-        $this->_addButton('goto_listings', array(
+        $this->_addButton(
+            'goto_listings', array(
             'label'     => Mage::helper('M2ePro')->__('Listings'),
             'onclick'   => 'setLocation(\'' . $url .'\')',
             'class'     => 'button_link'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('add', array(
+        $this->_addButton(
+            'add', array(
             'label'     => Mage::helper('M2ePro')->__('Add Category Policy'),
             'onclick'   => 'setLocation(\''.$this->getUrl('*/adminhtml_walmart_template_category/new').'\');',
             'class'     => 'add add-button-drop-down'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

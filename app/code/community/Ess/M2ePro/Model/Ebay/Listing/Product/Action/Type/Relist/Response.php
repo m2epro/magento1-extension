@@ -73,12 +73,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
     public function processAlreadyActive(array $response, array $responseParams = array())
     {
         $responseParams['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT;
-        $this->processSuccess($response,$responseParams);
+        $this->processSuccess($response, $responseParams);
     }
 
     //########################################
 
-    private function processRecheckInstructions(array $data)
+    protected function processRecheckInstructions(array $data)
     {
         if (!isset($data['additional_data'])) {
             $data['additional_data'] = $this->getListingProduct()->getAdditionalData();
@@ -146,7 +146,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
                     break;
             }
 
-            if (is_null($instructionType)) {
+            if ($instructionType === null) {
                 continue;
             }
 
@@ -167,7 +167,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Response
 
     //########################################
 
-    private function removeConditionNecessary($data)
+    protected function removeConditionNecessary($data)
     {
         if (!isset($data['additional_data'])) {
             $data['additional_data'] = $this->getListingProduct()->getAdditionalData();

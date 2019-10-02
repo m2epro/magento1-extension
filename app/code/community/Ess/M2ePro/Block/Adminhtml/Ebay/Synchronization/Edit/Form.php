@@ -80,7 +80,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Synchronization_Edit_Form extends Mage_Adm
     public function isShowReviseAll()
     {
         $showSetting = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/synchronization/revise_total/','show'
+            '/view/synchronization/revise_total/', 'show'
         );
 
         return $showSetting && Mage::helper('M2ePro/View_Ebay')->isAdvancedMode();

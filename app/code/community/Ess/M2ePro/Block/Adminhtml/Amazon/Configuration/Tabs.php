@@ -34,6 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
         if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
             $this->addTab(self::TAB_ID_GENERAL, $this->prepareTabGeneral());
         }
+
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
         $this->addTab(self::TAB_ID_MARKETPLACE, $this->prepareTabMarketplace());
         $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());

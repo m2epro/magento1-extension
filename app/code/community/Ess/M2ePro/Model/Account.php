@@ -6,8 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Amazon_Account as AmazonAccount;
+use Ess_M2ePro_Model_Ebay_Account as EbayAccount;
+use Ess_M2ePro_Model_Walmart_Account as WalmartAccount;
+
 /**
- * @method Ess_M2ePro_Model_Amazon_Account|Ess_M2ePro_Model_Ebay_Account|Ess_M2ePro_Model_Walmart_Account getChildObject()
+ * @method AmazonAccount|EbayAccount|WalmartAccount getChildObject()
  */
 class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -81,7 +85,7 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
      */
     public function getOtherListings($asObjects = false, array $filters = array())
     {
-        $otherListings = $this->getRelatedComponentItems('Listing_Other','account_id',$asObjects,$filters);
+        $otherListings = $this->getRelatedComponentItems('Listing_Other', 'account_id', $asObjects, $filters);
 
         if ($asObjects) {
             foreach ($otherListings as $otherListing) {
@@ -101,7 +105,7 @@ class Ess_M2ePro_Model_Account extends Ess_M2ePro_Model_Component_Parent_Abstrac
      */
     public function getOrders($asObjects = false, array $filters = array())
     {
-        $orders = $this->getRelatedComponentItems('Order','account_id',$asObjects,$filters);
+        $orders = $this->getRelatedComponentItems('Order', 'account_id', $asObjects, $filters);
 
         if ($asObjects) {
             foreach ($orders as $order) {

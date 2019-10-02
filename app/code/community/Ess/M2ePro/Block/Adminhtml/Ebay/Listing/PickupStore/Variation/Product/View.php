@@ -9,8 +9,8 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    protected $listingProductId;
-    protected $locationId;
+    protected $_listingProductId;
+    protected $_locationId;
 
     //########################################
 
@@ -20,7 +20,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
@@ -29,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     // ---------------------------------------
@@ -39,7 +39,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     public function setLocationId($locationId)
     {
-        $this->locationId = $locationId;
+        $this->_locationId = $locationId;
     }
 
     /**
@@ -47,7 +47,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
      */
     public function getLocationId()
     {
-        return $this->locationId;
+        return $this->_locationId;
     }
 
     //########################################
@@ -57,8 +57,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
         parent::__construct();
 
         $this->setTemplate('M2ePro/ebay/listing/pickupStore/variation/product/view.phtml');
-
-        return $this;
     }
 
     protected function _toHtml()

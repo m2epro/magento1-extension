@@ -11,9 +11,9 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
     const VIEW_LOG_LINK_SHOW = 0;
     const VIEW_LOG_LINK_HIDE = 1;
 
-    protected $tip = NULL;
-    protected $iconSrc = NULL;
-    protected $rows = array();
+    protected $_tip     = null;
+    protected $_iconSrc = null;
+    protected $_rows    = array();
 
     //########################################
 
@@ -31,17 +31,17 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
 
     public function getTip()
     {
-        return $this->tip;
+        return $this->_tip;
     }
 
     public function getIconSrc()
     {
-        return $this->iconSrc;
+        return $this->_iconSrc;
     }
 
     public function getEncodedRows()
     {
-        return base64_encode(Mage::helper('M2ePro')->jsonEncode($this->rows));
+        return base64_encode(Mage::helper('M2ePro')->jsonEncode($this->_rows));
     }
 
     public function getEntityId()
@@ -76,6 +76,7 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
         if (!empty($this->_data['hide_view_log_link'])) {
             return self::VIEW_LOG_LINK_HIDE;
         }
+
         return self::VIEW_LOG_LINK_SHOW;
     }
 
@@ -85,7 +86,7 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
             throw new Ess_M2ePro_Model_Exception_Logic('Log rows are not set.');
         }
 
-        if (count($this->_data['rows']) == 0) {
+        if (empty($this->_data['rows'])) {
             return array();
         }
 
@@ -114,7 +115,7 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
     {
         $rows = $this->getRows();
 
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return parent::_beforeToHtml();
         }
 
@@ -131,9 +132,9 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
             $icon = $this->getIconByType($lastActionRow['type']);
         }
 
-        $this->tip = Mage::helper('M2ePro')->escapeHtml($tip);
-        $this->iconSrc = $this->getSkinUrl('M2ePro/images/log_statuses/'.$icon.'.png');
-        $this->rows = $rows;
+        $this->_tip     = Mage::helper('M2ePro')->escapeHtml($tip);
+        $this->_iconSrc = $this->getSkinUrl('M2ePro/images/log_statuses/' . $icon . '.png');
+        $this->_rows    = $rows;
         // ---------------------------------------
 
         return parent::_beforeToHtml();
@@ -163,7 +164,7 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
 
     protected function _toHtml()
     {
-        if (count($this->rows) == 0) {
+        if (empty($this->_rows)) {
             return '';
         }
 

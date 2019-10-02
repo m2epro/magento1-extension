@@ -69,6 +69,7 @@ class Ess_M2ePro_Model_Magento_Quote_Total_WasteRecyclingFee extends Mage_Tax_Mo
             if (!$item->getWasteRecyclingFee() || $item->getParentItemId()) {
                 continue;
             }
+
             $this->_resetItemData($item);
             if ($item->getHasChildren() && $item->isChildrenCalculated()) {
                 foreach ($item->getChildren() as $child) {
@@ -174,7 +175,8 @@ class Ess_M2ePro_Model_Magento_Quote_Total_WasteRecyclingFee extends Mage_Tax_Mo
 
         $this->_helper->setApplied($item, array_merge($this->_helper->getApplied($item), $productTaxes));
         if ($applied) {
-            $this->_saveAppliedTaxes($address, $applied,
+            $this->_saveAppliedTaxes(
+                $address, $applied,
                 $item->getWeeeTaxAppliedAmount(),
                 $item->getBaseWeeeTaxAppliedAmount(),
                 null
@@ -199,6 +201,7 @@ class Ess_M2ePro_Model_Magento_Quote_Total_WasteRecyclingFee extends Mage_Tax_Mo
                 ->unsPriceInclTax()
                 ->unsBasePriceInclTax();
         }
+
         $item->setExtraTaxableAmount($value)
             ->setBaseExtraTaxableAmount($baseValue)
             ->setExtraRowTaxableAmount($rowValue)
@@ -240,7 +243,7 @@ class Ess_M2ePro_Model_Magento_Quote_Total_WasteRecyclingFee extends Mage_Tax_Mo
         $item->setWeeeTaxAppliedRowAmount(0);
     }
 
-    private function clearQuoteItemsCache($address)
+    protected function clearQuoteItemsCache($address)
     {
         /** @var $address Mage_Sales_Model_Quote_Address */
         $address->unsetData('cached_items_all');

@@ -72,6 +72,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Template_Description_Main
 </ul>
 HTML;
         }
+
         return $warnings;
     }
 

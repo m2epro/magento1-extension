@@ -35,6 +35,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Add Products');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -48,12 +49,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = $this->getUrl('*/*/index',array('_current' => true, 'step' => 1));
-        $this->_addButton('next', array(
+        $backUrl = Mage::helper('M2ePro')->makeBackUrlParam(
+            '*/adminhtml_ebay_listing_productAdd/sourceMode', array(
+            'listing_id' => $this->getRequest()->getParam('listing_id'),
+            'listing_creation' => $this->getRequest()->getParam('listing_creation')
+            )
+        );
+
+        $url = $this->getUrl('*/*/index', array('_current' => true, 'step' => 1, 'back' => $backUrl));
+        $this->_addButton(
+            'next', array(
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'onclick'   => 'CommonHandlerObj.submitForm(\''.$url.'\');',
             'class'     => 'scalable next'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -64,7 +74,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_SourceMode
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 

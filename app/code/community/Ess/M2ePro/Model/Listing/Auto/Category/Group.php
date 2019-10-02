@@ -115,7 +115,7 @@ class Ess_M2ePro_Model_Listing_Auto_Category_Group extends Ess_M2ePro_Model_Comp
      */
     public function getCategories($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Listing_Auto_Category','group_id', $asObjects, $filters);
+        return $this->getRelatedSimpleItems('Listing_Auto_Category', 'group_id', $asObjects, $filters);
     }
 
     public function clearCategories()

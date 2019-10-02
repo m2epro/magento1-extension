@@ -8,26 +8,26 @@
 
 abstract class Ess_M2ePro_Model_Connector_Command_Pending_Responser
 {
-    protected $params = array();
+    protected $_params = array();
 
-    /** @var Ess_M2ePro_Model_Connector_Connection_Response $response */
-    protected $response = NULL;
+    /** @var Ess_M2ePro_Model_Connector_Connection_Response $_response */
+    protected $_response = null;
 
-    protected $preparedResponseData = array();
+    protected $_preparedResponseData = array();
 
     // ########################################
 
     public function __construct(array $params = array(), Ess_M2ePro_Model_Connector_Connection_Response $response)
     {
-        $this->params   = $params;
-        $this->response = $response;
+        $this->_params   = $params;
+        $this->_response = $response;
     }
 
     // ########################################
 
     protected function getResponse()
     {
-        return $this->response;
+        return $this->_response;
     }
 
     // ########################################
@@ -54,14 +54,20 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Responser
 
     public function getPreparedResponseData()
     {
-        return $this->preparedResponseData;
+        return $this->_preparedResponseData;
     }
 
     // ########################################
 
-    public function failDetected($messageText) {}
+    public function failDetected($messageText)
+    {
+        return null;
+    }
 
-    public function eventAfterExecuting() {}
+    public function eventAfterExecuting()
+    {
+        return null;
+    }
 
     //-----------------------------------------
 
@@ -74,14 +80,17 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Responser
 
     protected function prepareResponseData()
     {
-        $this->preparedResponseData = $this->getResponse()->getData();
+        $this->_preparedResponseData = $this->getResponse()->getData();
     }
 
     abstract protected function processResponseData();
 
     // ########################################
 
-    protected function processResponseMessages() {}
+    protected function processResponseMessages()
+    {
+        return null;
+    }
 
     // ########################################
 }

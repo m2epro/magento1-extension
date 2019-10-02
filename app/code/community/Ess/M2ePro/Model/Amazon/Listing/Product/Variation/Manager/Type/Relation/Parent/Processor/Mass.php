@@ -10,12 +10,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 {
     const MAX_PROCESSORS_COUNT_PER_ONE_TIME = 1000;
 
-    //########################################
+    /** @var Ess_M2ePro_Model_Listing_Product[] $_listingsProducts */
+    protected $_listingsProducts = array();
 
-    /** @var Ess_M2ePro_Model_Listing_Product[] $listingsProducts */
-    private $listingsProducts = array();
-
-    private $forceExecuting = true;
+    protected $_forceExecuting = true;
 
     //########################################
 
@@ -25,7 +23,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
      */
     public function setListingsProducts(array $listingsProducts)
     {
-        $this->listingsProducts = $listingsProducts;
+        $this->_listingsProducts = $listingsProducts;
         return $this;
     }
 
@@ -35,7 +33,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
      */
     public function setForceExecuting($forceExecuting = true)
     {
-        $this->forceExecuting = $forceExecuting;
+        $this->_forceExecuting = $forceExecuting;
         return $this;
     }
 
@@ -48,9 +46,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         $alreadyProcessed = array();
 
         foreach ($uniqueProcessors as $listingProductId => $processor) {
-            if (!$this->forceExecuting && count($alreadyProcessed) >= self::MAX_PROCESSORS_COUNT_PER_ONE_TIME) {
+            if (!$this->_forceExecuting && count($alreadyProcessed) >= self::MAX_PROCESSORS_COUNT_PER_ONE_TIME) {
                 break;
             }
+
             try {
                 $processor->process();
             } catch (\Exception $exception) {
@@ -61,7 +60,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             $alreadyProcessed[] = $listingProductId;
         }
 
-        if ($this->forceExecuting || count($uniqueProcessors) <= count($alreadyProcessed)) {
+        if ($this->_forceExecuting || count($uniqueProcessors) <= count($alreadyProcessed)) {
             return;
         }
 
@@ -85,11 +84,11 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor[]
      */
-    private function getUniqueProcessors()
+    protected function getUniqueProcessors()
     {
         $processors = array();
 
-        foreach ($this->listingsProducts as $listingProduct) {
+        foreach ($this->_listingsProducts as $listingProduct) {
             if (isset($processors[$listingProduct->getId()])) {
                 continue;
             }

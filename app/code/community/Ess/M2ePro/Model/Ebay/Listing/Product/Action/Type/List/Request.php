@@ -9,13 +9,13 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 {
-    protected $isVerifyCall = false;
+    protected $_isVerifyCall = false;
 
     //########################################
 
     protected function beforeBuildDataEvent()
     {
-        if ($this->isVerifyCall) {
+        if ($this->_isVerifyCall) {
             parent::beforeBuildDataEvent();
             return;
         }
@@ -39,7 +39,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
     public function getActionData()
     {
         if (!$uuid = $this->getEbayListingProduct()->getItemUUID()) {
-
             $uuid = $this->getEbayListingProduct()->generateItemUUID();
             $this->getEbayListingProduct()->setData('item_uuid', $uuid)->save();
         }
@@ -50,28 +49,22 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
                 'sku'       => $this->getSku(),
                 'item_uuid' => $uuid,
             ),
-
             $this->getGeneralData(),
-
             $this->getQtyData(),
             $this->getPriceData(),
-
             $this->getTitleData(),
             $this->getSubtitleData(),
             $this->getDescriptionData(),
             $this->getImagesData(),
-
             $this->getCategoriesData(),
             $this->getPaymentData(),
             $this->getReturnData(),
             $this->getShippingData(),
-
             $this->getVariationsData(),
-
             $this->getOtherData()
         );
 
-        $this->isVerifyCall && $data['verify_call'] = true;
+        $this->_isVerifyCall && $data['verify_call'] = true;
 
         return $data;
     }
@@ -149,7 +142,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
     {
         if (!$this->getIsVariationItem() || !$this->getMagentoProduct()->isConfigurableType() ||
             empty($data['variations_sets']) || !is_array($data['variations_sets'])) {
-
             return $data;
         }
 
@@ -166,7 +158,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
         $replacements = array();
 
         foreach ($this->getEbayListingProduct()->getCategoryTemplate()->getSpecifics(true) as $specific) {
-
             if (!$specific->isItemSpecificsMode() || !$specific->isCustomAttributeValueMode()) {
                 continue;
             }
@@ -206,7 +197,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
 
     public function setIsVerifyCall($value)
     {
-        $this->isVerifyCall = $value;
+        $this->_isVerifyCall = $value;
         return $this;
     }
 

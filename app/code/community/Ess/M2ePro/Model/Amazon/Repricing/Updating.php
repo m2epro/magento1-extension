@@ -21,7 +21,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         $updatedSkus                      = array();
 
         foreach ($listingsProductsRepricing as $listingProductRepricing) {
-
             $changeData = $this->getChangeData($listingProductRepricing);
             if ($changeData && !in_array($changeData['sku'], $updatedSkus, true)) {
                 $changesData[] = $changeData;
@@ -41,7 +40,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
 
     //########################################
 
-    private function getChangeData(Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing)
+    protected function getChangeData(Ess_M2ePro_Model_Amazon_Listing_Product_Repricing $listingProductRepricing)
     {
         $isDisabled = $listingProductRepricing->isDisabled();
 
@@ -70,7 +69,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         );
     }
 
-    private function sendData(array $changesData)
+    protected function sendData(array $changesData)
     {
         try {
             $result = $this->getHelper()->sendRequest(
@@ -81,7 +80,6 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
                 )
             );
         } catch (Exception $exception) {
-
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($exception->getMessage()),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -96,7 +94,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Updating extends Ess_M2ePro_Model_Amazon
         return true;
     }
 
-    private function updateListingsProductsRepricing(array $updatedProducts)
+    protected function updateListingsProductsRepricing(array $updatedProducts)
     {
         $resource  = Mage::getSingleton('core/resource');
         $connWrite = $resource->getConnection('core_write');

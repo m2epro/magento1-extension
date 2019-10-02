@@ -36,13 +36,14 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs extends Ess_M2ePro_Block_Admin
 
         // ---------------------------------------
         $params = array('label' => Mage::helper('M2ePro')->__('Summary'));
-        if ($activeTab == Ess_M2ePro_Helper_View_Development::TAB_SUMMARY || !in_array($activeTab,$allowedTabs)) {
+        if ($activeTab == Ess_M2ePro_Helper_View_Development::TAB_SUMMARY || !in_array($activeTab, $allowedTabs)) {
             $params['content'] = $this->getLayout()
                                       ->createBlock('M2ePro/adminhtml_development_tabs_summary')->toHtml();
         } else {
             $params['url'] = $this->getUrl('*/adminhtml_development/summaryTab');
             $params['class'] = 'ajax';
         }
+
         $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_SUMMARY, $params);
         // ---------------------------------------
 
@@ -55,13 +56,16 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs extends Ess_M2ePro_Block_Admin
             $params['url'] = $this->getUrl('*/adminhtml_development/aboutTab');
             $params['class'] = 'ajax';
         }
+
         $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_ABOUT, $params);
         // ---------------------------------------
 
-        $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_INSPECTION, array(
+        $this->addTab(
+            Ess_M2ePro_Helper_View_Development::TAB_INSPECTION, array(
             'label'     => Mage::helper('M2ePro')->__('Inspection'),
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_inspection')->toHtml(),
-        ));
+            )
+        );
 
         // ---------------------------------------
         $params = array('label' => Mage::helper('M2ePro')->__('Database'));
@@ -72,25 +76,34 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs extends Ess_M2ePro_Block_Admin
             $params['url'] = $this->getUrl('*/adminhtml_development/databaseTab');
             $params['class'] = 'ajax';
         }
+
         $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_DATABASE, $params);
         // ---------------------------------------
 
-        $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_TOOLS, array(
+        $this->addTab(
+            Ess_M2ePro_Helper_View_Development::TAB_TOOLS, array(
             'label'     => Mage::helper('M2ePro')->__('Tools'),
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_tools')->toHtml(),
-        ));
-        $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_MODULE, array(
+            )
+        );
+        $this->addTab(
+            Ess_M2ePro_Helper_View_Development::TAB_MODULE, array(
             'label'     => Mage::helper('M2ePro')->__('Module'),
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_module')->toHtml(),
-        ));
-        $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_CRON, array(
+            )
+        );
+        $this->addTab(
+            Ess_M2ePro_Helper_View_Development::TAB_CRON, array(
             'label'     => Mage::helper('M2ePro')->__('Cron'),
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_cron')->toHtml(),
-        ));
-        $this->addTab(Ess_M2ePro_Helper_View_Development::TAB_DEBUG, array(
+            )
+        );
+        $this->addTab(
+            Ess_M2ePro_Helper_View_Development::TAB_DEBUG, array(
             'label'     => Mage::helper('M2ePro')->__('Debug'),
             'content'   => $this->getLayout()->createBlock('M2ePro/adminhtml_development_tabs_debug')->toHtml(),
-        ));
+            )
+        );
 
         $this->setActiveTab($activeTab);
 

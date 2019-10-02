@@ -51,17 +51,22 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
                 'second_table.template_synchronization_id', (int)$filterSynchronizationTemplate
             );
         }
+
         // ---------------------------------------
 
         // join marketplace and accounts
         // ---------------------------------------
         $collection->getSelect()
-            ->join(array('a'=>Mage::getResourceModel('M2ePro/Account')->getMainTable()),
+            ->join(
+                array('a'=>Mage::getResourceModel('M2ePro/Account')->getMainTable()),
                 '(`a`.`id` = `main_table`.`account_id`)',
-                array('account_title'=>'title'))
-            ->join(array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
+                array('account_title'=>'title')
+            )
+            ->join(
+                array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
                 '(`m`.`id` = `main_table`.`marketplace_id`)',
-                array('marketplace_title'=>'title'));
+                array('marketplace_title'=>'title')
+            );
         // ---------------------------------------
 
         $this->setCollection($collection);
@@ -88,20 +93,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
             )
         );
 
-        $this->getMassactionBlock()->addItem('clear_logs', array(
+        $this->getMassactionBlock()->addItem(
+            'clear_logs', array(
             'label'    => Mage::helper('M2ePro')->__('Clear Log(s)'),
             'url'      => $this->getUrl('*/adminhtml_listing/clearLog', array('back' => $backUrl)),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         // ---------------------------------------
 
         // Set remove listings action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('delete_listings', array(
+        $this->getMassactionBlock()->addItem(
+            'delete_listings', array(
             'label'    => Mage::helper('M2ePro')->__('Delete Listing(s)'),
             'url'      => $this->getUrl('*/adminhtml_walmart_listing/delete', array('back' => $backUrl)),
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -254,7 +263,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
             Mage::helper('M2ePro')->escapeHtml($value) .
             '</span>';
 
-        /* @var $row Ess_M2ePro_Model_Listing */
+        /** @var $row Ess_M2ePro_Model_Listing */
         $accountTitle = $row->getData('account_title');
         $marketplaceTitle = $row->getData('marketplace_title');
 
@@ -292,8 +301,10 @@ HTML;
             return;
         }
 
-        $collection->getSelect()->where('main_table.title LIKE ? OR m.title LIKE ? OR a.title LIKE ?',
-                                        '%'. $value .'%');
+        $collection->getSelect()->where(
+            'main_table.title LIKE ? OR m.title LIKE ? OR a.title LIKE ?',
+            '%'. $value .'%'
+        );
     }
 
     //########################################
@@ -323,18 +334,24 @@ HTML;
 
     protected function _toHtml()
     {
-        $urls = Mage::helper('M2ePro')->jsonEncode(array(
+        $urls = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'adminhtml_listing/saveTitle' => Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_listing/saveTitle')
-        ));
+            )
+        );
 
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Cancel' => Mage::helper('M2ePro')->__('Cancel'),
             'Save' => Mage::helper('M2ePro')->__('Save'),
             'Edit Listing Title' => Mage::helper('M2ePro')->__('Edit Listing Title'),
-        ));
+            )
+        );
 
-        $uniqueTitleTxt = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')
-            ->__('The specified Title is already used for other Listing. Listing Title must be unique.'));
+        $uniqueTitleTxt = Mage::helper('M2ePro')->escapeJs(
+            Mage::helper('M2ePro')
+            ->__('The specified Title is already used for other Listing. Listing Title must be unique.')
+        );
 
         $constants = Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Walmart');
 

@@ -8,11 +8,11 @@
 
 class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single extends Ess_M2ePro_Model_Abstract
 {
-    /** @var Ess_M2ePro_Model_Processing $processing */
-    private $processing = null;
+    /** @var Ess_M2ePro_Model_Processing $_processing */
+    protected $_processing = null;
 
-    /** @var Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle */
-    private $requestPendingSingle = null;
+    /** @var Ess_M2ePro_Model_Request_Pending_Single $_requestPendingSingle */
+    protected $_requestPendingSingle = null;
 
     //########################################
 
@@ -26,20 +26,20 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single extends Ess_M
 
     public function getProcessing()
     {
-        if (!is_null($this->processing)) {
-            return $this->processing;
+        if ($this->_processing !== null) {
+            return $this->_processing;
         }
 
-        return $this->processing = Mage::getModel('M2ePro/Processing')->load($this->getProcessingId());
+        return $this->_processing = Mage::getModel('M2ePro/Processing')->load($this->getProcessingId());
     }
 
     public function getRequestPendingSingle()
     {
-        if (!is_null($this->requestPendingSingle)) {
-            return $this->requestPendingSingle;
+        if ($this->_requestPendingSingle !== null) {
+            return $this->_requestPendingSingle;
         }
 
-        return $this->requestPendingSingle = Mage::getModel('M2ePro/Request_Pending_Single')->load(
+        return $this->_requestPendingSingle = Mage::getModel('M2ePro/Request_Pending_Single')->load(
             $this->getRequestPendingSingleId()
         );
     }

@@ -16,22 +16,24 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Qty
      */
     public function getData()
     {
-        if (!isset($this->cachedData['qty'])) {
-            $this->cachedData['qty'] = $this->getWalmartListingProduct()->getQty();
+        if (!isset($this->_cachedData['qty'])) {
+            $this->_cachedData['qty'] = $this->getWalmartListingProduct()->getQty();
         }
 
         $data = array(
-            'qty' => $this->cachedData['qty'],
+            'qty' => $this->_cachedData['qty'],
         );
 
         $this->checkQtyWarnings();
 
-        if (!isset($this->cachedData['lag_time'])) {
-            $lagTime = $this->getWalmartListingProduct()->getSellingFormatTemplateSource()->getLagTime();
-            $this->cachedData['lag_time'] = $lagTime;
+        if (!isset($this->_cachedData['lag_time'])) {
+            $lagTime                       = $this->getWalmartListingProduct()
+                                                  ->getSellingFormatTemplateSource()
+                                                  ->getLagTime();
+            $this->_cachedData['lag_time'] = $lagTime;
         }
 
-        $data['lag_time'] = $this->cachedData['lag_time'];
+        $data['lag_time'] = $this->_cachedData['lag_time'];
 
         return $data;
     }
@@ -43,13 +45,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Qty
         $qtyMode = $this->getWalmartListing()->getWalmartSellingFormatTemplate()->getQtyMode();
         if ($qtyMode == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED ||
             $qtyMode == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT) {
-
             $listingProductId = $this->getListingProduct()->getId();
             $productId = $this->getWalmartListingProduct()->getActualMagentoProduct()->getProductId();
             $storeId = $this->getListing()->getStoreId();
 
             if (!empty(Ess_M2ePro_Model_Magento_Product::$statistics[$listingProductId][$productId][$storeId]['qty'])) {
-
                 $qtys = Ess_M2ePro_Model_Magento_Product::$statistics[$listingProductId][$productId][$storeId]['qty'];
                 foreach ($qtys as $type => $override) {
                     $this->addQtyWarnings($type);
@@ -62,16 +62,21 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Qty
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
             // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Manage Stock No" field were taken into consideration.
-            $this->addWarningMessage('During the Quantity Calculation the Settings in the "Manage Stock No" '.
-                'field were taken into consideration.');
+            // During the Quantity Calculation the Settings in the "Manage Stock No"
+            // field were taken into consideration.
+            $this->addWarningMessage(
+                'During the Quantity Calculation the Settings in the "Manage Stock No" '.
+                'field were taken into consideration.'
+            );
         }
 
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_BACKORDERS) {
             // M2ePro_TRANSLATIONS
             // During the Quantity Calculation the Settings in the "Backorders" field were taken into consideration.
-            $this->addWarningMessage('During the Quantity Calculation the Settings in the "Backorders" '.
-                'field were taken into consideration.');
+            $this->addWarningMessage(
+                'During the Quantity Calculation the Settings in the "Backorders" '.
+                'field were taken into consideration.'
+            );
         }
     }
 

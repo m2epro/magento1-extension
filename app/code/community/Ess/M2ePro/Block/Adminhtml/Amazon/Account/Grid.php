@@ -15,12 +15,16 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Grid extends Ess_M2ePro_Block_Ad
         $collection = Mage::getModel('M2ePro/Account')->getCollection();
 
         $collection->getSelect()
-            ->joinLeft(array('aa'=>Mage::getResourceModel('M2ePro/Amazon_Account')->getMainTable()),
+            ->joinLeft(
+                array('aa'=>Mage::getResourceModel('M2ePro/Amazon_Account')->getMainTable()),
                 '(`aa`.`account_id` = `main_table`.`id`)',
-                array('merchant_id'))
-            ->joinLeft(array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
+                array('merchant_id')
+            )
+            ->joinLeft(
+                array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
                 '(`m`.`id` = `aa`.`marketplace_id`)',
-                array('marketplace_title'=>'title'));
+                array('marketplace_title'=>'title')
+            );
 
         $this->setCollection($collection);
 
@@ -31,25 +35,31 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Grid extends Ess_M2ePro_Block_Ad
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
-            'header'    => Mage::helper('M2ePro')->__('ID'),
-            'align'     => 'right',
-            'width'     => '100px',
-            'type'      => 'number',
-            'index'     => 'id',
-            'filter_index' => 'main_table.id'
-        ));
+        $this->addColumn(
+            'id',
+            array(
+                'header'       => Mage::helper('M2ePro')->__('ID'),
+                'align'        => 'right',
+                'width'        => '100px',
+                'type'         => 'number',
+                'index'        => 'id',
+                'filter_index' => 'main_table.id'
+            )
+        );
 
-        $this->addColumn('title', array(
-            'header'    => Mage::helper('M2ePro')->__('Title / Info'),
-            'align'     => 'left',
-            'type'      => 'text',
-            'index'     => 'title',
-            'escape'    => true,
-            'filter_index' => 'main_table.title',
-            'frame_callback' => array($this, 'callbackColumnTitle'),
-            'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+        $this->addColumn(
+            'title',
+            array(
+                'header'                    => Mage::helper('M2ePro')->__('Title / Info'),
+                'align'                     => 'left',
+                'type'                      => 'text',
+                'index'                     => 'title',
+                'escape'                    => true,
+                'filter_index'              => 'main_table.title',
+                'frame_callback'            => array($this, 'callbackColumnTitle'),
+                'filter_condition_callback' => array($this, 'callbackFilterTitle')
+            )
+        );
 
         return parent::_prepareColumns();
     }

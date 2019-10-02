@@ -56,7 +56,6 @@ class Ess_M2ePro_Model_Observer_Product_Website_Update_Before extends Ess_M2ePro
 
         foreach ($productIds as $productId) {
             foreach ($websiteIds as $websiteId) {
-
                 $websiteUpdate = false;
                 foreach ($websiteUpdates as $wUpdate) {
                     /** @var Ess_M2ePro_Model_Magento_Product_Websites_Update $wUpdate */
@@ -113,7 +112,7 @@ class Ess_M2ePro_Model_Observer_Product_Website_Update_Before extends Ess_M2ePro
 
     //########################################
 
-    private function getAction($action)
+    protected function getAction($action)
     {
         switch ($action) {
             case 'add':

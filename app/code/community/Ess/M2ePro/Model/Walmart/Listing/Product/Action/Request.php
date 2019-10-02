@@ -11,22 +11,22 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Request
     /**
      * @var array
      */
-    private $params = array();
+    protected $params = array();
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator
      */
-    private $configurator = NULL;
+    protected $configurator = null;
 
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProduct = NULL;
+    protected $listingProduct = null;
 
     /**
      * @var array
      */
-    private $warningMessages = array();
+    protected $warningMessages = array();
 
     /**
      * @var array
@@ -177,7 +177,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Request
 
     protected function addWarningMessage($message)
     {
-        $this->warningMessages[md5($message)] = $message;
+        $this->warningMessages[sha1($message)] = $message;
     }
 
     /**

@@ -44,32 +44,39 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('schedule_id', array(
+        $this->addColumn(
+            'schedule_id', array(
             'header'    => Mage::helper('M2ePro')->__('ID'),
             'align'     => 'right',
             'type'      => 'number',
             'index'     => 'schedule_id',
             'filter_index' => 'schedule_id',
-        ));
+            )
+        );
 
-        $this->addColumn('job_code', array(
+        $this->addColumn(
+            'job_code', array(
             'header'    => Mage::helper('M2ePro')->__('Job Code'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'job_code',
             'filter_index' => 'job_code',
-        ));
+            )
+        );
 
-        $this->addColumn('status', array(
+        $this->addColumn(
+            'status', array(
             'header'    => Mage::helper('M2ePro')->__('Status'),
             'align'     => 'left',
             'width'     => '50px',
             'type'      => 'text',
             'index'     => 'status',
             'filter_index' => 'status',
-        ));
+            )
+        );
 
-        $this->addColumn('created_at', array(
+        $this->addColumn(
+            'created_at', array(
             'header'    => Mage::helper('M2ePro')->__('Created At'),
             'align'     => 'right',
             'width'     => '150px',
@@ -77,9 +84,11 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
             'index'     => 'created_at',
             'filter_index' => 'created_at',
             'frame_callback' => array($this, 'callbackColumnIfEmptyThenNotAvailable'),
-        ));
+            )
+        );
 
-        $this->addColumn('scheduled_at', array(
+        $this->addColumn(
+            'scheduled_at', array(
             'header'    => Mage::helper('M2ePro')->__('Scheduled At'),
             'align'     => 'right',
             'width'     => '150px',
@@ -87,9 +96,11 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
             'index'     => 'scheduled_at',
             'filter_index' => 'scheduled_at',
             'frame_callback' => array($this, 'callbackColumnIfEmptyThenNotAvailable'),
-        ));
+            )
+        );
 
-        $this->addColumn('executed_at', array(
+        $this->addColumn(
+            'executed_at', array(
             'header'    => Mage::helper('M2ePro')->__('Executed At'),
             'align'     => 'right',
             'width'     => '150px',
@@ -97,9 +108,11 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
             'index'     => 'executed_at',
             'filter_index' => 'executed_at',
             'frame_callback' => array($this, 'callbackColumnIfEmptyThenNotAvailable'),
-        ));
+            )
+        );
 
-        $this->addColumn('finished_at', array(
+        $this->addColumn(
+            'finished_at', array(
             'header'    => Mage::helper('M2ePro')->__('Finished At'),
             'align'     => 'right',
             'width'     => '150px',
@@ -107,16 +120,19 @@ class Ess_M2ePro_Block_Adminhtml_Development_Inspection_CronScheduleTable_Grid
             'index'     => 'finished_at',
             'filter_index' => 'finished_at',
             'frame_callback' => array($this, 'callbackColumnIfEmptyThenNotAvailable'),
-        ));
+            )
+        );
 
-        $this->addColumn('messages', array(
+        $this->addColumn(
+            'messages', array(
             'header'    => Mage::helper('M2ePro')->__('Messages'),
             'align'     => 'center',
             'width'     => '40px',
             'type'      => 'text',
             'index'     => 'messages',
             'frame_callback' => array($this, 'callbackColumnMessages'),
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_AutoActions_Handler
 {
     //########################################
 
-    private function getAffectedInstructionTypes()
+    protected function getAffectedInstructionTypes()
     {
         return array(
             Ess_M2ePro_Model_Listing_Auto_Actions_Listing::INSTRUCTION_TYPE_STOP,
@@ -38,9 +38,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Instruction_AutoActions_Handler
         $params = array();
 
         if ($input->hasInstructionWithType(
-                Ess_M2ePro_Model_Listing_Auto_Actions_Listing::INSTRUCTION_TYPE_STOP_AND_REMOVE
+            Ess_M2ePro_Model_Listing_Auto_Actions_Listing::INSTRUCTION_TYPE_STOP_AND_REMOVE
         )) {
-
             if (!$input->getListingProduct()->isStoppable()) {
                 $removeHandler = Mage::getModel(
                     'M2ePro/Amazon_Listing_Product_RemoveHandler',

@@ -47,7 +47,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
 
     //########################################
 
-    private function getAllCheckers()
+    protected function getAllCheckers()
     {
         return array(
             'NotListed',
@@ -61,14 +61,16 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Instruction_SynchronizationTempla
      * @return Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTemplate_Checker_Abstract
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    private function getCheckerModel($checkerNick)
+    protected function getCheckerModel($checkerNick)
     {
         $checkerModelName = 'M2ePro/Walmart_Listing_Product_Instruction_SynchronizationTemplate_Checker_'.$checkerNick;
 
         if (!class_exists(Mage::getConfig()->getModelClassName($checkerModelName))) {
-            throw new Ess_M2ePro_Model_Exception_Logic(sprintf(
-                'Checker model "%s" does not exist.', $checkerModelName
-            ));
+            throw new Ess_M2ePro_Model_Exception_Logic(
+                sprintf(
+                    'Checker model "%s" does not exist.', $checkerModelName
+                )
+            );
         }
 
         $checkerModel = Mage::getModel($checkerModelName);

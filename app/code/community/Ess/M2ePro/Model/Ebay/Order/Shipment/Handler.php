@@ -23,7 +23,6 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
         }
 
         if (empty($trackingDetails)) {
-
             return $order->getChildObject()->updateShippingStatus()
                 ? self::HANDLE_RESULT_SUCCEEDED
                 : self::HANDLE_RESULT_FAILED;
@@ -32,7 +31,6 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
         $itemsToShip = $this->getItemsToShip($order, $shipment);
 
         if (empty($itemsToShip) || count($itemsToShip) == $order->getItemsCollection()->getSize()) {
-
             return $order->getChildObject()->updateShippingStatus($trackingDetails)
                 ? self::HANDLE_RESULT_SUCCEEDED
                 : self::HANDLE_RESULT_FAILED;
@@ -52,7 +50,7 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
 
     //########################################
 
-    private function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
+    protected function getItemsToShip(Ess_M2ePro_Model_Order $order, Mage_Sales_Model_Order_Shipment $shipment)
     {
         $productTypesNotAllowedByDefault = array(
             Mage_Catalog_Model_Product_Type::TYPE_BUNDLE,
@@ -67,7 +65,7 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
             $orderItem = $shipmentItem->getOrderItem();
             $parentOrderItemId = $orderItem->getParentItemId();
 
-            if (!is_null($parentOrderItemId)) {
+            if ($parentOrderItemId !== null) {
                 !in_array($parentOrderItemId, $allowedItems) && ($allowedItems[] = $parentOrderItemId);
                 continue;
             }
@@ -76,8 +74,7 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
                 $allowedItems[] = $orderItem->getId();
             }
 
-            $additionalData = $orderItem->getAdditionalData();
-            $additionalData = is_string($additionalData) ? @unserialize($additionalData) : array();
+            $additionalData = Mage::helper('M2ePro')->unserialize($orderItem->getAdditionalData());
 
             $itemId = $transactionId = null;
             $orderItemDataIdentifier = Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER;
@@ -96,12 +93,13 @@ class Ess_M2ePro_Model_Ebay_Order_Shipment_Handler extends Ess_M2ePro_Model_Orde
                 if (isset($additionalData[$orderItemDataIdentifier]['items'][0]['item_id'])) {
                     $itemId = $additionalData[$orderItemDataIdentifier]['items'][0]['item_id'];
                 }
+
                 if (isset($additionalData[$orderItemDataIdentifier]['items'][0]['transaction_id'])) {
                     $transactionId = $additionalData[$orderItemDataIdentifier]['items'][0]['transaction_id'];
                 }
             }
 
-            if (is_null($itemId) || is_null($transactionId)) {
+            if ($itemId === null || $transactionId === null) {
                 continue;
             }
 

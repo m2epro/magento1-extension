@@ -44,14 +44,13 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher extends Mage_Core_Model_A
 
     protected function processOrders(array $orders, $action, $connectorName, array $params = array())
     {
-        if (count($orders) == 0) {
+        if (empty($orders)) {
             return false;
         }
 
         /** @var $orders Ess_M2ePro_Model_Order[] */
 
         foreach ($orders as $order) {
-
             try {
                 $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
 
@@ -72,7 +71,6 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher extends Mage_Core_Model_A
 
                 return false;
             }
-
         }
 
         return true;

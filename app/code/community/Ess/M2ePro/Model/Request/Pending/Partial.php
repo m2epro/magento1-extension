@@ -65,7 +65,7 @@ class Ess_M2ePro_Model_Request_Pending_Partial extends Ess_M2ePro_Model_Abstract
 
     public function addResultData(array $data)
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Instance must be loaded first.');
         }
 

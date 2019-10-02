@@ -18,7 +18,7 @@ class Ess_M2ePro_Helper_Component_Ebay_PickupStore extends Mage_Core_Helper_Abst
 
         $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
 
-        if (!is_null($sessionCache->getValue('bopis'))) {
+        if ($sessionCache->getValue('bopis') !== null) {
             return $sessionCache->getValue('bopis');
         }
 

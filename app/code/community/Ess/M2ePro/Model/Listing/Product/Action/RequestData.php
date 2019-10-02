@@ -11,12 +11,12 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_RequestData
     /**
      * @var array
      */
-    protected $data = array();
+    protected $_data = array();
 
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    protected $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_RequestData
      */
     public function setData(array $data)
     {
-        $this->data = $data;
+        $this->_data = $data;
         return $this;
     }
 
@@ -35,7 +35,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_RequestData
      */
     public function getData()
     {
-        return $this->data;
+        return $this->_data;
     }
 
     // ---------------------------------------
@@ -45,7 +45,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_RequestData
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $object)
     {
-        $this->listingProduct = $object;
+        $this->_listingProduct = $object;
     }
 
     /**
@@ -53,7 +53,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_Action_RequestData
      */
     public function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################

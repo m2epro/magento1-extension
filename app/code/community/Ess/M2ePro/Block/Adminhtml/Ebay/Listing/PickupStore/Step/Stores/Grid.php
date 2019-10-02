@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
     extends Mage_Adminhtml_Block_Widget_Grid
 {
-    protected $listing;
+    protected $_listing;
 
     //########################################
 
@@ -17,7 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
     {
         parent::__construct();
 
-        $this->listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+        $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         $this->setId('ebayListingProductPickupStoreGrid');
 
@@ -37,8 +37,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
     protected function _prepareCollection()
     {
         $pickupStoreCollection = Mage::getModel('M2ePro/Ebay_Account_PickupStore')->getCollection();
-        $pickupStoreCollection->addFieldToFilter('account_id', $this->listing->getAccountId());
-        $pickupStoreCollection->addFieldToFilter('marketplace_id', $this->listing->getMarketplaceId());
+        $pickupStoreCollection->addFieldToFilter('account_id', $this->_listing->getAccountId());
+        $pickupStoreCollection->addFieldToFilter('marketplace_id', $this->_listing->getMarketplaceId());
 
         // Set collection to grid
         $this->setCollection($pickupStoreCollection);
@@ -48,16 +48,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('name', array(
+        $this->addColumn(
+            'name', array(
             'header'    => Mage::helper('M2ePro')->__('Name / Location ID'),
             'align'     => 'left',
             'type'      => 'text',
             'index'     => 'name',
             'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('location_id', array(
+        $this->addColumn(
+            'location_id', array(
             'header'    => Mage::helper('M2ePro')->__('Address'),
             'align'     => 'left',
             'type'      => 'text',
@@ -67,9 +70,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
             'escape'    => true,
             'frame_callback' => array($this, 'callbackColumnLocationId'),
             'filter_condition_callback' => array($this, 'callbackFilterLocation')
-        ));
+            )
+        );
 
-        $this->addColumn('phone', array(
+        $this->addColumn(
+            'phone', array(
             'header'    => Mage::helper('M2ePro')->__('Details'),
             'align'     => 'left',
             'type'      => 'text',
@@ -79,7 +84,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
             'escape'    => true,
             'frame_callback' => array($this, 'callbackColumnDetails'),
             'filter_condition_callback' => array($this, 'callbackFilterDetails')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -91,10 +97,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
 
         // Set mass-action
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('fake', array(
+        $this->getMassactionBlock()->addItem(
+            'fake', array(
             'label' => '&nbsp;&nbsp;&nbsp;&nbsp;',
             'url'   => '#',
-        ));
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -134,13 +142,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Stores_Grid
 
         $region = $row->getData('region');
         $city = $row->getData('city');
-        $address1 = $row->getData('address_1');
-        $address2 = $row->getData('address_2');
+        $addressOne = $row->getData('address_1');
+        $addressTwo = $row->getData('address_2');
 
-        $addressHtml = "{$realCountry}, {$region}, {$city}, {$address1}";
-        if (!empty($address2)) {
-            $addressHtml .= '<br/>' . $address2;
+        $addressHtml = "{$realCountry}, {$region}, {$city}, {$addressOne}";
+        if (!empty($addressTwo)) {
+            $addressHtml .= '<br/>' . $addressTwo;
         }
+
         $addressHtml .= ', ' .$row->getData('postal_code');
 
         return "<div>{$addressHtml}</div>";
@@ -254,9 +263,11 @@ HTML;
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/storesStepGrid', array(
-            'id' => $this->listing->getId()
-        ));
+        return $this->getUrl(
+            '*/*/storesStepGrid', array(
+            'id' => $this->_listing->getId()
+            )
+        );
     }
 
     public function getRowUrl($row)

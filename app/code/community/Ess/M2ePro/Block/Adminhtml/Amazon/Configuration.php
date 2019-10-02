@@ -27,6 +27,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration extends Ess_M2ePro_Block_A
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Configuration');
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -56,7 +57,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration extends Ess_M2ePro_Block_A
 
 JAVASCIRPT;
 
-        $activeTab = !is_null($this->getData('active_tab')) ? $this->getData('active_tab')
+        $activeTab = $this->getData('active_tab') !== null ? $this->getData('active_tab')
             : Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs::TAB_ID_MARKETPLACE;
         $tabsBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_amazon_configuration_tabs', '', array('active_tab' => $activeTab)

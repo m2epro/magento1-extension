@@ -37,8 +37,8 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Refund_ItemsRequester
             parent::getProcessingParams(),
             array(
                 'request_data' => $this->getRequestData(),
-                'order_id'     => $this->params['order']['order_id'],
-                'change_id'    => $this->params['order']['change_id'],
+                'order_id'     => $this->_params['order']['order_id'],
+                'change_id'    => $this->_params['order']['change_id'],
                 'action_type'  => Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_REFUND,
                 'lock_name'    => 'refund_order',
                 'start_date'   => Mage::helper('M2ePro')->getCurrentGmtDate(),
@@ -51,10 +51,10 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Refund_ItemsRequester
     public function getRequestData()
     {
         return array(
-            'order_id' => $this->params['order']['amazon_order_id'],
-            'currency' => $this->params['order']['currency'],
+            'order_id' => $this->_params['order']['amazon_order_id'],
+            'currency' => $this->_params['order']['currency'],
             'type'     => 'Refund',
-            'items'    => $this->params['order']['items'],
+            'items'    => $this->_params['order']['items'],
         );
     }
 

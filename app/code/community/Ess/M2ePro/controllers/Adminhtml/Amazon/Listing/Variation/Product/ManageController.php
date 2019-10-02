@@ -69,9 +69,15 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
 
     // ---------------------------------------
 
-    protected function addNotificationMessages() {}
+    protected function addNotificationMessages()
+    {
+        return null;
+    }
 
-    protected function beforeAddContentEvent() {}
+    protected function beforeAddContentEvent()
+    {
+        return null;
+    }
 
     // ---------------------------------------
 
@@ -105,8 +111,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
 
         $a = $this->hasChildWithWarning($productId);
         if ($a) {
-            $message = Mage::helper('M2ePro')->__('For one of the Child Amazon Products the accordance of Magento
-            Product Variation is not set. Please, specify a Variation for further work with this Child Product.');
+            $message = Mage::helper('M2ePro')->__(
+                'For one of the Child Amazon Products the accordance of Magento
+            Product Variation is not set. Please, specify a Variation for further work with this Child Product.'
+            );
             $this->_getSession()->addWarning($message);
         }
 
@@ -240,10 +248,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         $html = $settings->toHtml();
         $messages = $settings->getMessages();
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'error_icon' => count($messages) > 0 ? $settings->getMessagesType() : '',
-            'html' => $html
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                    'error_icon' => !empty($messages) ? $settings->getMessagesType() : '',
+                    'html' => $html
+                )
+            )
+        );
     }
 
     public function setGeneralIdOwnerAction()
@@ -251,22 +263,26 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         $listingProductId = $this->getRequest()->getParam('product_id');
         $generalIdOwner = $this->getRequest()->getParam('general_id_owner', null);
 
-        if (empty($listingProductId) || is_null($generalIdOwner)) {
+        if (empty($listingProductId) || $generalIdOwner === null) {
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
         if ($generalIdOwner != Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_YES) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(
-                $this->setGeneralIdOwner($listingProductId, $generalIdOwner)
-            ));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    $this->setGeneralIdOwner($listingProductId, $generalIdOwner)
+                )
+            );
         }
 
         $sku = Mage::helper('M2ePro/Data_Session')->getValue('listing_product_setting_owner_sku_' . $listingProductId);
 
         if (!$this->hasListingProductSku($listingProductId) && empty($sku)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(
-                array('success' => false, 'empty_sku' => true)
-            ));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array('success' => false, 'empty_sku' => true)
+                )
+            );
         }
 
         $data = $this->setGeneralIdOwner($listingProductId, $generalIdOwner);
@@ -274,11 +290,13 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         if (!$data['success']) {
             $mainBlock = $this->loadLayout()->getLayout()
                 ->createBlock('M2ePro/adminhtml_amazon_listing_template_description_main');
-            $mainBlock->setMessages(array(
+            $mainBlock->setMessages(
+                array(
                 array(
                 'type' => 'warning',
                 'text' => $data['msg']
-            )));
+                ))
+            );
             $data['html'] = $mainBlock->toHtml();
         } else {
             $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $listingProductId);
@@ -297,7 +315,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         $sku = $this->getRequest()->getParam('sku');
         $msg = '';
 
-        if (empty($listingProductId) || is_null($sku)) {
+        if (empty($listingProductId) || $sku === null) {
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
@@ -308,7 +326,6 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         } else if ($this->isExistInOtherListings($listingProduct, $sku)) {
             $msg = Mage::helper('M2ePro')->__('This SKU is already being used in M2E Pro 3rd Party Listing.');
         } else {
-
             $skuInfo = $this->getSkuInfo($listingProduct, $sku);
 
             if (!$skuInfo) {
@@ -329,10 +346,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         }
 
         if (!empty($msg)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'success' => false,
-                'msg' => $msg
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'success' => false,
+                    'msg' => $msg
+                    )
+                )
+            );
         }
 
         Mage::helper('M2ePro/Data_Session')->setValue('listing_product_setting_owner_sku_' . $listingProductId, $sku);
@@ -379,12 +400,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         $listingProductId = $this->getRequest()->getParam('product_id');
         $variationTheme   = $this->getRequest()->getParam('variation_theme', null);
 
-        if (empty($listingProductId) || is_null($variationTheme)) {
+        if (empty($listingProductId) || $variationTheme === null) {
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product',$listingProductId);
+        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $listingProductId);
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
@@ -464,7 +485,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         );
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product',$productId);
+        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $productId);
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();
@@ -737,7 +758,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         $attributeAutoAction = $this->getRequest()->getParam('attribute_auto_action');
         $optionAutoAction = $this->getRequest()->getParam('option_auto_action');
 
-        if (is_null($attributeAutoAction) || is_null($optionAutoAction)) {
+        if ($attributeAutoAction === null || $optionAutoAction === null) {
             return $this->getResponse()->setBody('You should provide correct parameters.');
         }
 
@@ -808,11 +829,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
 
     //########################################
 
-    private function isExistInM2eProListings($listingProduct, $sku)
+    protected function isExistInM2eProListings($listingProduct, $sku)
     {
         $listingTable = Mage::getResourceModel('M2ePro/Listing')->getMainTable();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $collection->getSelect()->join(
             array('l'=>$listingTable),
@@ -820,38 +841,39 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
             array()
         );
 
-        $collection->addFieldToFilter('sku',$sku);
-        $collection->addFieldToFilter('account_id',$listingProduct->getAccount()->getId());
+        $collection->addFieldToFilter('sku', $sku);
+        $collection->addFieldToFilter('account_id', $listingProduct->getAccount()->getId());
 
         return $collection->getSize() > 0;
     }
 
-    private function isExistInOtherListings($listingProduct, $sku)
+    protected function isExistInOtherListings($listingProduct, $sku)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Other_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Other_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
 
-        $collection->addFieldToFilter('sku',$sku);
-        $collection->addFieldToFilter('account_id',$listingProduct->getAccount()->getId());
+        $collection->addFieldToFilter('sku', $sku);
+        $collection->addFieldToFilter('account_id', $listingProduct->getAccount()->getId());
 
         return $collection->getSize() > 0;
     }
 
-    private function getSkuInfo($listingProduct, $sku)
+    protected function getSkuInfo($listingProduct, $sku)
     {
         try {
 
             /** @var $dispatcherObject Ess_M2ePro_Model_Amazon_Connector_Dispatcher */
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('product','search','asinBySkus',
-                                                                   array('include_info'  => true,
+            $connectorObj = $dispatcherObject->getVirtualConnector(
+                'product', 'search', 'asinBySkus',
+                array('include_info'  => true,
                                                                          'only_realtime' => true,
                                                                          'items'         => array($sku)),
-                                                                   'items', $listingProduct->getAccount()->getId());
+                'items', $listingProduct->getAccount()->getId()
+            );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
-
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
@@ -861,7 +883,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         return $response[$sku];
     }
 
-    private function hasListingProductSku($productId)
+    protected function hasListingProductSku($productId)
     {
         $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $productId);
 
@@ -869,12 +891,12 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
         return !empty($sku);
     }
 
-    private function setGeneralIdOwner($productId, $generalIdOwner)
+    protected function setGeneralIdOwner($productId, $generalIdOwner)
     {
         $data = array('success' => true);
 
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product',$productId);
+        $listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject('Listing_Product', $productId);
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
         $amazonListingProduct = $listingProduct->getChildObject();

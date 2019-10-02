@@ -28,29 +28,35 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs
 
     protected function _beforeToHtml()
     {
-        $this->addTab('general', array(
+        $this->addTab(
+            'general', array(
             'label'   => Mage::helper('M2ePro')->__('General'),
             'title'   => Mage::helper('M2ePro')->__('General'),
             'content' => $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_amazon_template_description_edit_tabs_general'
             )->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('definition', array(
+        $this->addTab(
+            'definition', array(
             'label'   => Mage::helper('M2ePro')->__('Definition'),
             'title'   => Mage::helper('M2ePro')->__('Definition'),
             'content' => $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_amazon_template_description_edit_tabs_definition'
             )->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('specifics', array(
+        $this->addTab(
+            'specifics', array(
             'label'   => Mage::helper('M2ePro')->__('Specifics'),
             'title'   => Mage::helper('M2ePro')->__('Specifics'),
             'content' => $this->getLayout()->createBlock(
                 'M2ePro/adminhtml_amazon_template_description_edit_tabs_specifics'
             )->toHtml(),
-        ));
+            )
+        );
 
         $this->setActiveTab($this->getRequest()->getParam('tab', 'general'));
 

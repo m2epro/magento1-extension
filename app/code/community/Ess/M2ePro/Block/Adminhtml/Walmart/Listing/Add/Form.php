@@ -28,12 +28,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
     {
         // ---------------------------------------
 
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/adminhtml_walmart_listing/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -46,11 +48,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => 'Add',
                 'onclick' => '',
                 'id' => 'add_account_button',
-            ));
+                )
+            );
 
         $this->setChild('add_account_button', $buttonBlock);
         // ---------------------------------------
@@ -72,12 +76,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label' => Mage::helper('M2ePro')->__('Insert'),
                 'onclick' => "WalmartListingChannelSettingsHandlerObj.appendToText"
                     ."('condition_note_custom_attribute', 'condition_note_value');",
                 'class' => 'condition_note_value_insert_button'
-            ));
+                )
+            );
         $this->setChild('condition_note_value_insert_button', $buttonBlock);
 
         // ---------------------------------------
@@ -141,7 +147,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
         return self::getDefaultFieldsValues();
     }
 
-    static function getDefaultFieldsValues()
+    public static function getDefaultFieldsValues()
     {
         return array(
             'template_selling_format_id' => '',
@@ -158,7 +164,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
         }
 

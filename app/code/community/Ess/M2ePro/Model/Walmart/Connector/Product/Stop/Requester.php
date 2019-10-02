@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
     {
         $identifier = parent::getLockIdentifier();
 
-        if (!empty($this->params['remove'])) {
+        if (!empty($this->_params['remove'])) {
             $identifier .= '_and_remove';
         }
 
@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
 
     protected function getLogsAction()
     {
-        return !empty($this->params['remove']) ?
+        return !empty($this->_params['remove']) ?
                Ess_M2ePro_Model_Listing_Log::ACTION_STOP_AND_REMOVE_PRODUCT :
                Ess_M2ePro_Model_Listing_Log::ACTION_STOP_PRODUCT_ON_COMPONENT;
     }
@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
         $validationResult = $validator->validate();
 
         if (!$validationResult && $this->listingProduct->isDeleted()) {
-            if (!is_null($parentListingProduct)) {
+            if ($parentListingProduct !== null) {
                 $parentListingProduct->loadInstance($parentListingProduct->getId());
 
                 /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartParentListingProduct */
@@ -72,7 +72,6 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
         }
 
         foreach ($validator->getMessages() as $messageData) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData($messageData['text'], $messageData['type']);
 
@@ -103,7 +102,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
             $filteredByStatusChildListingProducts
         );
 
-        if (empty($this->params['remove']) && empty($filteredByStatusNotLockedChildListingProducts)) {
+        if (empty($this->_params['remove']) && empty($filteredByStatusNotLockedChildListingProducts)) {
             $this->listingProduct->setData('no_child_for_processing', true);
             return false;
         }
@@ -115,12 +114,14 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
             return false;
         }
 
-        if (!empty($this->params['remove'])) {
+        if (!empty($this->_params['remove'])) {
             $walmartListingProduct->getVariationManager()->switchModeToAnother();
 
-            $this->listingProduct->addData(array(
+            $this->listingProduct->addData(
+                array(
                 'status' => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED,
-            ));
+                )
+            );
             $this->listingProduct->save();
 
             $this->getProcessingRunner()->stop();
@@ -146,7 +147,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
             $childListingsProductsIds[] = $listingProduct->getId();
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('id', array('in' => $childListingsProductsIds));
 
@@ -163,16 +164,18 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
         foreach ($processChildListingsProducts as $childListingProduct) {
             $processingRunner = Mage::getModel('M2ePro/Walmart_Connector_Product_ProcessingRunner');
 
-            $params = array_merge($this->params, array('is_parent_action' => true));
+            $params = array_merge($this->_params, array('is_parent_action' => true));
 
-            $processingRunner->setParams(array(
+            $processingRunner->setParams(
+                array(
                 'listing_product_id' => $childListingProduct->getId(),
                 'configurator'       => $this->listingProduct->getActionConfigurator()->getData(),
                 'action_type'        => $this->getActionType(),
                 'lock_identifier'    => $this->getLockIdentifier(),
                 'requester_params'   => $params,
                 'group_hash'         => $groupHash,
-            ));
+                )
+            );
 
             $processingRunner->start();
         }
@@ -192,7 +195,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
 
         foreach ($listingProducts as $id => $childListingProduct) {
             if ((!$childListingProduct->isListed() || !$childListingProduct->isStoppable()) &&
-                empty($this->params['remove'])
+                empty($this->_params['remove'])
             ) {
                 continue;
             }

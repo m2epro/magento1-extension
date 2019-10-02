@@ -15,7 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Messages
     {
         $messageText = parent::getCurrencyConversionMessage($marketplaceCurrency);
 
-        if (is_null($messageText)) {
+        if ($messageText === null) {
             return NULL;
         }
 

@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_Payment
      */
-    private $paymentTemplateModel = NULL;
+    protected $_paymentTemplateModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->paymentTemplateModel = NULL;
+        $temp && $this->_paymentTemplateModel = null;
         return $temp;
     }
 
@@ -37,13 +37,13 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
      */
     public function getPaymentTemplate()
     {
-        if (is_null($this->paymentTemplateModel)) {
-            $this->paymentTemplateModel = Mage::helper('M2ePro')->getCachedObject(
+        if ($this->_paymentTemplateModel === null) {
+            $this->_paymentTemplateModel = Mage::helper('M2ePro')->getCachedObject(
                 'Ebay_Template_Payment', $this->getTemplatePaymentId(), NULL, array('template')
             );
         }
 
-        return $this->paymentTemplateModel;
+        return $this->_paymentTemplateModel;
     }
 
     /**
@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
      */
     public function setPaymentTemplate(Ess_M2ePro_Model_Ebay_Template_Payment $instance)
     {
-         $this->paymentTemplateModel = $instance;
+         $this->_paymentTemplateModel = $instance;
     }
 
     //########################################

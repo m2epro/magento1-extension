@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 
     //########################################
 
-    private function matchAttributes($channelAttributes)
+    protected function matchAttributes($channelAttributes)
     {
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute $attributeMatcher */
         $attributeMatcher = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Matcher_Attribute');

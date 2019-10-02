@@ -26,12 +26,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form extends Mage_Admi
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $this->setForm($form);
 
@@ -46,8 +48,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form extends Mage_Admi
         /** @var Ess_M2ePro_Model_Marketplace[] $marketplaces */
         $marketplaces = Mage::helper('M2ePro/Component_Walmart')->getCollection('Marketplace')
                                                         ->setOrder('group_title', 'ASC')
-                                                        ->setOrder('sorder','ASC')
-                                                        ->setOrder('title','ASC')
+                                                        ->setOrder('sorder', 'ASC')
+                                                        ->setOrder('title', 'ASC')
                                                         ->getItems();
         $groups = array();
         $storedStatuses = array();
@@ -84,7 +86,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Marketplace_Edit_Form extends Mage_Admi
                     'params'   => array('locked' => $isLocked)
                 );
 
-                if (is_null($marketplace['instance']->getData('developer_key'))) {
+                if ($marketplace['instance']->getData('developer_key') === null) {
                     $disabledMarketplaces[] = $marketplace;
                 } else {
                     $groups[$key]['marketplaces'][] = $marketplace;

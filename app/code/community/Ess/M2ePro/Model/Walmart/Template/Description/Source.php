@@ -11,14 +11,14 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
     const GALLERY_IMAGES_COUNT_MAX = 8;
 
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $descriptionTemplateModel Ess_M2ePro_Model_Template_Description
+     * @var $_descriptionTemplateModel Ess_M2ePro_Model_Template_Description
      */
-    private $descriptionTemplateModel = null;
+    protected $_descriptionTemplateModel = null;
 
     //########################################
 
@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
      */
     public function setDescriptionTemplate(Ess_M2ePro_Model_Template_Description $instance)
     {
-        $this->descriptionTemplateModel = $instance;
+        $this->_descriptionTemplateModel = $instance;
         return $this;
     }
 
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
      */
     public function getDescriptionTemplate()
     {
-        return $this->descriptionTemplateModel;
+        return $this->_descriptionTemplateModel;
     }
 
     /**
@@ -65,7 +65,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
      */
     public function getWalmartDescriptionTemplate()
     {
-        return $this->descriptionTemplateModel->getChildObject();
+        return $this->_descriptionTemplateModel->getChildObject();
     }
 
     //########################################
@@ -214,7 +214,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         }
 
         if ($this->getWalmartDescriptionTemplate()->isMsrpRrpModeCustomAttribute()) {
-
             $src = $this->getWalmartDescriptionTemplate()->getMsrpRrpSource();
             $result = $this->getMagentoProductAttributeValue(
                 $src['custom_attribute'],
@@ -222,9 +221,9 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
             );
         }
 
-        is_string($result) && $result = str_replace(',','.',$result);
+        is_string($result) && $result = str_replace(',', '.', $result);
 
-        return round((float)$result,2);
+        return round((float)$result, 2);
     }
 
     /**
@@ -235,7 +234,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
     {
         $src = $this->getWalmartDescriptionTemplate()->getDescriptionSource();
 
-        /* @var $templateProcessor Mage_Core_Model_Email_Template_Filter */
+        /** @var $templateProcessor Mage_Core_Model_Email_Template_Filter */
         $templateProcessor = Mage::getModel('Core/Email_Template_Filter');
 
         switch ($src['mode']) {
@@ -263,7 +262,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         $allowedTags = array('<p>', '<br>', '<ul>', '<li>', '<b>');
 
         $description = str_replace(array('<![CDATA[', ']]>'), '', $description);
-        $description = strip_tags($description,implode($allowedTags));
+        $description = strip_tags($description, implode($allowedTags));
 
         return $description;
     }
@@ -421,7 +420,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         }
 
         if ($this->getWalmartDescriptionTemplate()->isImageMainModeAttribute()) {
-
             $src = $this->getWalmartDescriptionTemplate()->getImageMainSource();
             $image = $this->getMagentoProduct()->getImage($src['attribute']);
         }
@@ -451,12 +449,10 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         $limitGalleryImages = self::GALLERY_IMAGES_COUNT_MAX;
 
         if ($this->getWalmartDescriptionTemplate()->isGalleryImagesModeProduct()) {
-
             $limitGalleryImages = (int)$gallerySource['limit'];
             $galleryImagesTemp = $this->getMagentoProduct()->getGalleryImages($limitGalleryImages + 1);
 
             foreach ($galleryImagesTemp as $image) {
-
                 if (array_key_exists($image->getHash(), $galleryImages)) {
                     continue;
                 }
@@ -466,14 +462,12 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         }
 
         if ($this->getWalmartDescriptionTemplate()->isGalleryImagesModeAttribute()) {
-
             $limitGalleryImages = self::GALLERY_IMAGES_COUNT_MAX;
 
             $galleryImagesTemp = $this->getMagentoProduct()->getAttributeValue($gallerySource['attribute']);
             $galleryImagesTemp = (array)explode(',', $galleryImagesTemp);
 
             foreach ($galleryImagesTemp as $tempImageLink) {
-
                 $tempImageLink = trim($tempImageLink);
                 if (empty($tempImageLink)) {
                     continue;
@@ -492,7 +486,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
 
         unset($galleryImages[$mainImage->getHash()]);
 
-        if (count($galleryImages) <= 0) {
+        if (empty($galleryImages)) {
             return array($mainImage);
         }
 
@@ -518,7 +512,6 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         }
 
         if ($this->getWalmartDescriptionTemplate()->isImageVariationDifferenceModeAttribute()) {
-
             $src = $this->getWalmartDescriptionTemplate()->getImageVariationDifferenceSource();
             $image = $this->getMagentoProduct()->getImage($src['attribute']);
         }

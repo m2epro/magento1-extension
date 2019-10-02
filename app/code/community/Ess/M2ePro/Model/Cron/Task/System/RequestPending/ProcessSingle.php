@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
 
     //####################################
 
-    private function removeOutdated()
+    protected function removeOutdated()
     {
         $requestPendingSingleCollection = Mage::getResourceModel('M2ePro/Request_Pending_Single_Collection');
         $requestPendingSingleCollection->setOnlyOutdatedItemsFilter();
@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
         }
     }
 
-    private function completeExpired()
+    protected function completeExpired()
     {
         $requestPendingSingleCollection = Mage::getResourceModel('M2ePro/Request_Pending_Single_Collection');
         $requestPendingSingleCollection->setOnlyExpiredItemsFilter();
@@ -66,7 +66,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
         }
     }
 
-    private function executeInProgress()
+    protected function executeInProgress()
     {
         $componentsInProgress = Mage::getResourceModel('M2ePro/Request_Pending_Single')->getComponentsInProgress();
 
@@ -79,7 +79,6 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
             $serverHashesPacks = array_chunk($serverHashes, self::MAX_HASHES_PER_REQUEST);
 
             foreach ($serverHashesPacks as $serverHashesPack) {
-
                 $results = $this->getResultsFromServer($component, $serverHashesPack);
 
                 foreach ($serverHashesPack as $serverHash) {
@@ -119,11 +118,11 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
 
     //####################################
 
-    private function getResultsFromServer($component, array $serverHashes)
+    protected function getResultsFromServer($component, array $serverHashes)
     {
         $dispatcher = Mage::getModel('M2ePro/'.ucfirst($component).'_Connector_Dispatcher');
         $connector = $dispatcher->getVirtualConnector(
-            'processing','get','results',
+            'processing', 'get', 'results',
             array('processing_ids' => $serverHashes),
             'results', NULL, NULL
         );
@@ -133,7 +132,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
         return $connector->getResponseData();
     }
 
-    private function getFailedMessage()
+    protected function getFailedMessage()
     {
         $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
         $message->initFromPreparedData(
@@ -144,9 +143,11 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
         return $message;
     }
 
-    private function completeRequest(Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle,
-                                     array $data, array $messages)
-    {
+    protected function completeRequest(
+        Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle,
+        array $data,
+        array $messages
+    ) {
         $requestPendingSingle->setSettings('result_data', $data);
         $requestPendingSingle->setSettings('result_messages', $messages);
 

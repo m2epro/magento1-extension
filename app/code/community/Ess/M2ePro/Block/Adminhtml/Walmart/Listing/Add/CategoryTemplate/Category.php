@@ -22,7 +22,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category
 
         // Set header text
         // ---------------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__("Assign Category Policy");
+        if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+            $this->_headerText = Mage::helper('M2ePro')->__(
+                "Assign %component_name% Category Policy",
+                Mage::helper('M2ePro/Component_Walmart')->getTitle()
+            );
+        } else {
+            $this->_headerText = Mage::helper('M2ePro')->__("Assign Category Policy");
+        }
+
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_listing_add_categoryTemplate_category';
         // ---------------------------------------
@@ -38,20 +46,24 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('back', array(
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'onclick'   => 'ListingGridHandlerObj.resetCategoryTemplate()',
             'class'     => 'back'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('save_and_go_to_listing_view', array(
+        $this->_addButton(
+            'save_and_go_to_listing_view', array(
             'id'        => 'save_and_go_to_listing_view',
             'label'     => Mage::helper('M2ePro')->__('Continue'),
             'onclick'   => 'ListingGridHandlerObj.completeCategoriesDataStep()',
             'class'     => 'scalable next'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
@@ -62,7 +74,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category
         );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_listing_view_header','',
+            'M2ePro/adminhtml_listing_view_header', '',
             array('listing' => $listing)
         );
 
@@ -94,9 +106,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Category
         // ---------------------------------------
 
         // Translations
-        $translations = Mage::helper('M2ePro')->jsonEncode(array(
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'Assign Category Policy' => Mage::helper('M2ePro')->__('Assign Category Policy')
-        ));
+            )
+        );
         // ---------------------------------------
 
         $javascript = <<<HTML
@@ -165,7 +179,7 @@ HTML;
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component_Walmart')
                 ->getObject('Listing', $listingId)->getChildObject();
         }

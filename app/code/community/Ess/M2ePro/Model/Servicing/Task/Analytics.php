@@ -39,21 +39,21 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics extends Ess_M2ePro_Model_Servici
     public function getRequestData()
     {
         try {
-
             return $this->collectAnalytics();
-
         } catch (Exception $e) {
-
             Mage::helper('M2ePro/Module_Exception')->process($e);
             return array('analytics' => array());
         }
     }
 
-    public function processResponseData(array $data) {}
+    public function processResponseData(array $data)
+    {
+        return null;
+    }
 
     //########################################
 
-    private function collectAnalytics()
+    protected function collectAnalytics()
     {
         $registry   = Mage::getSingleton('M2ePro/Servicing_Task_Analytics_Registry');
         $serializer = Mage::getSingleton('M2ePro/Servicing_Task_Analytics_EntityManager_Serializer');
@@ -69,15 +69,16 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics extends Ess_M2ePro_Model_Servici
             foreach ($entitiesTypes as $entityType) {
 
                 /** @var Ess_M2ePro_Model_Servicing_Task_Analytics_EntityManager $manager */
-                $manager = Mage::getModel('M2ePro/Servicing_Task_Analytics_EntityManager', array(
+                $manager = Mage::getModel(
+                    'M2ePro/Servicing_Task_Analytics_EntityManager', array(
                     'component'  => $component,
                     'entityType' => $entityType
-                ));
+                    )
+                );
 
                 $progress[$manager->getEntityKey()] = false;
 
                 if ($manager->isCompleted()) {
-
                     $progress[$manager->getEntityKey()] = true;
                     continue;
                 }
@@ -115,7 +116,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics extends Ess_M2ePro_Model_Servici
 
     //########################################
 
-    private function getEntitiesTypes()
+    protected function getEntitiesTypes()
     {
         return array(
             Ess_M2ePro_Helper_Component_Amazon::NICK => array(
@@ -149,7 +150,7 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics extends Ess_M2ePro_Model_Servici
         );
     }
 
-    private function isEntitiesPackFull(&$entities)
+    protected function isEntitiesPackFull(&$entities)
     {
         $dataSize = strlen(Mage::helper('M2ePro')->jsonEncode($entities));
         return $dataSize > self::REQUEST_SIZE_MAX;

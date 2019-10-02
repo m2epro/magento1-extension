@@ -35,24 +35,28 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other extends Mage_Adminhtml_Blo
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        if (!is_null($this->getRequest()->getParam('back'))) {
+        if ($this->getRequest()->getParam('back') !== null) {
             // ---------------------------------------
             $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_amazon_listing/index');
-            $this->_addButton('back', array(
-                'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'CommonHandlerObj.back_click(\''.$url.'\')',
-                'class'     => 'back'
-            ));
+            $this->_addButton(
+                'back', array(
+                    'label'   => Mage::helper('M2ePro')->__('Back'),
+                    'onclick' => 'CommonHandlerObj.back_click(\'' . $url . '\')',
+                    'class'   => 'back'
+                )
+            );
             // ---------------------------------------
         }
 
         // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_amazon_log/listingOther');
-        $this->_addButton('view_log', array(
-            'label'     => Mage::helper('M2ePro')->__('View Log'),
-            'onclick'   => 'window.open(\''.$url.'\')',
-            'class'     => 'button_link'
-        ));
+        $this->_addButton(
+            'view_log', array(
+                'label'   => Mage::helper('M2ePro')->__('View Log'),
+                'onclick' => 'window.open(\'' . $url . '\')',
+                'class'   => 'button_link'
+            )
+        );
         // ---------------------------------------
     }
 

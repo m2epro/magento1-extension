@@ -40,7 +40,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
      */
     public function getHelper($viewNick = null)
     {
-        if (is_null($viewNick)) {
+        if ($viewNick === null) {
             $viewNick = $this->getCurrentView();
         }
 
@@ -71,7 +71,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
      */
     public function getComponentHelper($viewNick = null)
     {
-        if (is_null($viewNick)) {
+        if ($viewNick === null) {
             $viewNick = $this->getCurrentView();
         }
 
@@ -102,7 +102,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
      */
     public function getControllerHelper($viewNick = null)
     {
-        if (is_null($viewNick)) {
+        if ($viewNick === null) {
             $viewNick = $this->getCurrentView();
         }
 
@@ -134,7 +134,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         $request = Mage::app()->getRequest();
         $controller = $request->getControllerName();
 
-        if (is_null($controller)) {
+        if ($controller === null) {
             return NULL;
         }
 
@@ -222,10 +222,10 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         foreach ($matches as &$url) {
             $url = trim($url, '.()[] ');
         }
+
         unset($url);
 
         foreach ($matches as $url) {
-
             $nestingLinks = 0;
             foreach ($matches as $value) {
                 if (strpos($value, $url) !== false) {
@@ -319,7 +319,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         $resultPath['menu'] = $menuLabel;
 
         if ($tabName) {
-            $resultPath['tab'] = Mage::helper('M2ePro')->__($tabName) . ' ' . Mage::helper('M2ePro')->__('Tab');
+            $resultPath['tab'] = Mage::helper('M2ePro')->__($tabName);
         }
 
         if ($additionalEnd) {

@@ -198,10 +198,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_DescriptionController
         // ---------------------------------------
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
-        return $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('list',array(),array('edit'=>array('id'=>$id))));
+        return $this->_redirectUrl(
+            Mage::helper('M2ePro')->getBackUrl('list', array(), array('edit' => array('id' => $id)))
+        );
     }
 
-    private function getComparedData($data, $keyName, $valueName)
+    protected function getComparedData($data, $keyName, $valueName)
     {
         $result = array();
 
@@ -229,7 +231,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Template_DescriptionController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             $this->_redirect('*/*/index');
             return;

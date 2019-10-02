@@ -88,17 +88,15 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     const MAGENTO_ORDERS_SHIPMENT_MODE_NO  = 0;
     const MAGENTO_ORDERS_SHIPMENT_MODE_YES = 1;
 
-    //########################################
-
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Amazon_Account_Repricing
      */
-    private $repricingModel = NULL;
+    protected $_repricingModel = null;
 
     //########################################
 
@@ -123,10 +121,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
         if ($this->isRepricing()) {
             $this->getRepricing()->deleteInstance();
-            $this->repricingModel = NULL;
+            $this->_repricingModel = NULL;
         }
 
-        $this->marketplaceModel = NULL;
+        $this->_marketplaceModel = NULL;
 
         $this->delete();
 
@@ -137,7 +135,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     public function getAmazonItems($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedSimpleItems('Amazon_Item','account_id',$asObjects,$filters);
+        return $this->getRelatedSimpleItems('Amazon_Item', 'account_id', $asObjects, $filters);
     }
 
     //########################################
@@ -147,13 +145,13 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-                'Marketplace',$this->getMarketplaceId()
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
+                'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -161,7 +159,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-         $this->marketplaceModel = $instance;
+         $this->_marketplaceModel = $instance;
     }
 
     //########################################
@@ -192,13 +190,13 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getRepricing()
     {
-        if (is_null($this->repricingModel)) {
-            $this->repricingModel = Mage::helper('M2ePro')->getCachedObject(
+        if ($this->_repricingModel === null) {
+            $this->_repricingModel = Mage::helper('M2ePro')->getCachedObject(
                 'Amazon_Account_Repricing', $this->getId(), NULL, array('account')
             );
         }
 
-        return $this->repricingModel;
+        return $this->_repricingModel;
     }
 
     //########################################
@@ -242,7 +240,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     public function getDecodedInfo()
     {
         $tempInfo = $this->getInfo();
-        return is_null($tempInfo) ? NULL : Mage::helper('M2ePro')->jsonDecode($tempInfo);
+        return $tempInfo === null ? NULL : Mage::helper('M2ePro')->jsonDecode($tempInfo);
     }
 
     //########################################
@@ -279,9 +277,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getOtherListingsMappingGeneralIdMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('general_id', 'mode'),
-                                     self::OTHER_LISTINGS_MAPPING_GENERAL_ID_MODE_NONE);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('general_id', 'mode'),
+            self::OTHER_LISTINGS_MAPPING_GENERAL_ID_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -291,9 +291,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getOtherListingsMappingGeneralIdPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('general_id', 'priority'),
-                                     self::OTHER_LISTINGS_MAPPING_GENERAL_ID_DEFAULT_PRIORITY);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('general_id', 'priority'),
+            self::OTHER_LISTINGS_MAPPING_GENERAL_ID_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
@@ -312,9 +314,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getOtherListingsMappingSkuMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('sku', 'mode'),
-                                     self::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('sku', 'mode'),
+            self::OTHER_LISTINGS_MAPPING_SKU_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -324,17 +328,21 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getOtherListingsMappingSkuPriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('sku', 'priority'),
-                                     self::OTHER_LISTINGS_MAPPING_SKU_DEFAULT_PRIORITY);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('sku', 'priority'),
+            self::OTHER_LISTINGS_MAPPING_SKU_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
 
     public function getOtherListingsMappingSkuAttribute()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('sku', 'attribute'));
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('sku', 'attribute')
+        );
 
         return $setting;
     }
@@ -346,9 +354,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getOtherListingsMappingTitleMode()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('title', 'mode'),
-                                     self::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('title', 'mode'),
+            self::OTHER_LISTINGS_MAPPING_TITLE_MODE_NONE
+        );
 
         return (int)$setting;
     }
@@ -358,9 +368,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getOtherListingsMappingTitlePriority()
     {
-        $setting = $this->getSetting('other_listings_mapping_settings',
-                                     array('title', 'priority'),
-                                     self::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY);
+        $setting = $this->getSetting(
+            'other_listings_mapping_settings',
+            array('title', 'priority'),
+            self::OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY
+        );
 
         return (int)$setting;
     }
@@ -476,8 +488,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersListingsModeEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing', 'mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_MODE_YES);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing', 'mode'),
+            self::MAGENTO_ORDERS_LISTINGS_MODE_YES
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_MODE_YES;
     }
@@ -487,8 +501,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersListingsStoreCustom()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing', 'store_mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing', 'store_mode'),
+            self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM;
     }
@@ -510,8 +526,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersListingsOtherModeEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing_other', 'mode'),
+            self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES;
     }
@@ -531,8 +549,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersListingsOtherProductImportEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_mode'),
-                                     self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('listing_other', 'product_mode'),
+            self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT
+        );
 
         return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT;
     }
@@ -542,7 +562,11 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getMagentoOrdersListingsOtherProductTaxClassId()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'product_tax_class_id'));
+        $setting = $this->getSetting(
+            'magento_orders_settings',
+            array('listing_other', 'product_tax_class_id'),
+            Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE
+        );
 
         return (int)$setting;
     }
@@ -613,7 +637,7 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function getQtyReservationDays()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'));
+        $setting = $this->getSetting('magento_orders_settings', array('qty_reservation', 'days'), 1);
 
         return (int)$setting;
     }
@@ -679,8 +703,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersCustomerGuest()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST;
     }
@@ -690,8 +716,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersCustomerPredefined()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED;
     }
@@ -701,8 +729,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersCustomerNew()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_MODE_NEW;
     }
@@ -722,8 +752,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersCustomerNewSubscribed()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('customer', 'subscription_mode'),
-                                     self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('customer', 'subscription_mode'),
+            self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO
+        );
 
         return $setting == self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_YES;
     }
@@ -797,8 +829,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
      */
     public function isMagentoOrdersStatusMappingDefault()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('status_mapping', 'mode'),
-                                     self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('status_mapping', 'mode'),
+            self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT
+        );
 
         return $setting == self::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT;
     }
@@ -845,8 +879,10 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     public function isMagentoOrdersFbaModeEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', array('fba', 'mode'),
-                                     self::MAGENTO_ORDERS_FBA_MODE_YES);
+        $setting = $this->getSetting(
+            'magento_orders_settings', array('fba', 'mode'),
+            self::MAGENTO_ORDERS_FBA_MODE_YES
+        );
 
         return $setting == self::MAGENTO_ORDERS_FBA_MODE_YES;
     }

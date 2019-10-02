@@ -33,7 +33,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Inventory_Get_Defected_ItemsRes
             $preparedData['data'][$receivedItem['sku']] = $receivedItem;
         }
 
-        $this->preparedResponseData = $preparedData;
+        $this->_preparedResponseData = $preparedData;
     }
 
     // ########################################

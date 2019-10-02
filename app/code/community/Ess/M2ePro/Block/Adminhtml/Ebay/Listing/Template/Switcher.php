@@ -11,7 +11,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
     const MODE_LISTING_PRODUCT = 1;
     const MODE_COMMON          = 2;
 
-    private $templates = NULL;
+    protected $_templates;
 
     //########################################
 
@@ -89,9 +89,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
 
     public static function getSwitcherUrlHtml($mode)
     {
-        $urls = Mage::helper('M2ePro')->jsonEncode(array(
+        $urls = Mage::helper('M2ePro')->jsonEncode(
+            array(
             'adminhtml_ebay_template/getTemplateHtml' => self::getSwitcherUrl($mode)
-        ));
+            )
+        );
 
         return <<<HTML
 <script type="text/javascript">
@@ -122,6 +124,7 @@ HTML;
             $attributeSets = Mage::helper('M2ePro/Data_Global')->getValue('ebay_attribute_sets');
             $params['attribute_sets'] = implode(',', $attributeSets);
         }
+
         // ---------------------------------------
 
         // initiate display use default option param
@@ -148,7 +151,7 @@ HTML;
     {
         $templateMode = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_mode_' . $this->getTemplateNick());
 
-        if (is_null($templateMode)) {
+        if ($templateMode === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Template Mode is not initialized.');
         }
 
@@ -159,8 +162,8 @@ HTML;
     {
         $template = $this->getTemplateObject();
 
-        if (is_null($template)) {
-            return NULL;
+        if ($template === null) {
+            return null;
         }
 
         return $template->getId();
@@ -170,7 +173,7 @@ HTML;
     {
         $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_' . $this->getTemplateNick());
 
-        if (!is_null($template) && !is_null($template->getId())) {
+        if ($template !== null && $template->getId() !== null) {
             return $template;
         }
 
@@ -229,7 +232,7 @@ HTML;
                 break;
         }
 
-        if (is_null($blockName)) {
+        if ($blockName === null) {
             throw new Ess_M2ePro_Model_Exception_Logic(
                 sprintf('Form data Block for Template nick "%s" is unknown.', $this->getTemplateNick())
             );
@@ -240,9 +243,8 @@ HTML;
             'custom_title' => Mage::helper('M2ePro/Data_Global')->getValue('ebay_custom_template_title'),
             'policy_localization' => $this->getData('policy_localization')
         );
-        $block = $this->getLayout()->createBlock($blockName,'',$parameters);
 
-        return $block;
+        return $this->getLayout()->createBlock($blockName, '', $parameters);
     }
 
     public function getFormDataBlockHtml($templateDataForce = false)
@@ -274,7 +276,7 @@ HTML;
 
         $templates = $this->getTemplates();
 
-        if (count($templates) == 0 && !$this->canDisplayUseDefaultOption()) {
+        if (empty($templates) && !$this->canDisplayUseDefaultOption()) {
             return false;
         }
 
@@ -285,7 +287,7 @@ HTML;
     {
         $displayUseDefaultOption = Mage::helper('M2ePro/Data_Global')->getValue('ebay_display_use_default_option');
 
-        if (is_null($displayUseDefaultOption)) {
+        if ($displayUseDefaultOption === null) {
             return true;
         }
 
@@ -296,8 +298,8 @@ HTML;
 
     public function getTemplates()
     {
-        if (!is_null($this->templates)) {
-            return $this->templates;
+        if ($this->_templates !== null) {
+            return $this->_templates;
         }
 
         $manager = Mage::getModel('M2ePro/Ebay_Template_Manager')->setTemplate($this->getTemplateNick());
@@ -312,9 +314,9 @@ HTML;
             $collection->addFieldToFilter('marketplace_id', $marketplace->getId());
         }
 
-        $this->templates = $collection->getItems();
+        $this->_templates = $collection->getItems();
 
-        return $this->templates;
+        return $this->_templates;
     }
 
     //########################################

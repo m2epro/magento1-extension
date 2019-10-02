@@ -38,13 +38,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
             }
         } else {
             if ($this->isEditMode()) {
-                $this->_headerText = Mage::helper('M2ePro')->__('Edit Category Policy "%template_title%"',
+                $this->_headerText = Mage::helper('M2ePro')->__(
+                    'Edit Category Policy "%template_title%"',
                     $this->escapeHtml(Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getTitle())
                 );
             } else {
                 $this->_headerText = Mage::helper('M2ePro')->__("Add Category Policy");
             }
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -59,36 +61,43 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
 
         // ---------------------------------------
         $url = Mage::helper('M2ePro')->getBackUrl('index');
-        $this->_addButton('back', array(
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'onclick'   => 'WalmartTemplateCategoryHandlerObj.back_click(\'' . $url . '\')',
             'class'     => 'back'
-        ));
+            )
+        );
         // ---------------------------------------
 
         if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
             && Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
         ) {
             // ---------------------------------------
-            $this->_addButton('duplicate', array(
+            $this->_addButton(
+                'duplicate', array(
                 'label'   => Mage::helper('M2ePro')->__('Duplicate'),
                 'onclick' => 'WalmartTemplateCategoryHandlerObj.duplicate_click'
                     .'(\'walmart-template-sellingFormat\')',
                 'class'   => 'add M2ePro_duplicate_button'
-            ));
+                )
+            );
             // ---------------------------------------
 
             // ---------------------------------------
-            $this->_addButton('delete', array(
+            $this->_addButton(
+                'delete', array(
                 'label'     => Mage::helper('M2ePro')->__('Delete'),
                 'onclick'   => 'WalmartTemplateCategoryHandlerObj.delete_click()',
                 'class'     => 'delete M2ePro_delete_button'
-            ));
+                )
+            );
             // ---------------------------------------
         }
 
         // ---------------------------------------
-        $this->_addButton('save', array(
+        $this->_addButton(
+            'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'WalmartTemplateCategoryHandlerObj.save_click('
                 . '\'\','
@@ -96,11 +105,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
                 . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_CATEGORY . '\''
             . ')',
             'class'     => 'save'
-        ));
+            )
+        );
         // ---------------------------------------
 
         // ---------------------------------------
-        $this->_addButton('save_and_continue', array(
+        $this->_addButton(
+            'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
             'onclick'   => 'WalmartTemplateCategoryHandlerObj.save_and_edit_click('
                 . '\'\','
@@ -109,13 +120,14 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Edit
                 . '\'' . Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid::TEMPLATE_CATEGORY . '\''
             . ')',
             'class'     => 'save'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 
     //########################################
 
-    private function isEditMode()
+    protected function isEditMode()
     {
         $templateModel = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
         return $templateModel && $templateModel->getId();

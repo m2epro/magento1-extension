@@ -9,15 +9,15 @@
 class Ess_M2ePro_Model_Magento_AttributeSet_Group
 {
     /** @var Mage_Eav_Model_Entity_Attribute_Group */
-    private $groupObj = null;
+    protected $_groupObj = null;
 
     /** @var Mage_Eav_Model_Entity_Attribute_Set */
-    private $attributeSetObj = null;
+    protected $_attributeSetObj = null;
 
-    private $name;
-    private $attributeSetId;
+    protected $_name;
+    protected $_attributeSetId;
 
-    private $params = array();
+    protected $_params = array();
 
     //########################################
 
@@ -27,63 +27,62 @@ class Ess_M2ePro_Model_Magento_AttributeSet_Group
         return $this->saveGroup();
     }
 
-    private function init()
+    protected function init()
     {
-        if (!($this->attributeSetObj instanceof Mage_Eav_Model_Entity_Attribute_Set)) {
-
-            $attributeSet = Mage::getModel('eav/entity_attribute_set')->load($this->attributeSetId);
-            $attributeSet->getId() && $this->attributeSetObj = $attributeSet;
+        if (!($this->_attributeSetObj instanceof Mage_Eav_Model_Entity_Attribute_Set)) {
+            $attributeSet = Mage::getModel('eav/entity_attribute_set')->load($this->_attributeSetId);
+            $attributeSet->getId() && $this->_attributeSetObj = $attributeSet;
         }
 
         $tempCollection = Mage::getModel('eav/entity_attribute_group')->getCollection()
-              ->addFieldToFilter('attribute_group_name', $this->name)
-              ->addFieldToFilter('attribute_set_id', $this->attributeSetId);
+              ->addFieldToFilter('attribute_group_name', $this->_name)
+              ->addFieldToFilter('attribute_set_id', $this->_attributeSetId);
 
         $tempCollection->getSelect()->limit(1);
-        $this->groupObj = $tempCollection->getFirstItem();
+        $this->_groupObj = $tempCollection->getFirstItem();
     }
 
     // ---------------------------------------
 
-    private function saveGroup()
+    protected function saveGroup()
     {
-        if ($this->groupObj->getId()) {
+        if ($this->_groupObj->getId()) {
             return array('result' => true);
         }
 
-        if (!$this->attributeSetObj) {
-            return array('result' => false, 'error' => "Attribute Set '{$this->attributeSetId}' is not found.");
+        if (!$this->_attributeSetObj) {
+            return array('result' => false, 'error' => "Attribute Set '{$this->_attributeSetId}' is not found.");
         }
 
-        $this->groupObj->setAttributeGroupName($this->name);
-        $this->groupObj->setAttributeSetId($this->attributeSetId);
+        $this->_groupObj->setAttributeGroupName($this->_name);
+        $this->_groupObj->setAttributeSetId($this->_attributeSetId);
 
         try {
-            $this->groupObj->save();
+            $this->_groupObj->save();
         } catch (Exception $e) {
             return array('result' => false, 'error' => $e->getMessage());
         }
 
-        return array('result' => true, 'obj' => $this->groupObj);
+        return array('result' => true, 'obj' => $this->_groupObj);
     }
 
     //########################################
 
     public function setGroupName($value)
     {
-        $this->name = $value;
+        $this->_name = $value;
         return $this;
     }
 
     public function setAttributeSetId($value)
     {
-        $this->attributeSetId = $value;
+        $this->_attributeSetId = $value;
         return $this;
     }
 
     public function setParams(array $value = array())
     {
-        $this->params = $value;
+        $this->_params = $value;
         return $this;
     }
 
@@ -95,8 +94,8 @@ class Ess_M2ePro_Model_Magento_AttributeSet_Group
      */
     public function setAttributeSetObj(Mage_Eav_Model_Entity_Attribute_Set $obj)
     {
-        $this->attributeSetObj = $obj;
-        $this->attributeSetId = $obj->getId();
+        $this->_attributeSetObj = $obj;
+        $this->_attributeSetId  = $obj->getId();
 
         return $this;
     }

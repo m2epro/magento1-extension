@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Template_SellingFormat getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Walmart_Template_SellingFormat getResource()
+ * @method Ess_M2ePro_Model_Resource_Walmart_Template_SellingFormat getResource()
  */
 class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
@@ -56,12 +56,12 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source[]
      */
-    private $sellingFormatSourceModels = array();
+    protected $_sellingFormatSourceModels = array();
 
     //########################################
 
@@ -108,12 +108,12 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
             $promotion->deleteInstance();
         }
 
-        foreach ($this->getShippingOverrideServices(true) as $service) {
+        foreach ($this->getShippingOverrides(true) as $service) {
             $service->deleteInstance();
         }
 
         $this->delete();
-        $this->marketplaceModel = NULL;
+        $this->_marketplaceModel = NULL;
 
         return true;
     }
@@ -128,15 +128,15 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
     {
         $productId = $magentoProduct->getProductId();
 
-        if (!empty($this->sellingFormatSourceModels[$productId])) {
-            return $this->sellingFormatSourceModels[$productId];
+        if (!empty($this->_sellingFormatSourceModels[$productId])) {
+            return $this->_sellingFormatSourceModels[$productId];
         }
 
-        $this->sellingFormatSourceModels[$productId] = Mage::getModel('M2ePro/Walmart_Template_SellingFormat_Source');
-        $this->sellingFormatSourceModels[$productId]->setMagentoProduct($magentoProduct);
-        $this->sellingFormatSourceModels[$productId]->setSellingFormatTemplate($this->getParentObject());
+        $this->_sellingFormatSourceModels[$productId] = Mage::getModel('M2ePro/Walmart_Template_SellingFormat_Source');
+        $this->_sellingFormatSourceModels[$productId]->setMagentoProduct($magentoProduct);
+        $this->_sellingFormatSourceModels[$productId]->setSellingFormatTemplate($this->getParentObject());
 
-        return $this->sellingFormatSourceModels[$productId];
+        return $this->_sellingFormatSourceModels[$productId];
     }
 
     //########################################
@@ -146,13 +146,13 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
                 'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -160,7 +160,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-        $this->marketplaceModel = $instance;
+        $this->_marketplaceModel = $instance;
     }
 
     //########################################
@@ -173,7 +173,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
      */
     public function getListings($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedComponentItems('Listing','template_selling_format_id',$asObjects,$filters);
+        return $this->getRelatedComponentItems('Listing', 'template_selling_format_id', $asObjects, $filters);
     }
 
     //########################################
@@ -186,8 +186,10 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
      */
     public function getPromotions($asObjects = false, array $filters = array())
     {
-        $services = $this->getRelatedSimpleItems('Walmart_Template_SellingFormat_Promotion',
-            'template_selling_format_id', $asObjects, $filters);
+        $services = $this->getRelatedSimpleItems(
+            'Walmart_Template_SellingFormat_Promotion',
+            'template_selling_format_id', $asObjects, $filters
+        );
 
         if ($asObjects) {
             /** @var $service Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion */
@@ -202,22 +204,24 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
     /**
      * @param bool $asObjects
      * @param array $filters
-     * @return array|Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService[]
+     * @return array|Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride[]
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getShippingOverrideServices($asObjects = false, array $filters = array())
+    public function getShippingOverrides($asObjects = false, array $filters = array())
     {
-        $services = $this->getRelatedSimpleItems('Walmart_Template_SellingFormat_ShippingOverrideService',
-            'template_selling_format_id', $asObjects, $filters);
+        $shippingOverrides = $this->getRelatedSimpleItems(
+            'Walmart_Template_SellingFormat_ShippingOverride',
+            'template_selling_format_id', $asObjects, $filters
+        );
 
         if ($asObjects) {
-            /** @var $service Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService */
-            foreach ($services as $service) {
-                $service->setSellingFormatTemplate($this);
+            /** @var $shippingOverride Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride */
+            foreach ($shippingOverrides as $shippingOverride) {
+                $shippingOverride->setSellingFormatTemplate($this);
             }
         }
 
-        return $services;
+        return $shippingOverrides;
     }
 
     //########################################
@@ -1027,7 +1031,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
      */
     public function getAttributesTemplate()
     {
-        return is_null($this->getData('attributes'))
+        return $this->getData('attributes') === null
             ? array() : Mage::helper('M2ePro')->jsonDecode($this->getData('attributes'));
     }
 
@@ -1079,7 +1083,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
                 $templateValues[] = $item['value'];
             }
 
-            $searchTerms = implode(PHP_EOL,$templateValues);
+            $searchTerms = implode(PHP_EOL, $templateValues);
             preg_match_all('/#([a-zA-Z_0-9]+?)#/', $searchTerms, $match);
             $match && $attributes = $match[1];
         }
@@ -1119,7 +1123,6 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
         }
 
         foreach ($this->getPromotions(true) as $promotion) {
-
             if ($promotion->isPriceModeProduct() || $promotion->isPriceModeSpecial()) {
                 return true;
             }
@@ -1139,8 +1142,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
             }
         }
 
-        foreach ($this->getShippingOverrideServices(true) as $service) {
-
+        foreach ($this->getShippingOverrides(true) as $service) {
             if ($isPriceConvertEnabled && $service->isCostModeCustomAttribute() &&
                 $attributeHelper->isAttributeInputTypePrice($service->getCostAttribute())) {
                 return true;

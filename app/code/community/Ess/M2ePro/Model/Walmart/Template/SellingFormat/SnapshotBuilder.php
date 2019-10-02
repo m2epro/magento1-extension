@@ -13,13 +13,13 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_SnapshotBuilder
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
         if (empty($data)) {
             return array();
         }
 
         /** @var Ess_M2ePro_Model_Walmart_Template_SellingFormat $childModel */
-        $childModel = $this->model->getChildObject();
+        $childModel = $this->_model->getChildObject();
 
         $ignoredKeys = array(
             'id',
@@ -27,28 +27,31 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_SnapshotBuilder
         );
 
         // ---------------------------------------
-        $data['shipping_override_services'] = $childModel->getShippingOverrideServices();
+        $data['shipping_overrides'] = $childModel->getShippingOverrides();
 
-        if (!is_null($data['shipping_override_services'])) {
-            foreach ($data['shipping_override_services'] as &$shippingOverride) {
+        if ($data['shipping_overrides'] !== null) {
+            foreach ($data['shipping_overrides'] as &$shippingOverride) {
                 foreach ($shippingOverride as $key => &$value) {
                     if (in_array($key, $ignoredKeys)) {
                         unset($shippingOverride[$key]);
                         continue;
                     }
 
-                    !is_null($value) && !is_array($value) && $value = (string)$value;
+                    $value !== null && !is_array($value) && $value = (string)$value;
                 }
+
                 unset($value);
             }
+
             unset($shippingOverride);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
         $data['promotions'] = $childModel->getPromotions();
 
-        if (!is_null($data['promotions'])) {
+        if ($data['promotions'] !== null) {
             foreach ($data['promotions'] as &$promotion) {
                 foreach ($promotion as $key => &$value) {
                     if (in_array($key, $ignoredKeys)) {
@@ -56,12 +59,15 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_SnapshotBuilder
                         continue;
                     }
 
-                    !is_null($value) && !is_array($value) && $value = (string)$value;
+                    $value !== null && !is_array($value) && $value = (string)$value;
                 }
+
                 unset($value);
             }
+
             unset($promotion);
         }
+
         // ---------------------------------------
 
         return $data;

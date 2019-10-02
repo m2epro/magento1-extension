@@ -1,4 +1,12 @@
 <?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
 /** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Repricing */
 
 /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
@@ -179,7 +187,7 @@ $attributesByInputTypes = array(
                             <label><?php echo Mage::helper('M2ePro')->__('M2E Pro Products'); ?>:</label>
                         </td>
                         <td class="value" style="width: auto;">
-                            <span id="m2epro_repricing_total_products"><?php echo ($this->isRepricingLinked) ? $this->m2eProRepricingProducts : 0 ?></span>
+                            <span id="m2epro_repricing_total_products"><?php echo ($this->isRepricingLinked) ? $this->repricingProducts : 0 ?></span>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('This is a number of Products managed by the Repricing Tool in your M2E Pro.'); ?></span>
                             </p>

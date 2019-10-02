@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Observer_Order_View_After extends Ess_M2ePro_Model_Observ
             return;
         }
 
-        if (is_null($order) || !$order->getId()) {
+        if ($order === null || !$order->getId()) {
             return;
         }
 
@@ -43,18 +43,22 @@ class Ess_M2ePro_Model_Observer_Order_View_After extends Ess_M2ePro_Model_Observ
         if ($order->isComponentModeEbay()) {
             $buttonUrl = $block->getUrl('M2ePro/adminhtml_ebay_order/view', array('id' => $order->getId()));
 
-            Mage::helper('adminhtml')->setPageHelpUrl(Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                NULL, NULL, "x/1YwVAQ"
-            ));
+            Mage::helper('adminhtml')->setPageHelpUrl(
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                    NULL, NULL, "x/1YwVAQ"
+                )
+            );
         } else {
             $buttonUrl = $block->getUrl(
                 'M2ePro/adminhtml_'.strtolower($order->getComponentMode()).'_order/view',
                 array('id' => $order->getId())
             );
 
-            Mage::helper('adminhtml')->setPageHelpUrl(Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                NULL, NULL, "x/So0VAQ"
-            ));
+            Mage::helper('adminhtml')->setPageHelpUrl(
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                    NULL, NULL, "x/So0VAQ"
+                )
+            );
         }
 
         $componentTitles = Mage::helper('M2ePro/Component')->getComponentsTitles();

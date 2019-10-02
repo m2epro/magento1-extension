@@ -40,7 +40,6 @@ class Ess_M2ePro_Model_Collection_Custom extends Varien_Data_Collection
                 /**@var Varien_Object $filter */
 
                 switch ($filter->getData('type')) {
-
                     case self::CONDITION_LIKE:
                         $this->_applyLikeFilter($item, $key, $filter);
                         break;

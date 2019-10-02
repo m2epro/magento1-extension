@@ -8,33 +8,29 @@
 
 class Ess_M2ePro_Model_Upgrade_Backup
 {
-    //########################################
-
     const TABLE_PREFIX = '__b';
 
     // max MySQL lenth (64) - backup prefix (m2epro__b_65016_)
     const TABLE_IDENTIFIER_MAX_LEN = 46;
 
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer;
+    protected $_installer;
 
     /** @var array */
-    private $tablesList;
+    protected $_tablesList;
 
     //########################################
 
-    public function __construct(
-        Ess_M2ePro_Model_Upgrade_MySqlSetup $installer, $tablesList
-    ){
-        $this->installer = $installer;
-        $this->tablesList = $tablesList;
+    public function __construct(array $arguments = array())
+    {
+        list($this->_installer, $this->_tablesList) = $arguments;
     }
 
     //########################################
 
     public function isExists()
     {
-        foreach ($this->tablesList as $table) {
+        foreach ($this->_tablesList as $table) {
             if (!$this->getConnection()->isTableExists($this->getBackupTableName($table))) {
                 return false;
             }
@@ -47,12 +43,7 @@ class Ess_M2ePro_Model_Upgrade_Backup
 
     public function create()
     {
-        if (empty($this->tablesList)) {
-            throw new Ess_M2ePro_Model_Exception_Setup('Unable to create a backup. Tables list is empty.');
-        }
-
-        foreach ($this->tablesList as $table) {
-
+        foreach ($this->_tablesList as $table) {
             $this->prepareColumns($table);
 
             if ($this->getConnection()->isTableExists($this->getBackupTableName($table))) {
@@ -62,10 +53,12 @@ class Ess_M2ePro_Model_Upgrade_Backup
             $backupTable = $this->getConnection()->createTableByDdl(
                 $this->getOriginalTableName($table), $this->getBackupTableName($table)
             );
-            $backupTable->setComment(sprintf(
-                'Based on %s. From [%s] to [%s].',
-                $this->getOriginalTableName($table), $this->installer->versionFrom, $this->installer->versionTo
-            ));
+            $backupTable->setComment(
+                sprintf(
+                    'Based on %s. From [%s] to [%s].',
+                    $this->getOriginalTableName($table), $this->_installer->versionFrom, $this->_installer->versionTo
+                )
+            );
             $this->getConnection()->createTable($backupTable);
 
             $select = $this->getConnection()->select()->from($this->getOriginalTableName($table));
@@ -77,7 +70,7 @@ class Ess_M2ePro_Model_Upgrade_Backup
 
     public function remove()
     {
-        foreach ($this->tablesList as $table) {
+        foreach ($this->_tablesList as $table) {
             if ($this->getConnection()->isTableExists($this->getBackupTableName($table))) {
                 $this->getConnection()->dropTable($this->getBackupTableName($table));
             }
@@ -90,8 +83,7 @@ class Ess_M2ePro_Model_Upgrade_Backup
             throw new Ess_M2ePro_Model_Exception_Setup('Unable to rollback. Backup is not exists.');
         }
 
-        foreach ($this->tablesList as $table) {
-
+        foreach ($this->_tablesList as $table) {
             if ($this->getConnection()->isTableExists($this->getOriginalTableName($table))) {
                 $this->getConnection()->dropTable($this->getOriginalTableName($table));
             }
@@ -110,16 +102,15 @@ class Ess_M2ePro_Model_Upgrade_Backup
 
     //########################################
 
-    private function prepareColumns($table)
+    protected function prepareColumns($table)
     {
         $tableInfo = $this->getConnection()->describeTable(
-            $this->installer->getTablesObject()->getFullName($table)
+            $this->_installer->getTablesObject()->getFullName($table)
         );
 
-        $tableModifier = $this->installer->getTableModifier($table);
+        $tableModifier = $this->_installer->getTableModifier($table);
 
         foreach ($tableInfo as $columnTitle => $columnInfo) {
-
             $this->prepareFloatUnsignedColumns($tableModifier, $columnTitle, $columnInfo);
             $this->prepareVarcharColumns($tableModifier, $columnTitle, $columnInfo);
         }
@@ -135,9 +126,11 @@ class Ess_M2ePro_Model_Upgrade_Backup
      * convert FLOAT UNSIGNED columns to FLOAT because of zend framework bug in ->createTableByDdl method,
      * that does not support 'FLOAT UNSIGNED' column type
      */
-    private function prepareFloatUnsignedColumns(Ess_M2ePro_Model_Upgrade_Modifier_Table $tableModifier,
-                                                 $columnTitle, array $columnInfo)
-    {
+    protected function prepareFloatUnsignedColumns(
+        Ess_M2ePro_Model_Upgrade_Modifier_Table $tableModifier,
+        $columnTitle,
+        array $columnInfo
+    ) {
         if (strtolower($columnInfo['DATA_TYPE']) !== 'float unsigned') {
             return;
         }
@@ -158,15 +151,16 @@ class Ess_M2ePro_Model_Upgrade_Backup
      * convert VARCHAR(256-500) to VARCHAR(255) because ->createTableByDdl method will handle this column
      * as TEXT. Due to the incorrect length > 255
      */
-    private function prepareVarcharColumns(Ess_M2ePro_Model_Upgrade_Modifier_Table $tableModifier,
-                                           $columnTitle, array $columnInfo)
-    {
+    protected function prepareVarcharColumns(
+        Ess_M2ePro_Model_Upgrade_Modifier_Table $tableModifier,
+        $columnTitle,
+        array $columnInfo
+    ) {
         if (strtolower($columnInfo['DATA_TYPE']) !== 'varchar') {
             return;
         }
 
         if ($columnInfo['LENGTH'] > 255 && $columnInfo['LENGTH'] <= 500) {
-
             $columnType = 'varchar(255)';
             if (isset($columnInfo['NULLABLE']) && !$columnInfo['NULLABLE']) {
                 $columnType .= ' NOT NULL';
@@ -178,21 +172,21 @@ class Ess_M2ePro_Model_Upgrade_Backup
 
     //########################################
 
-    private function getConnection()
+    protected function getConnection()
     {
-        return $this->installer->getConnection();
+        return $this->_installer->getConnection();
     }
 
     // ---------------------------------------
 
     public function getOriginalTableName($table)
     {
-        return $this->installer->getTablesObject()->getFullName($table);
+        return $this->_installer->getTablesObject()->getFullName($table);
     }
 
     public function getBackupTableName($table)
     {
-        $prefix = 'm2epro' . self::TABLE_PREFIX. '_' . str_replace('.', '', $this->installer->versionTo) . '_';
+        $prefix = 'm2epro' . self::TABLE_PREFIX. '_' . str_replace('.', '', $this->_installer->versionTo) . '_';
 
         if (strlen($table) > self::TABLE_IDENTIFIER_MAX_LEN) {
             $table = sha1($table);

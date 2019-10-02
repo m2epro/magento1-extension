@@ -8,39 +8,37 @@
 
 class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Model_Connector_Command_RealTime
 {
-    // ########################################
+    protected $_command = null;
 
-    private $command = null;
+    protected $_requestData = array();
 
-    private $requestData = array();
+    protected $_responseDataKey = null;
 
-    private $responseDataKey = NULL;
-
-    private $requestTimeOut = NULL;
+    protected $_requestTimeOut = null;
 
     // ########################################
 
     public function setCommand(array $command)
     {
-        $this->command = $command;
+        $this->_command = $command;
         return $this;
     }
 
     public function setRequestData(array $requestData)
     {
-        $this->requestData = $requestData;
+        $this->_requestData = $requestData;
         return $this;
     }
 
     public function setResponseDataKey($key)
     {
-        $this->responseDataKey = $key;
+        $this->_responseDataKey = $key;
         return $this;
     }
 
     public function setRequestTimeOut($value)
     {
-        $this->requestTimeOut = $value;
+        $this->_requestTimeOut = $value;
         return $this;
     }
 
@@ -48,28 +46,28 @@ class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Mod
 
     protected function getCommand()
     {
-        if (is_null($this->command)) {
+        if ($this->_command === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Command was not set.');
         }
 
-        return $this->command;
+        return $this->_command;
     }
 
     public function getRequestData()
     {
-        return $this->requestData;
+        return $this->_requestData;
     }
 
     // ########################################
 
     protected function getConnection()
     {
-        if (is_null($this->requestTimeOut)) {
+        if ($this->_requestTimeOut === null) {
             return parent::getConnection();
         }
 
         $connection = parent::getConnection();
-        $connection->setTimeout($this->requestTimeOut);
+        $connection->setTimeout($this->_requestTimeOut);
 
         return $connection;
     }
@@ -79,17 +77,17 @@ class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Mod
     protected function prepareResponseData()
     {
         $responseData = $this->getResponse()->getData();
-        if (is_null($this->responseDataKey)) {
-            $this->responseData = $responseData;
+        if ($this->_responseDataKey === null) {
+            $this->_responseData = $responseData;
             return;
         }
 
-        if (!isset($responseData[$this->responseDataKey])) {
-            $this->responseData = $responseData;
+        if (!isset($responseData[$this->_responseDataKey])) {
+            $this->_responseData = $responseData;
             return;
         }
 
-        $this->responseData = $responseData[$this->responseDataKey];
+        $this->_responseData = $responseData[$this->_responseDataKey];
     }
 
     // ########################################

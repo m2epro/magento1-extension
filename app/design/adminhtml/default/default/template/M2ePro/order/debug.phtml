@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Order_Debug */
+
+?>
+
 <div id="magento_block_debug_information" class="entry-edit box-left" collapseable="no">
 
     <div class="entry-edit-head">
@@ -9,7 +22,7 @@
         <table cellspacing="0" width="100%" class="form-list">
             <tbody>
 
-                <?php if (!is_null($this->getData('store_tax_calculation_algorithm'))) : ?>
+                <?php if ($this->getData('store_tax_calculation_algorithm') !== null) : ?>
                     <tr>
                         <td class="label">Tax Calculation Method Based On:</td>
                         <td class="value"><?php echo $this->getData('store_tax_calculation_algorithm') ?></td>
@@ -36,7 +49,7 @@
                     <td class="value"><?php echo $this->getData('store_shipping_tax_class') != '' ? $this->getData('store_shipping_tax_class') : 'None' ?></td>
                 </tr>
 
-                <?php if (!is_null($this->getData('store_shipping_tax_rate'))) : ?>
+                <?php if ($this->getData('store_shipping_tax_rate') !== null) : ?>
                     <tr>
                         <td class="label">Store Shipping Tax Rate:</td>
                         <td class="value"><?php echo $this->getData('store_shipping_tax_rate'); ?>%</td>

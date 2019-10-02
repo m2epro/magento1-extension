@@ -175,11 +175,11 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
         $this->setPageHelpLink(NULL, NULL, "x/MAAJAQ");
 
         $this->_addContent(
-                 $this->getLayout()->createBlock(
-                     'M2ePro/adminhtml_ebay_log', '',
-                     array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_SYNCHRONIZATION)
-                 )
-             )->renderLayout();
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_ebay_log', '',
+                array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_SYNCHRONIZATION)
+            )
+        )->renderLayout();
     }
 
     public function synchronizationGridAction()
@@ -198,11 +198,11 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
         $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367088#Logs.-OrdersLog');
 
         $this->_addContent(
-                 $this->getLayout()->createBlock(
-                     'M2ePro/adminhtml_ebay_log', '',
-                     array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_ORDER)
-                 )
-             )->renderLayout();
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_ebay_log', '',
+                array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_ORDER)
+            )
+        )->renderLayout();
     }
 
     public function orderGridAction()

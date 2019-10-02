@@ -41,7 +41,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data extends Mag
 
         $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_return');
 
-        if (is_null($template)) {
+        if ($template === null) {
             return '';
         }
 
@@ -52,7 +52,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data extends Mag
     {
         $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_return');
 
-        if (is_null($template) || is_null($template->getId())) {
+        if ($template === null || $template->getId() === null) {
             return array();
         }
 
@@ -149,13 +149,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data extends Mag
 
     //########################################
 
-    private function getDictionaryInfo($key, Ess_M2ePro_Model_Marketplace $marketplace)
+    protected function getDictionaryInfo($key, Ess_M2ePro_Model_Marketplace $marketplace)
     {
         $returnPolicyInfo = $marketplace->getChildObject()->getReturnPolicyInfo();
         return !empty($returnPolicyInfo[$key]) ? $returnPolicyInfo[$key] : array();
     }
 
-    private function getInternationalDictionaryInfo($key, Ess_M2ePro_Model_Marketplace $marketplace)
+    protected function getInternationalDictionaryInfo($key, Ess_M2ePro_Model_Marketplace $marketplace)
     {
         $returnPolicyInfo = $marketplace->getChildObject()->getReturnPolicyInfo();
 

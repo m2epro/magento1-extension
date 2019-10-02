@@ -12,19 +12,20 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    protected $marketplace = NULL;
+    protected $marketplace;
 
     /**
      * @var Ess_M2ePro_Model_Account
      */
-    protected $account = NULL;
+    protected $account;
 
     // ########################################
 
-    public function __construct(array $params = array(),
-                                Ess_M2ePro_Model_Marketplace $marketplace = NULL,
-                                Ess_M2ePro_Model_Account $account = NULL)
-    {
+    public function __construct(
+        array $params = array(),
+        Ess_M2ePro_Model_Marketplace $marketplace = null,
+        Ess_M2ePro_Model_Account $account = null
+    ) {
         $this->marketplace = $marketplace;
         $this->account     = $account;
 
@@ -39,10 +40,11 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
 
         $requestData = $request->getData();
 
-        if (!is_null($this->marketplace)) {
+        if ($this->marketplace !== null) {
             $requestData['marketplace'] = $this->marketplace->getNativeId();
         }
-        if (!is_null($this->account)) {
+
+        if ($this->account !== null) {
             $requestData['account'] = $this->account->getChildObject()->getServerHash();
         }
 
@@ -57,10 +59,11 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
     {
         $params = parent::getProcessingParams();
 
-        if (!is_null($this->marketplace)) {
+        if ($this->marketplace !== null) {
             $params['marketplace_id'] = $this->marketplace->getId();
         }
-        if (!is_null($this->account)) {
+
+        if ($this->account !== null) {
             $params['account_id'] = $this->account->getId();
         }
 
@@ -71,10 +74,11 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
     {
         $params = parent::getResponserParams();
 
-        if (!is_null($this->marketplace)) {
+        if ($this->marketplace !== null) {
             $params['marketplace_id'] = $this->marketplace->getId();
         }
-        if (!is_null($this->account)) {
+
+        if ($this->account !== null) {
             $params['account_id'] = $this->account->getId();
         }
 

@@ -8,20 +8,20 @@
 
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
 {
-    protected $action = Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN;
+    protected $_action = Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN;
 
-    protected $actionId = NULL;
-    protected $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
+    protected $_actionId  = null;
+    protected $_initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
 
-    protected $storeMode = false;
-    protected $storedMessages = array();
+    protected $_storeMode      = false;
+    protected $_storedMessages = array();
 
-    protected $status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
+    protected $_status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
 
     /**
      * @var Ess_M2ePro_Model_Listing_Log
      */
-    private $listingLog = NULL;
+    protected $_listingLog = null;
 
     //########################################
 
@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
      */
     public function setActionId($id)
     {
-        $this->actionId = (int)$id;
+        $this->_actionId = (int)$id;
     }
 
     /**
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
      */
     public function getActionId()
     {
-        return $this->actionId;
+        return $this->_actionId;
     }
 
     // ---------------------------------------
@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
      */
     public function setAction($value)
     {
-        $this->action = (int)$value;
+        $this->_action = (int)$value;
     }
 
     /**
@@ -56,19 +56,19 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
      */
     public function setInitiator($value)
     {
-        $this->initiator = (int)$value;
+        $this->_initiator = (int)$value;
     }
 
     //########################################
 
     public function setStoreMode($value)
     {
-        $this->storeMode = (bool)$value;
+        $this->_storeMode = (bool)$value;
     }
 
     public function getStoredMessages()
     {
-        return $this->storedMessages;
+        return $this->_storedMessages;
     }
 
     // ---------------------------------------
@@ -78,30 +78,30 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
      */
     public function getStatus()
     {
-        return $this->status;
+        return $this->_status;
     }
 
     public function setStatus($status)
     {
         if ($status == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
-            $this->status = Ess_M2ePro_Helper_Data::STATUS_ERROR;
+            $this->_status = Ess_M2ePro_Helper_Data::STATUS_ERROR;
             return;
         }
 
-        if ($this->status == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
+        if ($this->_status == Ess_M2ePro_Helper_Data::STATUS_ERROR) {
             return;
         }
 
         if ($status == Ess_M2ePro_Helper_Data::STATUS_WARNING) {
-            $this->status = Ess_M2ePro_Helper_Data::STATUS_WARNING;
+            $this->_status = Ess_M2ePro_Helper_Data::STATUS_WARNING;
             return;
         }
 
-        if ($this->status == Ess_M2ePro_Helper_Data::STATUS_WARNING) {
+        if ($this->_status == Ess_M2ePro_Helper_Data::STATUS_WARNING) {
             return;
         }
 
-        $this->status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
+        $this->_status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
     }
 
     //########################################
@@ -111,13 +111,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
      * @param Ess_M2ePro_Model_Connector_Connection_Response_Message $message
      * @param int $priority
      */
-    public function logListingProductMessage(Ess_M2ePro_Model_Listing_Product $listingProduct,
-                                             Ess_M2ePro_Model_Connector_Connection_Response_Message $message,
-                                             $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM)
-    {
-        if ($this->storeMode) {
-
-            $this->storedMessages[] = array(
+    public function logListingProductMessage(
+        Ess_M2ePro_Model_Listing_Product $listingProduct,
+        Ess_M2ePro_Model_Connector_Connection_Response_Message $message,
+        $priority = Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+    ) {
+        if ($this->_storeMode) {
+            $this->_storedMessages[] = array(
                 'type' => $this->initLogType($message),
                 'text' => $message->getText(),
             );
@@ -126,15 +126,17 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
         }
 
         $this->getListingLog()
-            ->addProductMessage($listingProduct->getListingId() ,
-                                $listingProduct->getProductId() ,
-                                $listingProduct->getId() ,
-                                $this->initiator ,
-                                $this->actionId ,
-                                $this->action ,
-                                $message->getText(),
-                                $this->initLogType($message),
-                                $priority);
+            ->addProductMessage(
+                $listingProduct->getListingId(),
+                $listingProduct->getProductId(),
+                $listingProduct->getId(),
+                $this->_initiator,
+                $this->_actionId,
+                $this->_action,
+                $message->getText(),
+                $this->initLogType($message),
+                $priority
+            );
     }
 
     //########################################
@@ -171,18 +173,18 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Logger
     /**
      * @return Ess_M2ePro_Model_Listing_Log
      */
-    private function getListingLog()
+    protected function getListingLog()
     {
-        if (is_null($this->listingLog)) {
+        if ($this->_listingLog === null) {
 
             /** @var Ess_M2ePro_Model_Listing_Log $listingLog */
             $listingLog = Mage::getModel('M2ePro/Listing_Log');
             $listingLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
 
-            $this->listingLog = $listingLog;
+            $this->_listingLog = $listingLog;
         }
 
-        return $this->listingLog;
+        return $this->_listingLog;
     }
 
     //########################################

@@ -144,6 +144,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
                 $data[$key] = $post[$key];
             }
         }
+
         // ---------------------------------------
 
         // tab: stop
@@ -164,6 +165,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
                 $data[$key] = $post[$key];
             }
         }
+
         // ---------------------------------------
 
         // Add or update model
@@ -197,11 +199,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
         // ---------------------------------------
 
         $this->_getSession()->addSuccess(Mage::helper('M2ePro')->__('Policy was successfully saved'));
-        return $this->_redirectUrl(Mage::helper('M2ePro')->getBackUrl('*/adminhtml_amazon_template/index', array(),
-            array(
+        return $this->_redirectUrl(
+            Mage::helper('M2ePro')->getBackUrl(
+                '*/adminhtml_amazon_template/index', array(),
+                array(
                 'edit' => array('id'=>$id)
+                )
             )
-        ));
+        );
     }
 
     //########################################
@@ -210,7 +215,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
     {
         $ids = $this->getRequestIds();
 
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Please select Item(s) to remove.'));
             $this->_redirect('*/*/index');
             return;

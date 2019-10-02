@@ -56,9 +56,15 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_ShowContro
         return $this;
     }
 
-    protected function addNotificationMessages() {}
+    protected function addNotificationMessages()
+    {
+        return null;
+    }
 
-    protected function beforeAddContentEvent() {}
+    protected function beforeAddContentEvent()
+    {
+        return null;
+    }
 
     //########################################
 

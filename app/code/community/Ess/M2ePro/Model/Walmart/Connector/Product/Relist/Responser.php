@@ -25,7 +25,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Responser
     {
         parent::eventAfterExecuting();
 
-        $additionalData = $this->listingProduct->getAdditionalData();
+        $additionalData = $this->_listingProduct->getAdditionalData();
         if (empty($additionalData['skipped_action_configurator_data'])) {
             return;
         }
@@ -34,10 +34,12 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Responser
         $configurator->setData($additionalData['skipped_action_configurator_data']);
 
         $scheduledActionManager = Mage::getModel('M2ePro/Listing_Product_ScheduledAction_Manager');
-        $scheduledActionManager->addReviseAction($this->listingProduct, $configurator, false, $this->params['params']);
+        $scheduledActionManager->addReviseAction(
+            $this->_listingProduct, $configurator, false, $this->_params['params']
+        );
 
         unset($additionalData['skipped_action_configurator_data']);
-        $this->listingProduct->setSettings('additional_data', $additionalData)->save();
+        $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
     }
 
     // ########################################

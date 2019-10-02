@@ -19,7 +19,7 @@ class Ess_M2ePro_Model_Requirements_Semver_Semver
     const SORT_DESC = -1;
 
     /** @var VersionParser */
-    private static $versionParser;
+    private static $_versionParser;
 
     /**
      * Determine if given version satisfies given constraints.
@@ -31,11 +31,11 @@ class Ess_M2ePro_Model_Requirements_Semver_Semver
      */
     public static function satisfies($version, $constraints)
     {
-        if (null === self::$versionParser) {
-            self::$versionParser = new VersionParser();
+        if (null === self::$_versionParser) {
+            self::$_versionParser = new VersionParser();
         }
 
-        $versionParser = self::$versionParser;
+        $versionParser = self::$_versionParser;
         $provider = new Constraint('==', $versionParser->normalize($version));
         $constraints = $versionParser->parseConstraints($constraints);
 
@@ -52,9 +52,11 @@ class Ess_M2ePro_Model_Requirements_Semver_Semver
      */
     public static function satisfiedBy(array $versions, $constraints)
     {
-        $versions = array_filter($versions, function ($version) use ($constraints) {
+        $versions = array_filter(
+            $versions, function ($version) use ($constraints) {
             return Ess_M2ePro_Model_Requirements_Semver_Semver::satisfies($version, $constraints);
-        });
+            }
+        );
 
         return array_values($versions);
     }
@@ -91,11 +93,11 @@ class Ess_M2ePro_Model_Requirements_Semver_Semver
      */
     private static function usort(array $versions, $direction)
     {
-        if (null === self::$versionParser) {
-            self::$versionParser = new VersionParser();
+        if (null === self::$_versionParser) {
+            self::$_versionParser = new VersionParser();
         }
 
-        $versionParser = self::$versionParser;
+        $versionParser = self::$_versionParser;
         $normalized = array();
 
         // Normalize outside of usort() scope for minor performance increase.
@@ -104,7 +106,8 @@ class Ess_M2ePro_Model_Requirements_Semver_Semver
             $normalized[] = array($versionParser->normalize($version), $key);
         }
 
-        usort($normalized, function (array $left, array $right) use ($direction) {
+        usort(
+            $normalized, function (array $left, array $right) use ($direction) {
             if ($left[0] === $right[0]) {
                 return 0;
             }
@@ -114,7 +117,8 @@ class Ess_M2ePro_Model_Requirements_Semver_Semver
             }
 
             return $direction;
-        });
+            }
+        );
 
         // Recreate input array, using the original indexes which are now in sorted order.
         $sorted = array();

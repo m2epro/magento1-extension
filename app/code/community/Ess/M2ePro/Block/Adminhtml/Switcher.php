@@ -8,22 +8,22 @@
 
 abstract class Ess_M2ePro_Block_Adminhtml_Switcher extends Mage_Adminhtml_Block_Template
 {
-    protected $template = 'M2ePro/switcher.phtml';
+    protected $_template = 'M2ePro/switcher.phtml';
 
-    protected $items = null;
+    protected $_items;
 
-    protected $itemsIds = array();
+    protected $_itemsIds = array();
 
-    protected $paramName = '';
+    protected $_paramName = '';
 
-    protected $hasDefaultOption = true;
+    protected $_hasDefaultOption = true;
 
     //########################################
 
     public function __construct()
     {
         parent::__construct();
-        $this->setTemplate($this->template);
+        $this->setTemplate($this->_template);
     }
 
     //########################################
@@ -36,11 +36,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Switcher extends Mage_Adminhtml_Block_
 
     public function getItems()
     {
-        if (is_null($this->items)) {
+        if ($this->_items === null) {
             $this->loadItems();
         }
 
-        return $this->items;
+        return $this->_items;
     }
 
     public function isEmpty()
@@ -67,7 +67,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Switcher extends Mage_Adminhtml_Block_
     public function getSwitchCallback()
     {
         $callback = 'switch';
-        $callback .= ucfirst($this->paramName);
+        $callback .= ucfirst($this->_paramName);
 
         return $callback;
     }
@@ -81,7 +81,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Switcher extends Mage_Adminhtml_Block_
 
     public function getParamName()
     {
-        return $this->paramName;
+        return $this->_paramName;
     }
 
     public function getParamPlaceHolder()
@@ -99,9 +99,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Switcher extends Mage_Adminhtml_Block_
     public function hasDefaultOption($hasDefaultOption = null)
     {
         if (null !== $hasDefaultOption) {
-            $this->hasDefaultOption = $hasDefaultOption;
+            $this->_hasDefaultOption = $hasDefaultOption;
         }
-        return (bool)$this->hasDefaultOption;
+
+        return (bool)$this->_hasDefaultOption;
     }
 
     public function getDefaultOptionName()

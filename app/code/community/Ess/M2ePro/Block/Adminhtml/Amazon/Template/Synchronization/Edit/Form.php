@@ -25,19 +25,23 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Synchronization_Edit_Form
 
     protected function _beforeToHtml()
     {
-        $this->setChild('amazon_template_synchronization_edit_form_tabs_list',
+        $this->setChild(
+            'amazon_template_synchronization_edit_form_tabs_list',
             $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_synchronization_edit_tabs_list')
         );
 
-        $this->setChild('amazon_template_synchronization_edit_form_tabs_revise',
+        $this->setChild(
+            'amazon_template_synchronization_edit_form_tabs_revise',
             $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_synchronization_edit_tabs_revise')
         );
 
-        $this->setChild('amazon_template_synchronization_edit_form_tabs_relist',
+        $this->setChild(
+            'amazon_template_synchronization_edit_form_tabs_relist',
             $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_synchronization_edit_tabs_relist')
         );
 
-        $this->setChild('amazon_template_synchronization_edit_form_tabs_stop',
+        $this->setChild(
+            'amazon_template_synchronization_edit_form_tabs_stop',
             $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_template_synchronization_edit_tabs_stop')
         );
 
@@ -46,12 +50,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Synchronization_Edit_Form
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);

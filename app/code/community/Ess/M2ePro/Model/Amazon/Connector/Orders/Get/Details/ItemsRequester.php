@@ -28,8 +28,8 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsRequest
     protected function getResponserParams()
     {
         return array(
-            'account_id'     => $this->account->getId(),
-            'marketplace_id' => $this->account->getChildObject()->getMarketplaceId()
+            'account_id'     => $this->_account->getId(),
+            'marketplace_id' => $this->_account->getChildObject()->getMarketplaceId()
         );
     }
 
@@ -38,7 +38,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsRequest
     public function getRequestData()
     {
         return array(
-            'items' => $this->params['items'],
+            'items' => $this->_params['items'],
         );
     }
 

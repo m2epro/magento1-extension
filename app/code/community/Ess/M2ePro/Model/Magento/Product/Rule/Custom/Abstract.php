@@ -8,8 +8,8 @@
 
 abstract class Ess_M2ePro_Model_Magento_Product_Rule_Custom_Abstract
 {
-    protected $filterOperator  = NULL;
-    protected $filterCondition = NULL;
+    protected $_filterOperator  = null;
+    protected $_filterCondition = null;
 
     //########################################
 
@@ -49,12 +49,12 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Custom_Abstract
 
     public function getFilterOperator()
     {
-        return $this->filterOperator;
+        return $this->_filterOperator;
     }
 
     public function setFilterOperator($filterOperator)
     {
-        $this->filterOperator = $filterOperator;
+        $this->_filterOperator = $filterOperator;
         return $this;
     }
 
@@ -62,12 +62,12 @@ abstract class Ess_M2ePro_Model_Magento_Product_Rule_Custom_Abstract
 
     public function getFilterCondition()
     {
-        return $this->filterCondition;
+        return $this->_filterCondition;
     }
 
     public function setFilterCondition($filterCondition)
     {
-        $this->filterCondition = $filterCondition;
+        $this->_filterCondition = $filterCondition;
         return $this;
     }
 

@@ -13,14 +13,14 @@ class Ess_M2ePro_Model_Amazon_Template_Description_SnapshotBuilder
 
     public function getSnapshot()
     {
-        $data = $this->model->getData();
+        $data = $this->_model->getData();
         if (empty($data)) {
             return array();
         }
 
-        $data['specifics'] = $this->model->getChildObject()->getSpecifics();
-        $data['definition'] = $this->model->getChildObject()->getDefinitionTemplate()
-            ? $this->model->getChildObject()->getDefinitionTemplate()->getData() : array();
+        $data['specifics'] = $this->_model->getChildObject()->getSpecifics();
+        $data['definition'] = $this->_model->getChildObject()->getDefinitionTemplate()
+            ? $this->_model->getChildObject()->getDefinitionTemplate()->getData() : array();
 
         $ignoredKeys = array(
             'id', 'template_description_id',
@@ -34,9 +34,10 @@ class Ess_M2ePro_Model_Amazon_Template_Description_SnapshotBuilder
                     continue;
                 }
 
-                !is_null($value) && !is_array($value) && $value = (string)$value;
+                $value !== null && !is_array($value) && $value = (string)$value;
             }
         }
+
         unset($value);
 
         foreach ($data['definition'] as $key => &$value) {

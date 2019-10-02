@@ -29,7 +29,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
     /**
      * @return array
      */
-    private function getConditionData()
+    protected function getConditionData()
     {
         $this->searchNotFoundAttributes();
         $data = $this->getEbayListingProduct()->getDescriptionTemplateSource()->getCondition();
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
     /**
      * @return array
      */
-    private function getConditionNoteData()
+    protected function getConditionNoteData()
     {
         $this->searchNotFoundAttributes();
         $data = $this->getEbayListingProduct()->getDescriptionTemplateSource()->getConditionNote();
@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
     /**
      * @return array
      */
-    private function getVatTaxData()
+    protected function getVatTaxData()
     {
         $data = array(
             'tax_category' => $this->getEbayListingProduct()->getSellingFormatTemplateSource()->getTaxCategory()
@@ -82,7 +82,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
     /**
      * @return array
      */
-    private function getBestOfferData()
+    protected function getBestOfferData()
     {
         $data = array(
             'bestoffer_mode' => $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->isBestOfferEnabled(),
@@ -99,11 +99,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Other
     /**
      * @return array
      */
-    private function getCharityData()
+    protected function getCharityData()
     {
         $charity = $this->getEbayListingProduct()->getEbaySellingFormatTemplate()->getCharity();
 
-        if (is_null($charity)) {
+        if ($charity === null) {
             return array();
         }
 

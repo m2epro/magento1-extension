@@ -32,12 +32,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
     {
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                     'label' => Mage::helper('M2ePro')->__('Insert'),
                     'onclick' => "AmazonListingChannelSettingsHandlerObj.appendToText"
                         ."('condition_note_custom_attribute', 'condition_note_value');",
                     'class' => 'condition_note_value_insert_button'
-                ));
+                )
+            );
         $this->setChild('condition_note_value_insert_button', $buttonBlock);
 
         // ---------------------------------------
@@ -56,6 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
         foreach ($data as $key=>$value) {
             $this->setData($key, $value);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -99,7 +102,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
 
     protected function getListingData()
     {
-        if (!is_null($this->getRequest()->getParam('id'))) {
+        if ($this->getRequest()->getParam('id') !== null) {
             $data = $this->getListing()->getData();
         } else {
             $data = Mage::helper('M2ePro/Data_Session')->getValue($this->sessionKey);
@@ -116,7 +119,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
         return self::getDefaultFieldsValues();
     }
 
-    static function getDefaultFieldsValues()
+    public static function getDefaultFieldsValues()
     {
         return array(
             'sku_mode' => Ess_M2ePro_Model_Amazon_Listing::SKU_MODE_DEFAULT,
@@ -164,7 +167,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
         }
 

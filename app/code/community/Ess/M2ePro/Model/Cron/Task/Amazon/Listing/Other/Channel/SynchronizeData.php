@@ -43,14 +43,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
 
     protected function performActions()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('other_listings_synchronization',
-            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES);
+        $accountsCollection->addFieldToFilter(
+            'other_listings_synchronization',
+            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+        );
 
         $accounts = $accountsCollection->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -61,14 +63,12 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
             $this->getOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
 
             if (!$this->isLockedAccount($account)) {
-
                 $this->getOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
                     'Process Account '.$account->getTitle()
                 );
 
                 try {
-
                     $params = array();
                     if (!$this->isFullItemsDataAlreadyReceived($account)) {
                         $params['full_items_data'] = true;
@@ -85,9 +85,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
                     );
 
                     $dispatcherObject->process($connectorObj);
-
                 } catch (Exception $exception) {
-
                     $message = Mage::helper('M2ePro')->__(
                         'The "3rd Party Listings" Action for Amazon Account "%account%" was completed with error.',
                         $account->getTitle()
@@ -106,7 +104,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
 
     //########################################
 
-    private function isLockedAccount(Ess_M2ePro_Model_Account $account)
+    protected function isLockedAccount(Ess_M2ePro_Model_Account $account)
     {
         $lockItemNick = ProcessingRunner::LOCK_ITEM_PREFIX.'_'.$account->getId();
 
@@ -124,7 +122,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
         return true;
     }
 
-    private function isFullItemsDataAlreadyReceived(Ess_M2ePro_Model_Account $account)
+    protected function isFullItemsDataAlreadyReceived(Ess_M2ePro_Model_Account $account)
     {
         $additionalData = (array)Mage::helper('M2ePro')->jsonDecode($account->getAdditionalData());
         return !empty($additionalData['is_amazon_other_listings_full_items_data_already_received']);

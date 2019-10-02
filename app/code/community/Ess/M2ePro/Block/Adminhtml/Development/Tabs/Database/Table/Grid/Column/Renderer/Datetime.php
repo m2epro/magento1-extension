@@ -16,6 +16,7 @@ class Ess_M2ePro_Block_Adminhtml_Development_Tabs_Database_Table_Grid_Column_Ren
         if ($data = $this->_getValue($row)) {
             return $data;
         }
+
         return $this->getColumn()->getDefault();
     }
 

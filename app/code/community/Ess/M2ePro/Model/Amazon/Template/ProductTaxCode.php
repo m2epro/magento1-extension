@@ -7,7 +7,7 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Amazon_Template_ProductTaxCode getResource()
+ * @method Ess_M2ePro_Model_Resource_Amazon_Template_ProductTaxCode getResource()
  */
 class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode extends Ess_M2ePro_Model_Component_Abstract
 {
@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode extends Ess_M2ePro_Model_C
     /**
      * @var Ess_M2ePro_Model_Amazon_Template_ProductTaxCode_Source[]
      */
-    private $productTaxCodeSourceModels = array();
+    protected $_productTaxCodeSourceModels = array();
 
     //########################################
 
@@ -65,17 +65,17 @@ class Ess_M2ePro_Model_Amazon_Template_ProductTaxCode extends Ess_M2ePro_Model_C
     {
         $id = $magentoProduct->getProductId();
 
-        if (!empty($this->productTaxCodeSourceModels[$id])) {
-            return $this->productTaxCodeSourceModels[$id];
+        if (!empty($this->_productTaxCodeSourceModels[$id])) {
+            return $this->_productTaxCodeSourceModels[$id];
         }
 
-        $this->productTaxCodeSourceModels[$id] =
+        $this->_productTaxCodeSourceModels[$id] =
             Mage::getModel('M2ePro/Amazon_Template_ProductTaxCode_Source');
 
-        $this->productTaxCodeSourceModels[$id]->setMagentoProduct($magentoProduct);
-        $this->productTaxCodeSourceModels[$id]->setProductTaxCodeTemplate($this);
+        $this->_productTaxCodeSourceModels[$id]->setMagentoProduct($magentoProduct);
+        $this->_productTaxCodeSourceModels[$id]->setProductTaxCodeTemplate($this);
 
-        return $this->productTaxCodeSourceModels[$id];
+        return $this->_productTaxCodeSourceModels[$id];
     }
 
     //########################################

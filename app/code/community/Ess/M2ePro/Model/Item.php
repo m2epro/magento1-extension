@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Item
         $connWrite = $resource->getConnection('core_write');
         $existTables = Mage::helper('M2ePro/Magento')->getMySqlTables();
 
-        if (is_null($component)) {
+        if ($component === null) {
             $components = Mage::helper('M2ePro/Component')->getComponents();
         } else {
             $components = array($component);
@@ -32,6 +32,7 @@ class Ess_M2ePro_Model_Item
             if (!in_array($itemTable, $existTables)) {
                 continue;
             }
+
             $connWrite->delete($itemTable, array('product_id = ?' => $productId));
         }
     }

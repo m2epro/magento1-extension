@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 {
     //########################################
 
-    private function getStopInstructionTypes()
+    protected function getStopInstructionTypes()
     {
         return array(
             Ess_M2ePro_Model_Ebay_Template_Synchronization_ChangeProcessor::INSTRUCTION_TYPE_STOP_MODE_ENABLED,
@@ -38,13 +38,13 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isAllowed()
     {
-        if (!$this->input->hasInstructionWithTypes($this->getStopInstructionTypes()) &&
-            !$this->input->hasInstructionWithTypes($this->getReviseInstructionTypes())
+        if (!$this->_input->hasInstructionWithTypes($this->getStopInstructionTypes()) &&
+            !$this->_input->hasInstructionWithTypes($this->getReviseInstructionTypes())
         ) {
             return false;
         }
 
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         if ($listingProduct->isHidden()) {
             return false;
@@ -68,12 +68,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function process(array $params = array())
     {
-        $scheduledAction = $this->input->getScheduledAction();
-        if (is_null($scheduledAction)) {
+        $scheduledAction = $this->_input->getScheduledAction();
+        if ($scheduledAction === null) {
             $scheduledAction = Mage::getModel('M2ePro/Listing_Product_ScheduledAction');
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getStopInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getStopInstructionTypes())) {
             if (!$this->isMeetStopRequirements()) {
                 if ($scheduledAction->isActionTypeStop() && !$scheduledAction->isForce()) {
                     $this->getScheduledActionManager()->deleteAction($scheduledAction);
@@ -82,7 +82,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             } else {
 
                 /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
-                $ebayListingProduct = $this->input->getListingProduct()->getChildObject();
+                $ebayListingProduct = $this->_input->getListingProduct()->getChildObject();
 
                 $actionType = Ess_M2ePro_Model_Listing_Product::ACTION_STOP;
 
@@ -108,13 +108,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
                     }
                 }
 
-                $scheduledAction->addData(array(
-                    'listing_product_id' => $this->input->getListingProduct()->getId(),
-                    'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
-                    'action_type'        => $actionType,
-                    'tag'                => '/'.implode('/', $tags).'/',
-                    'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData),
-                ));
+                $scheduledAction->addData(
+                    array(
+                        'listing_product_id' => $this->_input->getListingProduct()->getId(),
+                        'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
+                        'action_type'        => $actionType,
+                        'tag'                => '/'.implode('/', $tags).'/',
+                        'additional_data'    => Mage::helper('M2ePro')->jsonEncode($additionalData),
+                    )
+                );
 
                 if ($scheduledAction->getId()) {
                     $this->getScheduledActionManager()->updateAction($scheduledAction);
@@ -131,7 +133,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
              isset($additionalData['params']['replaced_action']) &&
              $additionalData['params']['replaced_action'] == Ess_M2ePro_Model_Listing_Product::ACTION_STOP)
         ) {
-            if ($this->input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
+            if ($this->_input->hasInstructionWithTypes($this->getReviseInstructionTypes())) {
                 $this->setPropertiesForRecheck($this->getPropertiesDataFromInputInstructions());
             }
 
@@ -161,7 +163,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
         $tags = array_flip($tags);
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseQtyInstructionTypes())) {
             if ($this->isMeetReviseQtyRequirements()) {
                 $configurator->allowQty()->allowVariations();
                 $tags['qty'] = true;
@@ -171,7 +173,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePriceInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePriceInstructionTypes())) {
             if ($this->isMeetRevisePriceRequirements()) {
                 $configurator->allowPrice()->allowVariations();
                 $tags['price'] = true;
@@ -181,7 +183,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseTitleInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseTitleInstructionTypes())) {
             if ($this->isMeetReviseTitleRequirements()) {
                 $configurator->allowTitle();
                 $tags['title'] = true;
@@ -191,7 +193,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseSubtitleInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseSubtitleInstructionTypes())) {
             if ($this->isMeetReviseSubtitleRequirements()) {
                 $configurator->allowSubtitle();
                 $tags['subtitle'] = true;
@@ -201,7 +203,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseDescriptionInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseDescriptionInstructionTypes())) {
             if ($this->isMeetReviseDescriptionRequirements()) {
                 $configurator->allowDescription();
                 $tags['description'] = true;
@@ -211,11 +213,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseImagesInstructionTypes())) {
             if ($this->isMeetReviseImagesRequirements()) {
                 $configurator->allowImages();
 
-                if ($this->input->hasInstructionWithTypes($this->getReviseVariationImagesInstructionTypes())) {
+                if ($this->_input->hasInstructionWithTypes($this->getReviseVariationImagesInstructionTypes())) {
                     $configurator->allowVariations();
                 }
 
@@ -226,7 +228,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseCategoriesInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseCategoriesInstructionTypes())) {
             if ($this->isMeetReviseCategoriesRequirements()) {
                 $configurator->allowCategories();
                 $tags['categories'] = true;
@@ -236,7 +238,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseShippingInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseShippingInstructionTypes())) {
             if ($this->isMeetReviseShippingRequirements()) {
                 $configurator->allowShipping();
                 $tags['shipping'] = true;
@@ -246,7 +248,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getRevisePaymentInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getRevisePaymentInstructionTypes())) {
             if ($this->isMeetRevisePaymentRequirements()) {
                 $configurator->allowPayment();
                 $tags['payment'] = true;
@@ -256,7 +258,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseReturnInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseReturnInstructionTypes())) {
             if ($this->isMeetReviseReturnRequirements()) {
                 $configurator->allowReturn();
                 $tags['return'] = true;
@@ -266,7 +268,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if ($this->input->hasInstructionWithTypes($this->getReviseOtherInstructionTypes())) {
+        if ($this->_input->hasInstructionWithTypes($this->getReviseOtherInstructionTypes())) {
             if ($this->isMeetReviseOtherRequirements()) {
                 $configurator->allowOther();
                 $tags['other'] = true;
@@ -276,7 +278,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        if (count($configurator->getAllowedDataTypes()) == 0 ||
+        if (empty($configurator->getAllowedDataTypes()) ||
             (count($configurator->getAllowedDataTypes()) == 1 && $configurator->isVariationsAllowed())
         ) {
             if ($scheduledAction->getId()) {
@@ -288,16 +290,20 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
         $tags = array_keys($tags);
 
-        $scheduledAction->addData(array(
-            'listing_product_id' => $this->input->getListingProduct()->getId(),
-            'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
-            'action_type'        => Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
-            'tag'                => '/'.implode('/', $tags).'/',
-            'additional_data'    => Mage::helper('M2ePro')->jsonEncode(array(
-                'params'       => $params,
-                'configurator' => $configurator->getData()
-            )),
-        ));
+        $scheduledAction->addData(
+            array(
+                'listing_product_id' => $this->_input->getListingProduct()->getId(),
+                'component'          => Ess_M2ePro_Helper_Component_Ebay::NICK,
+                'action_type'        => Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
+                'tag'                => '/'.implode('/', $tags).'/',
+                'additional_data' => Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'params'       => $params,
+                        'configurator' => $configurator->getData()
+                    )
+                ),
+            )
+        );
 
         if ($scheduledAction->getId()) {
             $this->getScheduledActionManager()->updateAction($scheduledAction);
@@ -310,7 +316,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetStopRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -328,41 +334,36 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $variationResource = Mage::getResourceModel('M2ePro/Listing_Product_Variation');
 
         if ($ebaySynchronizationTemplate->isStopStatusDisabled()) {
-
             if (!$listingProduct->getMagentoProduct()->isStatusEnabled()) {
                 return true;
             } else if ($ebayListingProduct->isVariationsReady()) {
-
                 $temp = $variationResource->isAllStatusesDisabled(
                     $listingProduct->getId(),
                     $listingProduct->getListing()->getStoreId()
                 );
 
-                if (!is_null($temp) && $temp) {
+                if ($temp !== null && $temp) {
                     return true;
                 }
             }
         }
 
         if ($ebaySynchronizationTemplate->isStopOutOfStock()) {
-
             if (!$listingProduct->getMagentoProduct()->isStockAvailability()) {
                 return true;
             } else if ($ebayListingProduct->isVariationsReady()) {
-
                 $temp = $variationResource->isAllDoNotHaveStockAvailabilities(
                     $listingProduct->getId(),
                     $listingProduct->getListing()->getStoreId()
                 );
 
-                if (!is_null($temp) && $temp) {
+                if ($temp !== null && $temp) {
                     return true;
                 }
             }
         }
 
         if ($ebaySynchronizationTemplate->isStopWhenQtyMagentoHasValue()) {
-
             $productQty = (int)$listingProduct->getMagentoProduct()->getQty(true);
 
             $typeQty = (int)$ebaySynchronizationTemplate->getStopWhenQtyMagentoHasValueType();
@@ -386,7 +387,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         }
 
         if ($ebaySynchronizationTemplate->isStopWhenQtyCalculatedHasValue()) {
-
             $productQty = (int)$ebayListingProduct->getQty();
 
             $typeQty = (int)$ebaySynchronizationTemplate->getStopWhenQtyCalculatedHasValueType();
@@ -416,7 +416,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseQtyRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -440,7 +440,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         $maxAppliedValue = $ebaySynchronizationTemplate->getReviseUpdateQtyMaxAppliedValue();
 
         if (!$ebayListingProduct->isVariationsReady()) {
-
             $productQty = $ebayListingProduct->getQty();
             $channelQty = $ebayListingProduct->getOnlineQty() - $ebayListingProduct->getOnlineQtySold();
 
@@ -452,9 +451,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             if ($productQty != $channelQty) {
                 return true;
             }
-
         } else {
-
             $variations = $listingProduct->getVariations(true);
 
             foreach ($variations as $variation) {
@@ -467,7 +464,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
                 if ($productQty != $channelQty &&
                     (!$isMaxAppliedValueModeOn || $productQty <= $maxAppliedValue || $channelQty <= $maxAppliedValue)) {
-
                     return true;
                 }
             }
@@ -480,7 +476,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetRevisePriceRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -495,9 +491,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
         }
 
         if (!$ebayListingProduct->isVariationsReady()) {
-
             if ($ebayListingProduct->isListingTypeFixed()) {
-
                 $needRevise = $ebaySynchronizationTemplate->isPriceChangedOverAllowedDeviation(
                     $ebayListingProduct->getOnlineCurrentPrice(),
                     $ebayListingProduct->getFixedPrice()
@@ -509,7 +503,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
 
             if ($ebayListingProduct->isListingTypeAuction()) {
-
                 $needRevise = $ebaySynchronizationTemplate->isPriceChangedOverAllowedDeviation(
                     $ebayListingProduct->getOnlineStartPrice(),
                     $ebayListingProduct->getStartPrice()
@@ -537,9 +530,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
                     return true;
                 }
             }
-
         } else {
-
             $variations = $listingProduct->getVariations(true);
 
             foreach ($variations as $variation) {
@@ -565,7 +556,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseTitleRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -592,7 +583,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseSubtitleRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -619,7 +610,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseDescriptionRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -646,7 +637,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseImagesRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -672,7 +663,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseCategoriesRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -697,7 +688,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetRevisePaymentRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -722,7 +713,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseShippingRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -747,7 +738,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseReturnRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();
@@ -772,7 +763,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     public function isMeetReviseOtherRequirements()
     {
-        $listingProduct = $this->input->getListingProduct();
+        $listingProduct = $this->_input->getListingProduct();
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product $ebayListingProduct */
         $ebayListingProduct = $listingProduct->getChildObject();

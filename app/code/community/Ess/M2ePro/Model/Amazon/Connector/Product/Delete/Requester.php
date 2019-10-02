@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
     {
         $identifier = parent::getLockIdentifier();
 
-        if (!empty($this->params['remove'])) {
+        if (!empty($this->_params['remove'])) {
             $identifier .= '_and_remove';
         }
 
@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
 
     protected function getLogsAction()
     {
-        return !empty($this->params['remove']) ?
+        return !empty($this->_params['remove']) ?
                Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_AND_REMOVE_PRODUCT :
                Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_COMPONENT;
     }
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
     protected function validateListingProduct()
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $this->listingProduct->getChildObject();
+        $amazonListingProduct = $this->_listingProduct->getChildObject();
         $variationManager = $amazonListingProduct->getVariationManager();
 
         $parentListingProduct = null;
@@ -59,8 +59,8 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
 
         $validationResult = $validator->validate();
 
-        if (!$validationResult && $this->listingProduct->isDeleted()) {
-            if (!is_null($parentListingProduct)) {
+        if (!$validationResult && $this->_listingProduct->isDeleted()) {
+            if ($parentListingProduct !== null) {
                 $parentListingProduct->loadInstance($parentListingProduct->getId());
 
                 /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonParentListingProduct */
@@ -72,7 +72,6 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
         }
 
         foreach ($validator->getMessages() as $messageData) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData($messageData['text'], $messageData['type']);
 
@@ -87,7 +86,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
     protected function validateAndProcessParentListingProduct()
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $this->listingProduct->getChildObject();
+        $amazonListingProduct = $this->_listingProduct->getChildObject();
 
         if (!$amazonListingProduct->getVariationManager()->isRelationParentType()) {
             return false;
@@ -102,31 +101,33 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
             $filteredByStatusChildListingProducts
         );
 
-        if (empty($this->params['remove']) && empty($filteredByStatusNotLockedChildListingProducts)) {
-            $this->listingProduct->setData('no_child_for_processing', true);
+        if (empty($this->_params['remove']) && empty($filteredByStatusNotLockedChildListingProducts)) {
+            $this->_listingProduct->setData('no_child_for_processing', true);
             return false;
         }
 
         $notLockedChildListingProducts = $this->filterLockedChildListingProducts($childListingsProducts);
 
         if (count($childListingsProducts) != count($notLockedChildListingProducts)) {
-            $this->listingProduct->setData('child_locked', true);
+            $this->_listingProduct->setData('child_locked', true);
             return false;
         }
 
-        if (!empty($this->params['remove'])) {
-            $this->listingProduct->addData(array(
+        if (!empty($this->_params['remove'])) {
+            $this->_listingProduct->addData(
+                array(
                 'general_id'          => null,
                 'is_general_id_owner' => Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO,
                 'status'              => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED,
-            ));
-            $this->listingProduct->save();
+                )
+            );
+            $this->_listingProduct->save();
 
             $amazonListingProduct->getVariationManager()->switchModeToAnother();
 
             $this->getProcessingRunner()->stop();
 
-            $this->listingProduct->deleteInstance();
+            $this->_listingProduct->deleteInstance();
         }
 
         if (empty($filteredByStatusNotLockedChildListingProducts)) {
@@ -138,7 +139,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
             $childListingsProductsIds[] = $listingProduct->getId();
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('id', array('in' => $childListingsProductsIds));
 
@@ -149,22 +150,24 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
         }
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processing $processingAction */
-        $processingAction = $this->listingProduct->getProcessingAction();
+        $processingAction = $this->_listingProduct->getProcessingAction();
         $groupHash = $processingAction->getGroupHash();
 
         foreach ($processChildListingsProducts as $childListingProduct) {
             $processingRunner = Mage::getModel('M2ePro/Amazon_Connector_Product_ProcessingRunner');
 
-            $params = array_merge($this->params, array('is_parent_action' => true));
+            $params = array_merge($this->_params, array('is_parent_action' => true));
 
-            $processingRunner->setParams(array(
-                'listing_product_id' => $childListingProduct->getId(),
-                'configurator'       => $this->listingProduct->getActionConfigurator()->getData(),
-                'action_type'        => $this->getActionType(),
-                'lock_identifier'    => $this->getLockIdentifier(),
-                'requester_params'   => $params,
-                'group_hash'         => $groupHash,
-            ));
+            $processingRunner->setParams(
+                array(
+                    'listing_product_id' => $childListingProduct->getId(),
+                    'configurator'       => $this->_listingProduct->getActionConfigurator()->getData(),
+                    'action_type'        => $this->getActionType(),
+                    'lock_identifier'    => $this->getLockIdentifier(),
+                    'requester_params'   => $params,
+                    'group_hash'         => $groupHash,
+                )
+            );
 
             $processingRunner->start();
         }
@@ -183,7 +186,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
         $resultListingProducts = array();
 
         foreach ($listingProducts as $id => $childListingProduct) {
-            if ($childListingProduct->isBlocked() && empty($this->params['remove'])) {
+            if ($childListingProduct->isBlocked() && empty($this->_params['remove'])) {
                 continue;
             }
 

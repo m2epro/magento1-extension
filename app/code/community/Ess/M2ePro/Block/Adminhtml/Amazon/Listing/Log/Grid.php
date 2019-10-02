@@ -33,7 +33,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Log_Grid extends Ess_M2ePro_Bloc
         $value = Mage::helper('M2ePro')->escapeHtml($value);
 
         if ($row->getData('listing_id')) {
-
             $url = $this->getUrl(
                 '*/adminhtml_amazon_listing/view',
                 array('id' => $row->getData('listing_id'))

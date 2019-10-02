@@ -52,11 +52,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
             // ---------------------------------------
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Cancellation" Action for eBay Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -74,16 +71,16 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         if (!$account->getChildObject()->shouldCreateMagentoOrderImmediately()
             || $account->getChildObject()->getMagentoOrdersReservationDays() <= 0
@@ -114,7 +111,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function getUnpaidOrdersUpdates(Ess_M2ePro_Model_Account $account)
+    protected function getUnpaidOrdersUpdates(Ess_M2ePro_Model_Account $account)
     {
         $reservationDays = $account->getChildObject()->getMagentoOrdersReservationDays();
         list($startDate, $endDate) = $this->getDateRangeForUnpaidOrders($reservationDays);
@@ -127,9 +124,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
         }
 
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
-        $connectorObj = $dispatcherObj->getVirtualConnector('orders', 'get', 'orders',
-                                                            array('orders_ids' => $ordersIds),
-                                                            NULL, NULL, $account);
+        $connectorObj = $dispatcherObj->getVirtualConnector(
+            'orders', 'get', 'orders',
+            array('orders_ids' => $ordersIds),
+            NULL, NULL, $account
+        );
 
         $dispatcherObj->process($connectorObj);
         $response = $connectorObj->getResponseData();
@@ -139,14 +138,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
         return isset($response['orders']) ? $response['orders'] : array();
     }
 
-    private function processResponseMessages(array $messages)
+    protected function processResponseMessages(array $messages)
     {
         /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
         $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
         $messagesSet->init($messages);
 
         foreach ($messagesSet->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -162,7 +160,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
         }
     }
 
-    private function getDateRangeForUnpaidOrders($reservationDays)
+    protected function getDateRangeForUnpaidOrders($reservationDays)
     {
         $reservationDays = (int)$reservationDays;
 
@@ -179,7 +177,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
         return array($startDate, $endDate);
     }
 
-    private function associateAndUpdateOrder(Ess_M2ePro_Model_Account $account, array $orderData)
+    protected function associateAndUpdateOrder(Ess_M2ePro_Model_Account $account, array $orderData)
     {
         /** @var $order Ess_M2ePro_Model_Order */
         $order = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order')
@@ -212,8 +210,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
             $order->setData('payment_status', $paymentStatus);
         }
 
-        if (
-            !$order->getChildObject()->isCheckoutCompleted() &&
+        if (!$order->getChildObject()->isCheckoutCompleted() &&
             $checkoutStatus == Ess_M2ePro_Model_Ebay_Order::CHECKOUT_STATUS_COMPLETED
         ) {
             $shippingDetails = $orderData['shipping'];
@@ -234,7 +231,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function processOrder(Ess_M2ePro_Model_Order $order)
+    protected function processOrder(Ess_M2ePro_Model_Order $order)
     {
         if ($order->getChildObject()->isPaymentCompleted()) {
             // unpaid order became paid
@@ -269,14 +266,15 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
 
                 try {
                     $order->cancelMagentoOrder();
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             }
 
             $this->openUnpaidItemProcess($order);
         }
     }
 
-    private function createMagentoOrder(Ess_M2ePro_Model_Order $order)
+    protected function createMagentoOrder(Ess_M2ePro_Model_Order $order)
     {
         if ($order->canCreateMagentoOrder()) {
             try {
@@ -292,19 +290,23 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
         if ($order->getChildObject()->canCreatePaymentTransaction()) {
             $order->getChildObject()->createPaymentTransactions();
         }
+
         if ($order->getChildObject()->canCreateInvoice()) {
             $order->createInvoice();
         }
+
         if ($order->getChildObject()->canCreateShipment()) {
             $order->createShipment();
         }
+
         if ($order->getChildObject()->canCreateTracks()) {
             $order->getChildObject()->createTracks();
         }
+
         $order->updateMagentoOrderStatus();
     }
 
-    private function clearOrder(Ess_M2ePro_Model_Order $order)
+    protected function clearOrder(Ess_M2ePro_Model_Order $order)
     {
         $order->setMagentoOrder(null);
         $order->setData('magento_order_id', null);
@@ -315,7 +317,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function openUnpaidItemProcess(Ess_M2ePro_Model_Order $order)
+    protected function openUnpaidItemProcess(Ess_M2ePro_Model_Order $order)
     {
         $items = $this->getOrderItemsForUnpaidItemProcess($order);
         if (empty($items)) {
@@ -333,9 +335,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
         $dispatcher->process($action, $items, $params);
     }
 
-    private function getOrderItemsForUnpaidItemProcess(Ess_M2ePro_Model_Order $order)
+    protected function getOrderItemsForUnpaidItemProcess(Ess_M2ePro_Model_Order $order)
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Item_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Item_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order_Item');
         $collection->addFieldToFilter('order_id', $order->getId());
         $collection->addFieldToFilter(
@@ -347,19 +349,19 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    private function getCheckoutStatus($orderData)
+    protected function getCheckoutStatus($orderData)
     {
         return Mage::getSingleton('M2ePro/Ebay_Order_Helper')->getCheckoutStatus($orderData['statuses']['checkout']);
     }
 
-    private function getPaymentStatus($orderData)
+    protected function getPaymentStatus($orderData)
     {
         return Mage::getSingleton('M2ePro/Ebay_Order_Helper')->getPaymentStatus(
             $orderData['payment']['method'], $orderData['payment']['date'], $orderData['payment']['status']
         );
     }
 
-    private function getShippingStatus($orderData)
+    protected function getShippingStatus($orderData)
     {
         return Mage::getSingleton('M2ePro/Ebay_Order_Helper')->getShippingStatus(
             $orderData['shipping']['date'], !empty($orderData['shipping']['service'])

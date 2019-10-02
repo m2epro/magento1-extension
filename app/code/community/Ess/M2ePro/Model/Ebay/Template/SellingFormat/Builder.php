@@ -146,7 +146,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
         }
 
         if (isset($data['fixed_price_coefficient'], $data['fixed_price_coefficient_mode'])) {
-
             $prepared['fixed_price_coefficient'] = $this->getFormattedPriceCoefficient(
                 $data['fixed_price_coefficient'], $data['fixed_price_coefficient_mode']
             );
@@ -163,7 +162,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
         }
 
         if (isset($data['start_price_coefficient'], $data['start_price_coefficient_mode'])) {
-
             $prepared['start_price_coefficient'] = $this->getFormattedPriceCoefficient(
                 $data['start_price_coefficient'], $data['start_price_coefficient_mode']
             );
@@ -180,7 +178,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
         }
 
         if (isset($data['reserve_price_coefficient'], $data['reserve_price_coefficient_mode'])) {
-
             $prepared['reserve_price_coefficient'] = $this->getFormattedPriceCoefficient(
                 $data['reserve_price_coefficient'], $data['reserve_price_coefficient_mode']
             );
@@ -197,7 +194,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
         }
 
         if (isset($data['buyitnow_price_coefficient'], $data['buyitnow_price_coefficient_mode'])) {
-
             $prepared['buyitnow_price_coefficient'] = $this->getFormattedPriceCoefficient(
                 $data['buyitnow_price_coefficient'], $data['buyitnow_price_coefficient_mode']
             );
@@ -289,7 +285,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
 
     //########################################
 
-    private function getFormattedPriceCoefficient($priceCoeff, $priceCoeffMode)
+    protected function getFormattedPriceCoefficient($priceCoeff, $priceCoeffMode)
     {
         if ($priceCoeffMode == Ess_M2ePro_Model_Ebay_Template_SellingFormat::PRICE_COEFFICIENT_NONE) {
             return '';

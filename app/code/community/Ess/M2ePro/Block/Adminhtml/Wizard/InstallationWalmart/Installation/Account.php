@@ -25,26 +25,30 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Account
     protected function _beforeToHtml()
     {
         // ---------------------------------------
-        $url = $this->getUrl('*/adminhtml_walmart_account/new',array('wizard'=>true));
+        $url = $this->getUrl('*/adminhtml_walmart_account/new', array('wizard'=>true));
         $step = 'account';
         // ---------------------------------------
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Proceed'),
                 'onclick' => 'WizardHandlerObj.processStep(\''.$url.'\',\''.$step.'\');',
                 'class'   => 'process_account_button'
-            ));
+                )
+            );
         $this->setChild('process_account_button', $buttonBlock);
 
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Skip'),
                 'onclick' => 'WizardHandlerObj.skipStep(\''.$step.'\');',
                 'class'   => 'skip_account_button'
-            ));
+                )
+            );
         $this->setChild('skip_account_button', $buttonBlock);
         // ---------------------------------------
 

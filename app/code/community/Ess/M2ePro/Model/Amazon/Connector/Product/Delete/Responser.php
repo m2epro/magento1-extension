@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Product_Responser
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $parentForProcessing */
-    protected $parentForProcessing = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_parentForProcessing */
+    protected $_parentForProcessing = null;
 
     // ########################################
 
@@ -25,9 +25,9 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Responser
 
     public function eventAfterExecuting()
     {
-        if (!empty($this->params['params']['remove'])) {
+        if (!empty($this->_params['params']['remove'])) {
             $removeHandler = Mage::getModel(
-                'M2ePro/Amazon_Listing_Product_RemoveHandler', array('listing_product' => $this->listingProduct)
+                'M2ePro/Amazon_Listing_Product_RemoveHandler', array('listing_product' => $this->_listingProduct)
             );
             $removeHandler->process();
         }
@@ -37,17 +37,17 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Responser
 
     protected function processParentProcessor()
     {
-        if (empty($this->params['params']['remove'])) {
+        if (empty($this->_params['params']['remove'])) {
             parent::processParentProcessor();
             return;
         }
 
-        if (is_null($this->parentForProcessing)) {
+        if ($this->_parentForProcessing === null) {
             return;
         }
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $this->listingProduct->getChildObject();
+        $amazonListingProduct = $this->_listingProduct->getChildObject();
         $amazonListingProduct->getVariationManager()->getTypeModel()->getProcessor()->process();
     }
 

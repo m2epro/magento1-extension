@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific */
+
+?>
+
 <div class="content-header">
     <table cellspacing="0">
         <tr>
@@ -9,7 +22,7 @@
 
 <?php echo $this->getChildHtml('view_header'); ?>
 
-<?php if (!is_null($this->_selectedCategoryPath)): ?>
+<?php if ($this->_selectedCategoryPath !== null): ?>
     <div class="listing-view-header">
         <span style="font-size: 1em; font-weight: bold;"><?php echo Mage::helper('M2ePro')->__('eBay Category'); ?>:</span>&nbsp;&nbsp;&nbsp;
         <span style="font-size: 1.1em"><?php echo $this->_selectedCategoryPath; ?></span>

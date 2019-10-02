@@ -66,15 +66,15 @@ class Ess_M2ePro_Model_Order_Matching extends Ess_M2ePro_Model_Abstract
         $component,
         $hash = null
     ) {
-        if (is_null($productId) || count($input) == 0 || count($output) == 0) {
+        if ($productId === null || empty($input) || empty($output)) {
             throw new InvalidArgumentException('Invalid matching data.');
         }
 
-        if (is_null($hash)) {
+        if ($hash === null) {
             $hash = self::generateHash($input);
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Matching_Collection $matchingCollection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Matching_Collection $matchingCollection */
         $matchingCollection = Mage::getModel('M2ePro/Order_Matching')->getCollection();
         $matchingCollection->addFieldToFilter('product_id', (int)$productId);
         $matchingCollection->addFieldToFilter('hash', $hash);
@@ -82,24 +82,26 @@ class Ess_M2ePro_Model_Order_Matching extends Ess_M2ePro_Model_Abstract
         /** @var Ess_M2ePro_Model_Order_Matching $matching */
         $matching = $matchingCollection->getFirstItem();
 
-        $matching->addData(array(
+        $matching->addData(
+            array(
             'product_id'               => (int)$productId,
             'input_variation_options'  => Mage::helper('M2ePro')->jsonEncode($input),
             'output_variation_options' => Mage::helper('M2ePro')->jsonEncode($output),
             'hash'                     => $hash,
             'component'                => $component,
-        ));
+            )
+        );
 
         $matching->save();
     }
 
     public static function generateHash(array $input)
     {
-        if (count($input) == 0) {
+        if (empty($input)) {
             return null;
         }
 
-        return sha1(serialize($input));
+        return sha1(Mage::helper('M2ePro')->serialize($input));
     }
 
     //########################################

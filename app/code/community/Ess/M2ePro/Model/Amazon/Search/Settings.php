@@ -12,14 +12,12 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
     const STEP_WORLDWIDE_ID  = 2;
     const STEP_MAGENTO_TITLE = 3;
 
-    //########################################
+    protected $_step = null;
 
-    private $step = null;
+    protected $_stepData = array();
 
-    private $stepData = array();
-
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = null;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
     //########################################
 
@@ -29,7 +27,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -39,7 +37,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
      */
     public function setStep($step)
     {
-        $this->step = $step;
+        $this->_step = $step;
         return $this;
     }
 
@@ -48,13 +46,13 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
      */
     public function setNextStep()
     {
-        $nextStep = (int)$this->step + 1;
+        $nextStep = (int)$this->_step + 1;
 
         if (!in_array($nextStep, $this->getAllowedSteps())) {
             return false;
         }
 
-        $this->step = $nextStep;
+        $this->_step = $nextStep;
         return true;
     }
 
@@ -63,7 +61,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
      */
     public function resetStep()
     {
-        $this->step = null;
+        $this->_step = null;
         return $this;
     }
 
@@ -73,31 +71,31 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
      */
     public function setStepData(array $result)
     {
-        $this->stepData = $result;
+        $this->_stepData = $result;
         return $this;
     }
 
     //########################################
 
-    private function getListingProduct()
+    protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product
      */
-    private function getAmazonListingProduct()
+    protected function getAmazonListingProduct()
     {
         return $this->getListingProduct()->getChildObject();
     }
 
-    private function getVariationManager()
+    protected function getVariationManager()
     {
         return $this->getAmazonListingProduct()->getVariationManager();
     }
 
-    private function getAllowedSteps()
+    protected function getAllowedSteps()
     {
         return array(
             self::STEP_GENERAL_ID,
@@ -114,12 +112,12 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
             return false;
         }
 
-        if (!empty($this->stepData['result'])) {
+        if (!empty($this->_stepData['result'])) {
             $this->processResult();
             return true;
         }
 
-        $this->stepData = array();
+        $this->_stepData = array();
 
         if (!$this->setNextStep()) {
             $this->setNotFoundSearchStatus();
@@ -146,20 +144,20 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
 
     //########################################
 
-    private function processResult()
+    protected function processResult()
     {
-        $result = $this->stepData['result'];
-        $params = $this->stepData['params'];
+        $result = $this->_stepData['result'];
+        $params = $this->_stepData['params'];
 
         $params['search_method'] == 'byAsin' && $result = array($result);
 
-        if ($this->step == self::STEP_MAGENTO_TITLE) {
+        if ($this->_step == self::STEP_MAGENTO_TITLE) {
             $tempResult = $this->filterReceivedItemsFullTitleMatch($result);
             count($tempResult) == 1 && $result = $tempResult;
         }
 
         $type = 'string';
-        if ($this->step != self::STEP_MAGENTO_TITLE) {
+        if ($this->_step != self::STEP_MAGENTO_TITLE) {
             $type = $this->getIdentifierType($params['query']);
         }
 
@@ -186,14 +184,13 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
 
         $generalId = $this->getGeneralIdFromResult($result);
 
-        if ($this->step == self::STEP_MAGENTO_TITLE && $result['title'] !== $params['query']) {
+        if ($this->_step == self::STEP_MAGENTO_TITLE && $result['title'] !== $params['query']) {
             $this->setNotFoundSearchStatus();
             return;
         }
 
-        if ($this->step == self::STEP_GENERAL_ID && $generalId !== $params['query'] &&
+        if ($this->_step == self::STEP_GENERAL_ID && $generalId !== $params['query'] &&
             (!Mage::helper('M2ePro')->isISBN($generalId) || !Mage::helper('M2ePro')->isISBN($params['query']))) {
-
             $this->setNotFoundSearchStatus();
             return;
         }
@@ -221,7 +218,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return;
     }
 
-    private function processParentResult(array $result)
+    protected function processParentResult(array $result)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent $typeModel */
         $typeModel = $this->getVariationManager()->getTypeModel();
@@ -237,6 +234,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         foreach ($result['variations']['asins'] as $asin => $asinAttributes) {
             $channelVariations[$asin] = $asinAttributes['specifics'];
         }
+
         $typeModel->setChannelVariations($channelVariations);
 
         $this->getListingProduct()->save();
@@ -250,9 +248,9 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
 
     //########################################
 
-    private function validate()
+    protected function validate()
     {
-        if (!is_null($this->step) && !in_array($this->step, $this->getAllowedSteps())) {
+        if ($this->_step !== null && !in_array($this->_step, $this->getAllowedSteps())) {
             return false;
         }
 
@@ -268,10 +266,10 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return true;
     }
 
-    private function getConnectorParams()
+    protected function getConnectorParams()
     {
         $params = array(
-            'step' => $this->step,
+            'step' => $this->_step,
             'query' => $this->getQueryParam(),
             'search_method' => $this->getSearchMethod(),
             'listing_product_id' => $this->getListingProduct()->getId(),
@@ -289,7 +287,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return $params;
     }
 
-    private function getGeneralIdFromResult($result)
+    protected function getGeneralIdFromResult($result)
     {
         if ($this->getVariationManager()->isRelationParentType() || empty($result['requested_child_id'])) {
             return $result['general_id'];
@@ -298,7 +296,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return $result['requested_child_id'];
     }
 
-    private function canPutResultToSuggestData($result)
+    protected function canPutResultToSuggestData($result)
     {
         if (count($result) > 1) {
             return true;
@@ -328,12 +326,12 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return true;
     }
 
-    private function getQueryParam()
+    protected function getQueryParam()
     {
         $validationHelper = Mage::helper('M2ePro');
         $amazonHelper = Mage::helper('M2ePro/Component_Amazon');
 
-        switch ($this->step) {
+        switch ($this->_step) {
             case self::STEP_GENERAL_ID:
 
                 $query = $this->getAmazonListingProduct()->getGeneralId();
@@ -342,7 +340,6 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
                 if (!$amazonHelper->isASIN($query) && !$validationHelper->isISBN($query)) {
                     $query = null;
                 }
-
                 break;
 
             case self::STEP_WORLDWIDE_ID:
@@ -352,7 +349,6 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
                 if (!$validationHelper->isEAN($query) && !$validationHelper->isUPC($query)) {
                     $query = null;
                 }
-
                 break;
 
             case self::STEP_MAGENTO_TITLE:
@@ -362,7 +358,6 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
                 if ($this->getAmazonListingProduct()->getAmazonListing()->isSearchByMagentoTitleModeEnabled()) {
                     $query = $this->getAmazonListingProduct()->getActualMagentoProduct()->getName();
                 }
-
                 break;
 
             default:
@@ -373,13 +368,13 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return $query;
     }
 
-    private function getSearchMethod()
+    protected function getSearchMethod()
     {
         $searchMethods = array_combine(
             $this->getAllowedSteps(), array('byAsin', 'byIdentifier', 'byQuery')
         );
 
-        $searchMethod = $searchMethods[$this->step];
+        $searchMethod = $searchMethods[$this->_step];
 
         if ($searchMethod == 'byAsin' && Mage::helper('M2ePro')->isISBN($this->getQueryParam())) {
             $searchMethod = 'byIdentifier';
@@ -388,7 +383,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return $searchMethod;
     }
 
-    private function getIdentifierType($identifier)
+    protected function getIdentifierType($identifier)
     {
         $validation = Mage::helper('M2ePro');
 
@@ -398,7 +393,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
                ($validation->isEAN($identifier)                              ? 'EAN'  : false))));
     }
 
-    private function filterReceivedItemsFullTitleMatch($results)
+    protected function filterReceivedItemsFullTitleMatch($results)
     {
         $return = array();
 
@@ -415,7 +410,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         return $return;
     }
 
-    private function getAttributeMatcher($result)
+    protected function getAttributeMatcher($result)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute $attributeMatcher */
         $attributeMatcher = Mage::getModel('M2ePro/Amazon_Listing_Product_Variation_Matcher_Attribute');
@@ -427,7 +422,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
 
     //########################################
 
-    private function setNotFoundSearchStatus()
+    protected function setNotFoundSearchStatus()
     {
         $this->getListingProduct()->setData(
             'search_settings_status', Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND

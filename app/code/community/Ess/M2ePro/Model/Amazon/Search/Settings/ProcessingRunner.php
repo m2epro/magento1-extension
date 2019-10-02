@@ -6,11 +6,11 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Amazon_Search_Settings_Processing
+class Ess_M2ePro_Model_Amazon_Search_Settings_ProcessingRunner
     extends Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct;
 
     // ########################################
 
@@ -33,36 +33,36 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_Processing
     {
         parent::setLocks();
 
-        $this->getListingProduct()->addProcessingLock(NULL, $this->getId());
+        $this->getListingProduct()->addProcessingLock(null, $this->getId());
         $this->getListingProduct()->addProcessingLock('in_action', $this->getId());
         $this->getListingProduct()->addProcessingLock('search_action', $this->getId());
 
-        $this->getListingProduct()->getListing()->addProcessingLock(NULL, $this->getId());
+        $this->getListingProduct()->getListing()->addProcessingLock(null, $this->getId());
     }
 
     protected function unsetLocks()
     {
         parent::unsetLocks();
 
-        $this->getListingProduct()->deleteProcessingLocks(NULL, $this->getId());
-        $this->getListingProduct()->getListing()->deleteProcessingLocks(NULL, $this->getId());
+        $this->getListingProduct()->deleteProcessingLocks(null, $this->getId());
+        $this->getListingProduct()->getListing()->deleteProcessingLocks(null, $this->getId());
     }
 
     // ########################################
 
-    private function getListingProduct()
+    protected function getListingProduct()
     {
-        if (!is_null($this->listingProduct)) {
-            return $this->listingProduct;
+        if ($this->_listingProduct !== null) {
+            return $this->_listingProduct;
         }
 
         $params = $this->getParams();
 
-        $this->listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject(
+        $this->_listingProduct = Mage::helper('M2ePro/Component_Amazon')->getObject(
             'Listing_Product', $params['listing_product_id']
         );
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     // ########################################

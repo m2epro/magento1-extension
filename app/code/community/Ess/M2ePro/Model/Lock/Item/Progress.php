@@ -10,9 +10,9 @@ class Ess_M2ePro_Model_Lock_Item_Progress
 {
     const CONTENT_DATA_KEY = 'progress_data';
 
-    private $lockItemManager = NULL;
+    protected $_lockItemManager = null;
 
-    private $progressNick = NULL;
+    protected $_progressNick = null;
 
     //########################################
 
@@ -27,68 +27,70 @@ class Ess_M2ePro_Model_Lock_Item_Progress
         }
 
         if (!($args['lock_item_manager'] instanceof Ess_M2ePro_Model_Lock_Item_Manager)) {
-            throw new Ess_M2ePro_Model_Exception_Logic(sprintf(
-                'Lock item manager must be instance of "Ess_M2ePro_Model_Lock_Item_Manager", but got "%s"',
-                get_class($args['lock_item_manager'])
-            ));
+            throw new Ess_M2ePro_Model_Exception_Logic(
+                sprintf(
+                    'Lock item manager must be instance of "Ess_M2ePro_Model_Lock_Item_Manager", but got "%s"',
+                    get_class($args['lock_item_manager'])
+                )
+            );
         }
 
-        $this->lockItemManager = $args['lock_item_manager'];
-        $this->progressNick    = str_replace('/', '-', $args['progress_nick']);
+        $this->_lockItemManager = $args['lock_item_manager'];
+        $this->_progressNick    = str_replace('/', '-', $args['progress_nick']);
     }
 
     //########################################
 
     public function isInProgress()
     {
-        $contentData = $this->lockItemManager->getContentData();
-        return isset($contentData[self::CONTENT_DATA_KEY][$this->progressNick]);
+        $contentData = $this->_lockItemManager->getContentData();
+        return isset($contentData[self::CONTENT_DATA_KEY][$this->_progressNick]);
     }
 
     // ---------------------------------------
 
     public function start()
     {
-        $contentData = $this->lockItemManager->getContentData();
+        $contentData = $this->_lockItemManager->getContentData();
 
-        $contentData[self::CONTENT_DATA_KEY][$this->progressNick] = array(
+        $contentData[self::CONTENT_DATA_KEY][$this->_progressNick] = array(
             'percentage' => 0,
         );
 
-        $this->lockItemManager->setContentData($contentData);
+        $this->_lockItemManager->setContentData($contentData);
 
         return $this;
     }
 
     public function setPercentage($percentage)
     {
-        $contentData = $this->lockItemManager->getContentData();
+        $contentData = $this->_lockItemManager->getContentData();
 
-        $contentData[self::CONTENT_DATA_KEY][$this->progressNick]['percentage'] = $percentage;
+        $contentData[self::CONTENT_DATA_KEY][$this->_progressNick]['percentage'] = $percentage;
 
-        $this->lockItemManager->setContentData($contentData);
+        $this->_lockItemManager->setContentData($contentData);
 
         return $this;
     }
 
     public function setDetails($args = array())
     {
-        $contentData = $this->lockItemManager->getContentData();
+        $contentData = $this->_lockItemManager->getContentData();
 
-        $contentData[self::CONTENT_DATA_KEY][$this->progressNick] = $args;
+        $contentData[self::CONTENT_DATA_KEY][$this->_progressNick] = $args;
 
-        $this->lockItemManager->setContentData($contentData);
+        $this->_lockItemManager->setContentData($contentData);
 
         return $this;
     }
 
     public function stop()
     {
-        $contentData = $this->lockItemManager->getContentData();
+        $contentData = $this->_lockItemManager->getContentData();
 
-        unset($contentData[self::CONTENT_DATA_KEY][$this->progressNick]);
+        unset($contentData[self::CONTENT_DATA_KEY][$this->_progressNick]);
 
-        $this->lockItemManager->setContentData($contentData);
+        $this->_lockItemManager->setContentData($contentData);
 
         return $this;
     }

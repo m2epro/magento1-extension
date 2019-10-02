@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
     const PENDING_REQUEST_MAX_LIFE_TIME = 86400;
     const MAX_ITEMS_PER_REQUEST = 10000;
 
-    private $actionType = NULL;
+    protected $_actionType = null;
 
     //########################################
 
@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
             throw new Ess_M2ePro_Model_Exception_Logic('Action Type is not defined.');
         }
 
-        $this->actionType = $args['action_type'];
+        $this->_actionType = $args['action_type'];
     }
 
     //########################################
@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
     {
         $this->removeMissedProcessingActions();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountCollection */
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountCollection */
         $accountCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
 
         $merchantIds = array_unique($accountCollection->getColumnValues('merchant_id'));
@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
 
     //########################################
 
-    private function processAction($merchantId)
+    protected function processAction($merchantId)
     {
         $processingActions = $this->getNotProcessedActions($merchantId);
         if (empty($processingActions)) {
@@ -55,8 +55,8 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         $throttlingManager = Mage::getSingleton('M2ePro/Amazon_ThrottlingManager');
 
         if ($throttlingManager->getAvailableRequestsCount(
-                $merchantId, Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED
-            ) < 1) {
+            $merchantId, Ess_M2ePro_Model_Amazon_ThrottlingManager::REQUEST_TYPE_FEED
+        ) < 1) {
             return;
         }
 
@@ -71,7 +71,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
             $requestData[$requestDataKey][$processingAction->getOrderId()] = $processingAction->getRequestData();
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountsCollection */
+        /** @var Ess_M2ePro_Model_Resource_Account_Collection $accountsCollection */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         $accountsCollection->addFieldToFilter('merchant_id', $merchantId);
 
@@ -128,13 +128,15 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         }
 
         $requestPendingSingle = Mage::getModel('M2ePro/Request_Pending_Single');
-        $requestPendingSingle->setData(array(
+        $requestPendingSingle->setData(
+            array(
             'component'       => Ess_M2ePro_Helper_Component_Amazon::NICK,
             'server_hash'     => $responseData['processing_id'],
             'expiration_date' => Mage::helper('M2ePro')->getDate(
                 Mage::helper('M2ePro')->getCurrentGmtDate(true)+self::PENDING_REQUEST_MAX_LIFE_TIME
             )
-        ));
+            )
+        );
         $requestPendingSingle->save();
 
         $actionsIds = array();
@@ -153,7 +155,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
      * @param $merchantId
      * @return Ess_M2ePro_Model_Amazon_Order_Action_Processing[]
      */
-    private function getNotProcessedActions($merchantId)
+    protected function getNotProcessedActions($merchantId)
     {
         $collection = Mage::getResourceModel('M2ePro/Amazon_Order_Action_Processing_Collection');
         $collection->getSelect()->joinLeft(
@@ -166,13 +168,13 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         );
         $collection->setNotProcessedFilter();
         $collection->addFieldToFilter('aa.merchant_id', $merchantId);
-        $collection->addFieldToFilter('main_table.type', $this->actionType);
+        $collection->addFieldToFilter('main_table.type', $this->_actionType);
         $collection->getSelect()->limit(self::MAX_ITEMS_PER_REQUEST);
 
         return $collection->getItems();
     }
 
-    private function completeProcessingAction(Ess_M2ePro_Model_Amazon_Order_Action_Processing $action, array $data)
+    protected function completeProcessingAction(Ess_M2ePro_Model_Amazon_Order_Action_Processing $action, array $data)
     {
         $processing = $action->getProcessing();
 
@@ -184,7 +186,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         $action->deleteInstance();
     }
 
-    private function getResponseMessages(array $responseData, array $responseMessages, $orderId)
+    protected function getResponseMessages(array $responseData, array $responseMessages, $orderId)
     {
         $messages = $responseMessages;
 
@@ -203,9 +205,9 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         return $messages;
     }
 
-    private function getServerCommand()
+    protected function getServerCommand()
     {
-        switch ($this->actionType) {
+        switch ($this->_actionType) {
             case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_UPDATE:
                 return array('orders', 'update', 'entities');
 
@@ -220,9 +222,9 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
         }
     }
 
-    private function getRequestDataKey()
+    protected function getRequestDataKey()
     {
-        switch ($this->actionType) {
+        switch ($this->_actionType) {
             case Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_UPDATE:
                 return 'items';
 
@@ -237,7 +239,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processor
 
     //########################################
 
-    private function removeMissedProcessingActions()
+    protected function removeMissedProcessingActions()
     {
         $actionCollection = Mage::getResourceModel('M2ePro/Amazon_Listing_Product_Action_Processing_Collection');
         $actionCollection->getSelect()->joinLeft(

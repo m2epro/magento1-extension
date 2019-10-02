@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Amazon_Listing_Source
 {
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $listing Ess_M2ePro_Model_Listing
+     * @var $_listing Ess_M2ePro_Model_Listing
      */
-    private $listing = null;
+    protected $_listing = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
      */
     public function setListing(Ess_M2ePro_Model_Listing $listing)
     {
-        $this->listing = $listing;
+        $this->_listing = $listing;
         return $this;
     }
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
      */
     public function getListing()
     {
-        return $this->listing;
+        return $this->_listing;
     }
 
     /**
@@ -134,7 +134,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE) {
             $result = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
-            $result = str_replace('-','',$result);
+            $result = str_replace('-', '', $result);
         }
 
         is_string($result) && $result = trim($result);
@@ -156,7 +156,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE) {
             $result = $this->getMagentoProduct()->getAttributeValue($src['attribute']);
-            $result = str_replace('-','',$result);
+            $result = str_replace('-', '', $result);
         }
 
         is_string($result) && $result = trim($result);
@@ -259,7 +259,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         }
 
         if ($this->getAmazonListing()->isImageMainModeAttribute()) {
-
             $src = $this->getAmazonListing()->getImageMainSource();
             $image = $this->getMagentoProduct()->getImage($src['attribute']);
         }
@@ -291,7 +290,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
 
         if ($this->getAmazonListing()->isConditionDefaultMode() &&
             !in_array($conditionData['value'], $allowedConditionValues)) {
-
             return array();
         }
 
@@ -316,12 +314,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         $limitGalleryImages = Ess_M2ePro_Model_Amazon_Listing::GALLERY_IMAGES_COUNT_MAX;
 
         if ($this->getAmazonListing()->isGalleryImagesModeProduct()) {
-
             $limitGalleryImages = (int)$gallerySource['limit'];
             $galleryImagesTemp = $this->getMagentoProduct()->getGalleryImages($limitGalleryImages + 1);
 
             foreach ($galleryImagesTemp as $image) {
-
                 if (array_key_exists($image->getHash(), $galleryImages)) {
                     continue;
                 }
@@ -331,14 +327,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         }
 
         if ($this->getAmazonListing()->isGalleryImagesModeAttribute()) {
-
             $limitGalleryImages = Ess_M2ePro_Model_Amazon_Listing::GALLERY_IMAGES_COUNT_MAX;
 
             $galleryImagesTemp = $this->getMagentoProduct()->getAttributeValue($gallerySource['attribute']);
             $galleryImagesTemp = (array)explode(',', $galleryImagesTemp);
 
             foreach ($galleryImagesTemp as $tempImageLink) {
-
                 $tempImageLink = trim($tempImageLink);
                 if (empty($tempImageLink)) {
                     continue;
@@ -357,7 +351,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
 
         unset($galleryImages[$mainImage->getHash()]);
 
-        if (count($galleryImages) <= 0) {
+        if (empty($galleryImages)) {
             return array($mainImage);
         }
 

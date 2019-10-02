@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Template_Synchronization getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Walmart_Template_Synchronization getResource()
+ * @method Ess_M2ePro_Model_Resource_Walmart_Template_Synchronization getResource()
  */
 class Ess_M2ePro_Model_Walmart_Template_Synchronization extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
@@ -112,7 +112,7 @@ class Ess_M2ePro_Model_Walmart_Template_Synchronization extends Ess_M2ePro_Model
      */
     public function getListings($asObjects = false, array $filters = array())
     {
-        return $this->getRelatedComponentItems('Listing','template_synchronization_id',$asObjects,$filters);
+        return $this->getRelatedComponentItems('Listing', 'template_synchronization_id', $asObjects, $filters);
     }
 
     //########################################

@@ -1,58 +1,67 @@
 <?php
-    /** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Edit_Form_Data $this */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    /** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
-    $magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
+// @codingStandardsIgnoreFile
 
-    $attributesByInputTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text')),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'select')),
-    );
+/** @var Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Edit_Form_Data $this */
 
-    $generalAttributesByTypes = array(
-        'text' => $magentoAttributeHelper->filterByInputTypes($this->generalAttributes, array('text')),
-        'text_select' => $magentoAttributeHelper->filterByInputTypes($this->generalAttributes, array('text', 'select')),
-        'text_images' => $magentoAttributeHelper->filterByInputTypes(
-            $this->generalAttributes,
-            array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
-        ),
-    );
+/** @var Ess_M2ePro_Helper_Magento_Attribute $magentoAttributeHelper */
+$magentoAttributeHelper = Mage::helper('M2ePro/Magento_Attribute');
 
-    $formData = $this->getFormData();
+$attributesByInputTypes = array(
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text')),
+    'text_select' => $magentoAttributeHelper->filterByInputTypes($this->attributes, array('text', 'select')),
+);
 
-    $default = $this->getDefault();
-    $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
+$generalAttributesByTypes = array(
+    'text' => $magentoAttributeHelper->filterByInputTypes($this->generalAttributes, array('text')),
+    'text_select' => $magentoAttributeHelper->filterByInputTypes($this->generalAttributes, array('text', 'select')),
+    'text_images' => $magentoAttributeHelper->filterByInputTypes(
+        $this->generalAttributes,
+        array('text', 'image', 'media_image', 'gallery', 'multiline', 'textarea', 'select', 'multiselect')
+    ),
+);
 
-    $defaultStrictSettingsForSimpleMode = $default;
+$formData = $this->getFormData();
 
-    // removing ignored options for mode checking
-    $ignoredOptions = array('condition_value', 'condition_note_mode', 'condition_note_template',
-                            'condition_mode', 'product_details', 'gallery_images_mode',
-                            'watermark_settings', 'enhancement');
+$default = $this->getDefault();
+$formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
 
-    $defaultProductDetails = $defaultStrictSettingsForSimpleMode['product_details'];
-    foreach($ignoredOptions as $val) {
-        unset($defaultStrictSettingsForSimpleMode[$val]);
-    }
+$defaultStrictSettingsForSimpleMode = $default;
 
-    $variationConfigurableImages = $defaultStrictSettingsForSimpleMode['variation_configurable_images'];
-    unset($defaultStrictSettingsForSimpleMode['variation_configurable_images']);
+// removing ignored options for mode checking
+$ignoredOptions = array('condition_value', 'condition_note_mode', 'condition_note_template',
+                        'condition_mode', 'product_details', 'gallery_images_mode',
+                        'watermark_settings', 'enhancement');
 
-    $showBlockedAdvancedMode = false;
-    if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-        $showBlockedAdvancedMode = $formData['image_main_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_PRODUCT ||
-                                   $formData['gallery_images_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::GALLERY_IMAGES_MODE_NONE ||
-                                   !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)) ||
-                                   $defaultProductDetails != $formData['product_details'] ||
-                                   !!count(array_diff($variationConfigurableImages, $formData['variation_configurable_images'])) ||
-                                   !empty($formData['enhancement'][0]);
-    }
+$defaultProductDetails = $defaultStrictSettingsForSimpleMode['product_details'];
+foreach($ignoredOptions as $val) {
+    unset($defaultStrictSettingsForSimpleMode[$val]);
+}
 
-    $showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
+$variationConfigurableImages = $defaultStrictSettingsForSimpleMode['variation_configurable_images'];
+unset($defaultStrictSettingsForSimpleMode['variation_configurable_images']);
 
-    $tinymceEnabledForJavascript = $formData['editor_type'] == Ess_M2ePro_Model_Ebay_Template_Description::EDITOR_TYPE_TINYMCE ? 'true' : 'false';
+$showBlockedAdvancedMode = false;
+if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
+    $showBlockedAdvancedMode = $formData['image_main_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_PRODUCT ||
+                               $formData['gallery_images_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::GALLERY_IMAGES_MODE_NONE ||
+                               !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)) ||
+                               $defaultProductDetails != $formData['product_details'] ||
+                               !!count(array_diff($variationConfigurableImages, $formData['variation_configurable_images'])) ||
+                               !empty($formData['enhancement'][0]);
+}
 
-    $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::DESCRIPTION_MODE_CUSTOM);
+$showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
+
+$tinymceEnabledForJavascript = $formData['editor_type'] == Ess_M2ePro_Model_Ebay_Template_Description::EDITOR_TYPE_TINYMCE ? 'true' : 'false';
+
+$isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::DESCRIPTION_MODE_CUSTOM);
+
 ?>
 
 <script type="text/javascript">
@@ -523,17 +532,17 @@
 
             <tr id="watermark_image_container">
                 <td class="label">
-                    <label for="watermark_image"><?php echo Mage::helper('M2ePro')->__('Watermark Upload'); ?>: <?php if (is_null($formData['watermark_image'])) echo '<span class="required">*</span>' ?></label>
+                    <label for="watermark_image"><?php echo Mage::helper('M2ePro')->__('Watermark Upload'); ?>: <?php if ($formData['watermark_image'] === null) echo '<span class="required">*</span>' ?></label>
                 </td>
                 <td class="value">
-                    <input type="file" accept="image/png" name="watermark_image" id="watermark_image" <?php if (is_null($formData['watermark_image'])) echo 'class="M2ePro-required-when-visible"' ?>>
+                    <input type="file" accept="image/png" name="watermark_image" id="watermark_image" <?php if ($formData['watermark_image'] === null) echo 'class="M2ePro-required-when-visible"' ?>>
                     <p class="note">
                         <span><?php echo Mage::helper('M2ePro')->__('Select image that you want to add as a watermark.'); ?></span>
                     </p>
                 </td>
             </tr>
 
-            <?php if (!is_null($formData['watermark_image'])): ?>
+            <?php if ($formData['watermark_image'] !== null): ?>
                 <input type="hidden" name="description[old_watermark_image]" value="<?php echo base64_encode($formData['watermark_image']); ?>">
 
                 <tr id="watermark_uploaded_image_container">

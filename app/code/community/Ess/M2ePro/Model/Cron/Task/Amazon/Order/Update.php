@@ -64,11 +64,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update
             // ---------------------------------------
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Update" Action for Amazon Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -90,16 +87,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $relatedChanges = $this->getRelatedChanges($account);
         if (empty($relatedChanges)) {
@@ -136,7 +133,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update
 
     //########################################
 
-    private function getRelatedChanges(Ess_M2ePro_Model_Account $account)
+    protected function getRelatedChanges(Ess_M2ePro_Model_Account $account)
     {
         $changesCollection = Mage::getModel('M2ePro/Order_Change')->getCollection();
         $changesCollection->addAccountFilter($account->getId());
@@ -156,7 +153,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update
 
     // ---------------------------------------
 
-    private function deleteNotActualChanges()
+    protected function deleteNotActualChanges()
     {
         Mage::getResourceModel('M2ePro/Order_Change')
             ->deleteByProcessingAttemptCount(

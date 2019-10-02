@@ -37,6 +37,7 @@ class Ess_M2ePro_Helper_Data_Session extends Mage_Core_Helper_Abstract
                 $return[$tempReturnedKey] = Mage::getSingleton('adminhtml/session')->getData($key);
             }
         }
+
         return $return;
     }
 

@@ -8,24 +8,24 @@
 
 class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
 {
-    private $component = NULL;
+    protected $_component = null;
 
-    private $maxListingsProductsCount = NULL;
+    protected $_maxListingsProductsCount = null;
 
     /** @var Ess_M2ePro_Model_Listing_Product_Instruction_Handler_Interface[] */
-    private $handlers = array();
+    protected $_handlers = array();
 
     //########################################
 
     public function setComponent($component)
     {
-        $this->component = $component;
+        $this->_component = $component;
         return $this;
     }
 
     public function setMaxListingsProductsCount($count)
     {
-        $this->maxListingsProductsCount = $count;
+        $this->_maxListingsProductsCount = $count;
         return $this;
     }
 
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
 
     public function registerHandler(Ess_M2ePro_Model_Listing_Product_Instruction_Handler_Interface $handler)
     {
-        $this->handlers[] = $handler;
+        $this->_handlers[] = $handler;
         return $this;
     }
 
@@ -49,20 +49,18 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
         }
 
         foreach ($instructions as $listingProductId => $listingProductInstructions) {
-
             try {
                 $handlerInput = Mage::getModel('M2ePro/Listing_Product_Instruction_Handler_Input');
                 $handlerInput->setListingProduct($listingsProducts[$listingProductId]);
                 $handlerInput->setInstructions($listingProductInstructions);
 
-                foreach ($this->handlers as $handler) {
+                foreach ($this->_handlers as $handler) {
                     $handler->process($handlerInput);
 
                     if ($handlerInput->getListingProduct()->isDeleted()) {
                         break;
                     }
                 }
-
             } catch (\Exception $exception) {
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
@@ -79,13 +77,13 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
      * @param Ess_M2ePro_Model_Listing_Product[] $listingsProducts
      * @return Ess_M2ePro_Model_Listing_Product_Instruction[][]
      */
-    private function loadInstructions(array $listingsProducts)
+    protected function loadInstructions(array $listingsProducts)
     {
         if (empty($listingsProducts)) {
             return array();
         }
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Instruction_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection $collection */
         $instructionCollection = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection');
         $instructionCollection->applySkipUntilFilter();
         $instructionCollection->addFieldToFilter('listing_product_id', array_keys($listingsProducts));
@@ -109,18 +107,18 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
     /**
      * @return array
      */
-    private function getNeededListingsProducts()
+    protected function getNeededListingsProducts()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Instruction_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection $collection */
         $collection = Mage::getModel('M2ePro/Listing_Product_Instruction')->getCollection();
         $collection->applyNonBlockedFilter();
         $collection->applySkipUntilFilter();
-        $collection->addFieldToFilter('main_table.component', $this->component);
+        $collection->addFieldToFilter('main_table.component', $this->_component);
 
         $collection->setOrder('main_table.priority', 'DESC');
         $collection->setOrder('main_table.create_date', 'ASC');
 
-        $collection->getSelect()->limit($this->maxListingsProductsCount);
+        $collection->getSelect()->limit($this->_maxListingsProductsCount);
         $collection->getSelect()->group('main_table.listing_product_id');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns('main_table.listing_product_id');
@@ -130,7 +128,7 @@ class Ess_M2ePro_Model_Listing_Product_Instruction_Processor
             return array();
         }
 
-        $listingsProductsCollection = Mage::helper('M2ePro/Component_'.$this->component)
+        $listingsProductsCollection = Mage::helper('M2ePro/Component_'.$this->_component)
             ->getCollection('Listing_Product');
         $listingsProductsCollection->addFieldToFilter('id', $ids);
 

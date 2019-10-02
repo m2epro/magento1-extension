@@ -43,7 +43,6 @@ abstract class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_Abstract
                 $requestData
             );
         } catch (Exception $exception) {
-
             $this->getSynchronizationLog()->addMessage(
                 Mage::helper('M2ePro')->__($exception->getMessage()),
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,

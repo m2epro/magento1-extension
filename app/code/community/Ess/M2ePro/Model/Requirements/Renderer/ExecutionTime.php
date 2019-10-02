@@ -36,7 +36,7 @@ HTML;
     {
         $color = $this->getCheckObject()->isMeet() ? 'green' : 'red';
 
-        if (is_null($this->getCheckObject()->getReal())) {
+        if ($this->getCheckObject()->getReal() === null) {
             $value = Mage::helper('M2ePro')->__('unknown');
             $html = <<<HTML
 <span style="color: {$color};">
@@ -60,7 +60,6 @@ HTML;
         }
 
         if (Mage::helper('M2ePro/Client')->isPhpApiFastCgi()) {
-
             $noticeImage = Mage::getDesign()->getSkinUrl('M2ePro/images/tool-tip-icon.png');
             $helpImage = Mage::getDesign()->getSkinUrl('M2ePro/images/help.png');
             $notice = Mage::helper('M2ePro')->__(

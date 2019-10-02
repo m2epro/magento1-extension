@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Listing_Product_ScheduledAction extends Ess_M2ePro_Model_Abstract
 {
     /** @var Ess_M2ePro_Model_Listing_Product */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     //########################################
 
@@ -23,24 +23,24 @@ class Ess_M2ePro_Model_Listing_Product_ScheduledAction extends Ess_M2ePro_Model_
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
     }
 
     public function getListingProduct()
     {
-        if (is_null($this->getId())) {
+        if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Model must be loaded.');
         }
 
-        if (!is_null($this->listingProduct)) {
-            return $this->listingProduct;
+        if ($this->_listingProduct !== null) {
+            return $this->_listingProduct;
         }
 
-        $this->listingProduct = Mage::helper('M2ePro/Component')->getComponentObject(
+        $this->_listingProduct = Mage::helper('M2ePro/Component')->getComponentObject(
             $this->getComponent(), 'Listing_Product', $this->getListingProductId()
         );
 
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################

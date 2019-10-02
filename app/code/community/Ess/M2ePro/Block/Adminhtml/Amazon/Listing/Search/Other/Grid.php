@@ -102,16 +102,20 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Other_Grid
                 'is_repricing'                 => 'second_table.is_repricing',
                 'is_repricing_disabled'        => 'second_table.is_repricing_disabled',
 
-                'variation_parent_afn_state' => new \Zend_Db_Expr("IF(
+                'variation_parent_afn_state' => new \Zend_Db_Expr(
+                    "IF(
                     second_table.is_afn_channel = 1,
                     {$afnStateAllYes},
                     {$afnStateAllNo}
-                )"),
-                'variation_parent_repricing_state' => new \Zend_Db_Expr("IF(
+                )"
+                ),
+                'variation_parent_repricing_state' => new \Zend_Db_Expr(
+                    "IF(
                     second_table.is_repricing = 1,
                     {$repricingStateAllYes},
                     {$repricingStateAllNo}
-                )"),
+                )"
+                ),
 
                 'is_in_stock' => 'cisi.is_in_stock'
             )
@@ -138,7 +142,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Other_Grid
     {
         $title = $row->getData('name');
 
-        if (is_null($title) || $title === '') {
+        if ($title === null || $title === '') {
             $value = '<i style="color:gray;">receiving...</i>';
         } else {
             $value = '<span>' .Mage::helper('M2ePro')->escapeHtml($title). '</span>';
@@ -146,7 +150,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_Other_Grid
 
         $sku = $row->getData('sku');
         if (!empty($sku)) {
-
             $sku = Mage::helper('M2ePro')->escapeHtml($sku);
             $skuWord = Mage::helper('M2ePro')->__('SKU');
 
@@ -161,7 +164,7 @@ HTML;
 
     public function callbackColumnIsInStock($value, $row, $column, $isExport)
     {
-        if (is_null($row->getData('is_in_stock'))) {
+        if ($row->getData('is_in_stock') === null) {
             return Mage::helper('M2ePro')->__('N/A');
         }
 
@@ -178,13 +181,15 @@ HTML;
         $altTitle = Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Go to Listing'));
         $iconSrc = $this->getSkinUrl('M2ePro/images/goto_listing.png');
 
-        $manageUrl = $this->getUrl('*/adminhtml_amazon_listing_other/view/', array(
-            'account'     => $row->getData('account_id'),
-            'marketplace' => $row->getData('marketplace_id'),
-            'filter'      => base64_encode(
-                'title=' . $row->getData('online_sku')
+        $manageUrl = $this->getUrl(
+            '*/adminhtml_amazon_listing_other/view/', array(
+                'account'     => $row->getData('account_id'),
+                'marketplace' => $row->getData('marketplace_id'),
+                'filter'      => base64_encode(
+                    'title=' . $row->getData('online_sku')
+                )
             )
-        ));
+        );
 
         $html = <<<HTML
 <div style="float:right; margin:5px 15px 0 0;">
@@ -241,7 +246,6 @@ HTML;
         $condition = '';
 
         if (isset($value['from']) || isset($value['to'])) {
-
             if (isset($value['from']) && $value['from'] != '') {
                 $condition = 'second_table.online_price >= \'' . (float)$value['from'] . '\'';
             }
@@ -250,16 +254,18 @@ HTML;
                 if (isset($value['from']) && $value['from'] != '') {
                     $condition .= ' AND ';
                 }
+
                 $condition .= 'second_table.online_price <= \'' . (float)$value['to'] . '\'';
             }
         }
 
         if (Mage::helper('M2ePro/Component_Amazon_Repricing')->isEnabled() &&
-            isset($value['is_repricing']) && $value['is_repricing'] !== '')
-        {
+            isset($value['is_repricing']) && $value['is_repricing'] !== ''
+        ) {
             if (!empty($condition)) {
                 $condition = '(' . $condition . ') OR ';
             }
+
             $condition .= 'second_table.is_repricing = ' . (int)$value['is_repricing'];
         }
 
@@ -285,6 +291,7 @@ HTML;
             if (isset($value['from']) && $value['from'] != '') {
                 $where .= ' AND ';
             }
+
             $quoted = $collection->getConnection()->quote($value['to']);
             $where .= 'second_table.online_qty <= ' . $quoted;
         }
@@ -293,6 +300,7 @@ HTML;
             if (!empty($where)) {
                 $where = '(' . $where . ') OR ';
             }
+
             $where .= 'second_table.is_afn_channel = ' . (int)$value['afn'];
         }
 

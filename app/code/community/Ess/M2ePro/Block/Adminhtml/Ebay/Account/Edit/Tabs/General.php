@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General extends Mage_Adm
             'class'   => 'get_token_button'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('get_token_button',$buttonBlock);
+        $this->setChild('get_token_button', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
@@ -42,12 +42,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General extends Mage_Adm
                 'class'   => 'get_sell_token_button'
             );
             $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-            $this->setChild('get_sell_api_token_button',$buttonBlock);
+            $this->setChild('get_sell_api_token_button', $buttonBlock);
         }
+
         // ---------------------------------------
 
         $confirm = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_dialog_confirm');
-        $this->setChild('confirm_popup',$confirm);
+        $this->setChild('confirm_popup', $confirm);
 
         return parent::_beforeToHtml();
     }

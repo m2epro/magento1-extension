@@ -19,9 +19,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Update Accounts Preferences';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_UpdateAccountsPreferences::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -42,9 +44,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Templates -> Remove Unused';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -66,9 +70,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Channel -> SynchronizeChanges (Orders and Items)';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -91,9 +97,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Feedbacks -> Download New';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -115,9 +123,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Feedbacks -> SendResponse';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_SendResponse::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -140,9 +150,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Listing -> Other -> ResolveSku';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -164,9 +176,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Listing -> Other -> Channel -> Synchronize Data';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -189,9 +203,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Listing -> Product -> ProcessInstructions';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessInstructions::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -212,9 +228,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Listing -> Product -> ProcessScheduledActions';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessScheduledActions::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -235,9 +253,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Listing -> Product -> ProcessActions';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_ProcessActions::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -259,9 +279,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Listing -> Product -> RemovePotentialDuplicates';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -284,9 +306,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Order -> CreateFailed';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Order_CreateFailed::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -307,9 +331,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Order -> CreateFailed';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Order_Update::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -330,9 +356,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Order -> Cancel';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -354,9 +382,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'Order -> ReserveCancel';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_Order_ReserveCancel::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -379,9 +409,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'PickupStore -> ScheduleForUpdate';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_ScheduleForUpdate::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -402,9 +434,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_EbayController
         $taskTitle = 'PickupStore -> UpdateOnChannel';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_UpdateOnChannel::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");

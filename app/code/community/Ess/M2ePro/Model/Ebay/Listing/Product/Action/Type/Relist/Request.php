@@ -33,7 +33,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Request
     public function getActionData()
     {
         if (!$uuid = $this->getEbayListingProduct()->getItemUUID()) {
-
             $uuid = $this->getEbayListingProduct()->generateItemUUID();
             $this->getEbayListingProduct()->setData('item_uuid', $uuid)->save();
         }
@@ -45,7 +44,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Request
             ),
             $this->getQtyData(),
             $this->getPriceData(),
-
             $this->getVariationsData()
         );
 
@@ -66,7 +64,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Request
 
     //########################################
 
-    private function addConditionIfItIsNecessary(array $data)
+    protected function addConditionIfItIsNecessary(array $data)
     {
         $additionalData = $this->getListingProduct()->getAdditionalData();
 

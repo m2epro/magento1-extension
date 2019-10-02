@@ -26,7 +26,8 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 
         $this->loadAggregatorOptions();
         if ($options = $this->getAggregatorOptions()) {
-            foreach ($options as $aggregator=>$dummy) { $this->setAggregator($aggregator); break; }
+            foreach ($options as $aggregator=>$dummy) { $this->setAggregator($aggregator); break; 
+            }
         }
     }
 
@@ -134,10 +135,12 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 
     public function loadAggregatorOptions()
     {
-        $this->setAggregatorOption(array(
+        $this->setAggregatorOption(
+            array(
             'all' => Mage::helper('rule')->__('ALL'),
             'any' => Mage::helper('rule')->__('ANY'),
-        ));
+            )
+        );
         return $this;
     }
 
@@ -147,6 +150,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         foreach ($this->getAggregatorOption() as $k=>$v) {
             $opt[] = array('value'=>$k, 'label'=>$v);
         }
+
         return $opt;
     }
 
@@ -157,28 +161,33 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 
     public function getAggregatorElement()
     {
-        if (is_null($this->getAggregator())) {
+        if ($this->getAggregator() === null) {
             foreach ($this->getAggregatorOption() as $k=>$v) {
                 $this->setAggregator($k);
                 break;
             }
         }
-        return $this->getForm()->addField($this->getPrefix().'__'.$this->getId().'__aggregator', 'select', array(
+
+        return $this->getForm()->addField(
+            $this->getPrefix().'__'.$this->getId().'__aggregator', 'select', array(
             'name'=>'rule['.$this->getPrefix().']['.$this->getId().'][aggregator]',
             'values'=>$this->getAggregatorSelectOptions(),
             'value'=>$this->getAggregator(),
             'value_name'=>$this->getAggregatorName(),
-        ))->setRenderer(Mage::getBlockSingleton('rule/editable'));
+            )
+        )->setRenderer(Mage::getBlockSingleton('rule/editable'));
     }
 
     //########################################
 
     public function loadValueOptions()
     {
-        $this->setValueOption(array(
+        $this->setValueOption(
+            array(
             1 => Mage::helper('rule')->__('TRUE'),
             0 => Mage::helper('rule')->__('FALSE'),
-        ));
+            )
+        );
         return $this;
     }
 
@@ -224,10 +233,14 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 
     public function loadArray($arr, $key='conditions')
     {
-        $this->setAggregator(isset($arr['aggregator']) ? $arr['aggregator']
-            : (isset($arr['attribute']) ? $arr['attribute'] : null))
-            ->setValue(isset($arr['value']) ? $arr['value']
-                : (isset($arr['operator']) ? $arr['operator'] : null));
+        $this->setAggregator(
+            isset($arr['aggregator']) ? $arr['aggregator']
+            : (isset($arr['attribute']) ? $arr['attribute'] : null)
+        )
+            ->setValue(
+                isset($arr['value']) ? $arr['value']
+                : (isset($arr['operator']) ? $arr['operator'] : null)
+            );
 
         if (!empty($arr[$key]) && is_array($arr[$key])) {
             foreach ($arr[$key] as $condArr) {
@@ -238,7 +251,6 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 
                     $cond = $this->_getNewConditionModelInstance($condArr['type']);
                     if ($cond) {
-
                         if ($cond instanceof Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine) {
                             $cond->setData($this->getPrefix(), array());
                             $cond->setCustomOptionsFlag($this->_useCustomOptions);
@@ -252,6 +264,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
                 }
             }
         }
+
         return $this;
     }
 
@@ -260,10 +273,12 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         if (is_string($xml)) {
             $xml = simplexml_load_string($xml);
         }
+
         $arr = parent::loadXml($xml);
         foreach ($xml->conditions->children() as $condition) {
             $arr['conditions'] = parent::loadXml($condition);
         }
+
         $this->loadArray($arr);
         return $this;
     }
@@ -278,6 +293,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         foreach ($this->getConditions() as $condition) {
             $xml .= "<$itemKey>".$condition->asXml()."</$itemKey>";
         }
+
         $xml .= "</$containerKey>";
         return $xml;
     }
@@ -306,6 +322,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         if ($this->getId() != '1') {
             $html.= $this->getRemoveLinkHtml();
         }
+
         return $html;
     }
 
@@ -316,14 +333,17 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         foreach ($this->getConditions() as $cond) {
             $html .= '<li>'.$cond->asHtmlRecursive().'</li>';
         }
+
         $html .= '<li>'.$this->getNewChildElement()->getHtml().'</li></ul>';
         return $html;
     }
 
     public function asString($format='')
     {
-        $str = Mage::helper('M2ePro')->__("If %rule% of these Conditions are %value%:",
-                                          $this->getAggregatorName(), $this->getValueName());
+        $str = Mage::helper('M2ePro')->__(
+            "If %rule% of these Conditions are %value%:",
+            $this->getAggregatorName(), $this->getValueName()
+        );
         return $str;
     }
 
@@ -333,6 +353,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         foreach ($this->getConditions() as $cond) {
             $str .= "\n".$cond->asStringRecursive($level+1);
         }
+
         return $str;
     }
 
@@ -340,11 +361,13 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
 
     public function getNewChildElement()
     {
-        return $this->getForm()->addField($this->getPrefix().'__'.$this->getId().'__new_child', 'select', array(
+        return $this->getForm()->addField(
+            $this->getPrefix().'__'.$this->getId().'__new_child', 'select', array(
             'name'=>'rule['.$this->getPrefix().']['.$this->getId().'][new_child]',
             'values'=>$this->getNewChildSelectOptions(),
             'value_name'=>$this->getNewChildName(),
-        ))->setRenderer(Mage::getBlockSingleton('rule/newchild'));
+            )
+        )->setRenderer(Mage::getBlockSingleton('rule/newchild'));
     }
 
     public function validate(Varien_Object $object)
@@ -365,6 +388,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
                 return true;
             }
         }
+
         return $all ? true : false;
     }
 
@@ -373,6 +397,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         foreach ($this->getConditions() as $condition) {
             $condition->collectValidatedAttributes($productCollection);
         }
+
         return $this;
     }
 
@@ -382,6 +407,7 @@ class Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
         foreach ($this->getConditions() as $condition) {
             $condition->setJsFormObject($form);
         }
+
         return $this;
     }
 

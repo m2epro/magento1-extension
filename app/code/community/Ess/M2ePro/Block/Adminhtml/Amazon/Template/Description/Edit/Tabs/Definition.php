@@ -52,6 +52,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_Definitio
             $button = $this->getMultiElementButton('target_audience', $i);
             $this->setChild("select_attributes_for_target_audience_{$i}_button", $button);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -59,6 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_Definitio
             $button = $this->getMultiElementButton('bullet_points', $i);
             $this->setChild("select_attributes_for_bullet_points_{$i}_button", $button);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -66,6 +68,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_Definitio
             $button = $this->getMultiElementButton('search_terms', $i);
             $this->setChild("select_attributes_for_search_terms_{$i}_button", $button);
         }
+
         // ---------------------------------------
 
         // ---------------------------------------
@@ -79,7 +82,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Edit_Tabs_Definitio
 
     //########################################
 
-    private function getMultiElementButton($type, $index)
+    protected function getMultiElementButton($type, $index)
     {
         $onClick = <<<JS
 AttributeHandlerObj.appendToText('select_attributes_for_{$type}_{$index}', '{$type}_{$index}');
@@ -107,8 +110,11 @@ JS;
 
         $html = "<option %s selected=\"selected\">{$attributeLabel}</option>";
 
-        return is_null($value) ? sprintf($html, "value='{$attributeCode}'")
-                               : sprintf($html, "attribute_code='{$attributeCode}' value='{$value}'");
+        if ($value === null) {
+            return sprintf($html, "value='{$attributeCode}'");
+        }
+
+        return sprintf($html, "attribute_code='{$attributeCode}' value='{$value}'");
     }
 
     // ---------------------------------------

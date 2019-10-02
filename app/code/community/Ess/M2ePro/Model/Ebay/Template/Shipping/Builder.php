@@ -58,7 +58,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
             empty($data['country_custom_value']) ||
             $data['country_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_ATTRIBUTE &&
             empty($data['country_custom_attribute'])) {
-
             throw new Ess_M2ePro_Model_Exception_Logic('Country is empty.');
         }
 
@@ -159,7 +158,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
 
     //########################################
 
-    private function prepareCalculatedData($templateShippingId, array $data)
+    protected function prepareCalculatedData($templateShippingId, array $data)
     {
         $prepared = array('template_shipping_id' => $templateShippingId);
 
@@ -200,7 +199,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
         return $prepared;
     }
 
-    private function canSaveCalculatedData(array $data)
+    protected function canSaveCalculatedData(array $data)
     {
         if ($data['local_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED) {
             return true;
@@ -239,7 +238,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
         return false;
     }
 
-    private function createCalculated($templateShippingId, array $data)
+    protected function createCalculated($templateShippingId, array $data)
     {
         $coreRes = Mage::getSingleton('core/resource');
         $connWrite = $coreRes->getConnection('core_write');
@@ -260,7 +259,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
 
     //########################################
 
-    private function prepareServicesData($templateShippingId, array $data)
+    protected function prepareServicesData($templateShippingId, array $data)
     {
         if (isset($data['shipping_type']['%i%'])) {
             unset($data['shipping_type']['%i%']);
@@ -290,7 +289,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
 
         $services = array();
         foreach ($data['cost_mode'] as $i => $costMode) {
-
             $locations = array();
             if (isset($data['shippingLocation'][$i])) {
                 foreach ($data['shippingLocation'][$i] as $location) {
@@ -303,7 +301,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
                 : Ess_M2ePro_Model_Ebay_Template_Shipping_Service::SHIPPING_TYPE_INTERNATIONAL;
 
             if ($costMode == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_ATTRIBUTE) {
-
                 $cost = isset($data['shipping_cost_attribute'][$i])
                     ? $data['shipping_cost_attribute'][$i]
                     : '';
@@ -311,9 +308,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
                 $costAdditional = isset($data['shipping_cost_additional_attribute'][$i])
                     ? $data['shipping_cost_additional_attribute'][$i]
                     : '';
-
             } else {
-
                 $cost = isset($data['shipping_cost_value'][$i])
                     ? $data['shipping_cost_value'][$i]
                     : '';
@@ -324,17 +319,13 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
             }
 
             if ($costMode == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_ATTRIBUTE) {
-
                 $costSurcharge = isset($data['shipping_cost_surcharge_attribute'][$i])
                     ? $data['shipping_cost_surcharge_attribute'][$i]
                     : '';
-
             } else if ($costMode == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_VALUE) {
-
                 $costSurcharge = isset($data['shipping_cost_surcharge_value'][$i])
                     ? $data['shipping_cost_surcharge_value'][$i]
                     : '';
-
             } else {
                 $costSurcharge = '';
             }
@@ -355,7 +346,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
         return $services;
     }
 
-    private function createServices($templateShippingId, array $data)
+    protected function createServices($templateShippingId, array $data)
     {
         $coreRes = Mage::getSingleton('core/resource');
         $connWrite = $coreRes->getConnection('core_write');
@@ -380,7 +371,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
 
     //########################################
 
-    private function isRateTableEnabled(array $rateTableData)
+    protected function isRateTableEnabled(array $rateTableData)
     {
         if (empty($rateTableData)) {
             return false;

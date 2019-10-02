@@ -1,44 +1,55 @@
 <?php
-    $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $ebayUserId = null;
-    if (empty($formData['user_id']) && isset($formData['info']) && $ebayInfo = json_decode($formData['info'], true)) {
-        !empty($ebayInfo['UserID']) && $formData['user_id'] = (string)$ebayInfo['UserID'];
-    }
+// @codingStandardsIgnoreFile
 
-    $helper = Mage::helper('M2ePro');
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs_General */
 
-    $temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_title', true);
-    !is_null($temp) && $formData['title'] = $temp;
+$formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
 
-    $temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_mode', true);
-    !is_null($temp) && $formData['mode'] = $temp;
+$ebayUserId = null;
+if (empty($formData['user_id']) && isset($formData['info']) && $ebayInfo = json_decode($formData['info'], true)) {
+    !empty($ebayInfo['UserID']) && $formData['user_id'] = (string)$ebayInfo['UserID'];
+}
 
-    $temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_token_session', true);
-    !is_null($temp) && $formData['token_session'] = $temp;
+$helper = Mage::helper('M2ePro');
 
-    $temp = Mage::helper('M2ePro/Data_Session')->getValue('get_sell_api_token_account_token_session', true);
-    !is_null($temp) && $formData['sell_api_token_session'] = $temp;
+$temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_title', true);
+$temp !== null && $formData['title'] = $temp;
 
-    $defaults = array(
-        'title' => '',
-        'user_id' => '',
-        'mode' => Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION,
-        'token_session' => '',
-        'token_expired_date' => '',
-        'sell_api_token_session' => '',
-        'sell_api_token_expired_date' => '',
-        'other_listings_synchronization' => Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
-    );
-    $formData = array_merge($defaults, $formData);
+$temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_mode', true);
+$temp !== null && $formData['mode'] = $temp;
 
-    $isEdit = !!$this->getRequest()->getParam('id');
+$temp = Mage::helper('M2ePro/Data_Session')->getValue('get_token_account_token_session', true);
+$temp !== null && $formData['token_session'] = $temp;
 
-    $licenseMessage = '';
+$temp = Mage::helper('M2ePro/Data_Session')->getValue('get_sell_api_token_account_token_session', true);
+$temp !== null && $formData['sell_api_token_session'] = $temp;
 
-    if ($isEdit) {
-        $licenseMessage = (string)Mage::helper('M2ePro/Data_Global')->getValue('license_message');
-    }
+$defaults = array(
+    'title' => '',
+    'user_id' => '',
+    'mode' => Ess_M2ePro_Model_Ebay_Account::MODE_PRODUCTION,
+    'token_session' => '',
+    'token_expired_date' => '',
+    'sell_api_token_session' => '',
+    'sell_api_token_expired_date' => '',
+    'other_listings_synchronization' => Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+);
+$formData = array_merge($defaults, $formData);
+
+$isEdit = !!$this->getRequest()->getParam('id');
+
+$licenseMessage = '';
+
+if ($isEdit) {
+    $licenseMessage = (string)Mage::helper('M2ePro/Data_Global')->getValue('license_message');
+}
+
 ?>
 
 <div id="block_notice_ebay_accounts_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
@@ -54,7 +65,7 @@
 <?php } else { ?>
 
     <?php echo Mage::helper('M2ePro')->__(
-        'This Page shows the Environment for your eBay Account and details of the authorisation for M2E Pro to connect to your eBay Account.<br/><br/>
+        'This Page shows the Environment for your eBay Account and details of the authorization for M2E Pro to connect to your eBay Account.<br/><br/>
         If your token has expired or is not activated, click <b>Get Token</b>.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LAAJAQ')

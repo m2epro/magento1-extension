@@ -8,10 +8,10 @@
 
 class Ess_M2ePro_Model_Amazon_Search_Custom
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = null;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    private $query = null;
+    protected $_query = null;
 
     //########################################
 
@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
      */
     public function setQuery($query)
     {
-        $this->query = (string)$query;
+        $this->_query = (string)$query;
         return $this;
     }
 
@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getCustomConnector(
             'Amazon_Search_Custom_'.ucfirst($this->getSearchMethod()).'_Requester',
-            $this->getConnectorParams(), $this->listingProduct->getAccount()
+            $this->getConnectorParams(), $this->_listingProduct->getAccount()
         );
 
         $dispatcherObject->process($connectorObj);
@@ -51,12 +51,12 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
 
     //########################################
 
-    private function getConnectorParams()
+    protected function getConnectorParams()
     {
         $searchMethod = $this->getSearchMethod();
 
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $this->listingProduct->getChildObject();
+        $amazonListingProduct = $this->_listingProduct->getChildObject();
         $isModifyChildToSimple = !$amazonListingProduct->getVariationManager()->isRelationParentType();
 
         $params = array(
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         );
 
         if ($searchMethod == 'byQuery') {
-            $params['query'] = $this->query;
+            $params['query'] = $this->_query;
         } else {
             $params['query'] = $this->getStrippedQuery();
         }
@@ -76,7 +76,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         return $params;
     }
 
-    private function getSearchMethod()
+    protected function getSearchMethod()
     {
         $validationHelper = Mage::helper('M2ePro');
         $amazonHelper     = Mage::helper('M2ePro/Component_Amazon');
@@ -96,7 +96,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         return 'byQuery';
     }
 
-    private function getIdentifierType()
+    protected function getIdentifierType()
     {
         $query = $this->getStrippedQuery();
 
@@ -108,7 +108,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
                ($validationHelper->isEAN($query)                        ? 'EAN'  : false))));
     }
 
-    private function prepareResult($searchData)
+    protected function prepareResult($searchData)
     {
         $connectorParams = $this->getConnectorParams();
 
@@ -121,7 +121,7 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         if ($searchData !== false && $this->getSearchMethod() == 'byAsin') {
             if (is_array($searchData) && !empty($searchData)) {
                 $searchData = array($searchData);
-            } else if (is_null($searchData)) {
+            } else if ($searchData === null) {
                 $searchData = array();
             }
         }
@@ -133,9 +133,9 @@ class Ess_M2ePro_Model_Amazon_Search_Custom
         );
     }
 
-    private function getStrippedQuery()
+    protected function getStrippedQuery()
     {
-        return str_replace('-', '', $this->query);
+        return str_replace('-', '', $this->_query);
     }
 
     //########################################

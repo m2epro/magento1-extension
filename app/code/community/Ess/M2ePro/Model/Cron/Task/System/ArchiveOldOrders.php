@@ -22,7 +22,6 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
         $affectedOrders = $this->getAffectedOrdersGroupedByComponent();
 
         foreach (Mage::helper('M2ePro/Component')->getActiveComponents() as $component) {
-
             if (empty($affectedOrders[$component])) {
                 continue;
             }
@@ -35,7 +34,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
 
     //########################################
 
-    private function getAffectedOrdersGroupedByComponent()
+    protected function getAffectedOrdersGroupedByComponent()
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
         $firstAffectedId = $connRead->select()
@@ -72,7 +71,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
         return $orders;
     }
 
-    private function processComponentEntities($componentName, array $componentOrdersIds)
+    protected function processComponentEntities($componentName, array $componentOrdersIds)
     {
         $coreResource = Mage::getSingleton('core/resource');
         $dbHelper = Mage::helper('M2ePro/Module_Database_Structure');
@@ -92,7 +91,6 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
         $insertsData = array();
 
         while ($orderRow = $queryStmt->fetch()) {
-
             $insertsData[$orderRow['id']] = array(
                 'name' => 'Order',
                 'origin_id' => $orderRow['id'],
@@ -118,7 +116,6 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
         $orderItemsIds = array();
 
         while ($itemRow = $queryStmt->fetch()) {
-
             if (!isset($insertsData[$itemRow['order_id']])) {
                 continue;
             }
@@ -134,6 +131,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
         foreach ($insertsData as $key => &$data) {
             $data['data'] = Mage::helper('M2ePro')->jsonEncode($data['data']);
         }
+
         unset($data);
 
         $connWrite = $coreResource->getConnection('core_write');

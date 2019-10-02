@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Ebay_Feedback_Template extends Ess_M2ePro_Model_Component
     /**
      * @var Ess_M2ePro_Model_Account
      */
-    private $accountModel = NULL;
+    protected $_accountModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Ebay_Feedback_Template extends Ess_M2ePro_Model_Component
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->accountModel = NULL;
+        $temp && $this->_accountModel = null;
         return $temp;
     }
 
@@ -37,13 +37,13 @@ class Ess_M2ePro_Model_Ebay_Feedback_Template extends Ess_M2ePro_Model_Component
      */
     public function getAccount()
     {
-        if (is_null($this->accountModel)) {
-            $this->accountModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-                'Account',$this->getData('account_id')
+        if ($this->_accountModel === null) {
+            $this->_accountModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+                'Account', $this->getData('account_id')
             );
         }
 
-        return $this->accountModel;
+        return $this->_accountModel;
     }
 
     /**
@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Ebay_Feedback_Template extends Ess_M2ePro_Model_Component
      */
     public function setAccount(Ess_M2ePro_Model_Account $instance)
     {
-        $this->accountModel = $instance;
+        $this->_accountModel = $instance;
     }
 
     //########################################

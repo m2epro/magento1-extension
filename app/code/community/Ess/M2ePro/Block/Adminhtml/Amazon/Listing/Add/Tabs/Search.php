@@ -38,6 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Search
         foreach ($data as $key=>$value) {
             $this->setData($key, $value);
         }
+
         // ---------------------------------------
 
         return parent::_beforeToHtml();
@@ -47,7 +48,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Search
 
     protected  function getListingData()
     {
-        if (!is_null($this->getRequest()->getParam('id'))) {
+        if ($this->getRequest()->getParam('id') !== null) {
             $data = $this->getListing()->getData();
         } else {
             $data = Mage::helper('M2ePro/Data_Session')->getValue($this->sessionKey);
@@ -62,7 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Search
         return self::getDefaultFieldsValues();
     }
 
-    static function getDefaultFieldsValues()
+    public static function getDefaultFieldsValues()
     {
         return array(
             'general_id_mode' => Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_NOT_SET,
@@ -83,7 +84,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Search
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
+        if ($this->listing === null) {
             $this->listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $listingId);
         }
 

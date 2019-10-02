@@ -37,7 +37,6 @@ class Ess_M2ePro_Model_Walmart_Order_Helper
         $resultStatus = NULL;
 
         switch (array_shift($itemsStatuses)) {
-
             case Ess_M2ePro_Model_Walmart_Order_Item::STATUS_CREATED:
                 $resultStatus = Ess_M2ePro_Model_Walmart_Order::STATUS_CREATED;
                 break;

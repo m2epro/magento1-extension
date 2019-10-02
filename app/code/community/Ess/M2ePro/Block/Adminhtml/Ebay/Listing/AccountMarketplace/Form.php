@@ -24,12 +24,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace_Form extends Ma
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/*/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -48,15 +50,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace_Form extends Ma
 
         // ---------------------------------------
         $tempMarketplaces = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace')
-            ->setOrder('sorder','ASC')
-            ->setOrder('title','ASC')
+            ->setOrder('sorder', 'ASC')
+            ->setOrder('title', 'ASC')
             ->getItems();
 
         foreach ($tempMarketplaces as $id => $marketplace) {
             $tempMarketplaces[$id] = $marketplace->getData();
         }
 
-        $this->setData('marketplaces',$tempMarketplaces);
+        $this->setData('marketplaces', $tempMarketplaces);
         // ---------------------------------------
 
         $account = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account')->getLastItem();
@@ -71,27 +73,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace_Form extends Ma
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => 'Add',
                 'onclick' => '',
                 'id' => 'add_account_button',
-            ));
+                )
+            );
         if ($account->getId()) {
-            Mage::helper('M2ePro/View_Ebay')->isSimpleMode()    && $buttonBlock->setData('style','display: none');
-            (bool)$this->getRequest()->getParam('wizard',false) && $buttonBlock->setData('style','display: none');
+            Mage::helper('M2ePro/View_Ebay')->isSimpleMode()    && $buttonBlock->setData('style', 'display: none');
+            (bool)$this->getRequest()->getParam('wizard', false) && $buttonBlock->setData('style', 'display: none');
         }
 
-        $this->setChild('add_account_button',$buttonBlock);
+        $this->setChild('add_account_button', $buttonBlock);
         // ---------------------------------------
 
         // ---------------------------------------
         $sessionKey = 'ebay_listing_create';
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($sessionKey);
 
-        isset($sessionData['listing_title'])  && $this->setData('title',$sessionData['listing_title']);
-        isset($sessionData['account_id'])     && $this->setData('account_id',$sessionData['account_id']);
-        isset($sessionData['marketplace_id']) && $this->setData('marketplace_id',$sessionData['marketplace_id']);
-        isset($sessionData['store_id'])       && $this->setData('store_id',$sessionData['store_id']);
+        isset($sessionData['listing_title'])  && $this->setData('title', $sessionData['listing_title']);
+        isset($sessionData['account_id'])     && $this->setData('account_id', $sessionData['account_id']);
+        isset($sessionData['marketplace_id']) && $this->setData('marketplace_id', $sessionData['marketplace_id']);
+        isset($sessionData['store_id'])       && $this->setData('store_id', $sessionData['store_id']);
         // ---------------------------------------
 
         // ---------------------------------------
@@ -117,7 +121,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace_Form extends Ma
     protected function _toHtml()
     {
         $breadcrumb = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_ebay_listing_breadcrumb','',
+            'M2ePro/adminhtml_ebay_listing_breadcrumb', '',
             array('step' => 1)
         );
 

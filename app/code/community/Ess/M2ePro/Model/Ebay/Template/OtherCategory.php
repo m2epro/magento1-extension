@@ -7,24 +7,24 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Ebay_Template_OtherCategory getResource()
+ * @method Ess_M2ePro_Model_Resource_Ebay_Template_OtherCategory getResource()
  */
 class Ess_M2ePro_Model_Ebay_Template_OtherCategory extends Ess_M2ePro_Model_Component_Abstract
 {
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Account
      */
-    private $accountModel = NULL;
+    protected $_accountModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Ebay_Template_OtherCategory_Source[]
      */
-    private $otherCategorySourceModels = array();
+    protected $_otherCategorySourceModels = array();
 
     //########################################
 
@@ -42,9 +42,9 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory extends Ess_M2ePro_Model_Comp
             return false;
         }
 
-        $this->marketplaceModel = NULL;
-        $this->accountModel = NULL;
-        $this->otherCategorySourceModels = array();
+        $this->_marketplaceModel          = null;
+        $this->_accountModel              = null;
+        $this->_otherCategorySourceModels = array();
 
         $this->delete();
         return true;
@@ -57,13 +57,13 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory extends Ess_M2ePro_Model_Comp
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -71,7 +71,7 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory extends Ess_M2ePro_Model_Comp
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-         $this->marketplaceModel = $instance;
+         $this->_marketplaceModel = $instance;
     }
 
     // ---------------------------------------
@@ -81,13 +81,13 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory extends Ess_M2ePro_Model_Comp
      */
     public function getAccount()
     {
-        if (is_null($this->accountModel)) {
-            $this->accountModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+        if ($this->_accountModel === null) {
+            $this->_accountModel = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Account', $this->getAccountId()
             );
         }
 
-        return $this->accountModel;
+        return $this->_accountModel;
     }
 
     /**
@@ -95,7 +95,7 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory extends Ess_M2ePro_Model_Comp
      */
     public function setAccount(Ess_M2ePro_Model_Account $instance)
     {
-         $this->accountModel = $instance;
+         $this->_accountModel = $instance;
     }
 
     // ---------------------------------------
@@ -108,15 +108,15 @@ class Ess_M2ePro_Model_Ebay_Template_OtherCategory extends Ess_M2ePro_Model_Comp
     {
         $productId = $magentoProduct->getProductId();
 
-        if (!empty($this->otherCategorySourceModels[$productId])) {
-            return $this->otherCategorySourceModels[$productId];
+        if (!empty($this->_otherCategorySourceModels[$productId])) {
+            return $this->_otherCategorySourceModels[$productId];
         }
 
-        $this->otherCategorySourceModels[$productId] = Mage::getModel('M2ePro/Ebay_Template_OtherCategory_Source');
-        $this->otherCategorySourceModels[$productId]->setMagentoProduct($magentoProduct);
-        $this->otherCategorySourceModels[$productId]->setOtherCategoryTemplate($this);
+        $this->_otherCategorySourceModels[$productId] = Mage::getModel('M2ePro/Ebay_Template_OtherCategory_Source');
+        $this->_otherCategorySourceModels[$productId]->setMagentoProduct($magentoProduct);
+        $this->_otherCategorySourceModels[$productId]->setOtherCategoryTemplate($this);
 
-        return $this->otherCategorySourceModels[$productId];
+        return $this->_otherCategorySourceModels[$productId];
     }
 
     //########################################

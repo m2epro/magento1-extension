@@ -10,27 +10,27 @@ class Ess_M2ePro_Model_Cron_Strategy_Observer_KeepAlive
 {
     const ACTIVATE_INTERVAL = 30;
 
-    private $isEnabled = false;
+    protected $_isEnabled = false;
 
     /** @var Ess_M2ePro_Model_Lock_Item_Manager */
-    private $lockItemManager = NULL;
+    protected $_lockItemManager = null;
 
-    private $circleStartTime = NULL;
+    protected $_circleStartTime = null;
 
     //########################################
 
     public function enable()
     {
-        $this->isEnabled       = true;
-        $this->circleStartTime = NULL;
+        $this->_isEnabled       = true;
+        $this->_circleStartTime = null;
 
         return $this;
     }
 
     public function disable()
     {
-        $this->isEnabled       = false;
-        $this->circleStartTime = NULL;
+        $this->_isEnabled       = false;
+        $this->_circleStartTime = null;
 
         return $this;
     }
@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Cron_Strategy_Observer_KeepAlive
 
     public function setLockItemManager(Ess_M2ePro_Model_Lock_Item_Manager $lockItemManager)
     {
-        $this->lockItemManager = $lockItemManager;
+        $this->_lockItemManager = $lockItemManager;
         return $this;
     }
 
@@ -47,11 +47,11 @@ class Ess_M2ePro_Model_Cron_Strategy_Observer_KeepAlive
 
     public function process(Varien_Event_Observer $eventObserver)
     {
-        if (!$this->isEnabled) {
+        if (!$this->_isEnabled) {
             return;
         }
 
-        if (is_null($this->lockItemManager)) {
+        if ($this->_lockItemManager === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Lock Item Manager was not set.');
         }
 
@@ -61,24 +61,23 @@ class Ess_M2ePro_Model_Cron_Strategy_Observer_KeepAlive
             return;
         }
 
-        if ($eventObserver->getEvent()->getData('collection') &&
-            ($eventObserver->getEvent()->getData('collection') instanceof Ess_M2ePro_Model_Mysql4_Lock_Item_Collection)
-        ) {
+        $collection = $eventObserver->getEvent()->getData('collection');
+        if ($collection && ($collection instanceof Ess_M2ePro_Model_Resource_Lock_Item_Collection)) {
             return;
         }
 
-        if (is_null($this->circleStartTime)) {
-            $this->circleStartTime = time();
+        if ($this->_circleStartTime === null) {
+            $this->_circleStartTime = time();
             return;
         }
 
-        if ($this->circleStartTime + self::ACTIVATE_INTERVAL > time()) {
+        if ($this->_circleStartTime + self::ACTIVATE_INTERVAL > time()) {
             return;
         }
 
-        $this->lockItemManager->activate();
+        $this->_lockItemManager->activate();
 
-        $this->circleStartTime = time();
+        $this->_circleStartTime = time();
     }
 
     //########################################

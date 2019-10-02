@@ -28,12 +28,12 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion extends Ess_M2eP
     /**
      * @var Ess_M2ePro_Model_Walmart_Template_SellingFormat
      */
-    private $sellingFormatTemplateModel = NULL;
+    protected $_sellingFormatTemplateModel = null;
 
     /**
      * @var Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source[]
      */
-    private $sellingFormatPromotionSourceModels = NULL;
+    protected $_sellingFormatPromotionSourceModels = null;
 
     //########################################
 
@@ -48,8 +48,8 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion extends Ess_M2eP
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->sellingFormatTemplateModel = NULL;
-        $temp && $this->sellingFormatPromotionSourceModels = array();
+        $temp && $this->_sellingFormatTemplateModel = null;
+        $temp && $this->_sellingFormatPromotionSourceModels = array();
         return $temp;
     }
 
@@ -60,13 +60,13 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion extends Ess_M2eP
      */
     public function getSellingFormatTemplate()
     {
-        if (is_null($this->sellingFormatTemplateModel)) {
-            $this->sellingFormatTemplateModel = Mage::helper('M2ePro')->getCachedObject(
+        if ($this->_sellingFormatTemplateModel === null) {
+            $this->_sellingFormatTemplateModel = Mage::helper('M2ePro')->getCachedObject(
                 'Walmart_Template_SellingFormat', $this->getTemplateSellingFormatId(), NULL, array('template')
             );
         }
 
-        return $this->sellingFormatTemplateModel;
+        return $this->_sellingFormatTemplateModel;
     }
 
     /**
@@ -74,7 +74,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion extends Ess_M2eP
      */
     public function setSellingFormatTemplate(Ess_M2ePro_Model_Walmart_Template_SellingFormat $instance)
     {
-        $this->sellingFormatTemplateModel = $instance;
+        $this->_sellingFormatTemplateModel = $instance;
     }
 
     // ---------------------------------------
@@ -87,17 +87,17 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion extends Ess_M2eP
     {
         $id = $magentoProduct->getProductId();
 
-        if (!empty($this->sellingFormatPromotionSourceModels[$id])) {
-            return $this->sellingFormatPromotionSourceModels[$id];
+        if (!empty($this->_sellingFormatPromotionSourceModels[$id])) {
+            return $this->_sellingFormatPromotionSourceModels[$id];
         }
 
-        $this->sellingFormatPromotionSourceModels[$id] =
+        $this->_sellingFormatPromotionSourceModels[$id] =
             Mage::getModel('M2ePro/Walmart_Template_SellingFormat_Promotion_Source');
 
-        $this->sellingFormatPromotionSourceModels[$id]->setMagentoProduct($magentoProduct);
-        $this->sellingFormatPromotionSourceModels[$id]->setSellingFormatPromotion($this);
+        $this->_sellingFormatPromotionSourceModels[$id]->setMagentoProduct($magentoProduct);
+        $this->_sellingFormatPromotionSourceModels[$id]->setSellingFormatPromotion($this);
 
-        return $this->sellingFormatPromotionSourceModels[$id];
+        return $this->_sellingFormatPromotionSourceModels[$id];
     }
 
     //########################################

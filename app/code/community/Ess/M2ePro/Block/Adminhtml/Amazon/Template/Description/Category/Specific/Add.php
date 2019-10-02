@@ -42,7 +42,11 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Template_Description_Category_Specific_A
         $additionalTitle = $this->getRequest()->getParam('current_indexed_xpath');
         $additionalTitle = explode('/', ltrim($additionalTitle, '/'));
         array_shift($additionalTitle);
-        $additionalTitle = array_map(function($el) { return preg_replace('/-\d+/', '', $el); }, $additionalTitle);
+        $additionalTitle = array_map(
+            function($el) {
+            return preg_replace('/-\d+/', '', $el); 
+            }, $additionalTitle
+        );
         $this->setData('additional_title', implode(' > ', $additionalTitle));
 
         return parent::_beforeToHtml();

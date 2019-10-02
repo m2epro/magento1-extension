@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adminhtml_Block_Widget
 {
-    protected $_possibleMagentoStatuses = null;
+    protected $_possibleMagentoStatuses;
 
     //########################################
 
@@ -32,7 +32,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
                                         : array();
 
         // ---------------------------------------
-        $temp = Mage::getModel('core/website')->getCollection()->setOrder('sort_order','ASC')->toArray();
+        $temp = Mage::getModel('core/website')->getCollection()->setOrder('sort_order', 'ASC')->toArray();
         $this->websites = $temp['items'];
         // ---------------------------------------
 
@@ -44,11 +44,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
         // ---------------------------------------
         $selectedStore = !empty($magentoOrdersSettings['listing']['store_id'])
                                 ? $magentoOrdersSettings['listing']['store_id'] : '';
-        $blockStoreSwitcher = $this->getLayout()->createBlock('M2ePro/adminhtml_storeSwitcher', '', array(
-            'id' => 'magento_orders_listings_store_id',
-            'name' => 'magento_orders_settings[listing][store_id]',
-            'selected' => $selectedStore
-        ));
+        $blockStoreSwitcher = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_storeSwitcher', '',
+            array(
+                'id'       => 'magento_orders_listings_store_id',
+                'name'     => 'magento_orders_settings[listing][store_id]',
+                'selected' => $selectedStore
+            )
+        );
         $blockStoreSwitcher->hasDefaultOption(false);
         $this->setChild('magento_orders_listings_store_id', $blockStoreSwitcher);
         // ---------------------------------------
@@ -57,11 +60,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
         $selectedStore = !empty($magentoOrdersSettings['listing_other']['store_id'])
                             ? $magentoOrdersSettings['listing_other']['store_id']
                             : Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
-        $blockStoreSwitcher = $this->getLayout()->createBlock('M2ePro/adminhtml_storeSwitcher', '', array(
-            'id' => 'magento_orders_listings_other_store_id',
-            'name' => 'magento_orders_settings[listing_other][store_id]',
-            'selected' => $selectedStore
-        ));
+        $blockStoreSwitcher = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_storeSwitcher', '',
+            array(
+                'id'       => 'magento_orders_listings_other_store_id',
+                'name'     => 'magento_orders_settings[listing_other][store_id]',
+                'selected' => $selectedStore
+            )
+        );
         $blockStoreSwitcher->hasDefaultOption(false);
         $this->setChild('magento_orders_listings_other_store_id', $blockStoreSwitcher);
         // ---------------------------------------
@@ -82,7 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Edit_Tabs_Order extends Mage_Adm
 
     public function getMagentoOrderStatusList()
     {
-        if (is_null($this->_possibleMagentoStatuses)) {
+        if ($this->_possibleMagentoStatuses === null) {
             $this->_possibleMagentoStatuses = Mage::getSingleton('sales/order_config')->getStatuses();
         }
 

@@ -164,11 +164,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
     {
         $existedRelation = Mage::getSingleton('core/resource')->getConnection('core_read')
            ->select()
-           ->from(array('ei' => Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable()),
-                  array())
-           ->join(array('elp' => Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable()),
-                  '(`elp`.`ebay_item_id` = `ei`.`id`)',
-                  array('elp.listing_product_id'))
+        ->from(
+            array('ei' => Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable()),
+            array()
+        )
+        ->join(
+            array('elp' => Mage::getResourceModel('M2ePro/Ebay_Listing_Product')->getMainTable()),
+            '(`elp`.`ebay_item_id` = `ei`.`id`)',
+            array('elp.listing_product_id')
+        )
            ->where('`ei`.`item_id` = ?', $this->getItemId())
            ->where('`ei`.`account_id` = ?', $this->getAccount()->getId())
            ->query()
@@ -179,12 +183,14 @@ class Ess_M2ePro_Model_Ebay_Listing_Other extends Ess_M2ePro_Model_Component_Chi
         }
 
         Mage::getSingleton('core/resource')->getConnection('core_write')
-            ->delete(Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable(),
-                    array(
+            ->delete(
+                Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable(),
+                array(
                         '`item_id` = ?' => $this->getItemId(),
                         '`product_id` = ?' => $this->getParentObject()->getProductId(),
                         '`account_id` = ?' => $this->getAccount()->getId()
-                    ));
+                )
+            );
     }
 
     //########################################

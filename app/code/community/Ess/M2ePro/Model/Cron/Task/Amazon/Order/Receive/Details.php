@@ -62,11 +62,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
             // ---------------------------------------
 
             try {
-
                 $this->processAccount($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Receive Details" Action for Amazon Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -88,21 +85,21 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
 
     //########################################
 
-    private function getPermittedAccounts()
+    protected function getPermittedAccounts()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
         return $accountsCollection->getItems();
     }
 
     // ---------------------------------------
 
-    private function processAccount(Ess_M2ePro_Model_Account $account)
+    protected function processAccount(Ess_M2ePro_Model_Account $account)
     {
         $from = new \DateTime('now', new \DateTimeZone('UTC'));;
         $from->modify('- 5 days');
 
-        /** @var Ess_M2ePro_Model_Mysql4_Order_Collection $orderCollection */
+        /** @var Ess_M2ePro_Model_Resource_Order_Collection $orderCollection */
         $orderCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Order');
         $orderCollection->addFieldToFilter('account_id', $account->getId());
         $orderCollection->addFieldToFilter('is_afn_channel', 1);

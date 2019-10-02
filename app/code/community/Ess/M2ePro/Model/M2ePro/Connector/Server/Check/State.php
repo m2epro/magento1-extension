@@ -32,8 +32,8 @@ class Ess_M2ePro_Model_M2ePro_Connector_Server_Check_State
     {
         $connection = parent::buildConnectionInstance();
         $connection->setTimeout(30)
-                   ->setServerBaseUrl($this->params['base_url'])
-                   ->setServerHostName($this->params['hostname'])
+                   ->setServerBaseUrl($this->_params['base_url'])
+                   ->setServerHostName($this->_params['hostname'])
                    ->setTryToSwitchEndpointOnError(false)
                    ->setTryToResendOnError(false);
 

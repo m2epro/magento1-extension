@@ -36,7 +36,9 @@ class Ess_M2ePro_Model_Magento_Payment extends Mage_Payment_Model_Method_Abstrac
             'tax_id'                => isset($data['tax_id']) ? $data['tax_id'] : null,
         );
 
-        $this->getInfoInstance()->setAdditionalData(serialize($details));
+        $this->getInfoInstance()->setAdditionalData(
+            Mage::helper('M2ePro')->serialize($details)
+        );
 
         return $this;
     }

@@ -9,9 +9,9 @@
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
-    private $forceAllSteps = false;
+    protected $forceAllSteps = false;
 
     //########################################
 
@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
      */
     public function getInstaller()
     {
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
+        $this->_installer = $installer;
     }
 
     // ---------------------------------------
@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
 
     //########################################
 
-    /*
+    /**
 
         DROP TABLE `m2epro_attribute_set`;
 
@@ -73,15 +73,15 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
 
     //########################################
 
-    private function isNeedToSkip()
+    protected function isNeedToSkip()
     {
         if ($this->forceAllSteps) {
             return false;
         }
 
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_template_synchronization');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_template_synchronization');
         if ($connection->tableColumnExists($tempTable, 'revise_change_description_template') !== false) {
             return true;
         }
@@ -91,14 +91,15 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630_General
 
     //########################################
 
-    private function processAttributeSet()
+    protected function processAttributeSet()
     {
         $this->getInstaller()->run("DROP TABLE IF EXISTS m2epro_attribute_set;");
     }
 
-    private function processRegistry()
+    protected function processRegistry()
     {
-        $this->getInstaller()->run(<<<SQL
+        $this->getInstaller()->run(
+            <<<SQL
 
     DROP TABLE IF EXISTS m2epro_registry;
     CREATE TABLE m2epro_registry (
@@ -118,20 +119,20 @@ SQL
         );
     }
 
-    private function processLog()
+    protected function processLog()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempNewTable    = $this->installer->getTable('m2epro_listing_log');
-        $tempBackupTable = $this->installer->getTable('m2epro_backup_v630_listing_log');
+        $tempNewTable    = $this->_installer->getTable('m2epro_listing_log');
+        $tempBackupTable = $this->_installer->getTable('m2epro_backup_v630_listing_log');
 
         if ($connection->tableColumnExists($tempNewTable, 'additional_data') !== false &&
             $connection->tableColumnExists($tempNewTable, 'parent_listing_product_id') !== false) {
-
             return;
         }
 
-        $this->getInstaller()->run(<<<SQL
+        $this->getInstaller()->run(
+            <<<SQL
 RENAME TABLE m2epro_listing_log TO {$tempBackupTable};
 
 CREATE TABLE m2epro_listing_log (
@@ -202,11 +203,11 @@ SQL
         );
     }
 
-    private function processAmazonTemplates()
+    protected function processAmazonTemplates()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $tempTable = $this->installer->getTable('m2epro_amazon_template_synchronization');
+        $tempTable = $this->_installer->getTable('m2epro_amazon_template_synchronization');
 
         if ($connection->tableColumnExists($tempTable, 'relist_send_data') === false) {
             $connection->addColumn(
@@ -236,7 +237,8 @@ SQL
             );
         }
 
-        $this->getInstaller()->run(<<<SQL
+        $this->getInstaller()->run(
+            <<<SQL
 
     UPDATE `m2epro_amazon_template_selling_format`
     SET `sale_price_mode` = 0
@@ -246,20 +248,21 @@ SQL
         );
     }
 
-    private function processWizard()
+    protected function processWizard()
     {
-        $tempTable = $this->installer->getTable('m2epro_wizard');
+        $tempTable = $this->_installer->getTable('m2epro_wizard');
         $tempQuery = "SELECT * FROM `{$tempTable}` WHERE `nick` = 'migrationNewAmazon'";
 
-        $tempRow = $this->installer->getConnection()
-                                   ->query($tempQuery)
-                                   ->fetch();
+        $tempRow = $this->_installer->getConnection()
+                                    ->query($tempQuery)
+                                    ->fetch();
 
         if ($tempRow !== false) {
             return;
         }
 
-        $this->getInstaller()->run(<<<SQL
+        $this->getInstaller()->run(
+            <<<SQL
 
     INSERT INTO `m2epro_wizard` (`nick`, `view`, `status`, `step`, `type`, `priority`)
     VALUES ('migrationNewAmazon', 'common', 0, NULL, 0, 6);

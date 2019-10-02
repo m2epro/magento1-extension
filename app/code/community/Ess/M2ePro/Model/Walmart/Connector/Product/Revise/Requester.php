@@ -39,7 +39,6 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Revise_Requester
         $resultListingProducts = array();
 
         foreach ($listingProducts as $childListingProduct) {
-
             if (!$childListingProduct->isListed() || $childListingProduct->isBlocked()) {
                 continue;
             }

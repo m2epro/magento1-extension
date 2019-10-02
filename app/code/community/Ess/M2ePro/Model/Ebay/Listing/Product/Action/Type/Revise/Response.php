@@ -238,9 +238,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         }
 
         if (isset($response['ebay_item_fees'])) {
-
             foreach ($response['ebay_item_fees'] as $feeCode => $feeData) {
-
                 if ($feeData['fee'] == 0) {
                     continue;
                 }
@@ -258,7 +256,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
 
     // ---------------------------------------
 
-    private function updateEbayItem()
+    protected function updateEbayItem()
     {
         $data = array(
             'account_id'     => $this->getAccount()->getId(),
@@ -268,17 +266,14 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         );
 
         if ($this->getRequestData()->isVariationItem() && $this->getRequestData()->getVariations()) {
-
             $variations = array();
             $requestMetadata = $this->getRequestMetaData();
 
             foreach ($this->getRequestData()->getVariations() as $variation) {
-
                 $channelOptions = $variation['specifics'];
                 $productOptions = $variation['specifics'];
 
                 if (empty($requestMetadata['variations_specifics_replacements'])) {
-
                     $variations[] = array(
                         'product_options' => $productOptions,
                         'channel_options' => $channelOptions,
@@ -287,7 +282,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
                 }
 
                 foreach ($requestMetadata['variations_specifics_replacements'] as $productValue => $channelValue) {
-
                     if (!isset($productOptions[$channelValue])) {
                         continue;
                     }

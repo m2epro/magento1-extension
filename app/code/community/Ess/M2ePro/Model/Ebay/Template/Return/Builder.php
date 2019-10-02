@@ -46,6 +46,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
         if (empty($data['marketplace_id'])) {
             throw new Ess_M2ePro_Model_Exception_Logic('eBay Site ID is empty.');
         }
+
         // ---------------------------------------
 
         parent::validate($data);

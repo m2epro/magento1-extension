@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
     protected function processSuccess(array $params = array())
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
-        $amazonListingProduct = $this->listingProduct->getChildObject();
+        $amazonListingProduct = $this->_listingProduct->getChildObject();
 
         if ($amazonListingProduct->getVariationManager()->isRelationMode() &&
             !$this->getRequestDataObject()->hasProductId() &&
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
             );
 
             $this->getLogger()->logListingProductMessage(
-                $this->listingProduct,
+                $this->_listingProduct,
                 $message,
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
             );

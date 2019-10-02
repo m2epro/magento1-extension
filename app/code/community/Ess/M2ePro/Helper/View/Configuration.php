@@ -30,30 +30,46 @@ class Ess_M2ePro_Helper_View_Configuration extends Mage_Core_Helper_Abstract
 
     public function getComponentsUrl(array $params = array())
     {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit',array_merge(array(
-            'section' => self::CONFIG_SECTION_COMPONENTS
-        ), $params));
+        return Mage::helper('adminhtml')->getUrl(
+            'adminhtml/system_config/edit', array_merge(
+                array(
+                'section' => self::CONFIG_SECTION_COMPONENTS
+                ), $params
+            )
+        );
     }
 
     public function getSettingsUrl(array $params = array())
     {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit',array_merge(array(
-            'section' => self::CONFIG_SECTION_SETTINGS
-        ), $params));
+        return Mage::helper('adminhtml')->getUrl(
+            'adminhtml/system_config/edit', array_merge(
+                array(
+                'section' => self::CONFIG_SECTION_SETTINGS
+                ), $params
+            )
+        );
     }
 
     public function getLogsClearingUrl(array $params = array())
     {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit',array_merge(array(
-            'section' => self::CONFIG_SECTION_LOGS_CLEARING
-        ), $params));
+        return Mage::helper('adminhtml')->getUrl(
+            'adminhtml/system_config/edit', array_merge(
+                array(
+                'section' => self::CONFIG_SECTION_LOGS_CLEARING
+                ), $params
+            )
+        );
     }
 
     public function getLicenseUrl(array $params = array())
     {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit',array_merge(array(
-            'section' => self::CONFIG_SECTION_LICENSE
-        ), $params));
+        return Mage::helper('adminhtml')->getUrl(
+            'adminhtml/system_config/edit', array_merge(
+                array(
+                'section' => self::CONFIG_SECTION_LICENSE
+                ), $params
+            )
+        );
     }
 
     //########################################

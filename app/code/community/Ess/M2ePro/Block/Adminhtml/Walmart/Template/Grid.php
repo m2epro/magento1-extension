@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
     const TEMPLATE_SYNCHRONIZATION   = 'synchronization';
     const TEMPLATE_DESCRIPTION       = 'description';
 
-    private $enabledMarketplacesCollection = NULL;
+    protected $_enabledMarketplacesCollection = null;
 
     //########################################
 
@@ -157,7 +157,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
 
     protected function _prepareColumns()
     {
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'        => Mage::helper('M2ePro')->__('Details'),
             'align'         => 'left',
             'type'          => 'text',
@@ -166,7 +167,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             'filter_index'  => 'main_table.title',
             'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
         $options = array(
             self::TEMPLATE_CATEGORY          => Mage::helper('M2ePro')->__('Category'),
@@ -174,7 +176,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             self::TEMPLATE_DESCRIPTION       => Mage::helper('M2ePro')->__('Description'),
             self::TEMPLATE_SYNCHRONIZATION   => Mage::helper('M2ePro')->__('Synchronization')
         );
-        $this->addColumn('type', array(
+        $this->addColumn(
+            'type', array(
             'header'        => Mage::helper('M2ePro')->__('Type'),
             'align'         => 'left',
             'type'          => 'options',
@@ -183,9 +186,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             'index'         => 'type',
             'filter_index'  => 'main_table.type',
             'options'       => $options
-        ));
+            )
+        );
 
-        $this->addColumn('marketplace', array(
+        $this->addColumn(
+            'marketplace', array(
             'header'        => Mage::helper('M2ePro')->__('Marketplace'),
             'align'         => 'left',
             'type'          => 'options',
@@ -195,9 +200,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             'filter_condition_callback' => array($this, 'callbackFilterMarketplace'),
             'frame_callback'=> array($this, 'callbackColumnMarketplace'),
             'options'       => $this->getEnabledMarketplaceTitles()
-        ));
+            )
+        );
 
-        $this->addColumn('create_date', array(
+        $this->addColumn(
+            'create_date', array(
             'header'    => Mage::helper('M2ePro')->__('Creation Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -205,9 +212,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'create_date',
             'filter_index' => 'main_table.create_date'
-        ));
+            )
+        );
 
-        $this->addColumn('update_date', array(
+        $this->addColumn(
+            'update_date', array(
             'header'    => Mage::helper('M2ePro')->__('Update Date'),
             'align'     => 'left',
             'width'     => '150px',
@@ -215,9 +224,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
             'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
             'index'     => 'update_date',
             'filter_index' => 'main_table.update_date'
-        ));
+            )
+        );
 
-        $this->addColumn('actions', array(
+        $this->addColumn(
+            'actions', array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
             'align'     => 'left',
             'width'     => '100px',
@@ -250,7 +261,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Grid extends Mage_Adminhtml_Bl
                     'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
                 )
             )
-        ));
+            )
+        );
 
         return $this;
     }
@@ -336,21 +348,21 @@ HTML;
 
     //########################################
 
-    private function getEnabledMarketplacesCollection()
+    protected function getEnabledMarketplacesCollection()
     {
-        if (is_null($this->enabledMarketplacesCollection)) {
+        if ($this->_enabledMarketplacesCollection === null) {
             $collection = Mage::getModel('M2ePro/Marketplace')->getCollection();
             $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
             $collection->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE);
             $collection->setOrder('sorder', 'ASC');
 
-            $this->enabledMarketplacesCollection = $collection;
+            $this->_enabledMarketplacesCollection = $collection;
         }
 
-        return $this->enabledMarketplacesCollection;
+        return $this->_enabledMarketplacesCollection;
     }
 
-    private function getEnabledMarketplaceTitles()
+    protected function getEnabledMarketplaceTitles()
     {
         return $this->getEnabledMarketplacesCollection()->toOptionHash();
     }

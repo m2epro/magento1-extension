@@ -42,13 +42,12 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
     {
         $currentOptions = $this->getProductOptions();
 
-        $currentOptions = array_change_key_case(array_map('strtolower',$currentOptions), CASE_LOWER);
+        $currentOptions = array_change_key_case(array_map('strtolower', $currentOptions), CASE_LOWER);
         $magentoVariations = $this->getListingProduct()->getMagentoProduct()
                                                        ->getVariationInstance()
                                                        ->getVariationsTypeStandard();
 
         foreach ($magentoVariations['variations'] as $magentoVariation) {
-
             $magentoOptions = array();
 
             foreach ($magentoVariation as $magentoOption) {
@@ -85,7 +84,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
 
         $this->setProductOptions($options, false);
 
-        $this->getListingProduct()->setData('is_variation_product_matched',1);
+        $this->getListingProduct()->setData('is_variation_product_matched', 1);
 
         if ($this->getListingProduct()->getStatus() != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
             $this->createChannelItem($options);
@@ -135,13 +134,13 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
 
     // ---------------------------------------
 
-    private function setProductOptions(array $options, $save = true)
+    protected function setProductOptions(array $options, $save = true)
     {
         $this->getListingProduct()->setSetting('additional_data', 'variation_product_options', $options);
         $save && $this->getListingProduct()->save();
     }
 
-    private function resetProductOptions($save = true)
+    protected function resetProductOptions($save = true)
     {
         $options = array_fill_keys($this->getMagentoAttributes(), null);
         $this->setProductOptions($options, $save);
@@ -187,7 +186,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
 
         foreach ($currentVariation->getOptions(true) as $currentOption) {
             foreach ($magentoVariation as $magentoOption) {
-
                 if ($currentOption->getAttribute() != $magentoOption['attribute'] ||
                     $currentOption->getOption() != $magentoOption['option']) {
                     continue;
@@ -205,24 +203,25 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
 
     //########################################
 
-    private function removeStructure()
+    protected function removeStructure()
     {
         foreach ($this->getListingProduct()->getVariations(true) as $variation) {
-            /* @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
+            /** @var $variation Ess_M2ePro_Model_Listing_Product_Variation */
             $variation->deleteInstance();
         }
     }
 
-    private function createStructure(array $variation)
+    protected function createStructure(array $variation)
     {
         $variationId = Mage::helper('M2ePro/Component_Amazon')
                                 ->getModel('Listing_Product_Variation')
-                                ->addData(array(
+                                ->addData(
+                                    array(
                                     'listing_product_id' => $this->getListingProduct()->getId()
-                                ))->save()->getId();
+                                    )
+                                )->save()->getId();
 
         foreach ($variation as $option) {
-
             $tempData = array(
                 'listing_product_variation_id' => $variationId,
                 'product_id'   => $option['product_id'],
@@ -238,23 +237,23 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Physica
 
     // ---------------------------------------
 
-    private function removeChannelItems()
+    protected function removeChannelItems()
     {
         $items = Mage::getModel('M2ePro/Amazon_Item')->getCollection()
-                            ->addFieldToFilter('account_id',$this->getListing()->getAccountId())
-                            ->addFieldToFilter('marketplace_id',$this->getListing()->getMarketplaceId())
-                            ->addFieldToFilter('sku',$this->getAmazonListingProduct()->getSku())
-                            ->addFieldToFilter('product_id',$this->getListingProduct()->getProductId())
-                            ->addFieldToFilter('store_id',$this->getListing()->getStoreId())
+                            ->addFieldToFilter('account_id', $this->getListing()->getAccountId())
+                            ->addFieldToFilter('marketplace_id', $this->getListing()->getMarketplaceId())
+                            ->addFieldToFilter('sku', $this->getAmazonListingProduct()->getSku())
+                            ->addFieldToFilter('product_id', $this->getListingProduct()->getProductId())
+                            ->addFieldToFilter('store_id', $this->getListing()->getStoreId())
                             ->getItems();
 
         foreach ($items as $item) {
-            /* @var $item Ess_M2ePro_Model_Amazon_Item */
+            /** @var $item Ess_M2ePro_Model_Amazon_Item */
             $item->deleteInstance();
         }
     }
 
-    private function createChannelItem(array $options)
+    protected function createChannelItem(array $options)
     {
         $data = array(
             'account_id' => (int)$this->getListing()->getAccountId(),

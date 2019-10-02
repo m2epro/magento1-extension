@@ -8,15 +8,15 @@
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolver
 {
-    private $sourceAttributes = array();
+    protected $_sourceAttributes = array();
 
-    private $sourceAttributesNames = array();
+    protected $_sourceAttributesNames = array();
 
-    private $destinationAttributes = array();
+    protected $_destinationAttributes = array();
 
-    private $destinationAttributesNames = array();
+    protected $_destinationAttributesNames = array();
 
-    private $resolvedAttributes = array();
+    protected $_resolvedAttributes = array();
 
     //########################################
 
@@ -27,12 +27,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
      */
     public function addSourceAttribute($attribute, array $names)
     {
-        if (in_array($attribute, $this->sourceAttributes)) {
+        if (in_array($attribute, $this->_sourceAttributes)) {
             return $this;
         }
 
-        $this->sourceAttributes[] = $attribute;
-        $this->sourceAttributesNames[$attribute] = $names;
+        $this->_sourceAttributes[]                = $attribute;
+        $this->_sourceAttributesNames[$attribute] = $names;
 
         return $this;
     }
@@ -44,12 +44,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
      */
     public function addDestinationAttribute($attribute, array $names)
     {
-        if (in_array($attribute, $this->destinationAttributes)) {
+        if (in_array($attribute, $this->_destinationAttributes)) {
             return $this;
         }
 
-        $this->destinationAttributes[] = $attribute;
-        $this->destinationAttributesNames[$attribute] = $names;
+        $this->_destinationAttributes[]                = $attribute;
+        $this->_destinationAttributesNames[$attribute] = $names;
 
         return $this;
     }
@@ -61,29 +61,28 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
      */
     public function resolve()
     {
-        if (array_diff($this->sourceAttributes, array_keys($this->resolvedAttributes))) {
-            $this->resolvedAttributes = array();
+        if (array_diff($this->_sourceAttributes, array_keys($this->_resolvedAttributes))) {
+            $this->_resolvedAttributes = array();
         }
 
-        foreach ($this->sourceAttributes as $sourceAttribute) {
-
-            if (!empty($this->resolvedAttributes[$sourceAttribute]) &&
-                in_array($this->resolvedAttributes[$sourceAttribute], $this->destinationAttributes)
+        foreach ($this->_sourceAttributes as $sourceAttribute) {
+            if (!empty($this->_resolvedAttributes[$sourceAttribute]) &&
+                in_array($this->_resolvedAttributes[$sourceAttribute], $this->_destinationAttributes)
             ) {
                 continue;
             }
 
-            $this->resolvedAttributes[$sourceAttribute] = null;
+            $this->_resolvedAttributes[$sourceAttribute] = null;
 
-            $sourceNames = $this->sourceAttributesNames[$sourceAttribute];
+            $sourceNames = $this->_sourceAttributesNames[$sourceAttribute];
 
-            foreach ($this->destinationAttributes as $destinationAttribute) {
-                $destinationNames = $this->destinationAttributesNames[$destinationAttribute];
+            foreach ($this->_destinationAttributes as $destinationAttribute) {
+                $destinationNames = $this->_destinationAttributesNames[$destinationAttribute];
 
-                if (count(array_intersect($sourceNames, $destinationNames)) > 0 &&
-                    !in_array($destinationAttribute, $this->resolvedAttributes)
+                if (!empty(array_intersect($sourceNames, $destinationNames)) &&
+                    !in_array($destinationAttribute, $this->_resolvedAttributes)
                 ) {
-                    $this->resolvedAttributes[$sourceAttribute] = $destinationAttribute;
+                    $this->_resolvedAttributes[$sourceAttribute] = $destinationAttribute;
                     break;
                 }
             }
@@ -97,7 +96,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
      */
     public function getResolvedAttributes()
     {
-        return $this->resolvedAttributes;
+        return $this->_resolvedAttributes;
     }
 
     //########################################
@@ -107,8 +106,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
      */
     public function clearSourceAttributes()
     {
-        $this->sourceAttributes = array();
-        $this->sourceAttributesNames = array();
+        $this->_sourceAttributes      = array();
+        $this->_sourceAttributesNames = array();
 
         return $this;
     }
@@ -118,8 +117,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Attribute_Resolv
      */
     public function clearDestinationAttributes()
     {
-        $this->destinationAttributes = array();
-        $this->destinationAttributesNames = array();
+        $this->_destinationAttributes      = array();
+        $this->_destinationAttributesNames = array();
 
         return $this;
     }

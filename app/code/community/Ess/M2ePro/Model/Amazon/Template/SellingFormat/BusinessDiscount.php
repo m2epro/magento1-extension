@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount
     /**
      * @var Ess_M2ePro_Model_Template_SellingFormat
      */
-    private $sellingFormatTemplateModel = NULL;
+    protected $_sellingFormatTemplateModel = null;
 
     //########################################
 
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->sellingFormatTemplateModel = NULL;
+        $temp && $this->_sellingFormatTemplateModel = null;
         return $temp;
     }
 
@@ -42,13 +42,13 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount
      */
     public function getSellingFormatTemplate()
     {
-        if (is_null($this->sellingFormatTemplateModel)) {
-            $this->sellingFormatTemplateModel = Mage::helper('M2ePro')->getCachedObject(
-                'Amazon_Template_SellingFormat', $this->getTemplateSellingFormatId(), NULL, array('template')
+        if ($this->_sellingFormatTemplateModel === null) {
+            $this->_sellingFormatTemplateModel = Mage::helper('M2ePro')->getCachedObject(
+                'Amazon_Template_SellingFormat', $this->getTemplateSellingFormatId(), null, array('template')
             );
         }
 
-        return $this->sellingFormatTemplateModel;
+        return $this->_sellingFormatTemplateModel;
     }
 
     /**
@@ -56,7 +56,7 @@ class Ess_M2ePro_Model_Amazon_Template_SellingFormat_BusinessDiscount
      */
     public function setSellingFormatTemplate(Ess_M2ePro_Model_Template_SellingFormat $instance)
     {
-        $this->sellingFormatTemplateModel = $instance;
+        $this->_sellingFormatTemplateModel = $instance;
     }
 
     //########################################

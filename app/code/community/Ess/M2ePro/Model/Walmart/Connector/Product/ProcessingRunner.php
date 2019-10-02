@@ -9,23 +9,23 @@
 class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
     extends Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = NULL;
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction */
-    private $processingAction = NULL;
+    /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $_processingAction */
+    protected $_processingAction = null;
 
     // ########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
     public function setProcessingAction(Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction)
     {
-        $this->processingAction = $processingAction;
+        $this->_processingAction = $processingAction;
         return $this;
     }
 
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
     public function processSuccess()
     {
         // listing product can be removed during processing action
-        if (is_null($this->getListingProduct()->getId())) {
+        if ($this->getListingProduct()->getId() === null) {
             return true;
         }
 
@@ -44,7 +44,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
     public function processExpired()
     {
         // listing product can be removed during processing action
-        if (is_null($this->getListingProduct()->getId())) {
+        if ($this->getListingProduct()->getId() === null) {
             return;
         }
 
@@ -58,7 +58,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
     public function complete()
     {
         // listing product can be removed during processing action
-        if (is_null($this->getListingProduct()->getId())) {
+        if ($this->getListingProduct()->getId() === null) {
             $this->getProcessingObject()->deleteInstance();
             return;
         }
@@ -75,11 +75,11 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
 
     public function prepare()
     {
-        if (is_null($this->getProcessingObject()) || !$this->getProcessingObject()->getId()) {
+        if ($this->getProcessingObject() === null || !$this->getProcessingObject()->getId()) {
             throw new Ess_M2ePro_Model_Exception_Logic('Processing does not exist.');
         }
 
-        if (is_null($this->getProcessingAction()) || !$this->getProcessingAction()->getId()) {
+        if ($this->getProcessingAction() === null || !$this->getProcessingAction()->getId()) {
             throw new Ess_M2ePro_Model_Exception_Logic('Processing Action does not exist.');
         }
 
@@ -96,11 +96,11 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
 
     public function stop()
     {
-        if (is_null($this->getProcessingObject()) || !$this->getProcessingObject()->getId()) {
+        if ($this->getProcessingObject() === null || !$this->getProcessingObject()->getId()) {
             return;
         }
 
-        if (is_null($this->getProcessingAction()) || !$this->getProcessingAction()->getId()) {
+        if ($this->getProcessingAction() === null || !$this->getProcessingAction()->getId()) {
             return;
         }
 
@@ -118,13 +118,15 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction */
         $processingAction = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Processing');
-        $processingAction->setData(array(
+        $processingAction->setData(
+            array(
             'listing_product_id' => $params['listing_product_id'],
             'processing_id'      => $this->getProcessingObject()->getId(),
             'type'               => $this->getProcessingActionType(),
             'is_prepared'        => 0,
             'group_hash'         => $params['group_hash'],
-        ));
+            )
+        );
         $processingAction->save();
     }
 
@@ -208,23 +210,23 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
 
     protected function getListingProduct()
     {
-        if (!is_null($this->listingProduct)) {
-            return $this->listingProduct;
+        if ($this->_listingProduct !== null) {
+            return $this->_listingProduct;
         }
 
         $params = $this->getParams();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Product');
         $collection->addFieldToFilter('id', array('in' => $params['listing_product_id']));
 
-        return $this->listingProduct = $collection->getFirstItem();
+        return $this->_listingProduct = $collection->getFirstItem();
     }
 
     protected function getProcessingAction()
     {
-        if (!is_null($this->processingAction)) {
-            return $this->processingAction;
+        if ($this->_processingAction !== null) {
+            return $this->_processingAction;
         }
 
         $processingActionCollection = Mage::getResourceModel(
@@ -234,7 +236,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_ProcessingRunner
 
         $processingAction = $processingActionCollection->getFirstItem();
 
-        return $processingAction->getId() ? $this->processingAction = $processingAction : NULL;
+        return $processingAction->getId() ? $this->_processingAction = $processingAction : null;
     }
 
     // ########################################

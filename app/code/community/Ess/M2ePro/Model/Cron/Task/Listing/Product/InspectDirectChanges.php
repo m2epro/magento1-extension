@@ -57,13 +57,13 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     //########################################
 
-    private function calculateAllowedListingsProductsCount($component)
+    protected function calculateAllowedListingsProductsCount($component)
     {
         $maxAllowedInstructionsCount = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
             self::KEY_PREFIX.'/'.$component.'/', 'max_allowed_instructions_count'
         );
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Instruction_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection $collection */
         $currentInstructionsCount = Mage::getResourceModel('M2ePro/Listing_Product_Instruction_Collection')
             ->applySkipUntilFilter()
             ->addFieldToFilter('component', $component)
@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
         return $maxAllowedInstructionsCount - $currentInstructionsCount;
     }
 
-    private function getNextListingsProductsIds($component, $limit)
+    protected function getNextListingsProductsIds($component, $limit)
     {
         $collection = Mage::getResourceModel('M2ePro/Listing_Product_Collection');
         $collection->addFieldToFilter('component_mode', $component);
@@ -90,25 +90,25 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     //########################################
 
-    private function isEnabled()
+    protected function isEnabled()
     {
         return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(self::KEY_PREFIX.'/', 'mode');
     }
 
     // ---------------------------------------
 
-    private function getLastListingProductId($component)
+    protected function getLastListingProductId($component)
     {
         $configValue = $this->getRegistryValue(self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/');
 
-        if (is_null($configValue)) {
+        if ($configValue === null) {
             return 0;
         }
 
         return $configValue;
     }
 
-    private function setLastListingProductId($component, $listingProductId)
+    protected function setLastListingProductId($component, $listingProductId)
     {
         $this->setRegistryValue(self::KEY_PREFIX.'/'.$component.'/last_listing_product_id/', (int)$listingProductId);
     }

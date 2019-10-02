@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611
     const BACKUP_TABLE_PREFIX = '__backup_v611';
 
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
     //########################################
 
@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611
      */
     public function getInstaller()
     {
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -28,12 +28,12 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
+        $this->_installer = $installer;
     }
 
     //########################################
 
-    /*
+    /**
         DELETE FROM `m2epro_wizard` WHERE (`nick` = 'amazonNewAsin' OR `nick` = 'buyNewSku');
         UPDATE `m2epro_wizard` SET `priority` = 5 WHERE (`priority` = 7);
     */
@@ -55,10 +55,10 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611
 
     //########################################
 
-    private function prepareWizardsTable()
+    protected function prepareWizardsTable()
     {
-        $connection = $this->installer->getConnection();
-        $tempTable = $this->installer->getTable('m2epro_wizard');
+        $connection = $this->_installer->getConnection();
+        $tempTable = $this->_installer->getTable('m2epro_wizard');
 
         $connection->delete($tempTable, "`nick` = 'amazonNewAsin' OR `nick` = 'buyNewSku'");
         $connection->update($tempTable, array('priority' => 5), '`priority` = 7');
@@ -66,51 +66,52 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611
 
     // ---------------------------------------
 
-    private function processProcessing()
+    protected function processProcessing()
     {
         /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Processing $model */
         $model = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion611_Processing');
-        $model->setInstaller($this->installer);
+        $model->setInstaller($this->_installer);
         $model->process();
     }
 
-    private function processLogs()
+    protected function processLogs()
     {
         /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs $model */
         $model = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion611_Logs');
-        $model->setInstaller($this->installer);
+        $model->setInstaller($this->_installer);
         $model->process();
     }
 
-    private function processConfigData()
+    protected function processConfigData()
     {
         /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData $model */
         $model = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion611_ConfigData');
-        $model->setInstaller($this->installer);
+        $model->setInstaller($this->_installer);
         $model->process();
     }
 
     // ---------------------------------------
 
-    private function prepareOrdersTables()
+    protected function prepareOrdersTables()
     {
-        $connection = $this->installer->getConnection();
+        $connection = $this->_installer->getConnection();
 
-        $orderTable = $this->installer->getTable('m2epro_ebay_order');
-        $orderBackupOTable = $this->installer->getTable('m2epro'.self::BACKUP_TABLE_PREFIX.'_ebay_order');
+        $orderTable = $this->_installer->getTable('m2epro_ebay_order');
+        $orderBackupOTable = $this->_installer->getTable('m2epro' . self::BACKUP_TABLE_PREFIX . '_ebay_order');
 
-        if ($this->installer->tableExists($orderTable) && !$this->installer->tableExists($orderBackupOTable)) {
+        if ($this->_installer->tableExists($orderTable) && !$this->_installer->tableExists($orderBackupOTable)) {
             $connection->query("RENAME TABLE `{$orderTable}` TO `{$orderBackupOTable}`");
         }
 
-        $orderItemTable = $this->installer->getTable('m2epro_ebay_order_item');
-        $orderItemBackupTable = $this->installer->getTable('m2epro'.self::BACKUP_TABLE_PREFIX.'_ebay_order_item');
+        $orderItemTable = $this->_installer->getTable('m2epro_ebay_order_item');
+        $orderItemBackupTable = $this->_installer->getTable('m2epro' . self::BACKUP_TABLE_PREFIX . '_ebay_order_item');
 
-        if ($this->installer->tableExists($orderItemTable) && !$this->installer->tableExists($orderItemBackupTable)) {
+        if ($this->_installer->tableExists($orderItemTable) && !$this->_installer->tableExists($orderItemBackupTable)) {
             $connection->query("RENAME TABLE `{$orderItemTable}` TO `{$orderItemBackupTable}`");
         }
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 CREATE TABLE IF NOT EXISTS m2epro_ebay_order (
   order_id INT(11) UNSIGNED NOT NULL,
   ebay_order_id VARCHAR(255) NOT NULL,
@@ -174,10 +175,10 @@ SQL
 );
     }
 
-    private function prepareOrdersConfigTable()
+    protected function prepareOrdersConfigTable()
     {
-        $connection = $this->installer->getConnection();
-        $tempTable = $this->installer->getTable('m2epro_config');
+        $connection = $this->_installer->getConnection();
+        $tempTable = $this->_installer->getTable('m2epro_config');
 
         $tempQuery = <<<SQL
     SELECT * FROM `{$tempTable}`
@@ -187,7 +188,8 @@ SQL;
         $tempRow = $connection->query($tempQuery)->fetch();
 
         if ($tempRow === false) {
-            $this->installer->run(<<<SQL
+            $this->_installer->run(
+                <<<SQL
 
 INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
 ('/ebay/order/migration_to_v611/', 'is_need_migrate', '1', null, '2013-09-18 00:00:00', '2013-09-18 00:00:00');
@@ -197,7 +199,7 @@ SQL
         }
     }
 
-    private function processOrdersData()
+    protected function processOrdersData()
     {
         /** @var Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_OrdersData $migrationInstance */
         $migrationInstance = Mage::getModel('M2ePro/Upgrade_Migration_ToVersion611_OrdersData');

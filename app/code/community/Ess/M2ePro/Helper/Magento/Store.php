@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Helper_Magento_Store extends Mage_Core_Helper_Abstract
 {
-    private $defaultWebsite = NULL;
-    private $defaultStoreGroup = NULL;
-    private $defaultStore = NULL;
+    protected $_defaultWebsite    = null;
+    protected $_defaultStoreGroup = null;
+    protected $_defaultStore      = null;
 
     //########################################
 
@@ -28,52 +28,53 @@ class Ess_M2ePro_Helper_Magento_Store extends Mage_Core_Helper_Abstract
 
     public function getDefaultWebsite()
     {
-        if (is_null($this->defaultWebsite)) {
-            $this->defaultWebsite = Mage::getModel('core/website')->load(1,'is_default');
-            if (is_null($this->defaultWebsite->getId())) {
-                $this->defaultWebsite = Mage::getModel('core/website')->load(0);
-                if (is_null($this->defaultWebsite->getId())) {
+        if ($this->_defaultWebsite === null) {
+            $this->_defaultWebsite = Mage::getModel('core/website')->load(1, 'is_default');
+            if ($this->_defaultWebsite->getId() === null) {
+                $this->_defaultWebsite = Mage::getModel('core/website')->load(0);
+                if ($this->_defaultWebsite->getId() === null) {
                     throw new Ess_M2ePro_Model_Exception('Getting default website is failed');
                 }
             }
         }
-        return $this->defaultWebsite;
+
+        return $this->_defaultWebsite;
     }
 
     public function getDefaultStoreGroup()
     {
-        if (is_null($this->defaultStoreGroup)) {
-
+        if ($this->_defaultStoreGroup === null) {
             $defaultWebsite = $this->getDefaultWebsite();
             $defaultStoreGroupId = $defaultWebsite->getDefaultGroupId();
 
-            $this->defaultStoreGroup = Mage::getModel('core/store_group')->load($defaultStoreGroupId);
-            if (is_null($this->defaultStoreGroup->getId())) {
-                $this->defaultStoreGroup = Mage::getModel('core/store_group')->load(0);
-                if (is_null($this->defaultStoreGroup->getId())) {
+            $this->_defaultStoreGroup = Mage::getModel('core/store_group')->load($defaultStoreGroupId);
+            if ($this->_defaultStoreGroup->getId() === null) {
+                $this->_defaultStoreGroup = Mage::getModel('core/store_group')->load(0);
+                if ($this->_defaultStoreGroup->getId() === null) {
                     throw new Ess_M2ePro_Model_Exception('Getting default store group is failed');
                 }
             }
         }
-        return $this->defaultStoreGroup;
+
+        return $this->_defaultStoreGroup;
     }
 
     public function getDefaultStore()
     {
-        if (is_null($this->defaultStore)) {
-
+        if ($this->_defaultStore === null) {
             $defaultStoreGroup = $this->getDefaultStoreGroup();
             $defaultStoreId = $defaultStoreGroup->getDefaultStoreId();
 
-            $this->defaultStore = Mage::getModel('core/store')->load($defaultStoreId);
-            if (is_null($this->defaultStore->getId())) {
-                $this->defaultStore = Mage::getModel('core/store')->load(0);
-                if (is_null($this->defaultStore->getId())) {
+            $this->_defaultStore = Mage::getModel('core/store')->load($defaultStoreId);
+            if ($this->_defaultStore->getId() === null) {
+                $this->_defaultStore = Mage::getModel('core/store')->load(0);
+                if ($this->_defaultStore->getId() === null) {
                     throw new Ess_M2ePro_Model_Exception('Getting default store is failed');
                 }
             }
         }
-        return $this->defaultStore;
+
+        return $this->_defaultStore;
     }
 
     // ---------------------------------------

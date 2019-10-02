@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Marketplace_Edit_Form */
+
+?>
+
 <script type="text/javascript">
 
     M2ePro.url.add(<?php echo json_encode(array(
@@ -34,7 +47,7 @@
         MarketplaceProgressHandlerObj = new EbayMarketplaceSynchProgressHandler(MarketplaceProgressBarObj, MarketplaceWrapperObj );
         MarketplaceHandlerObj = new MarketplaceHandler(MarketplaceProgressHandlerObj, <?php echo json_encode($this->storedStatuses)?>);
 
-        <?php if (!is_null($this->getChildBlockId())) { ?>
+        <?php if ($this->getChildBlockId() !== null) { ?>
         <?php
             $childBlockId = Mage::helper('M2ePro')->escapeJs($this->getChildBlockId());
             $destinationBlockId = Mage::helper('M2ePro')->escapeJs($this->getId());

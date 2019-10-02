@@ -11,21 +11,22 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_RealTime extends Ess_M2eP
     /**
      * @var Ess_M2ePro_Model_Marketplace|null
      */
-    protected $marketplace = NULL;
+    protected $_marketplace = null;
 
     /**
      * @var Ess_M2ePro_Model_Account|null
      */
-    protected $account = NULL;
+    protected $_account = null;
 
     // ########################################
 
-    public function __construct(array $params = array(),
-                                Ess_M2ePro_Model_Marketplace $marketplace = NULL,
-                                Ess_M2ePro_Model_Account $account = NULL)
-    {
-        $this->marketplace = $marketplace;
-        $this->account = $account;
+    public function __construct(
+        array $params = array(),
+        Ess_M2ePro_Model_Marketplace $marketplace = null,
+        Ess_M2ePro_Model_Account $account = null
+    ) {
+        $this->_marketplace = $marketplace;
+        $this->_account     = $account;
 
         parent::__construct($params);
     }
@@ -38,11 +39,12 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_RealTime extends Ess_M2eP
 
         $requestData = $request->getData();
 
-        if (!is_null($this->marketplace)) {
-            $requestData['marketplace'] = $this->marketplace->getNativeId();
+        if ($this->_marketplace !== null) {
+            $requestData['marketplace'] = $this->_marketplace->getNativeId();
         }
-        if (!is_null($this->account)) {
-            $requestData['account'] = $this->account->getChildObject()->getServerHash();
+
+        if ($this->_account !== null) {
+            $requestData['account'] = $this->_account->getChildObject()->getServerHash();
         }
 
         $request->setData($requestData);

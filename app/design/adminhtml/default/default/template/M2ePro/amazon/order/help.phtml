@@ -1,3 +1,16 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_Help */
+
+?>
+
 <div id="block_notice_amazon_orders_list" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Orders'); ?>">
     <?php
     echo Mage::helper('M2ePro')->__('This Page contains all Orders.<br/><br/>
@@ -5,7 +18,7 @@
     If Magento Order, Invoice or / and Shipment was not created automatically,
     you can create them manually by using appropriate Options in the <strong>Action</strong> Dropdown.<br/><br/>
     <b>Note:</b> Automatic creation of Magento Orders, Invoices, and Shipments executes according to <i class="underline">Accounts Settings</i> in (%menu_path%).',
-        Mage::helper('M2ePro/View_Amazon')->getPageNavigationPath('configuration', 'Accounts', '', '[Needed Account] > Orders Tab')
+        Mage::helper('M2ePro/View_Amazon')->getPageNavigationPath('configuration', 'Accounts', 'Edit Account Configuration > Orders')
     );
 
     $url = Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/G40VAQ");

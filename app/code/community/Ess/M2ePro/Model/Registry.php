@@ -7,7 +7,7 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Registry _getResource()
+ * @method Ess_M2ePro_Model_Resource_Registry _getResource()
  */
 class Ess_M2ePro_Model_Registry extends Ess_M2ePro_Model_Abstract
 {
@@ -43,7 +43,7 @@ class Ess_M2ePro_Model_Registry extends Ess_M2ePro_Model_Abstract
 
     public function getValueFromJson()
     {
-        return is_null($this->getId()) ?  array() : Mage::helper('M2ePro')->jsonDecode($this->getValue());
+        return $this->getId() === null ?  array() : Mage::helper('M2ePro')->jsonDecode($this->getValue());
     }
 
     //########################################

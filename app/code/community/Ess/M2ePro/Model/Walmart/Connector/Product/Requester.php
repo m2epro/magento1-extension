@@ -67,17 +67,17 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
     {
         $this->listingProduct = $listingProduct;
 
-        if (is_null($this->listingProduct->getActionConfigurator())) {
+        if ($this->listingProduct->getActionConfigurator() === null) {
             $this->listingProduct->setActionConfigurator(
                 Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Configurator')
             );
         }
 
-        if (is_null($this->listingProduct->getProcessingAction())) {
+        if ($this->listingProduct->getProcessingAction() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Processing Action was not set.');
         }
 
-        $this->account = $this->listingProduct->getAccount();
+        $this->_account = $this->listingProduct->getAccount();
     }
 
     // ########################################
@@ -97,7 +97,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
                 'listing_product_id' => $this->listingProduct->getId(),
                 'lock_identifier'    => $this->getLockIdentifier(),
                 'action_type'        => $this->getActionType(),
-                'requester_params'   => $this->params,
+                'requester_params'   => $this->_params,
             )
         );
     }
@@ -162,7 +162,6 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
         $validationResult = $validator->validate();
 
         foreach ($validator->getMessages() as $messageData) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData($messageData['text'], $messageData['type']);
 
@@ -180,8 +179,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
     {
         /** @var Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator */
         $configurator = $this->listingProduct->getActionConfigurator();
-        if (count($configurator->getAllowedDataTypes()) <= 0) {
-
+        if (empty($configurator->getAllowedDataTypes())) {
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'There was no need for this action. It was skipped.
@@ -219,7 +217,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
             return false;
         }
 
-        $dispatcherParams = array_merge($this->params, array('is_parent_action' => true));
+        $dispatcherParams = array_merge($this->_params, array('is_parent_action' => true));
 
         $dispatcherObject = Mage::getModel('M2ePro/Walmart_Connector_Product_Dispatcher');
         $processStatus = $dispatcherObject->process(
@@ -266,7 +264,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
 
     public function getRequestData()
     {
-        if (!is_null($this->requestDataObject)) {
+        if ($this->requestDataObject !== null) {
             return $this->requestDataObject->getData();
         }
 
@@ -274,7 +272,6 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
         $requestDataRaw = $requestObject->getData();
 
         foreach ($requestObject->getWarningMessages() as $messageText) {
-
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 $messageText,
@@ -309,13 +306,13 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
         );
 
         return array(
-            'account_id'      => $this->account->getId(),
+            'account_id'      => $this->_account->getId(),
             'action_type'     => $this->getActionType(),
             'lock_identifier' => $this->getLockIdentifier(),
             'logs_action'     => $this->getLogsAction(),
             'logs_action_id'  => $this->getLogger()->getActionId(),
-            'status_changer'  => $this->params['status_changer'],
-            'params'          => $this->params,
+            'status_changer'  => $this->_params['status_changer'],
+            'params'          => $this->_params,
             'product'         => $product,
         );
     }
@@ -327,16 +324,16 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getLogger()
     {
-        if (is_null($this->logger)) {
+        if ($this->logger === null) {
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Logger $logger */
 
             $logger = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_Logger');
 
-            $logger->setActionId((int)$this->params['logs_action_id']);
+            $logger->setActionId((int)$this->_params['logs_action_id']);
             $logger->setAction($this->getLogsAction());
 
-            switch ($this->params['status_changer']) {
+            switch ($this->_params['status_changer']) {
                 case Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_UNKNOWN:
                     $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
                     break;
@@ -363,14 +360,14 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getValidatorObject()
     {
-        if (is_null($this->validatorObject)) {
+        if ($this->validatorObject === null) {
 
             /** @var $validator Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator */
             $validator = Mage::getModel(
                 'M2ePro/Walmart_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Validator'
             );
 
-            $validator->setParams($this->params);
+            $validator->setParams($this->_params);
             $validator->setListingProduct($this->listingProduct);
             $validator->setConfigurator($this->listingProduct->getActionConfigurator());
 
@@ -385,14 +382,13 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getRequestObject()
     {
-        if (is_null($this->requestObject)) {
-
-            /* @var $request Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request */
+        if ($this->requestObject === null) {
+            /** @var $request Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request */
             $request = Mage::getModel(
                 'M2ePro/Walmart_Listing_Product_Action_Type_'.$this->getOrmActionType().'_Request'
             );
 
-            $request->setParams($this->params);
+            $request->setParams($this->_params);
             $request->setListingProduct($this->listingProduct);
             $request->setConfigurator($this->listingProduct->getActionConfigurator());
             $request->setCachedData($this->getValidatorObject()->getData());
@@ -419,7 +415,7 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function buildRequestDataObject(array $data)
     {
-        if (is_null($this->requestDataObject)) {
+        if ($this->requestDataObject === null) {
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData $requestData */
             $requestData = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_RequestData');
@@ -442,24 +438,24 @@ abstract class Ess_M2ePro_Model_Walmart_Connector_Product_Requester
      */
     protected function getProcessingRunner()
     {
-        if (!is_null($this->processingRunner)) {
-            return $this->processingRunner;
+        if ($this->_processingRunner !== null) {
+            return $this->_processingRunner;
         }
 
-        $this->processingRunner = Mage::getModel('M2ePro/'.$this->getProcessingRunnerModelName());
+        $this->_processingRunner = Mage::getModel('M2ePro/' . $this->getProcessingRunnerModelName());
 
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $processingAction */
         $processingAction = $this->listingProduct->getProcessingAction();
 
-        $this->processingRunner->setProcessingObject($processingAction->getProcessing());
-        $this->processingRunner->setProcessingAction($processingAction);
+        $this->_processingRunner->setProcessingObject($processingAction->getProcessing());
+        $this->_processingRunner->setProcessingAction($processingAction);
 
-        return $this->processingRunner;
+        return $this->_processingRunner;
     }
 
     // ########################################
 
-    private function getOrmActionType()
+    protected function getOrmActionType()
     {
         switch ($this->getActionType()) {
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:

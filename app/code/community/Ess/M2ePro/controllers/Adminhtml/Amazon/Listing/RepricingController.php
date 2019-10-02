@@ -15,9 +15,11 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
     {
         $listingId = $this->getRequest()->getParam('id');
 
-        return $this->_redirect('*/adminhtml_amazon_listing/view', array(
+        return $this->_redirect(
+            '*/adminhtml_amazon_listing/view', array(
             'id' => $listingId
-        ));
+            )
+        );
     }
 
     //########################################
@@ -38,24 +40,34 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
         $result = $this->validateRegularPrice($productsIds);
 
         if (count($result) === 0) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-                'type' => 'error',
-                'message' => Mage::helper('M2ePro')
-                    ->__('Products with B2B Price can not be managed via Amazon Repricing Tool.
-                    Only Products with B2C Price can be repriced.'),
-                'products_ids' => $result
-            )));
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'type' => 'error',
+                    'message' => Mage::helper('M2ePro')
+                    ->__(
+                        'Products with B2B Price can not be managed via Amazon Repricing Tool.
+                    Only Products with B2C Price can be repriced.'
+                    ),
+                    'products_ids' => $result
+                    )
+                )
+            );
         }
 
         $popup = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_amazon_listing_view_sellercentral_repricing_regularPricePopup'
         );
 
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array(
-            'title' => Mage::helper('M2ePro')->__('Attention!'),
-            'html' => $popup->toHtml(),
-            'products_ids' => $result
-        )));
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                'title' => Mage::helper('M2ePro')->__('Attention!'),
+                'html' => $popup->toHtml(),
+                'products_ids' => $result
+                )
+            )
+        );
     }
 
     public function openAddProductsAction()
@@ -458,7 +470,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
             $repricingSynchronization = Mage::getModel('M2ePro/Amazon_Repricing_Synchronization_ActualPrice', $account);
             $repricingSynchronization->run($skus);
 
-            /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
+            /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
             $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
             $listingProductCollection->getSelect()->joinLeft(
                 array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
@@ -485,7 +497,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
                 $resultPrices[$accountId][$listingProductData['sku']] = $price;
             }
 
-            /** @var Ess_M2ePro_Model_Mysql4_Listing_Other_Collection $listingOtherCollection */
+            /** @var Ess_M2ePro_Model_Resource_Listing_Other_Collection $listingOtherCollection */
             $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
 
             $listingOtherCollection->addFieldToFilter('account_id', $accountId);
@@ -512,10 +524,9 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
 
     //########################################
 
-    private function addRepricingMessages($messages)
+    protected function addRepricingMessages($messages)
     {
         foreach ($messages as $message) {
-
             if ($message['type'] == 'notice') {
                 $this->_getSession()->addNotice($message['text']);
             }
@@ -532,7 +543,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_RepricingController
 
     //########################################
 
-    private function validateRegularPrice($productsIds)
+    protected function validateRegularPrice($productsIds)
     {
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
         $tableAmazonListingProduct = Mage::helper('M2ePro/Module_Database_Structure')

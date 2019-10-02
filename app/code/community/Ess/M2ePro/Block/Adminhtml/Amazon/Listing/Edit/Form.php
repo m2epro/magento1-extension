@@ -22,12 +22,14 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Edit_Form extends Mage_Adminhtml
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
-            'id'      => 'edit_form',
-            'action'  => $this->getUrl('*/adminhtml_amazon_listing/save'),
-            'method'  => 'post',
-            'enctype' => 'multipart/form-data'
-        ));
+        $form = new Varien_Data_Form(
+            array(
+                'id'      => 'edit_form',
+                'action'  => $this->getUrl('*/adminhtml_amazon_listing/save'),
+                'method'  => 'post',
+                'enctype' => 'multipart/form-data'
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);

@@ -30,11 +30,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationEbay_Installation_ModeConfir
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Continue'),
                 'onclick' => '',
                 'id' => 'continue_button'
-            ));
+                )
+            );
         $this->setChild('continue_button', $buttonBlock);
         // ---------------------------------------
 

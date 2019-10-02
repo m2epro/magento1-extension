@@ -30,7 +30,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
 
         $table = $this->getRequest()->getParam('table');
 
-        if (is_null($table)) {
+        if ($table === null) {
             $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDatabaseTabUrl());
             return;
         }
@@ -45,13 +45,14 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
 
         $response = '';
         foreach ($tables as $table) {
-
-            if (is_null(Mage::helper('M2ePro/Module_Database_Structure')->getTableModel($table))) {
+            if (Mage::helper('M2ePro/Module_Database_Structure')->getTableModel($table) === null) {
                 continue;
             }
 
-            $url = Mage::helper('adminhtml')->getUrl('*/adminhtml_development_database/manageTable',
-                                                     array('table' => $table));
+            $url = Mage::helper('adminhtml')->getUrl(
+                '*/adminhtml_development_database/manageTable',
+                array('table' => $table)
+            );
 
             $response .= "window.open('{$url}');";
         }
@@ -74,7 +75,6 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
 
         foreach ($tables as $table) {
-
             $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table);
             $writeConnection->delete($tableName);
 
@@ -86,6 +86,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         if (count($tables) == 1) {
             $this->redirectToTablePage($tables[0]);
         }
+
         $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDatabaseTabUrl());
     }
 
@@ -97,7 +98,6 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $writeConnection = Mage::getSingleton('core/resource')->getConnection('core_write');
 
         foreach ($tables as $table) {
-
             $tableName = Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table);
             $writeConnection->truncateTable($tableName);
 
@@ -109,6 +109,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         if (count($tables) == 1) {
             $this->redirectToTablePage($tables[0]);
         }
+
         $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDatabaseTabUrl());
     }
 
@@ -135,7 +136,6 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $ids = explode(',', $this->getRequest()->getParam('ids'));
 
         if (!$modelInstance || empty($ids)) {
-
             $this->_getSession()->addError("Failed to get model or any of Table Rows are not selected.");
             $this->redirectToTablePage($table);
             return;
@@ -145,13 +145,11 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $collection->addFieldToFilter($modelInstance->getIdFieldName(), array('in' => $ids));
 
         if ($collection->getSize() == 0) {
-
             $this->redirectToTablePage($table);
             return;
         }
 
         foreach ($collection as $item) {
-
             $item->delete();
             $this->isMergeModeEnabled($table) && $item->getChildObject()->delete();
         }
@@ -176,7 +174,6 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $collection->addFieldToFilter($modelInstance->getIdFieldName(), array('in' => $ids));
 
         if ($collection->getSize() == 0) {
-
             $this->redirectToTablePage($table);
             return;
         }
@@ -186,13 +183,11 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
 
         foreach ($collection->getItems() as $item) {
             foreach ($cellsValues as $field => $value) {
-
                 if ($field == $idFieldName && $isAutoIncrement) {
                     continue;
                 }
 
                 if ($field == $idFieldName && !$isAutoIncrement) {
-
                     Mage::getSingleton('core/resource')->getConnection('core_write')->update(
                         Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($table),
                         array($idFieldName => $value),
@@ -209,7 +204,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         $this->afterTableAction($table);
     }
 
-    private function afterTableAction($tableName)
+    protected function afterTableAction($tableName)
     {
         if (strpos($tableName, 'config') !== false || strpos($tableName, 'wizard') !== false) {
             Mage::helper('M2ePro/Module')->clearCache();
@@ -218,7 +213,7 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
 
     //########################################
 
-    private function getModel()
+    protected function getModel()
     {
         $table     = $this->getRequest()->getParam('table');
         $modelName = $this->getRequest()->getParam('model');
@@ -231,21 +226,20 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
         return Mage::helper('M2ePro/Component')->getComponentModel($component, $modelName);
     }
 
-    private function isMergeModeEnabled($table)
+    protected function isMergeModeEnabled($table)
     {
         return (bool)$this->getRequest()->getParam('merge') &&
                 Mage::helper('M2ePro/Module_Database_Structure')->isTableHorizontal($table);
     }
 
-    private function prepareCellsValuesArray()
+    protected function prepareCellsValuesArray()
     {
         $cells = $this->getRequest()->getParam('cells', array());
         is_string($cells) && $cells = array($cells);
 
         $bindArray = array();
         foreach ($cells as $columnName) {
-
-            if (is_null($columnValue = $this->getRequest()->getParam('value_'.$columnName))) {
+            if (($columnValue = $this->getRequest()->getParam('value_' . $columnName)) === null) {
                 continue;
             }
 
@@ -289,7 +283,6 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
     {
         $operationHistoryId = $this->getRequest()->getParam('operation_history_id');
         if (empty($operationHistoryId)) {
-
             $this->_getSession()->addError("Operation history ID is not presented.");
             return $this->redirectToTablePage('m2epro_operation_history');
         }
@@ -306,7 +299,6 @@ class Ess_M2ePro_Adminhtml_Development_DatabaseController
     {
         $operationHistoryId = $this->getRequest()->getParam('operation_history_id');
         if (empty($operationHistoryId)) {
-
             $this->_getSession()->addError("Operation history ID is not presented.");
             return $this->redirectToTablePage('m2epro_operation_history');
         }

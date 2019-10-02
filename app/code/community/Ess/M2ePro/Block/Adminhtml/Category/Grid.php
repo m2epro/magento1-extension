@@ -12,12 +12,12 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
 
     public function getStoreId()
     {
-        return !is_null($this->getData('store_id')) ? $this->getData('store_id') : Mage_Core_Model_App::ADMIN_STORE_ID;
+        return !$this->getData('store_id') !== null ? $this->getData('store_id') : Mage_Core_Model_App::ADMIN_STORE_ID;
     }
 
     public function setStoreId($storeId)
     {
-        $this->setData('store_id',$storeId);
+        $this->setData('store_id', $storeId);
         return $this;
     }
 
@@ -35,22 +35,23 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
 
         $ids = array();
         foreach ($stmt as $item) {
-            $ids = array_merge($ids,array_map('intval',explode('/',$item['path'])));
+            $ids = array_merge($ids, array_map('intval', explode('/', $item['path'])));
         }
+
         $ids = array_unique($ids);
 
         if (empty($ids)) {
             return;
         }
 
-        /* @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+        /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
         $attribute = $collection->getFirstItem()->getResource()->getAttribute('name');
 
         $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         $tableName = Mage_Catalog_Model_Category::ENTITY . '_entity_' . $attribute->getBackendType();
 
-        $dbSelect1 = $connRead
+        $dbSelectOne = $connRead
             ->select()
             ->from(
                 Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName),
@@ -58,24 +59,25 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
             )
             ->where("`entity_id` = `ccev`.`entity_id`")
             ->where("`attribute_id` = `ccev`.`attribute_id`")
-            ->where("`store_id` = 0 OR `store_id` = ?",$this->getStoreId());
+            ->where("`store_id` = 0 OR `store_id` = ?", $this->getStoreId());
 
-        $dbSelect2 = $connRead
+        $dbSelectTwo = $connRead
             ->select()
             ->from(
                 array('ccev' => Mage::helper('M2ePro/Module_Database_Structure')->getTableNameWithPrefix($tableName)),
                 array('name' => 'value','category_id' => 'entity_id')
             )
-            ->where('ccev.entity_id IN ('.implode(',',$ids).')')
+            ->where('ccev.entity_id IN ('.implode(',', $ids).')')
             ->where('ccev.attribute_id = ?', $attribute->getAttributeId())
             ->where('ccev.entity_type_id = ?', $attribute->getEntityTypeId())
-            ->where('ccev.store_id = ('.$dbSelect1->__toString().')');
+            ->where('ccev.store_id = ('.$dbSelectOne->__toString().')');
 
         $cacheData = array();
 
-        foreach ($connRead->fetchAll($dbSelect2) as $row) {
+        foreach ($connRead->fetchAll($dbSelectTwo) as $row) {
             $cacheData[$row['category_id']] = $row['name'];
         }
+
         $this->setData('categories_cache', $cacheData);
     }
 
@@ -83,7 +85,7 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
 
     public function callbackColumnMagentoCategory($value, $row, $column, $isExport)
     {
-        $ids = explode('/',$row->getPath());
+        $ids = explode('/', $row->getPath());
 
         $categoriesCache = $this->getData('categories_cache');
         $path = '';
@@ -91,6 +93,7 @@ class Ess_M2ePro_Block_Adminhtml_Category_Grid extends Mage_Adminhtml_Block_Widg
             if (!isset($categoriesCache[$id])) {
                 continue;
             }
+
             $path != '' && $path .= ' > ';
             $path .= $categoriesCache[$id];
         }

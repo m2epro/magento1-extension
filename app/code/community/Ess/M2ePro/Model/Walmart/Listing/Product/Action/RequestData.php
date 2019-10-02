@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function hasSku()
     {
-        return isset($this->data['sku']);
+        return isset($this->_data['sku']);
     }
 
     /**
@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function hasIsNeedSkuUpdate()
     {
-        return isset($this->data['is_need_sku_update']);
+        return isset($this->_data['is_need_sku_update']);
     }
 
     /**
@@ -32,12 +32,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function hasProductIdsData()
     {
-        return isset($this->data['product_ids_data']);
+        return isset($this->_data['product_ids_data']);
     }
 
     public function hasIsNeedProductIdUpdate()
     {
-        return isset($this->data['is_need_product_id_update']);
+        return isset($this->_data['is_need_product_id_update']);
     }
 
     // ---------------------------------------
@@ -47,7 +47,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function hasQty()
     {
-        return isset($this->data['qty']);
+        return isset($this->_data['qty']);
     }
 
     // ---------------------------------------
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function hasLagTime()
     {
-        return isset($this->data['lag_time']);
+        return isset($this->_data['lag_time']);
     }
 
     // ---------------------------------------
@@ -67,7 +67,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function hasPrice()
     {
-        return isset($this->data['price']);
+        return isset($this->_data['price']);
     }
 
     /**
@@ -75,14 +75,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function hasPromotionPrices()
     {
-        return isset($this->data['promotion_prices']);
+        return isset($this->_data['promotion_prices']);
     }
 
     // ---------------------------------------
 
     public function hasVariationData()
     {
-        return isset($this->data['variation_data']);
+        return isset($this->_data['variation_data']);
     }
 
     //########################################
@@ -92,12 +92,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getSku()
     {
-        return $this->hasSku() ? $this->data['sku'] : NULL;
+        return $this->hasSku() ? $this->_data['sku'] : NULL;
     }
 
     public function getIsNeedSkuUpdate()
     {
-        return $this->hasIsNeedSkuUpdate() ? $this->data['is_need_sku_update'] : NULL;
+        return $this->hasIsNeedSkuUpdate() ? $this->_data['is_need_sku_update'] : NULL;
     }
 
     /**
@@ -105,12 +105,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getProductIdsData()
     {
-        return $this->hasProductIdsData() ? $this->data['product_ids_data'] : NULL;
+        return $this->hasProductIdsData() ? $this->_data['product_ids_data'] : NULL;
     }
 
     public function getIsNeedProductIdUpdate()
     {
-        return $this->hasIsNeedProductIdUpdate() ? $this->data['is_need_product_id_update'] : NULL;
+        return $this->hasIsNeedProductIdUpdate() ? $this->_data['is_need_product_id_update'] : NULL;
     }
 
     // ---------------------------------------
@@ -120,7 +120,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getQty()
     {
-        return $this->hasQty() ? $this->data['qty'] : NULL;
+        return $this->hasQty() ? $this->_data['qty'] : NULL;
     }
 
     // ---------------------------------------
@@ -130,7 +130,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getLagTime()
     {
-        return $this->hasLagTime() ? $this->data['lag_time'] : NULL;
+        return $this->hasLagTime() ? $this->_data['lag_time'] : NULL;
     }
 
     // ---------------------------------------
@@ -140,14 +140,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getPrice()
     {
-        return $this->hasPrice() ? $this->data['price'] : NULL;
+        return $this->hasPrice() ? $this->_data['price'] : NULL;
     }
 
     // ---------------------------------------
 
     public function getVariationData()
     {
-        return $this->hasVariationData() ? $this->data['variation_data'] : NULL;
+        return $this->hasVariationData() ? $this->_data['variation_data'] : NULL;
     }
 
     //########################################

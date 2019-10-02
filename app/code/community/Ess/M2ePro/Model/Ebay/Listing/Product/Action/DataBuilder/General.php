@@ -48,16 +48,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
     /**
      * @return array
      */
-    private function getProductDetailsData()
+    protected function getProductDetailsData()
     {
-        if ($this->isVariationItem) {
+        if ($this->_isVariationItem) {
             return array();
         }
 
         $data = array();
 
         foreach (array('isbn','epid','upc','ean','brand','mpn') as $tempType) {
-
             if ($this->getEbayListingProduct()->getEbayDescriptionTemplate()->isProductDetailsModeNone($tempType)) {
                 continue;
             }
@@ -97,7 +96,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
         return $data;
     }
 
-    private function deleteMPNifBrandIsNotSelected(array $data)
+    protected function deleteMPNifBrandIsNotSelected(array $data)
     {
         if (empty($data)) {
             return $data;
@@ -114,7 +113,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
         return $data;
     }
 
-    private function deleteNotAllowedIdentifier(array $data)
+    protected function deleteNotAllowedIdentifier(array $data)
     {
         if (empty($data)) {
             return $data;
@@ -132,14 +131,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
         $statusDisabled = Ess_M2ePro_Helper_Component_Ebay_Category_Ebay::PRODUCT_IDENTIFIER_STATUS_DISABLED;
 
         foreach (array('ean','upc','isbn','epid') as $identifier) {
-
             $key = $identifier.'_enabled';
             if (!isset($categoryFeatures[$key]) || $categoryFeatures[$key] != $statusDisabled) {
                 continue;
             }
 
             if (isset($data[$identifier])) {
-
                 unset($data[$identifier]);
 
                 // M2ePro_TRANSLATIONS

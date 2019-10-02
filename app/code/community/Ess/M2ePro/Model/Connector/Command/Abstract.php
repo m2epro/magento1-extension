@@ -8,34 +8,32 @@
 
 abstract class Ess_M2ePro_Model_Connector_Command_Abstract
 {
-    // ########################################
-
-    protected $params = array();
+    protected $_params = array();
 
     /** @var Ess_M2ePro_Model_Connector_Protocol */
-    protected $protocol = NULL;
+    protected $_protocol = null;
 
-    /** @var Ess_M2ePro_Model_Connector_Connection_Single $connection */
-    protected $connection = NULL;
+    /** @var Ess_M2ePro_Model_Connector_Connection_Single $_connection */
+    protected $_connection = null;
 
     // ########################################
 
     public function __construct(array $params)
     {
-        $this->params = $params;
+        $this->_params = $params;
     }
 
     // ########################################
 
     public function setProtocol(Ess_M2ePro_Model_Connector_Protocol $protocol)
     {
-        $this->protocol = $protocol;
+        $this->_protocol = $protocol;
         return $this;
     }
 
     public function getProtocol()
     {
-        return $this->protocol;
+        return $this->_protocol;
     }
 
     // ########################################
@@ -46,11 +44,11 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
 
     protected function getConnection()
     {
-        if (!is_null($this->connection)) {
-            return $this->connection;
+        if ($this->_connection !== null) {
+            return $this->_connection;
         }
 
-        return $this->connection = $this->buildConnectionInstance();
+        return $this->_connection = $this->buildConnectionInstance();
     }
 
     protected function buildConnectionInstance()

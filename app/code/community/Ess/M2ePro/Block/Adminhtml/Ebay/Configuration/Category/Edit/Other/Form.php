@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other_Form extends Mage_Adminhtml_Block_Widget_Form
 {
-    protected $accountData = null;
+    protected $_accountData = null;
 
-    protected $marketplaceData = null;
+    protected $_marketplaceData = null;
 
     //########################################
 
@@ -36,32 +36,32 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other_Form ext
         $chooserBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_category_chooser');
         $chooserBlock->setMarketplaceId($chooserBlockData['marketplace']);
 
-        if (
-            in_array($chooserBlockData['type'], Mage::helper('M2ePro/Component_Ebay_Category')->getStoreCategoryTypes())
+        if (in_array($chooserBlockData['type'], Mage::helper('M2ePro/Component_Ebay_Category')->getStoreCategoryTypes())
         ) {
             $chooserBlock->setAccountId($chooserBlockData['account']);
         }
 
         $chooserBlock->setSingleCategoryMode();
         $chooserBlock->setSingleCategoryType($chooserBlockData['type']);
-        $chooserBlock->setSingleCategoryData(array(
+        $chooserBlock->setSingleCategoryData(
+            array(
             'mode' => $chooserBlockData['mode'],
             'value' => $chooserBlockData['value'],
             'path' => $chooserBlockData['path'],
-        ));
+            )
+        );
 
         $this->setChild('chooser_block', $chooserBlock);
         // ---------------------------------------
 
         // ---------------------------------------
-        if (
-            in_array($chooserBlockData['type'], Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes())
+        if (in_array($chooserBlockData['type'], Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes())
         ) {
             $marketplaceTitle = Mage::helper('M2ePro/Component_Ebay')
                 ->getCachedObject('Marketplace', (int)$chooserBlockData['marketplace'])
                 ->getTitle();
 
-            $this->marketplaceData = array(
+            $this->_marketplaceData = array(
                 'title' => $marketplaceTitle,
             );
         } else {
@@ -69,11 +69,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Other_Form ext
                 ->getCachedObject('Account', (int)$chooserBlockData['account'])
                 ->getTitle();
 
-            $this->accountData = array(
+            $this->_accountData = array(
                 'id' => $chooserBlockData['account'],
                 'title' => $accountTitle,
             );
         }
+
         // ---------------------------------------
 
         // ---------------------------------------

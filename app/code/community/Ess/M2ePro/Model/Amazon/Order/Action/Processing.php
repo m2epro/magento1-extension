@@ -15,13 +15,13 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processing extends Ess_M2ePro_Model_A
     //####################################
 
     /** @var Ess_M2ePro_Model_Order $order */
-    private $order = NULL;
+    protected $order = NULL;
 
     /** @var Ess_M2ePro_Model_Processing $processing */
-    private $processing = NULL;
+    protected $processing = NULL;
 
     /** @var Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle */
-    private $requestPendingSingle = NULL;
+    protected $requestPendingSingle = NULL;
 
     //####################################
 
@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processing extends Ess_M2ePro_Model_A
             throw new Ess_M2ePro_Model_Exception_Logic('Instance must be loaded first.');
         }
 
-        if (!is_null($this->order)) {
+        if ($this->order !== null) {
             return $this->order;
         }
 
@@ -70,7 +70,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processing extends Ess_M2ePro_Model_A
             throw new Ess_M2ePro_Model_Exception_Logic('Instance must be loaded first.');
         }
 
-        if (!is_null($this->processing)) {
+        if ($this->processing !== null) {
             return $this->processing;
         }
 
@@ -99,7 +99,7 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processing extends Ess_M2ePro_Model_A
             return null;
         }
 
-        if (!is_null($this->requestPendingSingle)) {
+        if ($this->requestPendingSingle !== null) {
             return $this->requestPendingSingle;
         }
 

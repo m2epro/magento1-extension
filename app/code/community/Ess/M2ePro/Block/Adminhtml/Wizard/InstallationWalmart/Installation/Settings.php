@@ -37,11 +37,13 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationWalmart_Installation_Setting
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'label'   => Mage::helper('M2ePro')->__('Proceed'),
                 'onclick' => 'InstallationWalmartWizardObj.saveSettingsStep()',
                 'class' => 'process_settings_button'
-            ));
+                )
+            );
         $this->setChild('process_settings_button', $buttonBlock);
         // ---------------------------------------
 

@@ -38,15 +38,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
         }
 
         if ($this->getConfigurator()->isQtyAllowed()) {
-
             if ($this->getAmazonListingProduct()->isAfnChannel()) {
-
                 if (empty($params['switch_to'])) {
-
                     $this->getConfigurator()->disallowQty();
 
                     // M2ePro_TRANSLATIONS
-                    // This Product is an FBA Item, so it’s Quantity updating will change it to MFN. Thus QTY feed, Production Time and Restock Date Values will not be updated. Inventory management for FBA Items is currently unavailable in M2E Pro. However, you can do that directly in your Amazon Seller Central.
+                    // This Product is an FBA Item, so it’s Quantity updating will change it to MFN. Thus QTY feed,
+                    // Production Time and Restock Date Values will not be updated. Inventory management for FBA
+                    // Items is currently unavailable in M2E Pro. However, you can do that directly in your
+                    // Amazon Seller Central.
                     $this->addMessage(
                         'This Product is an FBA Item, so it’s Quantity updating will change it to MFN. Thus QTY feed,
                         Production Time and Restock Date Values will not be updated. Inventory management for FBA
@@ -54,9 +54,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
                         Seller Central.',
                         Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
                     );
-
                 } else {
-
                     $afn = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN;
 
                     if ($params['switch_to'] === $afn) {
@@ -66,9 +64,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
                         return false;
                     }
                 }
-
             } else {
-
                 $mfn = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN;
 
                 if (!empty($params['switch_to']) && $params['switch_to'] === $mfn) {
@@ -83,7 +79,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
         if ($this->getAmazonListingProduct()->isAfnChannel() &&
             $this->getAmazonListingProduct()->isExistShippingTemplate()) {
             // M2ePro_TRANSLATIONS
-            // The Shipping Template Settings will not be sent for this Product because it is an FBA Item. Amazon will handle the delivery of the Order.
+            // The Shipping Template Settings will not be sent for this Product because it is an FBA Item.
+            // Amazon will handle the delivery of the Order.
             $this->addMessage(
                 'The Shipping Settings will not be sent for this Product because it is an FBA Item.
                 Amazon will handle the delivery of the Order.',
@@ -102,7 +99,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Validator
         if (!$this->getAmazonListingProduct()->isAfnChannel() &&
             (!$this->getListingProduct()->isListed() || !$this->getListingProduct()->isRevisable())
         ) {
-
             // M2ePro_TRANSLATIONS
             // Item is not Listed or not available
             $this->addMessage('Item is not Listed or not available');

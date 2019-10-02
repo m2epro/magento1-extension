@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
     extends Ess_M2ePro_Model_Listing_Product_Variation_Updater
 {
-    private $parentListingsProductsForProcessing = array();
+    protected $_parentListingsProductsForProcessing = array();
 
     //########################################
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
 
     public function afterMassProcessEvent()
     {
-        foreach ($this->parentListingsProductsForProcessing as $listingProduct) {
+        foreach ($this->_parentListingsProductsForProcessing as $listingProduct) {
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product $amazonListingProduct */
             $amazonListingProduct = $listingProduct->getChildObject();
             $amazonListingProduct->getVariationManager()->getTypeModel()->getProcessor()->process();
@@ -44,7 +44,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
 
     //########################################
 
-    private function checkChangeAsVariationProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    protected function checkChangeAsVariationProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
@@ -71,7 +71,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         return true;
     }
 
-    private function checkChangeAsNotVariationProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    protected function checkChangeAsNotVariationProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
@@ -101,13 +101,13 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
 
     // ---------------------------------------
 
-    private function checkVariationStructureChanges(Ess_M2ePro_Model_Listing_Product $listingProduct)
+    protected function checkVariationStructureChanges(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager $variationManager */
         $variationManager = $listingProduct->getChildObject()->getVariationManager();
 
         if ($variationManager->isRelationParentType()) {
-            $this->parentListingsProductsForProcessing[$listingProduct->getId()] = $listingProduct;
+            $this->_parentListingsProductsForProcessing[$listingProduct->getId()] = $listingProduct;
             return;
         }
 
@@ -121,10 +121,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         }
 
         if (!$typeModel->isActualProductAttributes()) {
-
             if ($variationManager->isRelationChildType()) {
                 /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Child $typeModel */
-                $this->parentListingsProductsForProcessing[$typeModel->getParentListingProduct()->getId()]
+                $this->_parentListingsProductsForProcessing[$typeModel->getParentListingProduct()->getId()]
                     = $typeModel->getParentListingProduct();
                 return;
             }
@@ -139,10 +138,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_PhysicalUnit $typeModel */
 
         if ($typeModel->isVariationProductMatched() && !$typeModel->isActualProductVariation()) {
-
             if ($variationManager->isRelationChildType()) {
                 /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Child $typeModel */
-                $this->parentListingsProductsForProcessing[$typeModel->getParentListingProduct()->getId()]
+                $this->_parentListingsProductsForProcessing[$typeModel->getParentListingProduct()->getId()]
                     = $typeModel->getParentListingProduct();
                 return;
             }
@@ -156,7 +154,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
             $typeModel->getParentTypeModel()->getVirtualChannelAttributes()
         ) {
             if (!$typeModel->getParentTypeModel()->isActualVirtualChannelAttributes()) {
-                $this->parentListingsProductsForProcessing[$typeModel->getParentListingProduct()->getId()]
+                $this->_parentListingsProductsForProcessing[$typeModel->getParentListingProduct()->getId()]
                     = $typeModel->getParentListingProduct();
             }
         }

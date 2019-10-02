@@ -25,7 +25,6 @@ class Ess_M2ePro_Helper_Component_Walmart_ProductData extends Mage_Core_Helper_A
         $recent = $allRecent[$marketplaceId];
 
         foreach ($recent as $index => $recentProductDataNick) {
-
             if ($excludedProductDataNick == $recentProductDataNick) {
                 unset($recent[$index]);
             }
@@ -46,7 +45,6 @@ class Ess_M2ePro_Helper_Component_Walmart_ProductData extends Mage_Core_Helper_A
 
         $recent = $allRecent[$marketplaceId];
         foreach ($recent as $recentProductDataNick) {
-
             if ($productDataNick == $recentProductDataNick) {
                 return;
             }
@@ -59,15 +57,17 @@ class Ess_M2ePro_Helper_Component_Walmart_ProductData extends Mage_Core_Helper_A
         $recent[] = $productDataNick;
         $allRecent[$marketplaceId] = $recent;
 
-        $registryModel->addData(array(
+        $registryModel->addData(
+            array(
             'key'   => $key,
             'value' => Mage::helper('M2ePro')->jsonEncode($allRecent)
-        ))->save();
+            )
+        )->save();
     }
 
     //########################################
 
-    private function getConfigGroup()
+    protected function getConfigGroup()
     {
         return "/walmart/product_data/recent/";
     }

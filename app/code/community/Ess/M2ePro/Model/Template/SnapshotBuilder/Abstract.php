@@ -9,13 +9,13 @@
 abstract class Ess_M2ePro_Model_Template_SnapshotBuilder_Abstract
 {
     /** @var Ess_M2ePro_Model_Abstract */
-    protected $model = NULL;
+    protected $_model = null;
 
     //########################################
 
     public function setModel(Ess_M2ePro_Model_Abstract $model)
     {
-        $this->model = $model;
+        $this->_model = $model;
         return $this;
     }
 

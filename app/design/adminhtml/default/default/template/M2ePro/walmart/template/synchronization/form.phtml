@@ -1,9 +1,32 @@
 <?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Walmart_Template_Synchronization_Edit_Form */
+
 $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
 $defaults = array('title' => '');
 $formData = array_merge($defaults, $formData);
 
+if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
+    $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+        Mage::helper('M2ePro')->__('Add %component_name% Synchronization Policy',
+            Mage::helper('M2ePro/Component_Walmart')->getTitle()
+        )
+    );
+} else {
+    $duplicateHeaderText = Mage::helper('M2ePro')->escapeJs(
+        Mage::helper('M2ePro')->__('Add Synchronization Policy')
+    );
+}
+
 $isEdit = (bool)$this->getRequest()->getParam('id');
+
 ?>
 
 <script type="text/javascript">
@@ -26,7 +49,7 @@ $isEdit = (bool)$this->getRequest()->getParam('id');
     )); ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Add Synchronization Policy' => Mage::helper('M2ePro')->__('Add Synchronization Policy'),
+        'Add Synchronization Policy' => Mage::helper('M2ePro')->__($duplicateHeaderText),
         'Wrong time format string.' => Mage::helper('M2ePro')->__('Wrong time format string.'),
 
         'Must be greater than "Min".' => Mage::helper('M2ePro')->__('Must be greater than "Min".'),

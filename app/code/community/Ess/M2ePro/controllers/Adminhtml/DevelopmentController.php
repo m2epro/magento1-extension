@@ -28,7 +28,7 @@ class Ess_M2ePro_Adminhtml_DevelopmentController
      */
     public function firstTestAction()
     {
-
+        return null;
     }
 
     /**
@@ -37,7 +37,7 @@ class Ess_M2ePro_Adminhtml_DevelopmentController
      */
     public function secondTestAction()
     {
-
+        return null;
     }
 
     //########################################
@@ -71,7 +71,8 @@ class Ess_M2ePro_Adminhtml_DevelopmentController
         $ebayDescriptionTable = $dbHelper->getTableNameWithPrefix('m2epro_ebay_template_description');
         $backupTable          = $dbHelper->getTableNameWithPrefix('m2epro_bv630_ebay_template_description');
 
-        $resource->getConnection('core_write')->query(<<<SQL
+        $resource->getConnection('core_write')->query(
+            <<<SQL
 
 INSERT INTO `{$descriptionTable}` (
 `id`,
@@ -91,7 +92,8 @@ FROM {$backupTable};
 SQL
         );
 
-        $resource->getConnection('core_write')->query(<<<SQL
+        $resource->getConnection('core_write')->query(
+            <<<SQL
 
 INSERT INTO `{$ebayDescriptionTable}` (
 `template_description_id`,
@@ -173,7 +175,8 @@ SQL
         $alp = $dbHelper->getTableNameWithPrefix('m2epro_amazon_listing_product');
         $lpv = $dbHelper->getTableNameWithPrefix('m2epro_listing_product_variation');
 
-        $resource->getConnection('core_write')->query(<<<SQL
+        $resource->getConnection('core_write')->query(
+            <<<SQL
 
 UPDATE `{$alp}` `malp`
    LEFT JOIN `{$lpv}` `mlpv` ON `mlpv`.`listing_product_id` = `malp`.`listing_product_id`
@@ -230,29 +233,6 @@ SQL
     }
 
     //########################################
-
-    public function enableMaintenanceModeAction()
-    {
-        if (!Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
-            Mage::helper('M2ePro/Module_Maintenance')->enable();
-        }
-
-        $this->_getSession()->addSuccess('Maintenance was activated.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDebugTabUrl());
-    }
-
-    public function disableMaintenanceModeAction()
-    {
-        if (Mage::helper('M2ePro/Module_Maintenance')->isEnabled()) {
-            Mage::helper('M2ePro/Module_Maintenance')->disable();
-            Mage::helper('M2ePro/Data_Session')->getValue('warning_message', true);
-        }
-
-        $this->_getSession()->addSuccess('Maintenance was deactivated.');
-        $this->_redirectUrl(Mage::helper('M2ePro/View_Development')->getPageDebugTabUrl());
-    }
-
-    // ---------------------------------------
 
     public function enableDevelopmentModeAction()
     {

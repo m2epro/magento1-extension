@@ -26,34 +26,42 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_PickupStore_Edit_Tabs
 
     protected function _beforeToHtml()
     {
-        $this->addTab('general', array(
+        $this->addTab(
+            'general', array(
             'label'   => Mage::helper('M2ePro')->__('General'),
             'title'   => Mage::helper('M2ePro')->__('General'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_ebay_account_pickupStore_edit_tabs_general')
                 ->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('location', array(
+        $this->addTab(
+            'location', array(
             'label'   => Mage::helper('M2ePro')->__('Location'),
             'title'   => Mage::helper('M2ePro')->__('Location'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_ebay_account_pickupStore_edit_tabs_location')->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('business_hours', array(
+        $this->addTab(
+            'business_hours', array(
             'label'   => Mage::helper('M2ePro')->__('Business Hours'),
             'title'   => Mage::helper('M2ePro')->__('Business Hours'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_ebay_account_pickupStore_edit_tabs_businessHours')->toHtml(),
-        ));
+            )
+        );
 
-        $this->addTab('stock_settings', array(
+        $this->addTab(
+            'stock_settings', array(
             'label'   => Mage::helper('M2ePro')->__('Quantity Settings'),
             'title'   => Mage::helper('M2ePro')->__('Quantity Settings'),
             'content' => $this->getLayout()
                 ->createBlock('M2ePro/adminhtml_ebay_account_pickupStore_edit_tabs_stockSettings')->toHtml(),
-        ));
+            )
+        );
 
         $this->setActiveTab($this->getRequest()->getParam('tab', 'general'));
 

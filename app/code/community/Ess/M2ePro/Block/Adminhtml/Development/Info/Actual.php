@@ -60,10 +60,11 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Actual extends Mage_Adminhtml_
 
         $cronLastRunTime = Mage::helper('M2ePro/Module_Cron')->getLastRun();
 
-        if (!is_null($cronLastRunTime)) {
+        if ($cronLastRunTime !== null) {
             $this->cronLastRunTime = $cronLastRunTime;
-            $this->cronIsNotWorking = Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(12,true);
+            $this->cronIsNotWorking = Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(12, true);
         }
+
         // ---------------------------------------
 
         return parent::_beforeToHtml();

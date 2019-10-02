@@ -15,12 +15,16 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Grid extends Ess_M2ePro_Block_A
         $collection = Mage::getModel('M2ePro/Account')->getCollection();
 
         $collection->getSelect()
-            ->joinLeft(array('aa'=>Mage::getResourceModel('M2ePro/Walmart_Account')->getMainTable()),
+            ->joinLeft(
+                array('aa'=>Mage::getResourceModel('M2ePro/Walmart_Account')->getMainTable()),
                 '(`aa`.`account_id` = `main_table`.`id`)',
-                array('consumer_id'))
-            ->joinLeft(array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
+                array('consumer_id')
+            )
+            ->joinLeft(
+                array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
                 '(`m`.`id` = `aa`.`marketplace_id`)',
-                array('marketplace_title'=>'title'));
+                array('marketplace_title'=>'title')
+            );
 
         $this->setCollection($collection);
 
@@ -31,16 +35,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Grid extends Ess_M2ePro_Block_A
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header'    => Mage::helper('M2ePro')->__('ID'),
             'align'     => 'right',
             'width'     => '100px',
             'type'      => 'number',
             'index'     => 'id',
             'filter_index' => 'main_table.id'
-        ));
+            )
+        );
 
-        $this->addColumn('title', array(
+        $this->addColumn(
+            'title', array(
             'header'    => Mage::helper('M2ePro')->__('Title / Info'),
             'align'     => 'left',
             'type'      => 'text',
@@ -49,7 +56,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Account_Grid extends Ess_M2ePro_Block_A
             'filter_index' => 'main_table.title',
             'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }
@@ -110,7 +118,8 @@ HTML;
 
         $collection->getSelect()->where(
             'main_table.title LIKE ?
-            OR m.title LIKE ?',
+            OR m.title LIKE ? 
+            OR aa.consumer_id LIKE ?',
             '%'. $value .'%'
         );
     }

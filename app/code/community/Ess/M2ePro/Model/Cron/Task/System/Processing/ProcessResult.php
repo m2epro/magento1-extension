@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
 
     //########################################
 
-    private function processExpired()
+    protected function processExpired()
     {
         $processingCollection = Mage::getResourceModel('M2ePro/Processing_Collection');
         $processingCollection->setOnlyExpiredItemsFilter();
@@ -34,7 +34,6 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         $processingObjects = $processingCollection->getItems();
 
         foreach ($processingObjects as $processingObject) {
-
             $this->getLockItemManager()->activate();
 
             try {
@@ -57,9 +56,9 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         }
     }
 
-    private function processCompletedSingle()
+    protected function processCompletedSingle()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Processing_Collection $processingCollection */
+        /** @var Ess_M2ePro_Model_Resource_Processing_Collection $processingCollection */
         $processingCollection = Mage::getResourceModel('M2ePro/Processing_Collection');
         $processingCollection->addFieldToFilter('is_completed', 1);
         $processingCollection->addFieldToFilter('type', Ess_M2ePro_Model_Processing::TYPE_SINGLE);
@@ -76,10 +75,8 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         $percentsForOneAction = 50 / count($processingObjects);
 
         foreach ($processingObjects as $processingObject) {
-
             $this->getLockItemManager()->activate();
             if ($iteration % 10 == 0) {
-
                 Mage::dispatchEvent(
                     Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,
                     array(
@@ -111,7 +108,7 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         }
     }
 
-    private function processCompletedPartial()
+    protected function processCompletedPartial()
     {
         $processingCollection = Mage::getResourceModel('M2ePro/Processing_Collection');
         $processingCollection->addFieldToFilter('is_completed', 1);
@@ -129,10 +126,8 @@ class Ess_M2ePro_Model_Cron_Task_System_Processing_ProcessResult extends Ess_M2e
         $percentsForOneAction = 50 / count($processingObjects);
 
         foreach ($processingObjects as $processingObject) {
-
             $this->getLockItemManager()->activate();
             if ($iteration % 10 == 0) {
-
                 Mage::dispatchEvent(
                     Ess_M2ePro_Model_Cron_Strategy_Abstract::PROGRESS_SET_DETAILS_EVENT_NAME,
                     array(

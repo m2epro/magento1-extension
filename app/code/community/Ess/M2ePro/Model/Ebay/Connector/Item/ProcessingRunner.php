@@ -9,15 +9,15 @@
 class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
     extends Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
 {
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = array();
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = array();
 
     // ########################################
 
     public function processSuccess()
     {
         // listing product can be removed during processing action
-        if (is_null($this->getListingProduct()->getId())) {
+        if ($this->getListingProduct()->getId() === null) {
             return true;
         }
 
@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
     public function processExpired()
     {
         // listing product can be removed during processing action
-        if (is_null($this->getListingProduct()->getId())) {
+        if ($this->getListingProduct()->getId() === null) {
             return;
         }
 
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
     public function complete()
     {
         // listing product can be removed during processing action
-        if (is_null($this->getListingProduct()->getId())) {
+        if ($this->getListingProduct()->getId() === null) {
             $this->getProcessingObject()->deleteInstance();
             return;
         }
@@ -53,13 +53,15 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
 
         /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing $processingAction */
         $processingAction = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Processing');
-        $processingAction->setData(array(
+        $processingAction->setData(
+            array(
             'listing_product_id' => $params['listing_product_id'],
             'processing_id'      => $this->getProcessingObject()->getId(),
             'type'               => $this->getProcessingActionType(),
             'request_timeout'    => $params['request_timeout'],
             'request_data'       => Mage::helper('M2ePro')->jsonEncode($params['request_data']),
-        ));
+            )
+        );
         $processingAction->save();
     }
 
@@ -119,17 +121,17 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
 
     protected function getListingProduct()
     {
-        if (!empty($this->listingProduct)) {
-            return $this->listingProduct;
+        if (!empty($this->_listingProduct)) {
+            return $this->_listingProduct;
         }
 
         $params = $this->getParams();
 
-        /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $collection */
+        /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $collection */
         $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
         $collection->addFieldToFilter('id', $params['listing_product_id']);
 
-        return $this->listingProduct = $collection->getFirstItem();
+        return $this->_listingProduct = $collection->getFirstItem();
     }
 
     // ########################################

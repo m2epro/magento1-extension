@@ -10,7 +10,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_MigrationToV611 extends Mage_Adminht
 {
     const ORDERS_COUNT_PER_AJAX_REQUEST = 10000;
 
-    private $notMigratedOrdersCount = 0;
+    protected $_notMigratedOrdersCount = 0;
 
     //########################################
 
@@ -24,13 +24,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_MigrationToV611 extends Mage_Adminht
 
     public function setNotMigratedOrdersCount($ordersCount)
     {
-        $this->notMigratedOrdersCount = $ordersCount;
+        $this->_notMigratedOrdersCount = $ordersCount;
         return $this;
     }
 
     public function getNotMigratedOrdersCount()
     {
-        return $this->notMigratedOrdersCount;
+        return $this->_notMigratedOrdersCount;
     }
 
     public function getOrdersCountPerAjaxRequest()

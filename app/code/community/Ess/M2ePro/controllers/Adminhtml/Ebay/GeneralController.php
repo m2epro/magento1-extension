@@ -14,7 +14,7 @@ class Ess_M2ePro_Adminhtml_Ebay_GeneralController
     public function isMarketplaceEnabledAction()
     {
         $marketplaceId = $this->getRequest()->getParam('marketplace_id');
-        $marketplaceObj = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace',(int)$marketplaceId);
+        $marketplaceObj = Mage::helper('M2ePro/Component')->getUnknownObject('Marketplace', (int)$marketplaceId);
 
         $this->loadLayout();
         $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($marketplaceObj->isStatusEnabled()));

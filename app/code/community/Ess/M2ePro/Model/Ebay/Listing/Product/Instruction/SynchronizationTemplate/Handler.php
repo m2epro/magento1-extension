@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
     //########################################
 
-    private function getAllCheckers()
+    protected function getAllCheckers()
     {
         return array(
             'NotListed',
@@ -59,7 +59,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
      * @return Ess_M2ePro_Model_Listing_Product_Instruction_SynchronizationTemplate_Checker_Abstract
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    private function getCheckerModel($checkerNick)
+    protected function getCheckerModel($checkerNick)
     {
         $checkerModelName = 'M2ePro/Ebay_Listing_Product_Instruction_SynchronizationTemplate_Checker_'.$checkerNick;
 

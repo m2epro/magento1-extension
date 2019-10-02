@@ -9,14 +9,13 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 {
-    protected $isVerifyCall = false;
+    protected $_isVerifyCall = false;
 
     //########################################
 
     public function validate()
     {
         if (!$this->getListingProduct()->isListable()) {
-
             // M2ePro_TRANSLATIONS
             // Item is Listed or not available
             $this->addMessage('Item is Listed or not available');
@@ -25,9 +24,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
         }
 
         if ($this->getListingProduct()->isHidden()) {
-
             // M2ePro_TRANSLATIONS
-            // The List action cannot be executed for this Item as it has a Listed (Hidden) status. You have to stop Item manually first to run the List action for it.
+            // The List action cannot be executed for this Item as it has a Listed (Hidden) status.
+            // You have to stop Item manually first to run the List action for it.
             $this->addMessage(
                 'The List action cannot be executed for this Item as it has a Listed (Hidden) status.
                 You have to stop Item manually first to run the List action for it.'
@@ -45,7 +44,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
         }
 
         if ($this->getEbayListingProduct()->isVariationsReady()) {
-
             if (!$this->validateVariationsOptions()) {
                 return false;
             }
@@ -70,7 +68,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
 
     protected function validateSameProductAlreadyListed()
     {
-        if ($this->isVerifyCall) {
+        if ($this->_isVerifyCall) {
             return true;
         }
 
@@ -92,16 +90,15 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
 
         $listingProductCollection
             ->getSelect()
-            ->join(array('l'=>$listingTable),'`main_table`.`listing_id` = `l`.`id`',array());
+            ->join(array('l'=>$listingTable), '`main_table`.`listing_id` = `l`.`id`', array());
 
         $listingProductCollection
             ->addFieldToFilter('status', array('neq' => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED))
-            ->addFieldToFilter('product_id',$this->getListingProduct()->getProductId())
-            ->addFieldToFilter('account_id',$this->getAccount()->getId())
-            ->addFieldToFilter('marketplace_id',$this->getMarketplace()->getId());
+            ->addFieldToFilter('product_id', $this->getListingProduct()->getProductId())
+            ->addFieldToFilter('account_id', $this->getAccount()->getId())
+            ->addFieldToFilter('marketplace_id', $this->getMarketplace()->getId());
 
         if (!empty($params['skip_check_the_same_product_already_listed_ids'])) {
-
             $listingProductCollection->addFieldToFilter(
                 'listing_product_id', array('nin' => $params['skip_check_the_same_product_already_listed_ids'])
             );
@@ -114,14 +111,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
             return true;
         }
 
-        $this->addMessage(Mage::helper('M2ePro/Module_Log')->encodeDescription(
-            'There is another Item with the same eBay User ID, '.
-            'Product ID and eBay Site presented in "%listing_title%" (%listing_id%) Listing.',
-            array(
+        $this->addMessage(
+            Mage::helper('M2ePro/Module_Log')->encodeDescription(
+                'There is another Item with the same eBay User ID, '.
+                'Product ID and eBay Site presented in "%listing_title%" (%listing_id%) Listing.',
+                array(
                 '!listing_title' => $theSameListingProduct->getListing()->getTitle(),
                 '!listing_id' => $theSameListingProduct->getListing()->getId()
+                )
             )
-        ));
+        );
 
         return false;
     }
@@ -130,7 +129,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
 
     public function setIsVerifyCall($value)
     {
-        $this->isVerifyCall = $value;
+        $this->_isVerifyCall = $value;
         return $this;
     }
 

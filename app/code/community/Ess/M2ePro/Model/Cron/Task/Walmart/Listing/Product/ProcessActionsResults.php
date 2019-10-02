@@ -23,9 +23,9 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessActionsResults
 
     //####################################
 
-    private function completeExpiredActions()
+    protected function completeExpiredActions()
     {
-        /** @var Ess_M2ePro_Model_Mysql4_Walmart_Listing_Product_Action_Processing_Collection $actionCollection */
+        /** @var Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_Processing_Collection $actionCollection */
         $actionCollection = Mage::getResourceModel('M2ePro/Walmart_Listing_Product_Action_Processing_Collection');
         $actionCollection->addFieldToFilter('request_pending_single_id', array('notnull' => true));
         $actionCollection->addFieldToFilter('type', array('neq' => ActionProcessing::TYPE_ADD));
@@ -50,7 +50,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessActionsResults
         }
     }
 
-    private function executeCompletedRequestsPendingSingle()
+    protected function executeCompletedRequestsPendingSingle()
     {
         $requestIds = Mage::getResourceModel('M2ePro/Walmart_Listing_Product_Action_Processing')
             ->getUniqueRequestPendingSingleIds();
@@ -110,31 +110,33 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_ProcessActionsResults
 
     //####################################
 
-    private function completeAction(Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $action,
-                                    array $data, $requestTime = NULL)
-    {
+    protected function completeAction(
+        Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $action,
+        array $data,
+        $requestTime = null
+    ) {
         try {
             $processing = $action->getProcessing();
 
             $processing->setSettings('result_data', $data);
             $processing->setData('is_completed', 1);
 
-            if (!is_null($requestTime)) {
+            if ($requestTime !== null) {
                 $processingParams = $processing->getParams();
                 $processingParams['request_time'] = $requestTime;
                 $processing->setSettings('params', $processingParams);
             }
 
             $processing->save();
-
         } catch (\Exception $exception) {
-
-            $this->getOperationHistory()->addContentData('exceptions', array(
+            $this->getOperationHistory()->addContentData(
+                'exceptions', array(
                 'message' => $exception->getMessage(),
                 'file'    => $exception->getFile(),
                 'line'    => $exception->getLine(),
                 'trace'   => $exception->getTraceAsString(),
-            ));
+                )
+            );
 
             Mage::helper('M2ePro/Module_Exception')->process($exception, false);
         }

@@ -10,15 +10,17 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 {
     //########################################
 
-    public function single(array $package,
-                           $serverBaseUrl = null,
-                           $serverHostName = null,
-                           $tryToResendOnError = true,
-                           $tryToSwitchEndpointOnError = true)
-    {
+    public function single(
+        array $package,
+        $serverBaseUrl = null,
+        $serverHostName = null,
+        $tryToResendOnError = true,
+        $tryToSwitchEndpointOnError = true
+    ) {
         if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
             // M2ePro_TRANSLATIONS
-            // The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance. Please try again later.
+            // The action is temporarily unavailable. M2E Pro server is currently
+            // under the planned maintenance. Please try again later.
             $message = 'The action is temporarily unavailable. M2E Pro server is currently';
             $message .= ' under the planned maintenance. Please try again later.';
 
@@ -41,21 +43,23 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         curl_close($curlObject);
 
         if ($response['body'] === false) {
-
             $switchingResult = false;
             $tryToSwitchEndpointOnError && $switchingResult = $this->getServerHelper()->switchEndpoint();
 
-            Mage::helper('M2ePro/Module_Logger')->process(array(
+            Mage::helper('M2ePro/Module_Logger')->process(
+                array(
                 'curl_error_number' => $response['curl_error_number'],
                 'curl_error_message' => $response['curl_error_message'],
                 'curl_info' => $response['curl_info']
-            ), 'Curl Empty Response', false);
+                ), 'Curl Empty Response', false
+            );
 
-            if ($this->canRepeatRequest($response['curl_error_number'],
-                                        $tryToResendOnError,
-                                        $tryToSwitchEndpointOnError,
-                                        $switchingResult)) {
-
+            if ($this->canRepeatRequest(
+                $response['curl_error_number'],
+                $tryToResendOnError,
+                $tryToSwitchEndpointOnError,
+                $switchingResult
+            )) {
                 return $this->single(
                     $package,
                     $tryToSwitchEndpointOnError ? $this->getServerHelper()->getEndpoint() : $serverBaseUrl,
@@ -75,25 +79,29 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
                     ->getKnowledgebaseUrl('server-connection')
                 .'">here</a>';
 
-            throw new Ess_M2ePro_Model_Exception_Connection($errorMsg,
+            throw new Ess_M2ePro_Model_Exception_Connection(
+                $errorMsg,
                 array('curl_error_number'  => $response['curl_error_number'],
                       'curl_error_message' => $response['curl_error_message'],
-                      'curl_info'          => $response['curl_info']));
+                'curl_info'          => $response['curl_info'])
+            );
         }
 
         return $response;
     }
 
-    public function multiple(array $packages,
-                            $serverBaseUrl = null,
-                            $serverHostName = null,
-                            $tryToResendOnError = true,
-                            $tryToSwitchEndpointOnError = true,
-                            $asynchronous = false)
-    {
+    public function multiple(
+        array $packages,
+        $serverBaseUrl = null,
+        $serverHostName = null,
+        $tryToResendOnError = true,
+        $tryToSwitchEndpointOnError = true,
+        $asynchronous = false
+    ) {
         if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
             // M2ePro_TRANSLATIONS
-            // The action is temporarily unavailable. M2E Pro server is currently under the planned maintenance. Please try again later.
+            // The action is temporarily unavailable. M2E Pro server is currently
+            // under the planned maintenance. Please try again later.
             $message = 'The action is temporarily unavailable. M2E Pro server is currently';
             $message .= ' under the planned maintenance. Please try again later.';
 
@@ -110,9 +118,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         $responses = array();
 
         if (count($packages) == 1 || !$asynchronous) {
-
             foreach ($packages as $key => $package) {
-
                 $curlObject = $this->buildCurlObject($package, $serverBaseUrl, $serverHostName);
                 $responseBody = curl_exec($curlObject);
 
@@ -125,26 +131,21 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 
                 curl_close($curlObject);
             }
-
         } else {
-
             $curlObjectsPool = array();
             $multiCurlObject = curl_multi_init();
 
             foreach ($packages as $key => $package) {
-
                 $curlObjectsPool[$key] = $this->buildCurlObject($package, $serverBaseUrl, $serverHostName);
                 curl_multi_add_handle($multiCurlObject, $curlObjectsPool[$key]);
             }
 
             do {
-
                 curl_multi_exec($multiCurlObject, $stillRunning);
 
                 if ($stillRunning) {
                     curl_multi_select($multiCurlObject, 1); //sleep in sec.
                 }
-
             } while ($stillRunning > 0);
 
             foreach ($curlObjectsPool as $key => $curlObject) {
@@ -167,31 +168,31 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 
         foreach ($responses as $key => $response) {
             if ($response['body'] === false) {
-
                 $isResponseFailed = true;
                 $tryToSwitchEndpointOnError && $switchingResult = $this->getServerHelper()->switchEndpoint();
 
-                Mage::helper('M2ePro/Module_Logger')->process(array(
+                Mage::helper('M2ePro/Module_Logger')->process(
+                    array(
                     'curl_error_number' => $response['curl_error_number'],
                     'curl_error_message' => $response['curl_error_message'],
                     'curl_info' => $response['curl_info']
-                ), 'Curl Empty Response', false);
+                    ), 'Curl Empty Response', false
+                );
                 break;
             }
         }
 
         if ($tryToResendOnError && $isResponseFailed) {
-
             $failedRequests = array();
 
             foreach ($responses as $key => $response) {
                 if ($response['body'] === false) {
-
-                    if ($this->canRepeatRequest($response['curl_error_number'],
-                                                $tryToResendOnError,
-                                                $tryToSwitchEndpointOnError,
-                                                $switchingResult)) {
-
+                    if ($this->canRepeatRequest(
+                        $response['curl_error_number'],
+                        $tryToResendOnError,
+                        $tryToSwitchEndpointOnError,
+                        $switchingResult
+                    )) {
                         $failedRequests[$key] = $packages[$key];
                     }
                 }
@@ -216,10 +217,11 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 
     // ----------------------------------------
 
-    private function buildCurlObject($package,
-                                     $serverBaseUrl,
-                                     $serverHostName)
-    {
+    protected function buildCurlObject(
+        $package,
+        $serverBaseUrl,
+        $serverHostName
+    ) {
         $curlObject = curl_init();
 
         $preparedHeaders = array();
@@ -249,7 +251,8 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
             $sslVerifyHost = false;
         }
 
-        curl_setopt_array($curlObject,
+        curl_setopt_array(
+            $curlObject,
             array(
                 // set the server we are using
                 CURLOPT_URL => $serverBaseUrl,
@@ -265,7 +268,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
 
                 // set the data body of the request
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => http_build_query($postData,'','&'),
+                CURLOPT_POSTFIELDS => http_build_query($postData, '', '&'),
 
                 // set it to return the transfer as a string from curl_exec
                 CURLOPT_RETURNTRANSFER => true,
@@ -277,11 +280,12 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         return $curlObject;
     }
 
-    private function canRepeatRequest($curlErrorNumber,
-                                      $tryToResendOnError,
-                                      $tryToSwitchEndpointOnError,
-                                      $switchingResult)
-    {
+    protected function canRepeatRequest(
+        $curlErrorNumber,
+        $tryToResendOnError,
+        $tryToSwitchEndpointOnError,
+        $switchingResult
+    ) {
         return $curlErrorNumber !== CURLE_OPERATION_TIMEOUTED && $tryToResendOnError &&
                (!$tryToSwitchEndpointOnError || ($tryToSwitchEndpointOnError && $switchingResult));
     }
@@ -291,7 +295,7 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
     /**
      * @return Ess_M2ePro_Helper_Server
      */
-    private function getServerHelper()
+    protected function getServerHelper()
     {
         return Mage::helper('M2ePro/Server');
     }

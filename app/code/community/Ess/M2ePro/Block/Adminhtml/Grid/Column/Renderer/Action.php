@@ -49,7 +49,6 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
         $sorted = array();
 
         foreach ($groupOrder as $groupId => $groupLabel) {
-
             $sorted[$groupId] = array(
                 'label' => $groupLabel,
                 'actions' => array()
@@ -108,7 +107,6 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Column_Renderer_Action
     {
         if (!empty($action['url']['params']) && is_array($action['url']['params'])) {
             foreach ($action['url']['params'] as $paramKey => $paramValue) {
-
                 if (strpos($paramValue, '$') === 0) {
                     $paramValue = str_replace('$', '', $paramValue);
                     $action['url']['params'][$paramKey] = $row->getData($paramValue);

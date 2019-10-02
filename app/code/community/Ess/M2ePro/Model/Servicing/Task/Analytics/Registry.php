@@ -11,20 +11,20 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
     const STORAGE_KEY = 'servicing/analytics';
 
     /** @var Ess_M2ePro_Model_Registry */
-    protected $registry;
+    protected $_registry;
 
     //########################################
 
     public function __construct()
     {
-        $this->registry = Mage::getModel('M2ePro/Registry')->loadByKey(self::STORAGE_KEY);
+        $this->_registry = Mage::getModel('M2ePro/Registry')->loadByKey(self::STORAGE_KEY);
     }
 
     //########################################
 
     public function save()
     {
-        $this->registry->save();
+        $this->_registry->save();
     }
 
     //########################################
@@ -73,8 +73,8 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData['planned_at'] = $date;
         unset($regData['started_at'], $regData['finished_at'], $regData['progress']);
 
-        $this->registry->setValue($regData);
-        $this->registry->save();
+        $this->_registry->setValue($regData);
+        $this->_registry->save();
     }
 
     public function markStarted()
@@ -84,8 +84,8 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData['started_at'] = Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d H:i:s');
         $regData['progress'] = array();
 
-        $this->registry->setValue($regData);
-        $this->registry->save();
+        $this->_registry->setValue($regData);
+        $this->_registry->save();
     }
 
     public function markFinished()
@@ -93,8 +93,8 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData = $this->getStoredData();
         $regData['finished_at'] = Mage::helper('M2ePro')->getCurrentGmtDate(false, 'Y-m-d H:i:s');
 
-        $this->registry->setValue($regData);
-        $this->registry->save();
+        $this->_registry->setValue($regData);
+        $this->_registry->save();
     }
 
     //########################################
@@ -111,14 +111,14 @@ class Ess_M2ePro_Model_Servicing_Task_Analytics_Registry
         $regData = $this->getStoredData();
         $regData['progress'][$nick][$progressDataKey] = $progressDataValue;
 
-        $this->registry->setValue($regData);
+        $this->_registry->setValue($regData);
     }
 
     //########################################
 
-    private function getStoredData()
+    protected function getStoredData()
     {
-        return $this->registry->getValueFromJson();
+        return $this->_registry->getValueFromJson();
     }
 
     //########################################

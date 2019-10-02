@@ -11,25 +11,25 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
     /**
      * @var array
      */
-    private $params = array();
+    protected $_params = array();
 
-    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator */
-    private $configurator = NULL;
-
-    /**
-     * @var array
-     */
-    private $messages = array();
+    /** @var Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $_configurator */
+    protected $_configurator = null;
 
     /**
      * @var array
      */
-    protected $data = array();
+    protected $_messages = array();
+
+    /**
+     * @var array
+     */
+    protected $_data = array();
 
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     //########################################
 
@@ -38,7 +38,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     public function setParams(array $params)
     {
-        $this->params = $params;
+        $this->_params = $params;
     }
 
     /**
@@ -46,7 +46,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     protected function getParams()
     {
-        return $this->params;
+        return $this->_params;
     }
 
     // ---------------------------------------
@@ -57,7 +57,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     public function setConfigurator(Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator $configurator)
     {
-        $this->configurator = $configurator;
+        $this->_configurator = $configurator;
         return $this;
     }
 
@@ -66,7 +66,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     protected function getConfigurator()
     {
-        return $this->configurator;
+        return $this->_configurator;
     }
 
     // ---------------------------------------
@@ -77,7 +77,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -86,7 +86,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     protected function getListingProduct()
     {
-        return $this->listingProduct;
+        return $this->_listingProduct;
     }
 
     //########################################
@@ -97,7 +97,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
     protected function addMessage($message, $type = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_ERROR)
     {
-        $this->messages[] = array(
+        $this->_messages[] = array(
             'text' => $message,
             'type' => $type,
         );
@@ -110,7 +110,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this->_messages;
     }
 
     // ---------------------------------------
@@ -121,11 +121,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     public function getData($key = null)
     {
-        if (is_null($key)) {
-            return $this->data;
+        if ($key === null) {
+            return $this->_data;
         }
 
-        return isset($this->data[$key]) ? $this->data[$key] : null;
+        return isset($this->_data[$key]) ? $this->_data[$key] : null;
     }
 
     /**
@@ -134,7 +134,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
      */
     public function setData($data)
     {
-        $this->data = $data;
+        $this->_data = $data;
         return $this;
     }
 
@@ -215,7 +215,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
     protected function validateCategory()
     {
         if (!$this->getEbayListingProduct()->isSetCategoryTemplate()) {
-
             // M2ePro_TRANSLATIONS
             // Categories Settings are not set
             $this->addMessage('Categories Settings are not set');
@@ -231,7 +230,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
     protected function validatePrice()
     {
         if ($this->getEbayListingProduct()->isVariationsReady()) {
-
             if (!$this->validateVariationsFixedPrice()) {
                 return false;
             }
@@ -240,7 +238,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
         }
 
         if ($this->getEbayListingProduct()->isListingTypeAuction()) {
-
             if (!$this->validateStartPrice()) {
                 return false;
             }
@@ -254,9 +251,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             }
 
             return true;
-
         } else {
-
             if (!$this->validateFixedPrice()) {
                 return false;
             }
@@ -275,12 +270,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $qty = $this->getQty();
         if ($qty <= 0) {
-
-            if (isset($this->params['status_changer']) &&
-                $this->params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
-
+            if (isset($this->_params['status_changer']) &&
+                $this->_params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
                 // M2ePro_TRANSLATIONS
-                // 'You are submitting an Item with zero quantity. It contradicts eBay requirements. Please apply the Stop Action instead.'
+                // 'You are submitting an Item with zero quantity. It contradicts eBay requirements.
+                // Please apply the Stop Action instead.'
                 $message = 'You are submitting an Item with zero quantity. It contradicts eBay requirements.';
 
                 if ($this->getListingProduct()->isStoppable()) {
@@ -290,7 +284,10 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
                 $this->addMessage($message);
             } else {
                 // M2ePro_TRANSLATIONS
-                // 'Cannot submit an Item with zero quantity. It contradicts eBay requirements. This action has been generated automatically based on your Synchronization Rule settings. The error occurs when the Stop Rules are not properly configured or disabled. Please review your settings.'
+                // 'Cannot submit an Item with zero quantity. It contradicts eBay requirements.
+                // This action has been generated automatically based on your Synchronization Rule settings.
+                // The error occurs when the Stop Rules are not properly configured or disabled.
+                // Please review your settings.'
                 $message = 'Cannot submit an Item with zero quantity. It contradicts eBay requirements.
                             This action has been generated automatically based on your Synchronization Rule settings. ';
 
@@ -306,7 +303,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             return false;
         }
 
-        $this->data['qty'] = $qty;
+        $this->_data['qty'] = $qty;
 
         return true;
     }
@@ -319,7 +316,14 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             !$this->getEbayListingProduct()->isVariationsReady())
         {
             // M2ePro_TRANSLATIONS
-            // M2E Pro identifies this Product as a Variational one. But no Variations can be obtained from it. The problem could be related to the fact that Product Variations are not assigned to Magento Store View your M2E Pro Listing is created for. In order to be processed, the Product data should be available within Website that M2E Pro appeals to. Another possible reason is an impact of the external plugins. The 3rd party tools override Magento core functionality, therefore, prevent M2E Pro from processing the Product data correctly. Make sure you have selected an appropriate Website in each Associated Product and no 3rd party extension overrides your settings. Otherwise, contact M2E Pro Support Team to resolve the issue.
+            // M2E Pro identifies this Product as a Variational one. But no Variations can be obtained from it.
+            // The problem could be related to the fact that Product Variations are not assigned to Magento Store
+            // View your M2E Pro Listing is created for. In order to be processed, the Product data should be
+            // available within Website that M2E Pro appeals to.
+            // Another possible reason is an impact of the external plugins. The 3rd party tools override
+            // Magento core functionality, therefore, prevent M2E Pro from processing the Product data correctly.
+            // Make sure you have selected an appropriate Website in each Associated Product and no 3rd party
+            // extension overrides your settings. Otherwise, contact M2E Pro Support Team to resolve the issue.
             $this->addMessage(
                 'M2E Pro identifies this Product as a Variational one. But no Variations can be obtained from it.
                 The problem could be related to the fact that Product Variations are not assigned to Magento Store
@@ -357,9 +361,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
                 // Max 5 pair attribute-option:
                 // Color: Blue, Size: XL, ...
                 if (count($uniqueAttributesValues) > 5) {
-
                     // M2ePro_TRANSLATIONS
-                    // Variations of this Magento Product are out of the eBay Variational Item limits. Its number of Variational Attributes is more than 5. That is why, this Product cannot be updated on eBay. Please, decrease the number of Attributes to solve this issue.
+                    // Variations of this Magento Product are out of the eBay Variational Item limits.
+                    // Its number of Variational Attributes is more than 5.
+                    // That is why, this Product cannot be updated on eBay.
+                    // Please, decrease the number of Attributes to solve this issue.
                     $this->addMessage(
                         'Variations of this Magento Product are out of the eBay Variational Item limits.
                         Its number of Variational Attributes is more than 5.
@@ -372,9 +378,11 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
                 // Maximum 60 options by one attribute:
                 // Color: Red, Blue, Green, ...
                 if (count($uniqueAttributesValues[$option->getAttribute()]) > 60) {
-
                     // M2ePro_TRANSLATIONS
-                    // Variations of this Magento Product are out of the eBay Variational Item limits. Its number of Options for some Variational Attribute(s) is more than 60. That is why, this Product cannot be updated on eBay. Please, decrease the number of Options to solve this issue.
+                    // Variations of this Magento Product are out of the eBay Variational Item limits.
+                    // Its number of Options for some Variational Attribute(s) is more than 60.
+                    // That is why, this Product cannot be updated on eBay.
+                    // Please, decrease the number of Options to solve this issue.
                     $this->addMessage(
                         'Variations of this Magento Product are out of the eBay Variational Item limits.
                         Its number of Options for some Variational Attribute(s) is more than 60.
@@ -390,9 +398,10 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
             // Not more that 250 possible variations
             if ($totalVariationsCount > 250) {
-
                 // M2ePro_TRANSLATIONS
-                // Variations of this Magento Product are out of the eBay Variational Item limits. The Number of Variations is more than 250. That is why, this Product cannot be updated on eBay. Please, decrease the number of Variations to solve this issue.
+                // Variations of this Magento Product are out of the eBay Variational Item limits.
+                // The Number of Variations is more than 250. That is why, this Product cannot be updated on eBay.
+                // Please, decrease the number of Variations to solve this issue.
                 $this->addMessage(
                     'Variations of this Magento Product are out of the eBay Variational Item limits.
                     The Number of Variations is more than 250. That is why, this Product cannot be updated on eBay.
@@ -403,9 +412,12 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
         }
 
         if ($totalVariationsCount == $totalDeletedVariationsCount) {
-
             // M2ePro_TRANSLATIONS
-            // This Product was listed to eBay as Variational Item. Changing of the Item type from Variational to Non-Variational during Revise/Relist actions is restricted by eBay. At the moment this Product is considered as Simple without any Variations, that does not allow updating eBay Variational Item.
+            // This Product was listed to eBay as Variational Item.
+            // Changing of the Item type from Variational to Non-Variational during Revise/Relist
+            // actions is restricted by eBay.
+            // At the moment this Product is considered as Simple without any Variations,
+            // that does not allow updating eBay Variational Item.
             $this->addMessage(
                 'This Product was listed to eBay as Variational Item.
                 Changing of the Item type from Variational to Non-Variational during Revise/Relist
@@ -435,14 +447,13 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
                 continue;
             }
 
-            if (isset($this->data['variation_fixed_price_'.$variation->getId()])) {
-                $variationPrice = $this->data['variation_fixed_price_'.$variation->getId()];
+            if (isset($this->_data['variation_fixed_price_' . $variation->getId()])) {
+                $variationPrice = $this->_data['variation_fixed_price_' . $variation->getId()];
             } else {
                 $variationPrice = $variation->getChildObject()->getPrice();
             }
 
             if ($variationPrice < 0.99) {
-
                 // M2ePro_TRANSLATIONS
                 // The Fixed Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
                 $this->addMessage(
@@ -452,7 +463,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
                 return false;
             }
 
-            $this->data['variation_fixed_price_'.$variation->getId()] = $variationPrice;
+            $this->_data['variation_fixed_price_' . $variation->getId()] = $variationPrice;
         }
 
         return true;
@@ -469,7 +480,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getFixedPrice();
         if ($price < 0.99) {
-
             // M2ePro_TRANSLATIONS
             // The Fixed Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
@@ -479,7 +489,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             return false;
         }
 
-        $this->data['price_fixed'] = $price;
+        $this->_data['price_fixed'] = $price;
 
         return true;
     }
@@ -492,7 +502,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getStartPrice();
         if ($price < 0.99) {
-
             // M2ePro_TRANSLATIONS
             // The Start Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
@@ -502,7 +511,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             return false;
         }
 
-        $this->data['price_start'] = $price;
+        $this->_data['price_start'] = $price;
 
         return true;
     }
@@ -519,7 +528,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getReservePrice();
         if ($price < 0.99) {
-
             // M2ePro_TRANSLATIONS
             // The Reserve Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
@@ -529,7 +537,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             return false;
         }
 
-        $this->data['price_reserve'] = $price;
+        $this->_data['price_reserve'] = $price;
 
         return true;
     }
@@ -546,7 +554,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getBuyItNowPrice();
         if ($price < 0.99) {
-
             // M2ePro_TRANSLATIONS
             // The Buy It Now Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
@@ -557,7 +564,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             return false;
         }
 
-        $this->data['price_buyitnow'] = $price;
+        $this->_data['price_buyitnow'] = $price;
 
         return true;
     }
@@ -566,8 +573,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
     protected function getQty()
     {
-        if (isset($this->data['qty'])) {
-            return $this->data['qty'];
+        if (isset($this->_data['qty'])) {
+            return $this->_data['qty'];
         }
 
         return $this->getEbayListingProduct()->getQty();
@@ -575,8 +582,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
     protected function getFixedPrice()
     {
-        if (isset($this->data['price_fixed'])) {
-            return $this->data['price_fixed'];
+        if (isset($this->_data['price_fixed'])) {
+            return $this->_data['price_fixed'];
         }
 
         return $this->getEbayListingProduct()->getFixedPrice();
@@ -584,8 +591,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
     protected function getStartPrice()
     {
-        if (!empty($this->data['price_start'])) {
-            return $this->data['price_start'];
+        if (!empty($this->_data['price_start'])) {
+            return $this->_data['price_start'];
         }
 
         return $this->getEbayListingProduct()->getStartPrice();
@@ -593,8 +600,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
     protected function getReservePrice()
     {
-        if (!empty($this->data['price_reserve'])) {
-            return $this->data['price_reserve'];
+        if (!empty($this->_data['price_reserve'])) {
+            return $this->_data['price_reserve'];
         }
 
         return $this->getEbayListingProduct()->getReservePrice();
@@ -602,8 +609,8 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
     protected function getBuyItNowPrice()
     {
-        if (!empty($this->data['price_buyitnow'])) {
-            return $this->data['price_buyitnow'];
+        if (!empty($this->_data['price_buyitnow'])) {
+            return $this->_data['price_buyitnow'];
         }
 
         return $this->getEbayListingProduct()->getBuyItNowPrice();

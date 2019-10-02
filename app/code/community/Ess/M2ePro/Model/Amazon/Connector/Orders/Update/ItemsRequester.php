@@ -37,8 +37,8 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Update_ItemsRequester
             parent::getProcessingParams(),
             array(
                 'request_data' => $this->getRequestData(),
-                'order_id'     => $this->params['order']['order_id'],
-                'change_id'    => $this->params['order']['change_id'],
+                'order_id'     => $this->_params['order']['order_id'],
+                'change_id'    => $this->_params['order']['change_id'],
                 'action_type'  => Ess_M2ePro_Model_Amazon_Order_Action_Processing::ACTION_TYPE_UPDATE,
                 'lock_name'    => 'update_shipping_status',
                 'start_date'   => Mage::helper('M2ePro')->getCurrentGmtDate(),
@@ -50,7 +50,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Update_ItemsRequester
 
     public function getRequestData()
     {
-        $order = $this->params['order'];
+        $order = $this->_params['order'];
         $fulfillmentDate = new DateTime($order['fulfillment_date'], new DateTimeZone('UTC'));
 
         $request = array(
@@ -65,7 +65,6 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Update_ItemsRequester
         );
 
         if (isset($order['items']) && is_array($order['items'])) {
-
             foreach ($order['items'] as $item) {
                 $request['items'][] = array(
                     'item_code' => $item['amazon_order_item_id'],

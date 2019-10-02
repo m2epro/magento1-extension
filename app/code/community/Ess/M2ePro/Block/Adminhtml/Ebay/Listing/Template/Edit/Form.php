@@ -22,12 +22,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Form extends Mage_Ad
 
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form(
+            array(
             'id'      => 'edit_form',
             'action'  => $this->getUrl('*/adminhtml_ebay_template/save'),
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
-        ));
+            )
+        );
 
         $form->setUseContainer(true);
         $this->setForm($form);
@@ -41,8 +43,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit_Form extends Mage_Ad
     {
         if ($this->getRequest()->getParam('step')) {
             $breadcrumb = $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_listing_breadcrumb','',
-                array('step' => $this->getRequest()->getParam('step',2))
+                'M2ePro/adminhtml_ebay_listing_breadcrumb', '',
+                array('step' => $this->getRequest()->getParam('step', 2))
             );
 
             return $breadcrumb->_toHtml() . parent::_toHtml();

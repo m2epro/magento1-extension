@@ -7,14 +7,14 @@
  */
 
 /**
- * @method Ess_M2ePro_Model_Mysql4_Walmart_Template_Category getResource()
+ * @method Ess_M2ePro_Model_Resource_Walmart_Template_Category getResource()
  */
 class Ess_M2ePro_Model_Walmart_Template_Category extends Ess_M2ePro_Model_Component_Abstract
 {
     /**
      * @var Ess_M2ePro_Model_Marketplace
      */
-    private $marketplaceModel = NULL;
+    protected $_marketplaceModel = null;
 
     //########################################
 
@@ -38,8 +38,10 @@ class Ess_M2ePro_Model_Walmart_Template_Category extends Ess_M2ePro_Model_Compon
 
         $collection = Mage::getModel('M2ePro/Walmart_Listing')->getCollection();
         $collection->getSelect()
-            ->where("main_table.auto_global_adding_category_template_id = {$this->getId()} OR
-                     main_table.auto_website_adding_category_template_id = {$this->getId()}");
+            ->where(
+                "main_table.auto_global_adding_category_template_id = {$this->getId()} OR
+                     main_table.auto_website_adding_category_template_id = {$this->getId()}"
+            );
 
         return (bool)Mage::getModel('M2ePro/Walmart_Listing_Product')
                             ->getCollection()
@@ -86,14 +88,13 @@ class Ess_M2ePro_Model_Walmart_Template_Category extends Ess_M2ePro_Model_Compon
      */
     public function getMarketplace()
     {
-        if (is_null($this->marketplaceModel)) {
-
-            $this->marketplaceModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
+        if ($this->_marketplaceModel === null) {
+            $this->_marketplaceModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
                 'Marketplace', $this->getMarketplaceId()
             );
         }
 
-        return $this->marketplaceModel;
+        return $this->_marketplaceModel;
     }
 
     /**
@@ -101,7 +102,7 @@ class Ess_M2ePro_Model_Walmart_Template_Category extends Ess_M2ePro_Model_Compon
      */
     public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
     {
-        $this->marketplaceModel = $instance;
+        $this->_marketplaceModel = $instance;
     }
 
     //########################################
@@ -113,8 +114,10 @@ class Ess_M2ePro_Model_Walmart_Template_Category extends Ess_M2ePro_Model_Compon
      */
     public function getSpecifics($asObjects = false, array $filters = array())
     {
-        $specifics = $this->getRelatedSimpleItems('Walmart_Template_Category_Specific','template_category_id',
-            $asObjects, $filters);
+        $specifics = $this->getRelatedSimpleItems(
+            'Walmart_Template_Category_Specific', 'template_category_id',
+            $asObjects, $filters
+        );
         if ($asObjects) {
             /** @var Ess_M2ePro_Model_Walmart_Template_Category_Specific $specific */
             foreach ($specifics as $specific) {

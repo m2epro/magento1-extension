@@ -74,9 +74,9 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Configuration
             $orderItem = $parentOrderItem->getChildObject();
 
             $orderItemProduct = $parentOrderItem->getProduct();
-            if (!is_null($orderItemProduct)) {
+            if ($orderItemProduct !== null) {
                 $weight = $orderItemProduct->getTypeInstance()->getWeight();
-                if (!is_null($weight)) {
+                if ($weight !== null) {
                     $totalWeight += $weight;
                 }
             }

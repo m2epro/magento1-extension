@@ -14,9 +14,15 @@ abstract class Ess_M2ePro_Model_Listing_Product_Variation_Updater
 
     //########################################
 
-    public function beforeMassProcessEvent() {}
+    public function beforeMassProcessEvent()
+    {
+        return null;
+    }
 
-    public function afterMassProcessEvent() {}
+    public function afterMassProcessEvent()
+    {
+        return null;
+    }
 
     //########################################
 }

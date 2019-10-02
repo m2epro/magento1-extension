@@ -1,7 +1,18 @@
 <?php
-    $categoryType = Mage::helper('M2ePro/Data_Global')->getValue('chooser_category_type');
-    $ebayCategoryTypes =  Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes();
-    $isWizard = !Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished();
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser_Tabs_Browse */
+
+$categoryType = Mage::helper('M2ePro/Data_Global')->getValue('chooser_category_type');
+$ebayCategoryTypes =  Mage::helper('M2ePro/Component_Ebay_Category')->getEbayCategoryTypes();
+$isWizard = !Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished();
+
 ?>
 
 <style>

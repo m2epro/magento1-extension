@@ -8,7 +8,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Order getParentObject()
- * @method Ess_M2ePro_Model_Mysql4_Walmart_Order getResource()
+ * @method Ess_M2ePro_Model_Resource_Walmart_Order getResource()
  */
 class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
@@ -21,11 +21,9 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
     const STATUS_SHIPPED             = 3;
     const STATUS_CANCELED            = 5;
 
-    //########################################
+    protected $_subTotalPrice = null;
 
-    private $subTotalPrice = NULL;
-
-    private $grandTotalPrice = NULL;
+    protected $_grandTotalPrice = null;
 
     //########################################
 
@@ -155,6 +153,10 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             return 0;
         }
 
+        if ($this->getSubtotalPrice() <= 0) {
+            return 0;
+        }
+
         $taxRate = ($taxAmount / $this->getSubtotalPrice()) * 100;
 
         return round($taxRate, 4);
@@ -167,6 +169,10 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
     {
         $taxAmount = $this->getShippingPriceTaxAmount();
         if ($taxAmount <= 0) {
+            return 0;
+        }
+
+        if ($this->getShippingPrice() <= 0) {
             return 0;
         }
 
@@ -224,11 +230,11 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
      */
     public function getSubtotalPrice()
     {
-        if (is_null($this->subTotalPrice)) {
-            $this->subTotalPrice = $this->getResource()->getItemsTotal($this->getId());
+        if ($this->_subTotalPrice === null) {
+            $this->_subTotalPrice = $this->getResource()->getItemsTotal($this->getId());
         }
 
-        return $this->subTotalPrice;
+        return $this->_subTotalPrice;
     }
 
     /**
@@ -236,14 +242,14 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
      */
     public function getGrandTotalPrice()
     {
-        if (is_null($this->grandTotalPrice)) {
-            $this->grandTotalPrice = $this->getSubtotalPrice();
-            $this->grandTotalPrice += $this->getProductPriceTaxAmount();
-            $this->grandTotalPrice += $this->getShippingPrice();
-            $this->grandTotalPrice += $this->getShippingPriceTaxAmount();
+        if ($this->_grandTotalPrice === null) {
+            $this->_grandTotalPrice = $this->getSubtotalPrice();
+            $this->_grandTotalPrice += $this->getProductPriceTaxAmount();
+            $this->_grandTotalPrice += $this->getShippingPrice();
+            $this->_grandTotalPrice += $this->getShippingPriceTaxAmount();
         }
 
-        return round($this->grandTotalPrice, 2);
+        return round($this->_grandTotalPrice, 2);
     }
 
     //########################################
@@ -269,7 +275,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
 
         $channelItems = $this->getParentObject()->getChannelItems();
 
-        if (count($channelItems) == 0) {
+        if (empty($channelItems)) {
             // 3rd party order
             // ---------------------------------------
             $storeId = $this->getWalmartAccount()->getMagentoOrdersListingsOtherStoreId();
@@ -283,6 +289,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                 $firstChannelItem = reset($channelItems);
                 $storeId = $firstChannelItem->getStoreId();
             }
+
             // ---------------------------------------
         }
 
@@ -370,7 +377,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();
-        if (is_null($magentoOrder)) {
+        if ($magentoOrder === null) {
             return false;
         }
 
@@ -428,7 +435,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();
-        if (is_null($magentoOrder)) {
+        if ($magentoOrder === null) {
             return false;
         }
 
@@ -490,7 +497,6 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         }
 
         if (empty($trackingDetails['tracking_number'])) {
-
             $this->getParentObject()->addErrorLog(
                 'Walmart Order was not shipped. Reason: %msg%',
                 array('msg' => 'Order status was not updated to Shipped on Walmart because a tracking number
@@ -504,7 +510,6 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         }
 
         if (!empty($trackingDetails['carrier_code'])) {
-
             $trackingDetails['carrier_title'] = Mage::helper('M2ePro/Component_Walmart')->getCarrierTitle(
                 $trackingDetails['carrier_code'],
                 isset($trackingDetails['carrier_title']) ? $trackingDetails['carrier_title'] : ''
@@ -512,7 +517,6 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
         }
 
         if (!empty($trackingDetails['carrier_title'])) {
-
             if ($trackingDetails['carrier_title'] == Ess_M2ePro_Model_Order_Shipment_Handler::CUSTOM_CARRIER_CODE &&
                 !empty($trackingDetails['shipping_method']))
             {
@@ -560,7 +564,6 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
             ->getFirstItem();
 
         if (!$change->getId()) {
-
             $change::create($orderId, $action, $creatorType, $component, $params);
             return true;
         }
@@ -574,7 +577,8 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                     $maxQtyTotal  = Mage::getModel('M2ePro/Walmart_Order_Item')->getCollection()
                         ->addFieldToFilter(
                             'walmart_order_item_id',
-                            $existingItem['walmart_order_item_id'])
+                            $existingItem['walmart_order_item_id']
+                        )
                         ->getFirstItem()
                         ->getQty();
                     $newQtyTotal >= $maxQtyTotal && $newQtyTotal = $maxQtyTotal;
@@ -582,6 +586,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
                     continue 2;
                 }
             }
+
             unset($existingItem);
             $existingParams['items'][] = $newItem;
         }

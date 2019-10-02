@@ -12,12 +12,12 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
     /**
      * @var array
      */
-    protected $cachedData = array();
+    protected $_cachedData = array();
 
     /**
      * @var array
      */
-    private $dataTypes = array(
+    protected $_dataTypes = array(
         'qty',
         'price',
         'promotions',
@@ -27,13 +27,13 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
     /**
      * @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Abstract[]
      */
-    private $dataBuilders = array();
+    protected $_dataBuilders = array();
 
     //########################################
 
     public function setCachedData(array $data)
     {
-        $this->cachedData = $data;
+        $this->_cachedData = $data;
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
      */
     public function getCachedData()
     {
-        return $this->cachedData;
+        return $this->_cachedData;
     }
 
     //########################################
@@ -62,7 +62,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
 
     //########################################
 
-    protected function beforeBuildDataEvent() {}
+    protected function beforeBuildDataEvent()
+    {
+        return null;
+    }
 
     abstract protected function getActionData();
 
@@ -75,8 +78,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
 
     protected function collectDataBuildersWarningMessages()
     {
-        foreach ($this->dataTypes as $requestType) {
-
+        foreach ($this->_dataTypes as $requestType) {
             $messages = $this->getDataBuilder($requestType)->getWarningMessages();
 
             foreach ($messages as $message) {
@@ -153,9 +155,9 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
      * @param $type
      * @return Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Abstract
      */
-    private function getDataBuilder($type)
+    protected function getDataBuilder($type)
     {
-        if (!isset($this->dataBuilders[$type])) {
+        if (!isset($this->_dataBuilders[$type])) {
 
             /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Abstract $dataBuilder */
             $dataBuilder = Mage::getModel('M2ePro/Walmart_Listing_Product_Action_DataBuilder_'.ucfirst($type));
@@ -164,10 +166,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
             $dataBuilder->setListingProduct($this->getListingProduct());
             $dataBuilder->setCachedData($this->getCachedData());
 
-            $this->dataBuilders[$type] = $dataBuilder;
+            $this->_dataBuilders[$type] = $dataBuilder;
         }
 
-        return $this->dataBuilders[$type];
+        return $this->_dataBuilders[$type];
     }
 
     //########################################

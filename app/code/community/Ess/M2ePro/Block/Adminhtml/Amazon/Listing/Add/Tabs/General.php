@@ -30,19 +30,21 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_General
         // ---------------------------------------
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->sessionKey);
 
-        isset($sessionData['title'])        && $this->setData('title',$sessionData['title']);
-        isset($sessionData['account_id'])   && $this->setData('account_id',$sessionData['account_id']);
-        isset($sessionData['store_id'])     && $this->setData('store_id',$sessionData['store_id']);
+        isset($sessionData['title'])        && $this->setData('title', $sessionData['title']);
+        isset($sessionData['account_id'])   && $this->setData('account_id', $sessionData['account_id']);
+        isset($sessionData['store_id'])     && $this->setData('store_id', $sessionData['store_id']);
         // ---------------------------------------
 
         // ---------------------------------------
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                'label'   => 'Add',
-                'onclick' => '',
-                'id' => 'add_account_button',
-            ));
+            ->setData(
+                array(
+                    'label'   => 'Add',
+                    'onclick' => '',
+                    'id'      => 'add_account_button',
+                )
+            );
 
         $this->setChild('add_account_button', $buttonBlock);
         // ---------------------------------------

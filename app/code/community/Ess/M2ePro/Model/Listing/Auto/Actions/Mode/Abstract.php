@@ -11,7 +11,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Abstract
     /**
      * @var null|Mage_Catalog_Model_Product
      */
-    private $product = NULL;
+    protected $_product = null;
 
     //########################################
 
@@ -20,7 +20,7 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Abstract
      */
     public function setProduct(Mage_Catalog_Model_Product $product)
     {
-        $this->product = $product;
+        $this->_product = $product;
     }
 
     /**
@@ -29,11 +29,11 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Mode_Abstract
      */
     protected function getProduct()
     {
-        if (!($this->product instanceof Mage_Catalog_Model_Product)) {
+        if (!($this->_product instanceof Mage_Catalog_Model_Product)) {
             throw new Ess_M2ePro_Model_Exception_Logic('Property "Product" should be set first.');
         }
 
-        return $this->product;
+        return $this->_product;
     }
 
     //########################################

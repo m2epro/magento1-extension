@@ -12,11 +12,12 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Schema extends Ess_M2ePro_
 
     public function schemaCreate()
     {
-        if ($this->installer->getTablesObject()->isExists('magento_product_websites_update')) {
+        if ($this->_installer->getTablesObject()->isExists('magento_product_websites_update')) {
             return;
         }
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
 CREATE TABLE IF NOT EXISTS `m2epro_processing` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -468,11 +469,12 @@ SQL
 
     public function schemaDelete()
     {
-        if (!$this->installer->getTablesObject()->isExists('synchronization_config')) {
+        if (!$this->_installer->getTablesObject()->isExists('synchronization_config')) {
             return;
         }
 
-        $this->installer->run(<<<SQL
+        $this->_installer->run(
+            <<<SQL
 
 DROP TABLE IF EXISTS `m2epro_buy_dictionary_category`;
 DROP TABLE IF EXISTS `m2epro_buy_template_new_product`;

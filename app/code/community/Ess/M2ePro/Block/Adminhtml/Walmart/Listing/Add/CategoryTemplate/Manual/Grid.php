@@ -10,7 +10,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
     extends Mage_Adminhtml_Block_Widget_Grid
 {
     /** @var Ess_M2ePro_Model_Listing */
-    private $listing = NULL;
+    protected $_listing = null;
 
     //########################################
 
@@ -37,9 +37,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
     {
         // Get collection
         // ---------------------------------------
-        /* @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
-        $collection = Mage::getConfig()->getModelInstance('Ess_M2ePro_Model_Mysql4_Magento_Product_Collection',
-            Mage::getModel('catalog/product')->getResource())
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
+        $collection = Mage::getConfig()->getModelInstance(
+            'Ess_M2ePro_Model_Resource_Magento_Product_Collection',
+            Mage::getModel('catalog/product')->getResource()
+        )
             ->setStoreId($this->getListing()->getData('store_id'))
             ->setListingProductModeOn()
             ->addAttributeToSelect('name')
@@ -79,7 +81,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
 
     protected function _prepareColumns()
     {
-        $this->addColumn('product_id', array(
+        $this->addColumn(
+            'product_id', array(
             'header'    => Mage::helper('M2ePro')->__('Product ID'),
             'align'     => 'right',
             'width'     => '100px',
@@ -87,9 +90,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
             'index'     => 'entity_id',
             'filter_index' => 'entity_id',
             'frame_callback' => array($this, 'callbackColumnProductId')
-        ));
+            )
+        );
 
-        $this->addColumn('name', array(
+        $this->addColumn(
+            'name', array(
             'header'    => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
             'align'     => 'left',
             'width'     => '400px',
@@ -98,9 +103,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
             'filter_index' => 'name',
             'frame_callback' => array($this, 'callbackColumnProductTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterProductTitle')
-        ));
+            )
+        );
 
-        $this->addColumn('category_template', array(
+        $this->addColumn(
+            'category_template', array(
             'header'    => Mage::helper('M2ePro')->__('Category Policy'),
             'align'     => 'left',
             'width'     => '*',
@@ -114,7 +121,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
             ),
             'frame_callback' => array($this, 'callbackColumnCategoryTemplateCallback'),
             'filter_condition_callback' => array($this, 'callbackColumnCategoryTemplateFilterCallback')
-        ));
+            )
+        );
 
         $actionsColumn = array(
             'header'    => Mage::helper('M2ePro')->__('Actions'),
@@ -150,10 +158,12 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
         $this->setMassactionIdFieldOnlyIndexValue(true);
 
         // ---------------------------------------
-        $this->getMassactionBlock()->addItem('setCategoryTemplate', array(
+        $this->getMassactionBlock()->addItem(
+            'setCategoryTemplate', array(
             'label' => Mage::helper('M2ePro')->__('Set Category Policy'),
             'url'   => ''
-        ));
+            )
+        );
         // ---------------------------------------
 
         return parent::_prepareMassaction();
@@ -164,13 +174,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
     public function callbackColumnProductId($value, $row, $column, $isExport)
     {
         $productId = (int)$row->getData('entity_id');
-        $storeId = (int)$this->listing->getData('store_id');
+        $storeId = (int)$this->_listing->getData('store_id');
 
         $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productId));
         $htmlWithoutThumbnail = '<a href="' . $url . '" target="_blank">'.$productId.'</a>';
 
         $showProductsThumbnails = (bool)(int)Mage::helper('M2ePro/Module')->getConfig()
-            ->getGroupValue('/view/','show_products_thumbnails');
+            ->getGroupValue('/view/', 'show_products_thumbnails');
 
         if (!$showProductsThumbnails) {
             return $htmlWithoutThumbnail;
@@ -182,7 +192,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_CategoryTemplate_Manual_Gri
         $magentoProduct->setStoreId($storeId);
 
         $thumbnail = $magentoProduct->getThumbnailImage();
-        if (is_null($thumbnail)) {
+        if ($thumbnail === null) {
             return $htmlWithoutThumbnail;
         }
 
@@ -212,7 +222,7 @@ HTML;
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         /** @var Ess_M2ePro_Model_Walmart_Listing_Product $walmartListingProduct */
         $listingProductId = (int)$row->getData('id');
-        $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product',$listingProductId);
+        $listingProduct = Mage::helper('M2ePro/Component_Walmart')->getObject('Listing_Product', $listingProductId);
         $walmartListingProduct = $listingProduct->getChildObject();
 
         if (!$walmartListingProduct->getVariationManager()->isVariationProduct()) {
@@ -229,7 +239,6 @@ HTML;
         }
 
         if (!empty($productAttributes)) {
-
             $value .= '<div style="font-size: 11px; font-weight: bold; color: grey; margin-left: 7px"><br/>';
             $value .= implode(', ', $productAttributes);
             $value .= '</div>';
@@ -251,9 +260,11 @@ HTML;
 HTML;
         }
 
-        $templateCategoryEditUrl = $this->getUrl('*/adminhtml_walmart_template_category/edit', array(
+        $templateCategoryEditUrl = $this->getUrl(
+            '*/adminhtml_walmart_template_category/edit', array(
             'id' => $categoryTemplateId
-        ));
+            )
+        );
 
         /** @var Ess_M2ePro_Model_Walmart_Template_Category $categoryTemplate */
         $categoryTemplate = Mage::getModel('M2ePro/Walmart_Template_Category')->load($categoryTemplateId);
@@ -312,8 +323,10 @@ HTML;
     protected function _toHtml()
     {
         $errorMessage = Mage::helper('M2ePro')
-            ->__("To proceed, the category data must be specified.
-                  Please select a relevant Category Policy for at least one product.");
+            ->__(
+                "To proceed, the category data must be specified.
+                  Please select a relevant Category Policy for at least one product."
+            );
         $isNotExistProductsWithCategoryTemplate = (int)$this->isNotExistProductsWithCategoryTemplate();
 
         $javascriptsMain = <<<HTML
@@ -356,19 +369,19 @@ HTML;
             throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
-        if (is_null($this->listing)) {
-            $this->listing = Mage::helper('M2ePro/Component_Walmart')
-                ->getObject('Listing', $listingId)->getChildObject();
+        if ($this->_listing === null) {
+            $this->_listing = Mage::helper('M2ePro/Component_Walmart')
+                                  ->getObject('Listing', $listingId)->getChildObject();
         }
 
-        return $this->listing;
+        return $this->_listing;
     }
 
     //########################################
 
-    private function isNotExistProductsWithCategoryTemplate()
+    protected function isNotExistProductsWithCategoryTemplate()
     {
-        /** @var Mage_Core_Model_Mysql4_Collection_Abstract $collection */
+        /** @var Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
         $collection = $this->getCollection();
         $countSelect = clone $collection->getSelect();
         $countSelect->reset(Zend_Db_Select::ORDER);

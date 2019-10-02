@@ -38,7 +38,8 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Delete_ProcessingRunner
             $account->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
             $account->deleteProcessingLocks('server_synchronize', $this->getProcessingObject()->getId());
             $account->deleteProcessingLocks('deleting_from_server', $this->getProcessingObject()->getId());
-        } catch (Exception $exception) {}
+        } catch (Exception $exception) {
+        }
     }
 
     //########################################

@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
                 break;
         }
 
-        if (is_null($connector)) {
+        if ($connector === null) {
             return false;
         }
 
@@ -43,14 +43,13 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
 
     protected function processItems(array $items, $connectorName, array $params = array())
     {
-        if (count($items) == 0) {
+        if (empty($items)) {
             return false;
         }
 
         /** @var $items Ess_M2ePro_Model_Order_Item[] */
 
         foreach ($items as $item) {
-
             try {
                 $dispatcher = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
 
@@ -69,7 +68,6 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
 
                 return false;
             }
-
         }
 
         return true;
@@ -77,7 +75,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
 
     // ########################################
 
-    private function prepareItems($items)
+    protected function prepareItems($items)
     {
         !is_array($items) && $items = array($items);
 

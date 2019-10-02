@@ -13,13 +13,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing extends Ess_M2ePro
     const TYPE_REVISE = 'revise';
     const TYPE_STOP   = 'stop';
 
-    //####################################
+    /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
+    protected $_listingProduct = null;
 
-    /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
-    private $listingProduct = NULL;
-
-    /** @var Ess_M2ePro_Model_Processing $processing */
-    private $processing = NULL;
+    /** @var Ess_M2ePro_Model_Processing $_processing */
+    protected $_processing = null;
 
     //####################################
 
@@ -33,7 +31,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing extends Ess_M2ePro
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        $this->listingProduct = $listingProduct;
+        $this->_listingProduct = $listingProduct;
         return $this;
     }
 
@@ -43,11 +41,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing extends Ess_M2ePro
             throw new Ess_M2ePro_Model_Exception_Logic('Instance must be loaded first.');
         }
 
-        if (!is_null($this->listingProduct)) {
-            return $this->listingProduct;
+        if ($this->_listingProduct !== null) {
+            return $this->_listingProduct;
         }
 
-        return $this->listingProduct = Mage::helper('M2ePro')->getObject(
+        return $this->_listingProduct = Mage::helper('M2ePro')->getObject(
             'Listing_Product', $this->getListingProductId()
         );
     }
@@ -56,7 +54,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing extends Ess_M2ePro
 
     public function setProcessing(Ess_M2ePro_Model_Processing $processing)
     {
-        $this->processing = $processing;
+        $this->_processing = $processing;
         return $this;
     }
 
@@ -70,11 +68,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing extends Ess_M2ePro
             throw new Ess_M2ePro_Model_Exception_Logic('Instance must be loaded first.');
         }
 
-        if (!is_null($this->processing)) {
-            return $this->processing;
+        if ($this->_processing !== null) {
+            return $this->_processing;
         }
 
-        return $this->processing = Mage::helper('M2ePro')->getObject('Processing', $this->getProcessingId());
+        return $this->_processing = Mage::helper('M2ePro')->getObject('Processing', $this->getProcessingId());
     }
 
     //####################################

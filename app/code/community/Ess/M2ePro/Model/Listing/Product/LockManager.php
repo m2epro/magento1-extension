@@ -11,19 +11,19 @@ class Ess_M2ePro_Model_Listing_Product_LockManager
     const LOCK_ITEM_MAX_ALLOWED_INACTIVE_TIME = 1800; // 30 min
 
     /** @var Ess_M2ePro_Model_Listing_Product */
-    private $listingProduct = NULL;
+    protected $_listingProduct = null;
 
     /** @var Ess_M2ePro_Model_Lock_Item_Manager */
-    private $lockItemManager = NULL;
+    protected $_lockItemManager = null;
 
     /** @var Ess_M2ePro_Model_Listing_Log */
-    private $listingLog = NULL;
+    protected $_listingLog = null;
 
-    private $initiator = NULL;
+    protected $_initiator = null;
 
-    private $logsActionId = NULL;
+    protected $_logsActionId = null;
 
-    private $logsAction = NULL;
+    protected $_logsAction = null;
 
     //########################################
 
@@ -33,26 +33,26 @@ class Ess_M2ePro_Model_Listing_Product_LockManager
             throw new Ess_M2ePro_Model_Exception_Logic('Listing Product is not defined.');
         }
 
-        $this->listingProduct = $args['listing_product'];
+        $this->_listingProduct = $args['listing_product'];
     }
 
     //########################################
 
     public function setInitiator($initiator)
     {
-        $this->initiator = $initiator;
+        $this->_initiator = $initiator;
         return $this;
     }
 
     public function setLogsActionId($logsActionId)
     {
-        $this->logsActionId = $logsActionId;
+        $this->_logsActionId = $logsActionId;
         return $this;
     }
 
     public function setLogsAction($logsAction)
     {
-        $this->logsAction = $logsAction;
+        $this->_logsAction = $logsAction;
         return $this;
     }
 
@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Listing_Product_LockManager
 
     public function isLocked()
     {
-        if ($this->listingProduct->isSetProcessingLock(NULL)) {
+        if ($this->_listingProduct->isSetProcessingLock(NULL)) {
             return true;
         }
 
@@ -83,12 +83,12 @@ class Ess_M2ePro_Model_Listing_Product_LockManager
         }
 
         $this->getListingLog()->addProductMessage(
-            $this->listingProduct->getListingId(),
-            $this->listingProduct->getProductId(),
-            $this->listingProduct->getId(),
-            $this->initiator,
-            $this->logsActionId,
-            $this->logsAction,
+            $this->_listingProduct->getListingId(),
+            $this->_listingProduct->getProductId(),
+            $this->_listingProduct->getId(),
+            $this->_initiator,
+            $this->_logsActionId,
+            $this->_logsAction,
             Mage::helper('M2ePro')->__('Another Action is being processed. Try again when the Action is completed.'),
             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
@@ -111,29 +111,30 @@ class Ess_M2ePro_Model_Listing_Product_LockManager
 
     //########################################
 
-    private function getLockItemManager()
+    protected function getLockItemManager()
     {
-        if (!is_null($this->lockItemManager)) {
-            return $this->lockItemManager;
+        if ($this->_lockItemManager !== null) {
+            return $this->_lockItemManager;
         }
 
-        return $this->lockItemManager = Mage::getModel(
+        return $this->_lockItemManager = Mage::getModel(
             'M2ePro/Lock_Item_Manager',
             array(
-                'nick' => $this->listingProduct->getComponentMode().'_listing_product_'.$this->listingProduct->getId()
+                'nick' => $this->_listingProduct->getComponentMode()
+                          . '_listing_product_' . $this->_listingProduct->getId()
             )
         );
     }
 
-    private function getListingLog()
+    protected function getListingLog()
     {
-        if (!is_null($this->listingLog)) {
-            return $this->listingLog;
+        if ($this->_listingLog !== null) {
+            return $this->_listingLog;
         }
 
-        $this->listingLog = Mage::getModel('M2ePro/'.$this->listingProduct->getComponentMode().'_Listing_Log');
+        $this->_listingLog = Mage::getModel('M2ePro/' . $this->_listingProduct->getComponentMode() . '_Listing_Log');
 
-        return $this->listingLog;
+        return $this->_listingLog;
     }
 
     //########################################

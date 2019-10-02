@@ -27,27 +27,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Log extends Mage_Adminhtml_B
 
         $otherListingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
         if (isset($otherListingData['id'])) {
-
             if (!Mage::helper('M2ePro/View_Ebay_Component')->isSingleActiveComponent()) {
                 $component = Mage::helper('M2ePro/Component')->getComponentTitle($otherListingData['component_mode']);
                 $headerText = Mage::helper('M2ePro')->__("Log For %component_name% 3rd Party Listing", $component);
             } else {
                 $headerText = Mage::helper('M2ePro')->__("Log For 3rd Party Listing");
             }
+
             $tempTitle = Mage::helper('M2ePro/Component_'.ucfirst($otherListingData['component_mode']))
-                ->getObject('Listing_Other',$otherListingData['id'])
+                ->getObject('Listing_Other', $otherListingData['id'])
                 ->getChildObject()->getTitle();
 
             $this->_headerText = $headerText;
             $this->_headerText .= ' "' . $this->escapeHtml($tempTitle) . '"';
         } else {
-
             // Set template
             // ---------------------------------------
             $this->setTemplate('M2ePro/widget/grid/container/only_content.phtml');
             // ---------------------------------------
-
         }
+
         // ---------------------------------------
 
         // Set buttons actions
@@ -59,11 +58,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_Log extends Mage_Adminhtml_B
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        $this->addButton('show_general_log', array(
+        $this->addButton(
+            'show_general_log', array(
             'label'     => Mage::helper('M2ePro')->__('Show General Log'),
             'onclick'   => 'setLocation(\'' .$this->getUrl('*/adminhtml_ebay_log/listingOther').'\')',
             'class'     => 'button_link'
-        ));
+            )
+        );
         // ---------------------------------------
     }
 

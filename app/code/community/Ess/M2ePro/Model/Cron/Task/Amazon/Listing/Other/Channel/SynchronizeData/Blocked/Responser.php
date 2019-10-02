@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Blocked_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Inventory_Get_Blocked_ItemsResponser
 {
-    protected $logsActionId = NULL;
-    protected $synchronizationLog = NULL;
+    protected $_logsActionId       = null;
+    protected $_synchronizationLog = null;
 
     // ########################################
 
@@ -19,7 +19,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         parent::processResponseMessages();
 
         foreach ($this->getResponse()->getMessages()->getEntities() as $message) {
-
             if (!$message->isError() && !$message->isWarning()) {
                 continue;
             }
@@ -66,11 +65,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
     protected function processResponseData()
     {
         try {
-
             $this->updateBlockedListingProducts();
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             $this->getSynchronizationLog()->addMessage(
@@ -102,14 +98,13 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
 
         $notReceivedIds = array();
         while ($existingItem = $stmtTemp->fetch()) {
-
             if (in_array($existingItem['sku'], $responseData['data'])) {
                 continue;
             }
 
             $notReceivedItem = $existingItem;
 
-            if (!in_array((int)$notReceivedItem['id'],$notReceivedIds)) {
+            if (!in_array((int)$notReceivedItem['id'], $notReceivedIds)) {
                 $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
                     ->getHumanTitleByListingProductStatus($notReceivedItem['status']);
                 $statusChangedTo = Mage::helper('M2ePro/Component_Amazon')
@@ -136,6 +131,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
 
             $notReceivedIds[] = (int)$notReceivedItem['id'];
         }
+
         $notReceivedIds = array_unique($notReceivedIds);
 
         if (empty($notReceivedIds)) {
@@ -151,22 +147,26 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
         $listingOtherMainTable = Mage::getResourceModel('M2ePro/Listing_Other')->getMainTable();
 
-        $chunckedIds = array_chunk($notReceivedIds,1000);
+        $chunckedIds = array_chunk($notReceivedIds, 1000);
         foreach ($chunckedIds as $partIds) {
-            $where = '`id` IN ('.implode(',',$partIds).')';
-            $connWrite->update($listingOtherMainTable,$bind,$where);
+            $where = '`id` IN ('.implode(',', $partIds).')';
+            $connWrite->update($listingOtherMainTable, $bind, $where);
         }
     }
 
     protected function getPdoStatementExistingListings()
     {
-        /** @var $collection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $collection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
-        $collection->getSelect()->where('`main_table`.account_id = ?',(int)$this->getAccount()->getId());
-        $collection->getSelect()->where('`main_table`.`status` != ?',
-            (int)Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED);
-        $collection->getSelect()->where('`main_table`.`status` != ?',
-            (int)Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED);
+        $collection->getSelect()->where('`main_table`.account_id = ?', (int)$this->getAccount()->getId());
+        $collection->getSelect()->where(
+            '`main_table`.`status` != ?',
+            (int)Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED
+        );
+        $collection->getSelect()->where(
+            '`main_table`.`status` != ?',
+            (int)Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED
+        );
 
         $tempColumns = array('main_table.id','main_table.status', 'second_table.sku');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns($tempColumns);
@@ -181,7 +181,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
      */
     protected function getAccount()
     {
-        return $this->getObjectByParam('Account','account_id');
+        return $this->getObjectByParam('Account', 'account_id');
     }
 
     /**
@@ -216,24 +216,24 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
 
     protected function getLogsActionId()
     {
-        if (!is_null($this->logsActionId)) {
-            return $this->logsActionId;
+        if ($this->_logsActionId !== null) {
+            return $this->_logsActionId;
         }
 
-        return $this->logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
+        return $this->_logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
     }
 
     protected function getSynchronizationLog()
     {
-        if (!is_null($this->synchronizationLog)) {
-            return $this->synchronizationLog;
+        if ($this->_synchronizationLog !== null) {
+            return $this->_synchronizationLog;
         }
 
-        $this->synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $this->synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
-        $this->synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS);
+        $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+        $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_OTHER_LISTINGS);
 
-        return $this->synchronizationLog;
+        return $this->_synchronizationLog;
     }
 
     // ########################################

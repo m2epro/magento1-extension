@@ -9,7 +9,7 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_Variations
     extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
-    protected $listingProductId;
+    protected $_listingProductId;
 
     //########################################
 
@@ -19,7 +19,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function setListingProductId($listingProductId)
     {
-        $this->listingProductId = $listingProductId;
+        $this->_listingProductId = $listingProductId;
 
         return $this;
     }
@@ -28,7 +28,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
      */
     public function getListingProductId()
     {
-        return $this->listingProductId;
+        return $this->_listingProductId;
     }
 
     public function __construct()
@@ -36,7 +36,5 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Variation_Product_Manage_Tabs_V
         parent::__construct();
 
         $this->setTemplate('M2ePro/walmart/listing/variation/product/manage/tabs/variations.phtml');
-
-        return $this;
     }
 }

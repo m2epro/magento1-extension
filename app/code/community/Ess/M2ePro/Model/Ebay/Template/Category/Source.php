@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Ebay_Template_Category_Source
 {
     /**
-     * @var $magentoProduct Ess_M2ePro_Model_Magento_Product
+     * @var $_magentoProduct Ess_M2ePro_Model_Magento_Product
      */
-    private $magentoProduct = null;
+    protected $_magentoProduct = null;
 
     /**
-     * @var $categoryTemplateModel Ess_M2ePro_Model_Ebay_Template_Category
+     * @var $_categoryTemplateModel Ess_M2ePro_Model_Ebay_Template_Category
      */
-    private $categoryTemplateModel = null;
+    protected $_categoryTemplateModel = null;
 
     //########################################
 
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Source
      */
     public function setMagentoProduct(Ess_M2ePro_Model_Magento_Product $magentoProduct)
     {
-        $this->magentoProduct = $magentoProduct;
+        $this->_magentoProduct = $magentoProduct;
         return $this;
     }
 
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Source
      */
     public function getMagentoProduct()
     {
-        return $this->magentoProduct;
+        return $this->_magentoProduct;
     }
 
     // ---------------------------------------
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Source
      */
     public function setCategoryTemplate(Ess_M2ePro_Model_Ebay_Template_Category $instance)
     {
-        $this->categoryTemplateModel = $instance;
+        $this->_categoryTemplateModel = $instance;
         return $this;
     }
 
@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Ebay_Template_Category_Source
      */
     public function getCategoryTemplate()
     {
-        return $this->categoryTemplateModel;
+        return $this->_categoryTemplateModel;
     }
 
     //########################################

@@ -33,23 +33,29 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Category_Edit_Primary
 
         $backUrl = $this->getUrl('*/adminhtml_ebay_category/index');
 
-        $this->_addButton('back', array(
+        $this->_addButton(
+            'back', array(
             'label'     => Mage::helper('M2ePro')->__('Back'),
             'onclick'   => 'setLocation(\''.$backUrl.'\');',
             'class'     => 'back'
-        ));
+            )
+        );
 
-        $this->_addButton('save_and_continue', array(
+        $this->_addButton(
+            'save_and_continue', array(
             'label'     => Mage::helper('M2ePro')->__('Save And Continue Edit'),
             'onclick'   => 'EbayConfigurationCategoryHandlerObj.save_click(\'primary\', true)',
             'class'     => 'save'
-        ));
+            )
+        );
 
-        $this->_addButton('save', array(
+        $this->_addButton(
+            'save', array(
             'label'     => Mage::helper('M2ePro')->__('Save'),
             'onclick'   => 'EbayConfigurationCategoryHandlerObj.save_click(\'primary\', false)',
             'class'     => 'save'
-        ));
+            )
+        );
     }
 
     protected function _toHtml()

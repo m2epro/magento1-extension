@@ -11,17 +11,22 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 {
     //########################################
 
-    protected function check() {}
+    protected function check()
+    {
+        return null;
+    }
 
     protected function execute()
     {
         $childListingProducts = $this->getProcessor()->getTypeModel()->getChildListingsProducts();
 
         if (empty($childListingProducts)) {
-            $this->getProcessor()->getListingProduct()->addData(array(
+            $this->getProcessor()->getListingProduct()->addData(
+                array(
                 'status'                   => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED,
                 'variation_child_statuses' => null,
-            ));
+                )
+            );
 
             return;
         }
@@ -54,7 +59,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
                 continue;
             }
 
-            if (is_null($sameStatus)) {
+            if ($sameStatus === null) {
                 $sameStatus = $childStatus;
                 continue;
             }
@@ -64,17 +69,19 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
             }
         }
 
-        if ($isStatusSame && !is_null($sameStatus) &&
+        if ($isStatusSame && $sameStatus !== null &&
             $sameStatus != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED &&
             $resultStatus != Ess_M2ePro_Model_Listing_Product::STATUS_LISTED
         ) {
             $resultStatus = $sameStatus;
         }
 
-        $this->getProcessor()->getListingProduct()->addData(array(
+        $this->getProcessor()->getListingProduct()->addData(
+            array(
             'status'                   => $resultStatus,
             'variation_child_statuses' => Mage::helper('M2ePro')->jsonEncode($childStatuses),
-        ));
+            )
+        );
     }
 
     //########################################

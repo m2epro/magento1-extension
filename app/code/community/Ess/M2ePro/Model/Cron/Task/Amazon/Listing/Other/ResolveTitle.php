@@ -40,14 +40,16 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
 
     protected function performActions()
     {
-        /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+        /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('other_listings_synchronization',
-                                              Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES);
+        $accountsCollection->addFieldToFilter(
+            'other_listings_synchronization',
+            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+        );
 
         $accounts = $accountsCollection->getItems();
 
-        if (count($accounts) <= 0) {
+        if (empty($accounts)) {
             return;
         }
 
@@ -61,11 +63,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
             );
 
             try {
-
                 $this->updateTitlesByAsins($account);
-
             } catch (Exception $exception) {
-
                 $message = Mage::helper('M2ePro')->__(
                     'The "Update Titles" Action for Amazon Account "%account%" was completed with error.',
                     $account->getTitle()
@@ -83,11 +82,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
 
     //########################################
 
-    private function updateTitlesByAsins(Ess_M2ePro_Model_Account $account)
+    protected function updateTitlesByAsins(Ess_M2ePro_Model_Account $account)
     {
         for ($i = 0; $i <= 5; $i++) {
 
-            /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+            /** @var $listingOtherCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
 
             $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
             $listingOtherCollection->addFieldToFilter('main_table.account_id', (int)$account->getId());
@@ -129,7 +128,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
 
     // ---------------------------------------
 
-    private function updateReceivedTitles(array $responseData, Ess_M2ePro_Model_Account $account)
+    protected function updateReceivedTitles(array $responseData, Ess_M2ePro_Model_Account $account)
     {
         if (!isset($responseData['items']) || !is_array($responseData['items'])) {
             return;
@@ -146,7 +145,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
 
         $receivedItems = array();
         foreach ($responseData['items'] as $generalId => $item) {
-
             if ($item == false) {
                 continue;
             }
@@ -163,11 +161,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
             $listingsOthersWithEmptyTitles = array();
             if ($account->getChildObject()->isOtherListingsMappingEnabled()) {
 
-                /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
+                /** @var $listingOtherCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
                 $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other')
-                                              ->addFieldToFilter('main_table.account_id',(int)$account->getId())
-                                              ->addFieldToFilter('second_table.general_id',(int)$generalId)
-                                              ->addFieldToFilter('second_table.title',array('null' => true));
+                                              ->addFieldToFilter('main_table.account_id', (int)$account->getId())
+                                              ->addFieldToFilter('second_table.general_id', (int)$generalId)
+                                              ->addFieldToFilter('second_table.title', array('null' => true));
 
                 $listingsOthersWithEmptyTitles = $listingOtherCollection->getItems();
             }
@@ -187,12 +185,10 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
                 )
             );
 
-            if (count($listingsOthersWithEmptyTitles) > 0) {
-
+            if (!empty($listingsOthersWithEmptyTitles)) {
                 foreach ($listingsOthersWithEmptyTitles as $listingOtherModel) {
-
-                    $listingOtherModel->setData('title',(string)$title);
-                    $listingOtherModel->getChildObject()->setData('title',(string)$title);
+                    $listingOtherModel->setData('title', (string)$title);
+                    $listingOtherModel->getChildObject()->setData('title', (string)$title);
 
                     $mappingModel->initialize($account);
                     $mappingModel->autoMapOtherListingProduct($listingOtherModel);
@@ -201,7 +197,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
         }
     }
 
-    private function updateNotReceivedTitles($neededItems, $responseData) {
+    protected function updateNotReceivedTitles($neededItems, $responseData)
+    {
 
         /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
@@ -209,7 +206,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
         $aloTable = Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getMainTable();
 
         foreach ($neededItems as $generalId) {
-
             if (isset($responseData['items'][$generalId]) &&
                 !empty($responseData['items'][$generalId][0]['title'])) {
                 continue;

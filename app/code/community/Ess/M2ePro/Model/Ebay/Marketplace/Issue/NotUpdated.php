@@ -22,7 +22,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Issue_NotUpdated extends Ess_M2ePro_Mode
 
         $outdatedMarketplaces = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue(self::CACHE_KEY);
         if ($outdatedMarketplaces === false) {
-
             $tableName = Mage::helper('M2ePro/Module_Database_Structure')
                 ->getTableNameWithPrefix('m2epro_ebay_dictionary_marketplace');
 
@@ -42,11 +41,11 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Issue_NotUpdated extends Ess_M2ePro_Mode
             $marketplacesCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Marketplace')
                 ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
                 ->addFieldToFilter('id', array('in' => array_keys($dictionaryData)))
-                ->setOrder('sorder','ASC');
+                ->setOrder('sorder', 'ASC');
 
             $outdatedMarketplaces = array();
             foreach ($marketplacesCollection as $marketplace) {
-                /* @var $marketplace Ess_M2ePro_Model_Marketplace */
+                /** @var $marketplace Ess_M2ePro_Model_Marketplace */
                 $outdatedMarketplaces[$marketplace->getTitle()] = $dictionaryData[$marketplace->getId()];
             }
 
@@ -61,7 +60,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Issue_NotUpdated extends Ess_M2ePro_Mode
 
         $tempTitle = Mage::helper('M2ePro')->__(
             'M2E Pro requires action: eBay marketplace data needs to be synchronized.
-            Please click here to update eBay marketplaces.'
+            Please update eBay marketplaces.'
         );
         $textToTranslate = <<<TEXT
 %marketplace_title% data was changed on eBay. You need to resynchronize the marketplace(s) to correctly
@@ -74,14 +73,14 @@ TEXT;
             implode(', ', array_keys($outdatedMarketplaces)),
             Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration'),
             Mage::helper('adminhtml')->getUrl(
-                '*/adminhtml_ebay_marketplace',
+                'M2ePro/adminhtml_ebay_marketplace',
                 array('tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_MARKETPLACE)
             )
         );
 
-        $editHash = md5(self::CACHE_KEY . Mage::helper('M2ePro')->jsonEncode($outdatedMarketplaces));
+        $editHash = sha1(self::CACHE_KEY . Mage::helper('M2ePro')->jsonEncode($outdatedMarketplaces));
         $messageUrl = Mage::helper('adminhtml')->getUrl(
-            '*/adminhtml_ebay_marketplace/index',
+            'M2ePro/adminhtml_ebay_marketplace/index',
             array(
                 'tab'    => Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs::TAB_ID_MARKETPLACE,
                 '_query' => array('hash' => $editHash)
@@ -89,12 +88,14 @@ TEXT;
         );
 
         return array(
-            Mage::getModel('M2ePro/Issue_Object', array(
+            Mage::getModel(
+                'M2ePro/Issue_Object', array(
                 Issue::KEY_TYPE  => Mage_Core_Model_Message::NOTICE,
                 Issue::KEY_TITLE => $tempTitle,
                 Issue::KEY_TEXT  => $tempMessage,
                 Issue::KEY_URL   => $messageUrl
-            ))
+                )
+            )
         );
     }
 

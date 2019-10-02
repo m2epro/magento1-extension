@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
 {
-    private $logsActionId = NULL;
+    protected $_logsActionId = null;
 
     // ########################################
 
@@ -19,8 +19,8 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
      */
     public function process($products, array $params = array())
     {
-        $this->logsActionId = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
-        $params['logs_action_id'] = $this->logsActionId;
+        $this->_logsActionId      = Mage::getModel('M2ePro/Listing_Log')->getResource()->getNextActionId();
+        $params['logs_action_id'] = $this->_logsActionId;
 
         $tempProducts = $this->prepareProducts($products);
         $sortedProducts = $this->sortProducts($tempProducts);
@@ -28,10 +28,9 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
         $results = array();
 
         foreach ($sortedProducts as $chunk) {
-
             $products = (array)$chunk['products'];
 
-            if (count($products) <= 0) {
+            if (empty($products)) {
                 continue;
             }
 
@@ -40,7 +39,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
             $params['service']         = $chunk['service'];
 
             for ($i=0; $i<count($products);$i+=100) {
-                $productsForRequest = array_slice($products,$i,100);
+                $productsForRequest = array_slice($products, $i, 100);
                 $results[] = $this->processProducts($productsForRequest, $params);
             }
         }
@@ -52,7 +51,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
 
     public function getLogsActionId()
     {
-        return (int)$this->logsActionId;
+        return (int)$this->_logsActionId;
     }
 
     // ########################################
@@ -65,7 +64,6 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
     protected function processProducts(array $products, array $params = array())
     {
         try {
-
             $dispatcher = Mage::getModel('M2ePro/Translation_Connector_Dispatcher');
 
             $connector = $dispatcher->getConnector('product', 'add', 'multipleRequester', $params);
@@ -74,9 +72,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
             $connector->process();
 
             return $connector->getStatus();
-
         } catch (Exception $exception) {
-
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             $logModel = Mage::getModel('M2ePro/Listing_Log');
@@ -93,7 +89,7 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
                     $product->getProductId(),
                     $product->getId(),
                     $initiator,
-                    $this->logsActionId,
+                    $this->_logsActionId,
                     Ess_M2ePro_Model_Listing_Log::ACTION_TRANSLATE_PRODUCT,
                     $exception->getMessage(),
                     Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -117,15 +113,14 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
 
         $productsIdsTemp = array();
         foreach ($products as $product) {
-
             $tempProduct = NULL;
             if ($product instanceof Ess_M2ePro_Model_Listing_Product) {
                 $tempProduct = $product;
             } else {
-                $tempProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product',(int)$product);
+                $tempProduct = Mage::helper('M2ePro/Component_Ebay')->getObject('Listing_Product', (int)$product);
             }
 
-            if (in_array((int)$tempProduct->getId(),$productsIdsTemp)) {
+            if (in_array((int)$tempProduct->getId(), $productsIdsTemp)) {
                 continue;
             }
 
@@ -141,9 +136,8 @@ class Ess_M2ePro_Model_Translation_Connector_Product_Add_Dispatcher
         $sortedProducts = array();
 
         foreach ($products as $product) {
-
             $listingId = $product->getListing()->getId();
-            $translationData = $product->getSetting('additional_data',array('translation_service'),array());
+            $translationData = $product->getSetting('additional_data', array('translation_service'), array());
 
             $key = $listingId
                 .'_'.$translationData['from']['language']

@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_QtyCalculator
     /**
      * @var bool
      */
-    private $isMagentoMode = false;
+    protected $_isMagentoMode = false;
 
     //########################################
 
@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_QtyCalculator
      */
     public function setIsMagentoMode($value)
     {
-        $this->isMagentoMode = (bool)$value;
+        $this->_isMagentoMode = (bool)$value;
         return $this;
     }
 
@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_QtyCalculator
      */
     protected function getIsMagentoMode()
     {
-        return $this->isMagentoMode;
+        return $this->_isMagentoMode;
     }
 
     //########################################
@@ -54,7 +54,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_QtyCalculator
     {
         if ($this->getIsMagentoMode() ||
             $this->getSource('mode') == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT) {
-
             if (!$this->getMagentoProduct()->isStatusEnabled() ||
                 !$this->getMagentoProduct()->isStockAvailability()) {
                 return 0;

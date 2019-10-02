@@ -19,9 +19,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Other -> Resolve Title';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -42,9 +44,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Other -> Channel -> SynchronizeData';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -66,9 +70,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Other -> Channel -> SynchronizeData -> Blocked';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Blocked::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -91,9 +97,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Product -> Channel -> SynchronizeData';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -114,9 +122,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Product -> Channel -> SynchronizeData -> Blocked';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_Blocked::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -138,9 +148,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Product -> Channel -> SynchronizeData -> Defected';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_Defected::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -163,9 +175,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Product -> RunVariationParentProcessors';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_RunVariationParentProcessors::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -186,9 +200,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Product -> ProcessInstructions';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessInstructions::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -209,9 +225,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Product -> ProcessActions';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessActions::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -233,9 +251,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Listing -> Product -> ProcessActionsResults';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_ProcessActionsResults::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -258,9 +278,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Receive';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -281,9 +303,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Receive Details';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -304,9 +328,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> CreateFailed';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -327,9 +353,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Update';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -350,9 +378,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Refund';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Refund::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -373,9 +403,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Cancel';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Cancel::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -397,9 +429,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Reserve Cancel';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_ReserveCancel::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -422,9 +456,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Action -> Process Update';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessUpdate::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -445,9 +481,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Action -> Process Refund';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessRefund::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -468,9 +506,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Action -> Process Cancel';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessCancel::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -492,9 +532,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Order -> Action -> Process Results';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessResults::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -517,9 +559,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Repricing -> InspectProducts';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_InspectProducts::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -540,9 +584,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Repricing -> UpdateSettings';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");
@@ -563,9 +609,11 @@ class Ess_M2ePro_Adminhtml_Development_Cron_AmazonController
         $taskTitle = 'Repricing -> Synchronize';
 
         $cronRunner = Mage::getModel('M2ePro/Cron_Runner_Developer');
-        $cronRunner->setAllowedTasks(array(
+        $cronRunner->setAllowedTasks(
+            array(
             Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_Synchronize::NICK
-        ));
+            )
+        );
 
         if ($cronRunner->process()) {
             $this->_getSession()->addSuccess("{$taskTitle} was successfully performed.");

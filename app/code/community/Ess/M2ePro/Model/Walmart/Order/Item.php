@@ -22,8 +22,8 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     // Product for Walmart Item "%id%" was Created in Magento Catalog.
     // Product for Walmart Item "%title%" was Created in Magento Catalog.
 
-    /** @var $channelItem Ess_M2ePro_Model_Walmart_Item */
-    private $channelItem = NULL;
+    /** @var $_channelItem Ess_M2ePro_Model_Walmart_Item */
+    protected $_channelItem = null;
 
     //########################################
 
@@ -65,16 +65,16 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
      */
     public function getChannelItem()
     {
-        if (is_null($this->channelItem)) {
-            $this->channelItem = Mage::getModel('M2ePro/Walmart_Item')->getCollection()
-                ->addFieldToFilter('account_id', $this->getParentObject()->getOrder()->getAccountId())
-                ->addFieldToFilter('marketplace_id', $this->getParentObject()->getOrder()->getMarketplaceId())
-                ->addFieldToFilter('sku', $this->getSku())
-                ->setOrder('create_date', Varien_Data_Collection::SORT_ORDER_DESC)
-                ->getFirstItem();
+        if ($this->_channelItem === null) {
+            $this->_channelItem = Mage::getModel('M2ePro/Walmart_Item')->getCollection()
+                 ->addFieldToFilter('account_id', $this->getParentObject()->getOrder()->getAccountId())
+                 ->addFieldToFilter('marketplace_id', $this->getParentObject()->getOrder()->getMarketplaceId())
+                 ->addFieldToFilter('sku', $this->getSku())
+                 ->setOrder('create_date', Varien_Data_Collection::SORT_ORDER_DESC)
+                 ->getFirstItem();
         }
 
-        return !is_null($this->channelItem->getId()) ? $this->channelItem : NULL;
+        return $this->_channelItem->getId() !== null ? $this->_channelItem : NULL;
     }
 
     //########################################
@@ -143,7 +143,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     {
         $channelItem = $this->getChannelItem();
 
-        if (is_null($channelItem)) {
+        if ($channelItem === null) {
             return array();
         }
 
@@ -157,7 +157,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     {
         $channelItem = $this->getChannelItem();
 
-        if (is_null($channelItem)) {
+        if ($channelItem === null) {
             return array();
         }
 
@@ -173,11 +173,12 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     {
         // Item was listed by M2E
         // ---------------------------------------
-        if (!is_null($this->getChannelItem())) {
+        if ($this->getChannelItem() !== null) {
             return $this->getWalmartAccount()->isMagentoOrdersListingsStoreCustom()
                 ? $this->getWalmartAccount()->getMagentoOrdersListingsStoreId()
                 : $this->getChannelItem()->getStoreId();
         }
+
         // ---------------------------------------
 
         return $this->getWalmartAccount()->getMagentoOrdersListingsOtherStoreId();
@@ -197,15 +198,15 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
 
     // ---------------------------------------
 
-    private function isOrdersCreationEnabled()
+    protected function isOrdersCreationEnabled()
     {
         $channelItem = $this->getChannelItem();
 
-        if (!is_null($channelItem) && !$this->getWalmartAccount()->isMagentoOrdersListingsModeEnabled()) {
+        if ($channelItem !== null && !$this->getWalmartAccount()->isMagentoOrdersListingsModeEnabled()) {
             return false;
         }
 
-        if (is_null($channelItem) && !$this->getWalmartAccount()->isMagentoOrdersListingsOtherModeEnabled()) {
+        if ($channelItem === null && !$this->getWalmartAccount()->isMagentoOrdersListingsOtherModeEnabled()) {
             return false;
         }
 
@@ -222,9 +223,10 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     {
         // Item was listed by M2E
         // ---------------------------------------
-        if (!is_null($this->getChannelItem())) {
+        if ($this->getChannelItem() !== null) {
             return $this->getChannelItem()->getProductId();
         }
+
         // ---------------------------------------
 
         // 3rd party Item
@@ -239,22 +241,27 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
                 ->getFirstItem();
 
             if ($product->getId()) {
-                Mage::dispatchEvent('m2epro_associate_walmart_order_item_to_product', array(
+                Mage::dispatchEvent(
+                    'm2epro_associate_walmart_order_item_to_product', array(
                     'product'    => $product,
                     'order_item' => $this->getParentObject(),
-                ));
+                    )
+                );
 
                 return $product->getId();
             }
         }
+
         // ---------------------------------------
 
         $product = $this->createProduct();
 
-        Mage::dispatchEvent('m2epro_associate_walmart_order_item_to_product', array(
+        Mage::dispatchEvent(
+            'm2epro_associate_walmart_order_item_to_product', array(
             'product'    => $product,
             'order_item' => $this->getParentObject(),
-        ));
+            )
+        );
 
         return $product->getId();
     }
@@ -263,7 +270,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
      * @return Mage_Catalog_Model_Product
      * @throws Ess_M2ePro_Model_Exception
      */
-    private function createProduct()
+    protected function createProduct()
     {
         if (!$this->getWalmartAccount()->isMagentoOrdersListingsOtherProductImportEnabled()) {
             throw new Ess_M2ePro_Model_Exception('Product Import is disabled in Walmart Account Settings.');
@@ -316,7 +323,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
         return $productBuilder->getProduct();
     }
 
-    private function getQtyForNewProduct()
+    protected function getQtyForNewProduct()
     {
         $otherListing = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other')
             ->addFieldToFilter('account_id', $this->getParentObject()->getOrder()->getAccountId())

@@ -27,10 +27,11 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
     {
         $requestData = array();
 
-        $tempValue = Mage::helper('M2ePro/Module')->getCacheConfig()->getGroupValue('/default_baseurl_index/',
-                                                                                    'given_by_server_at');
+        $tempValue = Mage::helper('M2ePro/Module')->getCacheConfig()->getGroupValue(
+            '/default_baseurl_index/',
+            'given_by_server_at'
+        );
         if ($tempValue) {
-
             $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
             $requestData['current_default_server_baseurl_index'] = $primaryConfig->getGroupValue(
                 '/server/', 'default_baseurl_index'
@@ -52,7 +53,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
 
     //########################################
 
-    private function updateServersBaseUrls(array $data)
+    protected function updateServersBaseUrls(array $data)
     {
         if (!is_array($data['servers_baseurls']) || empty($data['servers_baseurls'])) {
             return;
@@ -64,9 +65,8 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $config = Mage::helper('M2ePro/Primary')->getConfig();
 
         foreach ($data['servers_baseurls'] as $newHostName => $newBaseUrl) {
-
-            $oldHostName = $config->getGroupValue('/server/','hostname_'.$index);
-            $oldBaseUrl  = $config->getGroupValue('/server/','baseurl_'.$index);
+            $oldHostName = $config->getGroupValue('/server/', 'hostname_'.$index);
+            $oldBaseUrl  = $config->getGroupValue('/server/', 'baseurl_'.$index);
 
             if ($oldHostName != $newHostName || $oldBaseUrl != $newBaseUrl) {
                 $configUpdates[$index] = array(
@@ -79,16 +79,15 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
 
         for ($deletedIndex = $index; $deletedIndex < 100; $deletedIndex++) {
+            $deletedHostName = $config->getGroupValue('/server/', 'hostname_'.$deletedIndex);
+            $deletedBaseUrl  = $config->getGroupValue('/server/', 'baseurl_'.$deletedIndex);
 
-            $deletedHostName = $config->getGroupValue('/server/','hostname_'.$deletedIndex);
-            $deletedBaseUrl  = $config->getGroupValue('/server/','baseurl_'.$deletedIndex);
-
-            if (is_null($deletedHostName) && is_null($deletedBaseUrl)) {
+            if ($deletedHostName === null && $deletedBaseUrl === null) {
                 break;
             }
 
-            $config->deleteGroupValue('/server/','hostname_'.$deletedIndex);
-            $config->deleteGroupValue('/server/','baseurl_'.$deletedIndex);
+            $config->deleteGroupValue('/server/', 'hostname_'.$deletedIndex);
+            $config->deleteGroupValue('/server/', 'baseurl_'.$deletedIndex);
         }
 
         if (empty($configUpdates)) {
@@ -96,16 +95,17 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
 
         try {
-
             foreach ($configUpdates as $index => $change) {
 
                 /** @var $dispatcherObject Ess_M2ePro_Model_M2ePro_Connector_Dispatcher */
                 $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-                $connectorObj = $dispatcherObject->getConnector('server','check','state',
-                                                                array(
+                $connectorObj = $dispatcherObject->getConnector(
+                    'server', 'check', 'state',
+                    array(
                                                                    'base_url' => $change['baseurl'].'index.php',
                                                                    'hostname' => $change['hostname'],
-                                                                ));
+                    )
+                );
                 $dispatcherObject->process($connectorObj);
                 $response = $connectorObj->getResponseData();
 
@@ -113,7 +113,6 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
                     return;
                 }
             }
-
         } catch (Exception $e) {
             return;
         }
@@ -124,14 +123,14 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
     }
 
-    private function updateDefaultServerBaseUrlIndex(array $data)
+    protected function updateDefaultServerBaseUrlIndex(array $data)
     {
         if (!isset($data['default_server_baseurl_index']) || (int)$data['default_server_baseurl_index'] <= 0) {
             return;
         }
 
         Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            '/server/','default_baseurl_index',(int)$data['default_server_baseurl_index']
+            '/server/', 'default_baseurl_index', (int)$data['default_server_baseurl_index']
         );
 
         Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
@@ -139,7 +138,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         );
     }
 
-    private function updateCronHosts(array $data)
+    protected function updateCronHosts(array $data)
     {
         if (!isset($data['cron_domains'])) {
             return;
@@ -149,29 +148,27 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $config = Mage::helper('M2ePro/Module')->getConfig();
 
         foreach ($data['cron_domains'] as $newCronHost) {
-
-            $oldGroupValue = $config->getGroupValue('/cron/service/','hostname_'.$index);
+            $oldGroupValue = $config->getGroupValue('/cron/service/', 'hostname_'.$index);
 
             if ($oldGroupValue != $newCronHost) {
-                $config->setGroupValue('/cron/service/','hostname_'.$index, $newCronHost);
+                $config->setGroupValue('/cron/service/', 'hostname_'.$index, $newCronHost);
             }
 
             $index++;
         }
 
         for ($i = $index; $i < 100; $i++) {
+            $oldGroupValue = $config->getGroupValue('/cron/service/', 'hostname_'.$i);
 
-            $oldGroupValue = $config->getGroupValue('/cron/service/','hostname_'.$i);
-
-            if (is_null($oldGroupValue)) {
+            if ($oldGroupValue === null) {
                 break;
             }
 
-            $config->deleteGroupValue('/server/','hostname_'.$i);
+            $config->deleteGroupValue('/server/', 'hostname_'.$i);
         }
     }
 
-    private function updateLastVersion(array $data)
+    protected function updateLastVersion(array $data)
     {
         if (empty($data['last_version'])) {
             return;
@@ -186,7 +183,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         );
     }
 
-    private function updateSendLogs(array $data)
+    protected function updateSendLogs(array $data)
     {
         if (!isset($data['send_logs'])) {
             return;
@@ -197,7 +194,7 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         );
     }
 
-    private function updateAnalytics(array $data)
+    protected function updateAnalytics(array $data)
     {
         if (empty($data['analytics'])) {
             return;

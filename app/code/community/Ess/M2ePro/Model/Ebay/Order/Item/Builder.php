@@ -53,7 +53,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Builder extends Mage_Core_Model_Abstract
     /**
      * @return Ess_M2ePro_Model_Order_Item
      */
-    private function createOrderItem()
+    protected function createOrderItem()
     {
         $item = Mage::helper('M2ePro/Component_Ebay')->getCollection('Order_Item')
             ->addFieldToFilter('order_id', $this->getData('order_id'))

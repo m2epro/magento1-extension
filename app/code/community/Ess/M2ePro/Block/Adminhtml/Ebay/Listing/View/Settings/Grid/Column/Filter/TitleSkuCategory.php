@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid_Column_Filter_T
 
     protected function _renderOption($option, $value)
     {
-        $selected = (($option['value'] == $value && (!is_null($value))) ? ' selected="selected"' : '' );
+        $selected = (($option['value'] == $value && ($value !== null)) ? ' selected="selected"' : '' );
         return '<option value="'. $this->escapeHtml($option['value']).'"'.$selected.'>'
                     .$this->escapeHtml($option['label'])
               .'</option>';

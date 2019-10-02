@@ -11,15 +11,15 @@ class Ess_M2ePro_Model_Upgrade_Tables
     const M2E_PRO_TABLE_PREFIX = 'm2epro_';
 
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    private $installer = NULL;
+    protected $_installer = null;
 
     /** @var Varien_Db_Adapter_Pdo_Mysql */
-    private $connection = NULL;
+    protected $_connection = null;
 
     /**
      * @var string[]
      */
-    private $entities = array();
+    protected $_entities = array();
 
     //########################################
 
@@ -29,8 +29,8 @@ class Ess_M2ePro_Model_Upgrade_Tables
      */
     public function setInstaller(Ess_M2ePro_Model_Upgrade_MySqlSetup $installer)
     {
-        $this->installer = $installer;
-        $this->connection = $installer->getConnection();
+        $this->_installer  = $installer;
+        $this->_connection = $installer->getConnection();
         return $this;
     }
 
@@ -124,26 +124,31 @@ class Ess_M2ePro_Model_Upgrade_Tables
             'connector_pending_requester_single',
             'connector_pending_requester_partial',
             'amazon_processing_action_list_sku',
-            'listing_product_synchronization_instruction'
+            'listing_product_synchronization_instruction',
+            'walmart_order_action_processing',
+            'walmart_template_selling_format_shipping_override_service'
         );
 
         $currentTables = array();
         foreach (Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables() as $tableName) {
             $currentTables[] = str_replace('m2epro_', '', $tableName);
         }
+
         $allTables = array_values(array_unique(array_merge($oldTables, $currentTables)));
 
-        usort($allTables, function ($a,$b) {
+        usort(
+            $allTables, function ($a,$b) {
             return strlen($b) - strlen($a);
-        });
+            }
+        );
 
         foreach ($allTables as $table) {
             if ($table == 'ess_config') {
-                $this->entities[$table] = $this->getInstaller()->getTable($table);
+                $this->_entities[$table] = $this->getInstaller()->getTable($table);
                 continue;
             }
 
-            $this->entities[$table] = $this->getInstaller()->getTable(self::M2E_PRO_TABLE_PREFIX . $table);
+            $this->_entities[$table] = $this->getInstaller()->getTable(self::M2E_PRO_TABLE_PREFIX . $table);
         }
 
         return $this;
@@ -157,11 +162,11 @@ class Ess_M2ePro_Model_Upgrade_Tables
      */
     public function getInstaller()
     {
-        if (is_null($this->installer)) {
+        if ($this->_installer === null) {
             throw new Ess_M2ePro_Model_Exception_Setup("Installer does not exist.");
         }
 
-        return $this->installer;
+        return $this->_installer;
     }
 
     /**
@@ -170,11 +175,11 @@ class Ess_M2ePro_Model_Upgrade_Tables
      */
     public function getConnection()
     {
-        if (is_null($this->connection)) {
+        if ($this->_connection === null) {
             throw new Ess_M2ePro_Model_Exception_Setup("Connection does not exist.");
         }
 
-        return $this->connection;
+        return $this->_connection;
     }
 
     //########################################
@@ -185,7 +190,7 @@ class Ess_M2ePro_Model_Upgrade_Tables
         $currentTables = Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables();
 
         foreach ($currentTables as $table) {
-            $result[$table] = $this->entities[$table];
+            $result[$table] = $this->_entities[$table];
         }
 
         return $result;
@@ -193,7 +198,7 @@ class Ess_M2ePro_Model_Upgrade_Tables
 
     public function getAllHistoryEntities()
     {
-        return $this->entities;
+        return $this->_entities;
     }
 
     // ---------------------------------------
@@ -210,7 +215,7 @@ class Ess_M2ePro_Model_Upgrade_Tables
         );
 
         foreach ($currentConfigTables as $table) {
-            $result[$table] = $this->entities[$table];
+            $result[$table] = $this->_entities[$table];
         }
 
         return $result;
@@ -218,8 +223,10 @@ class Ess_M2ePro_Model_Upgrade_Tables
 
     public function getAllHistoryConfigEntities()
     {
-        return array_merge($this->getCurrentConfigEntities(),
-                           array('ess_config' => $this->entities['ess_config']));
+        return array_merge(
+            $this->getCurrentConfigEntities(),
+            array('ess_config' => $this->_entities['ess_config'])
+        );
     }
 
     //########################################
@@ -231,11 +238,11 @@ class Ess_M2ePro_Model_Upgrade_Tables
 
     public function getFullName($tableName)
     {
-        if (!isset($this->entities[$tableName])) {
+        if (!isset($this->_entities[$tableName])) {
             throw new Ess_M2ePro_Model_Exception_Setup("Table '{$tableName}' does not exist.");
         }
 
-        return $this->entities[$tableName];
+        return $this->_entities[$tableName];
     }
 
     //########################################

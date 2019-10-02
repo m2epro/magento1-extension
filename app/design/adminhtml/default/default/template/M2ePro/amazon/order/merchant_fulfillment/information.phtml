@@ -1,9 +1,18 @@
 <?php
-    /**
-     * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
-     */
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
 
-    $fulfillmentData = $this->getData('fulfillment_details');
+// @codingStandardsIgnoreFile
+
+/**
+ * @var $this Ess_M2ePro_Block_Adminhtml_Amazon_Order_MerchantFulfillment_Information
+ */
+
+$fulfillmentData = $this->getData('fulfillment_details');
+
 ?>
 
 <style>
@@ -45,13 +54,13 @@
     '); ?>
 </div>
 
-<?php if(is_null($this->getData('fulfillment_not_wizard'))): ?>
+<?php if($this->getData('fulfillment_not_wizard') === null): ?>
     <?php echo $this->getChildHtml('breadcrumb'); ?>
 <?php endif; ?>
 
 <div id="fulfillment_form_container">
 
-    <?php if(!is_null($this->getData('error_message'))): ?>
+    <?php if($this->getData('error_message') !== null): ?>
         <div>
             <ul class="messages">
                 <li class="warning-msg">
@@ -96,7 +105,7 @@
                                     <?php echo $this->getChildHtml('cancel_button'); ?>
                                 <?php endif; ?>
 
-                                <?php if(!is_null($this->getData('fulfillment_not_wizard'))): ?>
+                                <?php if($this->getData('fulfillment_not_wizard') !== null): ?>
                                     <?php echo $this->getChildHtml('refresh_button'); ?>
                                 <?php endif; ?>
                             </div>
@@ -305,17 +314,17 @@
                             <?php echo Mage::helper('M2ePro/Magento')->getTranslatedCountryName($fulfillmentData['address']['to']['physical']['country']); ?>
                         </td>
                     </tr>
-                    <?php if(!is_null($fulfillmentData['address']['to']['physical']['state'])
-                        || !is_null($fulfillmentData['address']['to']['physical']['region'])
+                    <?php if($fulfillmentData['address']['to']['physical']['state'] !== null
+                             || $fulfillmentData['address']['to']['physical']['region'] !== null
                     ):?>
                         <tr>
                             <td class="label">
                                 <?php echo Mage::helper('M2ePro')->__('Region/State'); ?>:
                             </td>
                             <td class="value" style="width: auto;">
-                                <?php if(!is_null($fulfillmentData['address']['to']['physical']['state'])):?>
+                                <?php if($fulfillmentData['address']['to']['physical']['state'] !== null):?>
                                     <?php echo $fulfillmentData['address']['to']['physical']['state']; ?>
-                                <?php elseif(!is_null($fulfillmentData['address']['to']['physical']['region'])): ?>
+                                <?php elseif($fulfillmentData['address']['to']['physical']['region'] !== null): ?>
                                     <?php echo $fulfillmentData['address']['to']['physical']['region']; ?>
                                 <?php endif; ?>
                             </td>
@@ -375,7 +384,7 @@
                             <?php echo $fulfillmentData['address']['from']['info']['name']; ?>
                         </td>
                     </tr>
-                    <?php if(!is_null($fulfillmentData['address']['from']['info']['email'])):?>
+                    <?php if($fulfillmentData['address']['from']['info']['email'] !== null):?>
                     <tr>
                         <td class="label">
                             <?php echo Mage::helper('M2ePro')->__('Email'); ?>:
@@ -401,17 +410,17 @@
                             <?php echo Mage::helper('M2ePro/Magento')->getTranslatedCountryName($fulfillmentData['address']['from']['physical']['country']); ?>
                         </td>
                     </tr>
-                    <?php if(!is_null($fulfillmentData['address']['from']['physical']['state'])
-                            || !is_null($fulfillmentData['address']['from']['physical']['region'])
+                    <?php if($fulfillmentData['address']['from']['physical']['state'] !== null
+                             || $fulfillmentData['address']['from']['physical']['region'] !== null
                     ):?>
                     <tr>
                         <td class="label">
                             <?php echo Mage::helper('M2ePro')->__('Region/State'); ?>:
                         </td>
                         <td class="value" style="width: auto;">
-                            <?php if(!is_null($fulfillmentData['address']['from']['physical']['state'])):?>
+                            <?php if($fulfillmentData['address']['from']['physical']['state'] !== null):?>
                                 <?php echo $fulfillmentData['address']['from']['physical']['state']; ?>
-                            <?php elseif(!is_null($fulfillmentData['address']['from']['physical']['region'])): ?>
+                            <?php elseif($fulfillmentData['address']['from']['physical']['region'] !== null): ?>
                                 <?php echo $fulfillmentData['address']['from']['physical']['region']; ?>
                             <?php endif; ?>
                         </td>
