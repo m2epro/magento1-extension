@@ -139,7 +139,7 @@ class Ess_M2ePro_Helper_Module_Wizard extends Mage_Core_Helper_Abstract
         return $this->getConfigValue($nick, self::KEY_STEP);
     }
 
-    public function setStep($nick, $step = NULL)
+    public function setStep($nick, $step = null)
     {
         $this->setConfigValue($nick, self::KEY_STEP, $step);
     }

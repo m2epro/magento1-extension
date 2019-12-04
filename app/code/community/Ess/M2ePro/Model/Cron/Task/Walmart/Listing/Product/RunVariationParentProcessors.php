@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Mass as MassProcessor;
+use Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_Parent_Processor_Mass as MassProcessor;
 
 class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_RunVariationParentProcessors
     extends Ess_M2ePro_Model_Cron_Task_Abstract

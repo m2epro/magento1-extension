@@ -50,7 +50,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_SourceCategories_Tree
 
     public function getCurrentNodeId()
     {
-        return $this->_currentNode ? $this->_currentNode->getId() : NULL;
+        return $this->_currentNode ? $this->_currentNode->getId() : null;
     }
 
     //########################################

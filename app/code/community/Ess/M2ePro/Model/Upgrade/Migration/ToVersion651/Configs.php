@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+// @codingStandardsIgnoreFile
+
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Configs extends Ess_M2ePro_Model_Upgrade_Migration_Abstract
 {
     //########################################
@@ -80,7 +82,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Configs extends Ess_M2ePro
                          ->getEntity('/support/', 'magento_connect_url')->updateValue($magentoConnectUrl);
 
         $this->_installer->getMainConfigModifier()
-                         ->insert(NULL, 'is_disabled', '0', '0 - disable, \r\n1 - enable');
+                         ->insert(null, 'is_disabled', '0', '0 - disable, \r\n1 - enable');
 
         $this->_installer->getMainConfigModifier()
                          ->getEntity('/buy/template/new_sku/', 'upc_exemption')->delete();
@@ -98,9 +100,9 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Configs extends Ess_M2ePro
         $this->_installer->getMainConfigModifier()
                          ->getEntity('/ebay/motors/', 'epids_attribute')->updateKey('epids_motor_attribute');
         $this->_installer->getMainConfigModifier()
-                         ->getEntity('/ebay/motors/', 'epids_uk_attribute')->insert(NULL);
+                         ->getEntity('/ebay/motors/', 'epids_uk_attribute')->insert(null);
         $this->_installer->getMainConfigModifier()
-                         ->getEntity('/ebay/motors/', 'epids_de_attribute')->insert(NULL);
+                         ->getEntity('/ebay/motors/', 'epids_de_attribute')->insert(null);
 
         $this->_installer->getMainConfigModifier()
                          ->delete('/view/ebay/terapeak/');
@@ -267,7 +269,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Configs extends Ess_M2ePro
             '/listing/product/inspector/', 'mode', $inspectorMode, '0 - disable, \r\n1 - enable'
         );
 
-        $this->_installer->getMainConfigModifier()->getEntity('/cron/', 'last_executed_slow_task')->updateValue(NULL);
+        $this->_installer->getMainConfigModifier()->getEntity('/cron/', 'last_executed_slow_task')->updateValue(null);
 
         $this->_installer->getMainConfigModifier()->insert(
             '/cron/task/ebay/update_accounts_preferences/', 'mode', '1', '0 - disable, \r\n1 - enable'
@@ -376,103 +378,103 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Configs extends Ess_M2ePro
             '/cron/task/ebay/pickup_store/update_on_channel/', 'interval', '60', 'in seconds'
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/listing/product/inspector/ebay/', 'max_allowed_instructions_count', '2000', NULL
+            '/listing/product/inspector/ebay/', 'max_allowed_instructions_count', '2000', null
         );
-        $this->_installer->getMainConfigModifier()->insert('/listing/product/revise/total/ebay/', 'mode', '0', NULL);
+        $this->_installer->getMainConfigModifier()->insert('/listing/product/revise/total/ebay/', 'mode', '0', null);
         $this->_installer->getMainConfigModifier()->insert(
-            '/listing/product/revise/total/ebay/', 'max_allowed_instructions_count', '2000', NULL
+            '/listing/product/revise/total/ebay/', 'max_allowed_instructions_count', '2000', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/instructions/cron/', 'listings_products_per_one_time', '1000', NULL
+            '/ebay/listing/product/instructions/cron/', 'listings_products_per_one_time', '1000', null
         );
         $this->_installer->getMainConfigModifier()->insert(
             '/ebay/listing/product/action/list/',
-            'priority_coefficient', '25', NULL
+            'priority_coefficient', '25', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/list/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/list/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/relist/', 'priority_coefficient', '125', NULL
+            '/ebay/listing/product/action/relist/', 'priority_coefficient', '125', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/relist/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/relist/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_qty/', 'priority_coefficient', '500', NULL
+            '/ebay/listing/product/action/revise_qty/', 'priority_coefficient', '500', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_qty/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_qty/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_price/', 'priority_coefficient', '250', NULL
+            '/ebay/listing/product/action/revise_price/', 'priority_coefficient', '250', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_price/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_price/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_title/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_title/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_title/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_title/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_subtitle/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_subtitle/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_subtitle/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_subtitle/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_description/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_description/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_description/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_description/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_images/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_images/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_images/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_images/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_categories/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_categories/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_categories/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_categories/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_payment/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_payment/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_payment/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_payment/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_shipping/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_shipping/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_shipping/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_shipping/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_return/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_return/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_return/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_return/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_other/', 'priority_coefficient', '50', NULL
+            '/ebay/listing/product/action/revise_other/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/revise_other/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/revise_other/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
             '/ebay/listing/product/action/stop/',
-            'priority_coefficient', '1000', NULL
+            'priority_coefficient', '1000', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/action/stop/', 'wait_increase_coefficient', '100', NULL
+            '/ebay/listing/product/action/stop/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/ebay/listing/product/scheduled_actions/', 'max_prepared_actions_count', '3000', NULL
+            '/ebay/listing/product/scheduled_actions/', 'max_prepared_actions_count', '3000', null
         );
 
         $this->_installer->getMainConfigModifier()->insert(
@@ -636,91 +638,91 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_Configs extends Ess_M2ePro
             '/cron/task/amazon/repricing/synchronize_actual_price/', 'interval', '60', 'in seconds'
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/listing/product/inspector/amazon/', 'max_allowed_instructions_count', '2000', NULL
+            '/listing/product/inspector/amazon/', 'max_allowed_instructions_count', '2000', null
         );
-        $this->_installer->getMainConfigModifier()->insert('/listing/product/revise/total/amazon/', 'mode', '0', NULL);
+        $this->_installer->getMainConfigModifier()->insert('/listing/product/revise/total/amazon/', 'mode', '0', null);
         $this->_installer->getMainConfigModifier()->insert(
-            '/listing/product/revise/total/amazon/', 'max_allowed_instructions_count', '2000', NULL
+            '/listing/product/revise/total/amazon/', 'max_allowed_instructions_count', '2000', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/instructions/cron/', 'listings_products_per_one_time', '1000', NULL
+            '/amazon/listing/product/instructions/cron/', 'listings_products_per_one_time', '1000', null
         );
         $this->_installer->getMainConfigModifier()->insert(
             '/amazon/listing/product/action/list/',
-            'priority_coefficient', '25', NULL
+            'priority_coefficient', '25', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/list/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/list/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/list/', 'min_allowed_wait_interval', '3600', NULL
+            '/amazon/listing/product/action/list/', 'min_allowed_wait_interval', '3600', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/relist/', 'priority_coefficient', '125', NULL
+            '/amazon/listing/product/action/relist/', 'priority_coefficient', '125', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/relist/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/relist/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/relist/', 'min_allowed_wait_interval', '1800', NULL
+            '/amazon/listing/product/action/relist/', 'min_allowed_wait_interval', '1800', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_qty/', 'priority_coefficient', '500', NULL
+            '/amazon/listing/product/action/revise_qty/', 'priority_coefficient', '500', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_qty/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/revise_qty/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_qty/', 'min_allowed_wait_interval', '900', NULL
+            '/amazon/listing/product/action/revise_qty/', 'min_allowed_wait_interval', '900', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_price/', 'priority_coefficient', '250', NULL
+            '/amazon/listing/product/action/revise_price/', 'priority_coefficient', '250', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_price/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/revise_price/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_price/', 'min_allowed_wait_interval', '1800', NULL
+            '/amazon/listing/product/action/revise_price/', 'min_allowed_wait_interval', '1800', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_details/', 'priority_coefficient', '50', NULL
+            '/amazon/listing/product/action/revise_details/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_details/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/revise_details/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_details/', 'min_allowed_wait_interval', '7200', NULL
+            '/amazon/listing/product/action/revise_details/', 'min_allowed_wait_interval', '7200', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_images/', 'priority_coefficient', '50', NULL
+            '/amazon/listing/product/action/revise_images/', 'priority_coefficient', '50', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_images/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/revise_images/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/revise_images/', 'min_allowed_wait_interval', '7200', NULL
+            '/amazon/listing/product/action/revise_images/', 'min_allowed_wait_interval', '7200', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/stop/', 'priority_coefficient', '1000', NULL
+            '/amazon/listing/product/action/stop/', 'priority_coefficient', '1000', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/stop/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/stop/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/stop/', 'min_allowed_wait_interval', '600', NULL
+            '/amazon/listing/product/action/stop/', 'min_allowed_wait_interval', '600', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/delete/', 'priority_coefficient', '1000', NULL
+            '/amazon/listing/product/action/delete/', 'priority_coefficient', '1000', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/delete/', 'wait_increase_coefficient', '100', NULL
+            '/amazon/listing/product/action/delete/', 'wait_increase_coefficient', '100', null
         );
         $this->_installer->getMainConfigModifier()->insert(
-            '/amazon/listing/product/action/delete/', 'min_allowed_wait_interval', '600', NULL
+            '/amazon/listing/product/action/delete/', 'min_allowed_wait_interval', '600', null
         );
 
         $this->_installer->getMainConfigModifier()->insert(
-            NULL, 'environment', 'production', "Available values:\r\nproduction\r\ndevelopment\r\ntesting"
+            null, 'environment', 'production', "Available values:\r\nproduction\r\ndevelopment\r\ntesting"
         );
 
         $this->_installer->getMainConfigModifier()->insert(

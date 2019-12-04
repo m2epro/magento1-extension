@@ -9,21 +9,21 @@
 abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsRequester
     extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Requester
 {
-    // ########################################
+    //########################################
 
     public function getCommand()
     {
         return array('orders','get','entitiesDetails');
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingRunnerModelName()
     {
         return 'Connector_Command_Pending_Processing_Partial_Runner';
     }
 
-    // ########################################
+    //########################################
 
     protected function getResponserParams()
     {
@@ -33,7 +33,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsRequest
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getRequestData()
     {
@@ -42,5 +42,5 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsRequest
         );
     }
 
-    // ########################################
+    //########################################
 }

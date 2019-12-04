@@ -34,7 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Order_View_Form extends Ess_M2ePro_Block
     {
         // Magento order data
         // ---------------------------------------
-        $this->realMagentoOrderId = NULL;
+        $this->realMagentoOrderId = null;
 
         $magentoOrder = $this->order->getMagentoOrder();
         if ($magentoOrder !== null) {

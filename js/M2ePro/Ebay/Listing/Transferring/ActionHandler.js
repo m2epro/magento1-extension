@@ -10,8 +10,7 @@ EbayListingTransferringActionHandler.prototype = {
         custom_settings   : null,
         account_id        : null,
         marketplace_id    : null,
-        listing_title     : null,
-        migration_service : {}
+        listing_title     : null
     },
 
     new_listing_id : null,
@@ -50,8 +49,7 @@ EbayListingTransferringActionHandler.prototype = {
             custom_settings   : null,
             account_id        : null,
             marketplace_id    : null,
-            listing_title     : null,
-            migration_service : {}
+            listing_title     : null
         };
 
         this.new_listing_id = null;
@@ -164,7 +162,7 @@ EbayListingTransferringActionHandler.prototype = {
         var marketplaceTitle = marketplaceSelector
             ? marketplaceSelector.options[marketplaceSelector.selectedIndex].text
             : '';
-        return marketplaceTitle.replace(/\[Translation Available\]/g,"");
+        return marketplaceTitle;
     },
 
     hasTargetMarketplace: function()
@@ -228,7 +226,6 @@ EbayListingTransferringActionHandler.prototype = {
                     var result = transport.responseText.evalJSON();
 
                     this.loadedData.listings[key] = result['listings'];
-                    this.setMigrationServiceAllowed(result['is_allowed_migration_service'], marketplaceId);
 
                     callback && callback();
 
@@ -283,27 +280,6 @@ EbayListingTransferringActionHandler.prototype = {
 
     // ---------------------------------------
 
-    setMigrationServiceAllowed: function(flag, marketplaceId)
-    {
-        this.source.migration_service[marketplaceId] = !!parseInt(flag);
-    },
-
-    isMigrationServiceAllowed: function(marketplaceId)
-    {
-        marketplaceId = marketplaceId || this.getTargetMarketplace();
-
-        return this.getTargetStore() && marketplaceId &&
-            this.source.migration_service[marketplaceId] != undefined &&
-            this.source.migration_service[marketplaceId];
-    },
-
-    isUseMigrationService: function()
-    {
-        return !!($('transferring_migration_service') && !!parseInt($('transferring_migration_service').value));
-    },
-
-    // ---------------------------------------
-
     loadDataStepPolicy: function(accountId, marketplaceId, storeId, callback)
     {
         accountId     = accountId     || this.getTargetAccount();
@@ -348,46 +324,6 @@ EbayListingTransferringActionHandler.prototype = {
 
     // ---------------------------------------
 
-    loadDataStepTranslation: function(accountId, callback)
-    {
-        accountId = accountId || this.getTargetAccount();
-
-        if (!accountId) {
-            return;
-        }
-
-        if (this.loadedData.translation[accountId] != undefined && this.loadedData.translation[accountId] != null) {
-            callback && callback();
-        } else {
-            new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/stepTranslation'), {
-                method: 'post',
-                asynchronous: true,
-                parameters: {
-                    account_id: accountId
-                },
-                onSuccess: function(transport) {
-                    this.loadedData.translation[accountId] = transport.responseText;
-                    callback && callback();
-                }.bind(this)
-            });
-        }
-    },
-
-    getDataStepTranslation: function(accountId)
-    {
-        accountId = accountId || this.getTargetAccount();
-        return this.loadedData.translation[accountId];
-    },
-
-    hasTranslationAccount: function()
-    {
-        var accountSelector = $('transferring_account_id');
-        return accountSelector &&
-            !!parseInt(accountSelector.options[accountSelector.selectedIndex].getAttribute('data'));
-    },
-
-    // ---------------------------------------
-
     isShowBreadcrumb: function()
     {
         return !!this.getTargetAccount() && this.hasTargetMarketplace() && this.getTargetStore() != null;
@@ -400,9 +336,7 @@ EbayListingTransferringActionHandler.prototype = {
 
     isNeedManageCategories: function()
     {
-        return (!this.isMigrationServiceAllowed() ||
-                ($('transferring_migration_service') && !this.isUseMigrationService())) &&
-                this.hasTargetMarketplace() && this.isDifferentMarketplace();
+        return this.hasTargetMarketplace() && this.isDifferentMarketplace();
     },
 
     // ---------------------------------------
@@ -485,11 +419,6 @@ EbayListingTransferringActionHandler.prototype = {
     {
         setLocation(M2ePro.url.get('adminhtml_ebay_listing_categorySettings/index',
             {listing_id: this.getTargetListing(), without_back: true}));
-    },
-
-    hasAllFailedTranslationProducts: function()
-    {
-        return this.allFailedTranslationProducts;
     },
 
     // ---------------------------------------
@@ -585,11 +514,7 @@ EbayListingTransferringActionHandler.prototype = {
         } else {
 
             this.addProducts(function() {
-                if (self.getSuccessProducts().length > 0 && self.isUseMigrationService()) {
-                    self.callAutoMigration(callback);
-                } else {
-                    callback && callback();
-                }
+                callback && callback();
             });
 
         }
@@ -808,42 +733,6 @@ EbayListingTransferringActionHandler.prototype = {
                 }, 500);
             }
         });
-    },
-
-    // ---------------------------------------
-
-    callAutoMigration: function(callback)
-    {
-        var self = this;
-        var products = implode(',', this.getSuccessProducts());
-
-        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing_transferring/autoMigration'), {
-            method: 'post',
-            parameters: {
-                target_listing_id   : this.getTargetListing(),
-                products            : products,
-                translation_service : $('transferring_translation_service') && $('transferring_translation_service').value
-            },
-            onSuccess: function(transport) {
-
-                var response = transport.responseText.evalJSON();
-
-                if (response['failed_products'].length) {
-                    MagentoMessageObj.addError(M2ePro.translator.translate(
-                        'Some Products Categories Settings are not set or Attributes for Title or Description are empty.'
-                    ));
-
-                    if (response['success_products'].length == 0) {
-                        self.allFailedTranslationProducts = true;
-                    }
-                }
-
-                if (response['result'] != 'success') {
-                    return self.ajaxError();
-                }
-
-                callback && callback();
-            }});
     }
 
     // ---------------------------------------

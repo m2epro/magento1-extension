@@ -18,7 +18,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_RealTime extends Ess_M2eP
      */
     protected $_account = null;
 
-    // ########################################
+    //########################################
 
     public function __construct(
         array $params = array(),
@@ -31,7 +31,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_RealTime extends Ess_M2eP
         parent::__construct($params);
     }
 
-    // ########################################
+    //########################################
 
     protected function buildRequestInstance()
     {
@@ -52,5 +52,5 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_RealTime extends Ess_M2eP
         return $request;
     }
 
-    // ########################################
+    //########################################
 }

@@ -129,8 +129,8 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
             $specific->deleteInstance();
         }
 
-        $this->_marketplaceModel           = NULL;
-        $this->_descriptionDefinitionModel = NULL;
+        $this->_marketplaceModel           = null;
+        $this->_descriptionDefinitionModel = null;
         $this->_descriptionSourceModels    = array();
 
         $this->delete();
@@ -176,7 +176,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description extends Ess_M2ePro_Model_Comp
     {
         if ($this->_descriptionDefinitionModel === null) {
             $this->_descriptionDefinitionModel = Mage::helper('M2ePro')->getCachedObject(
-                'Amazon_Template_Description_Definition', $this->getId(), NULL, array('template')
+                'Amazon_Template_Description_Definition', $this->getId(), null, array('template')
             );
 
             $this->_descriptionDefinitionModel->setDescriptionTemplate($this->getParentObject());

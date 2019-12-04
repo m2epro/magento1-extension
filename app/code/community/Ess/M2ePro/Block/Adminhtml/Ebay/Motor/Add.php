@@ -182,6 +182,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add extends Ess_M2ePro_Block_Adminht
                'title'       => 'Engine',
                'is_required' => false
            ),
+           array(
+               'name'        => 'street_name',
+               'title'       => 'Street Name',
+               'is_required' => false
+           ),
        );
     }
 

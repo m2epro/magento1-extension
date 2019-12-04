@@ -59,8 +59,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Sea
             return true;
         }
 
-        // M2ePro_TRANSLATIONS
-        // SKU generating is not successful.
         $this->addMessage('SKU generating is not successful.');
 
         return false;
@@ -108,9 +106,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Sea
     protected function isExistInM2ePro($sku, $addMessages = false)
     {
         if ($this->isAlreadyInProcessing($sku)) {
-// M2ePro_TRANSLATIONS
-// Another Product with the same SKU is being Listed simultaneously
-// with this one. Please change the SKU or enable the Option Generate Merchant SKU.
             $addMessages && $this->addMessage(
                 'Another Product with the same SKU is being Listed simultaneously
                  with this one. Please change the SKU or enable the Option Generate Merchant SKU.'
@@ -119,9 +114,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Sea
         }
 
         if ($this->isExistInM2eProListings($sku)) {
-// M2ePro_TRANSLATIONS
-// Product with the same SKU is found in other M2E Pro Listing that is created
-// from the same Merchant ID for the same Marketplace.
             $addMessages && $this->addMessage(
                 'Product with the same SKU is found in other M2E Pro Listing that is created
                  from the same Merchant ID for the same Marketplace.'
@@ -130,9 +122,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Sea
         }
 
         if ($this->isExistInOtherListings($sku)) {
-// M2ePro_TRANSLATIONS
-// Product with the same SKU is found in M2E Pro 3rd Party Listing.
-// Please change the SKU or enable the Option Generate Merchant SKU.
             $addMessages && $this->addMessage(
                 'Product with the same SKU is found in M2E Pro 3rd Party Listing.
                  Please change the SKU or enable the Option Generate Merchant SKU.'

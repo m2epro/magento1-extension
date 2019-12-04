@@ -16,44 +16,15 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
     {
         parent::__construct();
 
-        // Initialize view
-        // ---------------------------------------
-        $view                       = Mage::helper('M2ePro/View')->getCurrentView();
-        $this->_viewComponentHelper = Mage::helper('M2ePro/View')->getComponentHelper($view);
-        // ---------------------------------------
+        $this->setId(Mage::helper('M2ePro/View')->getCurrentView() . 'AccountGrid');
 
-        // Initialization block
-        // ---------------------------------------
-        $this->setId($view . 'AccountGrid');
-        // ---------------------------------------
-
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('title');
         $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
-
-    protected function _prepareCollection()
-    {
-        // Get collection of accounts
-        $collection = $this->getCollection();
-        if ($collection === null) {
-            $collection = Mage::getModel('M2ePro/Account')->getCollection();
-        }
-
-        $components = $this->_viewComponentHelper->getActiveComponents();
-        $collection->addFieldToFilter('main_table.component_mode', array('in'=>$components));
-
-        // Set collection to grid
-        $this->setCollection($collection);
-
-        return parent::_prepareCollection();
-    }
 
     protected function _prepareColumns()
     {
@@ -165,7 +136,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Account_Grid extends Mage_Adminhtml_Bl
         $text .= 'It does not affect the Subscription status and Billing process for this Channel Account. <br><br>';
         $text .= 'To delete Channel Account which you don\'t need to manage under M2E Pro Subscription Plan, ';
         $text .= 'go to the <a href="%url%" target="_blank">Clients Portal</a>.';
-        $text = Mage::helper('M2ePro')->__($text, Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl());
+        $text = Mage::helper('M2ePro')->__($text, Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl());
 
         $translations = Mage::helper('M2ePro')->jsonEncode(
             array(

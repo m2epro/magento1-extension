@@ -187,7 +187,16 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
 
         if (isset($data['variation']) && is_array($data['variation'])) {
             foreach ($data['variation'] as &$variation) {
-                if ($variation['add']) {
+                /** @var $ebayVariation Ess_M2ePro_Model_Ebay_Listing_Product_Variation */
+                $ebayVariation = $variation['_instance_']->getChildObject();
+
+                if ($ebayVariation->isAdd()) {
+                    continue;
+                }
+
+                if (!$ebayVariation->getOnlineQtySold() &&
+                    ($ebayVariation->isStopped() || $ebayVariation->isHidden())
+                ) {
                     continue;
                 }
 
@@ -320,12 +329,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
                 $data['variations_sets'][$replaceBy] = $data['variations_sets'][$findIt];
                 unset($data['variations_sets'][$findIt]);
 
-                // M2ePro_TRANSLATIONS
-                // The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item
-                // Specific "%replaced_by%" you select an Attribute by which your Variational Item varies.
-                // As it is impossible to send a correct Value for this Item Specific, it’s Label will be used
-                // as Variational Attribute Label instead of "%replaced_it%".
-                // This replacement cannot be edit in future by Relist/Revise Actions.
                 $this->addWarningMessage(
                     Mage::helper('M2ePro')->__(
                         'The Variational Attribute Label "%replaced_it%" was changed to "%replaced_by%". For Item
@@ -362,7 +365,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Request
         $additionalData = $this->getListingProduct()->getAdditionalData();
 
         if (!isset($additionalData['is_eps_ebay_images_mode'])) {
-            return NULL;
+            return null;
         }
 
         return $additionalData['is_eps_ebay_images_mode'];

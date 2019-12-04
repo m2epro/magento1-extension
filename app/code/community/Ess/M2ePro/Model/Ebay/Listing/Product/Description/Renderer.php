@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Description_Renderer
     //########################################
 
     /** @var Ess_M2ePro_Model_Ebay_Listing_Product */
-    protected $listingProduct = NULL;
+    protected $listingProduct = null;
 
     //########################################
 
@@ -70,7 +70,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Description_Renderer
         foreach ($matches[1] as $i => $attributeCode) {
             $method = 'get'.implode(array_map('ucfirst', explode('_', $attributeCode)));
 
-            $arg = NULL;
+            $arg = null;
             if (preg_match('/(?<=\[)(\d+?)(?=\])/', $method, $tempMatch)) {
                 $arg = $tempMatch[0];
                 $method = str_replace('['.$arg.']', '', $method);

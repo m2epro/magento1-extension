@@ -139,8 +139,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_General
             if (isset($data[$identifier])) {
                 unset($data[$identifier]);
 
-                // M2ePro_TRANSLATIONS
-                // The value of %type% was not sent because it is not allowed in this Category
                 $this->addWarningMessage(
                     Mage::helper('M2ePro')->__(
                         'The value of %type% was not sent because it is not allowed in this Category',

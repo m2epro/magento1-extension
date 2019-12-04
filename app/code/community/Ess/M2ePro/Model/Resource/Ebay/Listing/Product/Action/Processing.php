@@ -9,12 +9,12 @@
 class Ess_M2ePro_Model_Resource_Ebay_Listing_Product_Action_Processing
     extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Ebay_Listing_Product_Action_Processing', 'id');
     }
 
-    // ########################################
+    //########################################
 }

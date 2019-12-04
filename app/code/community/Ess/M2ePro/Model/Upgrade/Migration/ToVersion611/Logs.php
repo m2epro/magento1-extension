@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+// @codingStandardsIgnoreFile
+
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_Logs
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */

@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
      * @return bool
      * @throws Ess_M2ePro_Model_Exception_Setup
      */
-    public function isExists($group, $key = NULL)
+    public function isExists($group, $key = null)
     {
         $query = $this->getConnection()
                       ->select()
@@ -70,12 +70,11 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
      * @param string $group
      * @param string $key
      * @param string|null $value
-     * @param string|null $notice
+     * @param null $notice is not supported. left for backward compatibility
      * @return $this|int
      * @throws Ess_M2ePro_Model_Exception_Setup
-     * @throws Zend_Db_Adapter_Exception
      */
-    public function insert($group, $key, $value = NULL, $notice = NULL)
+    public function insert($group, $key, $value = null, $notice = null)
     {
         if ($this->isExists($group, $key)) {
             return $this;
@@ -87,7 +86,6 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
         );
 
         $value !== null && $preparedData['value'] = $value;
-        $notice !== null && $preparedData['notice'] = $notice;
 
         $preparedData['update_date'] = $this->getCurrentDateTime();
         $preparedData['create_date'] = $this->getCurrentDateTime();
@@ -122,7 +120,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config extends Ess_M2ePro_Model_Upgrade_
      * @return $this|int
      * @throws Ess_M2ePro_Model_Exception_Setup
      */
-    public function delete($group, $key = NULL)
+    public function delete($group, $key = null)
     {
         if (!$this->isExists($group, $key)) {
             return $this;

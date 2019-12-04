@@ -201,8 +201,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_AutoActionController
         );
 
         if ($listing->isComponentModeAmazon()) {
-            $data['auto_global_adding_description_template_id'] = NULL;
-            $data['auto_website_adding_description_template_id'] = NULL;
+            $data['auto_global_adding_description_template_id'] = null;
+            $data['auto_website_adding_description_template_id'] = null;
         }
 
         $listing->addData($data)->save();

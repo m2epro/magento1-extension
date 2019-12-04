@@ -20,11 +20,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
      */
     protected $_account = null;
 
-    protected $_logsActionId = null;
-
     //########################################
 
-    public function initialize(Ess_M2ePro_Model_Account $account = NULL)
+    public function initialize(Ess_M2ePro_Model_Account $account = null)
     {
         $this->_account = $account;
     }
@@ -41,10 +39,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
         }
 
         $responseData['items'] = $this->filterReceivedOnlyOtherListings($responseData['items']);
-
-        /** @var $logModel Ess_M2ePro_Model_Listing_Other_Log */
-        $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
-        $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
 
         /** @var $mappingModel Ess_M2ePro_Model_Ebay_Listing_Other_Mapping */
         $mappingModel = Mage::getModel('M2ePro/Ebay_Listing_Other_Mapping');
@@ -145,58 +139,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
             }
 
             if ($existsId) {
-                $tempLogMessages = array();
-
-                if ($newData['online_price'] != $existObject->getOnlinePrice()) {
-                    // M2ePro_TRANSLATIONS
-                    // Item Price was successfully changed from %from% to %to% .
-                    $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                        'Item Price was successfully changed from %from% to %to% .',
-                        $existObject->getOnlinePrice(),
-                        $newData['online_price']
-                    );
-                }
-
-                if ($existObject->getOnlineQty() != $newData['online_qty'] ||
-                    $existObject->getOnlineQtySold() != $newData['online_qty_sold']) {
-                    // M2ePro_TRANSLATIONS
-                    // Item QTY was successfully changed from %from% to %to% .
-                    $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                        'Item QTY was successfully changed from %from% to %to% .',
-                        ($existObject->getOnlineQty() - $existObject->getOnlineQtySold()),
-                        ($newData['online_qty'] - $newData['online_qty_sold'])
-                    );
-                }
-
                 if ($newData['status'] != $existObject->getStatus()) {
                     $newData['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT;
-
-                    $statusChangedFrom = Mage::helper('M2ePro/Component_Ebay')
-                        ->getHumanTitleByListingProductStatus($existObject->getStatus());
-                    $statusChangedTo = Mage::helper('M2ePro/Component_Ebay')
-                        ->getHumanTitleByListingProductStatus($newData['status']);
-
-                    if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                        // M2ePro_TRANSLATIONS
-                        // Item Status was successfully changed from "%from%" to "%to%" .
-                        $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                            'Item Status was successfully changed from "%from%" to "%to%" .',
-                            $statusChangedFrom,
-                            $statusChangedTo
-                        );
-                    }
-                }
-
-                foreach ($tempLogMessages as $tempLogMessage) {
-                    $logModel->addProductMessage(
-                        (int)$newData['id'],
-                        Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                        $this->getLogsActionId(),
-                        Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE,
-                        $tempLogMessage,
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                    );
                 }
             } else {
                 $newData['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT;
@@ -206,18 +150,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
             $listingOtherModel->setData($newData)->save();
 
             if (!$existsId) {
-                $logModel->addProductMessage(
-                    $listingOtherModel->getId(),
-                    Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                    NULL,
-                    Ess_M2ePro_Model_Listing_Other_Log::ACTION_ADD_LISTING,
-                    // M2ePro_TRANSLATIONS
-                    // Item was successfully Added
-                     'Item was successfully Added',
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                );
-
                 if (!$this->getAccount()->getChildObject()->isOtherListingsMappingEnabled()) {
                     continue;
                 }
@@ -315,15 +247,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Updating
     protected function getAccount()
     {
         return $this->_account;
-    }
-
-    protected function getLogsActionId()
-    {
-        if ($this->_logsActionId !== null) {
-            return $this->_logsActionId;
-        }
-
-        return $this->_logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
     }
 
     //########################################

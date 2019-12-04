@@ -122,7 +122,7 @@ class Ess_M2ePro_Helper_Magento_Store extends Mage_Core_Helper_Abstract
         try {
             $store = Mage::app()->getStore($storeId);
         } catch (Mage_Core_Model_Store_Exception $e) {
-            return NULL;
+            return null;
         }
 
         return $store->getWebsite();

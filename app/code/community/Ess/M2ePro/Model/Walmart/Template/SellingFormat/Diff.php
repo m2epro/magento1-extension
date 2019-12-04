@@ -13,6 +13,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Diff extends Ess_M2ePro_Mo
     public function isDifferent()
     {
         return $this->isQtyDifferent() ||
+               $this->isLagTimeDifferent() ||
                $this->isPriceDifferent() ||
                $this->isPromotionsDifferent() ||
                $this->isDetailsDifferent();
@@ -30,6 +31,14 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Diff extends Ess_M2ePro_Mo
             'qty_modification_mode',
             'qty_min_posted_value',
             'qty_max_posted_value',
+        );
+
+        return $this->isSettingsDifferent($keys);
+    }
+
+    public function isLagTimeDifferent()
+    {
+        $keys = array(
             'lag_time_mode',
             'lag_time_value',
             'lag_time_custom_attribute',

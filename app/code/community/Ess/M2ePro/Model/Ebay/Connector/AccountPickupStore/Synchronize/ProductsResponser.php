@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
     protected $pickupStoreStateItems = array();
 
     /** @var Ess_M2ePro_Model_Ebay_Account_PickupStore_Log $log */
-    protected $log = NULL;
+    protected $log = null;
 
     //########################################
 
@@ -134,7 +134,7 @@ class Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRes
      */
     protected function getSuccessMessage(array $stateItemData)
     {
-        $encodedDescription = NULL;
+        $encodedDescription = null;
 
         switch ($this->getLogsAction($stateItemData)) {
             case Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_ADD_PRODUCT:

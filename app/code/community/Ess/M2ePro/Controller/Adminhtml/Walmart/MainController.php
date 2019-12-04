@@ -35,7 +35,7 @@ abstract class Ess_M2ePro_Controller_Adminhtml_Walmart_MainController
 
     //########################################
 
-    protected function setComponentPageHelpLink($view = NULL)
+    protected function setComponentPageHelpLink($view = null)
     {
         $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Walmart::NICK, $view);
     }

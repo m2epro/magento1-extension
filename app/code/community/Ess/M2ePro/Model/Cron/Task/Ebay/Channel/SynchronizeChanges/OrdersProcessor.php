@@ -82,13 +82,13 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
         $ebayAccount = $account->getChildObject();
 
         if (empty($ebayData)) {
-            return NULL;
+            return null;
         }
 
         if (!empty($ebayData['job_token'])) {
             $ebayAccount->setData('job_token', $ebayData['job_token']);
         } else {
-            $ebayAccount->setData('job_token', NULL);
+            $ebayAccount->setData('job_token', null);
         }
 
         $processedEbayOrders = $this->processEbayOrders($account, $ebayData['items']);
@@ -127,7 +127,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_OrdersProcessor
         /** @var Ess_M2ePro_Model_Connector_Command_RealTime $connectorObj */
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getCustomConnector(
-            'Ebay_Connector_Order_Receive_Items', $params, NULL, $account
+            'Ebay_Connector_Order_Receive_Items', $params, null, $account
         );
 
         $dispatcherObj->process($connectorObj);

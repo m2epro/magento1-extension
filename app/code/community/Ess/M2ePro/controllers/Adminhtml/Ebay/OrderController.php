@@ -28,7 +28,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
              ->addJs('M2ePro/Order/NoteHandler.js')
              ->addJs('M2ePro/Plugin/ActionColumn.js');
 
-        $this->setPageHelpLink(NULL, NULL, "x/RQAJAQ");
+        $this->setPageHelpLink(null, null, "x/RQAJAQ");
 
         return $this;
     }
@@ -67,7 +67,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/wYwVAQ");
+        $this->setPageHelpLink(null, null, "x/wYwVAQ");
 
         $this->_initPopUp();
 
@@ -345,7 +345,7 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
             $connector = $dispatcher->getVirtualConnector(
                 'store', 'update', 'order',
                 array('order_id' => $ebayOrder->getEbayOrderId(), 'type' => $type),
-                NULL, NULL, $order->getAccount()
+                null, null, $order->getAccount()
             );
 
             try {

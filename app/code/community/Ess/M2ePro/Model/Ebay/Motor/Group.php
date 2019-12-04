@@ -98,6 +98,7 @@ class Ess_M2ePro_Model_Ebay_Motor_Group extends Ess_M2ePro_Model_Component_Abstr
             Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_MOTOR,
             Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_UK,
             Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE,
+            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU,
             )
         );
     }

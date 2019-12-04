@@ -10,7 +10,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Dispatcher
 {
     //####################################
 
-    public function getConnector($entity, $type, $name, array $params = array(), $account = NULL)
+    public function getConnector($entity, $type, $name, array $params = array(), $account = null)
     {
         $className = 'Ess_M2ePro_Model_Amazon_Connector';
 
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Dispatcher
         return $connectorObject;
     }
 
-    public function getCustomConnector($modelName, array $params = array(), $account = NULL)
+    public function getCustomConnector($modelName, array $params = array(), $account = null)
     {
         if (is_int($account) || is_string($account)) {
             $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', (int)$account);

@@ -15,6 +15,7 @@
             <action method="addJs"><script>M2ePro/Plugin/BlockNotice.js</script></action>
             <action method="addJs"><script>M2ePro/Plugin/Storage.js</script></action>
             <action method="addJs"><script>M2ePro/Initialization.js</script></action>
+            <action method="addJs"><script>M2ePro/ControlPanelHandler.js</script></action>
             <action method="addCss"><stylesheet>M2ePro/css/main.css</stylesheet></action>
             <action method="addCss"><stylesheet>M2ePro/css/Plugin/BlockNotice.css</stylesheet></action>
         </reference>

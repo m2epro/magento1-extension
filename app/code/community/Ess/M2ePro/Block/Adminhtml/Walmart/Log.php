@@ -14,33 +14,22 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log extends Ess_M2ePro_Block_Adminhtml_
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartLog');
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Logs', $componentName);
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Logs & Events', $componentName);
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('Logs');
+            $this->_headerText = Mage::helper('M2ePro')->__('Logs & Events');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        // ---------------------------------------
         $this->setTemplate('M2ePro/walmart/log/log.phtml');
-        // ---------------------------------------
     }
 
     //########################################

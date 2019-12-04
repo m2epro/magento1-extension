@@ -9,7 +9,7 @@
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Configuration_Settings_Form */
 
-$urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+$urlComponents = Mage::helper('M2ePro/Component')->getEnabledComponents();
 $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
 
 ?>
@@ -29,8 +29,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
     Event.observe(window, 'load', function() {
         SettingsHandlerObj = new ConfigurationSettingsHandler();
-
-        ControlPanelHandlerObj = new DevelopmentControlPanelHandler();
 
         //------------------------------
 
@@ -66,7 +64,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                 <div id="block_notice_configuration_interface" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Interface'); ?>">
                     <?php echo Mage::helper('M2ePro')->__('Set M2E Pro interface preferences, then click <b>Save Config</b>. More detailed information on how to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, "x/CwAJAQ")
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, "x/CwAJAQ")
                     ); ?>
                 </div>
 
@@ -143,7 +141,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                 <div id="block_notice_configuration_qty" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Quantity'); ?>">
                     <?php echo Mage::helper('M2ePro')->__(
                         'In this section, you can provide the global settings for Inventory management. More detailed information on how to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/CwAJAQ#GlobalSettings-Quantity')
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/CwAJAQ#GlobalSettings-Quantity')
                     ); ?>
                 </div>
 
@@ -204,7 +202,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                 <div id="block_notice_configuration_price" class="block_notices_module no-icon" title="<?php echo Mage::helper('M2ePro')->__('Price'); ?>">
                     <?php echo Mage::helper('M2ePro')->__(
                         'In this section, you can provide the global settings for Product Price management. More detailed information on how to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, "x/CwAJAQ#GlobalSettings-Price")
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, "x/CwAJAQ#GlobalSettings-Price")
                     ); ?>
                 </div>
 
@@ -267,9 +265,9 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                     More detailed information on how to work with this page can be found <a href="%url%" target="_blank">here</a>.
                     ',
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/xYQVAQ'),
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/CQ1PAQ'),
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, "x/CwAJAQ")
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/xYQVAQ'),
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/CQ1PAQ'),
+                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, "x/CwAJAQ")
                     ); ?>
                 </div>
 

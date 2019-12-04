@@ -76,7 +76,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
             }
         }
 
-        $this->_variationManager = NULL;
+        $this->_variationManager = null;
 
         $this->delete();
         return true;
@@ -358,7 +358,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product extends Ess_M2ePro_Model_Componen
         }
 
         return Mage::helper('M2ePro')->getCachedObject(
-            'Walmart_Template_Category', $this->getTemplateCategoryId(), NULL, array('template')
+            'Walmart_Template_Category', $this->getTemplateCategoryId(), null, array('template')
         );
     }
 

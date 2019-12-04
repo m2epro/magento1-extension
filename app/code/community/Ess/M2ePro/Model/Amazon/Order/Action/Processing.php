@@ -15,13 +15,13 @@ class Ess_M2ePro_Model_Amazon_Order_Action_Processing extends Ess_M2ePro_Model_A
     //####################################
 
     /** @var Ess_M2ePro_Model_Order $order */
-    protected $order = NULL;
+    protected $order = null;
 
     /** @var Ess_M2ePro_Model_Processing $processing */
-    protected $processing = NULL;
+    protected $processing = null;
 
     /** @var Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle */
-    protected $requestPendingSingle = NULL;
+    protected $requestPendingSingle = null;
 
     //####################################
 

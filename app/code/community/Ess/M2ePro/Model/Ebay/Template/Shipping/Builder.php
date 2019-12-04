@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
     public function build(array $data)
     {
         if (empty($data)) {
-            return NULL;
+            return null;
         }
 
         $this->validate($data);
@@ -139,7 +139,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
         }
 
         $key = 'cash_on_delivery_cost';
-        $prepared[$key] = (isset($data[$key]) && $data[$key] != '') ? $data[$key] : NULL;
+        $prepared[$key] = (isset($data[$key]) && $data[$key] != '') ? $data[$key] : null;
 
         $modes = array(
             'local_shipping_mode',
@@ -193,7 +193,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
         );
 
         foreach ($nullKeys as $key) {
-            $prepared[$key] = (isset($data[$key]) && $data[$key] != '') ? $data[$key] : NULL;
+            $prepared[$key] = (isset($data[$key]) && $data[$key] != '') ? $data[$key] : null;
         }
 
         return $prepared;

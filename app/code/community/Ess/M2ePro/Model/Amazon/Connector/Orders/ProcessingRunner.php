@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
     /** @var Ess_M2ePro_Model_Amazon_Order_Action_Processing $_processingAction */
     protected $_processingAction;
 
-    // ########################################
+    //########################################
 
     protected function eventBefore()
     {
@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
             array(
                 'processing_id' => $this->getProcessingObject()->getId(),
                 'order_id'      => $params['order_id'],
-                'type'          => $params{'action_type'},
+                'type'          => $params['action_type'],
                 'request_data'  => Mage::helper('M2ePro')->jsonEncode($params['request_data']),
             )
         );
@@ -53,7 +53,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
         $order->deleteProcessingLocks($params['lock_name'], $this->getProcessingObject()->getId());
     }
 
-    // ########################################
+    //########################################
 
     public function complete()
     {
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
         parent::complete();
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingAction()
     {
@@ -79,8 +79,8 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_ProcessingRunner
 
         $processingAction = $processingActionCollection->getFirstItem();
 
-        return $processingAction->getId() ? $this->_processingAction = $processingAction : NULL;
+        return $processingAction->getId() ? $this->_processingAction = $processingAction : null;
     }
 
-    // ########################################
+    //########################################
 }

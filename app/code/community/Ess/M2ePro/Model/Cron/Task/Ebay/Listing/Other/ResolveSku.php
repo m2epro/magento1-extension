@@ -42,10 +42,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
     {
         /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
-        $accountsCollection->addFieldToFilter(
-            'other_listings_synchronization',
-            Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
-        );
+        $accountsCollection->addFieldToFilter('other_listings_synchronization', 1);
 
         $accounts = $accountsCollection->getItems();
 
@@ -179,8 +176,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_ResolveSku extends Ess_M2ePr
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'item', 'get', 'all',
-            $inputData, NULL,
-            NULL, $account->getId()
+            $inputData, null,
+            null, $account->getId()
         );
 
         $dispatcherObj->process($connectorObj);

@@ -74,9 +74,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Relist_Request
             return $data;
         }
 
-        $descriptionData = $this->getDescriptionData();
+        $otherData = $this->getOtherData();
 
-        $data['item_condition'] = $descriptionData['item_condition'];
+        $data['item_condition'] = $otherData['item_condition'];
 
         return $data;
     }

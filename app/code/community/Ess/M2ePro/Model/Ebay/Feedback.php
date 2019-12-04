@@ -108,7 +108,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
             $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObj->getVirtualConnector(
                 'feedback', 'add', 'entity',
-                $paramsConnector, NULL, NULL,
+                $paramsConnector, null, null,
                 $this->getAccount()
             );
 
@@ -176,7 +176,7 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
 
         $order = $collection->getFirstItem();
 
-        return $order->getId() !== null ? $order : NULL;
+        return $order->getId() !== null ? $order : null;
     }
 
     //########################################

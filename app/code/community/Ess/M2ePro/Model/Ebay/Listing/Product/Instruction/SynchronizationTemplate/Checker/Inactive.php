@@ -26,9 +26,9 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             Ess_M2ePro_Model_Ebay_Listing_Product::INSTRUCTION_TYPE_CHANNEL_QTY_CHANGED,
             Ess_M2ePro_Model_Ebay_Listing_Product::INSTRUCTION_TYPE_CHANNEL_STATUS_CHANGED,
             Ess_M2ePro_Model_Ebay_Template_ChangeProcessor_Abstract::INSTRUCTION_TYPE_QTY_DATA_CHANGED,
-            Ess_M2ePro_Model_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
-            Ess_M2ePro_Model_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_STATUS_CHANGED,
-            Ess_M2ePro_Model_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_QTY_CHANGED,
+            Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_PRODUCT_CHANGED,
+            Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_STATUS_CHANGED,
+            Ess_M2ePro_PublicServices_Product_SqlChange::INSTRUCTION_TYPE_QTY_CHANGED,
             Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract::INSTRUCTION_TYPE_MAGMI_PLUGIN_PRODUCT_CHANGED,
             Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges::INSTRUCTION_TYPE,
         );
@@ -193,17 +193,17 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             $minQty = (int)$ebaySynchronizationTemplate->getRelistWhenQtyMagentoHasValueMin();
             $maxQty = (int)$ebaySynchronizationTemplate->getRelistWhenQtyMagentoHasValueMax();
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_QTY_LESS &&
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
                 $productQty <= $minQty) {
                 $result = true;
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_QTY_MORE &&
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
                 $productQty >= $minQty) {
                 $result = true;
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_QTY_BETWEEN &&
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
                 $productQty >= $minQty && $productQty <= $maxQty) {
                 $result = true;
             }
@@ -221,17 +221,17 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             $minQty = (int)$ebaySynchronizationTemplate->getRelistWhenQtyCalculatedHasValueMin();
             $maxQty = (int)$ebaySynchronizationTemplate->getRelistWhenQtyCalculatedHasValueMax();
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_QTY_LESS &&
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS &&
                 $productQty <= $minQty) {
                 $result = true;
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_QTY_MORE &&
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE &&
                 $productQty >= $minQty) {
                 $result = true;
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_QTY_BETWEEN &&
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN &&
                 $productQty >= $minQty && $productQty <= $maxQty) {
                 $result = true;
             }
@@ -241,7 +241,19 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
             }
         }
 
-        // ---------------------------------------
+        if ($ebaySynchronizationTemplate->isRelistAdvancedRulesEnabled()) {
+            $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setData(
+                array(
+                    'store_id' => $listingProduct->getListing()->getStoreId(),
+                    'prefix'   => Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_ADVANCED_RULES_PREFIX
+                )
+            );
+            $ruleModel->loadFromSerialized($ebaySynchronizationTemplate->getRelistAdvancedRulesFilters());
+
+            if (!$ruleModel->validate($listingProduct->getMagentoProduct()->getProduct())) {
+                return false;
+            }
+        }
 
         return true;
     }

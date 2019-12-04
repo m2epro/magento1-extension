@@ -9,7 +9,7 @@
 class Ess_M2ePro_Adminhtml_MigrationToMagento2Controller
     extends Ess_M2ePro_Controller_Adminhtml_BaseController
 {
-    const MIGRATION_VERSION = '1.0.0';
+    const MIGRATION_VERSION = '1.1.0';
     const BACKUP_PREFIX     = 'mtm2';
     const MAP_PREFIX        = 'mtm2map';
 
@@ -105,7 +105,6 @@ class Ess_M2ePro_Adminhtml_MigrationToMagento2Controller
     {
         $tablesForBackup = array(
             'listing_log',
-            'listing_other_log',
             'system_log',
             'order_log',
             'synchronization_log',
@@ -188,7 +187,6 @@ class Ess_M2ePro_Adminhtml_MigrationToMagento2Controller
             'm2epro_walmart_dictionary_specific',
 
             'm2epro_listing_log',
-            'm2epro_listing_other_log',
             'm2epro_system_log',
             'm2epro_synchronization_log',
             'm2epro_ebay_account_pickup_store_log',

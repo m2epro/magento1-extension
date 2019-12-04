@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Requester
     extends Ess_M2ePro_Model_Walmart_Connector_Product_Requester
 {
-    // ########################################
+    //########################################
 
     public function getCommand()
     {
         return array('product','update','entities');
     }
 
-    // ########################################
+    //########################################
 
     protected function getActionType()
     {
@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Requester
         return Ess_M2ePro_Model_Listing_Log::ACTION_RELIST_PRODUCT_ON_COMPONENT;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product[] $listingProducts
@@ -49,5 +49,5 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Requester
         return $resultListingProducts;
     }
 
-    // ########################################
+    //########################################
 }

@@ -9,7 +9,6 @@
 class Ess_M2ePro_Model_Log_Clearing
 {
     const LOG_LISTINGS          = 'listings';
-    const LOG_OTHER_LISTINGS    = 'other_listings';
     const LOG_SYNCHRONIZATIONS  = 'synchronizations';
     const LOG_ORDERS            = 'orders';
 
@@ -87,7 +86,6 @@ class Ess_M2ePro_Model_Log_Clearing
     protected function isValidLogType($log)
     {
         return $log == self::LOG_LISTINGS ||
-               $log == self::LOG_OTHER_LISTINGS ||
                $log == self::LOG_SYNCHRONIZATIONS ||
                $log == self::LOG_ORDERS ||
                $log == self::LOG_EBAY_PICKUP_STORE;
@@ -112,14 +110,11 @@ class Ess_M2ePro_Model_Log_Clearing
 
     protected function clearLogByMinTime($log, $minTime)
     {
-        $table = NULL;
+        $table = null;
 
         switch($log) {
             case self::LOG_LISTINGS:
                 $table = Mage::getResourceModel('M2ePro/Listing_Log')->getMainTable();
-                break;
-            case self::LOG_OTHER_LISTINGS:
-                $table = Mage::getResourceModel('M2ePro/Listing_Other_Log')->getMainTable();
                 break;
             case self::LOG_SYNCHRONIZATIONS:
                 $table = Mage::getResourceModel('M2ePro/Synchronization_Log')->getMainTable();

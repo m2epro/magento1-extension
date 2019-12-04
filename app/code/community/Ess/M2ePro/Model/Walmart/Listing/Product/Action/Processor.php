@@ -8,10 +8,11 @@
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
 {
-    const FEED_TYPE_UPDATE_QTY = 'update_qty';
-    const FEED_TYPE_UPDATE_PRICE = 'update_price';
+    const FEED_TYPE_UPDATE_QTY        = 'update_qty';
+    const FEED_TYPE_UPDATE_LAG_TIME   = 'update_lag_time';
+    const FEED_TYPE_UPDATE_PRICE      = 'update_price';
     const FEED_TYPE_UPDATE_PROMOTIONS = 'update_promotions';
-    const FEED_TYPE_UPDATE_DETAILS = 'update_details';
+    const FEED_TYPE_UPDATE_DETAILS    = 'update_details';
 
     const PENDING_REQUEST_MAX_LIFE_TIME = 86400;
 
@@ -30,18 +31,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
         $accounts = $accountCollection->getItems();
 
         foreach ($accounts as $account) {
-            $feedsPacks = array(
-                self::FEED_TYPE_UPDATE_QTY        => array(),
-                self::FEED_TYPE_UPDATE_PRICE      => array(),
-                self::FEED_TYPE_UPDATE_PROMOTIONS => array(),
-                self::FEED_TYPE_UPDATE_DETAILS    => array(),
-            );
-
-            $this->fillFeedsPacks(
-                $feedsPacks,
-                $this->getScheduledActionsDataStatement($account, true)
-            );
-
+            $feedsPacks               = $this->getFilledPacksByFeeds($account);
             $actionsDataForProcessing = $this->prepareAccountsActions($feedsPacks);
 
             $requestsPacks = $this->prepareRequestsPacks($actionsDataForProcessing);
@@ -110,22 +100,32 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
     // ---------------------------------------
 
     /**
-     * @param array $feedsPacks
-     * @param Zend_Db_Statement $scheduledActionsDataStatement
+     * @param Ess_M2ePro_Model_Account $account
+     * @return array
      * @throws Ess_M2ePro_Model_Exception_Logic
+     * @throws Zend_Db_Statement_Exception
      */
-    protected function fillFeedsPacks(
-        array &$feedsPacks,
-        Zend_Db_Statement $scheduledActionsDataStatement
-    ) {
-        $throttlingManager = Mage::getModel('M2ePro/Walmart_ThrottlingManager');
-
-        $canCreateNewPacksByFeedType = array(
-            self::FEED_TYPE_UPDATE_DETAILS => true,
-            self::FEED_TYPE_UPDATE_PROMOTIONS => true,
-            self::FEED_TYPE_UPDATE_QTY => true,
-            self::FEED_TYPE_UPDATE_PRICE => true,
+    protected function getFilledPacksByFeeds(Ess_M2ePro_Model_Account $account)
+    {
+        $availableFeeds = array(
+            self::FEED_TYPE_UPDATE_DETAILS,
+            self::FEED_TYPE_UPDATE_PROMOTIONS,
+            self::FEED_TYPE_UPDATE_QTY,
+            self::FEED_TYPE_UPDATE_LAG_TIME,
+            self::FEED_TYPE_UPDATE_PRICE,
         );
+
+        $canCreateNewPacksByFeedType = array_combine(
+            $availableFeeds, array_fill(0, count($availableFeeds), true)
+        );
+
+        $feedsPacks = array_combine(
+            $availableFeeds, array_fill(0, count($availableFeeds), array())
+        );
+
+        /** @var Ess_M2ePro_Model_Walmart_ThrottlingManager $throttlingManager */
+        $throttlingManager = Mage::getModel('M2ePro/Walmart_ThrottlingManager');
+        $scheduledActionsDataStatement = $this->getScheduledActionsDataStatement($account, true);
 
         while ($scheduledActionData = $scheduledActionsDataStatement->fetch()) {
             $feedTypes = $this->getFeedTypes($scheduledActionData['action_type'], $scheduledActionData['filtered_tag']);
@@ -168,6 +168,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                 $this->addToNewPack($feedsPacks, $feedType, $scheduledActionData);
             }
         }
+
+        return $feedsPacks;
     }
 
     /**
@@ -177,9 +179,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
     protected function prepareAccountsActions(array $feedsPacks)
     {
         $result = array();
+        $accounts = array();
 
         foreach ($feedsPacks as $feedType => $feedPacks) {
             foreach ($feedPacks as $accountId => $accountPacks) {
+                if (!isset($accounts[$accountId])) {
+                    $accounts[$accountId] = Mage::helper('M2ePro/Component_Walmart')->getObject('Account', $accountId);
+                }
+
                 foreach ($accountPacks as $accountPack) {
                     foreach ($accountPack as $listingProductData) {
                         $listingProductId = $listingProductData['listing_product_id'];
@@ -211,12 +218,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                             }
 
                             $listingProductData['configurator'] = $listingProductConfigurator;
-
                             $result[$accountId][$actionType][$listingProductId] = $listingProductData;
-
                             continue;
                         }
 
+                        /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator $configurator */
                         if (!empty($result[$accountId][$actionType][$listingProductId]['configurator'])) {
                             $configurator = $result[$accountId][$actionType][$listingProductId]['configurator'];
                         } else {
@@ -228,6 +234,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                             case 'qty':
                                 if ($listingProductConfigurator->isQtyAllowed()) {
                                     $configurator->allowQty();
+                                }
+                                break;
+
+                            case 'lag_time':
+                                if ($listingProductConfigurator->isLagTimeAllowed()) {
+                                    $configurator->allowLagTime();
                                 }
                                 break;
 
@@ -250,8 +262,16 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                                 break;
                         }
 
-                        $listingProductData['configurator'] = $configurator;
+                        /** @var Ess_M2ePro_Model_Account $account */
+                        $account = $accounts[$accountId];
+                        if ($account->getChildObject()->getMarketplace()->getCode() === 'CA' &&
+                            ($configurator->isQtyAllowed() || $configurator->isLagTimeAllowed())
+                        ) {
+                            $configurator->allowQty()
+                                         ->allowLagTime();
+                        }
 
+                        $listingProductData['configurator'] = $configurator;
                         $result[$accountId][$actionType][$listingProductId] = $listingProductData;
                     }
                 }
@@ -486,6 +506,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                         unset($tags['qty']);
                         break;
 
+                    case 'lag_time':
+                        $existedConfigurator->disallowLagTime();
+                        unset($tags['lag_time']);
+                        break;
+
                     case 'price':
                         $existedConfigurator->disallowPrice();
                         unset($tags['price']);
@@ -503,14 +528,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
                 }
             }
 
-            $tags = array_keys($tags);
-
             $additionalData['configurator'] = $existedConfigurator->getData();
             $scheduledAction->setSettings('additional_data', $additionalData);
 
-            if (empty($existedConfigurator->getAllowedDataTypes())) {
+            $types = $existedConfigurator->getAllowedDataTypes();
+            if (empty($types)) {
                 $scheduledActionManager->deleteAction($scheduledAction);
             } else {
+                $tags = array_keys($tags);
                 $scheduledAction->setData('tag', '/'.trim(implode('/', $tags), '/').'/');
                 $scheduledActionManager->updateAction($scheduledAction);
             }
@@ -646,6 +671,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
             $this->getReviseQtyScheduledActionsPreparedCollection(
                 $account->getId(), $withCreateDateFilter, $excludedListingsProductsIds
             )->getSelect(),
+            $this->getReviseLagTimeScheduledActionsPreparedCollection(
+                $account->getId(), $withCreateDateFilter, $excludedListingsProductsIds
+            )->getSelect(),
             $this->getRevisePriceScheduledActionsPreparedCollection(
                 $account->getId(), $withCreateDateFilter, $excludedListingsProductsIds
             )->getSelect(),
@@ -743,11 +771,47 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
         return $collection;
     }
 
-    protected function getRevisePriceScheduledActionsPreparedCollection(
+    protected function getReviseLagTimeScheduledActionsPreparedCollection(
         $accountId,
         $withCreateDateFilter = false,
         $excludedListingsProductsIds = array()
     ) {
+        $priorityCoefficient = (int)$this->getConfigValue(
+            '/walmart/listing/product/action/revise_lag_time/', 'priority_coefficient'
+        );
+        $waitIncreaseCoefficient = (int)$this->getConfigValue(
+            '/walmart/listing/product/action/revise_lag_time/', 'wait_increase_coefficient'
+        );
+
+        $collection = $this->getScheduledActionsPreparedCollection(
+            $priorityCoefficient, $waitIncreaseCoefficient
+        );
+        $collection->addFieldToFilter('main_table.action_type', Ess_M2ePro_Model_Listing_Product::ACTION_REVISE);
+        $collection->getSelect()->where(
+            'main_table.tag LIKE \'%/lag_time/%\' OR main_table.tag IS NULL OR main_table.tag = \'\''
+        );
+        $collection->addFieldToFilter('aa.account_id', $accountId);
+
+        if (!empty($excludedListingsProductsIds)) {
+            $collection->addFieldToFilter('listing_product_id', array('nin' => $excludedListingsProductsIds));
+        }
+
+        $collection->getSelect()->columns(array('filtered_tag' => new Zend_Db_Expr('\'lag_time\'')));
+
+        if ($withCreateDateFilter && Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
+            $minAllowedWaitInterval = (int)$this->getConfigValue(
+                '/walmart/listing/product/action/revise_lag_time/', 'min_allowed_wait_interval'
+            );
+            $collection->addCreatedBeforeFilter($minAllowedWaitInterval);
+        }
+
+        return $collection;
+    }
+
+    protected function getRevisePriceScheduledActionsPreparedCollection($accountId,
+                                                                      $withCreateDateFilter = false,
+                                                                      $excludedListingsProductsIds = array())
+    {
         $priorityCoefficient = (int)$this->getConfigValue(
             '/walmart/listing/product/action/revise_price/', 'priority_coefficient'
         );
@@ -977,49 +1041,51 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processor
 
     //########################################
 
-    protected function getFeedTypes($actionType, $tag = NULL)
+    protected function getFeedTypes($actionType, $tag = null)
     {
-        switch ($actionType) {
-            case Ess_M2ePro_Model_Listing_Product::ACTION_RELIST:
-                $feedTypes = array(
-                    self::FEED_TYPE_UPDATE_QTY,
-                );
-
-                if ($tag == 'price') {
-                    $feedTypes[] = self::FEED_TYPE_UPDATE_PRICE;
-                }
-
-                if ($tag == 'promotions') {
-                    $feedTypes[] = self::FEED_TYPE_UPDATE_PROMOTIONS;
-                }
-                return $feedTypes;
-
-            case Ess_M2ePro_Model_Listing_Product::ACTION_REVISE:
-                $feedTypes = array();
-
-                if ($tag == 'qty') {
-                    $feedTypes[] = self::FEED_TYPE_UPDATE_QTY;
-                }
-
-                if ($tag == 'price') {
-                    $feedTypes[] = self::FEED_TYPE_UPDATE_PRICE;
-                }
-
-                if ($tag == 'promotions') {
-                    $feedTypes[] = self::FEED_TYPE_UPDATE_PROMOTIONS;
-                }
-
-                if ($tag == 'details') {
-                    $feedTypes[] = self::FEED_TYPE_UPDATE_DETAILS;
-                }
-                return $feedTypes;
-
-            case Ess_M2ePro_Model_Listing_Product::ACTION_STOP:
-                return array(self::FEED_TYPE_UPDATE_QTY);
-
-            default:
-                throw new Ess_M2ePro_Model_Exception_Logic('Unknown action type.');
+        if (!in_array(
+            $actionType, array(
+                Ess_M2ePro_Model_Listing_Product::ACTION_RELIST,
+                Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
+                Ess_M2ePro_Model_Listing_Product::ACTION_STOP
+            )
+        )) {
+            throw new Ess_M2ePro_Model_Exception_Logic('Unknown action type.');
         }
+
+        $feedTypesByTags = array(
+            'qty'        => self::FEED_TYPE_UPDATE_QTY,
+            'lag_time'   => self::FEED_TYPE_UPDATE_LAG_TIME,
+            'price'      => self::FEED_TYPE_UPDATE_PRICE,
+            'promotions' => self::FEED_TYPE_UPDATE_PROMOTIONS,
+            'details'    => self::FEED_TYPE_UPDATE_DETAILS,
+        );
+
+        $feedTypes = array();
+        if ($actionType == Ess_M2ePro_Model_Listing_Product::ACTION_RELIST) {
+            $feedTypes[] = self::FEED_TYPE_UPDATE_QTY;
+
+            if ($tag === 'price' || $tag === 'promotions') {
+                $feedTypes[] = $feedTypesByTags[$tag];
+            }
+
+            return $feedTypes;
+        }
+
+        if ($actionType == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
+            if ($tag !== null && isset($feedTypesByTags[$tag])) {
+                $feedTypes[] = $feedTypesByTags[$tag];
+            }
+
+            return $feedTypes;
+        }
+
+        if ($actionType == Ess_M2ePro_Model_Listing_Product::ACTION_STOP) {
+            $feedTypes[] = self::FEED_TYPE_UPDATE_QTY;
+            return $feedTypes;
+        }
+
+        return $feedTypes;
     }
 
     protected function getMaxPackSize($feedType)

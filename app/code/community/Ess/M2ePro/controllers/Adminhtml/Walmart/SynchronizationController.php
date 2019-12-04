@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_Walmart_SynchronizationController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/L4taAQ");
 
         return $this;
     }

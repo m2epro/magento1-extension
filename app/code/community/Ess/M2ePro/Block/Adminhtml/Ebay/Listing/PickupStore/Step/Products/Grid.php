@@ -124,7 +124,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Step_Products_Grid
             array(
                 'item_id' => 'item_id',
             ),
-            NULL,
+            null,
             'left'
         );
         $collection->getSelect()->joinLeft(

@@ -90,7 +90,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_QtyCalculator
      * @param null|string $key
      * @return array|mixed
      */
-    protected function getSource($key = NULL)
+    protected function getSource($key = null)
     {
         if ($this->_source === null) {
             $this->_source = $this->getComponentSellingFormatTemplate()->getQtySource();

@@ -25,8 +25,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationAmazonController
              ->addJs('M2ePro/MarketplaceHandler.js')
              ->addJs('M2ePro/Wizard/InstallationAmazon.js')
              ->addJs('M2ePro/Wizard/InstallationAmazon/MarketplaceHandler.js')
-             ->addJs('M2ePro/Wizard/InstallationAmazon/CustomHandler.js')
-             ->addJs('M2ePro/Configuration/ComponentsHandler.js');
+             ->addJs('M2ePro/Wizard/InstallationAmazon/CustomHandler.js');
 
         return $this;
     }

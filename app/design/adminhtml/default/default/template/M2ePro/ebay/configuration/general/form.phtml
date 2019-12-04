@@ -29,9 +29,6 @@
 
         EbayConfigurationGeneralHandlerObj = new EbayConfigurationHandler();
 
-        $('view_ebay_mode').observe('change', EbayConfigurationGeneralHandlerObj.viewModeChange)
-                           .simulate('change');
-
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
     });
 
@@ -51,43 +48,6 @@
 <form id="<?php echo $this->getForm()->getId(); ?>" action="<?php echo $this->getForm()->getData('action'); ?>" method="post" enctype="multipart/form-data">
 
     <input name="form_key" value="<?php echo $this->getFormKey(); ?>" type="hidden" />
-
-    <div class="entry-edit" id="magento_block_ebay_configuration_general_general">
-
-        <div class="entry-edit-head">
-            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('General'); ?></h4>
-        </div>
-
-        <div class="fieldset">
-            <div class="hor-scroll">
-
-                <table class="form-list" cellspacing="0" cellpadding="0">
-
-                    <tbody>
-
-                        <tr id="view_ebay_mode_tr">
-                            <td class="label">
-                                <label><?php echo Mage::helper('M2ePro')->__('Mode'); ?>: </label>
-                            </td>
-                            <td class="value">
-                                <select id="view_ebay_mode" name="view_ebay_mode">
-                                    <option value="<?php echo Ess_M2ePro_Helper_View_Ebay::MODE_SIMPLE; ?>" <?php if ($this->view_ebay_mode == Ess_M2ePro_Helper_View_Ebay::MODE_SIMPLE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Simple'); ?></option>
-                                    <option value="<?php echo Ess_M2ePro_Helper_View_Ebay::MODE_ADVANCED; ?>" <?php if ($this->view_ebay_mode == Ess_M2ePro_Helper_View_Ebay::MODE_ADVANCED): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Advanced'); ?></option>
-                                </select>
-                                <p class="note">
-                                    <span><?php echo Mage::helper('M2ePro')->__('There are two modes. Simple is suitable for new users and for those with a limited Inventory. Advanced is suitable for the more experienced user.'); ?></span>
-                                </p>
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-        </div>
-
-    </div>
 
     <?php if ($this->is_ebay_feedbacks_enabled) : ?>
         <div class="entry-edit" id="magento_block_ebay_configuration_general_notification">
@@ -516,6 +476,96 @@
         </div>
     <?php endif; ?>
 
+    <?php if ($this->au_marketplace->isStatusEnabled() && $this->au_marketplace->getChildObject()->isEpidEnabled()): ?>
+        <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_epids_au">
+
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs AU]'); ?></h4>
+            </div>
+
+            <div class="fieldset">
+                <div class="hor-scroll">
+
+                    <div id="block_notice_ebay_category_motors_epids_au" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Parts Compatibility [ePIDs AU]'); ?>">
+                        <?php echo Mage::helper('M2ePro')->__('
+                            In this Section, you can provide a Magento Attribute where ePID values for AU marketplace will be saved.
+                            <br/>
+                            Also you can Add/Update ePID Database manually by clicking <strong>Manage Option</strong> in Database line.
+                            <br/>
+                            You have an ability to choose either ePID or kType values should be used on eBay AU.
+                            Specify the appropriate <strong>Parts Compatibility Mode</strong> for your Listing in M2E Pro Listings grid.
+                        '); ?>
+                    </div>
+
+                    <table class="form-list" cellspacing="0" cellpadding="0">
+                        <tbody>
+
+                        <tr>
+                            <td class="label">
+                                <label for="motors_epids_au_attribute"><?php echo Mage::helper('M2ePro')->__('Attribute'); ?>:</label>
+                            </td>
+
+                            <?php if (count($this->attributes_for_motors) != 0): ?>
+
+                                <td class="value">
+                                    <select id="motors_epids_au_attribute" class="select M2ePro-custom-attribute-can-be-created" allowed_attribute_types="textarea" apply_to_all_attribute_sets="0" name="motors_epids_au_attribute">
+                                        <option value="">-- <?php echo Mage::helper('M2ePro')->__('Select Attribute'); ?> --</option>
+                                        <?php foreach ($this->attributes_for_motors as $attribute): ?>
+                                            <option value="<?php echo $attribute['code']; ?>"<?php if ($attribute['code'] == $this->motors_epids_au_attribute): ?> selected="selected"<?php endif; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </td>
+                                <td id="motors_epids_au_attribute_td_note">
+                                    <p class="note">
+                                        <span>
+                                            <?php echo Mage::helper('M2ePro')->__(
+                                                'Choose the Attribute that contains the Product Reference IDs (ePIDs) of compatible vehicles for the parts.
+                                                 In the M2E Pro Listing, use the <strong>Add Compatible Vehicles</strong> tool to find necessary compatible Items.
+                                                 <br/>
+                                                 Only Textarea Attributes are shown.'
+                                            ); ?>
+                                        </span>
+                                    </p>
+                                </td>
+
+                            <?php else: ?>
+
+                                <td class="value">
+                                    <div id="block_notice_ebay_configuration_motors_epids_au_attribute" class="block_notices_module" title="" subtitle="" collapseable="no" hideblock="no" always_show="yes">
+                                        <?php echo Mage::helper('M2ePro')->__('You do not have Textarea Attributes.'); ?>
+                                    </div>
+                                </td>
+
+                            <?php endif; ?>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <label><?php echo Mage::helper('M2ePro')->__('Database'); ?>:</label>
+                            </td>
+
+                            <td class="value">
+                                <span style="padding-right: 2px;"><?php echo Mage::helper('M2ePro')->__('From eBay'); ?>: </span>
+                                <span style="font-weight: bold; display: inline-block; width: 40px;"><?php echo $this->motors_epids_au_dictionary_ebay_count; ?></span>
+
+                                <span style="padding-right: 2px; padding-left: 10px;"><?php echo Mage::helper('M2ePro')->__('Custom Added'); ?>: </span>
+                                <span style="font-weight: bold; padding-right: 2px;"><?php echo $this->motors_epids_au_dictionary_custom_count; ?></span>
+
+                                <span style="">
+                                    (<a href="javascript:void(0);" onclick="EbayConfigurationGeneralHandlerObj.manageMotorsRecords('<?php echo Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU; ?>', '<?php echo Mage::helper('M2ePro')->__('Manage Custom Compatibility [ePIDs AU]'); ?>');"><?php echo Mage::helper('M2ePro')->__('manage'); ?></a>)
+                                </span>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    <?php endif; ?>
+
     <?php if ($this->is_motors_ktypes_marketplace_enabled) : ?>
 
         <div class="entry-edit" id="magento_block_ebay_configuration_general_motors_ktypes">
@@ -615,12 +665,12 @@
                 This file should be in CSV format, where each line describes one Compatible Vehicle.<br/><br/>
                 First line of the file should contain names of Columns:
                 <ul class="list">
-                <li>for ePIDs: epid,product_type,make,model,submodel,year,trim,engine</li>
-                <li>for kTypes: ktype,make,model,variant,body_style,type,from_year,to_year,engine</li>
+                <li>for ePIDs: epid, product_type, make, model, submodel, street_name, year, trim, engine</li>
+                <li>for kTypes: ktype, make, model, variant, body_style, type, from_year, to_year, engine</li>
                 </ul>
                 There are several required fields:
                 <ul class="list">
-                <li>for ePIDs: epid,product_type,make,model,submodel,year</li>
+                <li>for ePIDs: epid, product_type, make, model, submodel, year</li>
                 <li>for kTypes: ktype</li>
                 </ul>
                 For ePIDs product_type column you should provide one of these possible Values:
@@ -652,6 +702,7 @@
                                 <span id="database-statistic-popup-epids-motor" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_motor_dictionary_custom_count; ?></span>
                                 <span id="database-statistic-popup-epids-uk" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_uk_dictionary_custom_count; ?></span>
                                 <span id="database-statistic-popup-epids-de" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_de_dictionary_custom_count; ?></span>
+                                <span id="database-statistic-popup-epids-au" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_epids_au_dictionary_custom_count; ?></span>
                                 <span id="database-statistic-popup-ktypes" class="database-statistic-popup" style="font-weight: bold;"><?php echo $this->motors_ktypes_dictionary_custom_count; ?></span>
                             </td>
                             <td class="value" style="width: 90px; text-align: right;">

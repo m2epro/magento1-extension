@@ -9,10 +9,9 @@
 class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Blocked_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Inventory_Get_Blocked_ItemsResponser
 {
-    protected $_logsActionId       = null;
     protected $_synchronizationLog = null;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages()
     {
@@ -47,7 +46,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function failDetected($messageText)
     {
@@ -60,7 +59,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData()
     {
@@ -77,7 +76,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateBlockedListingProducts()
     {
@@ -93,43 +92,13 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         /** @var $stmtTemp Zend_Db_Statement_Pdo */
         $stmtTemp = $connRead->query($this->getPdoStatementExistingListings());
 
-        $tempLog = Mage::getModel('M2ePro/Listing_Other_Log');
-        $tempLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
-
         $notReceivedIds = array();
         while ($existingItem = $stmtTemp->fetch()) {
             if (in_array($existingItem['sku'], $responseData['data'])) {
                 continue;
             }
 
-            $notReceivedItem = $existingItem;
-
-            if (!in_array((int)$notReceivedItem['id'], $notReceivedIds)) {
-                $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
-                    ->getHumanTitleByListingProductStatus($notReceivedItem['status']);
-                $statusChangedTo = Mage::helper('M2ePro/Component_Amazon')
-                    ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED);
-
-                // M2ePro_TRANSLATIONS
-                // Item Status was successfully changed from "%from%" to "%to%" .
-                $tempLogMessage = Mage::helper('M2ePro')->__(
-                    'Item Status was successfully changed from "%from%" to "%to%" .',
-                    $statusChangedFrom,
-                    $statusChangedTo
-                );
-
-                $tempLog->addProductMessage(
-                    (int)$notReceivedItem['id'],
-                    Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                    $this->getLogsActionId(),
-                    Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE,
-                    $tempLogMessage,
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                );
-            }
-
-            $notReceivedIds[] = (int)$notReceivedItem['id'];
+            $notReceivedIds[] = (int)$existingItem['id'];
         }
 
         $notReceivedIds = array_unique($notReceivedIds);
@@ -174,7 +143,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         return $collection->getSelect()->__toString();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -214,15 +183,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
 
     //-----------------------------------------
 
-    protected function getLogsActionId()
-    {
-        if ($this->_logsActionId !== null) {
-            return $this->_logsActionId;
-        }
-
-        return $this->_logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
-    }
-
     protected function getSynchronizationLog()
     {
         if ($this->_synchronizationLog !== null) {
@@ -236,5 +196,5 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Bl
         return $this->_synchronizationLog;
     }
 
-    // ########################################
+    //########################################
 }

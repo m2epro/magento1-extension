@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_InspectDirectChanges extends Es
 
     protected function performActions()
     {
-        $components = Mage::helper('M2ePro/Component')->getActiveComponents();
+        $components = Mage::helper('M2ePro/Component')->getEnabledComponents();
 
         foreach ($components as $component) {
             if (!$this->isEnabled()) {

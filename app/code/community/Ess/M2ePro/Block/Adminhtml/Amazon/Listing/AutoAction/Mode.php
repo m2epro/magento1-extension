@@ -14,7 +14,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_AutoAction_Mode
     public function getHelpPageUrl()
     {
         return Mage::helper('M2ePro/Module_Support')
-            ->getDocumentationUrl(NULL, NULL, "x/XYgVAQ");
+            ->getDocumentationUrl(null, null, "x/XYgVAQ");
     }
 
     //########################################

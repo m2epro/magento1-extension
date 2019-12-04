@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
 
     protected $_asynchronous = false;
 
-    // ########################################
+    //########################################
 
     protected function sendRequest()
     {
@@ -101,7 +101,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function createFailedResponse($errorMessage)
     {
@@ -120,7 +120,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         return $failedResponse;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param $key
@@ -149,7 +149,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function getRequest($key)
     {
-        return isset($this->_requestsContainers[$key]) ? $this->_requestsContainers[$key]->getRequest() : NULL;
+        return isset($this->_requestsContainers[$key]) ? $this->_requestsContainers[$key]->getRequest() : null;
     }
 
     // ----------------------------------------
@@ -160,7 +160,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
      */
     public function getResponse($key)
     {
-        return isset($this->_responses[$key]) ? $this->_responses[$key] : NULL;
+        return isset($this->_responses[$key]) ? $this->_responses[$key] : null;
     }
 
     /**
@@ -191,7 +191,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         return $this->_asynchronous;
     }
 
-    // ########################################
+    //########################################
 
     public function getHeaders(Ess_M2ePro_Model_Connector_Connection_Request $request)
     {
@@ -214,5 +214,5 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple extends Ess_M2ePro_Model_Co
         );
     }
 
-    // ########################################
+    //########################################
 }

@@ -46,7 +46,7 @@ abstract class Ess_M2ePro_Model_Order_ShippingAddress extends Varien_Object
     public function getRegion()
     {
         if (!$this->getCountry()->getId()) {
-            return NULL;
+            return null;
         }
 
         if ($this->_region === null) {

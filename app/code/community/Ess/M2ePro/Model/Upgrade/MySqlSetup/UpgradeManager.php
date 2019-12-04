@@ -73,8 +73,7 @@ class Ess_M2ePro_Model_Upgrade_MySqlSetup_UpgradeManager
         }
 
         /** @var Ess_M2ePro_Model_Upgrade_Tables $object */
-        $object = Mage::getModel('M2ePro/Upgrade_Tables');
-        $object->setInstaller($this->_installer)->initialize();
+        $object = Mage::getModel('M2ePro/Upgrade_Tables', $this->_installer);
 
         return $this->_cache[$cacheKey] = $object;
     }

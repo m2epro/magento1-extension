@@ -1,0 +1,34 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_System */
+
+?>
+
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Name'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->systemName; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Current Date'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->systemTime; ?>
+        </td>
+    </tr>
+
+</table>

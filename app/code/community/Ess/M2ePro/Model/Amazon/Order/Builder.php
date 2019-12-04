@@ -8,9 +8,6 @@
 
 class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Duplicated Amazon orders with ID #%id%.
-
     const INSTRUCTION_INITIATOR = 'order_builder';
 
     const STATUS_NOT_MODIFIED = 0;
@@ -427,8 +424,6 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                 if ($currentOnlineQty > $orderItem['qty_purchased']) {
                     $listingProduct->setData('online_qty', $currentOnlineQty - $orderItem['qty_purchased']);
 
-                    // M2ePro_TRANSLATIONS
-                    // Item QTY was successfully changed from %from% to %to% .
                     $tempLogMessage = Mage::helper('M2ePro')->__(
                         'Item QTY was successfully changed from %from% to %to% .',
                         $currentOnlineQty,
@@ -466,8 +461,6 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
                         ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
 
                     if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                        // M2ePro_TRANSLATIONS
-                        // Item Status was successfully changed from "%from%" to "%to%" .
                         $tempLogMessages[] = Mage::helper('M2ePro')->__(
                             'Item Status was successfully changed from "%from%" to "%to%" .',
                             $statusChangedFrom,
@@ -510,11 +503,6 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
     protected function processOtherListingsUpdates()
     {
-        $logger = Mage::getModel('M2ePro/Listing_Other_Log');
-        $logger->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
-
-        $logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
-
         foreach ($this->_items as $orderItem) {
             /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingOtherCollection */
             $listingOtherCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Other');
@@ -543,25 +531,6 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
                 if ($currentOnlineQty > $orderItem['qty_purchased']) {
                     $otherListing->setData('online_qty', $currentOnlineQty - $orderItem['qty_purchased']);
-
-                    // M2ePro_TRANSLATIONS
-                    // Item QTY was successfully changed from %from% to %to% .
-                    $tempLogMessage = Mage::helper('M2ePro')->__(
-                        'Item QTY was successfully changed from %from% to %to% .',
-                        $currentOnlineQty,
-                        ($currentOnlineQty - $orderItem['qty_purchased'])
-                    );
-
-                    $logger->addProductMessage(
-                        $otherListing->getId(),
-                        Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                        $logsActionId,
-                        Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE,
-                        $tempLogMessage,
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                    );
-
                     $otherListing->save();
 
                     continue;
@@ -569,42 +538,11 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
 
                 $otherListing->setData('online_qty', 0);
 
-                $tempLogMessages = array(Mage::helper('M2ePro')->__(
-                    'Item qty was successfully changed from %from% to %to% .',
-                    $currentOnlineQty, 0
-                ));
-
                 if (!$otherListing->isStopped()) {
-                    $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
-                        ->getHumanTitleByListingProductStatus($otherListing->getStatus());
-                    $statusChangedTo = Mage::helper('M2ePro/Component_Amazon')
-                        ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
-
-                    if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                        // M2ePro_TRANSLATIONS
-                        // Item Status was successfully changed from "%from%" to "%to%" .
-                        $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                            'Item Status was successfully changed from "%from%" to "%to%" .',
-                            $statusChangedFrom, $statusChangedTo
-                        );
-                    }
-
                     $otherListing->setData(
                         'status_changer', Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT
                     );
                     $otherListing->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
-                }
-
-                foreach ($tempLogMessages as $tempLogMessage) {
-                    $logger->addProductMessage(
-                        $otherListing->getId(),
-                        Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                        $logsActionId,
-                        Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE,
-                        $tempLogMessage,
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                    );
                 }
 
                 $otherListing->save();

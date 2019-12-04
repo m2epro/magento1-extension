@@ -165,7 +165,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
     public function getProductId()
     {
         $temp = $this->getData('product_id');
-        return $temp === null ? NULL : (int)$temp;
+        return $temp === null ? null : (int)$temp;
     }
 
     public function getAdditionalData()
@@ -272,7 +272,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
                                     ->getItems();
 
         foreach ($listingsOther as $listingOther) {
-            $listingOther->unmapProduct(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $listingOther->unmapProduct();
         }
     }
 
@@ -280,71 +280,27 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
 
     /**
      * @param int $productId
-     * @param int $logsInitiator
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function mapProduct($productId, $logsInitiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN)
+    public function mapProduct($productId)
     {
         $this->addData(array('product_id'=>$productId))->save();
         $this->getChildObject()->afterMapProduct();
-
-        $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
-        $logModel->setComponentMode($this->getComponentMode());
-        $logModel->addProductMessage(
-            $this->getId(),
-            $logsInitiator,
-            NULL,
-            Ess_M2ePro_Model_Listing_Other_Log::ACTION_MAP_LISTING,
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Mapped
-            'Item was successfully Mapped.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-        );
     }
 
     /**
-     * @param int $logsInitiator
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function unmapProduct($logsInitiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN)
+    public function unmapProduct()
     {
         $this->getChildObject()->beforeUnmapProduct();
-        $this->setData('product_id', NULL)->save();
-
-        $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
-        $logModel->setComponentMode($this->getComponentMode());
-        $logModel->addProductMessage(
-            $this->getId(),
-            $logsInitiator,
-            NULL,
-            Ess_M2ePro_Model_Listing_Other_Log::ACTION_UNMAP_LISTING,
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Unmapped
-            'Item was successfully Unmapped.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-        );
+        $this->setData('product_id', null)->save();
     }
 
     // ---------------------------------------
 
     public function moveToListingSucceed()
     {
-        $otherLogModel = Mage::getModel('M2ePro/Listing_Other_Log');
-        $otherLogModel->setComponentMode($this->getComponentMode());
-        $otherLogModel->addProductMessage(
-            $this->getId(),
-            Ess_M2ePro_Helper_Data::INITIATOR_USER,
-            NULL,
-            Ess_M2ePro_Model_Listing_Other_Log::ACTION_MOVE_LISTING,
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Moved
-            'Item was successfully Moved.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-        );
-
         /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
         $listingProduct = Mage::getModel('M2ePro/Listing_Product')->load(
             (int)$this->getSetting('additional_data', self::MOVING_LISTING_PRODUCT_DESTINATION_KEY)
@@ -353,15 +309,14 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
         if ($listingProduct->getId()) {
             $listingLogModel = Mage::getModel('M2ePro/Listing_Log');
             $listingLogModel->setComponentMode($this->getComponentMode());
+            $actionId = $listingLogModel->getResource()->getNextActionId();
             $listingLogModel->addProductMessage(
                 $listingProduct->getListingId(),
                 $listingProduct->getProductId(),
                 $listingProduct->getId(),
                 Ess_M2ePro_Helper_Data::INITIATOR_USER,
-                NULL,
+                $actionId,
                 Ess_M2ePro_Model_Listing_Log::ACTION_MOVE_FROM_OTHER_LISTING,
-                // M2ePro_TRANSLATIONS
-                // Item was successfully Moved
                 'Item was successfully Moved.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
@@ -369,23 +324,6 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
         }
 
         $this->deleteInstance();
-    }
-
-    public function moveToListingFailed()
-    {
-        $otherLogModel = Mage::getModel('M2ePro/Listing_Other_Log');
-        $otherLogModel->setComponentMode($this->getComponentMode());
-        $otherLogModel->addProductMessage(
-            $this->getId(),
-            Ess_M2ePro_Helper_Data::INITIATOR_USER,
-            NULL,
-            Ess_M2ePro_Model_Listing_Other_Log::ACTION_MOVE_LISTING,
-            // M2ePro_TRANSLATIONS
-            // Product already exists in the selected Listing.
-            'Product already exists in the selected Listing.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-            Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-        );
     }
 
     //########################################

@@ -75,7 +75,7 @@ class Ess_M2ePro_Model_Ebay_Feedback_Issue_NegativeReceived extends Ess_M2ePro_M
     public function isNeedProcess()
     {
         return Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished() &&
-               Mage::helper('M2ePro/Component_Ebay')->isActive();
+               Mage::helper('M2ePro/Component_Ebay')->isEnabled();
     }
 
     //########################################

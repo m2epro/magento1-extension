@@ -16,9 +16,6 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
     const UPDATE_STATUS = 'status';
 
-    // M2ePro_TRANSLATIONS
-    // Duplicated Walmart orders with ID #%id%.
-
     //########################################
 
     /** @var $_helper Ess_M2ePro_Model_Walmart_Order_Helper */
@@ -387,8 +384,6 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
                 if ($currentOnlineQty > $orderItem['qty']) {
                     $listingProduct->setData('online_qty', $currentOnlineQty - $orderItem['qty']);
 
-                    // M2ePro_TRANSLATIONS
-                    // Item QTY was successfully changed from %from% to %to% .
                     $tempLogMessage = Mage::helper('M2ePro')->__(
                         'Item QTY was successfully changed from %from% to %to% .',
                         $currentOnlineQty,
@@ -426,8 +421,6 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
                         ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
 
                     if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                        // M2ePro_TRANSLATIONS
-                        // Item Status was successfully changed from "%from%" to "%to%" .
                         $tempLogMessages[] = Mage::helper('M2ePro')->__(
                             'Item Status was successfully changed from "%from%" to "%to%" .',
                             $statusChangedFrom,
@@ -470,11 +463,6 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
     protected function processOtherListingsUpdates()
     {
-        $logger = Mage::getModel('M2ePro/Listing_Other_Log');
-        $logger->setComponentMode(Ess_M2ePro_Helper_Component_Walmart::NICK);
-
-        $logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
-
         foreach ($this->_items as $orderItem) {
             /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingOtherCollection */
             $listingOtherCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other');
@@ -496,25 +484,6 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
                 if ($currentOnlineQty > $orderItem['qty']) {
                     $otherListing->setData('online_qty', $currentOnlineQty - $orderItem['qty']);
-
-                    // M2ePro_TRANSLATIONS
-                    // Item QTY was successfully changed from %from% to %to% .
-                    $tempLogMessage = Mage::helper('M2ePro')->__(
-                        'Item QTY was successfully changed from %from% to %to% .',
-                        $currentOnlineQty,
-                        ($currentOnlineQty - $orderItem['qty'])
-                    );
-
-                    $logger->addProductMessage(
-                        $otherListing->getId(),
-                        Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                        $logsActionId,
-                        Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE,
-                        $tempLogMessage,
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                    );
-
                     $otherListing->save();
 
                     continue;
@@ -522,46 +491,11 @@ class Ess_M2ePro_Model_Walmart_Order_Builder extends Mage_Core_Model_Abstract
 
                 $otherListing->setData('online_qty', 0);
 
-                $tempLogMessages = array();
-
-                if ($currentOnlineQty > 0) {
-                    $tempLogMessages = array(Mage::helper('M2ePro')->__(
-                        'Item qty was successfully changed from %from% to %to% .',
-                        $currentOnlineQty, 0
-                    ));
-                }
-
                 if (!$otherListing->isStopped()) {
-                    $statusChangedFrom = Mage::helper('M2ePro/Component_Walmart')
-                        ->getHumanTitleByListingProductStatus($otherListing->getStatus());
-                    $statusChangedTo = Mage::helper('M2ePro/Component_Walmart')
-                        ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
-
-                    if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                        // M2ePro_TRANSLATIONS
-                        // Item Status was successfully changed from "%from%" to "%to%" .
-                        $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                            'Item Status was successfully changed from "%from%" to "%to%" .',
-                            $statusChangedFrom, $statusChangedTo
-                        );
-                    }
-
                     $otherListing->setData(
                         'status_changer', Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT
                     );
                     $otherListing->setData('status', Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED);
-                }
-
-                foreach ($tempLogMessages as $tempLogMessage) {
-                    $logger->addProductMessage(
-                        $otherListing->getId(),
-                        Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                        $logsActionId,
-                        Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE,
-                        $tempLogMessage,
-                        Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                    );
                 }
 
                 $otherListing->save();

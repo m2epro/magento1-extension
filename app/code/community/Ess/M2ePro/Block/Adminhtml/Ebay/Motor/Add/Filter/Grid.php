@@ -256,6 +256,8 @@ HTML;
                 $key = Mage::helper('M2ePro')->escapeHtml('Body Style');
             } else if ($key == 'product_type') {
                 $key = Mage::helper('M2ePro')->escapeHtml('Type');
+            } else if ($key == 'street_name') {
+                $key = Mage::helper('M2ePro')->escapeHtml('Street Name');
             } else {
                 $key = Mage::helper('M2ePro')->escapeHtml(ucfirst($key));
             }

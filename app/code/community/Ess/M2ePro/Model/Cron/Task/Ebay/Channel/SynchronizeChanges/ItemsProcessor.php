@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             return;
         }
 
-        Mage::helper('M2ePro/Data_Cache_Session')->setValue(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->setValue(
             'item_get_changes_data_' . $account->getId(), $changesByAccount
         );
 
@@ -247,8 +247,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'item', 'get', 'changes',
-            $paramsConnector, NULL,
-            NULL, $account->getId()
+            $paramsConnector, null,
+            null, $account->getId()
         );
 
         $dispatcherObj->process($connectorObj);
@@ -265,7 +265,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             );
             Mage::helper('M2ePro/Module_Logger')->process($logData, "ebay no changes received - #{$tryNumber} try");
 
-            return NULL;
+            return null;
         }
 
         return $responseData;
@@ -358,8 +358,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
             ->getHumanTitleByListingProductStatus($data['status']);
 
         if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-            // M2ePro_TRANSLATIONS
-            // Item Status was successfully changed from "%from%" to "%to%" .
             $this->logReportChange(
                 $listingProduct, Mage::helper('M2ePro')->__(
                     'Item Status was successfully changed from "%from%" to "%to%" .',
@@ -399,8 +397,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
         if ($ebayListingProduct->getOnlineQty() != $data['online_qty'] ||
             $ebayListingProduct->getOnlineQtySold() != $data['online_qty_sold']) {
-            // M2ePro_TRANSLATIONS
-            // Item QTY was successfully changed from %from% to %to% .
             $this->logReportChange(
                 $listingProduct, Mage::helper('M2ePro')->__(
                     'Item QTY was successfully changed from %from% to %to% .',
@@ -438,8 +434,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
         if ($listingType == Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_FIXED) {
             if ($ebayListingProduct->getOnlineCurrentPrice() != $data['online_current_price']) {
-                // M2ePro_TRANSLATIONS
-                // Item Price was successfully changed from %from% to %to% .
                 $this->logReportChange(
                     $listingProduct, Mage::helper('M2ePro')->__(
                         'Item Price was successfully changed from %from% to %to% .',
@@ -473,7 +467,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Channel_SynchronizeChanges_ItemsProcessor
 
         $calculateWithEmptyQty = $ebayListingProduct->isOutOfStockControlEnabled();
 
-        $onlineCurrentPrice  = NULL;
+        $onlineCurrentPrice  = null;
 
         foreach ($variations as $variation) {
 

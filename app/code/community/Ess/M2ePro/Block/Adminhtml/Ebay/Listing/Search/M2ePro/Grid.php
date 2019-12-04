@@ -104,7 +104,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search_M2ePro_Grid
             array(
                 'item_id' => 'item_id',
             ),
-            NULL,
+            null,
             'left'
         );
 

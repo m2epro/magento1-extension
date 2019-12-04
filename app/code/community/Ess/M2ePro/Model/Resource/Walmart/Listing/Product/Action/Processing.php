@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_Processing
     extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Walmart_Listing_Product_Action_Processing', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function getFullyPreparedGroupHashes()
     {
@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_Processing
         return $this->_getReadAdapter()->fetchCol($select);
     }
 
-    // ########################################
+    //########################################
 
     public function markAsInProgress(array $itemIds, Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle)
     {
@@ -57,5 +57,5 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_Processing
         return $this->_getReadAdapter()->fetchCol($select);
     }
 
-    // ########################################
+    //########################################
 }

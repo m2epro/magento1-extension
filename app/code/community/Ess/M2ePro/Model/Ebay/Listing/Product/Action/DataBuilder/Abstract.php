@@ -11,7 +11,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
     /**
      * @var Ess_M2ePro_Model_Listing_Product
      */
-    protected $_listingProduct = NULL;
+    protected $_listingProduct = null;
 
     /**
      * @var array
@@ -193,8 +193,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Abstract
                                     );
         }
 
-        // M2ePro_TRANSLATIONS
-        // %attribute_title%: Attribute(s) %attributes% were not found in this Product and its value was not sent.
         $this->addWarningMessage(
             Mage::helper('M2ePro')->__(
                 '%attribute_title%: Attribute(s) %attributes% were not found'.

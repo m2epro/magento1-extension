@@ -26,7 +26,7 @@ class Ess_M2ePro_Adminhtml_Walmart_MarketplaceController
              ->addJs('M2ePro/Walmart/Marketplace/SynchProgressHandler.js')
              ->addJs('M2ePro/MarketplaceHandler.js');
 
-        $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/L4taAQ");
 
         return $this;
     }

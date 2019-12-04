@@ -13,16 +13,14 @@
 class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Product_Responser
 {
-    // ########################################
+    //########################################
 
     protected function getSuccessfulMessage()
     {
-        // M2ePro_TRANSLATIONS
-        // Item was successfully Listed
         return 'Item was successfully Listed';
     }
 
-    // ########################################
+    //########################################
 
     protected function processSuccess(array $params = array())
     {
@@ -63,5 +61,5 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Responser
         return array('general_id' => $responseData['asins']);
     }
 
-    // ########################################
+    //########################################
 }

@@ -177,7 +177,7 @@ HTML;
             return $template;
         }
 
-        return NULL;
+        return null;
     }
 
     // ---------------------------------------
@@ -209,7 +209,7 @@ HTML;
 
     public function getFormDataBlock()
     {
-        $blockName = NULL;
+        $blockName = null;
 
         switch ($this->getTemplateNick()) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT:
@@ -270,10 +270,6 @@ HTML;
 
     public function canDisplaySwitcher()
     {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return false;
-        }
-
         $templates = $this->getTemplates();
 
         if (empty($templates) && !$this->canDisplayUseDefaultOption()) {
@@ -343,10 +339,6 @@ HTML;
 
     public function getButtonsHtml()
     {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return '';
-        }
-
         $html = $this->getChildHtml('save_custom_as_template');
         $nick = $this->getTemplateNick();
 

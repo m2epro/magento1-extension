@@ -14,7 +14,7 @@ class Ess_M2ePro_Sql_Update_y18_m09_WalmartIsShippingAllowed extends Ess_M2ePro_
             return;
         }
 
-        $modifier->addColumn('is_shipping_allowed', 'VARCHAR(255) NOT NULL', NULL, 'method');
+        $modifier->addColumn('is_shipping_allowed', 'VARCHAR(255) NOT NULL', null, 'method');
 
         //Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverrideService::IS_SHIPPING_ALLOWED_ADD_OR_OVERRIDE
         $this->_installer->run(

@@ -89,7 +89,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Variation_Product_Manage_Tabs
         $iconTitle = Mage::helper('M2ePro')->__('Action required.');
         $iconStyle = 'vertical-align: middle; padding-right: 5px;';
 
-        if (empty($settingsBlock->getMessages())) {
+        $messages = $settingsBlock->getMessages();
+        if (empty($messages)) {
             $iconStyle .= 'display:none;';
         }
 

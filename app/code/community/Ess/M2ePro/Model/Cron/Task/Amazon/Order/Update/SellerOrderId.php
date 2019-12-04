@@ -13,6 +13,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Update_SellerOrderId
 
     const ORDERS_PER_MERCHANT = 1000;
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 3600;
+
     //####################################
 
     public function isPossibleToRun()

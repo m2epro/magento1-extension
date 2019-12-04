@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
 
     protected $_timeout = 300;
 
-    // ########################################
+    //########################################
 
     protected function sendRequest()
     {
@@ -69,7 +69,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
         }
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Connector_Connection_Request $request
@@ -129,7 +129,7 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
         return $this->_timeout;
     }
 
-    // ########################################
+    //########################################
 
     public function getHeaders()
     {
@@ -152,5 +152,5 @@ class Ess_M2ePro_Model_Connector_Connection_Single extends Ess_M2ePro_Model_Conn
         );
     }
 
-    // ########################################
+    //########################################
 }

@@ -1,3 +1,29 @@
+* 6.5.7 (r14620) (26/11/2019)
+
+* Common: [Added] Advanced Rules for Synchronization Policy
+* Common: [Improved] Compatibility with the latest versions of PHP
+* Common: [Improved] Fatal Error: "Can't use function return value in write context" on PHP version < 5.5.0
+* Common: [Improved] Replace default caching lifetime with a relevant value
+* Common: [Improved] Listings Logs Grouped View Mode
+* Common: [Fixed] Magento Order was not created. Reason: The password must have at least 7 characters. Leading or trailing spaces will be ignored
+* Common: [Removed] 3rd party logs
+* Common: [Removed] Autocomplete
+* Amazon: [Improved] Amazon order prefixes [b2b | prime | afn]
+* Amazon: [Improved] Allow sending 250 characters in the Search Terms field (Amazon)
+* Amazon: [Fixed] Adding VAT to regular price [Repricing Tool]
+* Amazon: [Fixed] Error on Search ASIN/ISBN Manually
+* eBay: [Improved] Add support ePIDs for Australia and add the column 'Street Name' for ePIDs
+* eBay: [Fixed] "The Fixed Price must be greater than 0.99" on a partial Revise action (if the price was not sent for variations)
+* eBay: [Fixed] Item Condition is not being sent on Relist action when it is needed
+* eBay: [Removed] Translation services
+* eBay: [Removed] eBay Simple Mode
+* Walmart: [Fixed] Do not Revise promotions if they are empty both in the Module and the Channel
+* Walmart: [Fixed] Task "order receive" works in a loop
+* Walmart: [Fixed] All products change the status to "Inactive (Blocked)" on unauthorized error
+* Walmart: [Fixed] Unable to Reserve Walmart Items
+* Walmart: [Improved] Ability to send lag time in the separated feed only for the US
+* Walmart: [Improved] Walmart Consumer ID field Validation (the US only)
+
 * 6.5.6 (r14422) (02/08/2019)
 
 * Common: [Improved] Adding store id to redirect URLs to Magento Product

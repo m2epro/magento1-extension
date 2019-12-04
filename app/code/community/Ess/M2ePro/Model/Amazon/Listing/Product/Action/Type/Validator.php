@@ -221,10 +221,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
     protected function validateSku()
     {
         if (!$this->getAmazonListingProduct()->getSku()) {
-            // M2ePro_TRANSLATIONS
-            // You have to list Item first.
             $this->addMessage('You have to list Item first.');
-
             return false;
         }
 
@@ -236,10 +233,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
     protected function validateBlocked()
     {
         if ($this->getListingProduct()->isBlocked()) {
-// M2ePro_TRANSLATIONS
-// The Action can not be executed as the Item was Closed, Incomplete or Blocked on Amazon.
-// Please, go to Amazon Seller Central and activate the Item.
-// After the next Synchronization the Item will be available.
             $this->addMessage(
                 'The Action can not be executed as the Item was Closed, Incomplete or Blocked on Amazon.
                  Please, go to Amazon Seller Central and activate the Item.
@@ -264,9 +257,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
         if ($qty <= 0) {
             if (isset($this->_params['status_changer']) &&
                 $this->_params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
-                // M2ePro_TRANSLATIONS
-                // 'You are submitting an Item with zero quantity. It contradicts Amazon requirements.
-                // Please apply the Stop Action instead.'
                 $message = 'You are submitting an Item with zero quantity. It contradicts Amazon requirements.';
 
                 if ($this->getListingProduct()->isStoppable()) {
@@ -275,11 +265,6 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 
                 $this->addMessage($message);
             } else {
-                // M2ePro_TRANSLATIONS
-                // 'Cannot submit an Item with zero quantity. It contradicts Amazon requirements.
-                // This action has been generated automatically based on your Synchronization Rule settings.
-                // The error occurs when the Stop Rules are not properly configured or disabled.
-                // Please review your settings.'
                 $message = 'Cannot submit an Item with zero quantity. It contradicts Amazon requirements.
                             This action has been generated automatically based on your Synchronization Rule settings. ';
 
@@ -336,12 +321,9 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 
         $regularPrice = $this->getRegularPrice();
         if ($regularPrice <= 0) {
-            // M2ePro_TRANSLATIONS
-            // The Price must be greater than 0. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
                 'The Price must be greater than 0. Please, check the Selling Policy and Product Settings.'
             );
-
             return false;
         }
 
@@ -372,12 +354,9 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 
         $businessPrice = $this->getBusinessPrice();
         if ($businessPrice <= 0) {
-            // M2ePro_TRANSLATIONS
-            // The Business Price must be greater than 0. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
                 'The Business Price must be greater than 0. Please, check the Selling Policy and Product Settings.'
             );
-
             return false;
         }
 
@@ -391,10 +370,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
     protected function validateLogicalUnit()
     {
         if (!$this->getVariationManager()->isLogicalUnit()) {
-            // M2ePro_TRANSLATIONS
-            // Only logical Products can be processed.
             $this->addMessage('Only logical Products can be processed.');
-
             return false;
         }
 
@@ -406,14 +382,10 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
     protected function validateParentListingProductFlags()
     {
         if ($this->getListingProduct()->getData('no_child_for_processing')) {
-// M2ePro_TRANSLATIONS
-// This Parent has no Child Products on which the chosen Action can be performed.
             $this->addMessage('This Parent has no Child Products on which the chosen Action can be performed.');
             return false;
         }
 
-// M2ePro_TRANSLATIONS
-// This Action cannot be fully performed because there are different actions in progress on some Child Products
         if ($this->getListingProduct()->getData('child_locked')) {
             $this->addMessage(
                 'This Action cannot be fully performed because there are
@@ -430,10 +402,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
     protected function validatePhysicalUnitAndSimple()
     {
         if (!$this->getVariationManager()->isPhysicalUnit() && !$this->getVariationManager()->isSimpleType()) {
-            // M2ePro_TRANSLATIONS
-            // Only physical Products can be processed.
             $this->addMessage('Only physical Products can be processed.');
-
             return false;
         }
 
@@ -443,10 +412,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
     protected function validatePhysicalUnitMatching()
     {
         if (!$this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-            // M2ePro_TRANSLATIONS
-            // You have to select Magento Variation.
             $this->addMessage('You have to select Magento Variation.');
-
             return false;
         }
 
@@ -458,10 +424,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
         $typeModel = $this->getVariationManager()->getTypeModel();
 
         if (!$this->getAmazonListingProduct()->isGeneralIdOwner() && !$typeModel->isVariationChannelMatched()) {
-            // M2ePro_TRANSLATIONS
-            // You have to select Channel Variation.
             $this->addMessage('You have to select Channel Variation.');
-
             return false;
         }
 

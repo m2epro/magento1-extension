@@ -22,8 +22,7 @@
         ); ?>
     </p>
 
-    <?php if(Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) : ?>
-        <div>
+    <div>
             <?php echo Mage::helper('M2ePro')->__(
                 'There are three <b>View Mode</b>s available to you in Advanced Mode:
                 <ul class="list">
@@ -40,9 +39,8 @@
                 You can switch between modes using Dropdown at the top of the Product Grid.<br/><br/>
                 <b>Note:</b> If you need to Search by Magento Product Attributes not shown in the Filters of the Grid, click <b>Show Advanced Filter</b> above the Table on the right.<br/><br/>
                 More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/p4UVAQ')
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/p4UVAQ')
             ); ?>
         </div>
-    <?php endif; ?>
 
 </div>

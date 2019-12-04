@@ -42,14 +42,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Grid_Column_Filter_OrderId
         return $this->getData('value', $index);
     }
 
-    public function getEscapedValue($index = null)
+    public function getEscapedValue($index = null, $flag = ENT_COMPAT)
     {
         $value = $this->getValue($index);
         if ($index === null) {
             $value = $value['value'];
         }
 
-        return htmlspecialchars($value);
+        return htmlspecialchars($value, $flag, 'UTF-8');
     }
 
     //########################################

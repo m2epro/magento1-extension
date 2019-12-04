@@ -115,8 +115,8 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             $service->deleteInstance();
         }
 
-        $this->_marketplaceModel        = NULL;
-        $this->_calculatedShippingModel = NULL;
+        $this->_marketplaceModel        = null;
+        $this->_calculatedShippingModel = null;
         $this->_shippingSourceModels    = array();
 
         $this->delete();
@@ -178,7 +178,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         if ($this->_calculatedShippingModel === null) {
             try {
                 $this->_calculatedShippingModel = Mage::helper('M2ePro')->getCachedObject(
-                    'Ebay_Template_Shipping_Calculated', $this->getId(), NULL, array('template')
+                    'Ebay_Template_Shipping_Calculated', $this->getId(), null, array('template')
                 );
 
                 $this->_calculatedShippingModel->setShippingTemplate($this);
@@ -425,10 +425,10 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         $rateTable = $this->getRateTable('local', $account);
 
         if (empty($rateTable)) {
-            return NULL;
+            return null;
         }
 
-        return !empty($rateTable['value']) ? (bool)$rateTable['value'] : NULL;
+        return !empty($rateTable['value']) ? (bool)$rateTable['value'] : null;
     }
 
     /**
@@ -476,7 +476,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             return false;
         }
 
-        return !empty($rateTable['value']) ? (bool)$rateTable['value'] : NULL;
+        return !empty($rateTable['value']) ? (bool)$rateTable['value'] : null;
     }
 
     /**
@@ -626,12 +626,12 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         $data = $this->getData('local_shipping_discount_combined_profile_id');
 
         if ($data === null) {
-            return NULL;
+            return null;
         }
 
         $data = Mage::helper('M2ePro')->jsonDecode($data);
 
-        return !isset($data[$accountId]) ? NULL : $data[$accountId];
+        return !isset($data[$accountId]) ? null : $data[$accountId];
     }
 
     // ---------------------------------------
@@ -685,12 +685,12 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         $data = $this->getData('international_shipping_discount_combined_profile_id');
 
         if ($data === null) {
-            return NULL;
+            return null;
         }
 
         $data = Mage::helper('M2ePro')->jsonDecode($data);
 
-        return !isset($data[$accountId]) ? NULL : $data[$accountId];
+        return !isset($data[$accountId]) ? null : $data[$accountId];
     }
 
     // ---------------------------------------
@@ -716,7 +716,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             return (float)$tempData;
         }
 
-        return NULL;
+        return null;
     }
 
     // ---------------------------------------
@@ -800,15 +800,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     /**
      * @return array
      */
-    public function getDefaultSettingsSimpleMode()
-    {
-        return $this->getDefaultSettingsAdvancedMode();
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettingsAdvancedMode()
+    public function getDefaultSettings()
     {
         return array(
             'country_mode' => self::COUNTRY_MODE_CUSTOM_VALUE,
@@ -824,7 +816,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             'dispatch_time_mode' => self::DISPATCH_TIME_MODE_VALUE,
             'dispatch_time_value' => 1,
             'dispatch_time_attribute' => '',
-            'cash_on_delivery_cost' => NULL,
+            'cash_on_delivery_cost' => null,
             'global_shipping_program' => 0,
             'cross_border_trade' => self::CROSS_BORDER_TRADE_NONE,
             'excluded_locations' => Mage::helper('M2ePro')->jsonEncode(array()),
@@ -833,14 +825,14 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             'local_shipping_discount_promotional_mode' => 0,
             'local_shipping_discount_combined_profile_id' => Mage::helper('M2ePro')->jsonEncode(array()),
             'local_shipping_rate_table_mode' => 0,
-            'local_shipping_rate_table' => NULL,
+            'local_shipping_rate_table' => null,
             'click_and_collect_mode' => 1,
 
             'international_shipping_mode' => self::SHIPPING_TYPE_NO_INTERNATIONAL,
             'international_shipping_discount_promotional_mode' => 0,
             'international_shipping_discount_combined_profile_id' => Mage::helper('M2ePro')->jsonEncode(array()),
             'international_shipping_rate_table_mode' => 0,
-            'international_shipping_rate_table' => NULL,
+            'international_shipping_rate_table' => null,
 
             // CALCULATED SHIPPING
             // ---------------------------------------
@@ -863,8 +855,8 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             'weight_major' => '',
             'weight_attribute' => '',
 
-            'local_handling_cost' => NULL,
-            'international_handling_cost' => NULL,
+            'local_handling_cost' => null,
+            'international_handling_cost' => null,
             // ---------------------------------------
 
             'services' => array()

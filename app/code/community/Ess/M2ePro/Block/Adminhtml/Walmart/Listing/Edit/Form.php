@@ -14,12 +14,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtm
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartListingEditForm');
         $this->setTemplate('M2ePro/walmart/listing/edit/form.phtml');
-        // ---------------------------------------
     }
+
+    //########################################
 
     protected function _prepareForm()
     {
@@ -42,31 +41,20 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtm
 
     protected function _beforeToHtml()
     {
-        // ---------------------------------------
         $formData = $this->getFormData();
-        $maxRecordsQuantity = Mage::helper('M2ePro/View_Walmart')->getAutocompleteMaxItems();
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->sellingFormatTemplates = $this->getTemplates(
-            'Template_SellingFormat', isset($formData['marketplace_id']) ? $formData['marketplace_id'] : NULL
+            'Template_SellingFormat', isset($formData['marketplace_id']) ? $formData['marketplace_id'] : null
         );
-        $this->sellingFormatTemplatesDropDown = (count($this->sellingFormatTemplates) < $maxRecordsQuantity);
-        // ---------------------------------------
-
         $this->descriptionsTemplates = $this->getTemplates('Template_Description');
-        $this->descriptionsTemplatesDropDown = (count($this->descriptionsTemplates) < $maxRecordsQuantity);
-
-        // ---------------------------------------
         $this->synchronizationsTemplates = $this->getTemplates('Template_Synchronization');
-        $this->synchronizationsTemplatesDropDown = (count($this->synchronizationsTemplates) < $maxRecordsQuantity);
 
         return parent::_beforeToHtml();
     }
 
     //########################################
 
-    protected function getTemplates($model, $marketplaceId = NULL)
+    protected function getTemplates($model, $marketplaceId = null)
     {
         $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection($model);
         $collection->addFieldToFilter('component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK);
@@ -121,41 +109,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Edit_Form extends Mage_Adminhtm
         }
 
         return $this->listing;
-    }
-
-    //########################################
-
-    public function getDescriptionTemplateTitleById($id)
-    {
-        foreach ($this->descriptionsTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
-    }
-
-    public function getSellingFormatTemplateTitleById($id)
-    {
-        foreach ($this->sellingFormatTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
-    }
-
-    public function getSynchronizationTemplateTitleById($id)
-    {
-        foreach ($this->synchronizationsTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
     }
 
     //########################################

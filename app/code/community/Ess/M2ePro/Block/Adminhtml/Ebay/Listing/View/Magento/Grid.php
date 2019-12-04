@@ -42,28 +42,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
 
     //########################################
 
-    public function getAdvancedFilterButtonHtml()
-    {
-        if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            return '';
-        }
-
-        return parent::getAdvancedFilterButtonHtml();
-    }
-
-    //########################################
-
-    protected function isShowRuleBlock()
-    {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return false;
-        }
-
-        return parent::isShowRuleBlock();
-    }
-
-    //########################################
-
     protected function _prepareCollection()
     {
         /** @var Ess_M2ePro_Model_Listing $listing */
@@ -117,7 +95,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
                 'online_reserve_price'  => 'online_reserve_price',
                 'online_buyitnow_price' => 'online_buyitnow_price',
             ),
-            NULL,
+            null,
             'left'
         );
         $collection->joinTable(
@@ -126,7 +104,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
             array(
                 'item_id' => 'item_id',
             ),
-            NULL,
+            null,
             'left'
         );
         // ---------------------------------------
@@ -137,19 +115,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Magento_Grid
 
         if ($store->getId()) {
             $collection->joinAttribute(
-                'name', 'catalog_product/name', 'entity_id', NULL, 'left', $store->getId()
+                'name', 'catalog_product/name', 'entity_id', null, 'left', $store->getId()
             );
             $collection->joinAttribute(
-                'magento_price', 'catalog_product/price', 'entity_id', NULL, 'left', $store->getId()
+                'magento_price', 'catalog_product/price', 'entity_id', null, 'left', $store->getId()
             );
             $collection->joinAttribute(
-                'status', 'catalog_product/status', 'entity_id', NULL, 'inner', $store->getId()
+                'status', 'catalog_product/status', 'entity_id', null, 'inner', $store->getId()
             );
             $collection->joinAttribute(
-                'visibility', 'catalog_product/visibility', 'entity_id', NULL, 'inner', $store->getId()
+                'visibility', 'catalog_product/visibility', 'entity_id', null, 'inner', $store->getId()
             );
             $collection->joinAttribute(
-                'thumbnail', 'catalog_product/thumbnail', 'entity_id', NULL, 'left', $store->getId()
+                'thumbnail', 'catalog_product/thumbnail', 'entity_id', null, 'left', $store->getId()
             );
         } else {
             $collection->addAttributeToSelect('price');

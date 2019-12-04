@@ -12,9 +12,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
 
     public function getKey()
     {
-        $key = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/', 'key'
-        );
+        $key = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'key');
         return $key !== null ? (string)$key : '';
     }
 
@@ -22,9 +20,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
 
     public function getStatus()
     {
-        $status = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/', 'status'
-        );
+        $status = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'status');
         return (bool)$status;
     }
 
@@ -32,17 +28,13 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
 
     public function getDomain()
     {
-        $domain = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/', 'domain'
-        );
+        $domain = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'domain');
         return $domain !== null ? (string)$domain : '';
     }
 
     public function getIp()
     {
-        $ip = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/', 'ip'
-        );
+        $ip = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/', 'ip');
         return $ip !== null ? (string)$ip : '';
     }
 
@@ -50,9 +42,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
 
     public function getEmail()
     {
-        $email = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/info/', 'email'
-        );
+        $email = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/info/', 'email');
         return $email !== null ? (string)$email : '';
     }
 
@@ -60,17 +50,13 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
 
     public function isValidDomain()
     {
-        $isValid = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/', 'domain'
-        );
+        $isValid = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/valid/', 'domain');
         return $isValid === null || (bool)$isValid;
     }
 
     public function isValidIp()
     {
-        $isValid = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/', 'ip'
-        );
+        $isValid = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/license/valid/', 'ip');
         return $isValid === null || (bool)$isValid;
     }
 
@@ -129,48 +115,7 @@ class Ess_M2ePro_Helper_Module_License extends Mage_Core_Helper_Abstract
             return false;
         }
 
-        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/', 'key', (string)$response['key']
-        );
-
-        Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
-            Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()
-        );
-
-        return true;
-    }
-
-    public function setTrial($component)
-    {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            return false;
-        }
-
-        if ($this->getKey() === '') {
-            return false;
-        }
-
-        if (!$this->isNoneMode($component)) {
-            return true;
-        }
-
-        try {
-            $dispatcherObject = Mage::getModel('M2ePro/M2ePro_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector(
-                'license', 'set', 'trial',
-                array('key' => $this->getKey(),
-                'component' => $component)
-            );
-            $dispatcherObject->process($connectorObj);
-            $response = $connectorObj->getResponseData();
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($e);
-            return false;
-        }
-
-        if (!isset($response['status']) || !$response['status']) {
-            return false;
-        }
+        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue('/license/', 'key', (string)$response['key']);
 
         Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(
             Mage::getModel('M2ePro/Servicing_Task_License')->getPublicNick()

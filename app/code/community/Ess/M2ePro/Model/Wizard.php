@@ -33,7 +33,7 @@ class Ess_M2ePro_Model_Wizard extends Ess_M2ePro_Model_Abstract
      */
     public function getNick()
     {
-        return NULL;
+        return null;
     }
 
     //########################################

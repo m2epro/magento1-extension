@@ -118,7 +118,7 @@ class Ess_M2ePro_Helper_Magento_AttributeSet extends Ess_M2ePro_Helper_Magento_A
         $set = Mage::getModel('eav/entity_attribute_set')->load($setId);
 
         if (!$set->getId()) {
-            return NULL;
+            return null;
         }
 
         return $set->getData('attribute_set_name');

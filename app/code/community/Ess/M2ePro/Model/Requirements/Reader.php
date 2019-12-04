@@ -14,12 +14,12 @@ class Ess_M2ePro_Model_Requirements_Reader
 
     public function __construct()
     {
-        $requirementsFile = Mage::getConfig()->getModuleDir(NULL, Ess_M2ePro_Helper_Module::IDENTIFIER) .DS.
+        $requirementsFile = Mage::getConfig()->getModuleDir(null, Ess_M2ePro_Helper_Module::IDENTIFIER) .DS.
                             'requirements.json';
 
         $requirements = Mage::helper('M2ePro/Data')->jsonDecode(file_get_contents($requirementsFile));
 
-        $composerFile = Mage::getConfig()->getModuleDir(NULL, Ess_M2ePro_Helper_Module::IDENTIFIER) .DS.
+        $composerFile = Mage::getConfig()->getModuleDir(null, Ess_M2ePro_Helper_Module::IDENTIFIER) .DS.
                         'composer.json';
 
         $composerData = Mage::helper('M2ePro/Data')->jsonDecode(file_get_contents($composerFile));
@@ -30,19 +30,19 @@ class Ess_M2ePro_Model_Requirements_Reader
 
     //########################################
 
-    public function getMemoryLimitData($dataPart = NULL)
+    public function getMemoryLimitData($dataPart = null)
     {
         $path = array_filter(array('memory_limit', $dataPart));
         return $this->getPath($path);
     }
 
-    public function getExecutionTimeData($dataPart = NULL)
+    public function getExecutionTimeData($dataPart = null)
     {
         $path = array_filter(array('execution_time', $dataPart));
         return $this->getPath($path);
     }
 
-    public function getMagentoVersionData($dataPart = NULL)
+    public function getMagentoVersionData($dataPart = null)
     {
         $path = array_filter(array('magento_version', $dataPart));
         return $this->getPath($path);
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Requirements_Reader
             return !empty($path) ? $this->getPath($path, $data[$pathPart]) : $data[$pathPart];
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################

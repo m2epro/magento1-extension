@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Resource_Request_Pending_Partial
     extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Request_Pending_Partial', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function getResultData(Ess_M2ePro_Model_Request_Pending_Partial $requestPendingPartial, $partNumber)
     {
@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Resource_Request_Pending_Partial
         $resultData = $this->_getReadAdapter()->fetchCol($select);
         $resultData = reset($resultData);
 
-        return !empty($resultData) ? Mage::helper('M2ePro')->jsonDecode($resultData) : NULL;
+        return !empty($resultData) ? Mage::helper('M2ePro')->jsonDecode($resultData) : null;
     }
 
     public function addResultData(
@@ -60,5 +60,5 @@ class Ess_M2ePro_Model_Resource_Request_Pending_Partial
         );
     }
 
-    // ########################################
+    //########################################
 }

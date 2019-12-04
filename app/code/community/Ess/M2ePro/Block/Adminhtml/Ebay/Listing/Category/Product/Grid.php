@@ -57,7 +57,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product_Grid
                 'name',
                 'catalog_product/name',
                 'entity_id',
-                NULL,
+                null,
                 'inner',
                 $store->getId()
             );
@@ -65,7 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product_Grid
                 'thumbnail',
                 'catalog_product/thumbnail',
                 'entity_id',
-                NULL,
+                null,
                 'left',
                 $store->getId()
             );
@@ -245,7 +245,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Product_Grid
                     'catalog/product_website',
                     'website_id',
                     'product_id=entity_id',
-                    NULL,
+                    null,
                     'left'
                 );
             }
@@ -475,7 +475,7 @@ HTML;
         return '<span style="padding-left: 10px; display: inline-block;">' . $result . '</span>';
     }
 
-    protected function getCategoryPathLabel($categoryPath, $categoryId = NULL)
+    protected function getCategoryPathLabel($categoryPath, $categoryId = null)
     {
         $result = $categoryPath;
 
@@ -636,32 +636,18 @@ HTML;
 
         // ---------------------------------------
         $translations = array();
-        // M2ePro_TRANSLATIONS
-        // You have not selected the Primary eBay Category for some Products.
         $text = 'You have not selected the Primary eBay Category for some Products.';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Are you sure?
         $text = 'Are you sure?';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // eBay could not assign Categories for %product_tite% Products.
         $text = 'eBay could not assign Categories for %product_title% Products.';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Suggested Categories were successfully Received for %product_title% Product(s).
         $text = 'Suggested Categories were successfully Received for %product_title% Product(s).';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Set eBay Category
         $text = 'Set eBay Category';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Set eBay Category for Product(s)
         $text = 'Set eBay Category for Product(s)';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Set eBay Primary Category for Product(s)
         $text = 'Set eBay Primary Category for Product(s)';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
 

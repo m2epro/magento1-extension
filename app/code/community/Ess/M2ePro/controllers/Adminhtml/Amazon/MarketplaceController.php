@@ -26,7 +26,7 @@ class Ess_M2ePro_Adminhtml_Amazon_MarketplaceController
              ->addJs('M2ePro/Amazon/Marketplace/SynchProgressHandler.js')
              ->addJs('M2ePro/MarketplaceHandler.js');
 
-        $this->setPageHelpLink(NULL, NULL, "x/ioIVAQ");
+        $this->setPageHelpLink(null, null, "x/ioIVAQ");
 
         return $this;
     }

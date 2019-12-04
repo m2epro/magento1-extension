@@ -38,7 +38,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_DescriptionController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/HoMVAQ");
+        $this->setPageHelpLink(null, null, "x/HoMVAQ");
 
         return $this;
     }

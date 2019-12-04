@@ -36,56 +36,10 @@ foreach (array('local', 'international') as $type) {
     }
 }
 
-// checking what mode need to show (simple or advanced)
-$defaultStrictSettingsForSimpleMode = $default;
-
-// removing ignored options for mode checking
-$ignoredOptions = array('country_mode', 'country_custom_value', 'country_custom_attribute',
-    'postal_code_mode', 'postal_code_custom_value', 'postal_code_custom_attribute',
-    'address_mode', 'address_custom_value', 'address_custom_attribute',
-    'local_shipping_mode', 'dispatch_time_mode', 'international_shipping_mode', 'services', 'excluded_locations',
-    'local_shipping_rate_table', 'international_shipping_rate_table');
-
-foreach($ignoredOptions as $val) {
-    unset($defaultStrictSettingsForSimpleMode[$val]);
-}
-
-$settingsOnlyForAdvancedMode = array(
-    'local_shipping_mode' =>  Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED,
-    'country_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_ATTRIBUTE,
-    'postal_code_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::POSTAL_CODE_MODE_CUSTOM_ATTRIBUTE,
-    'address_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping::ADDRESS_MODE_CUSTOM_ATTRIBUTE
-);
-
-$showSimpleModeSettings = array(
-    Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FREIGHT,
-    Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_LOCAL
-);
-
-$showBlockedAdvancedMode = false;
-if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-    $showBlockedAdvancedMode = !in_array($formData['local_shipping_mode'], $showSimpleModeSettings) &&
-        (!!count(array_intersect_assoc($formData, $settingsOnlyForAdvancedMode)) ||
-        !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)));
-    if(!$showBlockedAdvancedMode) {
-        foreach($formData['services'] as $service) {
-            if(!empty($service['cost_surcharge_value'])) {
-                $showBlockedAdvancedMode = true;
-            }
-        }
-        if (!empty($formData['excluded_locations'])) {
-            $showBlockedAdvancedMode = true;
-        }
-    }
-}
-
-$showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
-
-$isLocalRateTableEnabled = $showAdvancedMode && $this->canDisplayLocalShippingRateTable();
-$isInternationalRateTableEnabled = $showAdvancedMode && $this->canDisplayInternationalShippingRateTable();
+$isLocalRateTableEnabled = $this->canDisplayLocalShippingRateTable();
+$isInternationalRateTableEnabled = $this->canDisplayInternationalShippingRateTable();
 
 $marketplaceData = $this->getMarketplaceData();
-
 $missingAttributes = $this->getMissingAttributes();
 
 ?>
@@ -112,7 +66,7 @@ $missingAttributes = $this->getMissingAttributes();
         After an eBay token is obtained, <strong>Save</strong> the changes to Account configuration.<br><br>
         The Rate Tables will be downloaded to M2E Pro Shipping Policy automatically. Select one which should be applied to your Items.<br><br>
         <strong>Note</strong>, you need to repeat the procedure above for each eBay Account separately.',
-            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/wRhPAQ')
+            Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/wRhPAQ')
         ),
         'You are submitting different Shipping Rate Table modes for the domestic and international shipping. It contradicts eBay requirements. Please edit the settings.' => Mage::helper('M2ePro')->__(
             'You are submitting different Shipping Rate Table modes for the domestic and international shipping. It contradicts eBay requirements. Please edit the settings.'
@@ -219,7 +173,6 @@ $missingAttributes = $this->getMissingAttributes();
         EbayTemplateShippingHandlerObj.shippingServices = <?php echo json_encode($marketplaceData['services']) ?>;
         EbayTemplateShippingHandlerObj.shippingLocations = <?php echo json_encode($marketplaceData['locations']) ?>;
         EbayTemplateShippingHandlerObj.discountProfiles = <?php echo json_encode($this->getDiscountProfiles()) ?>;
-        EbayTemplateShippingHandlerObj.isSimpleViewMode = <?php echo json_encode(!$showAdvancedMode); ?>;
         EbayTemplateShippingHandlerObj.originCountry = "<?php echo $marketplaceData['origin_country']; ?>";
 
         if (EbayTemplateShippingHandlerObj.isSimpleViewMode) {
@@ -310,11 +263,6 @@ $missingAttributes = $this->getMissingAttributes();
 
         EbayTemplateShippingHandlerObj.checkMessages('local');
         EbayTemplateShippingHandlerObj.checkMessages('international');
-
-        <?php if($showBlockedAdvancedMode): ?>
-            var ShippingFormWrapper = new AreaWrapper('template_shipping_data_container');
-            ShippingFormWrapper.lock();
-        <?php endif; ?>
     };
 
     <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
@@ -436,15 +384,6 @@ $missingAttributes = $this->getMissingAttributes();
 <input type="hidden" name="shipping[title]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getTitle()); ?>" />
 <input type="hidden" name="shipping[marketplace_id]" value="<?php echo (int)$marketplaceData['id']; ?>" />
 <input type="hidden" name="shipping[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
-
-<?php if($showBlockedAdvancedMode): ?>
-    <p style="font-size: 15px; font-weight: bolder; color: red;">
-        <?php $menuPath = Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'General', 'Mode > Advanced');
-        echo Mage::helper('M2ePro')->__(
-            'This set of Options cannot be edited in Simple Mode because it was set in Advanced Mode.<br/> To make the necessary changes you should switch to Advanced Mode (%menu_path%).', $menuPath);
-        ?>
-    </p>
-<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_ebay_template_shipping_form_data_location">
 
@@ -585,7 +524,7 @@ $missingAttributes = $this->getMissingAttributes();
                                 <?php if ($formData['local_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT): ?>selected="selected"<?php endif; ?>>
                                 <?php echo Mage::helper('M2ePro')->__('Flat: same cost to all Buyers'); ?>
                             </option>
-                            <?php if ($showAdvancedMode && $this->canDisplayLocalCalculatedShippingType()): ?>
+                            <?php if ($this->canDisplayLocalCalculatedShippingType()): ?>
                                 <option id="local_shipping_mode_calculated" value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED; ?>"
                                     <?php if ($formData['local_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED): ?>selected="selected"<?php endif; ?>>
                                     <?php echo Mage::helper('M2ePro')->__('Calculated: cost varies by Buyer Location'); ?>
@@ -848,7 +787,7 @@ $missingAttributes = $this->getMissingAttributes();
                     </td>
                 </tr>
 
-                <?php if ($showAdvancedMode && $this->canDisplayClickAndCollectOption()): ?>
+                <?php if ($this->canDisplayClickAndCollectOption()): ?>
                     <tr id="click_and_collect_mode_tr" class="local-shipping-tr">
                         <td class="label">
                             <label><?php echo Mage::helper('M2ePro')->__('Click And Collect Opt-out'); ?>:</label>
@@ -976,7 +915,7 @@ $missingAttributes = $this->getMissingAttributes();
                     </td>
                 </tr>
 
-                <?php if ($showAdvancedMode && $this->canDisplayCashOnDeliveryCost()): ?>
+                <?php if ($this->canDisplayCashOnDeliveryCost()): ?>
                     <tr id="cash_on_delivery_cost_cv_tr" class="cash-on-delivery-tr" style="display: none;">
                         <td class="label">
                             <label for="cash_on_delivery_cost"><?php echo Mage::helper('M2ePro')->__('"Cash On Delivery" Cost'); ?>:</label>
@@ -1068,7 +1007,7 @@ $missingAttributes = $this->getMissingAttributes();
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
-                <?php if ($showAdvancedMode && $this->canDisplayGlobalShippingProgram()): ?>
+                <?php if ($this->canDisplayGlobalShippingProgram()): ?>
 
                     <tr>
                         <td class="label">
@@ -1095,27 +1034,22 @@ $missingAttributes = $this->getMissingAttributes();
                         <label for="international_shipping_mode"><?php echo Mage::helper('M2ePro')->__('Type'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <?php if (!$showAdvancedMode && $this->isInternationalShippingModeCalculated()): ?>
-                            <input type="hidden" id="international_shipping_mode" name="shipping[international_shipping_mode]" />
-                            <span><?php echo Mage::helper('M2ePro')->__('Calculated: cost varies by Buyer Location'); ?></span>
-                        <?php else: ?>
-                            <select id="international_shipping_mode" name="shipping[international_shipping_mode]">
-                                <option id="international_shipping_none" value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_NO_INTERNATIONAL; ?>"
-                                    <?php if ($formData['international_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_NO_INTERNATIONAL): ?>selected="selected"<?php endif; ?> >
-                                    <?php echo Mage::helper('M2ePro')->__('No International Shipping'); ?>
+                        <select id="international_shipping_mode" name="shipping[international_shipping_mode]">
+                            <option id="international_shipping_none" value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_NO_INTERNATIONAL; ?>"
+                                <?php if ($formData['international_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_NO_INTERNATIONAL): ?>selected="selected"<?php endif; ?> >
+                                <?php echo Mage::helper('M2ePro')->__('No International Shipping'); ?>
+                            </option>
+                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT; ?>"
+                                <?php if ($formData['international_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT): ?>selected="selected"<?php endif; ?> >
+                                <?php echo Mage::helper('M2ePro')->__('Flat: same cost to all Buyers'); ?>
+                            </option>
+                            <?php if ($this->canDisplayInternationalCalculatedShippingType()): ?>
+                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED; ?>"
+                                    <?php if ($formData['international_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED): ?>selected="selected"<?php endif; ?> >
+                                    <?php echo Mage::helper('M2ePro')->__('Calculated: cost varies by Buyer Location'); ?>
                                 </option>
-                                <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT; ?>"
-                                    <?php if ($formData['international_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_FLAT): ?>selected="selected"<?php endif; ?> >
-                                    <?php echo Mage::helper('M2ePro')->__('Flat: same cost to all Buyers'); ?>
-                                </option>
-                                <?php if ($this->canDisplayInternationalCalculatedShippingType()): ?>
-                                    <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED; ?>"
-                                        <?php if ($formData['international_shipping_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::SHIPPING_TYPE_CALCULATED): ?>selected="selected"<?php endif; ?> >
-                                        <?php echo Mage::helper('M2ePro')->__('Calculated: cost varies by Buyer Location'); ?>
-                                    </option>
-                                <?php endif; ?>
-                            </select>
-                        <?php endif; ?>
+                            <?php endif; ?>
+                        </select>
                     </td>
                 </tr>
 

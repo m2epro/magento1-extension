@@ -56,6 +56,8 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_Diff_Abstract extends E
             'list_qty_calculated',
             'list_qty_calculated_value',
             'list_qty_calculated_value_max',
+            'list_advanced_rules_mode',
+            'list_advanced_rules_filters'
         );
 
         return $this->isSettingsDifferent($keys);
@@ -93,6 +95,8 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_Diff_Abstract extends E
             'relist_qty_calculated',
             'relist_qty_calculated_value',
             'relist_qty_calculated_value_max',
+            'relist_advanced_rules_mode',
+            'relist_advanced_rules_filters'
         );
 
         return $this->isSettingsDifferent($keys);
@@ -129,6 +133,8 @@ abstract class Ess_M2ePro_Model_Template_Synchronization_Diff_Abstract extends E
             'stop_qty_calculated',
             'stop_qty_calculated_value',
             'stop_qty_calculated_value_max',
+            'stop_advanced_rules_mode',
+            'stop_advanced_rules_filters'
         );
 
         return $this->isSettingsDifferent($keys);

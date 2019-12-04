@@ -16,7 +16,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
     public function getCurrencyConversionMessage($marketplaceCurrency = null)
     {
         if ($this->getMarketplace() === null) {
-            return NULL;
+            return null;
         }
 
         if ($marketplaceCurrency === null) {
@@ -24,7 +24,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
         }
 
         if (!$this->canDisplayCurrencyConversionMessage($marketplaceCurrency)) {
-            return NULL;
+            return null;
         }
 
         $storePath = Mage::helper('M2ePro/Magento_Store')->getStorePath($this->getStore()->getId());
@@ -44,10 +44,6 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
                 )
             );
 
-            // M2ePro_TRANSLATIONS
-            // Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a>
-            // for Store View "%store_path%" of your Magento.
-            // Currency conversion will not be performed.
             return
                 Mage::helper('M2ePro')->__(
                     'Currency "%currency_code%" is not allowed in <a href="%url%" target="_blank">Currency Setup</a> '
@@ -66,10 +62,6 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
                 4
             );
 
-        // M2ePro_TRANSLATIONS
-        // There is no rate for "%currency_from%-%currency_to%" in
-        // <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.
-        // Currency conversion will not be performed.
         if ($rate == 0) {
             return
                 Mage::helper('M2ePro')->__(
@@ -82,10 +74,6 @@ class Ess_M2ePro_Block_Adminhtml_Template_SellingFormat_Messages
                 );
         }
 
-        // M2ePro_TRANSLATIONS
-        // There is a rate %value% for "%currency_from%-%currency_to%" in
-        // <a href="%url%" target="_blank">Manage Currency Rates</a> of your Magento.
-        // Currency conversion will be performed automatically.
         $message =
             Mage::helper('M2ePro')->__(
                 'There is a rate %value% for "%currency_from%-%currency_to%" in '

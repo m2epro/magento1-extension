@@ -28,7 +28,17 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getDocumentationUrl($component = NULL, $articleUrl = NULL, $tinyLink = NULL)
+    public function getWebsiteUrl()
+    {
+        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'website_url');
+    }
+
+    public function getClientsPortalUrl()
+    {
+        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'clients_portal_url');
+    }
+
+    public function getDocumentationUrl($component = null, $articleUrl = null, $tinyLink = null)
     {
         $urlParts[] = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'documentation_url');
 
@@ -59,9 +69,9 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return implode('/', $urlParts);
     }
 
-    public function getKnowledgeBaseUrl($articleUrl = NULL)
+    public function getKnowledgeBaseUrl($articleUrl = null)
     {
-        $urlParts[] = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'knowledge_base_url');
+        $urlParts[] = $this->getSupportUrl();
 
         if ($articleUrl) {
             $urlParts[] = trim($articleUrl, '/');
@@ -70,29 +80,15 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return implode('/', $urlParts);
     }
 
-    public function getVideoTutorialsUrl($component)
+    public function getIdeasUrl()
     {
-        return $this->getDocumentationUrl($component, 'Video+Tutorials');
+        return $this->getSupportUrl() . 'ideas/';
     }
 
-    //########################################
-
-    public function getMainWebsiteUrl()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'main_website_url');
-    }
-
-    public function getClientsPortalBaseUrl()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'clients_portal_url');
-    }
-
-    // ---------------------------------------
-
-    public function getMainSupportUrl($urlPart = null)
+    public function getSupportUrl($urlPart = null)
     {
         $urlParts[] = trim(
-            Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'main_support_url'),
+            Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'support_url'),
             '/'
         );
 
@@ -103,9 +99,9 @@ class Ess_M2ePro_Helper_Module_Support extends Mage_Core_Helper_Abstract
         return implode('/', $urlParts);
     }
 
-    public function getMagentoConnectUrl()
+    public function getMagentoMarketplaceUrl()
     {
-        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'magento_connect_url');
+        return Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/support/', 'magento_marketplace_url');
     }
 
     //########################################

@@ -8,23 +8,28 @@
 
 abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 {
-    const NICK = NULL;
+    const NICK = null;
 
     protected $_initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
 
     /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 60;
+
+    /**
      * @var Ess_M2ePro_Model_Lock_Item_Manager
      */
-    protected $_lockItemManager = null;
+    protected $_lockItemManager;
 
     /**
      * @var Ess_M2ePro_Model_Cron_OperationHistory
      */
-    protected $_operationHistory = null;
+    protected $_operationHistory;
     /**
      * @var Ess_M2ePro_Model_Cron_OperationHistory
      */
-    protected $_parentOperationHistory = null;
+    protected $_parentOperationHistory;
 
     //########################################
 
@@ -65,10 +70,10 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
             $this->getOperationHistory()->addContentData(
                 'exceptions', array(
-                'message' => $exception->getMessage(),
-                'file'    => $exception->getFile(),
-                'line'    => $exception->getLine(),
-                'trace'   => $exception->getTraceAsString(),
+                    'message' => $exception->getMessage(),
+                    'file'    => $exception->getFile(),
+                    'line'    => $exception->getLine(),
+                    'trace'   => $exception->getTraceAsString(),
                 )
             );
 
@@ -169,14 +174,20 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     public function isPossibleToRun()
     {
+        if (!$this->isModeEnabled()) {
+            return false;
+        }
+
+        if ($this->getInitiator() === Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER) {
+            return true;
+        }
+
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
 
         $startFrom = $this->getConfigValue('start_from');
         $startFrom = !empty($startFrom) ? strtotime($startFrom) : $currentTimeStamp;
 
-        return $this->isModeEnabled() &&
-               (($startFrom <= $currentTimeStamp && $this->isIntervalExceeded()) ||
-                 $this->getInitiator() == Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER);
+        return $startFrom <= $currentTimeStamp && $this->isIntervalExceeded();
     }
 
     //########################################
@@ -188,12 +199,12 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
 
     protected function updateLastAccess()
     {
-        $this->setConfigValue('last_access', Mage::helper('M2ePro')->getCurrentGmtDate());
+        $this->setCacheConfigValue('last_access', Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 
     protected function updateLastRun()
     {
-        $this->setConfigValue('last_run', Mage::helper('M2ePro')->getCurrentGmtDate());
+        $this->setCacheConfigValue('last_run', Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 
     // ---------------------------------------
@@ -233,7 +244,12 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     protected function isModeEnabled()
     {
-        return (bool)$this->getConfigValue('mode');
+        $mode = $this->getConfigValue('mode');
+        if ($mode !== null) {
+            return (bool)$mode;
+        }
+
+        return true;
     }
 
     /**
@@ -241,16 +257,19 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
      */
     protected function isIntervalExceeded()
     {
-        $lastRun = $this->getConfigValue('last_run');
-
+        $lastRun = $this->getCacheConfigValue('last_run');
         if ($lastRun === null) {
             return true;
         }
 
-        $interval = (int)$this->getConfigValue('interval');
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
+        return $currentTimeStamp > strtotime($lastRun) + $this->getInterval();
+    }
 
-        return $currentTimeStamp > strtotime($lastRun) + $interval;
+    public function getInterval()
+    {
+        $interval = $this->getConfigValue('interval');
+        return $interval === null ? $this->_interval : (int)$interval;
     }
 
     //########################################
@@ -259,10 +278,10 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     {
         $this->getOperationHistory()->addContentData(
             'exceptions', array(
-            'message' => $exception->getMessage(),
-            'file'    => $exception->getFile(),
-            'line'    => $exception->getLine(),
-            'trace'   => $exception->getTraceAsString(),
+                'message' => $exception->getMessage(),
+                'file'    => $exception->getFile(),
+                'line'    => $exception->getLine(),
+                'trace'   => $exception->getTraceAsString(),
             )
         );
 
@@ -279,10 +298,10 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     {
         $this->getOperationHistory()->addContentData(
             'exceptions', array(
-            'message' => $message,
-            'file'    => $file,
-            'line'    => $line,
-            'trace'   => $trace,
+                'message' => $message,
+                'file'    => $file,
+                'line'    => $line,
+                'trace'   => $trace,
             )
         );
 
@@ -328,6 +347,11 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
         return Mage::helper('M2ePro/Module')->getConfig();
     }
 
+    protected function getCacheConfig()
+    {
+        return Mage::helper('M2ePro/Module')->getCacheConfig();
+    }
+
     protected function getConfigGroup()
     {
         return '/cron/task/'.$this->getNick().'/';
@@ -343,6 +367,18 @@ abstract class Ess_M2ePro_Model_Cron_Task_Abstract
     protected function getConfigValue($key)
     {
         return $this->getConfig()->getGroupValue($this->getConfigGroup(), $key);
+    }
+
+    // ---------------------------------------
+
+    protected function setCacheConfigValue($key, $value)
+    {
+        return $this->getCacheConfig()->setGroupValue($this->getConfigGroup(), $key, $value);
+    }
+
+    protected function getCacheConfigValue($key)
+    {
+        return $this->getCacheConfig()->getGroupValue($this->getConfigGroup(), $key);
     }
 
     //########################################

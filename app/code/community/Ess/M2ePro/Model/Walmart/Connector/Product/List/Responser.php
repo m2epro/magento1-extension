@@ -13,7 +13,7 @@
 class Ess_M2ePro_Model_Walmart_Connector_Product_List_Responser
     extends Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 {
-    // ########################################
+    //########################################
 
     protected function processSuccess(array $params = array())
     {
@@ -23,8 +23,8 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_List_Responser
 
     protected function getSuccessfulMessage()
     {
-        return NULL;
+        return null;
     }
 
-    // ########################################
+    //########################################
 }

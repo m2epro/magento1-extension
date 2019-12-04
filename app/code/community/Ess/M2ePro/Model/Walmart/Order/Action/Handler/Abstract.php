@@ -33,7 +33,7 @@ abstract class Ess_M2ePro_Model_Walmart_Order_Action_Handler_Abstract
 
         $connector = $dispatcher->getVirtualConnector(
             $serverCommand[0], $serverCommand[1], $serverCommand[2],
-            $this->getRequestData(), NULL, $this->_order->getAccount()
+            $this->getRequestData(), null, $this->_order->getAccount()
         );
 
         try {

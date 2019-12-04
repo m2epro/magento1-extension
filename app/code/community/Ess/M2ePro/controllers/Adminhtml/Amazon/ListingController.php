@@ -22,13 +22,11 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addCss('M2ePro/css/Plugin/DropDown.css')
-            ->addCss('M2ePro/css/Plugin/AutoComplete.css')
             ->addJs('mage/adminhtml/rules.js')
             ->addJs('M2ePro/Plugin/ActionColumn.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
-            ->addJs('M2ePro/Plugin/AutoComplete.js')
             ->addJs('M2ePro/Listing/ProductGridHandler.js')
             ->addJs('M2ePro/Listing/Category/TreeHandler.js')
             ->addJs('M2ePro/Listing/AutoActionHandler.js')
@@ -70,7 +68,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/T4kVAQ");
+        $this->setPageHelpLink(null, null, "x/T4kVAQ");
 
         return $this;
     }
@@ -86,17 +84,19 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
 
     public function indexAction()
     {
-        if ($this->getRequest()->isXmlHttpRequest()) {
-
-            /** @var $block Ess_M2ePro_Block_Adminhtml_Amazon_Listing */
-            $block = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing');
-            $block->enableAmazonTab();
-
-            $this->getResponse()->setBody($block->getAmazonTabHtml());
-        }
-
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_manageListings'))
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_amazon_manageListings',
+                    '',
+                    array(
+                        'tab' => $this->getRequest()->getParam(
+                            'tab',
+                            Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings::TAB_ID_LISTING
+                        )
+                    )
+                )
+            )
             ->renderLayout();
     }
 
@@ -110,35 +110,35 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
 
     public function getListingTabAction()
     {
-        if (!$this->getRequest()->isXmlHttpRequest()) {
-            $this->_redirect('*/adminhtml_amazon_listing/index');
-        }
-
-        $this->getResponse()->setBody(
-            $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing')->toHtml()
+        /** @var $block Ess_M2ePro_Block_Adminhtml_Amazon_Listing */
+        $block = $this->loadLayout()->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_manageListings',
+            '',
+            array('tab' => Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings::TAB_ID_LISTING)
         );
+        $this->_initAction()->_addContent($block)->renderLayout();
     }
 
     public function getListingOtherTabAction()
     {
-        if (!$this->getRequest()->isXmlHttpRequest()) {
-            $this->_redirect('*/adminhtml_amazon_listing/index');
-        }
-
-        $this->getResponse()->setBody(
-            $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_other')->toHtml()
+        /** @var $block Ess_M2ePro_Block_Adminhtml_Amazon_Listing */
+        $block = $this->loadLayout()->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_manageListings',
+            '',
+            array('tab' => Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings::TAB_ID_LISTING_OTHER)
         );
+        $this->_initAction()->_addContent($block)->renderLayout();
     }
 
     public function getSearchTabAction()
     {
-        if (!$this->getRequest()->isXmlHttpRequest()) {
-            $this->_redirect('*/adminhtml_amazon_listing/index');
-        }
-
-        $this->getResponse()->setBody(
-            $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_search')->toHtml()
+        /** @var $block Ess_M2ePro_Block_Adminhtml_Amazon_Listing */
+        $block = $this->loadLayout()->getLayout()->createBlock(
+            'M2ePro/adminhtml_amazon_manageListings',
+            '',
+            array('tab' => Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings::TAB_ID_SEARCH)
         );
+        $this->_initAction()->_addContent($block)->renderLayout();
     }
 
     //########################################
@@ -173,7 +173,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             return $this->_redirect(
                 '*/*/*', array(
                 '_current'  => true,
-                'do_list'   => NULL
+                'do_list'   => null
                 )
             );
         }
@@ -220,7 +220,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setPageHelpLink(NULL, NULL, "x/b4IVAQ");
+        $this->setPageHelpLink(null, null, "x/b4IVAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_view'))
             ->renderLayout();
@@ -546,7 +546,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $additionalData = array(
             'params' => $params,
         );
-        $tag = NULL;
+        $tag = null;
 
         if ($action == Ess_M2ePro_Model_Listing_Product::ACTION_REVISE) {
             $configurator = Mage::getModel('M2ePro/Amazon_Listing_Product_Action_Configurator');
@@ -815,8 +815,8 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         if ($isVariationProductMatched) {
             $listingProduct = $this->duplicateListingProduct($listingProduct);
         } else {
-            $listingProduct->setData('search_settings_status', NULL);
-            $listingProduct->setData('search_settings_data', NULL);
+            $listingProduct->setData('search_settings_status', null);
+            $listingProduct->setData('search_settings_data', null);
             $listingProduct->save();
         }
 
@@ -896,8 +896,8 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             Ess_M2ePro_Helper_Component_Amazon::NICK, 'Listing_Product', $listingProductId
         );
 
-        $listingProduct->setData('search_settings_status', NULL);
-        $listingProduct->setData('search_settings_data', NULL);
+        $listingProduct->setData('search_settings_status', null);
+        $listingProduct->setData('search_settings_data', null);
         $listingProduct->save();
 
         $listingProductManager = $listingProduct->getChildObject()->getVariationManager();
@@ -1187,8 +1187,15 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $productId = $this->getRequest()->getParam('product_id');
         $query = trim($this->getRequest()->getParam('query'));
 
-        if (empty($productId)) {
-            return $this->getResponse()->setBody('No product_id!');
+        if (empty($productId) || empty($query)) {
+            return $this->getResponse()->setBody(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                        'result' => 'error',
+                        'data'   => Mage::helper('M2ePro')->__('Required search parameters are not provided.')
+                    )
+                )
+            );
         }
 
         /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
@@ -1204,10 +1211,17 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
             $dispatcher = Mage::getModel('M2ePro/Amazon_Search_Dispatcher');
             $result = $dispatcher->runCustom($listingProduct, $query);
 
-            $message = Mage::helper('M2ePro')->__('Server is currently unavailable. Please try again later.');
             if ($result === false || $result['data'] === false) {
-                $response = array('result' => 'error','data' => $message);
-                return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
+                return $this->getResponse()->setBody(
+                    Mage::helper('M2ePro')->jsonEncode(
+                        array(
+                            'result' => 'error',
+                            'data'   => Mage::helper('M2ePro')->__(
+                                'Server is currently unavailable. Please try again later.'
+                            )
+                        )
+                    )
+                );
             }
 
             Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $result);
@@ -1220,12 +1234,14 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         $data = $this->loadLayout()->getLayout()
             ->createBlock('M2ePro/adminhtml_amazon_listing_productSearch_grid')->toHtml();
 
-        $response = array(
-            'result' => 'success',
-            'data'   => $data
+        return $this->getResponse()->setBody(
+            Mage::helper('M2ePro')->jsonEncode(
+                array(
+                    'result' => 'success',
+                    'data'   => $data
+                )
+            )
         );
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($response));
     }
 
     public function searchAsinAutoAction()
@@ -1420,8 +1436,8 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
         }
 
         $listingProduct->setData('general_id', $generalId);
-        $listingProduct->setData('search_settings_status', NULL);
-        $listingProduct->setData('search_settings_data', NULL);
+        $listingProduct->setData('search_settings_status', null);
+        $listingProduct->setData('search_settings_data', null);
 
         $listingProduct->save();
 
@@ -1662,14 +1678,14 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
                 $runListingProductProcessor = true;
             }
 
-            $listingProduct->setData('general_id', NULL);
-            $listingProduct->setData('general_id_search_info', NULL);
+            $listingProduct->setData('general_id', null);
+            $listingProduct->setData('general_id_search_info', null);
             $listingProduct->setData(
                 'is_general_id_owner',
                 Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO
             );
-            $listingProduct->setData('search_settings_status', NULL);
-            $listingProduct->setData('search_settings_data', NULL);
+            $listingProduct->setData('search_settings_status', null);
+            $listingProduct->setData('search_settings_data', null);
 
             $listingProduct->save();
 
@@ -1973,7 +1989,7 @@ class Ess_M2ePro_Adminhtml_Amazon_ListingController
                 'text' => Mage::helper('M2ePro')->__('Description Policy was successfully unassigned.')
             );
 
-            $this->setDescriptionTemplateFroProductsByChunks($productsIdsLocked, NULL);
+            $this->setDescriptionTemplateFroProductsByChunks($productsIdsLocked, null);
             $this->runProcessorForParents($productsIdsLocked);
         }
 

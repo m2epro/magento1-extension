@@ -8,15 +8,6 @@
 
 class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Payment status was updated to Paid on eBay.
-    // Shipping status was updated to Shipped on eBay.
-    // Buyer has changed the shipping address of this order at the time of completing payment on eBay.
-    // Duplicated eBay Orders with ID #%id%.
-    // Order Creation Rules were not met. Press Create Order Button at Order View Page to create it anyway.
-    // Magento Order #%order_id% should be canceled as new combined eBay Order #%new_id% was created.
-    // eBay Order #%old_id% was deleted as new combined Order #%new_id% was created.
-
     const STATUS_NOT_MODIFIED = 0;
     const STATUS_NEW          = 1;
     const STATUS_UPDATED      = 2;
@@ -236,7 +227,7 @@ class Ess_M2ePro_Model_Ebay_Order_Builder extends Mage_Core_Model_Abstract
     public function process()
     {
         if (!$this->canCreateOrUpdateOrder()) {
-            return NULL;
+            return null;
         }
 
         $this->checkUpdates();

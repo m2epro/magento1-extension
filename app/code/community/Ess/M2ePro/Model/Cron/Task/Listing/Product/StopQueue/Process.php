@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_Process extends Ess_M
 {
     const NICK = 'listing/product/stop_queue/process';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 3600;
+
     const EBAY_REQUEST_MAX_ITEMS_COUNT   = 10;
     const AMAZON_REQUEST_MAX_ITEMS_COUNT = 10000;
 

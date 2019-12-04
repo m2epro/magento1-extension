@@ -60,25 +60,18 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings extends Ess_M2ePro_Block_
 
         $script = '';
 
-        if (Mage::helper('M2ePro/View_Amazon')->is3rdPartyShouldBeShown(Ess_M2ePro_Helper_Component_Amazon::NICK)) {
+        if (Mage::helper('M2ePro/View_Amazon')->is3rdPartyShouldBeShown()) {
             $tabsContainer->addTab(self::TAB_ID_LISTING_OTHER, $this->prepareListingOtherTab());
             $script = $this->getScriptFor3rdPartyControlVisibility($tabsContainer);
         }
 
         $tabsContainer->addTab(self::TAB_ID_SEARCH, $this->prepareSearchTab());
 
-        $tabsContainer->setActiveTab($this->getActiveTab());
+        $tabsContainer->setActiveTab($this->getData('tab'));
 
         return parent::_toHtml() .
                $tabsContainer->toHtml() .
                '<div id="tabs_container"></div>' . $script;
-    }
-
-    //########################################
-
-    protected function getActiveTab()
-    {
-        return $this->getRequest()->getParam('tab', self::TAB_ID_LISTING);
     }
 
     //########################################
@@ -90,9 +83,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings extends Ess_M2ePro_Block_
             'title' => Mage::helper('M2ePro')->__('M2E Pro')
         );
 
-        if ($this->getActiveTab() != self::TAB_ID_LISTING) {
-            $tab['class'] = 'ajax';
-            $tab['url'] = $this->getUrl('*/adminhtml_amazon_listing/getListingTab');
+        if ($this->getData('tab') != self::TAB_ID_LISTING) {
+            $tab['url'] = $this->getUrl('*/adminhtml_amazon_listing/getListingTab', array('_current' => true));
         } else {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing')->toHtml();
         }
@@ -107,9 +99,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings extends Ess_M2ePro_Block_
             'title' => Mage::helper('M2ePro')->__('3rd Party')
         );
 
-        if ($this->getActiveTab() != self::TAB_ID_LISTING_OTHER) {
-            $tab['class'] = 'ajax';
-            $tab['url'] = $this->getUrl('*/adminhtml_amazon_listing/getListingOtherTab');
+        if ($this->getData('tab') != self::TAB_ID_LISTING_OTHER) {
+            $tab['url'] = $this->getUrl('*/adminhtml_amazon_listing/getListingOtherTab', array('_current' => true));
         } else {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_other')->toHtml();
         }
@@ -124,9 +115,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings extends Ess_M2ePro_Block_
             'title' => Mage::helper('M2ePro')->__('Search')
         );
 
-        if ($this->getActiveTab() != self::TAB_ID_SEARCH) {
-            $tab['class'] = 'ajax';
-            $tab['url'] = $this->getUrl('*/adminhtml_amazon_listing/getSearchTab');
+        if ($this->getData('tab') != self::TAB_ID_SEARCH) {
+            $tab['url'] = $this->getUrl('*/adminhtml_amazon_listing/getSearchTab', array('_current' => true));
         } else {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_search')->toHtml();
         }
@@ -140,7 +130,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_ManageListings extends Ess_M2ePro_Block_
     {
         $listingOtherId = self::TAB_ID_LISTING_OTHER;
         $amazonNick = Ess_M2ePro_Helper_Component_Amazon::NICK;
-
         $shouldBeShown = (int)Mage::helper('M2ePro/View_Amazon')->is3rdPartyShouldBeShown();
 
         return "<script>

@@ -88,13 +88,13 @@
 
         <select id="component" name="component">
             <option selected value="none"><?php echo Mage::helper('M2ePro')->__('General Problem'); ?></option>
-            <?php if (Mage::helper('M2ePro/Component_Ebay')->isActive()) { ?>
+            <?php if (Mage::helper('M2ePro/Component_Ebay')->isEnabled()) { ?>
                 <option value="<?php echo Ess_M2ePro_Helper_Component_Ebay::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Ebay')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
             <?php } ?>
-            <?php if (Mage::helper('M2ePro/Component_Amazon')->isActive()) { ?>
+            <?php if (Mage::helper('M2ePro/Component_Amazon')->isEnabled()) { ?>
                 <option value="<?php echo Ess_M2ePro_Helper_Component_Amazon::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Amazon')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
             <?php } ?>
-            <?php if (Mage::helper('M2ePro/Component_Walmart')->isActive()) { ?>
+            <?php if (Mage::helper('M2ePro/Component_Walmart')->isEnabled()) { ?>
                 <option value="<?php echo Ess_M2ePro_Helper_Component_Walmart::NICK; ?>"><?php echo Mage::helper('M2ePro/Component_Walmart')->getTitle(), ' ', Mage::helper('M2ePro')->__('Problem'); ?></option>
             <?php } ?>
         </select>

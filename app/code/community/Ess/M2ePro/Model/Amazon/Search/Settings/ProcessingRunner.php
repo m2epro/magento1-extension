@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ProcessingRunner
     /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
     protected $_listingProduct;
 
-    // ########################################
+    //########################################
 
     protected function eventBefore()
     {
@@ -48,7 +48,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ProcessingRunner
         $this->getListingProduct()->getListing()->deleteProcessingLocks(null, $this->getId());
     }
 
-    // ########################################
+    //########################################
 
     protected function getListingProduct()
     {
@@ -65,5 +65,5 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ProcessingRunner
         return $this->_listingProduct;
     }
 
-    // ########################################
+    //########################################
 }

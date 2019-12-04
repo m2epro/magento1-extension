@@ -88,8 +88,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
     public function getSuccessfulMessage()
     {
         if ($this->getConfigurator()->isExcludingMode()) {
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
@@ -97,84 +95,58 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         $isPlural = false;
 
         if ($this->getConfigurator()->isVariationsAllowed() && $this->getRequestData()->isVariationItem()) {
-            // M2ePro_TRANSLATIONS
-            // Variations
             $sequenceStrings[] = 'Variations';
             $isPlural = true;
         } else {
             if ($this->getConfigurator()->isQtyAllowed()) {
-                // M2ePro_TRANSLATIONS
-                // QTY
                 $sequenceStrings[] = 'QTY';
             }
 
             if ($this->getConfigurator()->isPriceAllowed()) {
-                // M2ePro_TRANSLATIONS
-                // Price
                 $sequenceStrings[] = 'Price';
             }
         }
 
         if ($this->getConfigurator()->isTitleAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Title
             $sequenceStrings[] = 'Title';
         }
 
         if ($this->getConfigurator()->isSubtitleAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Subtitle
             $sequenceStrings[] = 'Subtitle';
         }
 
         if ($this->getConfigurator()->isDescriptionAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Description
             $sequenceStrings[] = 'Description';
         }
 
         if ($this->getConfigurator()->isImagesAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Images
             $sequenceStrings[] = 'Images';
             $isPlural = true;
         }
 
         if ($this->getConfigurator()->isCategoriesAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Categories / Specifics
             $sequenceStrings[] = 'Categories / Specifics';
             $isPlural = true;
         }
 
         if ($this->getConfigurator()->isPaymentAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Payment
             $sequenceStrings[] = 'Payment';
         }
 
         if ($this->getConfigurator()->isShippingAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Shipping
             $sequenceStrings[] = 'Shipping';
         }
 
         if ($this->getConfigurator()->isReturnAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Return
             $sequenceStrings[] = 'Return';
         }
 
         if ($this->getConfigurator()->isOtherAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Other
             $sequenceStrings[] = 'Condition, Condition Note, Tax, Best Offer, Donation';
             $isPlural = true;
         }
 
         if (empty($sequenceStrings)) {
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
@@ -187,8 +159,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
             return ucfirst($sequenceStrings[0]).' '.$verb.' successfully Revised';
         }
 
-        // M2ePro_TRANSLATIONS
-        // was successfully Revised
         return ucfirst(implode(', ', $sequenceStrings)).' were successfully Revised';
     }
 
@@ -199,7 +169,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Response
         $metadata = $this->getRequestMetaData();
 
         if ($metadata["is_listing_type_fixed"]) {
-            $data['online_bids'] = NULL;
+            $data['online_bids'] = null;
         }
 
         return $data;

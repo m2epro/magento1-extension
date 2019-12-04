@@ -71,13 +71,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayPickupStoreVariationProductGrid');
         $this->setDefaultSort('id');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
@@ -229,7 +226,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
 
         $this->addColumn(
             'store_log', array(
-            'header'    => Mage::helper('M2ePro')->__('Logs'),
+            'header'    => Mage::helper('M2ePro')->__('Logs & Events'),
             'align'     => 'left',
             'type'      => 'text',
             'width'     => '100px',
@@ -360,6 +357,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
             )
             ->where('`account_pickup_store_state_id` = ?', $stateId)
             ->where('`action_id` IS NOT NULL')
+            ->where('`action` IN (?)', $this->getAvailableActions())
             ->order(array('id DESC'))
             ->limit(30);
 
@@ -456,6 +454,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Variation_Product_View
         $html = "<script>M2ePro.translator.add({$translations});</script>";
 
         return $html . $summary->toHtml();
+    }
+
+    protected function getAvailableActions()
+    {
+        return array(
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UNKNOWN,
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_ADD_PRODUCT,
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UPDATE_QTY,
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_DELETE_PRODUCT,
+        );
     }
 
     public function getActionForAction($actionRows)

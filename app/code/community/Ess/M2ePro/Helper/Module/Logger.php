@@ -10,7 +10,7 @@ class Ess_M2ePro_Helper_Module_Logger extends Mage_Core_Helper_Abstract
 {
     //########################################
 
-    public function process($logData, $type = NULL, $sendToServer = true)
+    public function process($logData, $type = null, $sendToServer = true)
     {
         try {
             $info  = $this->getLogMessage($logData, $type);

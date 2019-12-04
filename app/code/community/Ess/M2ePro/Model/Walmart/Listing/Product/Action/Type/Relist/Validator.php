@@ -50,8 +50,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Validator
 
         if (!$this->getListingProduct()->isStopped() &&
             (!$this->getListingProduct()->isBlocked() || !$this->getWalmartListingProduct()->isOnlinePriceInvalid())) {
-            // M2ePro_TRANSLATIONS
-            // The Item either is Listed, or not Listed yet or not available
             $this->addMessage(
                 'The Item either is Listed, or not Listed yet or not available'
             );

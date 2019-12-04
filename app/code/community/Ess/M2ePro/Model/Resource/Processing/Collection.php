@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Resource_Processing_Collection
     extends Ess_M2ePro_Model_Resource_Collection_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Resource_Processing_Collection
         $this->_init('M2ePro/Processing');
     }
 
-    // ########################################
+    //########################################
 
     public function setOnlyExpiredItemsFilter()
     {
@@ -25,5 +25,5 @@ class Ess_M2ePro_Model_Resource_Processing_Collection
         return $this;
     }
 
-    // ########################################
+    //########################################
 }

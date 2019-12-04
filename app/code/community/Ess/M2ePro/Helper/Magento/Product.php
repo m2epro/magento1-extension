@@ -14,7 +14,7 @@ class Ess_M2ePro_Helper_Magento_Product extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getCachedAndLoadedProduct($product, $storeId = NULL)
+    public function getCachedAndLoadedProduct($product, $storeId = null)
     {
         if ($product instanceof Mage_Catalog_Model_Product) {
             return $product;

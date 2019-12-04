@@ -8,9 +8,6 @@
 
 class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Sell On Walmart
-
     const NICK  = 'walmart';
 
     const WIZARD_INSTALLATION_NICK = 'installationWalmart';
@@ -32,21 +29,11 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getPageNavigationPath($pathNick, $tabName = NULL, $additionalEnd = NULL)
+    public function getPageNavigationPath($pathNick, $tabName = null, $additionalEnd = null)
     {
         return Mage::helper('M2ePro/View')->getPageNavigationPath(
             self::NICK .'/'. $pathNick, $tabName, $additionalEnd
         );
-    }
-
-    //########################################
-
-    public function getAutocompleteMaxItems()
-    {
-        $temp = (int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
-            '/view/walmart/autocomplete/', 'max_records_quantity'
-        );
-        return $temp <= 0 ? 100 : $temp;
     }
 
     //########################################
@@ -65,28 +52,20 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
 
     public function is3rdPartyShouldBeShown()
     {
-        $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
+        $sessionCache = Mage::helper('M2ePro/Data_Cache_Runtime');
 
         if ($sessionCache->getValue('is_3rd_party_should_be_shown') !== null) {
             return $sessionCache->getValue('is_3rd_party_should_be_shown');
         }
 
         $accountCollection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Account');
-        $accountCollection->addFieldToFilter(
-            'other_listings_synchronization', Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
-        );
+        $accountCollection->addFieldToFilter('other_listings_synchronization', 1);
 
         if ((bool)$accountCollection->getSize()) {
             $result = true;
         } else {
             $collection = Mage::helper('M2ePro/Component_Walmart')->getCollection('Listing_Other');
-
-            $logCollection = Mage::getModel('M2ePro/Listing_Other_Log')->getCollection();
-            $logCollection->addFieldToFilter(
-                'component_mode', Ess_M2ePro_Helper_Component_Walmart::NICK
-            );
-
-            $result = $collection->getSize() || $logCollection->getSize();
+            $result = $collection->getSize();
         }
 
         $sessionCache->setValue('is_3rd_party_should_be_shown', $result);
@@ -99,7 +78,7 @@ class Ess_M2ePro_Helper_View_Walmart extends Mage_Core_Helper_Abstract
     public function isResetFilterShouldBeShown($listingId, $isVariation = false)
     {
         $sessionKey = 'is_reset_filter_should_be_shown_' . (int)$listingId . '_' . (int)$isVariation;
-        $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
+        $sessionCache = Mage::helper('M2ePro/Data_Cache_Runtime');
 
         if ($sessionCache->getValue($sessionKey) === null) {
 

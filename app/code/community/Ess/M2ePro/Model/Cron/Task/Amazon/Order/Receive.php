@@ -109,7 +109,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive
         $preparedResponseData = $this->receiveAmazonOrdersData($merchantId, $accountsByServerHash);
 
         if (empty($preparedResponseData)) {
-            return NULL;
+            return null;
         }
 
         if (!empty($preparedResponseData['job_token'])) {

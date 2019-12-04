@@ -15,31 +15,56 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Synchronization_Edit_Form
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
+        $this->setId('walmartTemplateSynchronizationEditForm');
         $this->setTemplate('M2ePro/walmart/template/synchronization/form.phtml');
     }
+
+    //########################################
 
     protected function _beforeToHtml()
     {
         $this->setChild(
             'walmart_template_synchronization_edit_form_tabs_list',
-            $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_list')
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_list',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
+            )
         );
 
         $this->setChild(
             'walmart_template_synchronization_edit_form_tabs_revise',
-            $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_revise')
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_revise',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
+            )
         );
 
         $this->setChild(
             'walmart_template_synchronization_edit_form_tabs_relist',
-            $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_relist')
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_relist',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
+            )
         );
 
         $this->setChild(
             'walmart_template_synchronization_edit_form_tabs_stop',
-            $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_stop')
+            $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_walmart_template_synchronization_edit_tabs_stop',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
+            )
         );
 
         return parent::_beforeToHtml();
@@ -60,6 +85,19 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Synchronization_Edit_Form
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    //########################################
+
+    public function getFormData()
+    {
+        $template = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+        if ($template === null || $template->getId() === null) {
+            return array();
+        }
+
+        return $template->getData();
     }
 
     //########################################

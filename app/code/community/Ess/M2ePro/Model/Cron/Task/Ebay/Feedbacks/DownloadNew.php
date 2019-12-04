@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
 {
     const NICK = 'ebay/feedbacks/download_new';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 10800;
+
     //########################################
 
     /**
@@ -79,11 +84,9 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
 
     protected function getPermittedAccounts()
     {
-        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account')
-                                    ->addFieldToFilter(
-                                        'feedbacks_receive',
-                                        Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_YES
-                                    );
+        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
+        $collection->addFieldToFilter('feedbacks_receive', 1);
+
         return $collection->getItems();
     }
 
@@ -100,7 +103,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
                              ->where('`account_id` = ?', (int)$account->getId());
         $maxSellerDate = $connRead->fetchOne($dbSelect);
         if (strtotime($maxSellerDate) < strtotime('2001-01-02')) {
-            $maxSellerDate = NULL;
+            $maxSellerDate = null;
         }
 
         $dbSelect = $connRead->select()
@@ -108,7 +111,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
                              ->where('`account_id` = ?', (int)$account->getId());
         $maxBuyerDate = $connRead->fetchOne($dbSelect);
         if (strtotime($maxBuyerDate) < strtotime('2001-01-02')) {
-            $maxBuyerDate = NULL;
+            $maxBuyerDate = null;
         }
 
         $paramsConnector = array();
@@ -127,7 +130,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Feedbacks_DownloadNew extends Ess_M2ePro_M
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'feedback', 'get', 'entity',
             $paramsConnector, 'feedbacks',
-            NULL, $account->getId()
+            null, $account->getId()
         );
 
         $dispatcherObj->process($connectorObj);

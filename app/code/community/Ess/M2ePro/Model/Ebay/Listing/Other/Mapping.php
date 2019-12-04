@@ -11,16 +11,16 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
     /**
      * @var Ess_M2ePro_Model_Account|null
      */
-    protected $account = NULL;
+    protected $account = null;
 
-    protected $mappingSettings = NULL;
+    protected $mappingSettings = null;
 
     //########################################
 
-    public function initialize(Ess_M2ePro_Model_Account $account = NULL)
+    public function initialize(Ess_M2ePro_Model_Account $account = null)
     {
         $this->account = $account;
-        $this->mappingSettings = NULL;
+        $this->mappingSettings = null;
     }
 
     //########################################
@@ -99,7 +99,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         $mappingSettings = $this->getMappingRulesByPriority();
 
         foreach ($mappingSettings as $type) {
-            $magentoProductId = NULL;
+            $magentoProductId = null;
 
             if ($type == 'sku') {
                 $magentoProductId = $this->getSkuMappedMagentoProductId($otherListing);
@@ -117,7 +117,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
                 continue;
             }
 
-            $otherListing->mapProduct($magentoProductId, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $otherListing->mapProduct($magentoProductId);
 
             return true;
         }
@@ -169,14 +169,14 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         $temp = $otherListing->getChildObject()->getSku();
 
         if (empty($temp)) {
-            return NULL;
+            return null;
         }
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingSkuModeProductId()) {
             $productId = trim($otherListing->getChildObject()->getSku());
 
             if (!ctype_digit($productId) || (int)$productId <= 0) {
-                return NULL;
+                return null;
             }
 
             $product = Mage::getModel('catalog/product')->load($productId);
@@ -185,10 +185,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
                 return $product->getId();
             }
 
-            return NULL;
+            return null;
         }
 
-        $attributeCode = NULL;
+        $attributeCode = null;
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingSkuModeDefault()) {
             $attributeCode = 'sku';
@@ -199,7 +199,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         }
 
         if ($attributeCode === null) {
-            return NULL;
+            return null;
         }
 
         $storeId = $otherListing->getChildObject()->getRelatedStoreId();
@@ -212,7 +212,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             return $productObj->getId();
         }
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -225,10 +225,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         $temp = $otherListing->getChildObject()->getTitle();
 
         if (empty($temp)) {
-            return NULL;
+            return null;
         }
 
-        $attributeCode = NULL;
+        $attributeCode = null;
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingTitleModeDefault()) {
             $attributeCode = 'name';
@@ -239,7 +239,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         }
 
         if ($attributeCode === null) {
-            return NULL;
+            return null;
         }
 
         $storeId = $otherListing->getChildObject()->getRelatedStoreId();
@@ -252,7 +252,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             return $productObj->getId();
         }
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -268,17 +268,17 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
         $temp = $ebayListingOther->getItemId();
 
         if (empty($temp)) {
-            return NULL;
+            return null;
         }
 
-        $attributeCode = NULL;
+        $attributeCode = null;
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingItemIdModeCustomAttribute()) {
             $attributeCode = $this->getAccount()->getChildObject()->getOtherListingsMappingItemIdAttribute();
         }
 
         if ($attributeCode === null) {
-            return NULL;
+            return null;
         }
 
         $storeId = $ebayListingOther->getRelatedStoreId();
@@ -291,7 +291,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             return $productObj->getId();
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################
@@ -316,7 +316,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             'Account', $otherListing->getAccountId()
         );
 
-        $this->mappingSettings = NULL;
+        $this->mappingSettings = null;
     }
 
     //########################################

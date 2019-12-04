@@ -146,7 +146,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Product_Grid extends Mage_Adminh
             if ($hideParam) {
                 $dbExcludeSelect->join(
                     array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
-                    '`l`.`id` = `listing_id`', NULL
+                    '`l`.`id` = `listing_id`', null
                 );
 
                 $dbExcludeSelect->where('`l`.`account_id` = ?', $listingData['account_id']);

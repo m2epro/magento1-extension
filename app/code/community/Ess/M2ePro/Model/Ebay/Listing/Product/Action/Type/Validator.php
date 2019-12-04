@@ -215,10 +215,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
     protected function validateCategory()
     {
         if (!$this->getEbayListingProduct()->isSetCategoryTemplate()) {
-            // M2ePro_TRANSLATIONS
-            // Categories Settings are not set
             $this->addMessage('Categories Settings are not set');
-
             return false;
         }
 
@@ -272,9 +269,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
         if ($qty <= 0) {
             if (isset($this->_params['status_changer']) &&
                 $this->_params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
-                // M2ePro_TRANSLATIONS
-                // 'You are submitting an Item with zero quantity. It contradicts eBay requirements.
-                // Please apply the Stop Action instead.'
                 $message = 'You are submitting an Item with zero quantity. It contradicts eBay requirements.';
 
                 if ($this->getListingProduct()->isStoppable()) {
@@ -283,11 +277,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
                 $this->addMessage($message);
             } else {
-                // M2ePro_TRANSLATIONS
-                // 'Cannot submit an Item with zero quantity. It contradicts eBay requirements.
-                // This action has been generated automatically based on your Synchronization Rule settings.
-                // The error occurs when the Stop Rules are not properly configured or disabled.
-                // Please review your settings.'
                 $message = 'Cannot submit an Item with zero quantity. It contradicts eBay requirements.
                             This action has been generated automatically based on your Synchronization Rule settings. ';
 
@@ -315,15 +304,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
         if ($this->getEbayListingProduct()->isVariationMode() &&
             !$this->getEbayListingProduct()->isVariationsReady())
         {
-            // M2ePro_TRANSLATIONS
-            // M2E Pro identifies this Product as a Variational one. But no Variations can be obtained from it.
-            // The problem could be related to the fact that Product Variations are not assigned to Magento Store
-            // View your M2E Pro Listing is created for. In order to be processed, the Product data should be
-            // available within Website that M2E Pro appeals to.
-            // Another possible reason is an impact of the external plugins. The 3rd party tools override
-            // Magento core functionality, therefore, prevent M2E Pro from processing the Product data correctly.
-            // Make sure you have selected an appropriate Website in each Associated Product and no 3rd party
-            // extension overrides your settings. Otherwise, contact M2E Pro Support Team to resolve the issue.
             $this->addMessage(
                 'M2E Pro identifies this Product as a Variational one. But no Variations can be obtained from it.
                 The problem could be related to the fact that Product Variations are not assigned to Magento Store
@@ -361,11 +341,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
                 // Max 5 pair attribute-option:
                 // Color: Blue, Size: XL, ...
                 if (count($uniqueAttributesValues) > 5) {
-                    // M2ePro_TRANSLATIONS
-                    // Variations of this Magento Product are out of the eBay Variational Item limits.
-                    // Its number of Variational Attributes is more than 5.
-                    // That is why, this Product cannot be updated on eBay.
-                    // Please, decrease the number of Attributes to solve this issue.
                     $this->addMessage(
                         'Variations of this Magento Product are out of the eBay Variational Item limits.
                         Its number of Variational Attributes is more than 5.
@@ -378,11 +353,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
                 // Maximum 60 options by one attribute:
                 // Color: Red, Blue, Green, ...
                 if (count($uniqueAttributesValues[$option->getAttribute()]) > 60) {
-                    // M2ePro_TRANSLATIONS
-                    // Variations of this Magento Product are out of the eBay Variational Item limits.
-                    // Its number of Options for some Variational Attribute(s) is more than 60.
-                    // That is why, this Product cannot be updated on eBay.
-                    // Please, decrease the number of Options to solve this issue.
                     $this->addMessage(
                         'Variations of this Magento Product are out of the eBay Variational Item limits.
                         Its number of Options for some Variational Attribute(s) is more than 60.
@@ -398,10 +368,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
             // Not more that 250 possible variations
             if ($totalVariationsCount > 250) {
-                // M2ePro_TRANSLATIONS
-                // Variations of this Magento Product are out of the eBay Variational Item limits.
-                // The Number of Variations is more than 250. That is why, this Product cannot be updated on eBay.
-                // Please, decrease the number of Variations to solve this issue.
                 $this->addMessage(
                     'Variations of this Magento Product are out of the eBay Variational Item limits.
                     The Number of Variations is more than 250. That is why, this Product cannot be updated on eBay.
@@ -412,12 +378,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
         }
 
         if ($totalVariationsCount == $totalDeletedVariationsCount) {
-            // M2ePro_TRANSLATIONS
-            // This Product was listed to eBay as Variational Item.
-            // Changing of the Item type from Variational to Non-Variational during Revise/Relist
-            // actions is restricted by eBay.
-            // At the moment this Product is considered as Simple without any Variations,
-            // that does not allow updating eBay Variational Item.
             $this->addMessage(
                 'This Product was listed to eBay as Variational Item.
                 Changing of the Item type from Variational to Non-Variational during Revise/Relist
@@ -454,8 +414,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
             }
 
             if ($variationPrice < 0.99) {
-                // M2ePro_TRANSLATIONS
-                // The Fixed Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
                 $this->addMessage(
                     'The Fixed Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.'
                 );
@@ -480,8 +438,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getFixedPrice();
         if ($price < 0.99) {
-            // M2ePro_TRANSLATIONS
-            // The Fixed Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
                 'The Fixed Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.'
             );
@@ -502,8 +458,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getStartPrice();
         if ($price < 0.99) {
-            // M2ePro_TRANSLATIONS
-            // The Start Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
                 'The Start Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.'
             );
@@ -528,8 +482,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getReservePrice();
         if ($price < 0.99) {
-            // M2ePro_TRANSLATIONS
-            // The Reserve Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
                 'The Reserve Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.'
             );
@@ -554,8 +506,6 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Validator
 
         $price = $this->getBuyItNowPrice();
         if ($price < 0.99) {
-            // M2ePro_TRANSLATIONS
-            // The Buy It Now Price must be greater than 0.99. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
                 'The Buy It Now Price must be greater than 0.99.
                  Please, check the Selling Policy and Product Settings.'

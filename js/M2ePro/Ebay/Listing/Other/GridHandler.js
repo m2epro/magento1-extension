@@ -24,15 +24,6 @@ EbayListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
 
     // ---------------------------------------
 
-    getLogViewUrl: function(rowId)
-    {
-        return M2ePro.url.get('adminhtml_ebay_log/listingOther', {
-            id: rowId
-        });
-    },
-
-    // ---------------------------------------
-
     getSelectedItemsParts: function()
     {
         var selectedProductsArray = this.getSelectedProductsArray();

@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Resource_Amazon_Listing_Product_Repricing
 
     //########################################
 
-    public function getSkus(Ess_M2ePro_Model_Account $account, $filterSkus = NULL, $repricingDisabled = NULL)
+    public function getSkus(Ess_M2ePro_Model_Account $account, $filterSkus = null, $repricingDisabled = null)
     {
         /** @var Ess_M2ePro_Model_Resource_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');

@@ -72,11 +72,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
                                                ->getOutOfStockControl();
 
         if ($outOfStockControlCurrentState && !$outOfStockControlTemplateState) {
-            // M2ePro_TRANSLATIONS
-            // Although the Out of Stock Control option is disabled in Selling Policy settings,
-            // for this eBay Item it is remain enabled. Disabling of the Out of Stock Control during the Revise action
-            // is not supported by eBay. That is why the Out of Stock Control option will still be enabled for
-            // this Item on eBay.
             $this->addWarningMessage(
                 'Although the Out of Stock Control option is disabled in Selling Policy settings,
                 for this eBay Item it is remain enabled. Disabling of the Out of Stock Control during the Revise action
@@ -209,9 +204,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
         }
 
         if (!empty($warningMessageReasons)) {
-            // M2ePro_TRANSLATIONS
-            // %field_title% field(s) were ignored because eBay doesn't allow Revise the Item if it has
-            // sales, bids for Auction Type or less than 12 hours remain before the Item end.
             $this->addWarningMessage(
                 Mage::helper('M2ePro')->__(
                     '%field_title% field(s) were ignored because eBay doesn\'t allow Revise the Item if it has ' .
@@ -227,8 +219,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Request
     protected function removeDurationIfItCanNotBeChanged(array $data)
     {
         if (isset($data['duration']) && isset($data['bestoffer_mode']) && $data['bestoffer_mode']) {
-            // M2ePro_TRANSLATIONS
-            // Duration field(s) was ignored because eBay doesn't allow Revise the Item if Best Offer is enabled.
             $this->addWarningMessage(
                 Mage::helper('M2ePro')->__(
                     'Duration field(s) was ignored because '.

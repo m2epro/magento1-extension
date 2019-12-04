@@ -27,7 +27,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response_Message extends Ess_M2ePro_
         $this->_code   = $responseData[self::CODE_KEY];
     }
 
-    public function initFromPreparedData($text, $type, $sender = NULL, $code = NULL)
+    public function initFromPreparedData($text, $type, $sender = null, $code = null)
     {
         parent::initFromPreparedData($text, $type);
 

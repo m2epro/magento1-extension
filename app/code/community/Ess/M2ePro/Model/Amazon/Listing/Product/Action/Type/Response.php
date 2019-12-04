@@ -237,9 +237,9 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
 
         $data['online_regular_price'] = (float)$this->getRequestData()->getRegularPrice();
 
-        $data['online_regular_sale_price'] = NULL;
-        $data['online_regular_sale_price_start_date'] = NULL;
-        $data['online_regular_sale_price_end_date'] = NULL;
+        $data['online_regular_sale_price'] = null;
+        $data['online_regular_sale_price_start_date'] = null;
+        $data['online_regular_sale_price_end_date'] = null;
 
         if ($this->getRequestData()->hasRegularSalePrice()) {
             $salePrice = (float)$this->getRequestData()->getRegularSalePrice();

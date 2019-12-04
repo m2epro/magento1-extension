@@ -13,6 +13,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 {
     const NICK = 'amazon/listing/product/channel/synchronize_data/blocked';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 3600;
+
     //####################################
 
     public function isPossibleToRun()
@@ -64,9 +69,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                 try {
                     $this->processAccount($account);
                 } catch (Exception $exception) {
-                    // M2ePro_TRANSLATIONS
-                    // The "Update Blocked Listings Products" Action for Amazon Account: "%account%"
-                    // was completed with error.
                     $message = 'The "Update Blocked Listings Products" Action for Amazon Account "%account%"';
                     $message .= ' was completed with error.';
                     $message = Mage::helper('M2ePro')->__($message, $account->getTitle());

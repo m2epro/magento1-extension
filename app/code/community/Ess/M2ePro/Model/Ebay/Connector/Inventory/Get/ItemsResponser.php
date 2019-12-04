@@ -9,7 +9,7 @@
 abstract class Ess_M2ePro_Model_Ebay_Connector_Inventory_Get_ItemsResponser
     extends Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Responser
 {
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -21,5 +21,5 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Inventory_Get_ItemsResponser
         return true;
     }
 
-    // ########################################
+    //########################################
 }

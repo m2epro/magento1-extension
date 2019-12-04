@@ -9,7 +9,7 @@
 abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByAsin_ItemsResponser
     extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Responser
 {
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -21,7 +21,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByAsin_ItemsResponser
         return true;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareResponseData()
     {
@@ -73,5 +73,5 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByAsin_ItemsResponser
         $this->_preparedResponseData = $product;
     }
 
-    // ########################################
+    //########################################
 }

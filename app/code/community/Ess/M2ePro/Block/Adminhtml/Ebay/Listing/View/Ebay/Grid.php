@@ -46,28 +46,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
 
     //########################################
 
-    public function getAdvancedFilterButtonHtml()
-    {
-        if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            return '';
-        }
-
-        return parent::getAdvancedFilterButtonHtml();
-    }
-
-    //########################################
-
-    protected function isShowRuleBlock()
-    {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return false;
-        }
-
-        return parent::isShowRuleBlock();
-    }
-
-    //########################################
-
     protected function _setCollectionOrder($column)
     {
         $collection = $this->getCollection();
@@ -146,7 +124,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             array(
                 'item_id' => 'item_id',
             ),
-            NULL,
+            null,
             'left'
         );
 
@@ -281,22 +259,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
 
         $this->addColumn('status', $statusColumn);
 
-        if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
-            $this->addColumn(
-                'developer_action', array(
-                'header'    => Mage::helper('M2ePro')->__('Actions'),
-                'align'     => 'left',
-                'width'     => '150px',
-                'type'      => 'text',
-                'renderer'  => 'M2ePro/adminhtml_listing_view_grid_column_renderer_developerAction',
-                'index'     => 'value',
-                'filter'    => false,
-                'sortable'  => false,
-                'js_handler' => 'EbayListingEbayGridHandlerObj'
-                )
-            );
-        }
-
         return parent::_prepareColumns();
     }
 
@@ -322,14 +284,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?'),
         );
-
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
-            $collection->addFieldToFilter(
-                'status', array('neq' => Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED)
-            );
-            $collection->getSize() == 0 && $data['selected'] = true;
-        }
 
         $this->getMassactionBlock()->addItem('list', $data, 'actions');
 
@@ -364,15 +318,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
             ), 'actions'
         );
-
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            $this->getMassactionBlock()->addItem(
-                'editCategorySettings', array(
-                'label'    => Mage::helper('M2ePro')->__('Edit eBay Categories Settings'),
-                'url'      => '',
-                ), 'actions'
-            );
-        }
 
         $this->getMassactionBlock()->addItem(
             'previewItems', array(
@@ -879,6 +824,7 @@ HTML;
             )
             ->where('`listing_product_id` = ?', $listingProductId)
             ->where('`action_id` IS NOT NULL')
+            ->where('`action` IN (?)', $this->getAvailableActions())
             ->order(array('id DESC'))
             ->limit(30);
 
@@ -967,6 +913,18 @@ HTML;
         return $summary->toHtml();
     }
 
+    protected function getAvailableActions()
+    {
+        return array(
+            Ess_M2ePro_Model_Listing_Log::ACTION_LIST_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_RELIST_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_REVISE_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_AND_REMOVE_PRODUCT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE
+        );
+    }
+
     public function getActionForAction($actionRows)
     {
         $string = '';
@@ -992,9 +950,6 @@ HTML;
                 break;
             case Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE:
                 $string = Mage::helper('M2ePro')->__('Channel Change');
-                break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_TRANSLATE_PRODUCT:
-                $string = Mage::helper('M2ePro')->__('Translation');
                 break;
         }
 
@@ -1143,14 +1098,10 @@ HTML;
             $helper->__('"%task_title%" Task was completed successfully.')
         );
 
-        // M2ePro_TRANSLATIONS
-        // %task_title%" task was completed with warnings. <a target="_blank" href="%url%">View Log</a> for the details.
         $tempString = '"%task_title%" task was completed with warnings. ';
         $tempString .= '<a target="_blank" href="%url%">View Log</a> for the details.';
         $taskCompletedWarningMessage = $helper->escapeJs($helper->__($tempString));
 
-        // M2ePro_TRANSLATIONS
-        // "%task_title%" Task was completed with errors. <a target="_blank" href="%url%">View Log</a> for the details.
         $tempString = '"%task_title%" task was completed with errors. ';
         $tempString .= '<a target="_blank" href="%url%">View Log</a> for the details.';
         $taskCompletedErrorMessage = $helper->escapeJs($helper->__($tempString));
@@ -1209,14 +1160,10 @@ HTML;
             )
         );
 
-        $isSimpleViewMode = Mage::helper('M2ePro')->jsonEncode(Mage::helper('M2ePro/View_Ebay')->isSimpleMode());
         $showAutoAction   = Mage::helper('M2ePro')->jsonEncode((bool)$this->getRequest()->getParam('auto_actions'));
 
         $showMotorNotification= Mage::helper('M2ePro')->jsonEncode((bool)$this->isShowMotorNotification());
 
-        // M2ePro_TRANSLATIONS
-        // Please check eBay Motors compatibility attribute.You can find it in %menu_label% >
-        // Configuration > <a target="_blank" href="%url%">General</a>.
         $motorNotification = $helper->escapeJs(
             $helper->__(
                 'Please check eBay Motors compatibility attribute.'.
@@ -1300,7 +1247,7 @@ HTML;
             EbayListingEbayGridHandlerObj.actionHandler.listAction();
         }
 
-        if (!{$isSimpleViewMode} && {$showAutoAction}) {
+        if ({$showAutoAction}) {
             ListingAutoActionHandlerObj.loadAutoActionHtml();
         }
 

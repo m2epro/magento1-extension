@@ -22,7 +22,7 @@ class Ess_M2ePro_Adminhtml_Walmart_GeneralController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/L4taAQ");
 
         return $this;
     }
@@ -36,7 +36,7 @@ class Ess_M2ePro_Adminhtml_Walmart_GeneralController
 
     public function indexAction()
     {
-        if (!Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+        if (!Mage::helper('M2ePro/Component_Walmart')->isEnabled()) {
             $this->_redirect('*/adminhtml_walmart_synchronization/index');
         }
 

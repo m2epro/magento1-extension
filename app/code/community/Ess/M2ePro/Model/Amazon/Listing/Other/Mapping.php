@@ -91,7 +91,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         $mappingSettings = $this->getMappingRulesByPriority();
 
         foreach ($mappingSettings as $type) {
-            $magentoProductId = NULL;
+            $magentoProductId = null;
 
             if ($type == 'general_id') {
                 $magentoProductId = $this->getGeneralIdMappedMagentoProductId($otherListing);
@@ -109,7 +109,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
                 continue;
             }
 
-            $otherListing->mapProduct($magentoProductId, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+            $otherListing->mapProduct($magentoProductId);
 
             return true;
         }
@@ -152,7 +152,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         $temp = $otherListing->getChildObject()->getGeneralId();
 
         if (empty($temp)) {
-            return NULL;
+            return null;
         }
 
         if ($this->getAccount()->getChildObject()->isOtherListingsMappingGeneralIdModeCustomAttribute()) {
@@ -168,7 +168,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
             }
         }
 
-        return NULL;
+        return null;
     }
 
     /**

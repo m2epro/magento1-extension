@@ -112,7 +112,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
     {
         if ($this->_descriptionTemplateModel === null) {
             $this->_descriptionTemplateModel = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-                'Template_Description', $this->getId(), NULL, array('template')
+                'Template_Description', $this->getId(), null, array('template')
             );
         }
 

@@ -9,12 +9,12 @@
 class Ess_M2ePro_Model_Resource_Connector_Command_Pending_Processing_Partial
     extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Connector_Command_Pending_Processing_Partial', 'id');
     }
 
-    // ########################################
+    //########################################
 }

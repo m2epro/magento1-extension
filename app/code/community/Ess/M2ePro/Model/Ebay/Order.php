@@ -12,10 +12,6 @@
  */
 class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Magento Order was canceled.
-    // Magento Order cannot be canceled.
-
     const ORDER_STATUS_ACTIVE     = 0;
     const ORDER_STATUS_COMPLETED  = 1;
     const ORDER_STATUS_CANCELLED  = 2;
@@ -367,7 +363,8 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
      */
     public function isUseGlobalShippingProgram()
     {
-        return !empty($this->getGlobalShippingDetails());
+        $details = $this->getGlobalShippingDetails();
+        return !empty($details);
     }
 
     /**
@@ -615,7 +612,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
      */
     public function getAssociatedStoreId()
     {
-        $storeId = NULL;
+        $storeId = null;
 
         $channelItems = $this->getParentObject()->getChannelItems();
 
@@ -1031,7 +1028,7 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'orders', 'get', 'itemTransactions',
             $params, 'buyer_info',
-            NULL, $this->getParentObject()->getAccount(), NULL
+            null, $this->getParentObject()->getAccount(), null
         );
 
         $dispatcherObj->process($connectorObj);

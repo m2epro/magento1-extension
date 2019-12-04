@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
     extends Ess_M2ePro_Model_Walmart_Connector_Product_Requester
 {
-    // ########################################
+    //########################################
 
     public function getCommand()
     {
         return array('product','update','entities');
     }
 
-    // ########################################
+    //########################################
 
     protected function getActionType()
     {
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
                Ess_M2ePro_Model_Listing_Log::ACTION_STOP_PRODUCT_ON_COMPONENT;
     }
 
-    // ########################################
+    //########################################
 
     protected function validateListingProduct()
     {
@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
         return $validationResult;
     }
 
-    // ########################################
+    //########################################
 
     protected function validateAndProcessParentListingProduct()
     {
@@ -183,7 +183,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product[] $listingProducts
@@ -206,5 +206,5 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Requester
         return $resultListingProducts;
     }
 
-    // ########################################
+    //########################################
 }

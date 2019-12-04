@@ -73,9 +73,7 @@ class Ess_M2ePro_Model_Servicing_Task_Messages extends Ess_M2ePro_Model_Servicin
         !is_array($messages) && $messages = array();
 
         Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/server/',
-            'messages',
-            Mage::helper('M2ePro')->jsonEncode($messages)
+            '/server/', 'messages', Mage::helper('M2ePro')->jsonEncode($messages)
         );
     }
 

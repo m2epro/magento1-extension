@@ -73,7 +73,7 @@ class Ess_M2ePro_Model_Magento_Order_Shipment_Track
     {
         $trackingDetails = $this->getFilteredTrackingDetails();
         if (empty($trackingDetails)) {
-            return NULL;
+            return null;
         }
 
         // Skip shipment observer

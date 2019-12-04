@@ -21,7 +21,7 @@ class Ess_M2ePro_Sql_Update_y18_m09_WalmartOrderCancel extends Ess_M2ePro_Model_
                          ->insert('/cron/task/walmart/order/refund/', 'interval', '60', 'in seconds');
 
         $this->_installer->getTableModifier('walmart_order_item')
-                         ->addColumn('status', 'VARCHAR(30) NOT NULL', NULL, 'walmart_order_item_id');
+                         ->addColumn('status', 'VARCHAR(30) NOT NULL', null, 'walmart_order_item_id');
     }
 
     //########################################

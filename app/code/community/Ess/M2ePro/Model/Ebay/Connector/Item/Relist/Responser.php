@@ -23,8 +23,6 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
         if (!empty($data['already_active'])) {
             $this->getResponseObject()->processAlreadyActive($data, $params);
 
-            // M2ePro_TRANSLATIONS
-            // Item was already started on eBay
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'Item was already started on eBay',
@@ -88,9 +86,8 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Relist_Responser
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 Mage::helper('M2ePro')->__(
-                    "This Item {$itemId} cannot be accessed on eBay, so the Relist action cannot be executed for it.
-                    M2E Pro has automatically detected this issue and run the List action to solve it basing
-                    on the List Rule of the Synchronization Policy."
+                    "This Item {$itemId} was not relisted as it cannot be accessed on eBay.
+                    Instead, M2E Pro will run the List action based on your Synchronization Rules"
                 ),
                 Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_WARNING
             );

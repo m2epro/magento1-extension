@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+// @codingStandardsIgnoreFile
+
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion6
 {
     const PREFIX_TABLE_BACKUP = '__backup_v5';
@@ -387,8 +389,8 @@ SQL
         );
 
         foreach ($oldData as $oldRow) {
-            $newRow = NULL;
-            $oldRow['id'] = NULL;
+            $newRow = null;
+            $oldRow['id'] = null;
 
             // notices & thumbnails
             // ---------------------------------------
@@ -466,7 +468,7 @@ SQL
                 'group' => '/debug/maintenance/',
                 'keys' => array(
                     array('key' => 'mode', 'default' => 0),
-                    array('key' => 'restore_date', 'default' => NULL),
+                    array('key' => 'restore_date', 'default' => null),
                 )
             ),
             '/templates/description/' => array(
@@ -490,7 +492,7 @@ SQL
                     }
 
                     $newRow = array(
-                        'id' => NULL,
+                        'id' => null,
                         'group' => $data['group'],
                         'key'   => $oldRow['key'],
                         'value' => $oldRow['value']
@@ -504,7 +506,7 @@ SQL
                 }
 
                 if (!$found) {
-                    $newData[] = array('id'    => NULL,
+                    $newData[] = array('id'    => null,
                                        'group' => $data['group'],
                                        'key'   => $keyData['key'],
                                        'value' => $keyData['default']);
@@ -623,7 +625,7 @@ SQL
         );
 
         foreach ($data as $key => &$item) {
-            $item['id'] = NULL;
+            $item['id'] = null;
 
             foreach ($ignoreGroups as $groupData) {
                 if (stripos($item['group'], $groupData['group']) === false) {
@@ -638,10 +640,10 @@ SQL
                 continue 2;
             }
 
-            $item['group'] = str_replace('/synchronization/settings', NULL, $item['group']);
+            $item['group'] = str_replace('/synchronization/settings', null, $item['group']);
             $item['group'] = str_replace('/synchronization/', '/settings/', $item['group']);
 
-            $item['group'] === '/' && $item['group'] = NULL;
+            $item['group'] === '/' && $item['group'] = null;
         }
 
         !empty($data) && $this->_installer->getConnection()->insertMultiple($newTable, $data);
@@ -738,7 +740,7 @@ SQL
             $newWizardTable, array(
             'nick' => 'migrationToV6',
             'view' => '*',
-            'step' => NULL,
+            'step' => null,
             'status' => 0,
             'type' => 1,
             'priority' => 1
@@ -784,7 +786,7 @@ SQL
             $newWizardTable, array(
             'nick' => 'installationEbay',
             'view' => 'ebay',
-            'step' => NULL,
+            'step' => null,
             'status' => $status,
             'type' => 1,
             'priority' => 2
@@ -1420,16 +1422,16 @@ SQL
             );
 
             $newRow['schedule_mode'] = 0;
-            $newRow['schedule_interval_settings'] = NULL;
-            $newRow['schedule_week_settings'] = NULL;
+            $newRow['schedule_interval_settings'] = null;
+            $newRow['schedule_week_settings'] = null;
 
             if ($oldRow['relist_schedule_type'] == 2) {
                 $newRow['schedule_mode'] = 1;
                 $newRow['schedule_interval_settings'] = json_encode(
                     array(
                                                                         'mode' => 0,
-                                                                        'date_from' => NULL,
-                                                                        'date_to'   => NULL,
+                                                                        'date_from' => null,
+                                                                        'date_to'   => null,
                     )
                 );
 
@@ -2565,22 +2567,22 @@ SQL
                 'id' => $oldRow['id'],
 
                 'category_main_id' => $oldRow['categories_main_id'],
-                'category_main_path' => NULL,
+                'category_main_path' => null,
                 'category_main_mode' => $oldRow['categories_mode'],
                 'category_main_attribute' => $oldRow['categories_main_attribute'],
 
                 'category_secondary_id' => $oldRow['categories_secondary_id'],
-                'category_secondary_path' => NULL,
+                'category_secondary_path' => null,
                 'category_secondary_mode' => $oldRow['categories_mode'],
                 'category_secondary_attribute' => $oldRow['categories_secondary_attribute'],
 
                 'store_category_main_id' => $oldRow['store_categories_main_id'],
-                'store_category_main_path' => NULL,
+                'store_category_main_path' => null,
                 'store_category_main_mode' => $oldRow['store_categories_main_mode'],
                 'store_category_main_attribute' => $oldRow['store_categories_main_attribute'],
 
                 'store_category_secondary_id' => $oldRow['store_categories_secondary_id'],
-                'store_category_secondary_path' => NULL,
+                'store_category_secondary_path' => null,
                 'store_category_secondary_mode' => $oldRow['store_categories_secondary_mode'],
                 'store_category_secondary_attribute' => $oldRow['store_categories_secondary_attribute'],
 
@@ -3025,8 +3027,8 @@ SQL
                     'watermark_mode' => $oldListingData['watermark_mode'],
                     'watermark_image' => $oldListingData['watermark_image'],
                     'watermark_settings' => $oldListingData['watermark_settings'],
-                    'update_date' => Mage::getModel('core/date')->gmtDate(NULL),
-                    'create_date' => Mage::getModel('core/date')->gmtDate(NULL),
+                    'update_date' => Mage::getModel('core/date')->gmtDate(null),
+                    'create_date' => Mage::getModel('core/date')->gmtDate(null),
                 );
 
                 $this->_installer->getConnection()->insert($newEbayTemplateDescriptionTable, $templateDescriptionData);
@@ -3053,37 +3055,37 @@ SQL
 
                 'auto_mode' => $listingAutoMode,
                 'auto_global_adding_mode' => 0,
-                'auto_global_adding_template_category_id' => NULL,
+                'auto_global_adding_template_category_id' => null,
                 'auto_website_adding_mode' => 0,
-                'auto_website_adding_template_category_id' => NULL,
+                'auto_website_adding_template_category_id' => null,
                 'auto_website_deleting_mode' => 0,
 
                 'template_payment_mode' => 2,
                 'template_payment_id' => $oldListingData['template_general_id'],
-                'template_payment_custom_id' => NULL,
-                'template_payment_policy_id' => NULL,
+                'template_payment_custom_id' => null,
+                'template_payment_policy_id' => null,
 
                 'template_shipping_mode' => 2,
                 'template_shipping_id' => $oldListingData['template_general_id'],
-                'template_shipping_custom_id' => NULL,
-                'template_shipping_policy_id' => NULL,
+                'template_shipping_custom_id' => null,
+                'template_shipping_policy_id' => null,
 
                 'template_return_mode' => 2,
                 'template_return_id' => $oldListingData['template_general_id'],
-                'template_return_custom_id' => NULL,
-                'template_return_policy_id' => NULL,
+                'template_return_custom_id' => null,
+                'template_return_policy_id' => null,
 
                 'template_description_mode' => 2,
                 'template_description_id' => $newTemplateDescriptionId,
-                'template_description_custom_id' => NULL,
+                'template_description_custom_id' => null,
 
                 'template_selling_format_mode' => 2,
                 'template_selling_format_id' => $oldListingData['template_selling_format_id'],
-                'template_selling_format_custom_id' => NULL,
+                'template_selling_format_custom_id' => null,
 
                 'template_synchronization_mode' => 2,
                 'template_synchronization_id' => $oldListingData['template_synchronization_id'],
-                'template_synchronization_custom_id' => NULL
+                'template_synchronization_custom_id' => null
             );
         }
 
@@ -3134,8 +3136,8 @@ SQL
                     'watermark_mode' => $templateDescription['watermark_mode'],
                     'watermark_image' => $templateDescription['watermark_image'],
                     'watermark_settings' => $templateDescription['watermark_settings'],
-                    'update_date' => Mage::getModel('core/date')->gmtDate(NULL),
-                    'create_date' => Mage::getModel('core/date')->gmtDate(NULL),
+                    'update_date' => Mage::getModel('core/date')->gmtDate(null),
+                    'create_date' => Mage::getModel('core/date')->gmtDate(null),
                 );
 
                 $this->_installer->getConnection()->insert($newEbayTemplateDescriptionTable, $templateDescriptionData);
@@ -4777,7 +4779,7 @@ SQL
         $path = array();
 
         while (true) {
-            $currentCategory = NULL;
+            $currentCategory = null;
             foreach ($categories as $category) {
                 if ($category['category_id'] == $categoryId) {
                     $currentCategory = $category;

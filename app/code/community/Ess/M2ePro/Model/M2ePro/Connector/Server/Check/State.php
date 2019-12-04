@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_M2ePro_Connector_Server_Check_State
     extends Ess_M2ePro_Model_Connector_Command_RealTime
 {
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_M2ePro_Connector_Server_Check_State
         return true;
     }
 
-    // ########################################
+    //########################################
 
     protected function buildConnectionInstance()
     {
@@ -40,5 +40,5 @@ class Ess_M2ePro_Model_M2ePro_Connector_Server_Check_State
         return $connection;
     }
 
-    // ########################################
+    //########################################
 }

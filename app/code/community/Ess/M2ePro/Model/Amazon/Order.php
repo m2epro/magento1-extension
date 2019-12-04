@@ -12,9 +12,6 @@
  */
 class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Order Status cannot be Updated. Reason: %msg%
-
     const STATUS_PENDING             = 0;
     const STATUS_UNSHIPPED           = 1;
     const STATUS_SHIPPED_PARTIALLY   = 2;
@@ -119,25 +116,25 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     public function getShipDateFrom()
     {
         $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['ship']['from']) ? $shippingDates['ship']['from'] : NULL;
+        return !empty($shippingDates['ship']['from']) ? $shippingDates['ship']['from'] : null;
     }
 
     public function getShipDateTo()
     {
         $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['ship']['to']) ? $shippingDates['ship']['to'] : NULL;
+        return !empty($shippingDates['ship']['to']) ? $shippingDates['ship']['to'] : null;
     }
 
     public function getDeliveryDateFrom()
     {
         $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['delivery']['from']) ? $shippingDates['delivery']['from'] : NULL;
+        return !empty($shippingDates['delivery']['from']) ? $shippingDates['delivery']['from'] : null;
     }
 
     public function getDeliveryDateTo()
     {
         $shippingDates = $this->getSettings('shipping_dates');
-        return !empty($shippingDates['delivery']['to']) ? $shippingDates['delivery']['to'] : NULL;
+        return !empty($shippingDates['delivery']['to']) ? $shippingDates['delivery']['to'] : null;
     }
 
     //########################################
@@ -441,7 +438,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
      */
     public function getAssociatedStoreId()
     {
-        $storeId = NULL;
+        $storeId = null;
 
         $channelItems = $this->getParentObject()->getChannelItems();
 
@@ -579,7 +576,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     public function createInvoice()
     {
         if (!$this->canCreateInvoice()) {
-            return NULL;
+            return null;
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();
@@ -636,7 +633,7 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
     public function createShipment()
     {
         if (!$this->canCreateShipment()) {
-            return NULL;
+            return null;
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();

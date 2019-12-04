@@ -34,7 +34,7 @@ abstract class Ess_M2ePro_Model_Template_Diff_Abstract
 
     //########################################
 
-    protected function isSettingsDifferent($keys, $groupKey = NULL)
+    protected function isSettingsDifferent($keys, $groupKey = null)
     {
         $newSnapshotData = $this->_newSnapshot;
         if ($groupKey !== null && isset($newSnapshotData[$groupKey])) {

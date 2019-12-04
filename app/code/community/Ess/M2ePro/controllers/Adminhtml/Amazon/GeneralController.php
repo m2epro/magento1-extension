@@ -20,7 +20,7 @@ class Ess_M2ePro_Adminhtml_Amazon_GeneralController
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Amazon/Configuration/GeneralHandler.js');
 
-        $this->setPageHelpLink(NULL, NULL, "x/ioIVAQ");
+        $this->setPageHelpLink(null, null, "x/ioIVAQ");
 
         return $this;
     }
@@ -34,7 +34,7 @@ class Ess_M2ePro_Adminhtml_Amazon_GeneralController
 
     public function indexAction()
     {
-        if (!Mage::helper('M2ePro/Component_Amazon')->isActive()) {
+        if (!Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
             $this->_redirect('*/adminhtml_amazon_synchronization/index');
         }
 

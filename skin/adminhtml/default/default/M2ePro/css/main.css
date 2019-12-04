@@ -94,12 +94,47 @@ select.lacklustre_selected option[value="1"] {
     background: none repeat scroll 0 0 #E7EFEF !important;
 }
 
-.filter_block p {
+.filter_block p:not(.static-switcher) {
     float: left !important;
     border: none !important;
     padding-right: 20px !important;
     margin-bottom: 0 !important;
     background: none !important;
+}
+
+.filter_block .view-mode-switcher {
+    float: left !important;
+    display: inline !important;
+    margin: 10px !important;
+}
+
+.filter_block .switcher-separator {
+    float: left !important;
+    display: inline !important;
+    border-right: 1px solid #C1C1C1 !important;
+    height: 19px !important;
+    margin: 10px !important;
+}
+
+.static-switcher-block {
+    float: right !important;
+    margin-top: 8px !important;
+}
+
+.static-switcher {
+    float: right !important;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+    line-height: 20px !important;
+}
+
+.static-switcher span:last-child{
+    margin-left: 2px !important;
+    color: #878787 !important;
+}
+
+p.switcher > select[id$="Account_switcher"], p.switcher > select[id$="Marketplace_switcher"] {
+    min-width: 200px !important;
 }
 
 .invalid-row {
@@ -434,7 +469,8 @@ td.changed span {
     width: 225px;
 }
 
-form select:disabled {
+form select:disabled,
+form input:disabled {
     background: rgba(0,0,0,0.1);
 }
 
@@ -521,6 +557,36 @@ a.hover-underline:hover {
 
 .content-header-floating a span {
     background: none;
+}
+
+/* ================================================ */
+
+/* Log Grid */
+/* ================================================ */
+
+.grid-listing-column-description, .grid-listing-column-listing_title {
+    word-break: break-word;
+}
+
+.log-type {
+    font-weight: 600;
+}
+
+.log-description-group:not(:first-child) {
+    margin-top: 10px;
+}
+
+.log-description-group:not(:first-child) {
+    margin-top: 10px;
+}
+
+.log-description-full {
+    word-break: break-word;
+}
+
+.log-date {
+    font-size: 11px;
+    color: grey;
 }
 
 /* ================================================ */

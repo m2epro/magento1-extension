@@ -381,8 +381,9 @@ class Ess_M2ePro_Adminhtml_Ebay_MotorController extends Ess_M2ePro_Controller_Ad
 
         /** @var Ess_M2ePro_Model_Ebay_Motor_Group $model */
         $model = Mage::getModel('M2ePro/Ebay_Motor_Group')->load($groupId);
+        $ids = $model->getFiltersIds();
 
-        if (empty($model->getFiltersIds())) {
+        if (empty($ids)) {
             $model->deleteInstance();
         }
 

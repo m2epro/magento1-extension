@@ -333,20 +333,12 @@ HTML;
         // ---------------------------------------
         $translations = array();
 
-        // M2ePro_TRANSLATIONS
-        // Done
         $text = 'Done';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Cancel
         $text = 'Cancel';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Set eBay Categories
         $text = 'Set eBay Categories';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
-        // M2ePro_TRANSLATIONS
-        // Set eBay Category
         $text = 'Set eBay Category';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
 

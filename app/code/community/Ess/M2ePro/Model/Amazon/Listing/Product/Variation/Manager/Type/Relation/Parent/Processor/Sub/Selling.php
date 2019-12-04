@@ -24,8 +24,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
         $regularPrice  = null;
         $businessPrice = null;
 
-        $afnState = NULL;
-        $repricingState = NULL;
+        $afnState = null;
+        $repricingState = null;
         $isAfn = Product::IS_AFN_CHANNEL_NO;
         $isRepricing = Product::IS_REPRICING_NO;
         $repricingManaged = $repricingNotManaged = $afnCount = $totalCount = 0;

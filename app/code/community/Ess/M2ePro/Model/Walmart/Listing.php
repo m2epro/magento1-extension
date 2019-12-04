@@ -112,7 +112,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
     {
         if ($this->_descriptionTemplateModel === null) {
             $this->_descriptionTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                'Template_Description', $this->getData('template_description_id'), NULL, array('template')
+                'Template_Description', $this->getData('template_description_id'), null, array('template')
             );
         }
 
@@ -136,7 +136,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
     {
         if ($this->_sellingFormatTemplateModel === null) {
             $this->_sellingFormatTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                'Template_SellingFormat', $this->getData('template_selling_format_id'), NULL, array('template')
+                'Template_SellingFormat', $this->getData('template_selling_format_id'), null, array('template')
             );
         }
 
@@ -160,7 +160,7 @@ class Ess_M2ePro_Model_Walmart_Listing extends Ess_M2ePro_Model_Component_Child_
     {
         if ($this->_synchronizationTemplateModel === null) {
             $this->_synchronizationTemplateModel = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-                'Template_Synchronization', $this->getData('template_synchronization_id'), NULL, array('template')
+                'Template_Synchronization', $this->getData('template_synchronization_id'), null, array('template')
             );
         }
 

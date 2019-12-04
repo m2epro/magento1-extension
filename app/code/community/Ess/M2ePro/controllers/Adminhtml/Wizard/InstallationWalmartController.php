@@ -26,7 +26,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationWalmartController
              ->addJs('M2ePro/Wizard/InstallationWalmart.js')
              ->addJs('M2ePro/Wizard/InstallationWalmart/MarketplaceHandler.js')
              ->addJs('M2ePro/Wizard/InstallationWalmart/CustomHandler.js')
-             ->addJs('M2ePro/Configuration/ComponentsHandler.js')
              ->addJs('M2ePro/Walmart/Configuration/GeneralHandler.js');
 
         return $this;

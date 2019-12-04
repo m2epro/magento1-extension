@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Resource_Order_Change
         );
     }
 
-    public function deleteByProcessingAttemptCount($count = 3, $component = NULL)
+    public function deleteByProcessingAttemptCount($count = 3, $component = null)
     {
         $count = (int)$count;
 

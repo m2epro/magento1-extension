@@ -11,7 +11,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Responser
 {
     protected $_cachedParamsObjects = array();
 
-    // ########################################
+    //########################################
 
     protected function getObjectByParam($model, $idKey)
     {
@@ -20,7 +20,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Responser
         }
 
         if (!isset($this->_params[$idKey])) {
-            return NULL;
+            return null;
         }
 
         $this->_cachedParamsObjects[$idKey] = Mage::helper('M2ePro/Component_Ebay')
@@ -29,5 +29,5 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Responser
         return $this->_cachedParamsObjects[$idKey];
     }
 
-    // ########################################
+    //########################################
 }

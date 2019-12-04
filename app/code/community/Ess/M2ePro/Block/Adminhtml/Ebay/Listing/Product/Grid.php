@@ -28,28 +28,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
 
     //########################################
 
-    public function getAdvancedFilterButtonHtml()
-    {
-        if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            return '';
-        }
-
-        return parent::getAdvancedFilterButtonHtml();
-    }
-
-    //########################################
-
-    protected function isShowRuleBlock()
-    {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return false;
-        }
-
-        return parent::isShowRuleBlock();
-    }
-
-    //########################################
-
     protected function _prepareCollection()
     {
         $listing = Mage::helper('M2ePro/Component_Ebay')
@@ -94,19 +72,19 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
 
         if ($store->getId()) {
             $collection->joinAttribute(
-                'name', 'catalog_product/name', 'entity_id', NULL, 'left', 0
+                'name', 'catalog_product/name', 'entity_id', null, 'left', 0
             );
             $collection->joinAttribute(
-                'price', 'catalog_product/price', 'entity_id', NULL, 'left', $store->getId()
+                'price', 'catalog_product/price', 'entity_id', null, 'left', $store->getId()
             );
             $collection->joinAttribute(
-                'status', 'catalog_product/status', 'entity_id', NULL, 'inner', $store->getId()
+                'status', 'catalog_product/status', 'entity_id', null, 'inner', $store->getId()
             );
             $collection->joinAttribute(
-                'visibility', 'catalog_product/visibility', 'entity_id', NULL, 'inner', $store->getId()
+                'visibility', 'catalog_product/visibility', 'entity_id', null, 'inner', $store->getId()
             );
             $collection->joinAttribute(
-                'thumbnail', 'catalog_product/thumbnail', 'entity_id', NULL, 'left', 0
+                'thumbnail', 'catalog_product/thumbnail', 'entity_id', null, 'left', 0
             );
         } else {
             $collection->addAttributeToSelect('price');
@@ -138,7 +116,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
             if ($hideParam) {
                 $dbExcludeSelect->join(
                     array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),
-                    '`l`.`id` = `listing_id`', NULL
+                    '`l`.`id` = `listing_id`', null
                 );
 
                 $dbExcludeSelect->where('`l`.`account_id` = ?', $listing['account_id']);
@@ -403,7 +381,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
         $showAutoActionPopup = !Mage::helper('M2ePro/Module')->getCacheConfig()->getGroupValue(
             '/view/ebay/listing/advanced/autoaction_popup/', 'shown'
         );
-        Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showAutoActionPopup = false;
         $showAutoActionPopup = Mage::helper('M2ePro')->jsonEncode($showAutoActionPopup);
 
         $productAddSessionData = Mage::helper('M2ePro/Data_Session')->getValue('ebay_listing_product_add');
@@ -418,8 +395,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
 
         $showSettingsPopup = !isset($listingAdditionalData['show_settings_step']);
 
-        Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showSettingsStep = false;
-        Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showSettingsPopup = false;
         $showSettingsStep  = Mage::helper('M2ePro')->jsonEncode($showSettingsStep);
         $showSettingsPopup = Mage::helper('M2ePro')->jsonEncode($showSettingsPopup);
 

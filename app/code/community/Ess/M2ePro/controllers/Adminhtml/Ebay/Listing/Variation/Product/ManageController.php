@@ -24,12 +24,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addCss('M2ePro/css/Plugin/DropDown.css')
-            ->addCss('M2ePro/css/Plugin/AutoComplete.css')
             ->addJs('mage/adminhtml/rules.js')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
-            ->addJs('M2ePro/Plugin/AutoComplete.js')
             ->addJs('M2ePro/Plugin/ActionColumn.js')
             ->addJs('M2ePro/AttributeHandler.js')
             ->addJs('M2ePro/Listing/ProductGridHandler.js')
@@ -47,7 +45,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_Variation_Product_ManageController
             ->addJs('M2ePro/Ebay/Listing/Settings/GridHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Translation/GridHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Transferring/PaymentHandler.js')
-            ->addJs('M2ePro/Ebay/Listing/Transferring/TranslateHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Transferring/InfoHandler.js')
             ->addJs('M2ePro/Ebay/MotorsHandler.js');
 

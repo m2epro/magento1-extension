@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     protected $_logsActionId       = null;
     protected $_synchronizationLog = null;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages()
     {
@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function failDetected($messageText)
     {
@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData()
     {
@@ -79,7 +79,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateReceivedListingsProducts()
     {
@@ -104,14 +104,14 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 
             $newData = array(
                 'general_id'           => (string)$receivedItem['identifiers']['general_id'],
-                'online_regular_price' => !empty($receivedItem['price']) ? (float)$receivedItem['price'] : NULL,
+                'online_regular_price' => !empty($receivedItem['price']) ? (float)$receivedItem['price'] : null,
                 'online_qty'           => (int)$receivedItem['qty'],
                 'is_afn_channel'       => (bool)$receivedItem['channel']['is_afn'],
                 'is_isbn_general_id'   => (bool)$receivedItem['identifiers']['is_isbn']
             );
 
             if ($newData['is_afn_channel']) {
-                $newData['online_qty'] = NULL;
+                $newData['online_qty'] = null;
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
             } else {
                 if ($newData['online_qty'] > 0) {
@@ -124,7 +124,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             $existingData = array(
                 'general_id'           => (string)$existingItem['general_id'],
                 'online_regular_price' => !empty($existingItem['online_regular_price'])
-                    ? (float)$existingItem['online_regular_price'] : NULL,
+                    ? (float)$existingItem['online_regular_price'] : null,
                 'online_qty'           => (int)$existingItem['online_qty'],
                 'is_afn_channel'       => (bool)$existingItem['is_afn_channel'],
                 'is_isbn_general_id'   => (bool)$existingItem['is_isbn_general_id'],
@@ -228,8 +228,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             if (isset($newData['online_regular_price']) &&
                 $newData['online_regular_price'] != $existingData['online_regular_price']
             ) {
-                // M2ePro_TRANSLATIONS
-                // Item Price was successfully changed from %from% to %to% .
                 $tempLogMessages[] = Mage::helper('M2ePro')->__(
                     'Item Price was successfully changed from %from% to %to% .',
                     (float)$existingData['online_regular_price'],
@@ -238,8 +236,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
             }
 
             if (isset($newData['online_qty']) && $newData['online_qty'] != $existingData['online_qty']) {
-                // M2ePro_TRANSLATIONS
-                // Item QTY was successfully changed from %from% to %to% .
                 $tempLogMessages[] = Mage::helper('M2ePro')->__(
                     'Item QTY was successfully changed from %from% to %to% .',
                     (int)$existingData['online_qty'],
@@ -256,8 +252,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                     ->getHumanTitleByListingProductStatus($newData['status']);
 
                 if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                    // M2ePro_TRANSLATIONS
-                    // Item Status was successfully changed from "%from%" to "%to%" .
                     $tempLogMessages[] = Mage::helper('M2ePro')->__(
                         'Item Status was successfully changed from "%from%" to "%to%" .',
                         $statusChangedFrom,
@@ -290,7 +284,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function getPdoStatementExistingListings($withData = false)
     {
@@ -374,7 +368,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $massProcessor->execute();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -439,5 +433,5 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         return $existData[$key] != $newData[$key];
     }
 
-    // ########################################
+    //########################################
 }

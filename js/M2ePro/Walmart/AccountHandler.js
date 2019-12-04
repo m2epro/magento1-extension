@@ -13,7 +13,27 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
                                                 M2ePro.formData.id,
                                                 M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::NICK'));
 
+        Validation.add('M2ePro-validate-consumer-id', M2ePro.translator.translate('The specified Consumer ID / Partner ID is not valid'), function(value, el) {
+
+            if (CommonHandlerObj.isElementHiddenFromPage(el)) {
+                return true;
+            }
+
+            // Do not validate on edit
+            if (el.disabled) {
+                return true;
+            }
+
+            // Partner ID example: 10000004781
+            // Consumer ID Example: c2cfff2c-57a9-4f0a-b5ab-00b000dfe000
+            return /^[0-9]{11}$/.test(value) || /^[a-f0-9-]{36}$/.test(value);
+        });
+
         Validation.add('M2ePro-marketplace-merchant', M2ePro.translator.translate('M2E Pro was not able to get access to the Walmart Account'), function(value, el) {
+
+            if (CommonHandlerObj.isElementHiddenFromPage(el)) {
+                return true;
+            }
 
             // reset error message to the default
             this.error = M2ePro.translator.translate('M2E Pro was not able to get access to the Walmart Account');
@@ -81,18 +101,9 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
             return checkResult;
         });
 
-        Validation.add('M2ePro-account-order-number-prefix', M2ePro.translator.translate('Prefix length should not be greater than 5 characters.'), function(value) {
-
-            if ($('magento_orders_number_prefix_mode').value == 0) {
-                return true;
-            }
-
-            return value.length <= 5;
-        });
-
         Validation.add('M2ePro-require-select-attribute', M2ePro.translator.translate('If Yes is chosen, you must select at least one Attribute for Product Mapping.'), function(value, el) {
 
-            if ($('other_listings_mapping_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_NO')) {
+            if ($('other_listings_mapping_mode').value == 0) {
                 return true;
             }
 
@@ -149,13 +160,10 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
             return;
         }
 
-        $$('.marketplace-required-input').each(function(obj) {
-            if (obj.hasClassName('marketplace-required-input-text-id' + marketplaceId)) {
-                obj.addClassName('M2ePro-marketplace-merchant');
-            } else {
-                obj.removeClassName('M2ePro-marketplace-merchant');
-            }
-        });
+        $('consumer_id').removeClassName('M2ePro-validate-consumer-id');
+        if (marketplaceId == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Walmart::MARKETPLACE_US')) {
+            $('consumer_id').addClassName('M2ePro-validate-consumer-id');
+        }
 
         $$('.marketplace-required-field-id' + marketplaceId, '.marketplace-required-field-id-not-null').each(function(obj) {
             obj.show();
@@ -166,11 +174,11 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
     other_listings_synchronization_change: function()
     {
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES')) {
+        if (this.value == 1) {
             $('other_listings_mapping_mode_tr').show();
             $('other_listings_store_view_tr').show();
         } else {
-            $('other_listings_mapping_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_NO');
+            $('other_listings_mapping_mode').value = 0;
             $('other_listings_mapping_mode').simulate('change');
             $('other_listings_mapping_mode_tr').hide();
             $('other_listings_store_view_tr').hide();
@@ -179,7 +187,7 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
 
     other_listings_mapping_mode_change: function()
     {
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::OTHER_LISTINGS_MAPPING_MODE_YES')) {
+        if (this.value == 1) {
             $('magento_block_walmart_accounts_other_listings_product_mapping').show();
         } else {
             $('magento_block_walmart_accounts_other_listings_product_mapping').hide();
@@ -286,7 +294,7 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
     {
         var self = WalmartAccountHandlerObj;
 
-        if ($('magento_orders_listings_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES')) {
+        if ($('magento_orders_listings_mode').value == 1) {
             $('magento_orders_listings_store_mode_container').show();
         } else {
             $('magento_orders_listings_store_mode_container').hide();
@@ -313,7 +321,7 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
     {
         var self = WalmartAccountHandlerObj;
 
-        if ($('magento_orders_listings_other_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES')) {
+        if ($('magento_orders_listings_other_mode').value == 1) {
             $('magento_orders_listings_other_product_mode_container').show();
             $('magento_orders_listings_other_store_id_container').show();
         } else {
@@ -349,7 +357,7 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
     {
         var self = WalmartAccountHandlerObj;
 
-        if ($('magento_orders_number_prefix_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES')) {
+        if ($('magento_orders_number_prefix_mode').value == 1) {
             $('magento_orders_number_prefix_container').show();
         } else {
             $('magento_orders_number_prefix_container').hide();
@@ -372,7 +380,7 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
             orderNumber = $('sample_walmart_order_id').value;
         }
 
-        if ($('magento_orders_number_prefix_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES')) {
+        if ($('magento_orders_number_prefix_mode').value == 1) {
             orderNumber = $('magento_orders_number_prefix_prefix').value + orderNumber;
         }
 
@@ -400,7 +408,7 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
         $('magento_orders_customer_new_website_id').value = '';
         $('magento_orders_customer_new_group_id').value = '';
         $('magento_orders_customer_new_notifications').value = '';
-//        $('magento_orders_customer_new_newsletter_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO');
+//        $('magento_orders_customer_new_newsletter_mode').value = 0;
     },
 
     magentoOrdersStatusMappingModeChange: function()
@@ -424,12 +432,11 @@ WalmartAccountHandler.prototype = Object.extend(new CommonHandler(), {
     {
         var self = WalmartAccountHandlerObj;
 
-        if ($('magento_orders_listings_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO') &&
-            $('magento_orders_listings_other_mode').value == M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO')) {
+        if ($('magento_orders_listings_mode').value == 0 && $('magento_orders_listings_other_mode').value == 0) {
 
             $('magento_block_walmart_accounts_magento_orders_number').hide();
             $('magento_orders_number_source').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO');
-            $('magento_orders_number_prefix_mode').value = M2ePro.php.constant('Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO');
+            $('magento_orders_number_prefix_mode').value = 0;
             self.magentoOrdersNumberPrefixModeChange();
 
             $('magento_block_walmart_accounts_magento_orders_customer').hide();

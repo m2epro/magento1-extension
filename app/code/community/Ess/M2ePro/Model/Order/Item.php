@@ -15,11 +15,6 @@ use Ess_M2ePro_Model_Walmart_Order_Item as WalmartOrderItem;
  */
 class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Product does not exist.
-    // Product is disabled.
-    // Order Import does not support product type: %type%.
-
     /** @var Ess_M2ePro_Model_Order */
     protected $_order = null;
 
@@ -65,7 +60,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             return false;
         }
 
-        $this->_order = NULL;
+        $this->_order = null;
 
         $this->deleteChildInstance();
         $this->delete();
@@ -173,7 +168,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
     public function getProduct()
     {
         if ($this->getProductId() === null) {
-            return NULL;
+            return null;
         }
 
         return $this->getMagentoProduct()->getProduct();
@@ -356,7 +351,8 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
             return;
         }
 
-        if (!empty(array_diff($foundOptionsIds, $existOptionsIds))) {
+        $diff = array_diff($foundOptionsIds, $existOptionsIds);
+        if (!empty($diff)) {
             // options were already mapped, but not all of them
             throw new Ess_M2ePro_Model_Exception_Logic('Selected Options do not match the Product Options.');
         }

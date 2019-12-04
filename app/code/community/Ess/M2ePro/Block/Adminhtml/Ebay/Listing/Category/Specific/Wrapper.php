@@ -165,8 +165,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific_Wrapper
         $urls = Mage::helper('M2ePro')->jsonEncode($urls);
         // ---------------------------------------
 
-        // M2ePro_TRANSLATIONS
-        // Loading. Please wait
         $text = 'Loading. Please wait';
         $translations[$text] = Mage::helper('M2ePro')->__($text);
 

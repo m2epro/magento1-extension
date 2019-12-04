@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Repricing_UpdateSettings extends Ess_M2e
 {
     const NICK = 'amazon/repricing/update_settings';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 180;
+
     const MAX_COUNT_OF_ITERATIONS     = 10;
     const MAX_ITEMS_COUNT_PER_REQUEST = 500;
 

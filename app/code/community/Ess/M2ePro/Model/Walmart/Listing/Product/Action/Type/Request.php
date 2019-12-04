@@ -19,6 +19,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
      */
     protected $_dataTypes = array(
         'qty',
+        'lagTime',
         'price',
         'promotions',
         'details',
@@ -99,6 +100,19 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Request
         }
 
         $dataBuilder = $this->getDataBuilder('qty');
+        return $dataBuilder->getData();
+    }
+
+    /**
+     * @return array
+     */
+    public function getLagTimeData()
+    {
+        if (!$this->getConfigurator()->isLagTimeAllowed()) {
+            return array();
+        }
+
+        $dataBuilder = $this->getDataBuilder('lagTime');
         return $dataBuilder->getData();
     }
 

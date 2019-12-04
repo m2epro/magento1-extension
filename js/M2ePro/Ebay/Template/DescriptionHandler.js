@@ -17,11 +17,6 @@ EbayTemplateDescriptionHandler.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    simple_mode_disallowed_hide: function()
-    {
-        $$('#template_description_data_container .simple_mode_disallowed').invoke('hide');
-    },
-
     duplicate_click: function(headId, chapter_when_duplicate_text, templateNick)
     {
         var watermarkImageContainer = $('watermark_uploaded_image_container');

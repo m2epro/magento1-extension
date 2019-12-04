@@ -9,11 +9,7 @@
 class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Payment
     extends Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Payment Status for eBay Order was not updated. Reason: eBay Failure.
-    // Payment Status for eBay Order was updated to Paid.
-
-    // ########################################
+    //########################################
 
     protected function prepareResponseData()
     {
@@ -42,5 +38,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Payment
         }
     }
 
-    // ########################################
+    //########################################
 }

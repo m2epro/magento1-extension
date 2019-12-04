@@ -22,15 +22,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
 
         $sku = $this->getSku();
         if (empty($sku)) {
-            // M2ePro_TRANSLATIONS
-            // SKU is not provided. Please, check Listing Settings.
             $this->addMessage('SKU is not provided. Please, check Listing Settings.');
             return false;
         }
 
         if (strlen($sku) > Ess_M2ePro_Helper_Component_Walmart::SKU_MAX_LENGTH) {
-            // M2ePro_TRANSLATIONS
-            // The length of SKU must be less than 50 characters.
             $this->addMessage('The length of SKU must be less than 50 characters.');
             return false;
         }
@@ -44,8 +40,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         }
 
         if (!$this->getListingProduct()->isNotListed() || !$this->getListingProduct()->isListable()) {
-            // M2ePro_TRANSLATIONS
-            // Item is already on Walmart, or not available.
             $this->addMessage('Item is already on Walmart, or not available.');
 
             return false;
@@ -84,7 +78,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
 
         $params = $this->getParams();
         if (!isset($params['sku'])) {
-            return NULL;
+            return null;
         }
 
         return $params['sku'];
@@ -102,7 +96,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
 
         if ($helper->isGtinModeNotSet()) {
-            return NULL;
+            return null;
         }
 
         return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(
@@ -120,7 +114,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
 
         if ($helper->isUpcModeNotSet()) {
-            return NULL;
+            return null;
         }
 
         return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(
@@ -138,7 +132,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
 
         if ($helper->isEanModeNotSet()) {
-            return NULL;
+            return null;
         }
 
         return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(
@@ -156,7 +150,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Validator
         $helper = Mage::helper('M2ePro/Component_Walmart_Configuration');
 
         if ($helper->isIsbnModeNotSet()) {
-            return NULL;
+            return null;
         }
 
         return $this->getWalmartListingProduct()->getActualMagentoProduct()->getAttributeValue(

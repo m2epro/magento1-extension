@@ -31,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Grid_Massaction extends Mage_Adminhtml_Block_Wi
         return $this;
     }
 
-    public function addItem($itemId, array $item, $group = NULL)
+    public function addItem($itemId, array $item, $group = null)
     {
         if (!empty($group) && isset($this->_groups[$group])) {
             $this->_groups[$group]['items'][] = $itemId;

@@ -32,7 +32,7 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             ->addCss('M2ePro/css/Plugin/DropDown.css');
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/L4taAQ");
         return $this;
     }
 
@@ -392,22 +392,18 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
 
         // invoice/shipment settings
         // ---------------------------------------
-        $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_INVOICE_MODE_YES;
-        $data['magento_orders_settings']['invoice_mode'] = $temp;
-        $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES;
-        $data['magento_orders_settings']['shipment_mode'] = $temp;
+        $data['magento_orders_settings']['invoice_mode'] = 1;
+        $data['magento_orders_settings']['shipment_mode'] = 1;
 
         $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
         if (!empty($data['magento_orders_settings']['status_mapping']['mode']) &&
             $data['magento_orders_settings']['status_mapping']['mode'] == $temp) {
-            $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_INVOICE_MODE_NO;
             if (!isset($post['magento_orders_settings']['invoice_mode'])) {
-                $data['magento_orders_settings']['invoice_mode'] = $temp;
+                $data['magento_orders_settings']['invoice_mode'] = 0;
             }
 
-            $temp = Ess_M2ePro_Model_Walmart_Account::MAGENTO_ORDERS_SHIPMENT_MODE_NO;
             if (!isset($post['magento_orders_settings']['shipment_mode'])) {
-                $data['magento_orders_settings']['shipment_mode'] = $temp;
+                $data['magento_orders_settings']['shipment_mode'] = 0;
             }
         }
 
@@ -499,9 +495,6 @@ class Ess_M2ePro_Adminhtml_Walmart_AccountController
             // ---------------------------------------
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
-
-            // M2ePro_TRANSLATIONS
-            // The Walmart access obtaining is currently unavailable.<br/>Reason: %error_message%
 
             $error = 'The Walmart access obtaining is currently unavailable.<br/>Reason: %error_message%';
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());

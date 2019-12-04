@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
     extends Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner
 {
-    // ##################################
+    //##################################
 
     public function getType()
     {
         return Ess_M2ePro_Model_Processing::TYPE_SINGLE;
     }
 
-    // ##################################
+    //##################################
 
     public function processSuccess()
     {
@@ -44,7 +44,7 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
         }
     }
 
-    // ##################################
+    //##################################
 
     protected function eventBefore()
     {
@@ -84,5 +84,5 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Single_Runner
         $processingSingle->save();
     }
 
-    // ##################################
+    //##################################
 }

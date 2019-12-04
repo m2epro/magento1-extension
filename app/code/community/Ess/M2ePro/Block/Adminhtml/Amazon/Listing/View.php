@@ -21,15 +21,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonListingView');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_amazon_listing_view_' . $this->getViewMode();
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
@@ -39,19 +34,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
             $this->_headerText = Mage::helper('M2ePro')->__('View Listing ');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $url = $this->getUrl(
             '*/adminhtml_amazon_log/listing', array(
             'id' => $listingData['id']
@@ -59,14 +48,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         );
         $this->_addButton(
             'view_log', array(
-            'label'   => Mage::helper('M2ePro')->__('View Log'),
+            'label'   => Mage::helper('M2ePro')->__('Logs & Events'),
             'onclick' => 'window.open(\'' . $url . '\')',
             'class'   => 'button_link'
             )
         );
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->_addButton(
             'edit_settings', array(
             'label'   => Mage::helper('M2ePro')->__('Edit Settings'),
@@ -74,9 +61,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
             'class'   => 'drop_down edit_settings_drop_down'
             )
         );
-        // ---------------------------------------
 
-        // ---------------------------------------
         $this->_addButton(
             'add_products', array(
             'label'     => Mage::helper('M2ePro')->__('Add Products'),
@@ -84,7 +69,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
             'class'     => 'add drop_down add_products_drop_down'
             )
         );
-        // ---------------------------------------
     }
 
     //########################################
@@ -106,7 +90,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View extends Mage_Adminhtml_Bloc
         return self::DEFAULT_VIEW_MODE;
     }
 
-    protected function getParam($paramName, $default = NULL)
+    protected function getParam($paramName, $default = null)
     {
         $session = Mage::helper('M2ePro/Data_Session');
         $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');

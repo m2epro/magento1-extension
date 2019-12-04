@@ -283,25 +283,6 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
 
     // ---------------------------------------
 
-    renderStepTranslation: function()
-    {
-        var account = this.actionHandler.getTargetAccount();
-
-        var self = this;
-
-        this.actionHandler.loadDataStepTranslation(account, function() {
-
-            self.actionHandler.pushStep('translation');
-
-            $('data_container_step_translation') && $('data_container_step_translation')
-                .update(self.actionHandler.getDataStepTranslation(account));
-
-            self.showStep(true, true);
-        });
-    },
-
-    // ---------------------------------------
-
     refreshBreadcrumb: function()
     {
         if ($('transferring_use_custom_settings')) {
@@ -316,10 +297,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
             var itemStep = this.actionHandler.getItemStep();
             var breadcrumbs = ['destination'];
 
-            (itemStep == 'translation' || this.actionHandler.isMigrationServiceAllowed()) &&
-                breadcrumbs.push('translation');
-            (itemStep == 'policy' || this.actionHandler.isNeedManagePolicy()) &&
-                breadcrumbs.push('policy');
+            (itemStep == 'policy' || this.actionHandler.isNeedManagePolicy()) && breadcrumbs.push('policy');
 
             if (breadcrumbs.length > 1) {
                 this.breadcrumbHandler.showSteps(breadcrumbs);
@@ -358,13 +336,6 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
                     .observe('click', function() {
                         self.validate() && self.synchronizeMarketplace('EbayListingTransferringHandlerObj.renderStepPolicy();');
                     });
-            } else if (this.actionHandler.isMigrationServiceAllowed()) {
-                nextStepAllowed = true;
-                $('continue_button_destination')
-                    .stopObserving('click')
-                    .observe('click', function() {
-                        self.validate() && self.synchronizeMarketplace('EbayListingTransferringHandlerObj.renderStepTranslation();');
-                    });
             } else if (this.actionHandler.isNeedManageCategories() &&
                 !$('transferring_existing_listing').hasChildNodes()) {
 
@@ -378,14 +349,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
 
         } else if (itemStep == 'policy' && $('continue_button_policy')) {
 
-            if (this.actionHandler.isMigrationServiceAllowed()) {
-                nextStepAllowed = true;
-                $('continue_button_policy')
-                    .stopObserving('click')
-                    .observe('click', function() {
-                        self.validate() && self.actionHandler.createTemplates(self.renderStepTranslation.bind(self));
-                    });
-            } else if (this.actionHandler.isNeedManageCategories()) {
+            if (this.actionHandler.isNeedManageCategories()) {
                 nextStepAllowed = true;
                 $('continue_button_policy')
                     .stopObserving('click')
@@ -393,15 +357,6 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
                         self.validate() && self.actionHandler.createTemplates(self.confirm.bind(self, true))
                     });
             }
-
-        } else if (itemStep == 'translation' &&
-                   $('continue_button_translation') &&
-                   this.actionHandler.isNeedManageCategories()) {
-
-            nextStepAllowed = true;
-            $('continue_button_translation')
-                .stopObserving('click')
-                .observe('click', self.confirm.bind(self, true));
         }
 
         if (nextStepAllowed) {
@@ -434,13 +389,7 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
         }
 
         var selectedIndex = marketplaceSelect.selectedIndex;
-        var marketplaceOptGroupData = marketplaceSelect.options[selectedIndex].parentNode.getAttribute('data');
-
-        if (parseInt(marketplaceOptGroupData) && !this.actionHandler.isMigrationServiceAllowed()) {
-            storeNote.show();
-        } else {
-            storeNote.hide();
-        }
+        storeNote.show();
     },
 
     synchronizeMarketplace: function(callback)
@@ -517,45 +466,6 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
 
     // ---------------------------------------
 
-    createTranslationAccount: function()
-    {
-        var validationResult = [];
-
-        $('transferring_email')     && validationResult.push(Validation.validate($('transferring_email')));
-        $('transferring_firstname') && validationResult.push(Validation.validate($('transferring_firstname')));
-        $('transferring_lastname')  && validationResult.push(Validation.validate($('transferring_lastname')));
-        $('transferring_company')   && validationResult.push(Validation.validate($('transferring_company')));
-        $('transferring_country')   && validationResult.push(Validation.validate($('transferring_country')));
-
-        if (validationResult.indexOf(false) != -1) {
-            return;
-        }
-
-        this.actionHandler.createTranslationAccount(function() {
-            $('block_notice_ebay_translation_account') && $('block_notice_ebay_translation_account').hide();
-            $('transferring_translation_service_block') && $('transferring_translation_service_block').show();
-
-            var confirmButton = $('confirm_button_translation');
-            if (confirmButton) {
-                confirmButton.disabled = false;
-                confirmButton.removeClassName('disabled');
-            }
-
-            $('transferring_translation_service') &&
-                EbayListingTransferringHandlerObj.translationServiceChange($('transferring_translation_service'));
-        });
-    },
-
-    refreshTranslationAccount: function()
-    {
-        this.actionHandler.refreshTranslationAccount(function() {
-            $('transferring_translation_service') &&
-                EbayListingTransferringHandlerObj.translationServiceChange($('transferring_translation_service'));
-        });
-    },
-
-    // ---------------------------------------
-
     confirm: function(needToSetCategoryPolicies)
     {
         if (!this.validate()) {
@@ -582,15 +492,15 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
                     EbayListingTransferringHandlerObj.actionHandler.redirectToCategorySettings();
                 } else if (EbayListingTransferringHandlerObj.actionHandler.hasTargetListing()) {
 
-                    if (!EbayListingTransferringHandlerObj.actionHandler.hasAllFailedTranslationProducts() &&
-                        EbayListingTransferringHandlerObj.actionHandler.isUseMigrationService()) {
-                        var view_mode = 'translation';
-                    } else {
-                        var view_mode = 'ebay';
-                    }
-
-                    window.open(M2ePro.url.get('adminhtml_ebay_listing/getTransferringUrl',
-                        {id: EbayListingTransferringHandlerObj.actionHandler.getTargetListing(), view_mode: view_mode}));
+                    window.open(
+                        M2ePro.url.get(
+                            'adminhtml_ebay_listing/getTransferringUrl',
+                            {
+                                id: EbayListingTransferringHandlerObj.actionHandler.getTargetListing(),
+                                view_mode: 'ebay'
+                            }
+                        )
+                    );
                     EbayListingTransferringHandlerObj.popUp.close();
                 }
             } else {
@@ -735,92 +645,6 @@ EbayListingTransferringHandler = Class.create(CommonHandler, {
 
         EbayListingTransferringHandlerObj.refreshBreadcrumb();
         EbayListingTransferringHandlerObj.refreshButtons();
-    },
-
-    migrationServiceChange: function(el)
-    {
-        if ($('transferring_account_block')) {
-            if (!!parseInt(el.value)) {
-                $('transferring_account_block').show();
-            } else {
-                $('transferring_account_block').hide();
-            }
-        }
-        this.refreshBreadcrumb();
-        this.refreshButtons();
-    },
-
-    translationServiceChange: function(el)
-    {
-        var estimatedAmountElement = $('translation_estimated_amount');
-
-        if (estimatedAmountElement) {
-            estimatedAmount = this.actionHandler.getEstimatedAmount(el);
-            if (estimatedAmount) {
-                $('translation_estimated_row') && $('translation_estimated_row').show();
-            } else {
-                $('translation_estimated_row') && $('translation_estimated_row').hide();
-            }
-            estimatedAmountElement.innerHTML = estimatedAmount;
-        }
-
-        if (this.actionHandler.getCurTranslationType(el) === 'silver' && this.actionHandler.getTotalCredits() > 0) {
-            $('translation_total_credit_row') && $('translation_total_credit_row').show();
-        } else {
-            $('translation_total_credit_row') && $('translation_total_credit_row').hide();
-        }
-
-        if (this.actionHandler.isShowPaymentWarningMessage(el)) {
-            $('translation_enough_money_tip')     && $('translation_enough_money_tip').setStyle({display: 'none'});
-            $('translation_not_enough_money_tip') && $('translation_not_enough_money_tip').setStyle({display: 'inline-block'});
-            estimatedAmountElement                && estimatedAmountElement.setStyle({color: '#df280a'});
-            $('translation_estimated_currency')   && $('translation_estimated_currency').setStyle({color: '#df280a'});
-        } else {
-            $('translation_not_enough_money_tip') && $('translation_not_enough_money_tip').setStyle({display: 'none'});
-            $('translation_enough_money_tip')     && $('translation_enough_money_tip').setStyle({display: 'inline-block'});
-            estimatedAmountElement                && estimatedAmountElement.setStyle({color: '#333'});
-            $('translation_estimated_currency')   && $('translation_estimated_currency').setStyle({color: '#333'});
-        }
-    },
-
-    showPayNowPopup: function()
-    {
-        if (!$('transferring_translation_service')) {
-            return;
-        }
-
-        var remainingAmount = this.actionHandler.getRemainingAmount($('transferring_translation_service'));
-        if (remainingAmount <= 0) {
-            remainingAmount = '100.00';
-        }
-
-        var currency        = $('translation_account_currency') && $('translation_account_currency').innerHTML || 'USD';
-        var account         = this.actionHandler.getTargetAccount();
-
-        EbayListingTransferringPaymentHandlerObj.payNowAction(remainingAmount, currency, account);
-    },
-
-    changeSubmitStatus: function(el)
-    {
-        var createAccountButton = $('create_account_button_translation');
-
-        if (!createAccountButton) {
-            return;
-        }
-
-        createAccountButton.disabled = !el.checked;
-
-        if (el.checked) {
-            createAccountButton.removeClassName('disabled');
-        } else {
-            createAccountButton.addClassName('disabled');
-        }
-
-        var confirmButton = $('confirm_button_translation');
-        if (confirmButton) {
-            confirmButton.disabled = true;
-            confirmButton.addClassName('disabled');
-        }
     }
 
     // ---------------------------------------

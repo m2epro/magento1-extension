@@ -352,7 +352,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
         $metadata = $this->getRequestMetaData();
 
         if ($metadata["is_listing_type_fixed"]) {
-            $data['online_bids'] = NULL;
+            $data['online_bids'] = null;
         } else {
             $data['online_bids'] = 0;
         }
@@ -378,9 +378,9 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
         $metadata = $this->getRequestMetaData();
 
         if ($metadata["is_listing_type_fixed"]) {
-            $data['online_start_price'] = NULL;
-            $data['online_reserve_price'] = NULL;
-            $data['online_buyitnow_price'] = NULL;
+            $data['online_start_price'] = null;
+            $data['online_reserve_price'] = null;
+            $data['online_buyitnow_price'] = null;
 
             if ($this->getRequestData()->hasVariations()) {
                 // out_of_stock_control_result key is not presented in request data,

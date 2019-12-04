@@ -9,15 +9,10 @@
 class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
     extends Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Shipping Status for eBay Order was not updated. Reason: eBay Failure.
-    // Tracking number "%num%" for "%code%" has been sent to eBay.
-    // Shipping Status for eBay Order was updated to Shipped.
+    protected $_carrierCode    = null;
+    protected $_trackingNumber = null;
 
-    protected $_carrierCode    = NULL;
-    protected $_trackingNumber = NULL;
-
-    // ########################################
+    //########################################
 
     public function setAction($action)
     {
@@ -29,7 +24,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function isNeedSendRequest()
     {
@@ -40,7 +35,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
         return parent::isNeedSendRequest();
     }
 
-    // ########################################
+    //########################################
 
     public function getRequestData()
     {
@@ -54,7 +49,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
         return $requestData;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareResponseData()
     {
@@ -92,5 +87,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Shipping
         }
     }
 
-    // ########################################
+    //########################################
 }

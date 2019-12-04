@@ -126,7 +126,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
 
     public function getMustShipAlone()
     {
-        $result = NULL;
+        $result = null;
         $src = $this->getWalmartSellingFormatTemplate()->getMustShipAloneSource();
 
         if ($src['mode'] == WalmartSellingFormat::MUST_SHIP_ALONE_MODE_YES) {
@@ -154,7 +154,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
 
     public function getShipsInOriginalPackaging()
     {
-        $result = NULL;
+        $result = null;
         $src = $this->getWalmartSellingFormatTemplate()->getShipsInOriginalPackagingModeSource();
 
         if ($src['mode'] == WalmartSellingFormat::SHIPS_IN_ORIGINAL_PACKAGING_MODE_YES) {
@@ -182,7 +182,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
 
     public function getStartDate()
     {
-        $result = NULL;
+        $result = null;
         $src = $this->getWalmartSellingFormatTemplate()->getSaleTimeStartDateSource();
 
         if ($src['mode'] == WalmartSellingFormat::DATE_VALUE) {
@@ -198,7 +198,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Source
 
     public function getEndDate()
     {
-        $result = NULL;
+        $result = null;
         $src = $this->getWalmartSellingFormatTemplate()->getSaleTimeEndDateSource();
 
         if ($src['mode'] == WalmartSellingFormat::DATE_VALUE) {

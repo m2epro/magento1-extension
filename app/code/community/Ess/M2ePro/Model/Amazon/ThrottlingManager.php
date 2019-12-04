@@ -136,7 +136,7 @@ class Ess_M2ePro_Model_Amazon_ThrottlingManager
         $connector = $dispatcher->getVirtualConnector(
             'account', 'get', 'throttlingInfo',
             array('accounts' => $accountCollection->getColumnValues('server_hash')),
-            'data', NULL
+            'data', null
         );
 
         $dispatcher->process($connector);

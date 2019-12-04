@@ -24,7 +24,7 @@ class Ess_M2ePro_Model_Magento_Customer extends Mage_Core_Model_Abstract
 
     public function buildCustomer()
     {
-        $password = Mage::helper('core')->getRandomString(6);
+        $password = Mage::helper('core')->getRandomString(7);
 
         /**
          * Magento can replace customer group to the default.

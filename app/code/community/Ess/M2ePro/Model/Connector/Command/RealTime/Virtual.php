@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Mod
 
     protected $_requestTimeOut = null;
 
-    // ########################################
+    //########################################
 
     public function setCommand(array $command)
     {
@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Mod
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -58,7 +58,7 @@ class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Mod
         return $this->_requestData;
     }
 
-    // ########################################
+    //########################################
 
     protected function getConnection()
     {
@@ -72,7 +72,7 @@ class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Mod
         return $connection;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareResponseData()
     {
@@ -90,5 +90,5 @@ class Ess_M2ePro_Model_Connector_Command_RealTime_Virtual extends Ess_M2ePro_Mod
         $this->_responseData = $responseData[$this->_responseDataKey];
     }
 
-    // ########################################
+    //########################################
 }

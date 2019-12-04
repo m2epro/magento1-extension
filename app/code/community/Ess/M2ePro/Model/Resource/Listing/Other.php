@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Resource_Listing_Other
     public function getItemsByProductId($productId, array $filters = array())
     {
         $cacheKey   = __METHOD__.$productId.sha1(Mage::helper('M2ePro')->jsonEncode($filters));
-        $cacheValue = Mage::helper('M2ePro/Data_Cache_Session')->getValue($cacheKey);
+        $cacheValue = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($cacheKey);
 
         if ($cacheValue !== null) {
             return $cacheValue;
@@ -49,7 +49,7 @@ class Ess_M2ePro_Model_Resource_Listing_Other
             );
         }
 
-        Mage::helper('M2ePro/Data_Cache_Session')->setValue($cacheKey, $result);
+        Mage::helper('M2ePro/Data_Cache_Runtime')->setValue($cacheKey, $result);
 
         return $result;
     }

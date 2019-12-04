@@ -8,7 +8,12 @@
 
 abstract class Ess_M2ePro_Model_Cron_Checker_Task_Abstract
 {
-    const NICK = NULL;
+    const NICK = null;
+
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 3600;
 
     //########################################
 
@@ -23,7 +28,6 @@ abstract class Ess_M2ePro_Model_Cron_Checker_Task_Abstract
         }
 
         $this->updateLastRun();
-
         $this->performActions();
     }
 
@@ -54,23 +58,26 @@ abstract class Ess_M2ePro_Model_Cron_Checker_Task_Abstract
      */
     protected function isIntervalExceeded()
     {
-        $lastRun = $this->getConfigValue('last_run');
-
+        $lastRun = $this->getCacheConfigValue('last_run');
         if ($lastRun === null) {
             return true;
         }
 
-        $interval = (int)$this->getConfigValue('interval');
         $currentTimeStamp = Mage::helper('M2ePro')->getCurrentGmtDate(true);
+        return $currentTimeStamp > strtotime($lastRun) + $this->getInterval();
+    }
 
-        return $currentTimeStamp > strtotime($lastRun) + $interval;
+    public function getInterval()
+    {
+        $interval = $this->getConfigValue('interval');
+        return $interval === null ? $this->_interval : (int)$interval;
     }
 
     // ---------------------------------------
 
     protected function updateLastRun()
     {
-        $this->setConfigValue('last_run', Mage::helper('M2ePro')->getCurrentGmtDate());
+        $this->setCacheConfigValue('last_run', Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 
     //########################################
@@ -78,6 +85,11 @@ abstract class Ess_M2ePro_Model_Cron_Checker_Task_Abstract
     protected function getConfig()
     {
         return Mage::helper('M2ePro/Module')->getConfig();
+    }
+
+    protected function getCacheConfig()
+    {
+        return Mage::helper('M2ePro/Module')->getCacheConfig();
     }
 
     protected function getConfigGroup()
@@ -95,6 +107,18 @@ abstract class Ess_M2ePro_Model_Cron_Checker_Task_Abstract
     protected function setConfigValue($key, $value)
     {
         return $this->getConfig()->setGroupValue($this->getConfigGroup(), $key, $value);
+    }
+
+    // ---------------------------------------
+
+    protected function setCacheConfigValue($key, $value)
+    {
+        return $this->getCacheConfig()->setGroupValue($this->getConfigGroup(), $key, $value);
+    }
+
+    protected function getCacheConfigValue($key)
+    {
+        return $this->getCacheConfig()->getGroupValue($this->getConfigGroup(), $key);
     }
 
     //########################################

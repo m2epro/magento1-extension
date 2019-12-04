@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_ProcessingList_Collection
     extends Ess_M2ePro_Model_Resource_Collection_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,5 +17,5 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product_Action_ProcessingList_Co
         $this->_init('M2ePro/Walmart_Listing_Product_Action_ProcessingList');
     }
 
-    // ########################################
+    //########################################
 }

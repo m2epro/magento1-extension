@@ -16,17 +16,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Validator
     public function validate()
     {
         if (!$this->getListingProduct()->isListable()) {
-            // M2ePro_TRANSLATIONS
-            // Item is Listed or not available
             $this->addMessage('Item is Listed or not available');
-
             return false;
         }
 
         if ($this->getListingProduct()->isHidden()) {
-            // M2ePro_TRANSLATIONS
-            // The List action cannot be executed for this Item as it has a Listed (Hidden) status.
-            // You have to stop Item manually first to run the List action for it.
             $this->addMessage(
                 'The List action cannot be executed for this Item as it has a Listed (Hidden) status.
                 You have to stop Item manually first to run the List action for it.'

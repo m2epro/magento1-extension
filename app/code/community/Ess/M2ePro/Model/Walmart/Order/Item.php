@@ -17,11 +17,6 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     const STATUS_SHIPPED_PARTIALLY = 'shippedPartially';
     const STATUS_CANCELLED         = 'cancelled';
 
-    // M2ePro_TRANSLATIONS
-    // Product Import is disabled in Walmart Account Settings.
-    // Product for Walmart Item "%id%" was Created in Magento Catalog.
-    // Product for Walmart Item "%title%" was Created in Magento Catalog.
-
     /** @var $_channelItem Ess_M2ePro_Model_Walmart_Item */
     protected $_channelItem = null;
 
@@ -74,7 +69,7 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
                  ->getFirstItem();
         }
 
-        return $this->_channelItem->getId() !== null ? $this->_channelItem : NULL;
+        return $this->_channelItem->getId() !== null ? $this->_channelItem : null;
     }
 
     //########################################
@@ -132,6 +127,14 @@ class Ess_M2ePro_Model_Walmart_Order_Item extends Ess_M2ePro_Model_Component_Chi
     public function getQty()
     {
         return (int)$this->getData('qty');
+    }
+
+    /*
+   * Compatibility with Amazon | Ebay
+   */
+    public function getQtyPurchased()
+    {
+        return $this->getQty();
     }
 
     // ---------------------------------------

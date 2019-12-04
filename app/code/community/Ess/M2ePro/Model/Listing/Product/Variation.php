@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
 
     protected function _afterSave()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProductId()}_variations"
         );
         return parent::_afterSave();
@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
 
     protected function _beforeDelete()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProductId()}_variations"
         );
         return parent::_beforeDelete();
@@ -59,7 +59,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
             $option->deleteInstance();
         }
 
-        $this->_listingProductModel = NULL;
+        $this->_listingProductModel = null;
 
         $this->deleteChildInstance();
         $this->delete();
@@ -138,7 +138,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
         $storageKey = "listing_product_{$this->getListingProductId()}_variation_{$this->getId()}_options_" .
                        sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
 
-        if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Session')->getValue($storageKey))) {
+        if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey))) {
             return $cacheData;
         }
 
@@ -163,7 +163,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation extends Ess_M2ePro_Model_Compon
             }
         }
 
-        Mage::helper('M2ePro/Data_Cache_Session')->setValue(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->setValue(
             $storageKey, $options, array(
             'listing_product',
             "listing_product_{$this->getListingProductId()}",

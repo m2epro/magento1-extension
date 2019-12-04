@@ -104,7 +104,7 @@ TEXT;
     public function isNeedProcess()
     {
         return Mage::helper('M2ePro/View_Amazon')->isInstallationWizardFinished() &&
-               Mage::helper('M2ePro/Component_Amazon')->isActive();
+               Mage::helper('M2ePro/Component_Amazon')->isEnabled();
     }
 
     //########################################

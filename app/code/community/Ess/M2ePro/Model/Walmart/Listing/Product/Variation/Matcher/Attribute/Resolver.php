@@ -78,10 +78,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute_Resol
 
             foreach ($this->_destinationAttributes as $destinationAttribute) {
                 $destinationNames = $this->_destinationAttributesNames[$destinationAttribute];
+                $diff = array_intersect($sourceNames, $destinationNames);
 
-                if (!empty(array_intersect($sourceNames, $destinationNames)) &&
-                    !in_array($destinationAttribute, $this->_resolvedAttributes)
-                ) {
+                if (!empty($diff) && !in_array($destinationAttribute, $this->_resolvedAttributes)) {
                     $this->_resolvedAttributes[$sourceAttribute] = $destinationAttribute;
                     break;
                 }

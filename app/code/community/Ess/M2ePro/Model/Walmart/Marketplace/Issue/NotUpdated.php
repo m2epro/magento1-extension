@@ -104,7 +104,7 @@ TEXT;
     public function isNeedProcess()
     {
         return Mage::helper('M2ePro/View_Walmart')->isInstallationWizardFinished() &&
-               Mage::helper('M2ePro/Component_Walmart')->isActive();
+               Mage::helper('M2ePro/Component_Walmart')->isEnabled();
     }
 
     //########################################

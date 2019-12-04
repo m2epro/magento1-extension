@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
     extends Ess_M2ePro_Model_Amazon_Connector_Product_Requester
 {
-    // ########################################
+    //########################################
 
     public function getCommand()
     {
         return array('product','delete','entities');
     }
 
-    // ########################################
+    //########################################
 
     protected function getActionType()
     {
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
                Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_COMPONENT;
     }
 
-    // ########################################
+    //########################################
 
     protected function validateListingProduct()
     {
@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
         return $validationResult;
     }
 
-    // ########################################
+    //########################################
 
     protected function validateAndProcessParentListingProduct()
     {
@@ -175,7 +175,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
         return true;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product[] $listingProducts
@@ -196,5 +196,5 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_Delete_Requester
         return $resultListingProducts;
     }
 
-    // ########################################
+    //########################################
 }

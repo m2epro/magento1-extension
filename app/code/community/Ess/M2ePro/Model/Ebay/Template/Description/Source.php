@@ -200,13 +200,13 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
     public function getProductDetail($type)
     {
         if (!$this->getEbayDescriptionTemplate()->isProductDetailsModeAttribute($type)) {
-            return NULL;
+            return null;
         }
 
         $attribute = $this->getEbayDescriptionTemplate()->getProductDetailAttribute($type);
 
         if (!$attribute) {
-            return NULL;
+            return null;
         }
 
         return $this->getMagentoProduct()->getAttributeValue($attribute);

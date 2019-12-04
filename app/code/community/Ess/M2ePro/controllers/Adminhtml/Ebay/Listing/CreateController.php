@@ -19,6 +19,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
              ->_title(Mage::helper('M2ePro')->__('Creating A New M2E Pro Listing'));
 
         $this->getLayout()->getBlock('head')
+            ->setCanLoadExtJs(true)
+            ->addJs('mage/adminhtml/rules.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addCss('M2ePro/css/Plugin/DropDown.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
@@ -40,7 +42,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
+        $this->setPageHelpLink(null, null, "x/ZQAJAQ");
 
         if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()) {
             $this->getLayout()->getBlock('head')->setCanLoadTinyMce(true);
@@ -130,7 +132,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         Mage::helper('M2ePro/Data_Global')->setValue('ebay_marketplace_id', $this->getSessionValue('marketplace_id'));
 
         $this->_initAction();
-        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
+        $this->setPageHelpLink(null, null, "x/ZQAJAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_accountMarketplace'));
         $this->renderLayout();
@@ -193,7 +195,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
+        $this->setPageHelpLink(null, null, "x/ZQAJAQ");
 
         $this->_addContent($content);
         $this->renderLayout();
@@ -257,7 +259,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
+        $this->setPageHelpLink(null, null, "x/ZQAJAQ");
 
         $this->_addContent($content);
         $this->renderLayout();
@@ -327,41 +329,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
 
         // ---------------------------------------
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            // ---------------------------------------
-            $synchTemplate = $this->createDefaultSynchronizationTemplate();
-            // ---------------------------------------
-
-            // ---------------------------------------
-            $templateMode = Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM;
-            $nick = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION;
-
-            $this->setSessionValue("template_id_{$nick}", (int)$synchTemplate->getId());
-            $this->setSessionValue("template_mode_{$nick}", $templateMode);
-            // ---------------------------------------
-
-            // ---------------------------------------
-            $listing = $this->createListing();
-            $this->clearSession();
-            // ---------------------------------------
-
-            if ((bool)$this->getRequest()->getParam('wizard', false)) {
-                $this->setWizardStep('productTutorial');
-                return $this->_redirect('*/adminhtml_wizard_installationEbay');
-            }
-
-            return $this->_redirect(
-                '*/adminhtml_ebay_listing_productAdd/sourceMode',
-                array(
-                    'listing_id' => $listing->getId(),
-                    'listing_creation' => true
-                )
-            );
-        }
-
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->loadTemplatesDataFromSession();
         // ---------------------------------------
 
@@ -374,7 +341,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
 
         $this->_initAction();
-        $this->setPageHelpLink(NULL, NULL, "x/ZQAJAQ");
+        $this->setPageHelpLink(null, null, "x/ZQAJAQ");
 
         $this->_addContent($content);
         $this->renderLayout();
@@ -384,7 +351,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
 
     protected function createDefaultSynchronizationTemplate()
     {
-        $data = Mage::getModel('M2ePro/Ebay_Template_Synchronization')->getDefaultSettingsSimpleMode();
+        $data = Mage::getModel('M2ePro/Ebay_Template_Synchronization')->getDefaultSettings();
         $data['title'] = $this->getSessionValue('listing_title');
         $data['is_custom_template'] = 1;
 
@@ -436,13 +403,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         // ---------------------------------------
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
         $tempLog->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
+        $actionId = $tempLog->getResource()->getNextActionId();
         $tempLog->addListingMessage(
             $model->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
-            NULL,
+            $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
-            // M2ePro_TRANSLATIONS
-            // Listing was successfully Added
             'Listing was successfully Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
@@ -478,7 +444,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
         return $this;
     }
 
-    protected function getSessionValue($key = NULL)
+    protected function getSessionValue($key = null)
     {
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey);
 
@@ -490,14 +456,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_CreateController
             return $sessionData;
         }
 
-        return isset($sessionData[$key]) ? $sessionData[$key] : NULL;
+        return isset($sessionData[$key]) ? $sessionData[$key] : null;
     }
 
     //########################################
 
     protected function clearSession()
     {
-        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, NULL);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, null);
     }
 
     //########################################

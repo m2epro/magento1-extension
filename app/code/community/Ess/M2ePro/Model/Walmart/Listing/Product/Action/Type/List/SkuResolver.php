@@ -49,10 +49,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
         $sku = $this->getSku();
 
         if (empty($sku)) {
-            // M2ePro_TRANSLATIONS
-            // SKU is not provided. Please, check Listing Settings.
             $this->addMessage('SKU is not provided. Please, check Listing Settings.');
-            return NULL;
+            return null;
         }
 
         $generateSkuMode = Mage::helper('M2ePro/Component_Walmart_Configuration')->isGenerateSkuModeYes();
@@ -62,7 +60,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
         }
 
         if (!$generateSkuMode) {
-            return NULL;
+            return null;
         }
 
         $unifiedSku = $this->getUnifiedSku($sku);
@@ -111,9 +109,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
     protected function isExistInM2ePro($sku, $addMessages = false)
     {
         if ($this->isAlreadyInCurrentRequest($sku) || $this->isAlreadyInProcessing($sku)) {
-// M2ePro_TRANSLATIONS
-// Another Product with the same SKU is being Listed simultaneously with this one.
-// Please change the SKU or enable the Option Generate Merchant SKU.
             $addMessages && $this->addMessage(
                 'Another Product with the same SKU is being Listed simultaneously with this one.
                 Please change the SKU or enable the Option Generate Merchant SKU.'
@@ -122,9 +117,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
         }
 
         if ($this->isExistInM2eProListings($sku)) {
-// M2ePro_TRANSLATIONS
-// Product with the same SKU is found in other M2E Pro Listing that is created
-// from the same Merchant ID for the same Marketplace.
             $addMessages && $this->addMessage(
                 'Product with the same SKU is found in other M2E Pro Listing that is created
                  from the same Merchant ID for the same Marketplace.'
@@ -133,9 +125,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
         }
 
         if ($this->isExistInOtherListings($sku)) {
-// M2ePro_TRANSLATIONS
-// Product with the same SKU is found in M2E Pro 3rd Party Listing.
-// Please change the SKU or enable the Option Generate Merchant SKU.
             $addMessages && $this->addMessage(
                 'Product with the same SKU is found in M2E Pro 3rd Party Listing.
                 Please change the SKU or enable the Option Generate Merchant SKU.'
@@ -297,10 +286,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_SkuResolver
         }
 
         $newSku = preg_replace('/[.\s-]/', '_', $sku);
-// M2ePro_TRANSLATIONS
-// The Item SKU will be automatically changed to "%s". Special characters, i.e.
-// hyphen (-), space ( ), and period (.), are not allowed by Walmart and will be replaced with the underscore ( _ ).
-// The Item will remain associated with Magento Product "%s".
         $this->addMessage(
             sprintf(
                 'The Item SKU will be automatically changed to "%s".

@@ -21,6 +21,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Request
                 'wpid' => $this->getWalmartListingProduct()->getWpid(),
             ),
             $this->getQtyData(),
+            $this->getLagTimeData(),
             $this->getPriceData(),
             $this->getPromotionsData(),
             $this->getDetailsData()

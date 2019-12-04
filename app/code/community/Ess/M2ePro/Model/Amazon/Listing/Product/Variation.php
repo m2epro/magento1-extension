@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
 
     protected function _afterSave()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProduct()->getId()}_variations"
         );
         return parent::_afterSave();
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
 
     protected function _beforeDelete()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProduct()->getId()}_variations"
         );
         return parent::_beforeDelete();
@@ -283,7 +283,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
     public function getRegularPrice()
     {
         if (!$this->getAmazonListingProduct()->isAllowedForRegularCustomers()) {
-            return NULL;
+            return null;
         }
 
         $src = $this->getAmazonSellingFormatTemplate()->getRegularPriceSource();
@@ -301,7 +301,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
     public function getRegularMapPrice()
     {
         if (!$this->getAmazonListingProduct()->isAllowedForRegularCustomers()) {
-            return NULL;
+            return null;
         }
 
         $src = $this->getAmazonSellingFormatTemplate()->getRegularMapPriceSource();
@@ -317,7 +317,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
     public function getRegularSalePrice()
     {
         if (!$this->getAmazonListingProduct()->isAllowedForRegularCustomers()) {
-            return NULL;
+            return null;
         }
 
         $src = $this->getAmazonSellingFormatTemplate()->getRegularSalePriceSource();
@@ -338,7 +338,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
     public function getBusinessPrice()
     {
         if (!$this->getAmazonListingProduct()->isAllowedForBusinessCustomers()) {
-            return NULL;
+            return null;
         }
 
         $src = $this->getAmazonSellingFormatTemplate()->getBusinessPriceSource();
@@ -361,7 +361,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation extends Ess_M2ePro_Model
     public function getBusinessDiscounts()
     {
         if (!$this->getAmazonListingProduct()->isAllowedForBusinessCustomers()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getAmazonSellingFormatTemplate()->isBusinessDiscountsModeNone()) {

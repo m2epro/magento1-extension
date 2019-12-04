@@ -221,8 +221,6 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
     protected function validateSku()
     {
         if (!$this->getWalmartListingProduct()->getSku()) {
-            // M2ePro_TRANSLATIONS
-            // You have to list Item first.
             $this->addMessage('You have to list Item first.');
             return false;
         }
@@ -252,10 +250,7 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Validator
     protected function validateCategory()
     {
         if (!$this->getWalmartListingProduct()->isExistCategoryTemplate()) {
-            // M2ePro_TRANSLATIONS
-            // Categories Settings are not set.
             $this->addMessage('Categories Settings are not set.');
-
             return false;
         }
 
@@ -326,9 +321,6 @@ HTML;
         if ($qty <= 0) {
             if (isset($this->_params['status_changer']) &&
                 $this->_params['status_changer'] == Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER) {
-                // M2ePro_TRANSLATIONS
-                // You are submitting an Item with zero quantity. It contradicts Walmart requirements.
-                // Please apply the Stop Action instead.
                 $message = 'You are submitting an Item with zero quantity. It contradicts Walmart requirements.';
 
                 if ($this->getListingProduct()->isStoppable()) {
@@ -337,11 +329,6 @@ HTML;
 
                 $this->addMessage($message);
             } else {
-                // M2ePro_TRANSLATIONS
-                // Cannot submit an Item with zero quantity. It contradicts Walmart requirements.
-                // This action has been generated automatically based on your Synchronization Rule settings.
-                // The error occurs when the Stop Rules are not properly configured or disabled.
-                // Please review your settings.
                 $message = 'Cannot submit an Item with zero quantity. It contradicts Walmart requirements.
                             This action has been generated automatically based on your Synchronization Rule settings. ';
 
@@ -370,8 +357,6 @@ HTML;
 
         $price = $this->getPrice();
         if ($price <= 0) {
-            // M2ePro_TRANSLATIONS
-            // The Price must be greater than 0. Please, check the Selling Policy and Product Settings.
             $this->addMessage(
                 'The Price must be greater than 0. Please, check the Selling Policy and Product Settings.'
             );
@@ -421,14 +406,10 @@ HTML;
     protected function validateParentListingProductFlags()
     {
         if ($this->getListingProduct()->getData('no_child_for_processing')) {
-// M2ePro_TRANSLATIONS
-// This Parent has no Child Products on which the chosen Action can be performed.
             $this->addMessage('This Parent has no Child Products on which the chosen Action can be performed.');
             return false;
         }
 
-// M2ePro_TRANSLATIONS
-// This Action cannot be fully performed because there are different actions in progress on some Child Products
         if ($this->getListingProduct()->getData('child_locked')) {
             $this->addMessage(
                 'This Action cannot be fully performed because there are
@@ -445,10 +426,7 @@ HTML;
     protected function validatePhysicalUnitAndSimple()
     {
         if (!$this->getVariationManager()->isPhysicalUnit() && !$this->getVariationManager()->isSimpleType()) {
-            // M2ePro_TRANSLATIONS
-            // Only physical Products can be processed.
             $this->addMessage('Only physical Products can be processed.');
-
             return false;
         }
 
@@ -458,10 +436,7 @@ HTML;
     protected function validatePhysicalUnitMatching()
     {
         if (!$this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
-            // M2ePro_TRANSLATIONS
-            // You have to select Magento Variation.
             $this->addMessage('You have to select Magento Variation.');
-
             return false;
         }
 

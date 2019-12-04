@@ -10,9 +10,9 @@ class Ess_M2ePro_Model_VariablesDir
 {
     const BASE_NAME = 'M2ePro';
 
-    protected $_childFolder = NULL;
-    protected $_pathVariablesDirBase = NULL;
-    protected $_pathVariablesDirChildFolder = NULL;
+    protected $_childFolder = null;
+    protected $_pathVariablesDirBase = null;
+    protected $_pathVariablesDirChildFolder = null;
 
     //########################################
 
@@ -22,8 +22,8 @@ class Ess_M2ePro_Model_VariablesDir
         empty($args[0]) && $args[0] = array();
         $params = $args[0];
 
-        !isset($params['child_folder']) && $params['child_folder'] = NULL;
-        $params['child_folder'] === '' && $params['child_folder'] = NULL;
+        !isset($params['child_folder']) && $params['child_folder'] = null;
+        $params['child_folder'] === '' && $params['child_folder'] = null;
         $this->_pathVariablesDirBase = Mage::getBaseDir('var').DS.self::BASE_NAME;
 
         if ($params['child_folder'] !== null) {

@@ -17,19 +17,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_Grid
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonListingOtherGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setSaveParametersInSession(true);
         $this->setPagerVisibility(false);
         $this->setUseAjax(true);
         $this->setFilterVisibility(false);
         $this->setDefaultLimit(100);
-        // ---------------------------------------
     }
 
     //########################################

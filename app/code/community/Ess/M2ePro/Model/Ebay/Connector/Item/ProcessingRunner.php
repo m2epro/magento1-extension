@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
     /** @var Ess_M2ePro_Model_Listing_Product $_listingProduct */
     protected $_listingProduct = array();
 
-    // ########################################
+    //########################################
 
     public function processSuccess()
     {
@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
         parent::complete();
     }
 
-    // ########################################
+    //########################################
 
     protected function eventBefore()
     {
@@ -71,13 +71,13 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
 
         $params = $this->getParams();
 
-        $this->getListingProduct()->addProcessingLock(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->addProcessingLock(null, $this->getProcessingObject()->getId());
         $this->getListingProduct()->addProcessingLock('in_action', $this->getProcessingObject()->getId());
         $this->getListingProduct()->addProcessingLock(
             $params['lock_identifier'].'_action', $this->getProcessingObject()->getId()
         );
 
-        $this->getListingProduct()->getListing()->addProcessingLock(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->getListing()->addProcessingLock(null, $this->getProcessingObject()->getId());
     }
 
     protected function unsetLocks()
@@ -86,16 +86,16 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
 
         $params = $this->getParams();
 
-        $this->getListingProduct()->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->deleteProcessingLocks(null, $this->getProcessingObject()->getId());
         $this->getListingProduct()->deleteProcessingLocks('in_action', $this->getProcessingObject()->getId());
         $this->getListingProduct()->deleteProcessingLocks(
             $params['lock_identifier'].'_action', $this->getProcessingObject()->getId()
         );
 
-        $this->getListingProduct()->getListing()->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->getListing()->deleteProcessingLocks(null, $this->getProcessingObject()->getId());
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingActionType()
     {
@@ -134,5 +134,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_ProcessingRunner
         return $this->_listingProduct = $collection->getFirstItem();
     }
 
-    // ########################################
+    //########################################
 }

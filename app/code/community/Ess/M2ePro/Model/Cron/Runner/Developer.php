@@ -12,12 +12,12 @@ final class Ess_M2ePro_Model_Cron_Runner_Developer extends Ess_M2ePro_Model_Cron
 
     //########################################
 
-    protected function getNick()
+    public function getNick()
     {
-        return NULL;
+        return null;
     }
 
-    protected function getInitiator()
+    public function getInitiator()
     {
         return Ess_M2ePro_Helper_Data::INITIATOR_DEVELOPER;
     }

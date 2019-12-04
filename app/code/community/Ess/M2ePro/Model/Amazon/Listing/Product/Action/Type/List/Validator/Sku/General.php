@@ -19,18 +19,12 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_Sku_Gen
         $sku = $this->getSku();
 
         if (empty($sku)) {
-            // M2ePro_TRANSLATIONS
-            // SKU is not provided. Please, check Listing Settings.
             $this->addMessage('SKU is not provided. Please, check Listing Settings.');
-
             return false;
         }
 
         if (strlen($sku) > Ess_M2ePro_Helper_Component_Amazon::SKU_MAX_LENGTH) {
-            // M2ePro_TRANSLATIONS
-            // The length of SKU must be less than 40 characters.
             $this->addMessage('The length of SKU must be less than 40 characters.');
-
             return false;
         }
 

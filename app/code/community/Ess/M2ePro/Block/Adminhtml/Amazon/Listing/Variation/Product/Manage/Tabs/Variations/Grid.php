@@ -1155,6 +1155,7 @@ HTML;
             )
             ->where('`listing_product_id` = ?', $listingProductId)
             ->where('`action_id` IS NOT NULL')
+            ->where('`action` IN (?)', $this->getAvailableActions())
             ->order(array('id DESC'))
             ->limit(30);
 
@@ -1243,6 +1244,22 @@ HTML;
         );
 
         return $summary->toHtml();
+    }
+
+    protected function getAvailableActions()
+    {
+        return array(
+            Ess_M2ePro_Model_Listing_Log::ACTION_LIST_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_RELIST_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_REVISE_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_AND_REMOVE_PRODUCT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_AND_REMOVE_PRODUCT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE,
+            Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_AFN_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_MFN_ON_COMPONENT
+        );
     }
 
     public function getActionForAction($actionRows)

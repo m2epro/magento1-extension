@@ -13,26 +13,17 @@ final class Ess_M2ePro_Model_Cron_Runner_Magento extends Ess_M2ePro_Model_Cron_R
 
     //########################################
 
-    protected function getNick()
+    public function getNick()
     {
         return Ess_M2ePro_Helper_Module_Cron::RUNNER_MAGENTO;
     }
 
-    protected function getInitiator()
+    public function getInitiator()
     {
         return Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
     }
 
     //########################################
-
-    public function process()
-    {
-        if (Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/cron/magento/', 'disabled')) {
-            return false;
-        }
-
-        return parent::process();
-    }
 
     /**
      * @return Ess_M2ePro_Model_Cron_Strategy_Abstract
@@ -44,26 +35,9 @@ final class Ess_M2ePro_Model_Cron_Runner_Magento extends Ess_M2ePro_Model_Cron_R
 
     //########################################
 
-    protected function initialize()
-    {
-        parent::initialize();
-
-        $helper = Mage::helper('M2ePro/Module_Cron');
-
-        if ($helper->isRunnerMagento()) {
-            return;
-        }
-
-        if ($helper->isLastRunMoreThan(Ess_M2ePro_Helper_Module_Cron::RUNNER_SERVICE_MAX_INACTIVE_TIME)) {
-            $helper->setRunner(Ess_M2ePro_Helper_Module_Cron::RUNNER_MAGENTO);
-            $helper->setLastRunnerChange(Mage::helper('M2ePro')->getCurrentGmtDate());
-        }
-    }
-
     protected function isPossibleToRun()
     {
-        return Mage::helper('M2ePro/Data_Global')->getValue('cron_running') === null &&
-               parent::isPossibleToRun();
+        return Mage::helper('M2ePro/Data_Global')->getValue('cron_running') === null && parent::isPossibleToRun();
     }
 
     // ---------------------------------------

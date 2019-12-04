@@ -19,7 +19,6 @@ class Ess_M2ePro_Adminhtml_SupportController
 
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/SupportHandler.js')
-            ->addJs('M2ePro/Development/ControlPanelHandler.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
 
@@ -104,7 +103,7 @@ class Ess_M2ePro_Adminhtml_SupportController
             'description'
         );
 
-        $components = Mage::helper('M2ePro/Component')->getActiveComponents();
+        $components = Mage::helper('M2ePro/Component')->getEnabledComponents();
         count($components) == 1 && $post['component'] = array_pop($components);
 
         $data = array();

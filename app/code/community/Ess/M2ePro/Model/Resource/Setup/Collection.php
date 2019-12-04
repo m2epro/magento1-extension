@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Resource_Setup_Collection extends Ess_M2ePro_Model_Resource_Collection_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -16,5 +16,5 @@ class Ess_M2ePro_Model_Resource_Setup_Collection extends Ess_M2ePro_Model_Resour
         $this->_init('M2ePro/Setup');
     }
 
-    // ########################################
+    //########################################
 }

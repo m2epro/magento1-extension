@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
 {
     const LOCK_ITEM_PREFIX = 'synchronization_amazon_listings_products_update';
 
-    // ##################################
+    //##################################
 
     protected function setLocks()
     {
@@ -28,7 +28,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', $params['account_id']);
 
-        $account->addProcessingLock(NULL, $this->getProcessingObject()->getId());
+        $account->addProcessingLock(null, $this->getProcessingObject()->getId());
         $account->addProcessingLock('synchronization', $this->getProcessingObject()->getId());
         $account->addProcessingLock('synchronization_amazon', $this->getProcessingObject()->getId());
         $account->addProcessingLock(self::LOCK_ITEM_PREFIX, $this->getProcessingObject()->getId());
@@ -49,11 +49,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Account', $params['account_id']);
 
-        $account->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
+        $account->deleteProcessingLocks(null, $this->getProcessingObject()->getId());
         $account->deleteProcessingLocks('synchronization', $this->getProcessingObject()->getId());
         $account->deleteProcessingLocks('synchronization_amazon', $this->getProcessingObject()->getId());
         $account->deleteProcessingLocks(self::LOCK_ITEM_PREFIX, $this->getProcessingObject()->getId());
     }
 
-    // ##################################
+    //##################################
 }

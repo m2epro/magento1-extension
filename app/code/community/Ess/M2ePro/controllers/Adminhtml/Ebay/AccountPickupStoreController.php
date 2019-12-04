@@ -203,7 +203,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'store', 'add', 'entity',
                 Mage::helper('M2ePro/Component_Ebay_PickupStore')->prepareRequestData($data),
-                NULL, NULL, $data['account_id']
+                null, null, $data['account_id']
             );
 
             $dispatcherObject->process($connectorObj);
@@ -274,7 +274,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountPickupStoreController
                 array(
                     'location_id' => $model->getLocationId()
                 ),
-                NULL, NULL, $model->getAccountId()
+                null, null, $model->getAccountId()
             );
 
             $dispatcherObject->process($connectorObj);

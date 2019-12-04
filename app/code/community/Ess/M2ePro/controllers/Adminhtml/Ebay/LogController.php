@@ -13,14 +13,15 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
     protected function _initAction()
     {
         $this->loadLayout()
-            ->_title(Mage::helper('M2ePro')->__('Logs'));
+            ->_title(Mage::helper('M2ePro')->__('Logs & Events'));
 
         $this->getLayout()->getBlock('head')
+            ->addJs('M2ePro/GridHandler.js')
             ->addJs('M2ePro/LogHandler.js');
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367088');
+        $this->setPageHelpLink(null, 'pages/viewpage.action?pageId=17367088');
 
         return $this;
     }
@@ -55,7 +56,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MAAJAQ");
+        $this->setPageHelpLink(null, null, "x/MAAJAQ");
 
         if (!empty($id)) {
             $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log');
@@ -80,7 +81,19 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
             }
         }
 
-        $response = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log_grid')->toHtml();
+        if ($viewMode = $this->getRequest()->getParam('view_mode', false)) {
+            Mage::helper('M2ePro/Module_Log')->setViewMode(
+                Ess_M2ePro_Helper_View_Ebay::NICK . '_log_listing_view_mode',
+                $viewMode
+            );
+        } else {
+            $viewMode = Mage::helper('M2ePro/Module_Log')->getViewMode(
+                Ess_M2ePro_Helper_View_Ebay::NICK . '_log_listing_view_mode'
+            );
+        }
+
+        $response = $this->loadLayout()->getLayout()
+            ->createBlock('M2ePro/adminhtml_ebay_listing_log_view_' . $viewMode . '_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -116,53 +129,19 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
             }
         }
 
-        $response = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log_grid')->toHtml();
-        $this->getResponse()->setBody($response);
-    }
-
-    // ---------------------------------------
-
-    public function listingOtherAction()
-    {
-        $id = $this->getRequest()->getParam('id');
-        $model = Mage::getModel('M2ePro/Listing_Other')->load($id);
-
-        if (!$model->getId() && $id) {
-            $this->_getSession()->addError(Mage::helper('M2ePro')->__('3rd Party Listing does not exist.'));
-            return $this->_redirect('*/*/index');
-        }
-
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
-
-        $this->_initAction();
-
-        $this->setPageHelpLink(NULL, NULL, "x/MAAJAQ");
-
-        if (!empty($id)) {
-            $logBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_other_log');
+        if ($viewMode = $this->getRequest()->getParam('view_mode', false)) {
+            Mage::helper('M2ePro/Module_Log')->setViewMode(
+                Ess_M2ePro_Helper_View_Ebay::NICK . '_log_listing_view_mode',
+                $viewMode
+            );
         } else {
-            $logBlock = $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_log', '',
-                array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_LISTING_OTHER)
+            $viewMode = Mage::helper('M2ePro/Module_Log')->getViewMode(
+                Ess_M2ePro_Helper_View_Ebay::NICK . '_log_listing_view_mode'
             );
         }
 
-        $this->_addContent($logBlock)->renderLayout();
-    }
-
-    public function listingOtherGridAction()
-    {
-        $id = $this->getRequest()->getParam('id');
-        $model = Mage::getModel('M2ePro/Listing_Other')->load($id);
-
-        if (!$model->getId() && $id) {
-            return;
-        }
-
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model->getData());
-
         $response = $this->loadLayout()->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_listing_other_log_grid')->toHtml();
+            ->createBlock('M2ePro/adminhtml_ebay_listing_log_view_' . $viewMode . '_grid')->toHtml();
         $this->getResponse()->setBody($response);
     }
 
@@ -172,7 +151,7 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MAAJAQ");
+        $this->setPageHelpLink(null, null, "x/MAAJAQ");
 
         $this->_addContent(
             $this->getLayout()->createBlock(
@@ -195,19 +174,24 @@ class Ess_M2ePro_Adminhtml_Ebay_LogController extends Ess_M2ePro_Controller_Admi
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367088#Logs.-OrdersLog');
+        $this->setPageHelpLink(null, 'pages/viewpage.action?pageId=17367088#Logs.-OrdersLog');
 
         $this->_addContent(
             $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_log', '',
-                array('active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_ORDER)
+                'M2ePro/adminhtml_ebay_log', '', array(
+                    'active_tab' => Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs::TAB_ID_ORDER
+                )
             )
         )->renderLayout();
     }
 
     public function orderGridAction()
     {
-        $grid = $this->loadLayout()->getLayout()->createBlock('M2ePro/adminhtml_order_log_grid');
+        $grid = $this->loadLayout()->getLayout()->createBlock(
+            'M2ePro/adminhtml_order_log_grid', '', array(
+                'component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK
+            )
+        );
         $this->getResponse()->setBody($grid->toHtml());
     }
 

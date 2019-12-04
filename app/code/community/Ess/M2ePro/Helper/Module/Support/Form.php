@@ -64,7 +64,7 @@ class Ess_M2ePro_Helper_Module_Support_Form extends Mage_Core_Helper_Abstract
         $phpInfo['version'] = Mage::helper('M2ePro/Client')->getPhpVersion();
         $phpInfo['ini_file_location'] = Mage::helper('M2ePro/Client')->getPhpIniFileLoaded();
 
-        $mysqlInfo = Mage::Helper('M2ePro/Client')->getMysqlSettings();
+        $mysqlInfo = Mage::helper('M2ePro/Client')->getMysqlSettings();
         $mysqlInfo['api'] = Mage::helper('M2ePro/Client')->getMysqlApiName();
         $prefix = Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix();
         $mysqlInfo['prefix'] = $prefix != '' ? $prefix : 'Disabled';

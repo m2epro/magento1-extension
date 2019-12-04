@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
 
     //########################################
 
-    public function run($skus = NULL)
+    public function run($skus = null)
     {
         if ($skus !== null && empty($skus)) {
             return false;
@@ -218,8 +218,8 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_General
                 array(
                     'is_repricing'                         => 1,
                     'online_regular_sale_price'            => 0,
-                    'online_regular_sale_price_start_date' => NULL,
-                    'online_regular_sale_price_end_date'   => NULL,
+                    'online_regular_sale_price_start_date' => null,
+                    'online_regular_sale_price_end_date'   => null,
                 ),
                 array('listing_product_id IN (?)' => array_keys($insertDataPack))
             );

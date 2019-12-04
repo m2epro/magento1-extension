@@ -13,26 +13,17 @@ final class Ess_M2ePro_Model_Cron_Runner_Service extends Ess_M2ePro_Model_Cron_R
 
     //########################################
 
-    protected function getNick()
+    public function getNick()
     {
         return Ess_M2ePro_Helper_Module_Cron::RUNNER_SERVICE;
     }
 
-    protected function getInitiator()
+    public function getInitiator()
     {
         return Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
     }
 
     //########################################
-
-    public function process()
-    {
-        if (Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/cron/service/', 'disabled')) {
-            return false;
-        }
-
-        return parent::process();
-    }
 
     /**
      * @return Ess_M2ePro_Model_Cron_Strategy_Abstract
@@ -64,25 +55,6 @@ final class Ess_M2ePro_Model_Cron_Runner_Service extends Ess_M2ePro_Model_Cron_R
     }
 
     //########################################
-
-    protected function initialize()
-    {
-        parent::initialize();
-
-        $helper = Mage::helper('M2ePro/Module_Cron');
-
-        if ($helper->isRunnerService()) {
-            $helper->isLastAccessMoreThan(Ess_M2ePro_Helper_Module_Cron::RUNNER_SERVICE_MAX_INACTIVE_TIME) &&
-                $this->resetTasksStartFrom();
-
-            return;
-        }
-
-        $helper->setRunner(Ess_M2ePro_Helper_Module_Cron::RUNNER_SERVICE);
-        $helper->setLastRunnerChange(Mage::helper('M2ePro')->getCurrentGmtDate());
-
-        $this->resetTasksStartFrom();
-    }
 
     protected function isPossibleToRun()
     {

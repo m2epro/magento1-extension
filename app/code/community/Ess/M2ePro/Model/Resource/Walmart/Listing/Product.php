@@ -21,41 +21,6 @@ class Ess_M2ePro_Model_Resource_Walmart_Listing_Product
 
     //########################################
 
-    public function getChangedItems(
-        array $attributes,
-        $withStoreFilter = false
-    ) {
-        return Mage::getResourceModel('M2ePro/Listing_Product')->getChangedItems(
-            $attributes,
-            Ess_M2ePro_Helper_Component_Walmart::NICK,
-            $withStoreFilter
-        );
-    }
-
-    public function getChangedItemsByListingProduct(
-        array $attributes,
-        $withStoreFilter = false
-    ) {
-        return Mage::getResourceModel('M2ePro/Listing_Product')->getChangedItemsByListingProduct(
-            $attributes,
-            Ess_M2ePro_Helper_Component_Walmart::NICK,
-            $withStoreFilter
-        );
-    }
-
-    public function getChangedItemsByVariationOption(
-        array $attributes,
-        $withStoreFilter = false
-    ) {
-        return Mage::getResourceModel('M2ePro/Listing_Product')->getChangedItemsByVariationOption(
-            $attributes,
-            Ess_M2ePro_Helper_Component_Walmart::NICK,
-            $withStoreFilter
-        );
-    }
-
-    //########################################
-
     public function getProductsDataBySkus(
         array $skus = array(),
         array $filters = array(),

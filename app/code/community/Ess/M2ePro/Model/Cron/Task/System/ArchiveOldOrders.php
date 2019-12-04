@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
 {
     const NICK = 'system/archive_old_orders';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 3600;
+
     const MAX_ENTITIES_COUNT_FOR_ONE_TIME = 1000;
 
     const COUNT_EXCEEDS_TRIGGER = 100000;
@@ -21,7 +26,7 @@ class Ess_M2ePro_Model_Cron_Task_System_ArchiveOldOrders extends Ess_M2ePro_Mode
     {
         $affectedOrders = $this->getAffectedOrdersGroupedByComponent();
 
-        foreach (Mage::helper('M2ePro/Component')->getActiveComponents() as $component) {
+        foreach (Mage::helper('M2ePro/Component')->getEnabledComponents() as $component) {
             if (empty($affectedOrders[$component])) {
                 continue;
             }

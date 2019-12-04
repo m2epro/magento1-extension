@@ -55,8 +55,8 @@ class Ess_M2ePro_Block_Adminhtml_Wizard_InstallationAmazon_Installation_Marketpl
         $resultMarketplaces = array();
         $storedStatuses = array();
 
-        $canadaMarketplace = NULL;
-        $canadaStoreStatus = NULL;
+        $canadaMarketplace = null;
+        $canadaStoreStatus = null;
 
         foreach ($marketplaces as $marketplace) {
             if ($marketplace->getData('developer_key') === null) {

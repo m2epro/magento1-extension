@@ -123,7 +123,8 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
 
     protected function makeGallery()
     {
-        if (!is_array($this->getData('images')) || empty($this->getData('images'))) {
+        $images = $this->getData('images');
+        if (!is_array($this->getData('images')) || empty($images)) {
             return array();
         }
 

@@ -12,14 +12,14 @@
 class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Responser
     extends Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 {
-    // ########################################
+    //########################################
 
     protected function getSuccessfulMessage()
     {
         return 'Item was successfully Relisted';
     }
 
-    // ########################################
+    //########################################
 
     public function eventAfterExecuting()
     {
@@ -42,5 +42,5 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Relist_Responser
         $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
     }
 
-    // ########################################
+    //########################################
 }

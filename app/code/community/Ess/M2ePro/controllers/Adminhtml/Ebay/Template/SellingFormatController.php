@@ -42,7 +42,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_SellingFormatController
             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'marketplace', 'get', 'charity',
-                $params, NULL,
+                $params, null,
                 $marketplaceId
             );
 

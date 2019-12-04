@@ -36,7 +36,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
 
     protected $_isSuccess = false;
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array(), Ess_M2ePro_Model_Connector_Connection_Response $response)
     {
@@ -47,7 +47,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
                                      ->getObject('Listing_Product', $listingProductId);
     }
 
-    // ########################################
+    //########################################
 
     public function failDetected($messageText)
     {
@@ -100,7 +100,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
         $parentTypeModel->getProcessor()->process();
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -190,7 +190,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
      */
     abstract protected function getSuccessfulMessage();
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Logger
@@ -238,7 +238,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
         return $this->_configurator;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Response
@@ -286,7 +286,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
         return $this->_requestDataObject;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -335,7 +335,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
         return (int)$this->_params['status_changer'];
     }
 
-    // ########################################
+    //########################################
 
     protected function getOrmActionType()
     {
@@ -355,5 +355,5 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Product_Responser
         throw new Ess_M2ePro_Model_Exception('Wrong Action type');
     }
 
-    // ########################################
+    //########################################
 }

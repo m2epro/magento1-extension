@@ -27,13 +27,14 @@ class Ess_M2ePro_Model_Amazon_Search_Settings_ByQuery_Responser
 
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+        $actionId = $logModel->getResource()->getNextActionId();
 
         $logModel->addProductMessage(
             $this->getListingProduct()->getListingId(),
             $this->getListingProduct()->getProductId(),
             $this->getListingProduct()->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-            NULL,
+            $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_UNKNOWN,
             $messageText,
             Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,

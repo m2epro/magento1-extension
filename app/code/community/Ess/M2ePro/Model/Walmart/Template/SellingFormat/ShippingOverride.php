@@ -53,7 +53,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_ShippingOverride
     {
         if ($this->_sellingFormatTemplateModel === null) {
             $this->_sellingFormatTemplateModel = Mage::helper('M2ePro')->getCachedObject(
-                'Walmart_Template_SellingFormat', $this->getTemplateSellingFormatId(), NULL, array('template')
+                'Walmart_Template_SellingFormat', $this->getTemplateSellingFormatId(), null, array('template')
             );
         }
 

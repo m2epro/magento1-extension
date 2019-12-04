@@ -252,7 +252,9 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
     {
         /** @var Ess_M2ePro_Model_Listing_Product_Action_Configurator $configurator */
         $configurator = $this->_listingProduct->getActionConfigurator();
-        if (empty($configurator->getAllowedDataTypes())) {
+        $types = $configurator->getAllowedDataTypes();
+
+        if (empty($types)) {
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'There was no need for this action. It was skipped.
@@ -284,8 +286,6 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
     protected function isListingProductLocked()
     {
         if ($this->_listingProduct->isSetProcessingLock('in_action') || $this->getLockManager()->isLocked()) {
-            // M2ePro_TRANSLATIONS
-            // Another Action is being processed. Try again when the Action is completed.
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'Another Action is being processed. Try again when the Action is completed.',
@@ -300,7 +300,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         return false;
     }
 
-    // ########################################
+    //########################################
 
     protected function lockListingProduct()
     {
@@ -312,7 +312,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Requester
         $this->getLockManager()->unlock();
     }
 
-    // ########################################
+    //########################################
 
     public function getStatus()
     {

@@ -13,11 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
     public function __construct()
     {
         parent::__construct();
-
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartListingGrid');
-        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -209,7 +205,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Grid extends Ess_M2ePro_Block_A
             ),
 
             'viewLog' => array(
-                'caption' => $helper->__('View Log'),
+                'caption' => $helper->__('Logs & Events'),
                 'group'   => 'other',
                 'field'   => 'id',
                 'url'     => array(

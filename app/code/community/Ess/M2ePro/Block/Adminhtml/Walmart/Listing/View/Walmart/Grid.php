@@ -51,7 +51,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
         $this->_showAdvancedFilterProductsOption = false;
 
         $this->_sellingFormatTemplate = Mage::helper('M2ePro/Component_Walmart')->getCachedObject(
-            'Template_SellingFormat', $listingData['template_selling_format_id'], NULL,
+            'Template_SellingFormat', $listingData['template_selling_format_id'], null,
             array('template')
         );
     }
@@ -255,22 +255,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_View_Walmart_Grid
         }
 
         $this->addColumn('status', $statusColumn);
-
-        if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
-            $this->addColumn(
-                'developer_action', array(
-                'header'     => Mage::helper('M2ePro')->__('Actions'),
-                'align'      => 'left',
-                'width'      => '100px',
-                'type'       => 'text',
-                'renderer'   => 'M2ePro/adminhtml_listing_view_grid_column_renderer_developerAction',
-                'index'      => 'value',
-                'filter'     => false,
-                'sortable'   => false,
-                'js_handler' => 'ListingGridHandlerObj'
-                )
-            );
-        }
 
         return parent::_prepareColumns();
     }
@@ -1292,6 +1276,7 @@ SQL;
                 array('action_id','action','type','description','create_date','initiator','listing_product_id')
             )
             ->where('`action_id` IS NOT NULL')
+            ->where('`action` IN (?)', $this->getAvailableActions())
             ->order(array('id DESC'))
             ->limit(30);
 
@@ -1410,6 +1395,22 @@ SQL;
         );
 
         return $summary->toHtml();
+    }
+
+    protected function getAvailableActions()
+    {
+        return array(
+            Ess_M2ePro_Model_Listing_Log::ACTION_LIST_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_RELIST_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_REVISE_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_PRODUCT_ON_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_COMPONENT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_STOP_AND_REMOVE_PRODUCT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_AND_REMOVE_PRODUCT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_LISTING,
+            Ess_M2ePro_Model_Listing_Log::ACTION_RESET_BLOCKED_PRODUCT,
+            Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE
+        );
     }
 
     public function getActionForAction($actionRows)

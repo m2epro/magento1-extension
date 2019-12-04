@@ -45,7 +45,8 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
         sort($buyerNameParts);
         sort($recipientNameParts);
 
-        return empty(array_diff($buyerNameParts, $recipientNameParts));
+        $diff = array_diff($buyerNameParts, $recipientNameParts);
+        return empty($diff);
     }
 
     protected function getBuyerEmail()
@@ -54,7 +55,7 @@ class Ess_M2ePro_Model_Amazon_Order_ShippingAddress extends Ess_M2ePro_Model_Ord
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $email = str_replace(' ', '-', strtolower($this->_order->getChildObject()->getBuyerName()));
-            $email = mb_convert_encoding($email, "ASCII");
+            $email = mb_convert_encoding($email, "ASCII", 'UTF-8');
             $email .= Ess_M2ePro_Model_Magento_Customer::FAKE_EMAIL_POSTFIX;
         }
 

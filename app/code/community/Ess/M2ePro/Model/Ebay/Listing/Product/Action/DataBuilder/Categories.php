@@ -133,7 +133,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
             return $this->getPreparedMotorsKtypesData($rawData);
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################
@@ -572,6 +572,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Categories
 
         if (isset($resource['engine'])) {
             $motorsData['Engine'] = $resource['engine'];
+        }
+
+        if (isset($resource['street_name'])) {
+            $motorsData['StreetName'] = $resource['street_name'];
         }
 
         return $motorsData;

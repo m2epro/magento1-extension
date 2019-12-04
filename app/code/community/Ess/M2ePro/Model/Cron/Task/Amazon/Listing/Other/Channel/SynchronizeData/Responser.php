@@ -9,10 +9,9 @@
 class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Responser
     extends Ess_M2ePro_Model_Amazon_Connector_Inventory_Get_ItemsResponser
 {
-    protected $_logsActionId       = null;
     protected $_synchronizationLog = null;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages()
     {
@@ -47,7 +46,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function failDetected($messageText)
     {
@@ -60,7 +59,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData()
     {
@@ -80,15 +79,12 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateReceivedOtherListings($receivedItems)
     {
         /** @var $stmtTemp Zend_Db_Statement_Pdo */
         $stmtTemp = $this->getPdoStatementExistingListings(true);
-
-        $tempLog = Mage::getModel('M2ePro/Listing_Other_Log');
-        $tempLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
 
         while ($existingItem = $stmtTemp->fetch()) {
             if (!isset($receivedItems[$existingItem['sku']])) {
@@ -107,7 +103,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
             );
 
             if ($newData['is_afn_channel']) {
-                $newData['online_qty'] = NULL;
+                $newData['online_qty'] = null;
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
             } else {
                 if ($newData['online_qty'] > 0) {
@@ -140,79 +136,8 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
                 continue;
             }
 
-            $tempLogMessages = array();
-
-            if (isset($newData['online_price'], $existingData['online_price']) &&
-                $newData['online_price'] != $existingData['online_price']) {
-                // M2ePro_TRANSLATIONS
-                // Item Price was successfully changed from %from% to %to%.
-                $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                    'Item Price was successfully changed from %from% to %to%.',
-                    $existingData['online_price'],
-                    $newData['online_price']
-                );
-            }
-
-            if ($newData['online_qty'] !== null && $newData['online_qty'] != $existingData['online_qty']) {
-                // M2ePro_TRANSLATIONS
-                // Item QTY was successfully changed from %from% to %to%.
-                $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                    'Item QTY was successfully changed from %from% to %to%.',
-                    $existingData['online_qty'],
-                    $newData['online_qty']
-                );
-            }
-
-            if ($newData['online_qty'] === null && $newData['is_afn_channel'] != $existingData['is_afn_channel']) {
-                $from = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN;
-                $to = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN;
-
-                if ($existingData['is_afn_channel']) {
-                    $from = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN;
-                }
-
-                if ($newData['is_afn_channel']) {
-                    $to = Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN;
-                }
-
-                // M2ePro_TRANSLATIONS
-                // Item Fulfillment was successfully changed from %from% to %to%.
-                $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                    'Item Fulfillment was successfully changed from %from% to %to%.',
-                    $from,
-                    $to
-                );
-            }
-
             if ($newData['status'] != $existingData['status']) {
                 $newData['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_COMPONENT;
-
-                $statusChangedFrom = Mage::helper('M2ePro/Component_Amazon')
-                    ->getHumanTitleByListingProductStatus($existingData['status']);
-                $statusChangedTo = Mage::helper('M2ePro/Component_Amazon')
-                    ->getHumanTitleByListingProductStatus($newData['status']);
-
-                if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                    // M2ePro_TRANSLATIONS
-                    // Item Status was successfully changed from "%from%" to "%to%".
-                    $tempLogMessages[] = Mage::helper('M2ePro')->__(
-                        'Item Status was successfully changed from "%from%" to "%to%".',
-                        $statusChangedFrom,
-                        $statusChangedTo
-                    );
-                }
-            }
-
-            foreach ($tempLogMessages as $tempLogMessage) {
-                $tempLog->addProductMessage(
-                    (int)$existingItem['listing_other_id'],
-                    Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                    $this->getLogsActionId(),
-                    Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE,
-                    $tempLogMessage,
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-                );
             }
 
             $listingOtherObj = Mage::helper('M2ePro/Component_Amazon')
@@ -234,10 +159,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
 
             $receivedItems[$existingItem['sku']]['founded'] = true;
         }
-
-        /** @var $logModel Ess_M2ePro_Model_Listing_Other_Log */
-        $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
-        $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
 
         /** @var $mappingModel Ess_M2ePro_Model_Amazon_Listing_Other_Mapping */
         $mappingModel = Mage::getModel('M2ePro/Amazon_Listing_Other_Mapping');
@@ -266,11 +187,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
 
             if (isset($this->_params['full_items_data']) && $this->_params['full_items_data'] &&
                 $newData['title'] == Ess_M2ePro_Model_Amazon_Listing_Other::EMPTY_TITLE_PLACEHOLDER) {
-                $newData['title'] = NULL;
+                $newData['title'] = null;
             }
 
             if ((bool)$newData['is_afn_channel']) {
-                $newData['online_qty'] = NULL;
+                $newData['online_qty'] = null;
                 $newData['status'] = Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN;
             } else {
                 if ((int)$newData['online_qty'] > 0) {
@@ -285,18 +206,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
             $listingOtherModel = Mage::helper('M2ePro/Component_Amazon')->getModel('Listing_Other');
             $listingOtherModel->setData($newData)->save();
 
-            $logModel->addProductMessage(
-                $listingOtherModel->getId(),
-                Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-                NULL,
-                Ess_M2ePro_Model_Listing_Other_Log::ACTION_ADD_LISTING,
-                // M2ePro_TRANSLATIONS
-                                         // Item was successfully Added
-                                         'Item was successfully Added',
-                Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
-                Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW
-            );
-
             if (!$this->getAccount()->getChildObject()->isOtherListingsMappingEnabled()) {
                 continue;
             }
@@ -306,7 +215,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function getReceivedOnlyOtherListings()
     {
@@ -369,7 +278,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
         return $stmtTemp;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -389,15 +298,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
 
     //-----------------------------------------
 
-    protected function getLogsActionId()
-    {
-        if ($this->_logsActionId !== null) {
-            return $this->_logsActionId;
-        }
-
-        return $this->_logsActionId = Mage::getModel('M2ePro/Listing_Other_Log')->getResource()->getNextActionId();
-    }
-
     protected function getSynchronizationLog()
     {
         if ($this->_synchronizationLog !== null) {
@@ -411,5 +311,5 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData_Re
         return $this->_synchronizationLog;
     }
 
-    // ########################################
+    //########################################
 }

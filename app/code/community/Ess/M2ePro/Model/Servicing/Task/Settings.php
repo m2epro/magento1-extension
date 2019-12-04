@@ -28,13 +28,14 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $requestData = array();
 
         $tempValue = Mage::helper('M2ePro/Module')->getCacheConfig()->getGroupValue(
-            '/default_baseurl_index/',
-            'given_by_server_at'
+            '/server/location/',
+            'default_index_given_by_server_at'
         );
         if ($tempValue) {
             $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
             $requestData['current_default_server_baseurl_index'] = $primaryConfig->getGroupValue(
-                '/server/', 'default_baseurl_index'
+                '/server/location/',
+                'default_index'
             );
         }
 
@@ -65,8 +66,8 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $config = Mage::helper('M2ePro/Primary')->getConfig();
 
         foreach ($data['servers_baseurls'] as $newHostName => $newBaseUrl) {
-            $oldHostName = $config->getGroupValue('/server/', 'hostname_'.$index);
-            $oldBaseUrl  = $config->getGroupValue('/server/', 'baseurl_'.$index);
+            $oldHostName = $config->getGroupValue('/server/location/'.$index.'/', 'hostname');
+            $oldBaseUrl  = $config->getGroupValue('/server/location/'.$index.'/', 'baseurl');
 
             if ($oldHostName != $newHostName || $oldBaseUrl != $newBaseUrl) {
                 $configUpdates[$index] = array(
@@ -79,15 +80,15 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
 
         for ($deletedIndex = $index; $deletedIndex < 100; $deletedIndex++) {
-            $deletedHostName = $config->getGroupValue('/server/', 'hostname_'.$deletedIndex);
-            $deletedBaseUrl  = $config->getGroupValue('/server/', 'baseurl_'.$deletedIndex);
+            $deletedHostName = $config->getGroupValue('/server/location/'.$deletedIndex.'/', 'hostname');
+            $deletedBaseUrl  = $config->getGroupValue('/server/location/'.$deletedIndex.'/', 'baseurl');
 
             if ($deletedHostName === null && $deletedBaseUrl === null) {
                 break;
             }
 
-            $config->deleteGroupValue('/server/', 'hostname_'.$deletedIndex);
-            $config->deleteGroupValue('/server/', 'baseurl_'.$deletedIndex);
+            $config->deleteGroupValue('/server/location/'.$deletedIndex.'/', 'hostname');
+            $config->deleteGroupValue('/server/location/'.$deletedIndex.'/', 'baseurl');
         }
 
         if (empty($configUpdates)) {
@@ -102,8 +103,8 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
                 $connectorObj = $dispatcherObject->getConnector(
                     'server', 'check', 'state',
                     array(
-                                                                   'base_url' => $change['baseurl'].'index.php',
-                                                                   'hostname' => $change['hostname'],
+                       'base_url' => $change['baseurl'].'index.php',
+                       'hostname' => $change['hostname'],
                     )
                 );
                 $dispatcherObject->process($connectorObj);
@@ -118,8 +119,8 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
 
         foreach ($configUpdates as $index => $change) {
-            $config->setGroupValue('/server/', 'hostname_'.$index, $change['hostname']);
-            $config->setGroupValue('/server/', 'baseurl_'.$index, $change['baseurl']);
+            $config->setGroupValue('/server/location/'.$index.'/', 'hostname', $change['hostname']);
+            $config->setGroupValue('/server/location/'.$index.'/', 'baseurl', $change['baseurl']);
         }
     }
 
@@ -130,11 +131,15 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         }
 
         Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-            '/server/', 'default_baseurl_index', (int)$data['default_server_baseurl_index']
+            '/server/location/',
+            'default_index',
+            (int)$data['default_server_baseurl_index']
         );
 
         Mage::helper('M2ePro/Module')->getCacheConfig()->setGroupValue(
-            '/default_baseurl_index/', 'given_by_server_at', Mage::helper('M2ePro')->getCurrentGmtDate()
+            '/server/location/',
+            'default_index_given_by_server_at',
+            Mage::helper('M2ePro')->getCurrentGmtDate()
         );
     }
 

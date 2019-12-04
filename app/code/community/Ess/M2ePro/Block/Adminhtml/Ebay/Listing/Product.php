@@ -66,14 +66,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
         // ---------------------------------------
 
         // ---------------------------------------
-        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            $this->_addButton(
-                'auto_action', array(
-                'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
-                'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
-                )
-            );
-        }
+        $this->_addButton(
+            'auto_action', array(
+            'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
+            'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
+            )
+        );
 
         // ---------------------------------------
 
@@ -117,10 +115,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
     protected function getVideoTutorialHtml()
     {
         $videoId = 'iBEiQ8Ilya8';
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            $videoId = '_fEtRN2eYCA';
-        }
-
         return <<<HTML
 <div id="video_tutorial_pop_up" style="display: none;">
     <div class="player_container" style="margin: 20px 5px; ">
@@ -207,9 +201,6 @@ JS;
         $noButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         // ---------------------------------------
 
-        // M2ePro_TRANSLATIONS
-        // Choose <b>Yes</b> if you want to override the Default Settings for this M2E Pro Listing
-        // and to choose Different Settings for certain Products.
         return <<<HTML
 <div id="settings_popup_content" style="display: none">
     <div style="margin: 10px; height: 150px">

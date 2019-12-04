@@ -327,8 +327,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
     public function addQtyWarnings($type)
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
-        // M2ePro_TRANSLATIONS
-        // During the Quantity Calculation the Settings in the "Manage Stock No" field were taken into consideration.
             $this->addWarningMessage(
                 'During the Quantity Calculation the Settings in the "Manage Stock No" '.
                 'field were taken into consideration.'
@@ -336,8 +334,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
         }
 
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_BACKORDERS) {
-            // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Backorders" field were taken into consideration.
             $this->addWarningMessage(
                 'During the Quantity Calculation the Settings in the "Backorders" '.
                 'field were taken into consideration.'
@@ -354,7 +350,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
         /** @var Ess_M2ePro_Model_Ebay_Template_Description $ebayDescriptionTemplate */
         $ebayDescriptionTemplate = $this->getEbayListingProduct()->getEbayDescriptionTemplate();
 
-        $options = NULL;
+        $options = null;
         $additionalData = $variation->getAdditionalData();
 
         foreach (array('isbn','upc','ean','mpn','epid') as $tempType) {
@@ -456,8 +452,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Variations
             if (isset($data[$identifier])) {
                 unset($data[$identifier]);
 
-                // M2ePro_TRANSLATIONS
-                // The value of %type% was not sent because it is not allowed in this Category
                 $this->addWarningMessage(
                     Mage::helper('M2ePro')->__(
                         'The value of %type% was not sent because it is not allowed in this Category',

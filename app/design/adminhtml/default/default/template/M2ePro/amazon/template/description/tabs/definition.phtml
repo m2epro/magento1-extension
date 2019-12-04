@@ -19,7 +19,7 @@
         <b>Note:</b> Title value is required for creation of all Description Policies because of technical reasons.<br/><br/>
 
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/JYMVAQ')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/JYMVAQ')
     ); ?>
 </div>
 
@@ -1356,9 +1356,10 @@ $allAttributesByInputTypes = array(
                         <td class="value">
                             <input id="search_terms_<?php echo $i; ?>" onkeyup="AmazonTemplateDescriptionDefinitionHandlerObj.multi_element_keyup('search_terms',this)"
                                    name="definition[search_terms][]" type="text" class="input-text M2ePro-required-when-visible"
+                                   maxlength="250"
                                    value="<?php echo !empty($formData['definition']['search_terms'][$i]) ? Mage::helper('M2ePro')->escapeHtml($formData['definition']['search_terms'][$i]) : ''; ?>">
                             <p class="note">
-                                <span><?php echo Mage::helper('M2ePro')->__('Max. 50 characters.'); ?></span>
+                                <span><?php echo Mage::helper('M2ePro')->__('Max. 250 characters.'); ?></span>
                             </p>
                         </td>
                         <td class="value">

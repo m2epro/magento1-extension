@@ -10,7 +10,6 @@
 /** @var $this Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific */
 
 $isCompactMode = $this->isCompactMode();
-$interfaceMode = Mage::helper('M2ePro/View_Ebay')->getMode();
 
 $uniqueId      = $this->getUniqueId();
 $internalData  = $this->getInternalData();
@@ -63,8 +62,7 @@ $customSelectedSpecifics   = json_encode($this->getCustomSelectedSpecifics());
         EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj = new EbayListingCategorySpecificHandler('<?php echo $this->getMarketplaceId(); ?>',
                                                                                                                '<?php echo $this->getCategoryMode(); ?>',
                                                                                                                '<?php echo $this->getCategoryValue(); ?>',
-                                                                                                               '<?php echo $uniqueId; ?>',
-                                                                                                               '<?php echo $interfaceMode; ?>');
+                                                                                                               '<?php echo $uniqueId; ?>');
 
         EbayListingCategorySpecificHandler<?php echo $uniqueId; ?>Obj.setAttributes(<?php echo json_encode($this->getAttributes()); ?>)
                                                                      .setDictionarySpecifics(<?php echo $dictionarySpecifics; ?>)
@@ -139,7 +137,7 @@ $customSelectedSpecifics   = json_encode($this->getCustomSelectedSpecifics());
                 </ul>
                 <br/>
                 More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/TQAJAQ')
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/TQAJAQ')
             ); ?>
         </div>
 

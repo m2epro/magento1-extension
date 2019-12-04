@@ -12,14 +12,14 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
     /** @var Ess_M2ePro_Model_Request_Pending_Partial $_requestPendingPartial */
     protected $_requestPendingPartial;
 
-    // ##################################
+    //##################################
 
     public function getType()
     {
         return Ess_M2ePro_Model_Processing::TYPE_PARTIAL;
     }
 
-    // ##################################
+    //##################################
 
     protected function getResponse()
     {
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         return $this->_response;
     }
 
-    // ##################################
+    //##################################
 
     public function processSuccess()
     {
@@ -80,7 +80,7 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         }
     }
 
-    // ##################################
+    //##################################
 
     protected function eventBefore()
     {
@@ -122,7 +122,7 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         $requesterPartial->save();
     }
 
-    // ##################################
+    //##################################
 
     protected function getNextData()
     {
@@ -142,7 +142,7 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         return $this->getRequestPendingPartialObject()->getResultMessages();
     }
 
-    // ##################################
+    //##################################
 
     protected function getRequestPendingPartialObject()
     {
@@ -165,7 +165,7 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         return $this->_requestPendingPartial = $requestPendingPartial;
     }
 
-    // ##################################
+    //##################################
 
     protected function getNextDataPartNumber()
     {
@@ -185,5 +185,5 @@ class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Partial_Runner
         $this->getProcessingObject()->save();
     }
 
-    // ##################################
+    //##################################
 }

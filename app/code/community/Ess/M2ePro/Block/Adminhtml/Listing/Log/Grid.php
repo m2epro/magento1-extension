@@ -8,45 +8,33 @@
 
 abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
 {
-    protected $_viewComponentHelper = null;
-
     //########################################
 
     public function __construct()
     {
         parent::__construct();
+        $this->setId($this->getComponentMode() . 'ListingLogGrid' . $this->getEntityId());
 
-        // Initialize view
-        // ---------------------------------------
-        $view                       = Mage::helper('M2ePro/View')->getCurrentView();
-        $this->_viewComponentHelper = Mage::helper('M2ePro/View')->getComponentHelper($view);
-        // ---------------------------------------
-
-        $channel = $this->getRequest()->getParam('channel');
-
-        // Initialization block
-        // ---------------------------------------
-        $this->setId($view . ucfirst($channel) . 'ListingLogGrid' . $this->getEntityId());
-        // ---------------------------------------
-
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     //########################################
 
-    protected function _prepareCollection()
+    protected function getLogHash($log)
     {
-        // Get collection logs
-        // ---------------------------------------
-        $collection = Mage::getModel('M2ePro/Listing_Log')->getCollection();
-        // ---------------------------------------
+        return crc32("{$log->getActionId()}_{$log->getListingId()}_{$log->getListingProductId()}");
+    }
 
+    //########################################
+
+    /**
+     * @param Ess_M2ePro_Model_Resource_Listing_Log_Collection $collection
+     */
+    protected function applyFilters($collection)
+    {
         // Set listing filter
         // ---------------------------------------
         if ($this->getEntityId()) {
@@ -60,11 +48,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
                     array(
                         array(
                             'attribute' => self::LISTING_PRODUCT_ID_FIELD,
-                            'eq' => $this->getEntityId()
+                            'eq'        => $this->getEntityId()
                         ),
                         array(
                             'attribute' => self::LISTING_PARENT_PRODUCT_ID_FIELD,
-                            'eq' => $this->getEntityId()
+                            'eq'        => $this->getEntityId()
                         )
                     )
                 );
@@ -75,18 +63,20 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
 
         // ---------------------------------------
 
-        // prepare components
+        $collection->getSelect()->where('component_mode = ?', $this->getComponentMode());
+
+        // Add Filter By Account
         // ---------------------------------------
-        $channel = $this->getRequest()->getParam('channel');
-        if (!empty($channel)) {
-            $collection->getSelect()->where('component_mode = ?', $channel);
-        } else {
-            $components = $this->_viewComponentHelper->getActiveComponents();
-            $collection->getSelect()
-                ->where('component_mode IN(\'' . implode('\',\'', $components) . '\') OR component_mode IS NULL');
+        if ($accountId = (int)$this->getRequest()->getParam($this->getComponentMode() . 'Account', false)) {
+            $collection->getSelect()->where('account_id = ?', $accountId);
         }
 
+        // Add Filter By Marketplace
         // ---------------------------------------
+        if ($marketplaceId = (int)$this->getRequest()->getParam($this->getComponentMode() . 'Marketplace', false)) {
+            $collection->getSelect()->where('marketplace_id = ?', $marketplaceId);
+        }
+
 
         // we need sort by id also, because create_date may be same for some adjustment entries
         // ---------------------------------------
@@ -95,50 +85,46 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         }
 
         // ---------------------------------------
-
-        // Set collection to grid
-        $this->setCollection($collection);
-
-        return parent::_prepareCollection();
     }
 
     protected function _prepareColumns()
     {
         $this->addColumn(
             'create_date', array(
-            'header'    => Mage::helper('M2ePro')->__('Creation Date'),
-            'align'     => 'left',
-            'type'      => 'datetime',
-            'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
-            'width'     => '150px',
-            'index'     => 'create_date'
+                'header'    => Mage::helper('M2ePro')->__('Creation Date'),
+                'align'     => 'left',
+                'type'      => 'datetime',
+                'format'    => Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM),
+                'width'     => '150px',
+                'index'     => 'create_date',
+                'column_css_class' => 'random_border_color'
             )
         );
 
         $this->addColumn(
             'action', array(
-            'header'    => Mage::helper('M2ePro')->__('Action'),
-            'align'     => 'left',
-            'width'     => '150px',
-            'type'      => 'options',
-            'index'     => 'action',
-            'sortable'  => false,
-            'filter_index' => 'main_table.action',
-            'options' => $this->getActionTitles()
+                'header'       => Mage::helper('M2ePro')->__('Action'),
+                'align'        => 'left',
+                'width'        => '150px',
+                'type'         => 'options',
+                'index'        => 'action',
+                'sortable'     => false,
+                'filter_index' => 'main_table.action',
+                'options'      => $this->getActionTitles()
             )
         );
 
         if (!$this->getEntityId()) {
             $this->addColumn(
                 'listing_title', array(
-                'header'    => Mage::helper('M2ePro')->__('Listing Title / ID'),
-                'align'     => 'left',
-                'width'     => '150px',
-                'type'      => 'text',
-                'index'     => 'listing_title',
-                'filter_index' => 'main_table.listing_title',
-                'frame_callback' => array($this, 'callbackColumnListingTitleID'),
-                'filter_condition_callback' => array($this, 'callbackFilterListingTitleID')
+                    'header'         => Mage::helper('M2ePro')->__('Listing'),
+                    'align'          => 'left',
+                    'width'          => '150px',
+                    'type'           => 'text',
+                    'index'          => 'listing_title',
+                    'filter_index'   => 'main_table.listing_title',
+                    'frame_callback' => array($this, 'callbackColumnListingTitleID'),
+                    'filter_condition_callback' => array($this, 'callbackFilterListingTitleID')
                 )
             );
         }
@@ -146,70 +132,70 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         if (!$this->isListingProductLog()) {
             $this->addColumn(
                 'product_title', array(
-                'header' => Mage::helper('M2ePro')->__('Product Title / ID'),
-                'align' => 'left',
-                'width'     => '280px',
-                'type' => 'text',
-                'index' => 'product_title',
-                'filter_index' => 'main_table.product_title',
-                'frame_callback' => array($this, 'callbackColumnProductTitleID'),
-                'filter_condition_callback' => array($this, 'callbackFilterProductTitleID')
+                    'header'         => Mage::helper('M2ePro')->__('Magento Product'),
+                    'align'          => 'left',
+                    'width'          => '280px',
+                    'type'           => 'text',
+                    'index'          => 'product_title',
+                    'filter_index'   => 'main_table.product_title',
+                    'frame_callback' => array($this, 'callbackColumnProductTitleID'),
+                    'filter_condition_callback' => array($this, 'callbackFilterProductTitleID')
                 )
             );
         }
 
         if ($this->isListingProductLog() && $this->getListingProduct()->isComponentModeAmazon() &&
             ($this->getListingProduct()->getChildObject()->getVariationManager()->isRelationParentType() ||
-             $this->getListingProduct()->getChildObject()->getVariationManager()->isRelationChildType() ||
-             $this->getListingProduct()->getChildObject()->getVariationManager()->isIndividualType())) {
+                $this->getListingProduct()->getChildObject()->getVariationManager()->isRelationChildType() ||
+                $this->getListingProduct()->getChildObject()->getVariationManager()->isIndividualType())) {
             $this->addColumn(
                 'attributes', array(
-                'header' => Mage::helper('M2ePro')->__('Variation'),
-                'align' => 'left',
-                'width'     => '250px',
-                'index' => 'additional_data',
-                'sortable'  => false,
-                'filter_index' => 'main_table.additional_data',
-                'frame_callback' => array($this, 'callbackColumnAttributes'),
-                'filter_condition_callback' => array($this, 'callbackFilterAttributes')
+                    'header'         => Mage::helper('M2ePro')->__('Variation'),
+                    'align'          => 'left',
+                    'width'          => '250px',
+                    'index'          => 'additional_data',
+                    'sortable'       => false,
+                    'filter_index'   => 'main_table.additional_data',
+                    'frame_callback' => array($this, 'callbackColumnAttributes'),
+                    'filter_condition_callback' => array($this, 'callbackFilterAttributes')
                 )
             );
         }
 
         $this->addColumn(
             'description', array(
-            'header'    => Mage::helper('M2ePro')->__('Description'),
-            'align'     => 'left',
-            'type'      => 'text',
-            'index'     => 'description',
-            'filter_index' => 'main_table.description',
-            'frame_callback' => array($this, 'callbackDescription')
+                'header'         => Mage::helper('M2ePro')->__('Message'),
+                'align'          => 'left',
+                'type'           => 'text',
+                'index'          => 'description',
+                'filter_index'   => 'main_table.description',
+                'frame_callback' => array($this, 'callbackDescription')
             )
         );
 
         $this->addColumn(
             'initiator', array(
-            'header'=> Mage::helper('M2ePro')->__('Run Mode'),
-            'width' => '80px',
-            'index' => 'initiator',
-            'align' => 'right',
-            'type'  => 'options',
-            'sortable'  => false,
-            'options' => $this->_getLogInitiatorList(),
-            'frame_callback' => array($this, 'callbackColumnInitiator')
+                'header'         => Mage::helper('M2ePro')->__('Run Mode'),
+                'width'          => '80px',
+                'index'          => 'initiator',
+                'align'          => 'right',
+                'type'           => 'options',
+                'sortable'       => false,
+                'options'        => $this->_getLogInitiatorList(),
+                'frame_callback' => array($this, 'callbackColumnInitiator')
             )
         );
 
         $this->addColumn(
             'type', array(
-            'header'=> Mage::helper('M2ePro')->__('Type'),
-            'width' => '80px',
-            'index' => 'type',
-            'align' => 'right',
-            'type'  => 'options',
-            'sortable'  => false,
-            'options' => $this->_getLogTypeList(),
-            'frame_callback' => array($this, 'callbackColumnType')
+                'header'         => Mage::helper('M2ePro')->__('Type'),
+                'width'          => '80px',
+                'index'          => 'type',
+                'align'          => 'right',
+                'type'           => 'options',
+                'sortable'       => false,
+                'options'        => $this->_getLogTypeList(),
+                'frame_callback' => array($this, 'callbackColumnType')
             )
         );
 
@@ -242,8 +228,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
             );
 
             $value = '<a target="_blank" href="'.$url.'">' .
-                         $value .
-                     '</a><br/>ID: '.$row->getData('listing_id');
+                $value .
+                '</a><br/>ID: '.$row->getData('listing_id');
         }
 
         return $value;
@@ -257,8 +243,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
 
         $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $row->getData('product_id')));
         $value = '<a target="_blank" href="'.$url.'" target="_blank">'.
-                     Mage::helper('M2ePro')->escapeHtml($value).
-                 '</a><br/>ID: '.$row->getData('product_id');
+            Mage::helper('M2ePro')->escapeHtml($value).
+            '</a><br/>ID: '.$row->getData('product_id');
 
         $additionalData = Mage::helper('M2ePro')->jsonDecode($row->getData('additional_data'));
         if (empty($additionalData['variation_options'])) {
@@ -269,9 +255,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         foreach ($additionalData['variation_options'] as $attribute => $option) {
             !$option && $option = '--';
             $value .= '<strong>'.
-                          Mage::helper('M2ePro')->escapeHtml($attribute) .
-                      '</strong>:&nbsp;'.
-                      Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
+                Mage::helper('M2ePro')->escapeHtml($attribute) .
+                '</strong>:&nbsp;'.
+                Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
         }
 
         $value .= '</div>';
@@ -290,9 +276,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
         foreach ($additionalData['variation_options'] as $attribute => $option) {
             !$option && $option = '--';
             $result .= '<strong>'.
-                           Mage::helper('M2ePro')->escapeHtml($attribute) .
-                       '</strong>:&nbsp;'.
-                       Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
+                Mage::helper('M2ePro')->escapeHtml($attribute) .
+                '</strong>:&nbsp;'.
+                Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
         }
 
         $result .= '</div>';
@@ -347,8 +333,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
     {
         return $this->getUrl(
             '*/*/'.$this->getActionName(), array(
-            '_current'=>true,
-            'channel' => $this->getRequest()->getParam('channel')
+                '_current'=>true,
+                'channel' => $this->getRequest()->getParam('channel')
             )
         );
     }
@@ -357,6 +343,47 @@ abstract class Ess_M2ePro_Block_Adminhtml_Listing_Log_Grid extends Ess_M2ePro_Bl
     {
         return false;
     }
+
+    //########################################
+
+    protected function _toHtml()
+    {
+        if ($this->getRequest()->isAjax()) {
+            $javascript = <<<JAVASCIRPT
+<script type="text/javascript">
+    LogHandlerObj.afterInitPage();
+</script>
+JAVASCIRPT;
+            return $javascript . parent::_toHtml();
+        }
+
+        $translations = Mage::helper('M2ePro')->jsonEncode(
+            array(
+                'Description' => Mage::helper('M2ePro')->__('Description')
+            )
+        );
+
+        $javascript = <<<JAVASCIRPT
+
+<script type="text/javascript">
+
+    M2ePro.translator.add({$translations});
+
+    Event.observe(window, 'load', function() {
+        LogHandlerObj = new LogHandler();
+        LogHandlerObj.afterInitPage();
+    });
+
+</script>
+
+JAVASCIRPT;
+
+        return $javascript . parent::_toHtml();
+    }
+
+    //########################################
+
+    abstract protected function getComponentMode();
 
     //########################################
 }

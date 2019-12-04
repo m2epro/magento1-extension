@@ -148,7 +148,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
             /** @var Ess_M2ePro_Model_Connector_Command_RealTime_Virtual $connector */
             $connector = $dispatcher->getVirtualConnector(
                 $command[0], $command[1], $command[2],
-                $action->getRequestData(), NULL,
+                $action->getRequestData(), null,
                 $action->getListingProduct()->getMarketplace()->getId(),
                 $action->getListingProduct()->getAccount()->getId(),
                 $action->getRequestTimeOut()
@@ -233,7 +233,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                         $connectors[$action->getId()] = $dispatcher->getCustomVirtualConnector(
                             'Ebay_Listing_Product_Action_Processor_Connector_Multiple_Command_VirtualWithoutCall',
                             $command[0], $command[1], $command[2],
-                            $action->getRequestData(), NULL,
+                            $action->getRequestData(), null,
                             $ebayListingProduct->getListing()->getMarketplaceId(),
                             $ebayListingProduct->getListing()->getAccountId(),
                             $action->getRequestTimeOut()
@@ -264,7 +264,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
                 }
 
                 $systemErrorsMessages = array();
-                $isServerInMaintenanceMode = NULL;
+                $isServerInMaintenanceMode = null;
 
                 foreach ($connectors as $actionId => $connector) {
                     foreach ($actionsPack as $action) {
@@ -544,7 +544,7 @@ final class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor
         Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processing $action,
         array $data,
         array $messages,
-        $requestTime = NULL
+        $requestTime = null
     ) {
         $processing = $action->getProcessing();
 

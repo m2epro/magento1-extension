@@ -164,7 +164,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
 
     protected function getCategoryTemplate($autoMode, $groupId, $listing)
     {
-        $template = NULL;
+        $template = null;
 
         switch ($autoMode) {
             case Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL:
@@ -194,7 +194,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
 
     protected function getOtherCategoryTemplate($autoMode, $groupId, $listing)
     {
-        $template = NULL;
+        $template = null;
 
         switch ($autoMode) {
             case Ess_M2ePro_Model_Listing::AUTO_MODE_GLOBAL:
@@ -268,13 +268,13 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
             'auto_mode'                                      => Listing::AUTO_MODE_NONE,
             'auto_global_adding_mode'                        => Listing::ADDING_MODE_NONE,
             'auto_global_adding_add_not_visible'             => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_global_adding_template_category_id'        => NULL,
-            'auto_global_adding_template_other_category_id'  => NULL,
+            'auto_global_adding_template_category_id'        => null,
+            'auto_global_adding_template_other_category_id'  => null,
 
             'auto_website_adding_mode'                       => Listing::ADDING_MODE_NONE,
             'auto_website_adding_add_not_visible'            => Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_website_adding_template_category_id'       => NULL,
-            'auto_website_adding_template_other_category_id' => NULL,
+            'auto_website_adding_template_category_id'       => null,
+            'auto_website_adding_template_other_category_id' => null,
             'auto_website_deleting_mode'                     => Listing::DELETING_MODE_NONE
         );
 
@@ -379,8 +379,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
                 $group->setData('adding_template_category_id', $categoryTemplate->getId());
                 $group->setData('adding_template_other_category_id', $otherCategoryTemplate->getId());
             } else {
-                $group->setData('adding_template_category_id', NULL);
-                $group->setData('adding_template_other_category_id', NULL);
+                $group->setData('adding_template_category_id', null);
+                $group->setData('adding_template_other_category_id', null);
             }
 
             $group->save();
@@ -412,12 +412,12 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_AutoActionController
             'auto_mode' => Ess_M2ePro_Model_Listing::AUTO_MODE_NONE,
             'auto_global_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_global_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_global_adding_template_category_id' => NULL,
-            'auto_global_adding_template_other_category_id' => NULL,
+            'auto_global_adding_template_category_id' => null,
+            'auto_global_adding_template_other_category_id' => null,
             'auto_website_adding_mode' => Ess_M2ePro_Model_Listing::ADDING_MODE_NONE,
             'auto_website_adding_add_not_visible' => Ess_M2ePro_Model_Listing::AUTO_ADDING_ADD_NOT_VISIBLE_YES,
-            'auto_website_adding_template_category_id' => NULL,
-            'auto_website_adding_template_other_category_id' => NULL,
+            'auto_website_adding_template_category_id' => null,
+            'auto_website_adding_template_other_category_id' => null,
             'auto_website_deleting_mode' => Ess_M2ePro_Model_Listing::DELETING_MODE_NONE
         );
 

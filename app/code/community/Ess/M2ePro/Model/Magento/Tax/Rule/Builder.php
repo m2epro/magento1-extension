@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Magento_Tax_Rule_Builder
 
     //########################################
 
-    public function buildProductTaxRule($rate = 0, $countryId, $customerTaxClassId = NULL)
+    public function buildProductTaxRule($rate = 0, $countryId, $customerTaxClassId = null)
     {
         $this->buildTaxRule(
             $rate,
@@ -42,7 +42,7 @@ class Ess_M2ePro_Model_Magento_Tax_Rule_Builder
         );
     }
 
-    public function buildShippingTaxRule($rate = 0, $countryId, $customerTaxClassId = NULL)
+    public function buildShippingTaxRule($rate = 0, $countryId, $customerTaxClassId = null)
     {
         $this->buildTaxRule(
             $rate,
@@ -57,7 +57,7 @@ class Ess_M2ePro_Model_Magento_Tax_Rule_Builder
     protected function buildTaxRule(
         $rate = 0,
         $countryId,
-        $customerTaxClassId = NULL,
+        $customerTaxClassId = null,
         $taxRateCode,
         $taxRuleCode,
         $taxClassName

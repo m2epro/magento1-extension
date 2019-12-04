@@ -9,10 +9,6 @@
 abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
     extends Ess_M2ePro_Model_Ebay_Connector_Command_RealTime
 {
-    // M2ePro_TRANSLATIONS
-    // eBay Order Status was not updated. Reason: %msg%
-    // Status of India Site Orders cannot be updated if the Buyer uses PaisaPay payment method.
-
     /**
      * @var $_order Ess_M2ePro_Model_Order
      */
@@ -21,7 +17,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
 
     protected $_status = Ess_M2ePro_Helper_Data::STATUS_SUCCESS;
 
-    // ########################################
+    //########################################
 
     public function setOrder(Ess_M2ePro_Model_Order $order)
     {
@@ -55,17 +51,17 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
             return (int)$this->_params['change_id'];
         }
 
-        return NULL;
+        return null;
     }
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
         return array('orders', 'update', 'status');
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -141,5 +137,5 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Order_Update_Abstract
         return $requestData;
     }
 
-    // ########################################
+    //########################################
 }

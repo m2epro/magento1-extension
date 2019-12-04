@@ -162,12 +162,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
 
     public function getAttributes()
     {
-        $attributes = array();
-        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            $attributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
-        }
-
-        return $attributes;
+        return Mage::helper('M2ePro/Magento_Attribute')->getAll();
     }
 
     // ---------------------------------------
@@ -282,7 +277,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
 
     protected function filterSelectedSpecificsByMode($mode)
     {
-        if (empty($this->getSelectedSpecifics())) {
+        $specifics = $this->getSelectedSpecifics();
+        if (empty($specifics)) {
             return array();
         }
 

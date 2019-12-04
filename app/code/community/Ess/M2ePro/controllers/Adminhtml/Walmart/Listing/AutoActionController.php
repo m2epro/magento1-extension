@@ -201,8 +201,8 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_AutoActionController
         );
 
         if ($listing->isComponentModeWalmart()) {
-            $data['auto_global_adding_category_template_id'] = NULL;
-            $data['auto_website_adding_category_template_id'] = NULL;
+            $data['auto_global_adding_category_template_id'] = null;
+            $data['auto_website_adding_category_template_id'] = null;
         }
 
         $listing->addData($data)->save();

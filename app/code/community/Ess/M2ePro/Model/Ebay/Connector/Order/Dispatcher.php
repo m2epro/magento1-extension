@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher extends Mage_Core_Model_A
     const ACTION_SHIP       = 2;
     const ACTION_SHIP_TRACK = 3;
 
-    // ########################################
+    //########################################
 
     public function process($action, $orders, array $params = array())
     {
@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher extends Mage_Core_Model_A
         return $result;
     }
 
-    // ########################################
+    //########################################
 
     protected function processOrders(array $orders, $action, $connectorName, array $params = array())
     {
@@ -76,7 +76,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher extends Mage_Core_Model_A
         return true;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareOrders($orders)
     {
@@ -95,5 +95,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Dispatcher extends Mage_Core_Model_A
         return $preparedOrders;
     }
 
-    // ########################################
+    //########################################
 }

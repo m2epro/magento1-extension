@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
     /** @var Ess_M2ePro_Model_Walmart_Listing_Product_Action_Processing $_processingAction */
     protected $_processingAction = null;
 
-    // ########################################
+    //########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     public function prepare()
     {
@@ -88,7 +88,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
         $this->unsetLocks();
     }
 
-    // ########################################
+    //########################################
 
     protected function eventBefore()
     {
@@ -129,7 +129,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
         }
     }
 
-    // ########################################
+    //########################################
 
     public function processAddResult()
     {
@@ -151,7 +151,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
             $response = Mage::getModel('M2ePro/Connector_Connection_Response');
             $response->initFromPreparedResponse($resultData);
 
-            $responser = new Ess_M2ePro_Model_Walmart_Connector_Product_List_UpdateQty_Responser(
+            $responser = new Ess_M2ePro_Model_Walmart_Connector_Product_List_UpdateInventory_Responser(
                 $this->getResponserParams(), $response
             );
             $responser->setProcessingList($processingList);
@@ -177,7 +177,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
         parent::complete();
     }
 
-    // ########################################
+    //########################################
 
     protected function setLocks()
     {
@@ -185,7 +185,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
 
         $params = $this->getParams();
 
-        $this->getListingProduct()->addProcessingLock(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->addProcessingLock(null, $this->getProcessingObject()->getId());
         $this->getListingProduct()->addProcessingLock('in_action', $this->getProcessingObject()->getId());
         $this->getListingProduct()->addProcessingLock(
             $params['lock_identifier'].'_action', $this->getProcessingObject()->getId()
@@ -199,13 +199,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
             /** @var Ess_M2ePro_Model_Listing_Product $parentListingProduct */
             $parentListingProduct = $variationManager->getTypeModel()->getParentListingProduct();
 
-            $parentListingProduct->addProcessingLock(NULL, $this->getProcessingObject()->getId());
+            $parentListingProduct->addProcessingLock(null, $this->getProcessingObject()->getId());
             $parentListingProduct->addProcessingLock(
                 'child_products_in_action', $this->getProcessingObject()->getId()
             );
         }
 
-        $this->getListingProduct()->getListing()->addProcessingLock(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->getListing()->addProcessingLock(null, $this->getProcessingObject()->getId());
     }
 
     protected function unsetLocks()
@@ -214,7 +214,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
 
         $params = $this->getParams();
 
-        $this->getListingProduct()->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->deleteProcessingLocks(null, $this->getProcessingObject()->getId());
         $this->getListingProduct()->deleteProcessingLocks('in_action', $this->getProcessingObject()->getId());
         $this->getListingProduct()->deleteProcessingLocks(
             $params['lock_identifier'].'_action', $this->getProcessingObject()->getId()
@@ -228,16 +228,16 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
             /** @var Ess_M2ePro_Model_Listing_Product $parentListingProduct */
             $parentListingProduct = $variationManager->getTypeModel()->getParentListingProduct();
 
-            $parentListingProduct->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
+            $parentListingProduct->deleteProcessingLocks(null, $this->getProcessingObject()->getId());
             $parentListingProduct->deleteProcessingLocks(
                 'child_products_in_action', $this->getProcessingObject()->getId()
             );
         }
 
-        $this->getListingProduct()->getListing()->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
+        $this->getListingProduct()->getListing()->deleteProcessingLocks(null, $this->getProcessingObject()->getId());
     }
 
-    // ########################################
+    //########################################
 
     protected function getListingProduct()
     {
@@ -267,8 +267,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_List_ProcessingRunner
 
         $processingAction = $processingActionCollection->getFirstItem();
 
-        return $processingAction->getId() ? $this->_processingAction = $processingAction : NULL;
+        return $processingAction->getId() ? $this->_processingAction = $processingAction : null;
     }
 
-    // ########################################
+    //########################################
 }

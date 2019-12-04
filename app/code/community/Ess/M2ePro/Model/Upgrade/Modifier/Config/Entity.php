@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config_Entity
     public function getValue()
     {
         $row = $this->getConfigModifier()->getRow($this->_group, $this->_key);
-        return isset($row['value']) ? $row['value'] : NULL;
+        return isset($row['value']) ? $row['value'] : null;
     }
 
     // ---------------------------------------
@@ -93,27 +93,6 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config_Entity
         return $result;
     }
 
-    public function updateGroup($value)
-    {
-        return $this->getConfigModifier()->updateGroup(
-            $value, array('`group` = ?' => $this->_group, '`key` = ?' => $this->_key)
-        );
-    }
-
-    public function updateKey($value)
-    {
-        return $this->getConfigModifier()->updateKey(
-            $value, array('`group` = ?' => $this->_group, '`key` = ?' => $this->_key)
-        );
-    }
-
-    public function updateValue($value)
-    {
-        return $this->getConfigModifier()->updateValue(
-            $value, array('`group` = ?' => $this->_group, '`key` = ?' => $this->_key)
-        );
-    }
-
     public function delete()
     {
         $result = $this->getConfigModifier()->delete($this->_group, $this->_key);
@@ -123,6 +102,34 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Config_Entity
         }
 
         return $result;
+    }
+
+    // ---------------------------------------
+
+    public function updateGroup($value)
+    {
+        $this->getConfigModifier()->updateGroup(
+            $value, array('`group` = ?' => $this->_group, '`key` = ?' => $this->_key)
+        );
+        $this->_group = $value;
+        return $this;
+    }
+
+    public function updateKey($value)
+    {
+        $this->getConfigModifier()->updateKey(
+            $value, array('`group` = ?' => $this->_group, '`key` = ?' => $this->_key)
+        );
+        $this->_key = $value;
+        return $this;
+    }
+
+    public function updateValue($value)
+    {
+        $this->getConfigModifier()->updateValue(
+            $value, array('`group` = ?' => $this->_group, '`key` = ?' => $this->_key)
+        );
+        return $this;
     }
 
     //########################################

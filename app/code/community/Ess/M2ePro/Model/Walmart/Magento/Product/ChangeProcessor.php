@@ -9,8 +9,8 @@
 class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
     extends Ess_M2ePro_Model_Magento_Product_ChangeProcessor_Abstract
 {
-    const INSTRUCTION_TYPE_QTY_DATA_CHANGED        = 'magento_product_qty_data_changed';
     const INSTRUCTION_TYPE_PROMOTIONS_DATA_CHANGED = 'magento_product_promotions_data_changed';
+    const INSTRUCTION_TYPE_LAG_TIME_DATA_CHANGED   = 'magento_product_lag_time_data_changed';
     const INSTRUCTION_TYPE_DETAILS_DATA_CHANGED    = 'magento_product_details_data_changed';
 
     //########################################
@@ -19,7 +19,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
     {
         return array_unique(
             array_merge(
-                $this->getQtyTrackingAttributes(),
+                $this->getLagTimeTrackingAttributes(),
                 $this->getPromotionsTrackingAttributes(),
                 $this->getDetailsTrackingAttributes()
             )
@@ -30,7 +30,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
     {
         $data = array();
 
-        if (array_intersect($attributes, $this->getQtyTrackingAttributes())) {
+        if (array_intersect($attributes, $this->getLagTimeTrackingAttributes())) {
             $priority = 5;
 
             if ($this->getListingProduct()->isListed()) {
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
             }
 
             $data[] = array(
-                'type'     => self::INSTRUCTION_TYPE_QTY_DATA_CHANGED,
+                'type'     => self::INSTRUCTION_TYPE_LAG_TIME_DATA_CHANGED,
                 'priority' => $priority,
             );
         }
@@ -74,7 +74,7 @@ class Ess_M2ePro_Model_Walmart_Magento_Product_ChangeProcessor
 
     //########################################
 
-    public function getQtyTrackingAttributes()
+    public function getLagTimeTrackingAttributes()
     {
         $walmartSellingFormatTemplate = $this->getWalmartListingProduct()->getWalmartSellingFormatTemplate();
 

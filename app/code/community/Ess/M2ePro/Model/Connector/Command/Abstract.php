@@ -16,14 +16,14 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
     /** @var Ess_M2ePro_Model_Connector_Connection_Single $_connection */
     protected $_connection = null;
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params)
     {
         $this->_params = $params;
     }
 
-    // ########################################
+    //########################################
 
     public function setProtocol(Ess_M2ePro_Model_Connector_Protocol $protocol)
     {
@@ -36,11 +36,11 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
         return $this->_protocol;
     }
 
-    // ########################################
+    //########################################
 
     abstract public function process();
 
-    // ########################################
+    //########################################
 
     protected function getConnection()
     {
@@ -74,7 +74,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
         return $request;
     }
 
-    // ########################################
+    //########################################
 
     public function getRequest()
     {
@@ -86,14 +86,14 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
         return $this->getConnection()->getResponse();
     }
 
-    // ########################################
+    //########################################
 
     public function getRequestTime()
     {
         return $this->getResponse()->getRequestTime();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return array
@@ -105,5 +105,5 @@ abstract class Ess_M2ePro_Model_Connector_Command_Abstract
      */
     abstract protected function getCommand();
 
-    // ########################################
+    //########################################
 }

@@ -8,12 +8,6 @@
 
 class Ess_M2ePro_Model_Magento_Order_Updater
 {
-    // M2ePro_TRANSLATIONS
-    // Cancel is not allowed for Orders which were already Canceled.
-    // Cancel is not allowed for Orders with Invoiced Items.
-    // Cancel is not allowed for Orders which were put on Hold.
-    // Cancel is not allowed for Orders which were Completed or Closed.
-
     /** @var $_magentoOrder Mage_Sales_Model_Order */
     protected $_magentoOrder = null;
 

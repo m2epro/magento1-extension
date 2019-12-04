@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
+        $this->setPageHelpLink(null, null, "x/MQAJAQ");
 
         return $this;
     }
@@ -79,7 +79,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/OwAJAQ");
+        $this->setPageHelpLink(null, null, "x/OwAJAQ");
 
         $this->_addLeft($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs'))
              ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_account_edit'))
@@ -108,15 +108,13 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'account', 'get', 'authUrl',
                 array('back_url' => $backUrl, 'mode' => $mode),
-                NULL, NULL, NULL, $mode
+                null, null, null, $mode
             );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
-            // M2ePro_TRANSLATIONS
-            // The eBay token obtaining is currently unavailable.<br/>Reason: %error_message%
             $error = 'The eBay token obtaining is currently unavailable.<br/>Reason: %error_message%';
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
@@ -187,15 +185,13 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'account', 'get', 'authUrl',
                 array('back_url' => $backUrl, 'mode' => $mode, 'auth_type' => 'oauth'),
-                NULL, NULL, NULL, $mode
+                null, null, null, $mode
             );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
         } catch (Exception $exception) {
             Mage::helper('M2ePro/Module_Exception')->process($exception);
-            // M2ePro_TRANSLATIONS
-            // The eBay token obtaining is currently unavailable.<br/>Reason: %error_message%
             $error = 'The eBay Sell token obtaining is currently unavailable.<br/>Reason: %error_message%';
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
@@ -544,22 +540,18 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
 
         // invoice/shipment settings
         // ---------------------------------------
-        $temp = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_INVOICE_MODE_YES;
-        $data['magento_orders_settings']['invoice_mode'] = $temp;
-        $temp = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES;
-        $data['magento_orders_settings']['shipment_mode'] = $temp;
+        $data['magento_orders_settings']['invoice_mode'] = 1;
+        $data['magento_orders_settings']['shipment_mode'] = 1;
 
         $temp = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM;
         if (!empty($data['magento_orders_settings']['status_mapping']['mode']) &&
             $data['magento_orders_settings']['status_mapping']['mode'] == $temp) {
             if (!isset($post['magento_orders_settings']['invoice_mode'])) {
-                $temp = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_INVOICE_MODE_NO;
-                $data['magento_orders_settings']['invoice_mode'] = $temp;
+                $data['magento_orders_settings']['invoice_mode'] = 0;
             }
 
             if (!isset($post['magento_orders_settings']['shipment_mode'])) {
-                $temp = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_SHIPMENT_MODE_NO;
-                $data['magento_orders_settings']['shipment_mode'] = $temp;
+                $data['magento_orders_settings']['shipment_mode'] = 0;
             }
         }
 
@@ -622,7 +614,7 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
                 $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
                 $connectorObj = $dispatcherObject->getVirtualConnector(
                     'account', 'delete', 'entity',
-                    array(), NULL, NULL, $account->getId()
+                    array(), null, null, $account->getId()
                 );
                 $dispatcherObject->process($connectorObj);
             } catch (Exception $e) {
@@ -676,11 +668,11 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             $requestData['title'] = $model->getTitle();
 
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'update', 'entity', $requestData, NULL, NULL, $id
+                'account', 'update', 'entity', $requestData, null, null, $id
             );
         } else {
             $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'add', 'entity', $requestData, NULL, NULL, NULL
+                'account', 'add', 'entity', $requestData, null, null, null
             );
         }
 
@@ -756,8 +748,6 @@ class Ess_M2ePro_Adminhtml_Ebay_AccountController extends Ess_M2ePro_Controller_
             if (Mage::helper('M2ePro/Component_Ebay_Category_Store')->isExistDeletedCategories()) {
                 $url = $this->getUrl('*/adminhtml_ebay_category/index', array('filter' => base64_encode('state=0')));
 
-        // M2ePro_TRANSLATIONS
-        // Some eBay Store Categories were deleted from eBay. Click <a target="_blank" href="%url%">here</a> to check.
                 $this->_getSession()->addWarning(
                     Mage::helper('M2ePro')->__(
                         'Some eBay Store Categories were deleted from eBay. Click '.

@@ -107,7 +107,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Magento_Product_Grid_Abstract
         return $this->callbackColumnProductId($value, $row, $column, $isExport);
     }
 
-    public function callbackColumnProductId($value, $row, $column, $isExport, $storeId = NULL)
+    public function callbackColumnProductId($value, $row, $column, $isExport, $storeId = null)
     {
         /** @var Ess_M2ePro_Model_Listing $listing */
         $listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');

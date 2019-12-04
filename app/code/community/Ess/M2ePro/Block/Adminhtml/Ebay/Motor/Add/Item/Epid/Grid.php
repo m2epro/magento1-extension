@@ -116,6 +116,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Add_Item_Epid_Grid
             )
         );
 
+        $this->addColumn(
+            'street_name', array(
+                'header' => Mage::helper('M2ePro')->__('Street Name'),
+                'align'  => 'left',
+                'type'   => 'text',
+                'index'  => 'street_name',
+                'width'  => '100px',
+                'frame_callback' => array($this, 'callbackNullableColumn')
+            )
+        );
+
         return parent::_prepareColumns();
     }
 

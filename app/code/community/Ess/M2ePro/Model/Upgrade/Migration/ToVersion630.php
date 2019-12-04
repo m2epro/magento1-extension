@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+// @codingStandardsIgnoreFile
+
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion630
 {
     const BACKUP_TABLE_PREFIX = '__backup_v630';

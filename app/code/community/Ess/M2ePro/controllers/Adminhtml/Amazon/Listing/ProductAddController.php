@@ -59,7 +59,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MogVAQ");
+        $this->setPageHelpLink(null, null, "x/MogVAQ");
 
         return $this;
     }
@@ -168,7 +168,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/N4gVAQ");
+        $this->setPageHelpLink(null, null, "x/N4gVAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_sourceProduct'))
             ->renderLayout();
@@ -213,7 +213,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/P4gVAQ");
+        $this->setPageHelpLink(null, null, "x/P4gVAQ");
 
         $gridContainer = $this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_sourceCategory');
         $this->_addContent($gridContainer);
@@ -268,7 +268,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/J4kVAQ");
+        $this->setPageHelpLink(null, null, "x/J4kVAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_searchAsin'))
             ->renderLayout();
@@ -286,7 +286,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/zYgVAQ");
+        $this->setPageHelpLink(null, null, "x/zYgVAQ");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -843,7 +843,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/zYgVAQ");
+        $this->setPageHelpLink(null, null, "x/zYgVAQ");
 
         $this->_addContent($block)->renderLayout();
     }
@@ -866,7 +866,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/zYgVAQ");
+        $this->setPageHelpLink(null, null, "x/zYgVAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_listing_add_newAsin_manual'))
              ->renderLayout();
@@ -979,14 +979,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
                     $runListingProductProcessor = true;
                 }
 
-                $listingProduct->setData('general_id', NULL);
-                $listingProduct->setData('general_id_search_info', NULL);
+                $listingProduct->setData('general_id', null);
+                $listingProduct->setData('general_id_search_info', null);
                 $listingProduct->setData(
                     'is_general_id_owner',
                     Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO
                 );
-                $listingProduct->setData('search_settings_status', NULL);
-                $listingProduct->setData('search_settings_data', NULL);
+                $listingProduct->setData('search_settings_status', null);
+                $listingProduct->setData('search_settings_data', null);
 
                 $listingProduct->save();
 
@@ -995,7 +995,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
                 }
             }
 
-            $this->setDescriptionTemplate($listingProductsIds, NULL);
+            $this->setDescriptionTemplate($listingProductsIds, null);
         }
 
         $this->getListing()->setSetting('additional_data', 'adding_category_templates_data', array());
@@ -1062,7 +1062,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
         return $this;
     }
 
-    protected function getSessionValue($key = NULL)
+    protected function getSessionValue($key = null)
     {
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey);
 
@@ -1074,14 +1074,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_ProductAddController
             return $sessionData;
         }
 
-        return isset($sessionData[$key]) ? $sessionData[$key] : NULL;
+        return isset($sessionData[$key]) ? $sessionData[$key] : null;
     }
 
     // ---------------------------------------
 
     protected function clearSession()
     {
-        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, NULL);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, null);
     }
 
     //########################################

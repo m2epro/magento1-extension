@@ -127,7 +127,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Order_Cancel extends Ess_M2ePro_Model_Cron
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'orders', 'get', 'orders',
             array('orders_ids' => $ordersIds),
-            NULL, NULL, $account
+            null, null, $account
         );
 
         $dispatcherObj->process($connectorObj);

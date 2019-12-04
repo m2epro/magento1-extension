@@ -431,24 +431,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return $incrementInstance->getNextId();
     }
 
-    public function isMagentoOrderIdUsed($orderId)
-    {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $select    = $connRead->select();
-
-        $table = Mage::getModel('sales/order')->getResource()->getMainTable();
-
-        $select->from($table, 'entity_id')->where('increment_id = :increment_id');
-
-        $result = $connRead->fetchOne($select, array(':increment_id' => $orderId));
-        if ($result > 0) {
-            return true;
-        }
-
-        return false;
-    }
-
     //########################################
 
     public function clearMenuCache()

@@ -788,7 +788,7 @@ HTML;
     protected function _toHtml()
     {
         $tempGridIds = array();
-        Mage::helper('M2ePro/Component_Ebay')->isActive() && $tempGridIds[] = $this->getId();
+        Mage::helper('M2ePro/Component_Ebay')->isEnabled() && $tempGridIds[] = $this->getId();
 
         $generalBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_order_general');
         $generalBlock->setGridIds($tempGridIds);

@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Magento_GlobalNotifications extends Ess_M2ePro_
 {
     const NICK = 'magento/global_notifications';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 86400;
+
     //########################################
 
     protected function performActions()

@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+// @codingStandardsIgnoreFile
+
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_NewProcessing extends Ess_M2ePro_Model_Upgrade_Migration_Abstract
 {
     //########################################
@@ -56,7 +58,7 @@ SQL
         }
 
         $this->_installer->getTableModifier('processing_lock')
-                         ->addColumn('processing_id', 'INT(11) UNSIGNED NOT NULL', NULL, 'id', true, false)
+                         ->addColumn('processing_id', 'INT(11) UNSIGNED NOT NULL', null, 'id', true, false)
                          ->dropColumn('description', true, false)
                          ->commit();
 
@@ -121,7 +123,7 @@ SQL
             ? 'M2ePro/Amazon_Connector_Product_List_ProcessingRunner'
             : 'M2ePro/Amazon_Connector_Product_ProcessingRunner';
 
-        $processingActionType = NULL;
+        $processingActionType = null;
         switch ($responserParams['action_type']) {
             case 1:
                 $processingActionType = 'add';
@@ -181,7 +183,7 @@ SQL
                 'params' => json_encode(
                     array(
                     'component'            => 'Amazon',
-                    'server_hash'          => NULL,
+                    'server_hash'          => null,
                     'account_id'           => $responserParams['account_id'],
                     'request_data'         => $request,
                     'configurator'         => $configurator,
@@ -264,9 +266,9 @@ SQL
                 break;
 
             default:
-                $actionType = NULL;
-                $lockName = NULL;
-                $responserModelName = NULL;
+                $actionType = null;
+                $lockName = null;
+                $responserModelName = null;
         }
 
         $ordersIds = array();
@@ -296,7 +298,7 @@ WHERE `id` IN ({$ordersIds});
 
             $accountId = isset($orderToAccountMap[$responserParamsItem['order_id']])
                 ? $orderToAccountMap[$responserParamsItem['order_id']]
-                : NULL;
+                : null;
 
             // -- Processing
             $processingData = array(
@@ -304,7 +306,7 @@ WHERE `id` IN ({$ordersIds});
                 'params' => json_encode(
                     array(
                     'component'    => 'Amazon',
-                    'server_hash'  => NULL,
+                    'server_hash'  => null,
                     'account_id'   => $accountId,
                     'request_data' => $requestItem,
                     'order_id'     => $responserParamsItem['order_id'],

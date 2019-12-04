@@ -33,6 +33,13 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_ChangeProcessor
             );
         }
 
+        if ($diff->isLagTimeDifferent()) {
+            $data[] = array(
+                'type'      => self::INSTRUCTION_TYPE_LAG_TIME_DATA_CHANGED,
+                'priority'  => 60,
+            );
+        }
+
         if ($diff->isPriceDifferent()) {
             $priority = 5;
 

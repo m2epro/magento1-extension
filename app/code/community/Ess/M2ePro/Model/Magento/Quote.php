@@ -70,7 +70,13 @@ class Ess_M2ePro_Model_Magento_Quote
             $this->prepareOrderNumber();
             // ---------------------------------------
         } catch (Exception $e) {
-            $this->_quote->setIsActive(false)->save();
+
+            // Remove ordered items from customer cart
+            $this->_quote->setIsActive(false);
+            $this->_quote->removeAllAddresses();
+            $this->_quote->removeAllItems();
+
+            $this->_quote->save();
             throw $e;
         }
     }
@@ -281,37 +287,22 @@ class Ess_M2ePro_Model_Magento_Quote
     protected function prepareOrderNumber()
     {
         if ($this->_proxyOrder->isOrderNumberPrefixSourceChannel()) {
-            $orderNumber = $this->addPrefixToOrderNumberIfNeed($this->_proxyOrder->getChannelOrderNumber());
-            if (Mage::helper('M2ePro/Magento')->isMagentoOrderIdUsed($orderNumber)) {
-                $orderNumber .= '(1)';
-            }
+            $orderNumber = $this->_proxyOrder->getOrderNumberPrefix() . $this->_proxyOrder->getChannelOrderNumber();
+            $this->_quote->getResource()->isOrderIncrementIdUsed($orderNumber) && $orderNumber .= '(1)';
 
             $this->_quote->setReservedOrderId($orderNumber);
             return;
         }
 
         $orderNumber = $this->_quote->getReservedOrderId();
-        if (empty($orderNumber)) {
-            $orderNumber = $this->_quote->getResource()->getReservedOrderId($this->_quote);
-        }
-
-        $orderNumber = $this->addPrefixToOrderNumberIfNeed($orderNumber);
+        empty($orderNumber) && $orderNumber = $this->_quote->getResource()->getReservedOrderId($this->_quote);
+        $orderNumber = $this->_proxyOrder->getOrderNumberPrefix() . $orderNumber;
 
         if ($this->_quote->getResource()->isOrderIncrementIdUsed($orderNumber)) {
             $orderNumber = $this->_quote->getResource()->getReservedOrderId($this->_quote);
         }
 
         $this->_quote->setReservedOrderId($orderNumber);
-    }
-
-    protected function addPrefixToOrderNumberIfNeed($orderNumber)
-    {
-        $prefix = $this->_proxyOrder->getOrderNumberPrefix();
-        if (empty($prefix)) {
-            return $orderNumber;
-        }
-
-        return $prefix.$orderNumber;
     }
 
     //########################################

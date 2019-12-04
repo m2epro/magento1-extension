@@ -270,42 +270,40 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid_Abstract
             )
         );
 
-        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            $templateSynch = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION;
+        $templateSynch = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION;
 
-            $this->addColumn(
-                'synch_settings', array(
-                'header'=> Mage::helper('catalog')->__('Synchronization'),
-                'width' => '170px',
-                'type'  => 'options',
-                'sortable'  => false,
-                'options' => array(
-                    Mage::helper('M2ePro')->jsonEncode(
-                        array(
-                        'mode'     => $modeParent,
-                        'template' => $templateSynch
-                        )
-                    ) => Mage::helper('M2ePro')->__('Use from Listing Settings'),
+        $this->addColumn(
+            'synch_settings', array(
+            'header'=> Mage::helper('catalog')->__('Synchronization'),
+            'width' => '170px',
+            'type'  => 'options',
+            'sortable'  => false,
+            'options' => array(
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'mode'     => $modeParent,
+                    'template' => $templateSynch
+                    )
+                ) => Mage::helper('M2ePro')->__('Use from Listing Settings'),
 
-                    Mage::helper('M2ePro')->jsonEncode(
-                        array(
-                        'mode'     => $modeCustom,
-                        'template' => $templateSynch
-                        )
-                    ) => Mage::helper('M2ePro')->__('Custom Settings'),
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'mode'     => $modeCustom,
+                    'template' => $templateSynch
+                    )
+                ) => Mage::helper('M2ePro')->__('Custom Settings'),
 
-                    Mage::helper('M2ePro')->jsonEncode(
-                        array(
-                        'mode'     => $modeTemplate,
-                        'template' => $templateSynch
-                        )
-                    ) => Mage::helper('M2ePro')->__('Policies'),
-                ),
-                'filter_condition_callback' => array($this, 'callbackFilterSettings'),
-                'frame_callback' => array($this, 'callbackColumnSynchSettings')
-                )
-            );
-        }
+                Mage::helper('M2ePro')->jsonEncode(
+                    array(
+                    'mode'     => $modeTemplate,
+                    'template' => $templateSynch
+                    )
+                ) => Mage::helper('M2ePro')->__('Policies'),
+            ),
+            'filter_condition_callback' => array($this, 'callbackFilterSettings'),
+            'frame_callback' => array($this, 'callbackColumnSynchSettings')
+            )
+        );
 
         $this->addColumn(
             'actions', array(
@@ -611,10 +609,6 @@ HTML;
                 'onclick_action' => 'EbayListingSettingsGridHandlerObj.actions[\'editGeneralSettingsAction\']'
             )
         );
-
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            unset($actions['editSynchSettings']);
-        }
 
         return $actions;
     }

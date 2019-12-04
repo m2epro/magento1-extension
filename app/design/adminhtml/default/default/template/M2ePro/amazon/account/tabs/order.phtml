@@ -19,7 +19,7 @@
             Moreover, you can provide the settings for <strong>Orders fulfilled by Amazon</strong>. Specify whether the corresponding Magento Order has to be created or not. Additionally, you are able to reduce Magento Stock taking into account the FBA Orders.<br/><br/>
             Besides, you can set your preferences for the <strong>Refund & Cancellation, Tax, Customer, Order Number</strong> and <strong>Order Status Mapping</strong> Settings as well as specify the automatic creation of invoices and shipment notifications.<br/><br/>
             More detailed information you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/3oIVAQ')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/3oIVAQ')
         );
     ?>
 </div>
@@ -31,33 +31,36 @@
     $defaults = array(
         'magento_orders_settings' => array(
             'listing' => array(
-                'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES,
+                'mode' => 1,
                 'store_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT,
-                'store_id' => NULL
+                'store_id' => null
             ),
             'listing_other' => array(
-                'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES,
+                'mode' => 1,
                 'product_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT,
                 'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
-                'store_id' => NULL,
+                'store_id' => null,
             ),
             'number' => array(
                 'source' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,
                 'prefix' => array(
-                    'mode'   => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO,
-                    'prefix' => '',
+                    'mode'         => 0,
+                    'prefix'       => '',
+                    'afn-prefix'   => '',
+                    'prime-prefix' => '',
+                    'b2b-prefix'   => '',
                 ),
-                'apply_to_amazon' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_APPLY_TO_AMAZON_MODE_NO
+                'apply_to_amazon' => 0
             ),
             'tax' => array(
                 'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_TAX_MODE_MIXED
             ),
             'customer' => array(
                 'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
-                'id' => NULL,
-                'website_id' => NULL,
-                'group_id' => NULL,
-//                'subscription_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO,
+                'id' => null,
+                'website_id' => null,
+                'group_id' => null,
+//                'subscription_mode' => 0,
                 'notifications' => array(
 //                    'customer_created' => false,
                     'invoice_created' => false,
@@ -77,11 +80,11 @@
                 'refund_mode' => 1,
             ),
             'fba' => array(
-                'mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_MODE_YES,
-                'stock_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_STOCK_MODE_NO
+                'mode'       => 1,
+                'stock_mode' => 0
             ),
-            'invoice_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_INVOICE_MODE_YES,
-            'shipment_mode' => Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES
+            'invoice_mode'  => 1,
+            'shipment_mode' => 1
         )
     );
 
@@ -99,46 +102,49 @@
     //-----------------------------
     M2ePro.translator.add(<?php echo json_encode(array(
         'No Customer entry is found for specified ID.' => Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
-        'Prefix length should not be greater than 5 characters.' => Mage::helper('M2ePro')->__('Prefix length should not be greater than 5 characters.')
     )); ?>);
-
-    M2ePro.formData.magento_orders_listings_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['mode']); ?>';
-    M2ePro.formData.magento_orders_listings_store_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['store_mode']); ?>';
-    M2ePro.formData.magento_orders_listings_store_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['store_id']); ?>';
-
-    M2ePro.formData.magento_orders_listings_other_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['mode']); ?>';
-    M2ePro.formData.magento_orders_listings_other_store_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['store_id']); ?>';
-    M2ePro.formData.magento_orders_listings_other_product_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['product_mode']); ?>';
-
-    M2ePro.formData.magento_orders_customer_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['mode']); ?>';
-    M2ePro.formData.magento_orders_customer_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['id']); ?>';
-    M2ePro.formData.magento_orders_customer_new_website_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['website_id']); ?>';
-    M2ePro.formData.magento_orders_customer_new_group_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['group_id']); ?>';
-<!--    M2ePro.formData.magento_orders_customer_new_newsletter_mode = '--><?php //echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['subscription_mode']); ?><!--';-->
 
     Event.observe(window, 'load', function() {
 
-        setTimeout(function() {
-            $('magento_orders_listings_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsModeChange);
-            $('magento_orders_listings_store_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsStoreModeChange);
+        $('magento_orders_listings_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsModeChange);
+        $('magento_orders_listings_store_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsStoreModeChange);
 
-            $('magento_orders_listings_other_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsOtherModeChange);
-            $('magento_orders_listings_other_product_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsOtherProductModeChange);
+        $('magento_orders_listings_other_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsOtherModeChange);
+        $('magento_orders_listings_other_product_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersListingsOtherProductModeChange);
 
-            $('magento_orders_number_source').observe('change', AmazonAccountHandlerObj.magentoOrdersNumberSourceChange);
-            $('magento_orders_number_prefix_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersNumberPrefixModeChange);
-            $('magento_orders_number_prefix_prefix').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
-            AmazonAccountHandlerObj.renderOrderNumberExample();
+        $('magento_orders_number_source').observe('change', AmazonAccountHandlerObj.magentoOrdersNumberSourceChange);
 
-            $('magento_orders_fba_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersFbaModeChange);
+        $('magento_orders_number_prefix_mode')
+            .observe('change', AmazonAccountHandlerObj.magentoOrdersNumberPrefixModeChange)
+            .simulate('change');
 
-            $('magento_orders_customer_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersCustomerModeChange);
-            $('magento_orders_status_mapping_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersStatusMappingModeChange);
-        }, 350);
+        $('magento_orders_number_prefix_prefix').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
+        $('magento_orders_number_prefix_afn').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
+        $('magento_orders_number_prefix_prime').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
+        $('magento_orders_number_prefix_b2b').observe('keyup', AmazonAccountHandlerObj.magentoOrdersNumberPrefixPrefixChange);
+
+        $('magento_orders_fba_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersFbaModeChange);
+
+        $('magento_orders_customer_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersCustomerModeChange);
+        $('magento_orders_status_mapping_mode').observe('change', AmazonAccountHandlerObj.magentoOrdersStatusMappingModeChange);
     });
     //-----------------------------
 
 </script>
+
+<style>
+    .magento_orders_number_prefixes {
+        border-collapse: collapse;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    .magento_orders_number_prefixes tr.headings th {
+        border: 1px solid #d1cfcf !important;
+    }
+    .magento_orders_number_prefixes td input {
+        width: 230px !important;
+    }
+</style>
 
 <div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_listings">
 
@@ -157,8 +163,8 @@
                     </td>
                     <td class="value">
                         <select id="magento_orders_listings_mode" name="magento_orders_settings[listing][mode]" class="M2ePro-required-when-visible">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['listing']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['listing']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Whether an Order has to be created in Magento if a sold Product belongs to M2E Pro Listings.'); ?></span>
@@ -166,7 +172,7 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_listings_store_mode_container" <?php if($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO) echo 'style="display: none;"'; ?>>
+                <tr id="magento_orders_listings_store_mode_container" <?php if($formData['magento_orders_settings']['listing']['mode'] == 0) echo 'style="display: none;"'; ?>>
                     <td class="label">
                         <label for="magento_orders_listings_store_mode"><?php echo Mage::helper('M2ePro')->__('Store View Source'); ?>:</label>
                     </td>
@@ -217,8 +223,8 @@
                     </td>
                     <td class="value">
                         <select id="magento_orders_listings_other_mode" name="magento_orders_settings[listing_other][mode]" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Whether an Order has to be created in Magento if a sold Product does not belong to M2E Pro Listings.'); ?></span>
@@ -226,7 +232,7 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_listings_other_store_id_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo 'style="display: none;"'; ?>>
+                <tr id="magento_orders_listings_other_store_id_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == 0) echo 'style="display: none;"'; ?>>
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Store View'); ?>: <span class="required">*</span></label>
                     </td>
@@ -238,7 +244,7 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_listings_other_product_mode_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo 'style="display: none;"'; ?>>
+                <tr id="magento_orders_listings_other_product_mode_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == 0) echo 'style="display: none;"'; ?>>
                     <td class="label">
                         <label for="magento_orders_listings_other_product_mode"><?php echo Mage::helper('M2ePro')->__('Product Not Found'); ?>:</label>
                     </td>
@@ -278,7 +284,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_number" <?php if(($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_number" <?php if(($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Magento Order Number'); ?></h4>
@@ -314,8 +320,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="magento_orders_number_prefix_mode" name="magento_orders_settings[number][prefix][mode]" class="M2ePro-required-when-visible">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Choose to set the prefix before Magento Order number.'); ?></span>
@@ -323,31 +329,60 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_number_prefix_container" <?php if($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO) echo 'style="display: none;"'; ?>>
-                    <td class="label">
-                        <label for="magento_orders_customer_id"><?php echo Mage::helper('M2ePro')->__('Prefix'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value" style="width: auto;">
-                        <input id="magento_orders_number_prefix_prefix" maxlength="5" name="magento_orders_settings[number][prefix][prefix]" value="<?php echo $this->escapeHtml($formData['magento_orders_settings']['number']['prefix']['prefix']); ?>" type="text" class="M2ePro-required-when-visible M2ePro-account-order-number-prefix input-text" />
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Enter the prefix to be set before Magento Order number.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
+            </table>
 
-                <tr>
-                    <td class="label">
-                        <label></label>
-                    </td>
-                    <td class="value" style="width: auto;">
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr id="magento_orders_number_prefix_container">
+                    <td class="grid">
+
                         <input type="hidden" id="sample_magento_order_id" value="<?php echo Mage::helper('M2ePro/Magento')->getNextMagentoOrderId(); ?>" />
                         <input type="hidden" id="sample_amazon_order_id" value="141-4423723-6495633" />
 
-                        <p class="note note-no-tool-tip">
-                            <?php echo Mage::helper('M2ePro')->__('e.g.'); ?> <strong><span id="order_number_example_container"></span></strong>
-                        </p>
+                        <table class="magento_orders_number_prefixes">
+                            <thead>
+                                <tr class="headings">
+                                    <th><span><?php echo Mage::helper('M2ePro')->__('General'); ?></span></th>
+                                    <th><span><?php echo Mage::helper('M2ePro')->__('FBA'); ?></span></th>
+                                    <th><span><?php echo Mage::helper('M2ePro')->__('Prime'); ?></span></th>
+                                    <th><span><?php echo Mage::helper('M2ePro')->__('B2B'); ?></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input id="magento_orders_number_prefix_prefix" maxlength="5" name="magento_orders_settings[number][prefix][prefix]" value="<?php echo $this->escapeHtml(!empty($formData['magento_orders_settings']['number']['prefix']['prefix']) ? $formData['magento_orders_settings']['number']['prefix']['prefix'] : ''); ?>" type="text" class="input-text" />
+                                        <p class="note note-no-tool-tip">
+                                            <?php echo Mage::helper('M2ePro')->__('e.g.'); ?> <strong><span id="order_number_example_container_regular"></span></strong>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <input id="magento_orders_number_prefix_afn" maxlength="5" name="magento_orders_settings[number][prefix][afn-prefix]" value="<?php echo $this->escapeHtml(!empty($formData['magento_orders_settings']['number']['prefix']['afn-prefix']) ? $formData['magento_orders_settings']['number']['prefix']['afn-prefix'] : ''); ?>" type="text" class="input-text" />
+                                        <p class="note note-no-tool-tip">
+                                            <?php echo Mage::helper('M2ePro')->__('e.g.'); ?> <strong><span id="order_number_example_container_afn"></span></strong>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <input id="magento_orders_number_prefix_prime" maxlength="5" name="magento_orders_settings[number][prefix][prime-prefix]" value="<?php echo $this->escapeHtml(!empty($formData['magento_orders_settings']['number']['prefix']['prime-prefix']) ? $formData['magento_orders_settings']['number']['prefix']['prime-prefix'] : ''); ?>" type="text" class="input-text" />
+                                        <p class="note note-no-tool-tip">
+                                            <?php echo Mage::helper('M2ePro')->__('e.g.'); ?> <strong><span id="order_number_example_container_prime"></span></strong>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <input id="magento_orders_number_prefix_b2b" maxlength="5" name="magento_orders_settings[number][prefix][b2b-prefix]" value="<?php echo $this->escapeHtml(!empty($formData['magento_orders_settings']['number']['prefix']['b2b-prefix']) ? $formData['magento_orders_settings']['number']['prefix']['b2b-prefix'] : ''); ?>" type="text" class="input-text" />
+                                        <p class="note note-no-tool-tip">
+                                            <?php echo Mage::helper('M2ePro')->__('e.g.'); ?> <strong><span id="order_number_example_container_b2b"></span></strong>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </td>
                 </tr>
+
+            </table>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
 
                 <tr>
                     <td class="label">
@@ -355,8 +390,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="magento_orders_number_apply_to_amazon" name="magento_orders_settings[number][apply_to_amazon]" class="M2ePro-required-when-visible">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_APPLY_TO_AMAZON_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['number']['apply_to_amazon'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_APPLY_TO_AMAZON_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_APPLY_TO_AMAZON_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['number']['apply_to_amazon'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_NUMBER_APPLY_TO_AMAZON_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['number']['apply_to_amazon'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['number']['apply_to_amazon'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Set \'Yes\' to use Magento Order number as Your Seller Order ID in Amazon Order details.'); ?></span>
@@ -371,7 +406,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_rules" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_rules" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Quantity Reservation'); ?></h4>
@@ -416,7 +451,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_refund_and_cancellation" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_refund_and_cancellation" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Refund & Cancellation'); ?></h4>
@@ -454,7 +489,7 @@
 
 </div>
 
-<?php $canShowBlock = (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES || $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES)); ?>
+<?php $canShowBlock = (($formData['magento_orders_settings']['listing']['mode'] == 1 || $formData['magento_orders_settings']['listing_other']['mode'] == 1)); ?>
 <div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_fba" <?php if (!$canShowBlock): ?>style="display: none;"<?php endif; ?>>
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('FBA Orders Settings'); ?></h4>
@@ -480,8 +515,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="magento_orders_fba_mode" name="magento_orders_settings[fba][mode]" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['fba']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['fba']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['fba']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['fba']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Whether an Order has to be created in Magento if a sold Product is fulfilled by Amazon.'); ?></span>
@@ -489,15 +524,15 @@
                     </td>
                 </tr>
 
-                <?php $canShowBlock = $formData['magento_orders_settings']['fba']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_MODE_YES; ?>
+                <?php $canShowBlock = $formData['magento_orders_settings']['fba']['mode'] == 1 ?>
                 <tr id="magento_orders_fba_stock_mode_container" <?php if (!$canShowBlock): ?>style="display: none;"<?php endif; ?>>
                     <td class="label">
                         <label for="magento_orders_fba_stock_mode"><?php echo Mage::helper('M2ePro')->__('Manage Stock'); ?>:</label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="magento_orders_fba_stock_mode" name="magento_orders_settings[fba][stock_mode]" class="M2ePro-required-when-visible">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_STOCK_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_STOCK_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_STOCK_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_FBA_STOCK_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['fba']['stock_mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('If <i>Yes</i>, after Magento Order Creation QTY of Magento Product reduces.'); ?></span>
@@ -512,7 +547,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_customer" <?php if(($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_customer" <?php if(($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Customer Settings'); ?></h4>
@@ -653,7 +688,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_tax" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_tax" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Tax Settings'); ?></h4>
@@ -697,7 +732,7 @@
 
 <?php $statusList = $this->getMagentoOrderStatusList(); ?>
 
-<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_status_mapping" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_amazon_accounts_magento_orders_status_mapping" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Status Mapping'); ?></h4>
@@ -731,8 +766,8 @@
                         $formData['magento_orders_settings']['status_mapping']['processing'] = Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING;
                         $formData['magento_orders_settings']['status_mapping']['shipped'] = Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED;
 
-                        $formData['magento_orders_settings']['invoice_mode'] = Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_INVOICE_MODE_YES;
-                        $formData['magento_orders_settings']['shipment_mode'] = Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES;
+                        $formData['magento_orders_settings']['invoice_mode'] = 1;
+                        $formData['magento_orders_settings']['shipment_mode'] = 1;
                     }
                 ?>
 
@@ -748,7 +783,7 @@
                         </select>
                     </td>
                     <td class="value">
-                        <input id="magento_orders_invoice_mode" name="magento_orders_settings[invoice_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['invoice_mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_INVOICE_MODE_YES) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
+                        <input id="magento_orders_invoice_mode" name="magento_orders_settings[invoice_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['invoice_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
                         <label for="magento_orders_invoice_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Invoice Creation'); ?></label>
                     </td>
                 </tr>
@@ -765,7 +800,7 @@
                         </select>
                     </td>
                     <td class="value">
-                        <input id="magento_orders_shipment_mode" name="magento_orders_settings[shipment_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['shipment_mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
+                        <input id="magento_orders_shipment_mode" name="magento_orders_settings[shipment_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Amazon_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['shipment_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
                         <label for="magento_orders_shipment_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Shipment Creation');?></label>
                     </td>
                 </tr>

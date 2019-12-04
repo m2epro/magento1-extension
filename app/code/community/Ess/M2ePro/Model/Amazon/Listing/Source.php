@@ -129,7 +129,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         $src = $this->getAmazonListing()->getGeneralIdSource();
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_NOT_SET) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE) {
@@ -151,7 +151,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         $src = $this->getAmazonListing()->getWorldwideIdSource();
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::WORLDWIDE_ID_MODE_NOT_SET) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Listing::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE) {
@@ -368,7 +368,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
      */
     public function getGiftWrap()
     {
-        $result = NULL;
+        $result = null;
         $src = $this->getAmazonListing()->getGiftWrapSource();
 
         if ($this->getAmazonListing()->isGiftWrapModeYes()) {
@@ -399,7 +399,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
      */
     public function getGiftMessage()
     {
-        $result = NULL;
+        $result = null;
         $src = $this->getAmazonListing()->getGiftMessageSource();
 
         if ($this->getAmazonListing()->isGiftMessageModeYes()) {

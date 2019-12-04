@@ -56,14 +56,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings extends Mage_Adminhtml_Bl
         // ---------------------------------------
 
         // ---------------------------------------
-        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            $this->_addButton(
-                'auto_action', array(
-                'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
-                'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
-                )
-            );
-        }
+        $this->_addButton(
+            'auto_action', array(
+            'label'     => Mage::helper('M2ePro')->__('Auto Add/Remove Rules'),
+            'onclick'   => 'ListingAutoActionHandlerObj.loadAutoActionHtml();'
+            )
+        );
 
         // ---------------------------------------
 

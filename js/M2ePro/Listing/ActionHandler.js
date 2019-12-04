@@ -308,45 +308,6 @@ ListingActionHandler = Class.create(ActionHandler, {
             M2ePro.url.previewItems + 'productIds/' + implode(',', orderedSelectedProductsArray)
                                     + '/currentProductId/' + orderedSelectedProductsArray[0]
         );
-    },
-
-    startTranslateAction: function()
-    {
-        var selectedProductsParts = this.gridHandler.getSelectedItemsParts(100);
-        if (selectedProductsParts.length == 0) {
-            return;
-        }
-
-        var self = this;
-        EbayListingTransferringTranslateHandlerObj.loadActionHtml(
-            self.gridHandler.getSelectedProductsArray(),
-            function() {
-                self.startActions(
-                    self.options.text.start_translate_selected_items_message,
-                    self.options.url.runStartTranslateProducts,
-                    selectedProductsParts
-                );
-            }, function() {
-                self.gridHandler.unselectAll();
-        });
-    },
-
-    stopTranslateAction: function()
-    {
-        if (!confirm(M2ePro.translator.translate('Are you sure?'))) {
-            return;
-        }
-
-        var selectedProductsParts = this.gridHandler.getSelectedItemsParts(100);
-        if (selectedProductsParts.length == 0) {
-            return;
-        }
-
-        this.startActions(
-            this.options.text.stop_translate_selected_items_message,
-            this.options.url.runStopTranslateProducts,
-            selectedProductsParts
-        );
     }
 
     // ---------------------------------------

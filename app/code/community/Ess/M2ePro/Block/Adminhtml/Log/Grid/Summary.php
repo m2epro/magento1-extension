@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+use Ess_M2ePro_Model_Log_Abstract as LogModel;
+
 class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_Widget
 {
     const VIEW_LOG_LINK_SHOW = 0;
@@ -15,16 +17,20 @@ class Ess_M2ePro_Block_Adminhtml_Log_Grid_Summary extends Mage_Adminhtml_Block_W
     protected $_iconSrc = null;
     protected $_rows    = array();
 
+    public static $actionsSortOrder = array(
+        LogModel::TYPE_SUCCESS  => 1,
+        LogModel::TYPE_ERROR    => 2,
+        LogModel::TYPE_WARNING  => 3,
+        LogModel::TYPE_NOTICE   => 4,
+    );
+
     //########################################
 
     public function __construct()
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('logGridSummary');
-        // ---------------------------------------
 
         $this->setTemplate('M2ePro/log/grid/summary.phtml');
     }

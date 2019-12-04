@@ -102,7 +102,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_CreateFailed
                     array(
                     'magento_order_creation_failure' => Ess_M2ePro_Model_Order::MAGENTO_ORDER_CREATION_FAILED_NO,
                     'magento_order_creation_fails_count' => 0,
-                    'magento_order_creation_latest_attempt_date' => NULL
+                    'magento_order_creation_latest_attempt_date' => null
                     )
                 );
                 $order->save();

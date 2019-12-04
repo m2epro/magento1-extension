@@ -16,7 +16,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     protected function check()
     {
-        if (empty($this->getProcessor()->getTypeModel()->getChildListingsProducts())) {
+        $products = $this->getProcessor()->getTypeModel()->getChildListingsProducts();
+        if (empty($products)) {
             return;
         }
 

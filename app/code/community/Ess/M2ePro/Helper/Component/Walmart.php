@@ -57,7 +57,7 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
         );
 
         if (!isset($statuses[$status])) {
-            return NULL;
+            return null;
         }
 
         return $statuses[$status];
@@ -70,17 +70,7 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
         return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/component/'.self::NICK.'/', 'mode');
     }
 
-    public function isAllowed()
-    {
-        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/component/'.self::NICK.'/', 'allowed');
-    }
-
-    public function isActive()
-    {
-        return $this->isEnabled() && $this->isAllowed();
-    }
-
-    public function isObject($modelName, $value, $field = NULL)
+    public function isObject($modelName, $value, $field = null)
     {
         $mode = Mage::helper('M2ePro/Component')->getComponentMode($modelName, $value, $field);
         return $mode !== null && $mode == self::NICK;
@@ -93,18 +83,22 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro/Component')->getComponentModel(self::NICK, $modelName);
     }
 
-    public function getObject($modelName, $value, $field = NULL)
+    public function getObject($modelName, $value, $field = null)
     {
         return Mage::helper('M2ePro/Component')->getComponentObject(self::NICK, $modelName, $value, $field);
     }
 
-    public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
+    public function getCachedObject($modelName, $value, $field = null, array $tags = array())
     {
         return Mage::helper('M2ePro/Component')->getCachedComponentObject(
             self::NICK, $modelName, $value, $field, $tags
         );
     }
 
+    /**
+     * @param $modelName
+     * @return Ess_M2ePro_Model_Resource_Collection_Abstract
+     */
     public function getCollection($modelName)
     {
         return $this->getModel($modelName)->getCollection();
@@ -131,7 +125,7 @@ class Ess_M2ePro_Helper_Component_Walmart extends Mage_Core_Helper_Abstract
         return $url;
     }
 
-    public function getItemUrl($productItemId, $marketplaceId = NULL)
+    public function getItemUrl($productItemId, $marketplaceId = null)
     {
         $marketplaceId = (int)$marketplaceId;
         $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_US;

@@ -11,22 +11,6 @@
  */
 class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Magento Order was not created. Reason: %msg%
-    // Magento Order #%order_id% was created.
-    // Payment Transaction was not created. Reason: %msg%
-    // Invoice was not created. Reason: %msg%
-    // Invoice #%invoice_id% was created.
-    // Shipment was not created. Reason: %msg%
-    // Shipment #%shipment_id% was created.
-    // Tracking details were not imported. Reason: %msg%
-    // Tracking details were imported.
-    // Magento Order #%order_id% was canceled.
-    // Magento Order #%order_id% was not canceled. Reason: %msg%
-    // Store does not exist.
-    // Payment method "M2E Pro Payment" is disabled in Magento Configuration.
-    // Shipping method "M2E Pro Shipping" is disabled in Magento Configuration.
-
     const ADDITIONAL_DATA_KEY_IN_ORDER = 'm2epro_order';
 
     const MAGENTO_ORDER_CREATION_FAILED_NO  = 0;
@@ -51,7 +35,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     /** @var Ess_M2ePro_Model_Order_Log */
     protected $_logModel = null;
 
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -82,10 +66,10 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
              ->addFieldToFilter('order_id', $this->getId())
              ->walk('deleteInstance');
 
-        $this->_account         = NULL;
-        $this->_magentoOrder    = NULL;
-        $this->_itemsCollection = NULL;
-        $this->_proxy           = NULL;
+        $this->_account         = null;
+        $this->_magentoOrder    = null;
+        $this->_itemsCollection = null;
+        $this->_proxy           = null;
 
         $this->delete();
 
@@ -235,7 +219,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         return $this->_logModel;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Resource_Order_Item_Collection
@@ -390,7 +374,7 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     public function getMagentoOrder()
     {
         if ($this->getMagentoOrderId() === null) {
-            return NULL;
+            return null;
         }
 
         if ($this->_magentoOrder === null) {

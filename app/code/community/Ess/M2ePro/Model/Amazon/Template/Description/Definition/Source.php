@@ -101,7 +101,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         $src = $this->getDescriptionDefinitionTemplate()->getBrandSource();
 
         if ($this->getDescriptionDefinitionTemplate()->isBrandModeNone()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getDescriptionDefinitionTemplate()->isBrandModeCustomValue()) {
@@ -120,7 +120,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         $src = $this->getDescriptionDefinitionTemplate()->getItemPackageQuantitySource();
 
         if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeNone()) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeCustomValue()) {
@@ -143,7 +143,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         $src = $this->getDescriptionDefinitionTemplate()->getNumberOfItemsSource();
 
         if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeNone()) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeCustomValue()) {
@@ -160,12 +160,12 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
     /**
      * @return float|null
      */
-    public function getMsrpRrp($storeForConvertingAttributeTypePrice = NULL)
+    public function getMsrpRrp($storeForConvertingAttributeTypePrice = null)
     {
         $result = '';
 
         if ($this->getDescriptionDefinitionTemplate()->isMsrpRrpModeNone()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getDescriptionDefinitionTemplate()->isMsrpRrpModeCustomAttribute()) {
@@ -301,7 +301,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         $src = $this->getDescriptionDefinitionTemplate()->getManufacturerSource();
 
         if ($this->getDescriptionDefinitionTemplate()->isManufacturerModeNone()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getDescriptionDefinitionTemplate()->isManufacturerModeCustomValue()) {
@@ -319,7 +319,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         $src = $this->getDescriptionDefinitionTemplate()->getManufacturerPartNumberSource();
 
         if ($this->getDescriptionDefinitionTemplate()->isManufacturerPartNumberModeNone()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getDescriptionDefinitionTemplate()->isManufacturerPartNumberModeCustomValue()) {
@@ -366,7 +366,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
      */
     public function getItemDimensionsVolumeUnitOfMeasure()
     {
-        $unitOfMeasure = NULL;
+        $unitOfMeasure = null;
 
         if ($this->getDescriptionDefinitionTemplate()->isItemDimensionsVolumeModeNone()) {
             return $unitOfMeasure;
@@ -435,7 +435,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
      */
     public function getPackageDimensionsVolumeUnitOfMeasure()
     {
-        $unitOfMeasure = NULL;
+        $unitOfMeasure = null;
 
         if ($this->getDescriptionDefinitionTemplate()->isPackageDimensionsVolumeModeNone()) {
             return $unitOfMeasure;
@@ -495,7 +495,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
      */
     protected function getWeight($weightType)
     {
-        $src = NULL;
+        $src = null;
 
         switch ($weightType) {
             case self::WEIGHT_TYPE_ITEM_DIMENSIONS:
@@ -512,7 +512,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         }
 
         if (!$src || $src['mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_MODE_NONE) {
-            return NULL;
+            return null;
         }
 
         $weight = $src['mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_MODE_CUSTOM_VALUE
@@ -531,7 +531,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
     protected function getWeightUnitOfMeasure($weightType)
     {
-        $src = NULL;
+        $src = null;
 
         switch ($weightType) {
             case self::WEIGHT_TYPE_ITEM_DIMENSIONS:
@@ -548,7 +548,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         }
 
         if (!$src) {
-            return NULL;
+            return null;
         }
 
         $tValue = Ess_M2ePro_Model_Amazon_Template_Description_Definition::WEIGHT_UNIT_OF_MEASURE_MODE_CUSTOM_VALUE;
@@ -561,7 +561,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
             return trim($this->getMagentoProduct()->getAttributeValue($src['custom_attribute']));
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################

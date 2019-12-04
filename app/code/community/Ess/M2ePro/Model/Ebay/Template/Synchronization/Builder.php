@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
     public function build(array $data)
     {
         if (empty($data)) {
-            return NULL;
+            return null;
         }
 
         $this->validate($data);
@@ -39,11 +39,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
     {
         $prepared = parent::prepareData($data);
 
-        $isSimpleMode = Mage::helper('M2ePro/View_Ebay')->isSimpleMode();
-
-        $defaultData = $isSimpleMode
-            ? Mage::getSingleton('M2ePro/Ebay_Template_Synchronization')->getDefaultSettingsSimpleMode()
-            : Mage::getSingleton('M2ePro/Ebay_Template_Synchronization')->getDefaultSettingsAdvancedMode();
+        $defaultData =  Mage::getSingleton('M2ePro/Ebay_Template_Synchronization')->getDefaultSettings();
 
         $data = Mage::helper('M2ePro')->arrayReplaceRecursive($defaultData, $data);
 
@@ -99,6 +95,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
         if (isset($data['list_qty_calculated_value_max'])) {
             $prepared['list_qty_calculated_value_max'] = (int)$data['list_qty_calculated_value_max'];
         }
+
+        if (isset($data['list_advanced_rules_mode'])) {
+            $prepared['list_advanced_rules_mode'] = (int)$data['list_advanced_rules_mode'];
+        }
+
+        $prepared['list_advanced_rules_filters'] = $this->getRuleData(
+            Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_ADVANCED_RULES_PREFIX
+        );
 
         return $prepared;
     }
@@ -215,6 +219,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
             $prepared['relist_qty_calculated_value_max'] = (int)$data['relist_qty_calculated_value_max'];
         }
 
+        if (isset($data['relist_advanced_rules_mode'])) {
+            $prepared['relist_advanced_rules_mode'] = (int)$data['relist_advanced_rules_mode'];
+        }
+
+        $prepared['relist_advanced_rules_filters'] = $this->getRuleData(
+            Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_ADVANCED_RULES_PREFIX
+        );
+
         return $prepared;
     }
 
@@ -258,7 +270,31 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
             $prepared['stop_qty_calculated_value_max'] = (int)$data['stop_qty_calculated_value_max'];
         }
 
+        if (isset($data['stop_advanced_rules_mode'])) {
+            $prepared['stop_advanced_rules_mode'] = (int)$data['stop_advanced_rules_mode'];
+        }
+
+        $prepared['stop_advanced_rules_filters'] = $this->getRuleData(
+            Ess_M2ePro_Model_Ebay_Template_Synchronization::STOP_ADVANCED_RULES_PREFIX
+        );
+
         return $prepared;
+    }
+
+    //########################################
+
+    protected function getRuleData($rulePrefix)
+    {
+        $post = Mage::app()->getRequest()->getPost();
+        if (empty($post['rule'][$rulePrefix])) {
+            return null;
+        }
+
+        $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setData(
+            array('prefix' => $rulePrefix)
+        );
+
+        return $ruleModel->getSerializedFromPost($post);
     }
 
     //########################################

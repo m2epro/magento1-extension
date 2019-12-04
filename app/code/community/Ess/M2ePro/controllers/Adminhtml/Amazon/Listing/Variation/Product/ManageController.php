@@ -18,12 +18,10 @@ class Ess_M2ePro_Adminhtml_Amazon_Listing_Variation_Product_ManageController
             ->addCss('M2ePro/css/Plugin/ProgressBar.css')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addCss('M2ePro/css/Plugin/DropDown.css')
-            ->addCss('M2ePro/css/Plugin/AutoComplete.css')
             ->addJs('mage/adminhtml/rules.js')
             ->addJs('M2ePro/Plugin/DropDown.js')
             ->addJs('M2ePro/Plugin/ProgressBar.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
-            ->addJs('M2ePro/Plugin/AutoComplete.js')
             ->addJs('M2ePro/Listing/ProductGridHandler.js')
 
             ->addJs('M2ePro/GridHandler.js')

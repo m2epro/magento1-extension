@@ -124,7 +124,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater
 
         foreach ($magentoVariations as $mVariation) {
             $isExistVariation = false;
-            $cVariationExist = NULL;
+            $cVariationExist = null;
 
             foreach ($currentVariations as $cVariation) {
                 if ($this->isEqualVariations($mVariation['options'], $cVariation['options'])) {

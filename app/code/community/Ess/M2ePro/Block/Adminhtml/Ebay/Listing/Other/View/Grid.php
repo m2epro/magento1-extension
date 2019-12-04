@@ -17,18 +17,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         /** @var $this->connRead Varien_Db_Adapter_Pdo_Mysql */
         $this->connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayListingOtherViewGrid');
-        // ---------------------------------------
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     public function getMassactionBlockName()
@@ -200,41 +194,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             )
         );
 
-        $back = Mage::helper('M2ePro')->makeBackUrlParam(
-            '*/adminhtml_ebay_listing_other/view', array(
-                'account'     => $this->getRequest()->getParam('account'),
-                'marketplace' => $this->getRequest()->getParam('marketplace'),
-                'back'        => $this->getRequest()->getParam('back')
-            )
-        );
-
-        $this->addColumn(
-            'actions', array(
-                'header'   => Mage::helper('M2ePro')->__('Actions'),
-                'align'    => 'left',
-                'width'    => '70px',
-                'type'     => 'action',
-                'index'    => 'actions',
-                'filter'   => false,
-                'sortable' => false,
-                'getter'   => 'getId',
-                'actions'  => array(
-                    array(
-                        'caption' => Mage::helper('M2ePro')->__('View Log'),
-                        'url'     => array('base' => '*/adminhtml_ebay_log/listingOther'),
-                        'target'  => '_blank',
-                        'field'   => 'id'
-                    ),
-                    array(
-                        'caption' => Mage::helper('M2ePro')->__('Clear Log'),
-                        'url'     => array('base' => '*/adminhtml_listing_other/clearLog/back/' . $back . '/'),
-                        'field'   => 'id',
-                        'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
-                    )
-                )
-            )
-        );
-
         return parent::_prepareColumns();
     }
 
@@ -307,10 +266,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
                                         (int)$row->getId().
                                     ');">' . Mage::helper('M2ePro')->__('Map') . '</a>';
 
-            if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
-                $htmlValue .= '<br/>' . $row->getId();
-            }
-
             return $htmlValue;
         }
 
@@ -329,10 +284,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             .')">'
             .Mage::helper('M2ePro')->__('Move')
             .'</a>';
-
-        if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
-            $htmlValue .= '<br/>' . $row->getId();
-        }
 
         return $htmlValue;
     }
@@ -449,7 +400,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
                 break;
         }
 
-        return $value.$this->getViewLogIconHtml($row->getId());
+        return $value;
     }
 
     public function callbackColumnStartTime($value, $row, $column, $isExport)
@@ -516,150 +467,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
         }
 
         $collection->getSelect()->where('second_table.title LIKE ? OR second_table.sku LIKE ?', '%'.$value.'%');
-    }
-
-    //########################################
-
-    public function getViewLogIconHtml($listingOtherId)
-    {
-        $listingOtherId = (int)$listingOtherId;
-
-        // Get last messages
-        // ---------------------------------------
-        $dbSelect = $this->connRead->select()
-            ->from(
-                Mage::getResourceModel('M2ePro/Listing_Other_Log')->getMainTable(),
-                array('action_id','action','type','description','create_date','initiator')
-            )
-            ->where('`listing_other_id` = ?', $listingOtherId)
-            ->where('`action_id` IS NOT NULL')
-            ->order(array('id DESC'))
-            ->limit(30);
-
-        $logRows = $this->connRead->fetchAll($dbSelect);
-        // ---------------------------------------
-
-        // Get grouped messages by action_id
-        // ---------------------------------------
-        $actionsRows = array();
-        $tempActionRows = array();
-        $lastActionId = false;
-
-        foreach ($logRows as $row) {
-            $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
-
-            if ($row['action_id'] !== $lastActionId) {
-                if (!empty($tempActionRows)) {
-                    $actionsRows[] = array(
-                        'type' => $this->getMainTypeForActionId($tempActionRows),
-                        'date' => $this->getMainDateForActionId($tempActionRows),
-                        'action' => $this->getActionForAction($tempActionRows[0]),
-                        'initiator' => $this->getInitiatorForAction($tempActionRows[0]),
-                        'items' => $tempActionRows
-                    );
-                    $tempActionRows = array();
-                }
-
-                $lastActionId = $row['action_id'];
-            }
-
-            $tempActionRows[] = $row;
-        }
-
-        if (!empty($tempActionRows)) {
-            $actionsRows[] = array(
-                'type' => $this->getMainTypeForActionId($tempActionRows),
-                'date' => $this->getMainDateForActionId($tempActionRows),
-                'action' => $this->getActionForAction($tempActionRows[0]),
-                'initiator' => $this->getInitiatorForAction($tempActionRows[0]),
-                'items' => $tempActionRows
-            );
-        }
-
-        if (empty($actionsRows)) {
-            return '';
-        }
-
-        $tips = array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'Last Action was completed successfully.',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'Last Action was completed with error(s).',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'Last Action was completed with warning(s).'
-        );
-
-        $icons = array(
-            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'normal',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'error',
-            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
-        );
-
-        $summary = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_log_grid_summary', '', array(
-            'entity_id' => $listingOtherId,
-            'rows' => $actionsRows,
-            'tips' => $tips,
-            'icons' => $icons,
-            'view_help_handler' => 'EbayListingOtherGridHandlerObj.viewItemHelp',
-            'hide_help_handler' => 'EbayListingOtherGridHandlerObj.hideItemHelp',
-            )
-        );
-
-        return $summary->toHtml();
-    }
-
-    public function getActionForAction($actionRows)
-    {
-        $string = '';
-
-        switch ((int)$actionRows['action']) {
-            case Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE:
-                $string = Mage::helper('M2ePro')->__('Channel Change');
-                break;
-        }
-
-        return $string;
-    }
-
-    public function getInitiatorForAction($actionRows)
-    {
-        $string = '';
-
-        switch ($actionRows['initiator']) {
-            case Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN:
-                $string = '';
-                break;
-            case Ess_M2ePro_Helper_Data::INITIATOR_USER:
-                $string = Mage::helper('M2ePro')->__('Manual');
-                break;
-            case Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION:
-                $string = Mage::helper('M2ePro')->__('Automatic');
-                break;
-        }
-
-        return $string;
-    }
-
-    public function getMainTypeForActionId($actionRows)
-    {
-        $type = Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS;
-
-        foreach ($actionRows as $row) {
-            if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR) {
-                $type = Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR;
-                break;
-            }
-
-            if ($row['type'] == Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING) {
-                $type = Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
-            }
-        }
-
-        return $type;
-    }
-
-    public function getMainDateForActionId($actionRows)
-    {
-        $format = Mage::app()->getLocale()->getDateTimeFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
-        return Mage::app()->getLocale()->date(strtotime($actionRows[0]['create_date']))->toString($format);
     }
 
     //########################################

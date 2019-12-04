@@ -224,6 +224,24 @@ HTML
         return $this->addContent($block);
     }
 
+    protected function _addAjaxContent($content)
+    {
+        $blockGeneral = Mage::helper('M2ePro/View')->getGeneralBlock();
+        $blockGeneral->setPageHelpLink($this->getPageHelpLink());
+
+        return $this->getResponse()->setBody($blockGeneral->toHtml() . $content);
+    }
+
+    protected function _addJsonContent(array $content)
+    {
+        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode($content));
+    }
+
+    protected function _addRawContent($content)
+    {
+        return $this->getResponse()->setBody($content);
+    }
+
     // ---------------------------------------
 
     protected function beforeAddLeftEvent()
@@ -313,9 +331,8 @@ HTML
             return;
         }
 
-        $generalBlockPath = Ess_M2ePro_Helper_View::GENERAL_BLOCK_PATH;
-        $blockGeneral = $this->getLayout()->createBlock($generalBlockPath);
-        $blockGeneral->setData('page_help_link', $this->getPageHelpLink());
+        $blockGeneral = Mage::helper('M2ePro/View')->getGeneralBlock();
+        $blockGeneral->setPageHelpLink($this->getPageHelpLink());
 
         $block->append($blockGeneral);
         $this->_generalBlockWasAppended = true;

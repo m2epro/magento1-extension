@@ -257,7 +257,7 @@ HTML;
 
     public function hasGeneralId()
     {
-        return $this->getListingProduct()->getChildObject()->getGeneralId() !== NULL;
+        return $this->getListingProduct()->getChildObject()->getGeneralId() !== null;
     }
 
     public function getGeneralId()

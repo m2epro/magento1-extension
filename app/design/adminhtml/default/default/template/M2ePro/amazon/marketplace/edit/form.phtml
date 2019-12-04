@@ -85,7 +85,7 @@
 
                         <?php
                             $componentName = '';
-                            if (count(Mage::helper('M2ePro/Component')->getActiveComponents()) > 1) {
+                            if (count(Mage::helper('M2ePro/Component')->getEnabledComponents()) > 1) {
                                 $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
                             }
                         ?>

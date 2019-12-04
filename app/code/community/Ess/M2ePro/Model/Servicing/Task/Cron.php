@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Servicing_Task_Cron extends Ess_M2ePro_Model_Servicing_Ta
         $adminStore = Mage::app()->getStore(Mage_Core_Model_App::ADMIN_STORE_ID);
 
         return array(
-            'base_url' => $adminStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, NULL),
+            'base_url' => $adminStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, null),
             'calculation_url' => $adminStore->getUrl(
                 'M2ePro/cron/test',
                 array(

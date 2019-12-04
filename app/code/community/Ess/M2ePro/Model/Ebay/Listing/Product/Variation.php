@@ -23,7 +23,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
 
     protected function _afterSave()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProduct()->getId()}_variations"
         );
         return parent::_afterSave();
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
 
     protected function _beforeDelete()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProduct()->getId()}_variations"
         );
         return parent::_beforeDelete();
@@ -493,7 +493,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     {
         $src = $this->getEbaySellingFormatTemplate()->getFixedPriceSource();
 
-        $vatPercent = NULL;
+        $vatPercent = null;
         if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
@@ -512,7 +512,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     {
         $src = $this->getEbaySellingFormatTemplate()->getPriceDiscountStpSource();
 
-        $vatPercent = NULL;
+        $vatPercent = null;
         if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
@@ -527,7 +527,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
     {
         $src = $this->getEbaySellingFormatTemplate()->getPriceDiscountMapSource();
 
-        $vatPercent = NULL;
+        $vatPercent = null;
         if ($this->getEbaySellingFormatTemplate()->isPriceIncreaseVatPercentEnabled()) {
             $vatPercent = $this->getEbaySellingFormatTemplate()->getVatPercent();
         }
@@ -537,7 +537,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
 
     // ---------------------------------------
 
-    protected function getCalculatedPrice($src, $vatPercent = NULL, $coefficient = NULL)
+    protected function getCalculatedPrice($src, $vatPercent = null, $coefficient = null)
     {
         /** @var $calculator Ess_M2ePro_Model_Ebay_Listing_Product_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Ebay_Listing_Product_PriceCalculator');
@@ -589,9 +589,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation extends Ess_M2ePro_Model_C
             $orderItemVariationKeys = array_map('trim', array_keys($orderItemVariationOptions));
             $orderItemVariationValues = array_map('trim', array_values($orderItemVariationOptions));
 
+            $diffKeys = array_diff($variationKeys, $orderItemVariationKeys);
+            $diffValues = array_diff($variationValues, $orderItemVariationValues);
+
             if (count($currentSpecifics) == count($orderItemVariationOptions) &&
-                empty(array_diff($variationKeys, $orderItemVariationKeys)) &&
-                empty(array_diff($variationValues, $orderItemVariationValues))) {
+                empty($diffKeys) && empty($diffValues)
+            ) {
                 $findOrderItem = true;
                 break;
             }

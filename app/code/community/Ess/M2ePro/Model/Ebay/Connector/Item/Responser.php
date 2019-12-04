@@ -344,7 +344,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
         }
 
         $getItemCallsCount   = 0;
-        $getItemLastCallDate = NULL;
+        $getItemLastCallDate = null;
 
         $maxAllowedGetItemCallsCount = 2;
 
@@ -737,7 +737,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Item_Responser
         return (int)$this->_params['status_changer'];
     }
 
-    // ########################################
+    //########################################
 
     protected function getOrmActionType()
     {

@@ -11,6 +11,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessUpdate
 {
     const NICK = 'amazon/order/action/process_update';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 3600;
+
     //####################################
 
     public function performActions()

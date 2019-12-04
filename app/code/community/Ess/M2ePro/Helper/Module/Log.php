@@ -150,7 +150,6 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
     {
         switch ($class) {
             case 'Listing_Log':
-            case 'Listing_Other_Log':
             case 'Ebay_Account_PickupStore_Log':
                 $prefix = 'ACTION_';
                 break;
@@ -193,6 +192,22 @@ class Ess_M2ePro_Helper_Module_Log extends Mage_Core_Helper_Abstract
         );
 
         return $typesStatusesMap[$resultType];
+    }
+
+    //########################################
+
+    public function getViewMode($sessionName)
+    {
+        if ($sessionViewMode = Mage::helper('M2ePro/Data_Session')->getValue($sessionName)) {
+            return $sessionViewMode;
+        }
+
+        return Ess_M2ePro_Block_Adminhtml_Log_Listing_View_ModeSwitcher::DEFAULT_VIEW_MODE;
+    }
+
+    public function setViewMode($sessionName, $mode)
+    {
+        return Mage::helper('M2ePro/Data_Session')->setValue($sessionName, $mode);
     }
 
     //########################################

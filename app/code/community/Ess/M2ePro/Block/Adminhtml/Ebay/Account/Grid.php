@@ -12,17 +12,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Grid extends Ess_M2ePro_Block_Admi
 
     protected function _prepareCollection()
     {
-        // Get collection of accounts
-        $collection = Mage::getModel('M2ePro/Account')->getCollection();
-
-        $collection->getSelect()
-            ->joinLeft(
-                array('ea'=>Mage::getResourceModel('M2ePro/Ebay_Account')->getMainTable()),
-                '(`ea`.`account_id` = `main_table`.`id`)',
-                array('user_id', 'mode')
-            );
-
-        // Set collection to grid
+        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -54,8 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Grid extends Ess_M2ePro_Block_Admi
             )
         );
 
-        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode() &&
-            Mage::helper('M2ePro/View_Ebay')->isFeedbacksShouldBeShown()) {
+        if (Mage::helper('M2ePro/View_Ebay')->isFeedbacksShouldBeShown()) {
             $this->addColumn(
                 'feedbacks', array(
                     'header'         => Mage::helper('M2ePro')->__('Feedback'),
@@ -76,6 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Grid extends Ess_M2ePro_Block_Admi
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
+        /** @var Ess_M2ePro_Model_Account $row */
         $userIdLabel = Mage::helper('M2ePro')->__('eBay User ID');
         $userId = $row->getData('user_id');
 
@@ -89,21 +79,20 @@ HTML;
         }
 
         $environmentLabel = Mage::helper('M2ePro')->__('Environment');
-        $environment = (int)$row->getData('mode') == Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX ?
-            'Sandbox (Test)' : 'Production (Live)';
+        $environment = (int)$row->getData('mode') == Ess_M2ePro_Model_Ebay_Account::MODE_SANDBOX
+            ? 'Sandbox (Test)'
+            : 'Production (Live)';
         $environment = Mage::helper('M2ePro')->__($environment);
 
-        $value = <<<HTML
-        <div>
-            {$value}<br/>
-            {$userIdHtml}
-            <span style="font-weight: bold">{$environmentLabel}</span>:
-            <span style="color: #505050">{$environment}</span>
-            <br/>
-        </div>
+        return <<<HTML
+<div>
+    {$value}<br/>
+    {$userIdHtml}
+    <span style="font-weight: bold">{$environmentLabel}</span>:
+    <span style="color: #505050">{$environment}</span>
+    <br/>
+</div>
 HTML;
-
-        return $value;
     }
 
     protected function callbackFilterTitle($collection, $column)
@@ -123,11 +112,11 @@ HTML;
 
         $modeWhere = '';
         if ($mode !== null) {
-            $modeWhere = ' OR ea.mode = ' . $mode;
+            $modeWhere = ' OR second_table.mode = ' . $mode;
         }
 
         $collection->getSelect()->where(
-            'main_table.title LIKE ? OR ea.user_id LIKE ?' . $modeWhere,
+            'main_table.title LIKE ? OR second_table.user_id LIKE ?' . $modeWhere,
             '%'. $value .'%'
         );
     }

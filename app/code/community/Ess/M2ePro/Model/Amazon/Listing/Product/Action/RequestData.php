@@ -240,7 +240,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getSku()
     {
-        return $this->hasSku() ? $this->_data['sku'] : NULL;
+        return $this->hasSku() ? $this->_data['sku'] : null;
     }
 
     /**
@@ -248,7 +248,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getProductId()
     {
-        return $this->hasProductId() ? $this->_data['product_id'] : NULL;
+        return $this->hasProductId() ? $this->_data['product_id'] : null;
     }
 
     /**
@@ -256,7 +256,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getProductIdType()
     {
-        return $this->hasProductIdType() ? $this->_data['product_id_type'] : NULL;
+        return $this->hasProductIdType() ? $this->_data['product_id_type'] : null;
     }
 
     // ---------------------------------------
@@ -295,7 +295,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getQty()
     {
-        return $this->hasQty() ? $this->_data['qty'] : NULL;
+        return $this->hasQty() ? $this->_data['qty'] : null;
     }
 
     // ---------------------------------------
@@ -305,7 +305,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getHandlingTime()
     {
-        return $this->hasHandlingTime() ? $this->_data['handling_time'] : NULL;
+        return $this->hasHandlingTime() ? $this->_data['handling_time'] : null;
     }
 
     /**
@@ -313,7 +313,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getRestockDate()
     {
-        return $this->hasRestockDate() ? $this->_data['restock_date'] : NULL;
+        return $this->hasRestockDate() ? $this->_data['restock_date'] : null;
     }
 
     // ---------------------------------------
@@ -323,7 +323,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getRegularPrice()
     {
-        return $this->hasRegularPrice() ? $this->_data['price'] : NULL;
+        return $this->hasRegularPrice() ? $this->_data['price'] : null;
     }
 
     /**
@@ -331,7 +331,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getRegularSalePrice()
     {
-        return $this->hasRegularSalePrice() ? $this->_data['sale_price'] : NULL;
+        return $this->hasRegularSalePrice() ? $this->_data['sale_price'] : null;
     }
 
     /**
@@ -339,7 +339,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getRegularSalePriceStartDate()
     {
-        return $this->hasRegularSalePrice() ? $this->_data['sale_price_start_date'] : NULL;
+        return $this->hasRegularSalePrice() ? $this->_data['sale_price_start_date'] : null;
     }
 
     /**
@@ -347,7 +347,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getRegularSalePriceEndDate()
     {
-        return $this->hasRegularSalePrice() ? $this->_data['sale_price_end_date'] : NULL;
+        return $this->hasRegularSalePrice() ? $this->_data['sale_price_end_date'] : null;
     }
 
     // ---------------------------------------
@@ -357,7 +357,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getBusinessPrice()
     {
-        return $this->hasBusinessPrice() ? $this->_data['business_price'] : NULL;
+        return $this->hasBusinessPrice() ? $this->_data['business_price'] : null;
     }
 
     /**
@@ -365,7 +365,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getBusinessDiscounts()
     {
-        return $this->hasBusinessDiscounts() ? $this->_data['business_discounts'] : NULL;
+        return $this->hasBusinessDiscounts() ? $this->_data['business_discounts'] : null;
     }
 
     // ---------------------------------------
@@ -375,7 +375,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getCondition()
     {
-        return $this->hasCondition() ? $this->_data['condition'] : NULL;
+        return $this->hasCondition() ? $this->_data['condition'] : null;
     }
 
     /**
@@ -383,7 +383,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getConditionNote()
     {
-        return $this->hasConditionNote() ? $this->_data['condition_note'] : NULL;
+        return $this->hasConditionNote() ? $this->_data['condition_note'] : null;
     }
 
     // ---------------------------------------
@@ -393,7 +393,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getGiftWrap()
     {
-        return $this->hasGiftWrap() ? $this->_data['gift_wrap'] : NULL;
+        return $this->hasGiftWrap() ? $this->_data['gift_wrap'] : null;
     }
 
     /**
@@ -401,7 +401,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getGiftMessage()
     {
-        return $this->hasGiftMessage() ? $this->_data['gift_message'] : NULL;
+        return $this->hasGiftMessage() ? $this->_data['gift_message'] : null;
     }
 
     // ---------------------------------------
@@ -411,7 +411,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getShippingData()
     {
-        return $this->hasShippingData() ? $this->_data['shipping_data'] : NULL;
+        return $this->hasShippingData() ? $this->_data['shipping_data'] : null;
     }
 
     // ---------------------------------------
@@ -421,7 +421,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getTaxCode()
     {
-        return $this->hasTaxCode() ? $this->_data['tax_code'] : NULL;
+        return $this->hasTaxCode() ? $this->_data['tax_code'] : null;
     }
 
     // ---------------------------------------
@@ -431,7 +431,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getNumberOfItems()
     {
-        return $this->hasNumberOfItems() ? $this->_data['number_of_items'] : NULL;
+        return $this->hasNumberOfItems() ? $this->_data['number_of_items'] : null;
     }
 
     /**
@@ -439,7 +439,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getItemPackageQuantity()
     {
-        return $this->hasItemPackageQuantity() ? $this->_data['item_package_quantity'] : NULL;
+        return $this->hasItemPackageQuantity() ? $this->_data['item_package_quantity'] : null;
     }
 
     // ---------------------------------------
@@ -449,7 +449,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getBrowsenodeId()
     {
-        return $this->hasBrowsenodeId() ? $this->_data['browsenode_id'] : NULL;
+        return $this->hasBrowsenodeId() ? $this->_data['browsenode_id'] : null;
     }
 
     /**
@@ -457,7 +457,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getProductDataNick()
     {
-        return $this->hasProductDataNick() ? $this->_data['product_data_nick'] : NULL;
+        return $this->hasProductDataNick() ? $this->_data['product_data_nick'] : null;
     }
 
     // ---------------------------------------
@@ -467,7 +467,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getProductData()
     {
-        return $this->hasProductData() ? $this->_data['product_data'] : NULL;
+        return $this->hasProductData() ? $this->_data['product_data'] : null;
     }
 
     /**
@@ -475,7 +475,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getDescriptionData()
     {
-        return $this->hasDescriptionData() ? $this->_data['description_data'] : NULL;
+        return $this->hasDescriptionData() ? $this->_data['description_data'] : null;
     }
 
     // ---------------------------------------
@@ -485,7 +485,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getImagesData()
     {
-        return $this->hasImagesData() ? $this->_data['images_data'] : NULL;
+        return $this->hasImagesData() ? $this->_data['images_data'] : null;
     }
 
     // ---------------------------------------
@@ -495,7 +495,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_RequestData
      */
     public function getVariationAttributes()
     {
-        return $this->hasVariationAttributes() ? $this->_data['variation_data']['attributes'] : NULL;
+        return $this->hasVariationAttributes() ? $this->_data['variation_data']['attributes'] : null;
     }
 
     //########################################

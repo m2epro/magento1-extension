@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
      * @param null $storeForConvertingAttributeTypePrice
      * @return float
      */
-    public function getCost($storeForConvertingAttributeTypePrice = NULL)
+    public function getCost($storeForConvertingAttributeTypePrice = null)
     {
         $result = 0;
 
@@ -92,7 +92,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
      * @param null $storeForConvertingAttributeTypePrice
      * @return float
      */
-    public function getCostAdditional($storeForConvertingAttributeTypePrice = NULL)
+    public function getCostAdditional($storeForConvertingAttributeTypePrice = null)
     {
         $result = 0;
 
@@ -120,7 +120,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Service_Source
      * @param null $storeForConvertingAttributeTypePrice
      * @return float
      */
-    public function getCostSurcharge($storeForConvertingAttributeTypePrice = NULL)
+    public function getCostSurcharge($storeForConvertingAttributeTypePrice = null)
     {
         $result = 0;
 

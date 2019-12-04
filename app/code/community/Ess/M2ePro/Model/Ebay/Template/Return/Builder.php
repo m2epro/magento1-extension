@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return_Builder
     public function build(array $data)
     {
         if (empty($data)) {
-            return NULL;
+            return null;
         }
 
         $this->validate($data);

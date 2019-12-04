@@ -18,8 +18,8 @@ if (isset($formData['other_listings_mapping_settings'])) {
 $defaults = array(
     'related_store_id' => 0,
 
-    'other_listings_synchronization' => Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES,
-    'other_listings_mapping_mode' => Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_MODE_YES,
+    'other_listings_synchronization' => 1,
+    'other_listings_mapping_mode' => 1,
     'other_listings_mapping_settings' => array(),
 );
 
@@ -76,7 +76,7 @@ $isEdit = !!$this->getRequest()->getParam('id');
         The detailed information can be found <a href="%url%" target="_blank">here</a>.',
 
         Mage::helper('M2ePro/View_Amazon')->getPageNavigationPath('listings', '3rd Party'),
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/u4IVAQ')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/u4IVAQ')
     ); ?>
 </div>
 
@@ -97,8 +97,8 @@ $isEdit = !!$this->getRequest()->getParam('id');
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="other_listings_synchronization" name="other_listings_synchronization">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES; ?>" <?php if ($formData['other_listings_synchronization'] == Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_NO; ?>" <?php if ($formData['other_listings_synchronization'] == Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['other_listings_synchronization'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['other_listings_synchronization'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Allows importing 3rd Party Listings.'); ?></span>
@@ -138,8 +138,8 @@ $isEdit = !!$this->getRequest()->getParam('id');
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="other_listings_mapping_mode" name="other_listings_mapping_mode" class="M2ePro-require-select-attribute">
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_MODE_YES ?>" <?php if ($formData['other_listings_mapping_mode'] == Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_MODE_NO ?>" <?php if ($formData['other_listings_mapping_mode'] == Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_MAPPING_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['other_listings_mapping_mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['other_listings_mapping_mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Maps Amazon Product with Magento Product.'); ?></span>

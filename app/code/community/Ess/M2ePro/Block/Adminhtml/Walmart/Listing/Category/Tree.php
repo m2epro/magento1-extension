@@ -51,7 +51,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Category_Tree extends Mage_Admi
 
     public function getCurrentNodeId()
     {
-        return $this->_currentNode ? $this->_currentNode->getId() : NULL;
+        return $this->_currentNode ? $this->_currentNode->getId() : null;
     }
 
     //########################################

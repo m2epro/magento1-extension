@@ -93,18 +93,6 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
 
     // ---------------------------------------
 
-    simple_mode_disallowed_hide: function()
-    {
-        $$('#template_selling_format_data_container .simple_mode_disallowed').invoke('hide');
-    },
-
-    // ---------------------------------------
-
-    isSimpleMode: function()
-    {
-        return M2ePro.formData.simpleMode;
-    },
-
     isStpAvailable: function()
     {
         return M2ePro.formData.isStpEnabled;
@@ -167,8 +155,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
 
         outOfStockControlTr.hide();
 
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC') &&
-            !EbayTemplateSellingFormatHandlerObj.isSimpleMode()) {
+        if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay::LISTING_DURATION_GTC')) {
             outOfStockControlTr.show();
             outOfStockControlMode.value = M2ePro.formData.outOfStockControl;
         } else {
@@ -199,10 +186,6 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         var qtyPercentageTr = $('qty_percentage_tr');
 
         qtyPercentageTr.hide();
-
-        if (EbayTemplateSellingFormatHandlerObj.isSimpleMode()) {
-            return;
-        }
 
         if ($('listing_type').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION')) {
             return;
@@ -282,18 +265,12 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
 
             outOfStockControlTr.hide();
             outOfStockControlMode.value = 0;
-
-            if (EbayTemplateSellingFormatHandlerObj.isSimpleMode()) {
-                durationMode.hide();
-            }
         }
 
         if ($('listing_type').value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_ATTRIBUTE')) {
             durationMode.hide();
-            if (!EbayTemplateSellingFormatHandlerObj.isSimpleMode()) {
-                durationAttribute.show();
-                durationAttributeNote.show();
-            }
+            durationAttribute.show();
+            durationAttributeNote.show();
 
             outOfStockControlTr.hide();
             outOfStockControlMode.value = 0;
@@ -311,8 +288,7 @@ EbayTemplateSellingFormatHandler.prototype = Object.extend(new CommonHandler(), 
         removeBottomBorderTds.invoke('removeClassName','bottom_border_disabled');
         addRowspanTds.invoke('removeAttribute','rowspan');
 
-        if (!EbayTemplateSellingFormatHandlerObj.isSimpleMode() &&
-            $('listing_type').value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION')) {
+        if ($('listing_type').value != M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_SellingFormat::LISTING_TYPE_AUCTION')) {
             variationPriceTr.show();
             addRowspanTds.invoke('setAttribute','rowspan','2');
             if(priceModeSelect.value != M2ePro.php.constant('Ess_M2ePro_Model_Template_SellingFormat::PRICE_MODE_NONE')) {

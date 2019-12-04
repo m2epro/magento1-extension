@@ -58,7 +58,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Chooser_Tabs extends Ess_
                               ->toHtml()
             )
         );
-        Mage::helper('M2ePro/View_Ebay')->isAdvancedMode() && $this->addTab(
+        $this->addTab(
             self::TAB_ID_ATTRIBUTE, array(
             'label'   => Mage::helper('M2ePro')->__('Magento Attribute'),
             'title'   => Mage::helper('M2ePro')->__('Magento Attribute'),

@@ -18,10 +18,10 @@ class Ess_M2ePro_Helper_Data_Cache_Permanent extends Ess_M2ePro_Helper_Data_Cach
         return $value;
     }
 
-    public function setValue($key, $value, array $tags = array(), $lifeTime = NULL)
+    public function setValue($key, $value, array $tags = array(), $lifeTime = null)
     {
         if ($lifeTime === null || (int)$lifeTime <= 0) {
-            $lifeTime = 60*60*24*365*5;
+            $lifeTime = 60*60*24;
         }
 
         $cacheKey = Ess_M2ePro_Helper_Data::CUSTOM_IDENTIFIER.'_'.$key;

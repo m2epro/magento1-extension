@@ -171,44 +171,6 @@ WizardInstallationEbay = Class.create(CommonHandler, {
             self.initAccountSettings();
 
         }, 1000);
-    },
-
-    // Mode
-    // ---------------------------------------
-
-    initAccountMode: function(accountMode)
-    {
-        $(accountMode + '_mode_input').checked = true;
-        $(accountMode + '_mode_label').setStyle({fontWeight: 'bold'});
-    },
-
-    saveAccountMode: function()
-    {
-        var mode = null;
-        Form.getElements($('mode_confirmation_form')).each(function(element) {
-            element.checked && (mode = element.value);
-        });
-
-        MagentoMessageObj.clearAll();
-
-        new Ajax.Request( M2ePro.url.get('adminhtml_wizard_installationEbay/setModeAndUpdateAccount'), {
-            method: 'post',
-            parameters: { mode: mode },
-            onSuccess: function(transport) {
-
-                var response = transport.responseText.evalJSON();
-
-                if (response.result == 'error') {
-                    MagentoMessageObj.addError(response.message);
-                    return CommonHandlerObj.scroll_page_to_top();
-                }
-
-                var stepIndex = WizardHandlerObj.steps.all.indexOf(WizardHandlerObj.steps.current);
-                var nextStepNick = WizardHandlerObj.steps.all[stepIndex + 1];
-
-                WizardHandlerObj.setStep(nextStepNick, setLocation.bind(window, location.href));
-            }
-        });
     }
 
     // ---------------------------------------

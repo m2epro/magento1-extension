@@ -20,7 +20,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
     /** @var Ess_M2ePro_Model_Connector_Connection_Response $_response */
     protected $_response = null;
 
-    // ##################################
+    //##################################
 
     public function setProcessingObject(Ess_M2ePro_Model_Processing $processingObjectObject)
     {
@@ -70,7 +70,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
         return $this->_responserParams;
     }
 
-    // ##################################
+    //##################################
 
     protected function eventAfter()
     {
@@ -83,7 +83,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
         }
     }
 
-    // ##################################
+    //##################################
 
     protected function getResponser($returnNewObject = false)
     {
@@ -119,5 +119,5 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Processing_Runner exte
         return $this->_response;
     }
 
-    // ##################################
+    //##################################
 }

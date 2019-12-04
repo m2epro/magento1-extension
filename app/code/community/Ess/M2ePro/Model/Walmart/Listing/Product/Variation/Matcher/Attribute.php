@@ -125,7 +125,9 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function isFullyMatched()
     {
-        return empty($this->getMagentoUnmatchedAttributes()) && empty($this->getChannelUnmatchedAttributes());
+        $magentoAttributes = $this->getMagentoUnmatchedAttributes();
+        $channelAttributes = $this->getChannelUnmatchedAttributes();
+        return empty($magentoAttributes) && empty($channelAttributes);
     }
 
     /**
@@ -133,7 +135,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Matcher_Attribute
      */
     public function isNotMatched()
     {
-        return empty($this->getMatchedAttributes());
+        $attributes = $this->getMatchedAttributes();
+        return empty($attributes);
     }
 
     /**

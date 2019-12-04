@@ -82,9 +82,6 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const ACTION_CHANNEL_CHANGE = 25;
     const _ACTION_CHANNEL_CHANGE = 'Change Item on Channel';
 
-    const ACTION_TRANSLATE_PRODUCT = 28;
-    const _ACTION_TRANSLATE_PRODUCT = 'Translation';
-
     //########################################
 
     public function _construct()
@@ -108,8 +105,8 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         $dataForAdd = $this->makeDataForAdd(
             $listingId,
             $initiator,
-            NULL,
-            NULL,
+            null,
+            null,
             $actionId,
             $action,
             $description,
@@ -151,7 +148,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //########################################
 
-    public function clearMessages($listingId = NULL)
+    public function clearMessages($listingId = null)
     {
         $filters = array();
 
@@ -174,7 +171,9 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
             $this->_componentMode, 'Listing', $dataForAdd['listing_id']
         );
 
-        $dataForAdd['listing_title'] = $listing->getData('title');
+        $dataForAdd['listing_title']  = $listing->getData('title');
+        $dataForAdd['account_id']     = $listing->getData('account_id');
+        $dataForAdd['marketplace_id'] = $listing->getData('marketplace_id');
 
         if (isset($dataForAdd['product_id'])) {
             $dataForAdd['product_title'] = Mage::getModel('M2ePro/Magento_Product')
@@ -211,19 +210,19 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         if ($productId !== null) {
             $dataForAdd['product_id'] = (int)$productId;
         } else {
-            $dataForAdd['product_id'] = NULL;
+            $dataForAdd['product_id'] = null;
         }
 
         if ($listingProductId !== null) {
             $dataForAdd['listing_product_id'] = (int)$listingProductId;
         } else {
-            $dataForAdd['listing_product_id'] = NULL;
+            $dataForAdd['listing_product_id'] = null;
         }
 
         if ($actionId !== null) {
             $dataForAdd['action_id'] = (int)$actionId;
         } else {
-            $dataForAdd['action_id'] = NULL;
+            $dataForAdd['action_id'] = null;
         }
 
         if ($action !== null) {
@@ -235,7 +234,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
         if ($description !== null) {
             $dataForAdd['description'] = $description;
         } else {
-            $dataForAdd['description'] = NULL;
+            $dataForAdd['description'] = null;
         }
 
         if ($type !== null) {

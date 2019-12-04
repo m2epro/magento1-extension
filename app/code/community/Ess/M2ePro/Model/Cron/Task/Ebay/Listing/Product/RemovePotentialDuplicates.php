@@ -179,8 +179,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
                         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
                         $connectorObj = $dispatcherObj->getVirtualConnector(
                             'item', 'update', 'ends',
-                            array('items' => $itemsPart), NULL,
-                            $marketplaceId, $accountId, NULL
+                            array('items' => $itemsPart), null,
+                            $marketplaceId, $accountId, null
                         );
                         $dispatcherObj->process($connectorObj);
                     } catch (Exception $e) {
@@ -214,8 +214,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'item', 'get', 'info',
-            array('item_id' => $itemId), NULL,
-            NULL, $accountId
+            array('item_id' => $itemId), null,
+            null, $accountId
         );
 
         $dispatcherObj->process($connectorObj);
@@ -233,8 +233,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'item', 'get', 'all',
             array('since_time'=>$timeFrom,
-                                                                  'to_time'=>$timeTo), NULL,
-            NULL, $accountId
+                                                                  'to_time'=>$timeTo), null,
+            null, $accountId
         );
 
         $dispatcherObj->process($connectorObj);
@@ -317,8 +317,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
             return;
         }
 
-        // M2ePro_TRANSLATIONS
-        // Duplicated Item %item_id% was found and Stopped on eBay.
         $textToTranslate = 'Duplicated Item %item_id% was found and stopped on eBay.';
         $duplicateDeletedMessage = Mage::helper('M2ePro')->__($textToTranslate, $duplicateItemId);
 
@@ -347,8 +345,6 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Product_RemovePotentialDuplicates
             ->getHumanTitleByListingProductStatus($statusTo);
 
         if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-            // M2ePro_TRANSLATIONS
-            // Item Status was successfully changed from "%from%" to "%to%" .
             $message = Mage::helper('M2ePro')->__(
                 'Item Status was successfully changed from "%from%" to "%to%" .',
                 $statusChangedFrom,

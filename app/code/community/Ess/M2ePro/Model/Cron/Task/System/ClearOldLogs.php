@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs extends Ess_M2ePro_Model_Cr
 {
     const NICK = 'system/clear_old_logs';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 86400;
+
     const SYSTEM_LOG_MAX_DAYS = 30;
     const SYSTEM_LOG_MAX_RECORDS = 100000;
 
@@ -21,7 +26,6 @@ class Ess_M2ePro_Model_Cron_Task_System_ClearOldLogs extends Ess_M2ePro_Model_Cr
         $tempModel = Mage::getModel('M2ePro/Log_Clearing');
 
         $tempModel->clearOldRecords(Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS);
-        $tempModel->clearOldRecords(Ess_M2ePro_Model_Log_Clearing::LOG_OTHER_LISTINGS);
         $tempModel->clearOldRecords(Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS);
         $tempModel->clearOldRecords(Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS);
 

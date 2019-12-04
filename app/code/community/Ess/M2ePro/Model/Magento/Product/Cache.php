@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
     {
         $key = Mage::helper('M2ePro')->jsonEncode($key);
         $key = sha1('magento_product_'.$this->getProductId().'_'.$this->getStoreId().'_'.$key);
-        return Mage::helper('M2ePro/Data_Cache_Session')->getValue($key);
+        return Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($key);
     }
 
     public function setCacheValue($key, $value)
@@ -28,12 +28,12 @@ class Ess_M2ePro_Model_Magento_Product_Cache extends Ess_M2ePro_Model_Magento_Pr
             'magento_product_'.$this->getProductId().'_'.$this->getStoreId()
         );
 
-        return Mage::helper('M2ePro/Data_Cache_Session')->setValue($key, $value, $tags);
+        return Mage::helper('M2ePro/Data_Cache_Runtime')->setValue($key, $value, $tags);
     }
 
     public function clearCache()
     {
-        return Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        return Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             'magento_product_'.$this->getProductId().'_'.$this->getStoreId()
         );
     }

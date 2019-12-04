@@ -38,7 +38,7 @@ $defaults = array(
     'token_expired_date' => '',
     'sell_api_token_session' => '',
     'sell_api_token_expired_date' => '',
-    'other_listings_synchronization' => Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+    'other_listings_synchronization' => 1
 );
 $formData = array_merge($defaults, $formData);
 
@@ -59,7 +59,7 @@ if ($isEdit) {
         'To connect M2E Pro with your eBay Account, select the Environment of the eBay Account:
         either <i>Production (Live)</i> or <i>Sandbox (Test)</i>.<br>
         Then proceed to grant M2E Pro access to your eBay account data following this <a href="%url%" target="_blank">instruction</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LAAJAQ')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/LAAJAQ')
     ); ?>
 
 <?php } else { ?>
@@ -68,7 +68,7 @@ if ($isEdit) {
         'This Page shows the Environment for your eBay Account and details of the authorization for M2E Pro to connect to your eBay Account.<br/><br/>
         If your token has expired or is not activated, click <b>Get Token</b>.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LAAJAQ')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/LAAJAQ')
     ); ?>
 
 <?php } ?>
@@ -96,10 +96,9 @@ if ($isEdit) {
         'No Customer entry is found for specified ID.' => Mage::helper('M2ePro')->__('No Customer entry is found for specified ID.'),
         'If Yes is chosen, you must select at least one Attribute for Product Mapping.' => Mage::helper('M2ePro')->__('If Yes is chosen, you must select at least one Attribute for Product Mapping.'),
         'You should create at least one Response Template.' => Mage::helper('M2ePro')->__('You should create at least one Response Template.'),
-        'Prefix length should not be greater than 5 characters.' => Mage::helper('M2ePro')->__('Prefix length should not be greater than 5 characters.'),
         'on_delete_account_message' => Mage::helper('M2ePro')->__('Attention! By applying this action you delete the Account data only from current M2E Pro instance. It does not affect the Subscription status and Billing process for this Channel Account. <br><br>
                                                                    To delete Channel Account which you don\'t need to manage under M2E Pro Subscription Plan, go to the <a href="%url%" target="_blank">Clients Portal</a>.',
-                                                                   Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl())
+                                                                   Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl())
     )); ?>);
 
     M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';

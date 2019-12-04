@@ -9,16 +9,10 @@
 class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
     extends Ess_M2ePro_Model_Ebay_Connector_Command_RealTime
 {
-    // M2ePro_TRANSLATIONS
-    // Shipping status was not updated (Item: %item_id%, Transaction: %trn_id%). Reason: %msg%
-    // Shipping status was not updated (Item: %item_id%, Transaction: %trn_id%). Reason: eBay Failure.
-    // Tracking number "%num%" for "%code%" has been sent to eBay (Item: %item_id%, Transaction: %trn_id%).
-    // Order Item has been marked as Shipped (Item: %item_id%, Transaction: %trn_id%).
-
     /** @var $_orderItem Ess_M2ePro_Model_Order_Item */
     protected $_orderItem;
 
-    // ########################################
+    //########################################
 
     public function setOrderItem(Ess_M2ePro_Model_Order_Item $orderItem)
     {
@@ -43,7 +37,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
         throw new Ess_M2ePro_Model_Exception_Logic('Order change id has not been set.');
     }
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -75,7 +69,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
         );
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -101,7 +95,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponseData()
     {
@@ -153,5 +147,5 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Update_Status
         Mage::getResourceModel('M2ePro/Order_Change')->deleteByIds(array($this->getOrderChangeId()));
     }
 
-    // ########################################
+    //########################################
 }

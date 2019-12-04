@@ -58,9 +58,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         $accounts = array();
         foreach ($collection->getItems() as $account) {
             $accounts[] = array(
-                'id'               => $account->getId(),
-                'title'            => Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
-                'translation_hash' => (bool)$account->getTranslationHash() ? '1' : '0',
+                'id'    => $account->getId(),
+                'title' => Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
             );
         }
 
@@ -101,7 +100,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             Mage::helper('M2ePro')->jsonEncode(
                 array(
                 'listings'                     => $listings,
-                'is_allowed_migration_service' => $this->isAllowedMigrationService() ? '1' : '0',
+                'is_allowed_migration_service' => '0',
                 )
             )
         );
@@ -142,122 +141,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             ->createBlock('M2ePro/adminhtml_ebay_listing_transferring_step_policy', '', $params);
 
         $this->getResponse()->setBody($listingBlock->toHtml());
-    }
-
-    //########################################
-
-    public function stepTranslationAction()
-    {
-        $translationAccountBlock = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_listing_transferring_step_translation')
-            ->setData('account_id', (int)$this->getRequest()->getParam('account_id'))
-            ->setData('is_allowed', true);
-
-        $this->getResponse()->setBody($translationAccountBlock->toHtml());
-    }
-
-    //########################################
-
-    public function createTranslationAccountAction()
-    {
-        if (!$post = $this->getRequest()->getPost()) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        if (empty($post['account_id']) ||
-            empty($post['email'])      ||
-            empty($post['first_name']) ||
-            empty($post['last_name'])  ||
-            empty($post['company'])    ||
-            empty($post['country'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', (int)$post['account_id'])
-            ->getChildObject();
-        $ebayInfo = Mage::helper('M2ePro')->jsonDecode($account['info']);
-
-        if (empty($ebayInfo['UserID'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        $params = array(
-            'email'       => $post['email'],
-            'first_name'  => $post['first_name'],
-            'last_name'   => $post['last_name'],
-            'company'     => $post['company'],
-            'additional'  => array(
-                'country' => $post['country'],
-                'ebay'    => array('user_id' => $ebayInfo['UserID'],),
-            ),
-        );
-
-        try {
-            $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector('account', 'add', 'entity', $params);
-            $dispatcherObject->process($connectorObj);
-            $response = $connectorObj->getResponseData();
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-        }
-
-        if (!isset($response['hash'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        $account->addData(
-            array(
-            'translation_hash' => $response['hash'],
-            'translation_info' => Mage::helper('M2ePro')->jsonEncode($response['info']),
-            )
-        )->save();
-
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                'result' => 'success',
-                'hash'   => $response['hash'],
-                'info'   => $response['info'],
-                )
-            )
-        );
-    }
-
-    public function refreshTranslationAccountAction()
-    {
-        $accountId = $this->getRequest()->getParam('account_id');
-
-        $account = !empty($accountId)
-            ? Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', $accountId)
-            : $this->getSourceListingFromRequest()->getAccount();
-
-        try {
-            $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'get', 'info',
-                array(), NULL, $account
-            );
-
-            $dispatcherObject->process($connectorObj);
-            $response = $connectorObj->getResponseData();
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-        }
-
-        if (empty($response)) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        $account->getChildObject()->setData('translation_info', Mage::helper('M2ePro')->jsonEncode($response))->save();
-
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                'result' => 'success',
-                'info'   => $response
-                )
-            )
-        );
     }
 
     //########################################
@@ -429,281 +312,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
     //########################################
 
-    public function autoMigrationAction()
-    {
-        if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        if (!$post = $this->getRequest()->getPost()) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        if (empty($post['target_listing_id']) || empty($post['products'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        if (!empty($post['translation_service']) &&
-            !Mage::helper('M2ePro/Component_Ebay')->isAllowedTranslationService($post['translation_service'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        $matchingListingProducts = $this->getSessionValue('matching_listing_products');
-
-        // ---------------------------------------
-        $targetListing = Mage::helper('M2ePro/Component_Ebay')
-            ->getCachedObject('Listing', (int)$post['target_listing_id']);
-
-        $sourceLanguage = $this->getSourceListingFromRequest()->getMarketplace()->getChildObject()->getLanguageCode();
-        $targetLanguage = $targetListing->getMarketplace()->getChildObject()->getLanguageCode();
-        // ---------------------------------------
-
-        $sourceLanguage = str_replace('_', '-', strtolower($sourceLanguage));
-        $targetLanguage = str_replace('_', '-', strtolower($targetLanguage));
-
-        $ebayCategoryHelper = Mage::helper('M2ePro/Component_Ebay_Category_Ebay');
-
-        $translationService = !empty($post['translation_service'])
-            ? $post['translation_service']
-            : NULL;
-
-        $productsIds = explode(',', $post['products']);
-        $productsIds = array_unique($productsIds);
-        $productsIds = array_filter($productsIds);
-
-        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product')
-            ->addFieldToFilter('id', array('in' => ($productsIds)));
-
-        $ids = array();
-        $failedProducts = array();
-
-        /** @var  $logModel Ess_M2ePro_Model_Listing_Log */
-        $logModel = Mage::getModel('M2ePro/Listing_Log');
-        $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
-        $logsActionId = $logModel->getResource()->getNextActionId();
-
-        foreach ($collection->getItems() as $targetListingProduct) {
-            $sourceListingProduct = Mage::helper('M2ePro/Component_Ebay')
-                ->getObject('Listing_Product', (int)$matchingListingProducts[$targetListingProduct->getId()]);
-
-            if (!$sourceListingProduct->getChildObject()->isSetCategoryTemplate()) {
-                // Set message to log
-                // ---------------------------------------
-                $logModel->addProductMessage(
-                    $post['target_listing_id'],
-                    $targetListingProduct->getProductId(),
-                    $targetListingProduct->getId(),
-                    Ess_M2ePro_Helper_Data::INITIATOR_USER,
-                    $logsActionId,
-                    Ess_M2ePro_Model_Listing_Log::ACTION_TRANSLATE_PRODUCT,
-                    // M2ePro_TRANSLATIONS
-                    // Categories Settings are not set.
-                    'Categories Settings are not set.',
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-                );
-
-                $tempKey = array_search($targetListingProduct->getId(), $productsIds);
-                if ($tempKey !== false) {
-                    unset($productsIds[$tempKey]);
-                }
-
-                $failedProducts[] = $targetListingProduct->getProductId();
-                continue;
-            }
-
-            $descriptionTemplateSource = $targetListingProduct->getChildObject()->getDescriptionTemplateSource();
-            $descriptionRenderer       = $targetListingProduct->getChildObject()->getDescriptionRenderer();
-
-            $title       = trim($descriptionTemplateSource->getTitle());
-            $description = trim($descriptionRenderer->parseTemplate($descriptionTemplateSource->getDescription()));
-
-            if (!$title || !$description) {
-                // Set message to log
-                // ---------------------------------------
-                $logModel->addProductMessage(
-                    $post['target_listing_id'],
-                    $targetListingProduct->getProductId(),
-                    $targetListingProduct->getId(),
-                    Ess_M2ePro_Helper_Data::INITIATOR_USER,
-                    $logsActionId,
-                    Ess_M2ePro_Model_Listing_Log::ACTION_TRANSLATE_PRODUCT,
-                    // M2ePro_TRANSLATIONS
-                    // Translation cannot be executed because Attributes for Title or Description are empty.
-                    'Translation cannot be executed because Attributes for Title or Description are empty.',
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-                );
-
-                $tempKey = array_search($targetListingProduct->getId(), $productsIds);
-                if ($tempKey !== false) {
-                    unset($productsIds[$tempKey]);
-                }
-
-                $failedProducts[] = $targetListingProduct->getProductId();
-                continue;
-            }
-
-            $categoryTemplate  = $sourceListingProduct->getChildObject()->getCategoryTemplate();
-            $primaryCategoryId = $categoryTemplate->getCategoryMainId();
-            $marketplaceId     = $categoryTemplate->getMarketplaceId();
-
-            $additionalData = $targetListingProduct->getAdditionalData();
-            $additionalData['translation_service'] = array(
-                'from' =>  array(
-                    'description'    => array(
-                        'title'       => $title,
-                        'subtitle'    => trim($descriptionTemplateSource->getSubTitle()),
-                        'description' => $description,
-                    ),
-                    'category'       => array(
-                        'primary_id'   => $primaryCategoryId,
-                        'top_level_id' => $ebayCategoryHelper->getTopLevel($primaryCategoryId, $marketplaceId),
-                        'path'         => $categoryTemplate->getCategoryPath($targetListing, false),
-                    ),
-                    'item_specifics' => $this->getEbayItemSpecificsData($sourceListingProduct),
-                    'sku'            => $targetListingProduct->getChildObject()->getSku(),
-                    'language'       => $sourceLanguage,
-                ),
-                'to' => array(
-                    'description'    => array(
-                        'title'       => '',
-                        'subtitle'    => '',
-                        'description' => '',
-                    ),
-                    'category'       => array(
-                        'primary_id'   => '',
-                        'top_level_id' => '',
-                        'path'         => '',
-                    ),
-                    'item_specifics' => array(),
-                    'sku'            => '',
-                    'language'       => $targetLanguage,
-                ),
-                'payment' => array(
-                    'amount_due' => '',
-                    'currency'   => '',
-                ),
-            );
-
-            $data = $this->getSynchronizationTemplateDataFromSource($sourceListingProduct->getChildObject());
-            $targetListingProduct->addData($data)->save();
-
-            $targetListingProduct->setData(
-                'additional_data',
-                Mage::helper('M2ePro')->jsonEncode($additionalData)
-            )->save();
-            $targetListingProduct->getChildObject()->addData(
-                array(
-                'translation_status'  => Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_PENDING,
-                'translation_service' => $translationService
-                )
-            )->save();
-
-            $ids[] = $targetListingProduct->getId();
-        }
-
-        $params = array('status_changer' => Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER);
-
-        $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Product_Add_Dispatcher');
-        $result = (int)$dispatcherObject->process($productsIds, $params);
-
-        if ($result == Ess_M2ePro_Helper_Data::STATUS_SUCCESS) {
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                    'result'           => 'success',
-                    'success_products' => $ids,
-                    'failed_products'  => $failedProducts,
-                    )
-                )
-            );
-        }
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-    }
-
-    public function updateTranslationServiceAction()
-    {
-        if (!$post = $this->getRequest()->getPost()) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        if (empty($post['products_ids'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        if (empty($post['translation_service']) ||
-            !Mage::helper('M2ePro/Component_Ebay')->isAllowedTranslationService($post['translation_service'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
-        }
-
-        $productsIds = $post['products_ids'];
-        $productsIds = explode(',', $productsIds);
-        $productsIds = array_filter($productsIds);
-
-        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product')
-            ->addFieldToFilter('id', array('in' => ($productsIds)));
-
-        $allowedTranslationStatuses = array(
-            Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_PENDING,
-            Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_PENDING_PAYMENT_REQUIRED
-        );
-        foreach ($collection->getItems() as $listingProduct) {
-            if (in_array($listingProduct->getChildObject()->getTranslationStatus(), $allowedTranslationStatuses)) {
-                $listingProduct->getChildObject()
-                               ->setData('translation_service', $post['translation_service'])
-                               ->save();
-            }
-        }
-
-        return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'success')));
-    }
-
-    //########################################
-
-    public function getPaymentUrlAction()
-    {
-        $accountId = $this->getRequest()->getParam('account_id');
-
-        $account = !empty($accountId)
-            ? Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', $accountId)
-            : $this->getSourceListingFromRequest()->getAccount();
-
-        $params = array(
-            'amount'   => number_format($this->getRequest()->getParam('amount'), 2),
-            'currency' => $this->getRequest()->getParam('currency'),
-        );
-
-        try {
-            $dispatcherObject = Mage::getModel('M2ePro/Translation_Connector_Dispatcher');
-            $connectorObj = $dispatcherObject->getVirtualConnector(
-                'account', 'add', 'balance',
-                $params, NULL, $account
-            );
-
-            $dispatcherObject->process($connectorObj);
-            $response = $connectorObj->getResponseData();
-        } catch (Exception $exception) {
-            Mage::helper('M2ePro/Module_Exception')->process($exception);
-        }
-
-        if (!isset($response['payment_url'])) {
-            return $this->getResponse()->setBody(Mage::helper('M2ePro')->jsonEncode(array('result' => 'error')));
-        }
-
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                'result'      => 'success',
-                'payment_url' => $response['payment_url'],
-                )
-            )
-        );
-    }
-
-    //########################################
-
     protected function setSessionValue($key, $value)
     {
         $sessionData = $this->getSessionValue();
@@ -714,7 +322,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         return $this;
     }
 
-    protected function getSessionValue($key = NULL)
+    protected function getSessionValue($key = null)
     {
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey);
 
@@ -726,14 +334,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             return $sessionData;
         }
 
-        return isset($sessionData[$key]) ? $sessionData[$key] : NULL;
+        return isset($sessionData[$key]) ? $sessionData[$key] : null;
     }
 
     //########################################
 
     protected function clearSession()
     {
-        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, NULL);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->_sessionKey, null);
     }
 
     //########################################
@@ -748,35 +356,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         $dataLoader = Mage::getBlockSingleton('M2ePro/adminhtml_ebay_listing_template_switcher_dataLoader');
         $dataLoader->load(Mage::helper('M2ePro/Data_Session'), array('session_key' => $this->_sessionKey));
         // ---------------------------------------
-    }
-
-    //########################################
-
-    protected function isAllowedMigrationService()
-    {
-        $marketplaceId = (int)$this->getRequest()->getParam('marketplace_id');
-
-        if (empty($marketplaceId)) {
-            return false;
-        }
-
-        $targetEbayMarketplace = Mage::helper('M2ePro/Component_Ebay')
-            ->getCachedObject('Marketplace', $marketplaceId)->getChildObject();
-
-        if ($targetEbayMarketplace->getId()) {
-            $sourceEbayMarketplace = $this->getSourceListingFromRequest()->getMarketplace()->getChildObject();
-
-            if ($targetEbayMarketplace->getId() != $sourceEbayMarketplace->getId() &&
-                ($targetEbayMarketplace->isTranslationServiceModeTo() ||
-                    $targetEbayMarketplace->isTranslationServiceModeBoth() )       &&
-                ($sourceEbayMarketplace->isTranslationServiceModeFrom() ||
-                    $sourceEbayMarketplace->isTranslationServiceModeBoth())        &&
-                $targetEbayMarketplace->getLanguageCode() != $sourceEbayMarketplace->getLanguageCode()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     //########################################
@@ -848,7 +427,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
             if (!$this->getSessionValue($key)) {
                 $sourceData = $ebaySynchronizationTemplate->getData();
                 unset($sourceData['id']);
-                $sourceData['list_mode'] = Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_MODE_NONE;
+                $sourceData['list_mode'] = 0;
                 $sourceData['title'] =
                     $sourceData['title'].Mage::helper('M2ePro')->__(' (Changed because Translation Service applied.)');
                 $sourceData['is_custom_template'] = 1;
@@ -942,14 +521,14 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
         if ($isDifferentMarketplace) {
             if ($sourceEbayListing->isAutoGlobalAddingModeAddAndAssignCategory()) {
                 $listingData['auto_global_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_NONE;
-                $listingData['auto_global_adding_template_category_id']       = NULL;
-                $listingData['auto_global_adding_template_other_category_id'] = NULL;
+                $listingData['auto_global_adding_template_category_id']       = null;
+                $listingData['auto_global_adding_template_other_category_id'] = null;
             }
 
             if ($sourceEbayListing->isAutoWebsiteAddingModeAddAndAssignCategory()) {
                 $listingData['auto_website_adding_mode'] = Ess_M2ePro_Model_Listing::ADDING_MODE_NONE;
-                $listingData['auto_website_adding_template_category_id']       = NULL;
-                $listingData['auto_website_adding_template_other_category_id'] = NULL;
+                $listingData['auto_website_adding_template_category_id']       = null;
+                $listingData['auto_website_adding_template_other_category_id'] = null;
             }
         }
 
@@ -980,8 +559,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_TransferringController
 
             if ($isDifferentMarketplace && $ebaySourceGroup->isAddingModeAddAndAssignCategory()) {
                 $group->setData('adding_mode', Ess_M2ePro_Model_Listing::ADDING_MODE_NONE);
-                $group->setData('adding_template_category_id', NULL);
-                $group->setData('adding_template_other_category_id', NULL);
+                $group->setData('adding_template_category_id', null);
+                $group->setData('adding_template_other_category_id', null);
             }
 
             $group->save();

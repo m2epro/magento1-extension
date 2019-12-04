@@ -103,7 +103,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
      * @throws Ess_M2ePro_Model_Exception_Setup
      * @throws Zend_Db_Exception
      */
-    public function addColumn($name, $type, $default = NULL, $after = NULL, $addIndex = false, $autoCommit = true)
+    public function addColumn($name, $type, $default = null, $after = null, $addIndex = false, $autoCommit = true)
     {
         if ($this->isColumnExists($name)) {
             return $this;
@@ -141,7 +141,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
      * @throws Ess_M2ePro_Model_Exception_Setup
      * @throws Zend_Db_Exception
      */
-    public function changeColumn($name, $type, $default = NULL, $after = NULL, $autoCommit = true)
+    public function changeColumn($name, $type, $default = null, $after = null, $autoCommit = true)
     {
         if (!$this->isColumnExists($name)) {
             throw new Ess_M2ePro_Model_Exception_Setup(
@@ -267,7 +267,7 @@ class Ess_M2ePro_Model_Upgrade_Modifier_Table extends Ess_M2ePro_Model_Upgrade_M
 
     //########################################
 
-    protected function buildColumnDefinition($type, $default = NULL, $after = NULL, $autoCommit = true)
+    protected function buildColumnDefinition($type, $default = null, $after = null, $autoCommit = true)
     {
         $definition = $type;
 

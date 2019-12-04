@@ -20,8 +20,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Revise_Validator
         }
 
         if (!$this->getListingProduct()->isRevisable()) {
-            // M2ePro_TRANSLATIONS
-            // Item is not Listed or not available
             $this->addMessage('Item is not Listed or not available');
 
             return false;

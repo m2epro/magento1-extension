@@ -503,7 +503,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
         if (!is_array($productDetails) || !isset($productDetails[$type]) ||
             !isset($productDetails[$type]['mode'])) {
-            return NULL;
+            return null;
         }
 
         return $productDetails[$type]['mode'];
@@ -519,7 +519,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
         if (!is_array($productDetails) || !isset($productDetails[$type]) ||
             $this->isProductDetailsModeNone($type) || !isset($productDetails[$type]['attribute'])) {
-            return NULL;
+            return null;
         }
 
         return $productDetails[$type]['attribute'];
@@ -1020,7 +1020,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     /**
      * @return array
      */
-    public function getDefaultSettingsSimpleMode()
+    public function getDefaultSettings()
     {
         return array(
 
@@ -1042,14 +1042,14 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
             'product_details' => Mage::helper('M2ePro')->jsonEncode(
                 array(
-                'isbn'  => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
-                'epid'  => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
-                'upc'   => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
-                'ean'   => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
-                'brand' => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
-                'mpn'   => array('mode' => self::PRODUCT_DETAILS_MODE_DOES_NOT_APPLY, 'attribute' => ''),
-                'include_description' => 1,
-                'include_image'       => 1,
+                    'isbn'  => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'epid'  => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'upc'   => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'ean'   => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'brand' => array('mode' => self::PRODUCT_DETAILS_MODE_NONE, 'attribute' => ''),
+                    'mpn'   => array('mode' => self::PRODUCT_DETAILS_MODE_DOES_NOT_APPLY, 'attribute' => ''),
+                    'include_description' => 1,
+                    'include_image'       => 1,
                 )
             ),
 
@@ -1077,27 +1077,19 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
             'watermark_settings' => Mage::helper('M2ePro')->jsonEncode(
                 array(
-                'position' => self::WATERMARK_POSITION_TOP,
-                'scale' => self::WATERMARK_SCALE_MODE_NONE,
-                'transparent' => self::WATERMARK_TRANSPARENT_MODE_NO,
+                    'position' => self::WATERMARK_POSITION_TOP,
+                    'scale' => self::WATERMARK_SCALE_MODE_NONE,
+                    'transparent' => self::WATERMARK_TRANSPARENT_MODE_NO,
 
-                'hashes' => array(
-                    'current'  => '',
-                    'previous' => '',
-                )
+                    'hashes' => array(
+                        'current'  => '',
+                        'previous' => '',
+                    )
                 )
             ),
 
-            'watermark_image' => NULL
+            'watermark_image' => null
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettingsAdvancedMode()
-    {
-        return $this->getDefaultSettingsSimpleMode();
     }
 
     //########################################

@@ -20,10 +20,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
 
         $this->_listing = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayListingPickupStoreGrid'.$this->_listing->getId());
-        // ---------------------------------------
 
         $this->_showAdvancedFilterProductsOption = false;
     }
@@ -97,7 +94,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
             array('ei' => 'M2ePro/Ebay_Item'),
             'id=ebay_item_id',
             array('item_id' => 'item_id',),
-            NULL,
+            null,
             'left'
         );
 
@@ -287,7 +284,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_PickupStore_Grid
 
         $this->addColumn(
             'delete_action', array(
-                'header'         => Mage::helper('M2ePro')->__('Logs'),
+                'header'         => Mage::helper('M2ePro')->__('Logs & Events'),
                 'align'          => 'left',
                 'type'           => 'action',
                 'index'          => 'delete_action',
@@ -714,6 +711,7 @@ HTML
             )
             ->where('`account_pickup_store_state_id` = ?', $stateId)
             ->where('`action_id` IS NOT NULL')
+            ->where('`action` IN (?)', $this->getAvailableActions())
             ->order(array('id DESC'))
             ->limit(30);
 
@@ -810,6 +808,16 @@ HTML
         $html = "<script>M2ePro.translator.add({$translations});</script>";
 
         return $html . $summary->toHtml();
+    }
+
+    protected function getAvailableActions()
+    {
+        return array(
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UNKNOWN,
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_ADD_PRODUCT,
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_UPDATE_QTY,
+            Ess_M2ePro_Model_Ebay_Account_PickupStore_Log::ACTION_DELETE_PRODUCT,
+        );
     }
 
     public function getActionForAction($actionRows)

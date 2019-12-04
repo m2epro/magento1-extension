@@ -119,7 +119,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         $src = $this->getWalmartDescriptionTemplate()->getCountPerPackSource();
 
         if ($this->getWalmartDescriptionTemplate()->isCountPerPackModeNone()) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($this->getWalmartDescriptionTemplate()->isCountPerPackModeCustomValue()) {
@@ -142,7 +142,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         $src = $this->getWalmartDescriptionTemplate()->getMultipackQuantitySource();
 
         if ($this->getWalmartDescriptionTemplate()->isMultipackQuantityModeNone()) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($this->getWalmartDescriptionTemplate()->isMultipackQuantityModeCustomValue()) {
@@ -165,7 +165,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         $src = $this->getWalmartDescriptionTemplate()->getTotalCountSource();
 
         if ($this->getWalmartDescriptionTemplate()->isTotalCountModeNone()) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($this->getWalmartDescriptionTemplate()->isTotalCountModeCustomValue()) {
@@ -188,7 +188,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         $src = $this->getWalmartDescriptionTemplate()->getModelNumberSource();
 
         if ($this->getWalmartDescriptionTemplate()->isModelNumberModeNone()) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($this->getWalmartDescriptionTemplate()->isModelNumberModeCustomValue()) {
@@ -205,12 +205,12 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
     /**
      * @return float|null
      */
-    public function getMsrpRrp($storeForConvertingAttributeTypePrice = NULL)
+    public function getMsrpRrp($storeForConvertingAttributeTypePrice = null)
     {
         $result = '';
 
         if ($this->getWalmartDescriptionTemplate()->isMsrpRrpModeNone()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getWalmartDescriptionTemplate()->isMsrpRrpModeCustomAttribute()) {
@@ -356,7 +356,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
     public function getKeywords()
     {
         if ($this->getWalmartDescriptionTemplate()->isKeywordsModeNone()) {
-            return NULL;
+            return null;
         }
 
         $src = $this->getWalmartDescriptionTemplate()->getKeywordsSource();
@@ -378,7 +378,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         $src = $this->getWalmartDescriptionTemplate()->getManufacturerSource();
 
         if ($this->getWalmartDescriptionTemplate()->isManufacturerModeNone()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getWalmartDescriptionTemplate()->isManufacturerModeCustomValue()) {
@@ -394,7 +394,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
     public function getManufacturerPartNumber()
     {
         if ($this->getWalmartDescriptionTemplate()->isManufacturerPartNumberModeNone()) {
-            return NULL;
+            return null;
         }
 
         $src = $this->getWalmartDescriptionTemplate()->getManufacturerPartNumberSource();
@@ -502,7 +502,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
     public function getVariationDifferenceImage()
     {
         if ($this->getWalmartDescriptionTemplate()->isImageVariationDifferenceModeNone()) {
-            return NULL;
+            return null;
         }
 
         $image = null;
@@ -517,7 +517,7 @@ class Ess_M2ePro_Model_Walmart_Template_Description_Source
         }
 
         if (!$image) {
-            return NULL;
+            return null;
         }
 
         return $image;

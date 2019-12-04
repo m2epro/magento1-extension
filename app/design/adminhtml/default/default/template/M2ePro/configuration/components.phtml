@@ -8,31 +8,7 @@
 // @codingStandardsIgnoreFile
 
 /** @var $this Ess_M2ePro_Block_Adminhtml_Configuration_Components_Form */
-
-$urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
-$componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
-
 ?>
-<script type="text/javascript">
-
-    // General for all tabs
-    //-----------------------------
-    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,'Ess_M2ePro_Helper_Component_Amazon');
-
-    M2ePro.translator.add(<?php echo json_encode(array(
-        'Default Component should be enabled.' => Mage::helper('M2ePro')->__('Default Component should be enabled.')
-    )); ?>);
-
-    Event.observe(window, 'load', function() {
-        ComponentsHandlerObj = new ConfigurationComponentsHandler();
-
-        ControlPanelHandlerObj = new DevelopmentControlPanelHandler();
-
-        ComponentsHandlerObj.componentsTitles = <?php echo $this->getComponentsTitles(); ?>
-    });
-    //-----------------------------
-
-</script>
 
 <style>
     .columns .form-list td.value {
@@ -50,7 +26,7 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
             <p><?php echo Mage::helper('M2ePro')->__('
                 <b>Enable</b> the Channels you want to sell on, then click <b>Save Config</b>.<br/><br/>
                 More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/CwAJAQ#GlobalSettings-Channels')
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/CwAJAQ#GlobalSettings-Channels')
                 ); ?></p>
         </div>
 
@@ -70,7 +46,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                         <tbody>
 
-                        <?php if ($this->component_ebay_allowed) { ?>
                             <tr>
                                 <td class="label">
                                     <label><?php echo Mage::helper('M2ePro')->__('Status'); ?>: </label>
@@ -85,8 +60,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                                     </p>
                                 </td>
                             </tr>
-
-                        <?php } ?>
 
                         </tbody>
 
@@ -114,7 +87,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                     <tbody>
 
-                    <?php if ($this->component_amazon_allowed) { ?>
                         <tr>
                             <td class="label">
                                 <label><?php echo Mage::helper('M2ePro')->__('Status'); ?>: </label>
@@ -129,7 +101,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                                 </p>
                             </td>
                         </tr>
-                    <?php } ?>
 
                     </tbody>
 
@@ -156,7 +127,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
 
                     <tbody>
 
-                    <?php if ($this->component_walmart_allowed) { ?>
                         <tr>
                             <td class="label">
                                 <label><?php echo Mage::helper('M2ePro')->__('Status'); ?>: </label>
@@ -171,7 +141,6 @@ $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Es
                                 </p>
                             </td>
                         </tr>
-                    <?php } ?>
 
                     </tbody>
 

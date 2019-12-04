@@ -10,6 +10,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator
     extends Ess_M2ePro_Model_Listing_Product_Action_Configurator
 {
     const DATA_TYPE_QTY        = 'qty';
+    const DATA_TYPE_LAG_TIME   = 'lag_time';
     const DATA_TYPE_PRICE      = 'price';
     const DATA_TYPE_PROMOTIONS = 'promotions';
     const DATA_TYPE_DETAILS    = 'details';
@@ -23,6 +24,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator
     {
         return array(
             self::DATA_TYPE_QTY,
+            self::DATA_TYPE_LAG_TIME,
             self::DATA_TYPE_PRICE,
             self::DATA_TYPE_PROMOTIONS,
             self::DATA_TYPE_DETAILS,
@@ -53,6 +55,32 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator
     public function disallowQty()
     {
         return $this->disallow(self::DATA_TYPE_QTY);
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return bool
+     */
+    public function isLagTimeAllowed()
+    {
+        return $this->isAllowed(self::DATA_TYPE_LAG_TIME);
+    }
+
+    /**
+     * @return $this
+     */
+    public function allowLagTime()
+    {
+        return $this->allow(self::DATA_TYPE_LAG_TIME);
+    }
+
+    /**
+     * @return $this
+     */
+    public function disallowLagTime()
+    {
+        return $this->disallow(self::DATA_TYPE_LAG_TIME);
     }
 
     // ---------------------------------------

@@ -55,7 +55,7 @@ class Ess_M2ePro_Model_Magento_Order_PaymentTransaction extends Mage_Core_Model_
         $existTransaction = $payment->getTransaction($this->getData('transaction_id'));
 
         if ($existTransaction && $existTransaction->getTxnType() == $transactionType) {
-            return NULL;
+            return null;
         }
 
         $payment->setTransactionId($this->getData('transaction_id'));

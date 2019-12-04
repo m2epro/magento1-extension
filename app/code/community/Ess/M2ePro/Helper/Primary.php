@@ -19,11 +19,4 @@ class Ess_M2ePro_Helper_Primary extends Mage_Core_Helper_Abstract
     }
 
     //########################################
-
-    public function getModules()
-    {
-        return $this->getConfig()->getAllGroupValues('/modules/');
-    }
-
-    //########################################
 }

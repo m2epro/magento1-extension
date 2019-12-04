@@ -40,7 +40,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         $listingProductId = $this->getListingProduct()->getId();
         $variationId      = $this->getListingProductVariationId();
 
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$listingProductId}_variation_{$variationId}_options"
         );
 
@@ -52,7 +52,7 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
         $listingProductId = $this->getListingProduct()->getId();
         $variationId      = $this->getListingProductVariationId();
 
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$listingProductId}_variation_{$variationId}_options"
         );
 
@@ -64,8 +64,8 @@ class Ess_M2ePro_Model_Listing_Product_Variation_Option extends Ess_M2ePro_Model
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->_listingProductVariationModel = NULL;
-        $temp && $this->_magentoProductModel = NULL;
+        $temp && $this->_listingProductVariationModel = null;
+        $temp && $this->_magentoProductModel = null;
         return $temp;
     }
 

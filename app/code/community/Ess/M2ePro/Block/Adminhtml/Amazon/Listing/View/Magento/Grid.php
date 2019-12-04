@@ -89,7 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
                 'is_details_data_changed'   => 'is_details_data_changed',
                 'is_images_data_changed'    => 'is_images_data_changed',
             ),
-            NULL,
+            null,
             'left'
         );
         // ---------------------------------------
@@ -100,19 +100,19 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_View_Magento_Grid
 
         if ($store->getId()) {
             $collection->joinAttribute(
-                'name', 'catalog_product/name', 'entity_id', NULL, 'left', $store->getId()
+                'name', 'catalog_product/name', 'entity_id', null, 'left', $store->getId()
             );
             $collection->joinAttribute(
-                'magento_price', 'catalog_product/price', 'entity_id', NULL, 'left', $store->getId()
+                'magento_price', 'catalog_product/price', 'entity_id', null, 'left', $store->getId()
             );
             $collection->joinAttribute(
-                'status', 'catalog_product/status', 'entity_id', NULL, 'inner', $store->getId()
+                'status', 'catalog_product/status', 'entity_id', null, 'inner', $store->getId()
             );
             $collection->joinAttribute(
-                'visibility', 'catalog_product/visibility', 'entity_id', NULL, 'inner', $store->getId()
+                'visibility', 'catalog_product/visibility', 'entity_id', null, 'inner', $store->getId()
             );
             $collection->joinAttribute(
-                'thumbnail', 'catalog_product/thumbnail', 'entity_id', NULL, 'left', $store->getId()
+                'thumbnail', 'catalog_product/thumbnail', 'entity_id', null, 'left', $store->getId()
             );
         } else {
             $collection->addAttributeToSelect('price');

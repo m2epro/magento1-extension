@@ -116,7 +116,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Search_M2ePro_Grid
                 'is_repricing_disabled' => 'is_online_disabled',
                 'is_repricing_inactive' => 'is_online_inactive',
             ),
-            NULL,
+            null,
             'left'
         );
 

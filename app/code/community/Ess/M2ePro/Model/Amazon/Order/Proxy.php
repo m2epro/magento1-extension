@@ -86,11 +86,26 @@ class Ess_M2ePro_Model_Amazon_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
      */
     public function getOrderNumberPrefix()
     {
-        if (!$this->_order->getAmazonAccount()->isMagentoOrdersNumberPrefixEnable()) {
+        $amazonAccount = $this->_order->getAmazonAccount();
+        if (!$amazonAccount->isMagentoOrdersNumberPrefixEnable()) {
             return '';
         }
 
-        return $this->_order->getAmazonAccount()->getMagentoOrdersNumberPrefix();
+        $prefix = $amazonAccount->getMagentoOrdersNumberRegularPrefix();
+
+        if ($amazonAccount->getMagentoOrdersNumberAfnPrefix() && $this->_order->isFulfilledByAmazon()) {
+            $prefix .= $amazonAccount->getMagentoOrdersNumberAfnPrefix();
+        }
+
+        if ($amazonAccount->getMagentoOrdersNumberPrimePrefix() && $this->_order->isPrime()) {
+            $prefix .= $amazonAccount->getMagentoOrdersNumberPrimePrefix();
+        }
+
+        if ($amazonAccount->getMagentoOrdersNumberB2bPrefix() && $this->_order->isBusiness()) {
+            $prefix .= $amazonAccount->getMagentoOrdersNumberB2bPrefix();
+        }
+
+        return $prefix;
     }
 
     //########################################

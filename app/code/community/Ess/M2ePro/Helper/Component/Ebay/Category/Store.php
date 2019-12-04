@@ -18,7 +18,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Store extends Mage_Core_Helper_A
         $pathData = array();
 
         while (true) {
-            $currentCategory = NULL;
+            $currentCategory = null;
 
             foreach ($categories as $category) {
                 if ($category['category_id'] == $categoryId) {

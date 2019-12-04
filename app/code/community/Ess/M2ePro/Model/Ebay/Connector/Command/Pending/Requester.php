@@ -19,7 +19,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
      */
     protected $account;
 
-    // ########################################
+    //########################################
 
     public function __construct(
         array $params = array(),
@@ -32,7 +32,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
         parent::__construct($params);
     }
 
-    // ########################################
+    //########################################
 
     protected function buildRequestInstance()
     {
@@ -53,7 +53,7 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
         return $request;
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingParams()
     {
@@ -85,5 +85,5 @@ abstract class Ess_M2ePro_Model_Ebay_Connector_Command_Pending_Requester
         return $params;
     }
 
-    // ########################################
+    //########################################
 }

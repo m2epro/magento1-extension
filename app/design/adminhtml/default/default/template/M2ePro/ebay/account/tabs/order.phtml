@@ -18,7 +18,7 @@
         Once eBay Order is imported, the <strong>Reserve Quantity</strong> feature will hold the Stock if Magento Order could not be created immediately in accordance with provided settings.<br/><br/>
         Besides, you can configure the <strong>Tax, Order Number</strong> and <strong>Order Status Mapping</strong> Settings for your Magento Orders as well as specify the automatic creation of invoices and shipment notifications.<br/><br/>
         More detailed information you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/NwAJAQ'));
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/NwAJAQ'));
     ?>
 </div>
 
@@ -29,29 +29,29 @@
     $defaults = array(
         'magento_orders_settings' => array(
             'listing' => array(
-                'mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES,
+                'mode' => 1,
                 'store_mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT,
-                'store_id' => NULL
+                'store_id' => null
             ),
             'listing_other' => array(
-                'mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES,
+                'mode' => 1,
                 'product_mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT,
                 'product_tax_class_id' => Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE,
-                'store_id' => NULL,
+                'store_id' => null,
             ),
             'number' => array(
                 'source' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO,
                 'prefix' => array(
-                    'mode'   => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO,
+                    'mode'   => 0,
                     'prefix' => '',
                 ),
             ),
             'customer' => array(
                 'mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CUSTOMER_MODE_GUEST,
-                'id' => NULL,
-                'website_id' => NULL,
-                'group_id' => NULL,
-//                'subscription_mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO,
+                'id' => null,
+                'website_id' => null,
+                'group_id' => null,
+//                'subscription_mode' => 0,
                 'notifications' => array(
 //                    'customer_created' => false,
                     'invoice_created' => false,
@@ -79,8 +79,8 @@
             'qty_reservation' => array(
                 'days' => 1
             ),
-            'invoice_mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_INVOICE_MODE_YES,
-            'shipment_mode' => Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES
+            'invoice_mode'  => 1,
+            'shipment_mode' => 1
         )
     );
 
@@ -93,20 +93,6 @@
 
     // Data for current tab
     //-----------------------------
-    M2ePro.formData.magento_orders_listings_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['mode']); ?>';
-    M2ePro.formData.magento_orders_listings_store_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['store_mode']); ?>';
-    M2ePro.formData.magento_orders_listings_store_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing']['store_id']); ?>';
-
-    M2ePro.formData.magento_orders_listings_other_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['mode']); ?>';
-    M2ePro.formData.magento_orders_listings_other_store_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['store_id']); ?>';
-    M2ePro.formData.magento_orders_listings_other_product_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['listing_other']['product_mode']); ?>';
-
-    M2ePro.formData.magento_orders_customer_mode = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['mode']); ?>';
-    M2ePro.formData.magento_orders_customer_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['id']); ?>';
-    M2ePro.formData.magento_orders_customer_new_website_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['website_id']); ?>';
-    M2ePro.formData.magento_orders_customer_new_group_id = '<?php echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['group_id']); ?>';
-<!--    M2ePro.formData.magento_orders_customer_new_newsletter_mode = '--><?php //echo Mage::helper('M2ePro')->escapeJs($formData['magento_orders_settings']['customer']['subscription_mode']); ?><!--';-->
-
     Event.observe(window, 'load', function() {
         setTimeout(function() {
             $('magento_orders_listings_mode').observe('change', EbayAccountHandlerObj.magentoOrdersListingsModeChange);
@@ -150,8 +136,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="magento_orders_listings_mode" name="magento_orders_settings[listing][mode]" class="M2ePro-required-when-visible">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['listing']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['listing']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Choose whether a Magento Order should be created if an eBay Order is received for an eBay Item Listed using M2E Pro.'); ?></span>
@@ -159,7 +145,7 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_listings_store_mode_container" <?php if($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO) echo 'style="display: none;"'; ?>>
+                <tr id="magento_orders_listings_store_mode_container" <?php if($formData['magento_orders_settings']['listing']['mode'] == 0) echo 'style="display: none;"'; ?>>
                     <td class="label">
                         <label for="magento_orders_listings_store_mode"><?php echo Mage::helper('M2ePro')->__('Magento Store View Source'); ?>: </label>
                     </td>
@@ -214,8 +200,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="magento_orders_listings_other_mode" name="magento_orders_settings[listing_other][mode]" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['listing_other']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Choose whether a Magento Order should be created if an eBay Order is received for an eBay Item <b>not</b> Listed using M2E Pro.'); ?></span>
@@ -223,7 +209,7 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_listings_other_store_id_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo 'style="display: none;"'; ?>>
+                <tr id="magento_orders_listings_other_store_id_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == 0) echo 'style="display: none;"'; ?>>
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Magento Store View'); ?>: <span class="required">*</span></label>
                     </td>
@@ -235,7 +221,7 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_listings_other_product_mode_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO) echo 'style="display: none;"'; ?>>
+                <tr id="magento_orders_listings_other_product_mode_container" <?php if($formData['magento_orders_settings']['listing_other']['mode'] == 0) echo 'style="display: none;"'; ?>>
                     <td class="label">
                         <label for="magento_orders_listings_other_product_mode"><?php echo Mage::helper('M2ePro')->__('Product Not Found'); ?>: </label>
                     </td>
@@ -278,7 +264,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_number" <?php if(($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_number" <?php if(($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Magento Order Number'); ?></h4>
@@ -314,8 +300,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="magento_orders_number_prefix_mode" name="magento_orders_settings[number][prefix][mode]" class="M2ePro-required-when-visible">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO; ?>" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES; ?>" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['magento_orders_settings']['number']['prefix']['mode'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Choose to set prefix before Magento Order number.'); ?></span>
@@ -323,7 +309,7 @@
                     </td>
                 </tr>
 
-                <tr id="magento_orders_number_prefix_container" <?php if($formData['magento_orders_settings']['number']['prefix']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO) echo 'style="display: none;"'; ?>>
+                <tr id="magento_orders_number_prefix_container" <?php if($formData['magento_orders_settings']['number']['prefix']['mode'] == 0) echo 'style="display: none;"'; ?>>
                     <td class="label">
                         <label for="magento_orders_customer_id"><?php echo Mage::helper('M2ePro')->__('Prefix'); ?>: <span class="required">*</span></label>
                     </td>
@@ -356,7 +342,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_customer" <?php if(($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_customer" <?php if(($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Customer Settings'); ?></h4>
@@ -364,18 +350,6 @@
 
     <div class="fieldset">
         <div class="hor-scroll">
-
-        <!--
-            <div id="block_notice_ebay_accounts_orders_customers" class="block_notices_module" title="<?php //echo Mage::helper('M2ePro')->__('Customers'); ?>">
-                <?php //echo Mage::helper('M2ePro')->__('There are several ways to specify a customer Magento Orders will be assigned to:
-                //<br/>
-                //    <br/><b>Guest Account</b> - the system does not require a customer account to be created. Default guest account will be used instead.
-                //    <br/><b>Note:</b> To use this option, Magento Guest Checkout option must be enabled.
-                //<br/><br/><b>Predefined Customer</b> - the system uses predefined customer.
-                //<br/><br/><b>Create New</b> - a new customer will be created in Magento.
-                //    <br/><b>Note:</b> If a customer already exists in Magento, the system assigns orders to him.'); ?>
-            </div>
-        -->
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
@@ -467,7 +441,7 @@
     </div>
 
 </div>
-<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_rules" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_rules" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Creation Rules'); ?></h4>
@@ -563,7 +537,7 @@
     </div>
 </div>
 
-<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_tax" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_tax" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Tax Settings'); ?></h4>
@@ -609,7 +583,7 @@
 
 <?php if ($this->isStorePickupEnabled): ?>
 
-    <div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_in_store_pickup_statuses" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+    <div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_in_store_pickup_statuses" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
         <div class="entry-edit-head">
             <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('In Store Pickup Notification Status Mapping'); ?></h4>
@@ -669,7 +643,7 @@
 
 <?php endif; ?>
 
-<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_status_mapping" <?php if (($formData['magento_orders_settings']['listing']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_MODE_NO && $formData['magento_orders_settings']['listing_other']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO)) echo 'style="display: none;"'; ?>>
+<div class="entry-edit" id="magento_block_ebay_accounts_magento_orders_status_mapping" <?php if (($formData['magento_orders_settings']['listing']['mode'] == 0 && $formData['magento_orders_settings']['listing_other']['mode'] == 0)) echo 'style="display: none;"'; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Order Status Mapping'); ?></h4>
@@ -704,8 +678,8 @@
                         $formData['magento_orders_settings']['status_mapping']['paid'] = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_PAID;
                         $formData['magento_orders_settings']['status_mapping']['shipped'] = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED;
 
-                        $formData['magento_orders_settings']['invoice_mode'] = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_INVOICE_MODE_YES;
-                        $formData['magento_orders_settings']['shipment_mode'] = Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES;
+                        $formData['magento_orders_settings']['invoice_mode'] = 1;
+                        $formData['magento_orders_settings']['shipment_mode'] = 1;
                     }
                 ?>
 
@@ -734,7 +708,7 @@
                         </select>
                     </td>
                     <td class="value">
-                        <input id="magento_orders_invoice_mode" name="magento_orders_settings[invoice_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['invoice_mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_INVOICE_MODE_YES) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
+                        <input id="magento_orders_invoice_mode" name="magento_orders_settings[invoice_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['invoice_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
                         <label for="magento_orders_invoice_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Invoice Creation'); ?></label>
                     </td>
                 </tr>
@@ -751,7 +725,7 @@
                         </select>
                     </td>
                     <td class="value">
-                        <input id="magento_orders_shipment_mode" name="magento_orders_settings[shipment_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['shipment_mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_SHIPMENT_MODE_YES) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
+                        <input id="magento_orders_shipment_mode" name="magento_orders_settings[shipment_mode]" type="checkbox" <?php if ($formData['magento_orders_settings']['status_mapping']['mode'] == Ess_M2ePro_Model_Ebay_Account::MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT || $formData['magento_orders_settings']['shipment_mode'] == 1) echo 'checked="checked"'; ?> <?php echo $isDisabledStatusStyle; ?>>
                         <label for="magento_orders_shipment_mode"><?php echo Mage::helper('M2ePro')->__('Automatic Shipment Creation');?></label>
                     </td>
                 </tr>

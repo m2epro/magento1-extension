@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
     public function build(array $data)
     {
         if (empty($data)) {
-            return NULL;
+            return null;
         }
 
         $this->validate($data);
@@ -39,11 +39,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
     {
         $prepared = parent::prepareData($data);
 
-        $isSimpleMode = Mage::helper('M2ePro/View_Ebay')->isSimpleMode();
-
-        $defaultData = $isSimpleMode ?
-            Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettingsSimpleMode() :
-            Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettingsAdvancedMode();
+        $defaultData = Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettings();
 
         $data = array_merge($defaultData, $data);
 

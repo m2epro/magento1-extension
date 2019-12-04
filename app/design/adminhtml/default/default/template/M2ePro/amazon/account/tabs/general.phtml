@@ -28,7 +28,7 @@
         </ul>
         Continue working with 3rd Party Listings and Orders Settings Tabs.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/qoIVAQ')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/qoIVAQ')
     ); ?>
 </div>
 
@@ -93,7 +93,7 @@
         'Coefficient is not valid.' => Mage::helper('M2ePro')->__('Coefficient is not valid.'),
         'on_delete_account_message' => Mage::helper('M2ePro')->__('Attention! By applying this action you delete the Account data only from current M2E Pro instance. It does not affect the Subscription status and Billing process for this Channel Account. <br><br>
                                                                    To delete Channel Account which you don\'t need to manage under M2E Pro Subscription Plan, go to the <a href="%url%" target="_blank">Clients Portal</a>.',
-                                                                   Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl())
+                                                                   Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl())
     )); ?>);
 
     M2ePro.formData.id = '<?php echo $this->getRequest()->getParam('id'); ?>';
@@ -138,7 +138,6 @@
     //-----------------------------
     M2ePro.translator.add(<?php echo json_encode(array(
         'The specified Title is already used for other Account. Account Title must be unique.' => Mage::helper('M2ePro')->__('The specified Title is already used for other Account. Account Title must be unique.'),
-        'You must choose Marketplace first.' => Mage::helper('M2ePro')->__('You must choose Marketplace first.'),
         'M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID.' => Mage::helper('M2ePro')->__('M2E Pro was not able to get access to the Amazon Account. Please, make sure, that you choose correct Option on MWS Authorization Page and enter correct Merchant ID / MWS Auth Token'),
         'M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%' => Mage::helper('M2ePro')->__('M2E Pro was not able to get access to the Amazon Account. Reason: %error_message%')
     )); ?>);
@@ -177,14 +176,6 @@
     </div>
 
 </div>
-
-<?php if ($this->synchronizeProcessing) { ?>
-    <div class="locked_block">
-
-        <div class="locked_wrapper">
-            <div><?php echo Mage::helper('M2ePro')->__('Synchronizing Now') ?></div>
-        </div>
-<?php } ?>
 
 <div class="entry-edit" id="magento_block_amazon_accounts_marketplaces_access" collapseable="no">
 
@@ -281,7 +272,3 @@
     </div>
 
 </div>
-
-<?php if ($this->synchronizeProcessing) { ?>
-    </div>
-<?php } ?>

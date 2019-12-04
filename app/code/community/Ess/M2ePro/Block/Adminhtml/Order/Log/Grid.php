@@ -14,20 +14,11 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
     {
         parent::__construct();
 
-        $channel = $this->getRequest()->getParam('channel');
-
-        // Initialization block
-        // ---------------------------------------
-        $this->setId(ucfirst($channel) . 'OrderLogGrid');
-        // ---------------------------------------
-
-        // Set default values
-        // ---------------------------------------
+        $this->setId('OrderLog');
         $this->setDefaultSort('create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -47,6 +38,16 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
             array('magento_order_number' => 'increment_id')
         );
 
+        if ($accountId = $this->getRequest()->getParam($this->getComponentMode() . 'Account')) {
+            $collection->addFieldToFilter('main_table.account_id', $accountId);
+        }
+
+        if ($marketplaceId = $this->getRequest()->getParam($this->getComponentMode() . 'Marketplace')) {
+            $collection->addFieldToFilter('main_table.marketplace_id', $marketplaceId);
+        }
+
+        $collection->addFieldToFilter('main_table.component_mode', $this->getComponentMode());
+
         $orderId = $this->getRequest()->getParam('order_id');
         if ($orderId && !$this->getRequest()->isXmlHttpRequest()) {
             $collection->addFieldToFilter('main_table.order_id', (int)$orderId);
@@ -62,21 +63,6 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
                 )
             );
         }
-
-        $channel = $this->getRequest()->getParam('channel');
-        if (!empty($channel)) {
-            $collection->getSelect()->where('main_table.component_mode = ?', $channel);
-        } else {
-            $components = Mage::helper('M2ePro/View')->getComponentHelper()->getActiveComponents();
-            $collection->addFieldToFilter('main_table.component_mode', array('in'=>$components));
-        }
-
-        // ---------------------------------------
-        if ($this->getRequest()->getParam('sort', 'create_date') == 'create_date') {
-            $collection->setOrder('id', $this->getRequest()->getParam('dir', 'DESC'));
-        }
-
-        // ---------------------------------------
 
         $this->setCollection($collection);
 
@@ -98,6 +84,18 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
         );
 
         $this->addColumn(
+            'channel_order_id', array(
+            'header'    => Mage::helper('M2ePro')->__($this->getComponentTitle() . ' Order #'),
+            'align'     => 'left',
+            'width'     => '180px',
+            'sortable'  => false,
+            'index'     => 'channel_order_id',
+            'frame_callback' => array($this, 'callbackColumnChannelOrderId'),
+            'filter_condition_callback' => array($this, 'callbackFilterChannelOrderId')
+            )
+        );
+
+        $this->addColumn(
             'magento_order_number', array(
             'header'    => Mage::helper('M2ePro')->__('Magento Order #'),
             'align'     => 'left',
@@ -109,20 +107,8 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
         );
 
         $this->addColumn(
-            'channel_order_id', array(
-            'header'    => Mage::helper('M2ePro')->__('Order #'),
-            'align'     => 'left',
-            'width'     => '180px',
-            'sortable'  => false,
-            'index'     => 'channel_order_id',
-            'frame_callback' => array($this, 'callbackColumnChannelOrderId'),
-            'filter_condition_callback' => array($this, 'callbackFilterChannelOrderId')
-            )
-        );
-
-        $this->addColumn(
             'description', array(
-            'header'    => Mage::helper('M2ePro')->__('Description'),
+            'header'    => Mage::helper('M2ePro')->__('Message'),
             'align'     => 'left',
             'width'     => '*',
             'index'     => 'description',
@@ -271,7 +257,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
 
         $ordersIds = array();
 
-        if (Mage::helper('M2ePro/Component_Ebay')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Ebay')->isEnabled()) {
             $tempOrdersIds = Mage::getModel('M2ePro/Ebay_Order')
                 ->getCollection()
                 ->addFieldToFilter('ebay_order_id', array('like' => '%'.$value.'%'))
@@ -279,7 +265,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
             $ordersIds = array_merge($ordersIds, $tempOrdersIds);
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
             $tempOrdersIds = Mage::getModel('M2ePro/Amazon_Order')
                 ->getCollection()
                 ->addFieldToFilter('amazon_order_id', array('like' => '%'.$value.'%'))
@@ -287,7 +273,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
             $ordersIds = array_merge($ordersIds, $tempOrdersIds);
         }
 
-        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Walmart')->isEnabled()) {
             $tempOrdersIds = Mage::getModel('M2ePro/Walmart_Order')
                 ->getCollection()
                 ->addFieldToFilter('walmart_order_id', array('like' => '%'.$value.'%'))
@@ -311,10 +297,21 @@ class Ess_M2ePro_Block_Adminhtml_Order_Log_Grid extends Mage_Adminhtml_Block_Wid
     {
         return $this->getUrl(
             '*/*/orderGrid', array(
-            '_current' => true,
-            'channel' => $this->getRequest()->getParam('channel')
+                '_current' => true
             )
         );
+    }
+
+    //#######################################
+
+    protected function getComponentTitle()
+    {
+        return Mage::helper('M2ePro/Component_' . ucfirst($this->getComponentMode()))->getTitle();
+    }
+
+    protected function getComponentMode()
+    {
+        return $this->getData('component_mode');
     }
 
     //########################################

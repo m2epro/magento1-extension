@@ -12,7 +12,7 @@ class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Admi
 
     protected function getCustomViewNick()
     {
-        return NULL;
+        return null;
     }
 
     //########################################
@@ -27,7 +27,7 @@ class Ess_M2ePro_Adminhtml_TemplateController extends Ess_M2ePro_Controller_Admi
         // ---------------------------------------
 
         // ---------------------------------------
-        $template = NULL;
+        $template = null;
         $templateData = $data ? $data : array();
         $templateUsedAttributes = array();
         // ---------------------------------------

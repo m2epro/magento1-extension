@@ -21,7 +21,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
 
     protected $_validatorsData = array();
 
-    // ########################################
+    //########################################
 
     public function setListingProduct(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
@@ -36,21 +36,21 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingRunnerModelName()
     {
         return 'Amazon_Connector_Product_List_ProcessingRunner';
     }
 
-    // ########################################
+    //########################################
 
     public function getCommand()
     {
         return array('product','add','entities');
     }
 
-    // ########################################
+    //########################################
 
     protected function getActionType()
     {
@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return Ess_M2ePro_Model_Listing_Log::ACTION_LIST_PRODUCT_ON_COMPONENT;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param Ess_M2ePro_Model_Listing_Product[] $listingProducts
@@ -83,7 +83,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return $resultListingProducts;
     }
 
-    // ########################################
+    //########################################
 
     protected function validateListingProduct()
     {
@@ -94,7 +94,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
                 && $this->validateListTypeRequirements();
     }
 
-    // ########################################
+    //########################################
 
     protected function validateGeneralRequirements()
     {
@@ -252,7 +252,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return false;
     }
 
-    // ########################################
+    //########################################
 
     protected function getValidatorsData($key = null)
     {
@@ -268,7 +268,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         $this->_validatorsData = array_merge($this->_validatorsData, $data);
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_List_Validator_General
@@ -385,7 +385,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return $this->_listTypeValidatorObject;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Request
@@ -409,5 +409,5 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_Requester
         return $this->_requestObject;
     }
 
-    // ########################################
+    //########################################
 }

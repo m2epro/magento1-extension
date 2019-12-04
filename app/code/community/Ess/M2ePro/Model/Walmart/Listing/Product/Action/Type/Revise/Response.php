@@ -34,6 +34,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
 
         $data = $this->appendStatusChangerValue($data);
         $data = $this->appendQtyValues($data);
+        $data = $this->appendLagTimeValues($data);
         $data = $this->appendPriceValues($data);
         $data = $this->appendPromotionsValues($data);
         $data = $this->appendDetailsValues($data);
@@ -57,8 +58,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
     public function getSuccessfulMessage()
     {
         if ($this->getConfigurator()->isExcludingMode()) {
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
@@ -66,27 +65,19 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
         $isPlural = false;
 
         if ($this->getConfigurator()->isQtyAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // QTY
             $sequenceStrings[] = 'QTY';
         }
 
         if ($this->getConfigurator()->isPriceAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Price
             $sequenceStrings[] = 'Price';
         }
 
         if ($this->getConfigurator()->isPromotionsAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Promotions
             $sequenceStrings[] = 'Promotions';
         }
 
         if ($this->getConfigurator()->isDetailsAllowed()) {
             if ($this->getRequestData()->getIsNeedSkuUpdate()) {
-                // M2ePro_TRANSLATIONS
-                // SKU
                 $sequenceStrings[] = 'SKU';
             }
 
@@ -95,15 +86,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
                 !empty($idsMetadata) && $sequenceStrings[] = strtoupper($idsMetadata['type']);
             }
 
-            // M2ePro_TRANSLATIONS
-            // Details
             $sequenceStrings[] = 'Details';
             $isPlural = true;
         }
 
         if (empty($sequenceStrings)) {
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
@@ -116,8 +103,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Revise_Response
             return ucfirst($sequenceStrings[0]).' '.$verb.' successfully Revised';
         }
 
-        // M2ePro_TRANSLATIONS
-        // was successfully Revised
         return ucfirst(implode(', ', $sequenceStrings)).' were successfully Revised';
     }
 

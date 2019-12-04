@@ -33,8 +33,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Delete_Validator
 
         if ($this->getListingProduct()->isNotListed()) {
             if (empty($params['remove'])) {
-                // M2ePro_TRANSLATIONS
-                // Item is not Listed or not available
                 $this->addMessage('Item is not Listed or not available');
             } else {
                 $removeHandler = Mage::getModel(

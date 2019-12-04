@@ -18,7 +18,8 @@ class Ess_M2ePro_Model_Cron_Task_Magento_Product_DetectDirectlyAdded extends Ess
             $this->setLastProcessedProductId($this->getLastProductId());
         }
 
-        if (empty($products = $this->getProducts())) {
+        $products = $this->getProducts();
+        if (empty($products)) {
             return;
         }
 

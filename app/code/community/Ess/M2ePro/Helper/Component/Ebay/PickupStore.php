@@ -12,11 +12,7 @@ class Ess_M2ePro_Helper_Component_Ebay_PickupStore extends Mage_Core_Helper_Abst
 
     public function isFeatureEnabled()
     {
-        if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            return false;
-        }
-
-        $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
+        $sessionCache = Mage::helper('M2ePro/Data_Cache_Runtime');
 
         if ($sessionCache->getValue('bopis') !== null) {
             return $sessionCache->getValue('bopis');

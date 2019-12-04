@@ -72,7 +72,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
      * @return array|mixed
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    protected function getSource($key = NULL)
+    protected function getSource($key = null)
     {
         if (empty($this->_source)) {
             throw new Ess_M2ePro_Model_Exception_Logic('Initialize all parameters first.');
@@ -82,7 +82,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
             return $this->_source;
         }
 
-        return isset($this->_source[$key]) ? $this->_source[$key] : NULL;
+        return isset($this->_source[$key]) ? $this->_source[$key] : null;
     }
 
     // ---------------------------------------
@@ -919,8 +919,8 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         /** @var $productTypeInstance Mage_Catalog_Model_Product_Type_Grouped */
         $productTypeInstance = $product->getTypeInstance();
 
-        $lowestVariationValue = NULL;
-        $resultChildProduct   = NULL;
+        $lowestVariationValue = null;
+        $resultChildProduct   = null;
 
         foreach ($productTypeInstance->getAssociatedProducts() as $childProduct) {
 
@@ -937,7 +937,7 @@ abstract class Ess_M2ePro_Model_Listing_Product_PriceCalculator
         }
 
         if ($resultChildProduct === null) {
-            return NULL;
+            return null;
         }
 
         return $this->getExistedProductTierValue($resultChildProduct);

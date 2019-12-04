@@ -10,7 +10,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
 {
     protected $_logsActionId = null;
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $action
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
         return (int)$this->_logsActionId;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $sortedProductsData
@@ -122,7 +122,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareProducts($products)
     {
@@ -283,7 +283,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
         return $logAction;
     }
 
-    // ########################################
+    //########################################
 
     protected function getActionNick($action)
     {
@@ -308,5 +308,5 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 }

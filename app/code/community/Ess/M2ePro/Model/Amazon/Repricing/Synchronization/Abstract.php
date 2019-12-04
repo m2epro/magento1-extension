@@ -14,7 +14,7 @@ abstract class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_Abstract
 
     //########################################
 
-    abstract public function run($skus = NULL);
+    abstract public function run($skus = null);
 
     //########################################
 

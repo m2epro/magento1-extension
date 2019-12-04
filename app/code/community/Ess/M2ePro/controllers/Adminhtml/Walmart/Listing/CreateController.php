@@ -21,9 +21,6 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
 
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
-            ->addCss('M2ePro/css/Plugin/AutoComplete.css')
-            ->addJs('M2ePro/Plugin/AutoComplete.js')
-
             ->addJs('M2ePro/TemplateHandler.js')
             ->addJs('M2ePro/Walmart/Listing/AddListingHandler.js')
             ->addJs('M2ePro/Walmart/Listing/SettingsHandler.js')
@@ -56,7 +53,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/L4taAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_add', ''));
 
@@ -98,13 +95,12 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
         // ---------------------------------------
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
         $tempLog->setComponentMode($listing->getComponentMode());
+        $actionId = $tempLog->getResource()->getNextActionId();
         $tempLog->addListingMessage(
             $listing->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
-            NULL,
+            $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
-            // M2ePro_TRANSLATIONS
-            // Listing was successfully Added
             'Listing was successfully Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
@@ -142,7 +138,7 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
         return $this;
     }
 
-    protected function getSessionValue($key = NULL)
+    protected function getSessionValue($key = null)
     {
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->getSessionKey());
 
@@ -154,14 +150,14 @@ class Ess_M2ePro_Adminhtml_Walmart_Listing_CreateController
             return $sessionData;
         }
 
-        return isset($sessionData[$key]) ? $sessionData[$key] : NULL;
+        return isset($sessionData[$key]) ? $sessionData[$key] : null;
     }
 
     // ---------------------------------------
 
     protected function clearSession()
     {
-        Mage::helper('M2ePro/Data_Session')->setValue($this->getSessionKey(), NULL);
+        Mage::helper('M2ePro/Data_Session')->setValue($this->getSessionKey(), null);
     }
 
     //########################################

@@ -121,7 +121,7 @@ class Ess_M2ePro_Adminhtml_Listing_MovingController
         $selectedProducts = $sessionHelper->getValue($sessionKey);
 
         /** @var Ess_M2ePro_Model_Listing $targetListing */
-        $sourceListing = NULL;
+        $sourceListing = null;
         $targetListing = Mage::helper('M2ePro/Component')->getCachedComponentObject(
             $componentMode, 'Listing', (int)$this->getRequest()->getParam('listingId')
         );

@@ -8,14 +8,11 @@
 
 class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Model_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Action was not completed (Item: %item_id%, Transaction: %trn_id%). Reason: %msg%
-
     const ACTION_ADD_DISPUTE   = 1;
     const ACTION_UPDATE_STATUS = 2;
     const ACTION_UPDATE_TRACK  = 3;
 
-    // ########################################
+    //########################################
 
     public function process($action, $items, array $params = array())
     {
@@ -39,7 +36,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
         return $this->processItems($items, $connector, $params);
     }
 
-    // ########################################
+    //########################################
 
     protected function processItems(array $items, $connectorName, array $params = array())
     {
@@ -73,7 +70,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
         return true;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareItems($items)
     {
@@ -92,5 +89,5 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Dispatcher extends Mage_Core_Mod
         return $preparedItems;
     }
 
-    // ########################################
+    //########################################
 }

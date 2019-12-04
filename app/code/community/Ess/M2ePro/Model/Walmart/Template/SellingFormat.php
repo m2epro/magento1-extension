@@ -113,7 +113,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat extends Ess_M2ePro_Model_C
         }
 
         $this->delete();
-        $this->_marketplaceModel = NULL;
+        $this->_marketplaceModel = null;
 
         return true;
     }

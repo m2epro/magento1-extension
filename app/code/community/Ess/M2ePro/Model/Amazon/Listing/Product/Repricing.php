@@ -206,17 +206,25 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
         );
         $coefficient   = $this->getAccountRepricing()->getRegularPriceCoefficient();
         $variationMode = $this->getAccountRepricing()->getRegularPriceVariationMode();
+        $vatPercent    = null;
 
         if ($source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::REGULAR_PRICE_MODE_PRODUCT_POLICY) {
             $amazonSellingFormatTemplate = $this->getAmazonListingProduct()->getAmazonSellingFormatTemplate();
 
             $source            = $amazonSellingFormatTemplate->getRegularPriceSource();
-            $sourceModeMapping = NULL;
+            $sourceModeMapping = null;
             $coefficient       = $amazonSellingFormatTemplate->getRegularPriceCoefficient();
             $variationMode     = $amazonSellingFormatTemplate->getRegularPriceVariationMode();
+            $vatPercent        = $amazonSellingFormatTemplate->getRegularPriceVatPercent();
         }
 
-        $calculator = $this->getPriceCalculator($source, $sourceModeMapping, $coefficient, $variationMode);
+        $calculator = $this->getPriceCalculator(
+            $source,
+            $sourceModeMapping,
+            $coefficient,
+            $variationMode,
+            $vatPercent
+        );
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
             $this->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
@@ -246,7 +254,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
             $this->getAccountRepricing()->isMinPriceModeRegularValue()
         ) {
             if ($this->getAccountRepricing()->isRegularPriceModeManual()) {
-                return NULL;
+                return null;
             }
 
             $value = $this->getRegularPrice() - $this->calculateModificationValueBasedOnRegular($source);
@@ -299,7 +307,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
             $this->getAccountRepricing()->isMaxPriceModeRegularValue()
         ) {
             if ($this->getAccountRepricing()->isRegularPriceModeManual()) {
-                return NULL;
+                return null;
             }
 
             $value = $this->getRegularPrice() + $this->calculateModificationValueBasedOnRegular($source);
@@ -351,7 +359,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
         $source = $this->getAccountRepricing()->getDisableSource();
 
         if ($source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_MANUAL) {
-            return NULL;
+            return null;
         }
 
         if ($source['mode'] == Ess_M2ePro_Model_Amazon_Account_Repricing::DISABLE_MODE_ATTRIBUTE) {
@@ -382,13 +390,15 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
      * @param array $sourceModeMapping
      * @param string $coefficient
      * @param int $priceVariationMode
+     * @param int $vatPercent
      * @return Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator
      */
     protected function getPriceCalculator(
         array $source,
         $sourceModeMapping = null,
         $coefficient = null,
-        $priceVariationMode = null
+        $priceVariationMode = null,
+        $vatPercent = null
     ) {
         /** @var $calculator Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator */
         $calculator = Mage::getModel('M2ePro/Amazon_Listing_Product_Repricing_PriceCalculator');
@@ -396,6 +406,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing extends Ess_M2ePro_Model
         $calculator->setSource($source)->setProduct($this->getListingProduct());
         $calculator->setCoefficient($coefficient);
         $calculator->setPriceVariationMode($priceVariationMode);
+        $calculator->setVatPercent($vatPercent);
 
         return $calculator;
     }

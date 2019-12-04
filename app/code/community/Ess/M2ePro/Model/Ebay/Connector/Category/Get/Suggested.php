@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Ebay_Connector_Category_Get_Suggested
     extends Ess_M2ePro_Model_Ebay_Connector_Command_RealTime
 {
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Category_Get_Suggested
         $this->_responseData = $this->getResponse()->getData();
     }
 
-    // ########################################
+    //########################################
 
     protected function buildConnectionInstance()
     {
@@ -47,5 +47,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Category_Get_Suggested
         return $connection;
     }
 
-    // ########################################
+    //########################################
 }

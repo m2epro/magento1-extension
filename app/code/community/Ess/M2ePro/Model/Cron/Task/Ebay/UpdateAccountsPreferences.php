@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_UpdateAccountsPreferences extends Ess_M2eP
 {
     const NICK = 'ebay/update_accounts_preferences';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 86400;
+
     //########################################
 
     public function performActions()

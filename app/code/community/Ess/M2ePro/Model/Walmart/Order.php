@@ -12,9 +12,6 @@
  */
 class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Order Status cannot be Updated. Reason: %msg%
-
     const STATUS_CREATED             = 0;
     const STATUS_UNSHIPPED           = 1;
     const STATUS_SHIPPED_PARTIALLY   = 2;
@@ -271,7 +268,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
      */
     public function getAssociatedStoreId()
     {
-        $storeId = NULL;
+        $storeId = null;
 
         $channelItems = $this->getParentObject()->getChannelItems();
 
@@ -307,7 +304,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
      */
     public function isReservable()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -397,7 +394,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
     public function createInvoice()
     {
         if (!$this->canCreateInvoice()) {
-            return NULL;
+            return null;
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();
@@ -454,7 +451,7 @@ class Ess_M2ePro_Model_Walmart_Order extends Ess_M2ePro_Model_Component_Child_Wa
     public function createShipment()
     {
         if (!$this->canCreateShipment()) {
-            return NULL;
+            return null;
         }
 
         $magentoOrder = $this->getParentObject()->getMagentoOrder();

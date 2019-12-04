@@ -54,7 +54,7 @@
             <?php echo Mage::helper('M2ePro')->__(
                 'This Page sets the eBay details and Magento Store View you want to use for this M2E Pro Listing.<br/><br/>
                 More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
-                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/YAAJAQ')
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/YAAJAQ')
             ); ?>
         </div>
 
@@ -380,10 +380,6 @@
 
 <div id="video_tutorial_pop_up" style="display: none;">
     <div class="player_container" style="margin: 20px 5px; ">
-        <?php if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) { ?>
-            <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/CvjQSRx-od0?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/CvjQSRx-od0?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
-        <?php } else { ?>
-            <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/IvXP-tA64KE?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/IvXP-tA64KE?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
-        <?php } ?>
+        <object width="853" height="480"><param name="movie" value="http://www.youtube.com/v/IvXP-tA64KE?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/IvXP-tA64KE?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720" type="application/x-shockwave-flash" width="853" height="480" allowscriptaccess="always" allowfullscreen="true"></embed></object>
     </div>
 </div>

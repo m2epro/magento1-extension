@@ -13,7 +13,7 @@
 
 <div id="block_notice_configuration_license" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Billing Info'); ?>">
     <?php
-    $urlComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+    $urlComponents = Mage::helper('M2ePro/Component')->getEnabledComponents();
     $componentForUrl = count($urlComponents) == 1 ? array_shift($urlComponents) : Ess_M2ePro_Helper_Component_Ebay::NICK;
 
     $countries = Mage::getModel('adminhtml/system_config_source_country')->toOptionArray();
@@ -30,7 +30,7 @@
     The same Extension Key cannot be used for different domains, sub-domains or IPs. If your Magento Server changes its location, the new Extension Key must be obtained on the <a href="%url%" target="_blank" >Clients Portal</a> and provided to M2E Pro ‘Billing Info’ section. Save Config to apply the changes. <br><br>
 
     <strong>Note:</strong> if you need some assistance to activate your M2E Pro Instance, contact our Support Team.',
-    Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl());
+    Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl());
     echo $tempString;
     ?>
 </div>
@@ -58,7 +58,6 @@
         }
 
         LicenseHandlerObj = new ConfigurationLicenseHandler();
-        ControlPanelHandlerObj = new DevelopmentControlPanelHandler();
 
         configEditForm = new varienForm('config_edit_form', '<?php echo $this->getValidationUrl(); ?>');
     });
@@ -119,7 +118,7 @@
                                     <span>
                                         <?php echo Mage::helper('M2ePro')->__('Your email address entered during the Extension configuration.<br/>
                                         Use it to log into your Account on the <a href="%url%" target="_blank">Clients Portal</a>. M2E Pro notifications are sent to this email address. ',
-                                        Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl()); ?>
+                                        Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl()); ?>
                                     </span>
                                 </p>
                             </td>
@@ -130,7 +129,7 @@
                         <tr>
                             <td class="label"></td>
                             <td class="value">
-                                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl();?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Log in to Clients Portal'); ?></a>
+                                <a href="<?php echo Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl();?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Log in to Clients Portal'); ?></a>
                             </td>
                         </tr>
                         <?php } ?>
@@ -245,7 +244,7 @@
             <?php echo Mage::helper('M2ePro')->__(
                 'Enter the new Key value obtained on the <a href="%url%" target="_blank">Clients Portal</a> and Refresh the data. Your current IP, Domain will be automatically associated with the new Extension Key. <br><br>
                 <strong>Note:</strong> Extension Key is strictly connected with IP and Domain. New Extension Key is required if the location (IP/Domain) of your Magento Server is changed.',
-                Mage::helper('M2ePro/Module_Support')->getClientsPortalBaseUrl()
+                Mage::helper('M2ePro/Module_Support')->getClientsPortalUrl()
             ); ?>
         </div>
         <form  id="popup_change_license_form">

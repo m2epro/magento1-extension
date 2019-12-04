@@ -73,9 +73,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Qty
     protected function addQtyWarnings($type)
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
-            // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Manage Stock No"
-            // field were taken into consideration.
             $this->addWarningMessage(
                 'During the Quantity Calculation the Settings in the "Manage Stock No" '.
                 'field were taken into consideration.'
@@ -83,8 +80,6 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_DataBuilder_Qty
         }
 
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_BACKORDERS) {
-            // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Backorders" field were taken into consideration.
             $this->addWarningMessage(
                 'During the Quantity Calculation the Settings in the "Backorders" '.
                 'field were taken into consideration.'

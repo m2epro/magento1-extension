@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator
     public function getProductValue()
     {
         if ($this->isSourceModeNone()) {
-            return NULL;
+            return null;
         }
 
         return parent::getProductValue();
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Repricing_PriceCalculator
     public function getVariationValue(Ess_M2ePro_Model_Listing_Product_Variation $variation)
     {
         if ($this->isSourceModeNone()) {
-            return NULL;
+            return null;
         }
 
         return parent::getVariationValue($variation);

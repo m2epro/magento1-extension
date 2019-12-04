@@ -203,7 +203,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'shipment', 'get', 'offers',
-                $requestData, NULL, $order->getAccount()
+                $requestData, null, $order->getAccount()
             );
 
             $dispatcherObject->process($connectorObj);
@@ -264,7 +264,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'shipment', 'add', 'entity',
-                $requestData, NULL, $order->getAccount()
+                $requestData, null, $order->getAccount()
             );
 
             $dispatcherObject->process($connectorObj);
@@ -325,14 +325,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'shipment', 'get', 'entity',
-                $requestData, NULL, $order->getAccount()
+                $requestData, null, $order->getAccount()
             );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
 
             if (empty($response['label']) && !empty($orderFulfillmentData['label'])) {
-                $order->setData('merchant_fulfillment_label', NULL);
+                $order->setData('merchant_fulfillment_label', null);
             }
 
             unset($response['label']['file']['contents']);
@@ -383,14 +383,14 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
             $dispatcherObject = Mage::getModel('M2ePro/Amazon_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'shipment', 'cancel', 'entity',
-                $requestData, NULL, $order->getAccount()
+                $requestData, null, $order->getAccount()
             );
 
             $dispatcherObject->process($connectorObj);
             $response = $connectorObj->getResponseData();
 
             if (empty($response['label']) && !empty($orderFulfillmentData['label'])) {
-                $order->setData('merchant_fulfillment_label', NULL);
+                $order->setData('merchant_fulfillment_label', null);
             }
 
             $order->setSettings('merchant_fulfillment_data', $response)->save();
@@ -428,8 +428,8 @@ class Ess_M2ePro_Adminhtml_Amazon_Order_MerchantFulfillmentController
 
         $order->addData(
             array(
-            'merchant_fulfillment_data'  => NULL,
-            'merchant_fulfillment_label' => NULL
+            'merchant_fulfillment_data'  => null,
+            'merchant_fulfillment_label' => null
             )
         )->save();
 

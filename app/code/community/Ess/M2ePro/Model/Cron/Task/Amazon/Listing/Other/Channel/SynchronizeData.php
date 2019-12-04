@@ -13,6 +13,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
 {
     const NICK = 'amazon/listing/other/channel/synchronize_data';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 86400;
+
     //####################################
 
     public function isPossibleToRun()
@@ -45,10 +50,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_Channel_SynchronizeData
     {
         /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter(
-            'other_listings_synchronization',
-            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
-        );
+        $accountsCollection->addFieldToFilter('other_listings_synchronization', 1);
 
         $accounts = $accountsCollection->getItems();
 

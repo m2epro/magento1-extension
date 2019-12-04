@@ -42,10 +42,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
     {
         /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter(
-            'other_listings_synchronization',
-            Ess_M2ePro_Model_Amazon_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
-        );
+        $accountsCollection->addFieldToFilter('other_listings_synchronization', 1);
 
         $accounts = $accountsCollection->getItems();
 
@@ -110,7 +107,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
                     'items'         => $neededItems,
                     'id_type'       => 'ASIN',
                     'only_realtime' => 1
-                ), NULL,
+                ), null,
                 $account->getId()
             );
 
@@ -138,7 +135,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
         $connWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
         $aloTable = Mage::getResourceModel('M2ePro/Amazon_Listing_Other')->getMainTable();
-        $lolTable = Mage::getResourceModel('M2ePro/Listing_Other_Log')->getMainTable();
 
         /** @var $mappingModel Ess_M2ePro_Model_Amazon_Listing_Other_Mapping */
         $mappingModel = Mage::getModel('M2ePro/Amazon_Listing_Other_Mapping');
@@ -174,15 +170,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Other_ResolveTitle extends Ess_M
                 $aloTable,
                 array('title' => (string)$title),
                 array('general_id = ?' => (string)$generalId)
-            );
-
-            $connWrite->update(
-                $lolTable,
-                array('title' => (string)$title),
-                array(
-                    'identifier = ?' => (string)$generalId,
-                    'component_mode = ?' => Ess_M2ePro_Helper_Component_Amazon::NICK
-                )
             );
 
             if (!empty($listingsOthersWithEmptyTitles)) {

@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
     const TIMEOUT_RISE_ON_ERROR        = 30;
     const TIMEOUT_RISE_MAX_VALUE       = 1500;
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
         return $data;
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -74,7 +74,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
         return $connection;
     }
 
-    // ########################################
+    //########################################
 
     protected function getRequestTimeOut()
     {
@@ -87,5 +87,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Order_Receive_Items
         return 300 + $rise;
     }
 
-    // ########################################
+    //########################################
 }

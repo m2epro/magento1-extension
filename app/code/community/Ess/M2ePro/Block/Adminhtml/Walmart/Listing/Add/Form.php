@@ -15,11 +15,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartListingAddForm');
         $this->setTemplate('M2ePro/walmart/listing/add/form.phtml');
-        // ---------------------------------------
     }
 
     //########################################
@@ -99,21 +96,9 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
         );
         // ---------------------------------------
 
-        // ---------------------------------------
-        $maxRecordsQuantity = Mage::helper('M2ePro/View_Walmart')->getAutocompleteMaxItems();
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->sellingFormatTemplates = $this->getTemplates('SellingFormat');
-        $this->sellingFormatTemplatesDropDown = (count($this->sellingFormatTemplates) < $maxRecordsQuantity);
-        // ---------------------------------------
-
         $this->descriptionsTemplates = $this->getTemplates('Description');
-        $this->descriptionsTemplatesDropDown = (count($this->descriptionsTemplates) < $maxRecordsQuantity);
-
-        // ---------------------------------------
         $this->synchronizationsTemplates = $this->getTemplates('Synchronization');
-        $this->synchronizationsTemplatesDropDown = (count($this->synchronizationsTemplates) < $maxRecordsQuantity);
 
         return parent::_beforeToHtml();
     }
@@ -169,41 +154,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Add_Form
         }
 
         return $this->listing;
-    }
-
-    //########################################
-
-    public function getSellingFormatTemplateTitleById($id)
-    {
-        foreach ($this->sellingFormatTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
-    }
-
-    public function getSynchronizationTemplateTitleById($id)
-    {
-        foreach ($this->synchronizationsTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
-    }
-
-    public function getDescriptionTemplateTitleById($id)
-    {
-        foreach ($this->descriptionsTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
     }
 
     //########################################

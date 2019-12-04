@@ -16,6 +16,8 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
              ->_title(Mage::helper('M2ePro')->__('Policies'));
 
         $this->getLayout()->getBlock('head')
+            ->setCanLoadExtJs(true)
+            ->addJs('mage/adminhtml/rules.js')
             ->addJs('M2ePro/Plugin/AreaWrapper.js')
             ->addCss('M2ePro/css/Plugin/AreaWrapper.css')
             ->addJs('M2ePro/Plugin/DropDown.js')
@@ -36,7 +38,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
+        $this->setPageHelpLink(null, null, "x/MQAJAQ");
 
         if (Mage::helper('M2ePro/Magento')->isTinyMceAvailable()) {
             $this->getLayout()->getBlock('head')->setCanLoadTinyMce(true);
@@ -118,27 +120,27 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         switch ($nick) {
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_RETURN:
-                $this->setPageHelpLink(NULL, NULL, "x/ZAAJAQ");
+                $this->setPageHelpLink(null, null, "x/ZAAJAQ");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_PAYMENT:
-                $this->setPageHelpLink(NULL, NULL, "x/XgAJAQ");
+                $this->setPageHelpLink(null, null, "x/XgAJAQ");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING:
-                $this->setPageHelpLink(NULL, NULL, "x/aQAJAQ");
+                $this->setPageHelpLink(null, null, "x/aQAJAQ");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION:
-                $this->setPageHelpLink(NULL, NULL, "x/PgAJAQ");
+                $this->setPageHelpLink(null, null, "x/PgAJAQ");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SELLING_FORMAT:
-                $this->setPageHelpLink(NULL, NULL, "x/PQAJAQ");
+                $this->setPageHelpLink(null, null, "x/PQAJAQ");
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION:
-                $this->setPageHelpLink(NULL, NULL, "x/KQAJAQ");
+                $this->setPageHelpLink(null, null, "x/KQAJAQ");
                 break;
         }
 
@@ -234,7 +236,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
         $data = $this->getRequest()->getPost($nick);
 
         if ($data === null) {
-            return NULL;
+            return null;
         }
 
         $templateManager = Mage::getSingleton('M2ePro/Ebay_Template_Manager')->setTemplate($nick);
@@ -379,7 +381,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/UwAJAQ");
+        $this->setPageHelpLink(null, null, "x/UwAJAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_template_edit'))
              ->renderLayout();
@@ -788,7 +790,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                 continue;
             }
 
-            $data[$column] = NULL;
+            $data[$column] = null;
         }
     }
 
@@ -805,7 +807,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                 ->getCachedObject(
                     'Ebay_Template_Category',
                     $newData['template_category_id'],
-                    NULL, array('template')
+                    null, array('template')
                 );
             $snapshotBuilder->setModel($newTemplate);
 
@@ -822,7 +824,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                 ->getCachedObject(
                     'Ebay_Template_Category',
                     $oldData['template_category_id'],
-                    NULL, array('template')
+                    null, array('template')
                 );
             $snapshotBuilder->setModel($oldTemplate);
 
@@ -851,7 +853,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                 ->getCachedObject(
                     'Ebay_Template_OtherCategory',
                     $newData['template_category_other_id'],
-                    NULL, array('template')
+                    null, array('template')
                 );
             $snapshotBuilder->setModel($newTemplate);
 
@@ -868,7 +870,7 @@ class Ess_M2ePro_Adminhtml_Ebay_TemplateController extends Ess_M2ePro_Controller
                 ->getCachedObject(
                     'Ebay_Template_OtherCategory',
                     $oldData['template_category_other_id'],
-                    NULL, array('template')
+                    null, array('template')
                 );
             $snapshotBuilder->setModel($oldTemplate);
 

@@ -39,15 +39,15 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
     {
         $components = array();
 
-        if (Mage::helper('M2ePro/Component_Ebay')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Ebay')->isEnabled()) {
             $components[] = Ess_M2ePro_Helper_Component_Ebay::NICK;
         }
 
-        if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
             $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
         }
 
-        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Walmart')->isEnabled()) {
             $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
         }
 
@@ -125,196 +125,16 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getAllowedComponents()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Ebay::NICK;
-        }
-
-        if (Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
-        }
-
-        if (Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
-        }
-
-        return $components;
-    }
-
-    // ---------------------------------------
-
-    public function getAllowedComponentsTitles()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
-                Mage::helper('M2ePro/Component_Ebay')->getTitle();
-        }
-
-        if (Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
-                Mage::helper('M2ePro/Component_Amazon')->getTitle();
-        }
-
-        if (Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
-                Mage::helper('M2ePro/Component_Walmart')->getTitle();
-        }
-
-        return $components;
-    }
-
-    //########################################
-
-    public function getForbiddenComponents()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Ebay::NICK;
-        }
-
-        if (!Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
-        }
-
-        if (!Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
-        }
-
-        return $components;
-    }
-
-    // ---------------------------------------
-
-    public function getForbiddenComponentsTitles()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
-                Mage::helper('M2ePro/Component_Ebay')->getTitle();
-        }
-
-        if (!Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
-                Mage::helper('M2ePro/Component_Amazon')->getTitle();
-        }
-
-        if (!Mage::helper('M2ePro/Component_Walmart')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
-                Mage::helper('M2ePro/Component_Walmart')->getTitle();
-        }
-
-        return $components;
-    }
-
-    //########################################
-
-    public function getActiveComponents()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Ebay::NICK;
-        }
-
-        if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
-        }
-
-        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
-        }
-
-        return $components;
-    }
-
-    // ---------------------------------------
-
-    public function getActiveComponentsTitles()
-    {
-        $components = array();
-
-        if (Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
-                Mage::helper('M2ePro/Component_Ebay')->getTitle();
-        }
-
-        if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
-                Mage::helper('M2ePro/Component_Amazon')->getTitle();
-        }
-
-        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
-                Mage::helper('M2ePro/Component_Walmart')->getTitle();
-        }
-
-        return $components;
-    }
-
-    //########################################
-
-    public function getInactiveComponents()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Ebay::NICK;
-        }
-
-        if (!Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Amazon::NICK;
-        }
-
-        if (!Mage::helper('M2ePro/Component_Walmart')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Walmart::NICK;
-        }
-
-        return $components;
-    }
-
-    // ---------------------------------------
-
-    public function getInactiveComponentsTitles()
-    {
-        $components = array();
-
-        if (!Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] =
-                Mage::helper('M2ePro/Component_Ebay')->getTitle();
-        }
-
-        if (!Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] =
-                Mage::helper('M2ePro/Component_Amazon')->getTitle();
-        }
-
-        if (!Mage::helper('M2ePro/Component_Walmart')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Walmart::NICK] =
-                Mage::helper('M2ePro/Component_Walmart')->getTitle();
-        }
-
-        return $components;
-    }
-
-    //########################################
-
     public function isSingleActiveComponent()
     {
-        return count($this->getActiveComponents()) == 1;
+        return count($this->getEnabledComponents()) == 1;
     }
 
     //########################################
 
     public function getComponentTitle($component)
     {
-        $title = NULL;
+        $title = null;
 
         switch ($component) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
@@ -333,19 +153,19 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getComponentMode($modelName, $value, $field = NULL)
+    public function getComponentMode($modelName, $value, $field = null)
     {
         /** @var $model Ess_M2ePro_Model_Component_Parent_Abstract */
         $model = Mage::helper('M2ePro')->getModel($modelName);
 
         if ($model === null || !($model instanceof Ess_M2ePro_Model_Component_Parent_Abstract)) {
-            return NULL;
+            return null;
         }
 
         $mode = $model->loadInstance($value, $field)->getData('component_mode');
 
         if ($mode === null || !in_array($mode, $this->getComponents())) {
-            return NULL;
+            return null;
         }
 
         return $mode;
@@ -354,14 +174,14 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
     public function getComponentModel($mode, $modelName)
     {
         if ($mode === null || !in_array($mode, $this->getComponents())) {
-            return NULL;
+            return null;
         }
 
         /** @var $model Ess_M2ePro_Model_Component_Parent_Abstract */
         $model = Mage::helper('M2ePro')->getModel($modelName);
 
         if ($model === null || !($model instanceof Ess_M2ePro_Model_Component_Parent_Abstract)) {
-            return NULL;
+            return null;
         }
 
         $model->setChildMode($mode);
@@ -376,24 +196,24 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    public function getUnknownObject($modelName, $value, $field = NULL)
+    public function getUnknownObject($modelName, $value, $field = null)
     {
         $mode = $this->getComponentMode($modelName, $value, $field);
 
         if ($mode === null) {
-            return NULL;
+            return null;
         }
 
         return $this->getComponentObject($mode, $modelName, $value, $field);
     }
 
-    public function getComponentObject($mode, $modelName, $value, $field = NULL)
+    public function getComponentObject($mode, $modelName, $value, $field = null)
     {
         /** @var $model Ess_M2ePro_Model_Component_Parent_Abstract */
         $model = $this->getComponentModel($mode, $modelName);
 
         if ($model === null) {
-            return NULL;
+            return null;
         }
 
         return $model->loadInstance($value, $field);
@@ -401,18 +221,18 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    public function getCachedUnknownObject($modelName, $value, $field = NULL, array $tags = array())
+    public function getCachedUnknownObject($modelName, $value, $field = null, array $tags = array())
     {
         $mode = $this->getComponentMode($modelName, $value, $field);
 
         if ($mode === null) {
-            return NULL;
+            return null;
         }
 
         return $this->getCachedComponentObject($mode, $modelName, $value, $field, $tags);
     }
 
-    public function getCachedComponentObject($mode, $modelName, $value, $field = NULL, array $tags = array())
+    public function getCachedComponentObject($mode, $modelName, $value, $field = null, array $tags = array())
     {
         if (Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
             return $this->getComponentObject($mode, $modelName, $value, $field);
@@ -474,9 +294,9 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         /** @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
         $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
-        $activeComponents = Mage::helper('M2ePro/Component')->getActiveComponents();
+        $activeComponents = Mage::helper('M2ePro/Component')->getEnabledComponents();
 
-        $menuArray[self::MENU_ROOT_NODE]['label'] = implode(', ', $this->getActiveComponentsTitles());
+        $menuArray[self::MENU_ROOT_NODE]['label'] = implode(', ', $this->getEnabledComponentsTitles());
 
         foreach ($menuArray[self::MENU_ROOT_NODE]['children'] as $component => $componentNode) {
             if (empty($componentNode['children'])) {

@@ -26,15 +26,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Qty
 
         $this->checkQtyWarnings();
 
-        if (!isset($this->_cachedData['lag_time'])) {
-            $lagTime                       = $this->getWalmartListingProduct()
-                                                  ->getSellingFormatTemplateSource()
-                                                  ->getLagTime();
-            $this->_cachedData['lag_time'] = $lagTime;
-        }
-
-        $data['lag_time'] = $this->_cachedData['lag_time'];
-
         return $data;
     }
 
@@ -61,9 +52,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Qty
     public function addQtyWarnings($type)
     {
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_MANAGE_STOCK_NO) {
-            // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Manage Stock No"
-            // field were taken into consideration.
             $this->addWarningMessage(
                 'During the Quantity Calculation the Settings in the "Manage Stock No" '.
                 'field were taken into consideration.'
@@ -71,8 +59,6 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_DataBuilder_Qty
         }
 
         if ($type === Ess_M2ePro_Model_Magento_Product::FORCING_QTY_TYPE_BACKORDERS) {
-            // M2ePro_TRANSLATIONS
-            // During the Quantity Calculation the Settings in the "Backorders" field were taken into consideration.
             $this->addWarningMessage(
                 'During the Quantity Calculation the Settings in the "Backorders" '.
                 'field were taken into consideration.'

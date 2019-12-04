@@ -9,14 +9,14 @@
 abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Refund_ItemsRequester
     extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Requester
 {
-    // ########################################
+    //########################################
 
     public function getCommand()
     {
         return array('orders','refund','entities');
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -24,7 +24,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Refund_ItemsRequester
         $this->getProcessingRunner()->start();
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingRunnerModelName()
     {
@@ -46,7 +46,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Refund_ItemsRequester
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getRequestData()
     {
@@ -58,5 +58,5 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Refund_ItemsRequester
         );
     }
 
-    // ########################################
+    //########################################
 }

@@ -44,7 +44,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
      */
     public function getTopLevel($categoryId, $marketplaceId)
     {
-        $topLevel = NULL;
+        $topLevel = null;
         for ($i = 1; $i < 10; $i++) {
             $category = Mage::helper('M2ePro/Component_Ebay')
                 ->getCachedObject('Marketplace', (int)$marketplaceId)
@@ -52,7 +52,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
                 ->getCategory((int)$categoryId);
 
             if (!$category || ($i == 1 && !$category['is_leaf'])) {
-                return NULL;
+                return null;
             }
 
             $topLevel = $category['category_id'];
@@ -78,7 +78,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
     {
         $features = $this->getFeatures($categoryId, $marketplaceId);
         if ($features === null) {
-            return NULL;
+            return null;
         }
 
         return !empty($features['variation_enabled']);
@@ -137,7 +137,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
 
         // not found marketplace category row
         if (!$categoryRow) {
-            return NULL;
+            return null;
         }
 
         $features = array();
@@ -145,7 +145,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
             $features = (array)Mage::helper('M2ePro')->jsonDecode($categoryRow['features']);
         }
 
-        $cacheHelper->setValue($cacheKey, $features, array(self::CACHE_TAG));
+        $cacheHelper->setValue($cacheKey, $features, array(self::CACHE_TAG, 'marketplace'));
         return $features;
     }
 
@@ -180,11 +180,11 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
 
         // not found marketplace category row
         if (!$categoryRow) {
-            return NULL;
+            return null;
         }
 
         if (!$categoryRow['is_leaf']) {
-            $cacheHelper->setValue($cacheKey, array(), array(self::CACHE_TAG));
+            $cacheHelper->setValue($cacheKey, array(), array(self::CACHE_TAG, 'marketplace'));
             return array();
         }
 
@@ -196,14 +196,14 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
                 $connectorObj = $dispatcherObject->getVirtualConnector(
                     'category', 'get', 'specifics',
                     array('category_id' => $categoryId), 'specifics',
-                    $marketplaceId, NULL
+                    $marketplaceId, null
                 );
 
                 $dispatcherObject->process($connectorObj);
                 $specifics = (array)$connectorObj->getResponseData();
             } catch (\Exception $exception) {
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
-                return NULL;
+                return null;
             }
 
             /** @var $connWrite Varien_Db_Adapter_Pdo_Mysql */
@@ -218,7 +218,7 @@ class Ess_M2ePro_Helper_Component_Ebay_Category_Ebay extends Mage_Core_Helper_Ab
             );
         }
 
-        $cacheHelper->setValue($cacheKey, $specifics, array(self::CACHE_TAG));
+        $cacheHelper->setValue($cacheKey, $specifics, array(self::CACHE_TAG, 'marketplace'));
         return $specifics;
     }
 

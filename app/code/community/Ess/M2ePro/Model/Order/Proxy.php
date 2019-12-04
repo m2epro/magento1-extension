@@ -11,13 +11,13 @@ abstract class Ess_M2ePro_Model_Order_Proxy
     const CHECKOUT_GUEST    = 'guest';
     const CHECKOUT_REGISTER = 'register';
 
-    /** @var $_order Ess_M2ePro_Model_Ebay_Order|Ess_M2ePro_Model_Amazon_Order */
-    protected $_order = null;
+    /** @var Ess_M2ePro_Model_Ebay_Order|Ess_M2ePro_Model_Amazon_Order|Ess_M2ePro_Model_Walmart_Order */
+    protected $_order;
 
-    protected $_items = null;
+    protected $_items;
 
-    /** @var $_store Mage_Core_Model_Store */
-    protected $_store = null;
+    /** @var Mage_Core_Model_Store */
+    protected $_store;
 
     protected $_addressData = array();
 

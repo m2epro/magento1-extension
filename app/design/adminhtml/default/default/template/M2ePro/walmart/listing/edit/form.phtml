@@ -24,7 +24,7 @@ $formData = $this->getFormData();
 
         The detailed information can be found <a href="%url%" target="_blank">here</a>.',
 
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/L4taAQ')
     ); ?>
 </div>
 
@@ -92,39 +92,6 @@ $formData = $this->getFormData();
     M2ePro.url.editSynchronizationTemplate = '<?php echo $this->getUrl('*/adminhtml_walmart_template_synchronization/edit'); ?>' + 'id/';
     M2ePro.url.getSynchronizationTemplates = '<?php echo $this->getUrl('*/adminhtml_general/modelGetAll',array('model'=>'Template_Synchronization','id_field'=>'id','data_field'=>'title','sort_field'=>'title','sort_dir'=>'ASC','component_mode'=>Ess_M2ePro_Helper_Component_Walmart::NICK)); ?>';
 
-    M2ePro.autoCompleteData = {
-        url : {}
-    };
-    M2ePro.autoCompleteData.flags = {
-        sellingFormatTemplatesDropDown    : <?php echo $this->sellingFormatTemplatesDropDown    ? 'true' : 'false'; ?>,
-        descriptionsTemplatesDropDown     : <?php echo $this->descriptionsTemplatesDropDown     ? 'true' : 'false'; ?>,
-        synchronizationsTemplatesDropDown : <?php echo $this->synchronizationsTemplatesDropDown ? 'true' : 'false'; ?>
-    };
-    M2ePro.autoCompleteData.url.getSellingFormatTemplates = '<?php echo $this->getUrl(
-        '*/adminhtml_general/searchAutocomplete',
-        array(
-            'model' => 'Template_SellingFormat',
-            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK,
-            'marketplace_id' => isset($formData['marketplace_id']) ? $formData['marketplace_id'] : ''
-        )
-    ); ?>';
-
-    M2ePro.autoCompleteData.url.getDescriptionTemplates = '<?php echo $this->getUrl(
-        '*/adminhtml_general/searchAutocomplete',
-        array(
-            'model' => 'Template_Description',
-            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK
-        )
-    ); ?>';
-
-    M2ePro.autoCompleteData.url.getSynchronizationTemplates = '<?php echo $this->getUrl(
-        '*/adminhtml_general/searchAutocomplete',
-        array(
-            'model' => 'Template_Synchronization',
-            'component' => Ess_M2ePro_Helper_Component_Walmart::NICK
-        )
-    ); ?>';
-
 </script>
 
 <script type="text/javascript">
@@ -171,54 +138,19 @@ $formData = $this->getFormData();
         });
         $('template_synchronization_id').simulate('change');
 
-        AutoCompleteHandler = new AutoComplete();
-
-        if (M2ePro.autoCompleteData.flags.sellingFormatTemplatesDropDown) {
-            $('template_selling_format_id').observe('change', WalmartListingSettingsHandlerObj.selling_format_template_id_change)
-            if ($('template_selling_format_id').value) {
-                $('template_selling_format_id').simulate('change');
-            }
-        } else {
-            AutoCompleteHandler.bind('template_selling_format_autocomplete',
-                M2ePro.autoCompleteData.url.getSellingFormatTemplates,
-                M2ePro.formData.template_selling_format_id > 0 ? M2ePro.formData.template_selling_format_id : '',
-                M2ePro.formData.template_selling_format_title,
-                function (id) { $('template_selling_format_id').value = id; $('template_selling_format_id').simulate('change'); }
-            );
-            $('template_selling_format_id').value = $('template_selling_format_autocomplete').readAttribute('selected_id');
-            M2ePro.formData.template_selling_format_id > 0 && $('template_selling_format_autocomplete').setStyle({color: 'initial'});
+        $('template_selling_format_id').observe('change', WalmartListingSettingsHandlerObj.selling_format_template_id_change);
+        if ($('template_selling_format_id').value) {
+            $('template_selling_format_id').simulate('change');
         }
 
-        if (M2ePro.autoCompleteData.flags.descriptionsTemplatesDropDown) {
-            $('template_description_id').observe('change', WalmartListingSettingsHandlerObj.description_template_id_change)
-            if ($('template_description_id').value) {
-                $('template_description_id').simulate('change');
-            }
-        } else {
-            AutoCompleteHandler.bind('template_description_autocomplete',
-                M2ePro.autoCompleteData.url.getDescriptionTemplates,
-                M2ePro.formData.template_description_id > 0 ? M2ePro.formData.template_description_id : '',
-                M2ePro.formData.template_description_title,
-                function (id) { $('template_description_id').value = id; $('template_description_id').simulate('change'); }
-            );
-            $('template_description_id').value = $('template_description_autocomplete').readAttribute('selected_id');
-            M2ePro.formData.template_description_id > 0 && $('template_description_autocomplete').setStyle({color: 'initial'});
+        $('template_description_id').observe('change', WalmartListingSettingsHandlerObj.description_template_id_change);
+        if ($('template_description_id').value) {
+            $('template_description_id').simulate('change');
         }
 
-        if (M2ePro.autoCompleteData.flags.synchronizationsTemplatesDropDown) {
-            $('template_synchronization_id').observe('change', WalmartListingSettingsHandlerObj.synchronization_template_id_change)
-            if ($('template_synchronization_id').value) {
-                $('template_synchronization_id').simulate('change');
-            }
-        } else {
-            AutoCompleteHandler.bind('template_synchronization_autocomplete',
-                M2ePro.autoCompleteData.url.getSynchronizationTemplates,
-                M2ePro.formData.template_synchronization_id > 0 ? M2ePro.formData.template_synchronization_id : '',
-                M2ePro.formData.template_synchronization_title,
-                function (id) { $('template_synchronization_id').value = id; $('template_synchronization_id').simulate('change'); }
-            );
-            $('template_synchronization_id').value = $('template_synchronization_autocomplete').readAttribute('selected_id');
-            M2ePro.formData.template_synchronization_id > 0 && $('template_synchronization_autocomplete').setStyle({color: 'initial'});
+        $('template_synchronization_id').observe('change', WalmartListingSettingsHandlerObj.synchronization_template_id_change);
+        if ($('template_synchronization_id').value) {
+            $('template_synchronization_id').simulate('change');
         }
 
         editForm = new varienForm('edit_form', '<?php echo $this->getValidationUrl(); ?>');
@@ -248,24 +180,15 @@ $formData = $this->getFormData();
                             <label for="template_selling_format_id"><?php echo Mage::helper('M2ePro')->__('Selling Policy'); ?>: <span class="required">*</span></label>
                         </td>
                         <td id="template_selling_format_cell" class="value">
-                            <?php if ($this->sellingFormatTemplatesDropDown): ?>
-                                <select id="template_selling_format_id" name="template_selling_format_id" <?php if (!count($this->sellingFormatTemplates)) echo 'style="display: none;"';?> class="required-entry">
-                                    <?php if (!$formData['template_selling_format_id']): ?>
-                                        <option class="empty"></option>
-                                    <?php endif ?>
-                                    <?php foreach ($this->sellingFormatTemplates as $item) { ?>
-                                        <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_selling_format_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
-                                    <?php } ?>
-                                </select>
-                                <span id="template_selling_format_label" <?php if (count($this->sellingFormatTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
-                            <?php else: ?>
-                                <input type="text" id="template_selling_format_autocomplete" class="input-text"
-                                       selected_id="<?php echo $formData['template_selling_format_id']; ?>" style="width: 275px;"
-                                       placeholder="<?php echo Mage::helper('M2ePro')->__('Type Policy Name Here...'); ?>"
-                                       value="<?php echo $this->getSellingFormatTemplateTitleById($formData['template_selling_format_id']); ?>"
-                                >
-                                <input type="hidden" name="template_selling_format_id" id="template_selling_format_id" class="required-entry" value="<?php echo $formData['template_selling_format_id']; ?>" />
-                            <?php endif; ?>
+                            <select id="template_selling_format_id" name="template_selling_format_id" <?php if (!count($this->sellingFormatTemplates)) echo 'style="display: none;"';?> class="required-entry">
+                                <?php if (!$formData['template_selling_format_id']): ?>
+                                    <option class="empty"></option>
+                                <?php endif ?>
+                                <?php foreach ($this->sellingFormatTemplates as $item) { ?>
+                                    <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_selling_format_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
+                                <?php } ?>
+                            </select>
+                            <span id="template_selling_format_label" <?php if (count($this->sellingFormatTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
                         </td>
                         <td class="value">
                         <span id="edit_selling_format_template_link">
@@ -285,23 +208,15 @@ $formData = $this->getFormData();
                             <label for="template_description_id"><?php echo Mage::helper('M2ePro')->__('Description Policy'); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <?php if ($this->descriptionsTemplatesDropDown): ?>
-                                <select id="template_description_id" name="template_description_id" <?php if (!count($this->descriptionsTemplates)) echo 'style="display: none;"';?> class="required-entry">
-                                    <?php if (!$formData['template_description_id']): ?>
-                                        <option class="empty"></option>
-                                    <?php endif ?>
-                                    <?php foreach ($this->descriptionsTemplates as $item){ ?>
-                                        <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_description_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
-                                    <?php } ?>
-                                </select>
-                                <span id="template_description_label" <?php if (count($this->descriptionsTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
-                            <?php else:?>
-                                <input type="text" id="template_description_autocomplete" class="input-text" selected_id="<?php echo $formData['template_description_id']; ?>" style="width: 275px;"
-                                       placeholder="<?php echo Mage::helper('M2ePro')->__('Type Policy Name Here...'); ?>"
-                                       value="<?php echo $this->getDescriptionTemplateTitleById($formData['template_description_id']); ?>"
-                                >
-                                <input type="hidden" name="template_description_id" id="template_description_id" class="required-entry" value="<?php echo $formData['template_description_id']; ?>" />
-                            <?php endif; ?>
+                            <select id="template_description_id" name="template_description_id" <?php if (!count($this->descriptionsTemplates)) echo 'style="display: none;"';?> class="required-entry">
+                                <?php if (!$formData['template_description_id']): ?>
+                                    <option class="empty"></option>
+                                <?php endif ?>
+                                <?php foreach ($this->descriptionsTemplates as $item){ ?>
+                                    <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_description_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
+                                <?php } ?>
+                            </select>
+                            <span id="template_description_label" <?php if (count($this->descriptionsTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
                         </td>
                         <td class="value">
                         <span id="edit_description_template_link">
@@ -317,23 +232,15 @@ $formData = $this->getFormData();
                             <label for="template_synchronization_id"><?php echo Mage::helper('M2ePro')->__('Synchronization Policy'); ?>: <span class="required">*</span></label>
                         </td>
                         <td class="value">
-                            <?php if ($this->synchronizationsTemplatesDropDown): ?>
-                                <select id="template_synchronization_id" name="template_synchronization_id" <?php if (!count($this->synchronizationsTemplates)) echo 'style="display: none;"';?> class="required-entry">
-                                    <?php if (!$formData['template_synchronization_id']): ?>
-                                        <option class="empty"></option>
-                                    <?php endif ?>
-                                    <?php foreach ($this->synchronizationsTemplates as $item){ ?>
-                                        <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_synchronization_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
-                                    <?php } ?>
-                                </select>
-                                <span id="template_synchronization_label" <?php if (count($this->synchronizationsTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
-                            <?php else:?>
-                                <input type="text" id="template_synchronization_autocomplete" class="input-text" selected_id="<?php echo $formData['template_synchronization_id']; ?>" style="width: 275px;"
-                                       placeholder="<?php echo Mage::helper('M2ePro')->__('Type Policy Name Here...'); ?>"
-                                       value="<?php echo $this->getSynchronizationTemplateTitleById($formData['template_synchronization_id']); ?>"
-                                >
-                                <input type="hidden" name="template_synchronization_id" id="template_synchronization_id" class="required-entry" value="<?php echo $formData['template_synchronization_id']; ?>" />
-                            <?php endif; ?>
+                            <select id="template_synchronization_id" name="template_synchronization_id" <?php if (!count($this->synchronizationsTemplates)) echo 'style="display: none;"';?> class="required-entry">
+                                <?php if (!$formData['template_synchronization_id']): ?>
+                                    <option class="empty"></option>
+                                <?php endif ?>
+                                <?php foreach ($this->synchronizationsTemplates as $item){ ?>
+                                    <option value="<?php echo $item['id']; ?>" <?php if ($item['id'] == $formData['template_synchronization_id']) echo ' selected="selected"'; ?>><?php echo $item['title']; ?></option>
+                                <?php } ?>
+                            </select>
+                            <span id="template_synchronization_label" <?php if (count($this->synchronizationsTemplates)) echo 'style="display: none;"';?>><?php echo Mage::helper('M2ePro')->__('No Policies available.'); ?></span>
                         </td>
                         <td class="value">
                         <span id="edit_synchronization_template_link">

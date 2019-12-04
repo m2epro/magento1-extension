@@ -1,0 +1,43 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_Magento */
+
+?>
+
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Edition'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->platformMode; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Version'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->platformVersion; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Add Secret Key to URLs'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->platformIsSecretKey ? Mage::helper('M2ePro')->__('Enabled') : Mage::helper('M2ePro')->__('Disabled'); ?>
+        </td>
+    </tr>
+
+</table>

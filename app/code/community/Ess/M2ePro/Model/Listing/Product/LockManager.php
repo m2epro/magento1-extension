@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Listing_Product_LockManager
 
     public function isLocked()
     {
-        if ($this->_listingProduct->isSetProcessingLock(NULL)) {
+        if ($this->_listingProduct->isSetProcessingLock(null)) {
             return true;
         }
 

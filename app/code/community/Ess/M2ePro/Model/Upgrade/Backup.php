@@ -140,7 +140,7 @@ class Ess_M2ePro_Model_Upgrade_Backup
             $columnType .= ' NOT NULL';
         }
 
-        $tableModifier->changeColumn($columnTitle, $columnType, $columnInfo['DEFAULT'], NULL, false);
+        $tableModifier->changeColumn($columnTitle, $columnType, $columnInfo['DEFAULT'], null, false);
     }
 
     /**
@@ -166,7 +166,7 @@ class Ess_M2ePro_Model_Upgrade_Backup
                 $columnType .= ' NOT NULL';
             }
 
-            $tableModifier->changeColumn($columnTitle, $columnType, $columnInfo['DEFAULT'], NULL, false);
+            $tableModifier->changeColumn($columnTitle, $columnType, $columnInfo['DEFAULT'], null, false);
         }
     }
 

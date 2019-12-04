@@ -13,7 +13,7 @@
 class Ess_M2ePro_Model_Walmart_Connector_Product_Revise_Responser
     extends Ess_M2ePro_Model_Walmart_Connector_Product_Responser
 {
-    // ########################################
+    //########################################
 
     protected function getSuccessfulMessage()
     {
@@ -33,5 +33,5 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Revise_Responser
         $this->_listingProduct->setSettings('additional_data', $additionalData)->save();
     }
 
-    // ########################################
+    //########################################
 }

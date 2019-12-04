@@ -12,7 +12,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
     protected $_logsActionId       = null;
     protected $_synchronizationLog = null;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages()
     {
@@ -47,7 +47,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function failDetected($messageText)
     {
@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData()
     {
@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateBlockedListingProducts()
     {
@@ -117,8 +117,6 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
                 $statusChangedTo = Mage::helper('M2ePro/Component_Amazon')
                     ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED);
 
-                // M2ePro_TRANSLATIONS
-                // Item Status was successfully changed from "%from%" to "%to%" .
                 $tempLogMessage = Mage::helper('M2ePro')->__(
                     'Item Status was successfully changed from "%from%" to "%to%" .',
                     $statusChangedFrom,
@@ -199,7 +197,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         return $collection->getSelect()->__toString();
     }
 
-    // ########################################
+    //########################################
 
     protected function processParentProcessors(array $parentIds)
     {
@@ -225,7 +223,7 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         $massProcessor->execute();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -299,5 +297,5 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Listing_Product_Channel_SynchronizeData_
         return $lastDate > $requestDate;
     }
 
-    // ########################################
+    //########################################
 }

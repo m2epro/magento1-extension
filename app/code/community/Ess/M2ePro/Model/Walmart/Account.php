@@ -11,12 +11,6 @@
  */
 class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_Walmart_Abstract
 {
-    const OTHER_LISTINGS_SYNCHRONIZATION_NO  = 0;
-    const OTHER_LISTINGS_SYNCHRONIZATION_YES = 1;
-
-    const OTHER_LISTINGS_MAPPING_MODE_NO  = 0;
-    const OTHER_LISTINGS_MAPPING_MODE_YES = 1;
-
     const OTHER_LISTINGS_MAPPING_SKU_MODE_NONE             = 0;
     const OTHER_LISTINGS_MAPPING_SKU_MODE_DEFAULT          = 1;
     const OTHER_LISTINGS_MAPPING_SKU_MODE_CUSTOM_ATTRIBUTE = 2;
@@ -41,23 +35,14 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     const OTHER_LISTINGS_MAPPING_WPID_DEFAULT_PRIORITY       = 4;
     const OTHER_LISTINGS_MAPPING_TITLE_DEFAULT_PRIORITY      = 5;
 
-    const MAGENTO_ORDERS_LISTINGS_MODE_NO  = 0;
-    const MAGENTO_ORDERS_LISTINGS_MODE_YES = 1;
-
     const MAGENTO_ORDERS_LISTINGS_STORE_MODE_DEFAULT = 0;
     const MAGENTO_ORDERS_LISTINGS_STORE_MODE_CUSTOM  = 1;
-
-    const MAGENTO_ORDERS_LISTINGS_OTHER_MODE_NO  = 0;
-    const MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES = 1;
 
     const MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IGNORE = 0;
     const MAGENTO_ORDERS_LISTINGS_OTHER_PRODUCT_MODE_IMPORT = 1;
 
     const MAGENTO_ORDERS_NUMBER_SOURCE_MAGENTO = 'magento';
     const MAGENTO_ORDERS_NUMBER_SOURCE_CHANNEL = 'channel';
-
-    const MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO  = 0;
-    const MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES = 1;
 
     const MAGENTO_ORDERS_TAX_MODE_NONE    = 0;
     const MAGENTO_ORDERS_TAX_MODE_CHANNEL = 1;
@@ -68,21 +53,12 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     const MAGENTO_ORDERS_CUSTOMER_MODE_PREDEFINED = 1;
     const MAGENTO_ORDERS_CUSTOMER_MODE_NEW        = 2;
 
-    const MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO  = 0;
-    const MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_YES = 1;
-
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT = 0;
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM  = 1;
 
     const MAGENTO_ORDERS_STATUS_MAPPING_NEW        = 'pending';
     const MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING = 'processing';
     const MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED    = 'complete';
-
-    const MAGENTO_ORDERS_INVOICE_MODE_NO  = 0;
-    const MAGENTO_ORDERS_INVOICE_MODE_YES = 1;
-
-    const MAGENTO_ORDERS_SHIPMENT_MODE_NO  = 0;
-    const MAGENTO_ORDERS_SHIPMENT_MODE_YES = 1;
 
     /**
      * @var Ess_M2ePro_Model_Marketplace
@@ -110,7 +86,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
             $item->deleteInstance();
         }
 
-        $this->_marketplaceModel = NULL;
+        $this->_marketplaceModel = null;
 
         $this->delete();
 
@@ -199,7 +175,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
     public function getDecodedInfo()
     {
         $tempInfo = $this->getInfo();
-        return $tempInfo === null ? NULL : Mage::helper('M2ePro')->jsonDecode($tempInfo);
+        return $tempInfo === null ? null : Mage::helper('M2ePro')->jsonDecode($tempInfo);
     }
 
     //########################################
@@ -433,7 +409,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isOtherListingsSynchronizationEnabled()
     {
-        return $this->getOtherListingsSynchronization() == self::OTHER_LISTINGS_SYNCHRONIZATION_YES;
+        return $this->getOtherListingsSynchronization() == 1;
     }
 
     /**
@@ -441,7 +417,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isOtherListingsMappingEnabled()
     {
-        return $this->getOtherListingsMappingMode() == self::OTHER_LISTINGS_MAPPING_MODE_YES;
+        return $this->getOtherListingsMappingMode() == 1;
     }
 
     // ---------------------------------------
@@ -565,12 +541,8 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersListingsModeEnabled()
     {
-        $setting = $this->getSetting(
-            'magento_orders_settings', array('listing', 'mode'),
-            self::MAGENTO_ORDERS_LISTINGS_MODE_YES
-        );
-
-        return $setting == self::MAGENTO_ORDERS_LISTINGS_MODE_YES;
+        $setting = $this->getSetting('magento_orders_settings', array('listing', 'mode'), 1);
+        return $setting == 1;
     }
 
     /**
@@ -603,12 +575,8 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersListingsOtherModeEnabled()
     {
-        $setting = $this->getSetting(
-            'magento_orders_settings', array('listing_other', 'mode'),
-            self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES
-        );
-
-        return $setting == self::MAGENTO_ORDERS_LISTINGS_OTHER_MODE_YES;
+        $setting = $this->getSetting('magento_orders_settings', array('listing_other', 'mode'), 1);
+        return $setting == 1;
     }
 
     /**
@@ -677,15 +645,14 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersNumberPrefixEnable()
     {
-        $setting = $this->getSetting(
-            'magento_orders_settings', array('number', 'prefix', 'mode'), self::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_NO
-        );
-        return $setting == self::MAGENTO_ORDERS_NUMBER_PREFIX_MODE_YES;
+        $setting = $this->getSetting('magento_orders_settings', array('number', 'prefix', 'mode'), 0);
+        return $setting === 1;
     }
 
-    public function getMagentoOrdersNumberPrefix()
+    public function getMagentoOrdersNumberRegularPrefix()
     {
-        return $this->getSetting('magento_orders_settings', array('number', 'prefix', 'prefix'), '');
+        $settings = $this->getSetting('magento_orders_settings', array('number', 'prefix'));
+        return isset($settings['prefix']) ? $settings['prefix'] : '';
     }
 
     // ---------------------------------------
@@ -798,12 +765,8 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
      */
     public function isMagentoOrdersCustomerNewSubscribed()
     {
-        $setting = $this->getSetting(
-            'magento_orders_settings', array('customer', 'subscription_mode'),
-            self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO
-        );
-
-        return $setting == self::MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_YES;
+        $setting = $this->getSetting('magento_orders_settings', array('customer', 'subscription_mode'), 0);
+        return $setting == 1;
     }
 
     /**
@@ -897,7 +860,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
             return true;
         }
 
-        return $this->getSetting('magento_orders_settings', 'invoice_mode') == self::MAGENTO_ORDERS_INVOICE_MODE_YES;
+        return $this->getSetting('magento_orders_settings', 'invoice_mode') == 1;
     }
 
     public function isMagentoOrdersShipmentEnabled()
@@ -906,7 +869,7 @@ class Ess_M2ePro_Model_Walmart_Account extends Ess_M2ePro_Model_Component_Child_
             return true;
         }
 
-        return $this->getSetting('magento_orders_settings', 'shipment_mode') == self::MAGENTO_ORDERS_SHIPMENT_MODE_YES;
+        return $this->getSetting('magento_orders_settings', 'shipment_mode') == 1;
     }
 
     //########################################

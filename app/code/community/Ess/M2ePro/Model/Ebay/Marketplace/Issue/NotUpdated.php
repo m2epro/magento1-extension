@@ -104,7 +104,7 @@ TEXT;
     public function isNeedProcess()
     {
         return Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished() &&
-               Mage::helper('M2ePro/Component_Ebay')->isActive();
+               Mage::helper('M2ePro/Component_Ebay')->isEnabled();
     }
 
     //########################################

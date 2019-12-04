@@ -60,25 +60,18 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
 
         $script = '';
 
-        if (Mage::helper('M2ePro/View_Walmart')->is3rdPartyShouldBeShown(Ess_M2ePro_Helper_Component_Walmart::NICK)) {
+        if (Mage::helper('M2ePro/View_Walmart')->is3rdPartyShouldBeShown()) {
             $tabsContainer->addTab(self::TAB_ID_LISTING_OTHER, $this->prepareListingOtherTab());
             $script = $this->getScriptFor3rdPartyControlVisibility($tabsContainer);
         }
 
         $tabsContainer->addTab(self::TAB_ID_SEARCH, $this->prepareSearchTab());
 
-        $tabsContainer->setActiveTab($this->getActiveTab());
+        $tabsContainer->setActiveTab($this->getData('tab'));
 
         return parent::_toHtml() .
                $tabsContainer->toHtml() .
                '<div id="tabs_container"></div>' . $script;
-    }
-
-    //########################################
-
-    protected function getActiveTab()
-    {
-        return $this->getRequest()->getParam('tab', self::TAB_ID_LISTING);
     }
 
     //########################################
@@ -90,9 +83,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
             'title' => Mage::helper('M2ePro')->__('M2E Pro')
         );
 
-        if ($this->getActiveTab() != self::TAB_ID_LISTING) {
-            $tab['class'] = 'ajax';
-            $tab['url'] = $this->getUrl('*/adminhtml_walmart_listing/getListingTab');
+        if ($this->getData('tab') != self::TAB_ID_LISTING) {
+            $tab['url'] = $this->getUrl('*/adminhtml_walmart_listing/getListingTab', array('_current' => true));
         } else {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing')->toHtml();
         }
@@ -107,9 +99,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
             'title' => Mage::helper('M2ePro')->__('3rd Party')
         );
 
-        if ($this->getActiveTab() != self::TAB_ID_LISTING_OTHER) {
-            $tab['class'] = 'ajax';
-            $tab['url'] = $this->getUrl('*/adminhtml_walmart_listing/getListingOtherTab');
+        if ($this->getData('tab') != self::TAB_ID_LISTING_OTHER) {
+            $tab['url'] = $this->getUrl('*/adminhtml_walmart_listing/getListingOtherTab', array('_current' => true));
         } else {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_other')->toHtml();
         }
@@ -124,9 +115,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
             'title' => Mage::helper('M2ePro')->__('Search')
         );
 
-        if ($this->getActiveTab() != self::TAB_ID_SEARCH) {
-            $tab['class'] = 'ajax';
-            $tab['url'] = $this->getUrl('*/adminhtml_walmart_listing/getSearchTab');
+        if ($this->getData('tab') != self::TAB_ID_SEARCH) {
+            $tab['url'] = $this->getUrl('*/adminhtml_walmart_listing/getSearchTab', array('_current' => true));
         } else {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_search')->toHtml();
         }
@@ -139,10 +129,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
     protected function getScriptFor3rdPartyControlVisibility($tabsContainer)
     {
         $listingOtherId = self::TAB_ID_LISTING_OTHER;
-        $walmartNick = Ess_M2ePro_Helper_Component_Walmart::NICK;
-
-        $isWalmart3rdPartyShouldBeShown = (int)Mage::helper('M2ePro/View_Walmart')
-            ->is3rdPartyShouldBeShown(Ess_M2ePro_Helper_Component_Walmart::NICK);
+        $walmartNick    = Ess_M2ePro_Helper_Component_Walmart::NICK;
+        $shouldBeShown  = (int)Mage::helper('M2ePro/View_Walmart')->is3rdPartyShouldBeShown();
 
         return "<script>
                    function change3rdPartyVisibility(event) {
@@ -154,7 +142,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_ManageListings extends Ess_M2ePro_Block
                                 }
 
                                 if (targetId == 'listing_{$walmartNick}') {
-                                    (!{$isWalmart3rdPartyShouldBeShown}) ?
+                                    (!{$shouldBeShown}) ?
                                         tab.style.display = 'none':
                                         tab.style.display = '';
                                 }

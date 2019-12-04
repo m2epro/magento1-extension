@@ -37,8 +37,6 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Stop_Responser
         if (!empty($data['already_stop'])) {
             $this->getResponseObject()->processSuccess($data, $params);
 
-            // M2ePro_TRANSLATIONS
-            // Item was already Stopped on eBay
             $message = Mage::getModel('M2ePro/Connector_Connection_Response_Message');
             $message->initFromPreparedData(
                 'Item was already Stopped on eBay',

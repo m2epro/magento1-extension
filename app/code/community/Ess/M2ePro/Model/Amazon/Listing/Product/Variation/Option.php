@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option extends Ess_M2ePr
         $listingProductId = $this->getListingProduct()->getId();
         $variationId      = $this->getListingProductVariation()->getId();
 
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$listingProductId}_variation_{$variationId}_options"
         );
 
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Option extends Ess_M2ePr
         $listingProductId = $this->getListingProduct()->getId();
         $variationId      = $this->getListingProductVariation()->getId();
 
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$listingProductId}_variation_{$variationId}_options"
         );
 

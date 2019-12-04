@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Amazon_Repricing_Synchronization_ActualPrice
 {
     //########################################
 
-    public function run($skus = NULL)
+    public function run($skus = null)
     {
         $requestSkus = array_unique(
             array_merge(

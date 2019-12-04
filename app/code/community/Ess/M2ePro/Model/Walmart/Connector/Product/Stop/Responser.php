@@ -12,16 +12,14 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Responser
     /** @var Ess_M2ePro_Model_Listing_Product $_parentForProcessing */
     protected $_parentForProcessing = null;
 
-    // ########################################
+    //########################################
 
     protected function getSuccessfulMessage()
     {
-        // M2ePro_TRANSLATIONS
-        // Item was successfully Stopped
         return 'Item was successfully Stopped';
     }
 
-    // ########################################
+    //########################################
 
     public function eventAfterExecuting()
     {
@@ -51,5 +49,5 @@ class Ess_M2ePro_Model_Walmart_Connector_Product_Stop_Responser
         $walmartListingProduct->getVariationManager()->getTypeModel()->getProcessor()->process();
     }
 
-    // ########################################
+    //########################################
 }

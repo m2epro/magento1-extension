@@ -21,7 +21,6 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
         return array(
             'm2epro_operation_history',
             'm2epro_listing_log',
-            'm2epro_listing_other_log',
             'm2epro_order_log',
             'm2epro_synchronization_log',
             'm2epro_lock_item',
@@ -161,7 +160,7 @@ class Ess_M2ePro_Model_Cron_Checker_Task_RepairCrashedTables
             return $matches[2];
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################

@@ -10,7 +10,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_RealTime extends Ess_M2ePro_Mo
 {
     protected $_responseData = null;
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -23,7 +23,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_RealTime extends Ess_M2ePro_Mo
         $this->prepareResponseData();
     }
 
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -35,7 +35,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_RealTime extends Ess_M2ePro_Mo
         $this->_responseData = $this->getResponse()->getData();
     }
 
-    // ########################################
+    //########################################
 
     public function getResponseData()
     {
@@ -47,5 +47,5 @@ abstract class Ess_M2ePro_Model_Connector_Command_RealTime extends Ess_M2ePro_Mo
         return $this->getResponse()->getMessages()->getEntitiesAsArrays();
     }
 
-    // ########################################
+    //########################################
 }

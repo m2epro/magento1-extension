@@ -219,7 +219,8 @@ HTML;
     protected function _toHtml()
     {
         $addErrorJs = '';
-        if (!empty($this->getData('categories_data'))) {
+        $categoriesData = $this->getData('categories_data');
+        if (!empty($categoriesData)) {
             $errorMessage = Mage::helper('M2ePro')
                                 ->__(
                                     "To proceed, the category data must be specified.

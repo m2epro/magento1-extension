@@ -111,8 +111,6 @@ class Ess_M2ePro_Helper_Magento_Store_View
             $error = Mage::helper('M2ePro')->__('Store with %code% already exists.', $code);
             throw new Ess_M2ePro_Model_Exception($error);
         } catch (Exception $e) {
-            // M2ePro_TRANSLATIONS
-            // Group with id %group_id% doesn't belongs to website with %site_id%.
             if ($groupId) {
                 if (!Mage::helper('M2ePro/Magento_Store_Group')->isChildOfWebsite($groupId, $websiteId)) {
                     $error = Mage::helper('M2ePro')->__(

@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Requirements_Checks_PhpVersion extends Ess_M2ePro_Model_R
             $this->getVersionParser()->parseConstraints($this->getCompatibilityPattern())
         );
 
-        $minVersion = NULL;
+        $minVersion = null;
         foreach ($constraints as $constraint) {
             if ($minVersion === null || $constraint->versionCompare($constraint->getVersion(), $minVersion, '<')) {
                 $minVersion = $constraint->getVersion();

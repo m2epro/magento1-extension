@@ -59,7 +59,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated extends Ess_M2ePro_Mode
     {
         if ($this->_shippingTemplateModel === null) {
             $this->_shippingTemplateModel = Mage::helper('M2ePro')->getCachedObject(
-                'Ebay_Template_Shipping', $this->getId(), NULL, array('template')
+                'Ebay_Template_Shipping', $this->getId(), null, array('template')
             );
         }
 

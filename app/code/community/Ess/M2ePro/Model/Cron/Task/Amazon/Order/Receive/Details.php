@@ -11,6 +11,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
 {
     const NICK = 'amazon/order/receive/details';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 7200;
+
     //####################################
 
     public function isPossibleToRun()
@@ -105,7 +110,13 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Receive_Details
         $orderCollection->addFieldToFilter('is_afn_channel', 1);
         $orderCollection->addFieldToFilter('status', array('neq' => Ess_M2ePro_Model_Amazon_Order::STATUS_PENDING));
         $orderCollection->addFieldToFilter('create_date', array('gt' => $from->format('Y-m-d H:i:s')));
-        $orderCollection->addFieldToFilter('additional_data', array('nlike' => '%fulfillment_details%'));
+        $orderCollection->addFieldToFilter(
+            array('additional_data', 'additional_data'),
+            array(
+                array('additional_data', 'null' => true),
+                array('additional_data', 'nlike' => '%fulfillment_details%')
+            )
+        );
 
         $amazonOrdersIds = $orderCollection->getColumnValues('amazon_order_id');
         if (empty($amazonOrdersIds)) {

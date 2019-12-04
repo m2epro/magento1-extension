@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
 
     protected $_requestTime;
 
-    // ########################################
+    //########################################
 
     public function initFromRawResponse($response)
     {
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         $this->initResultType($response['response']['result']['type']);
     }
 
-    public function initFromPreparedResponse(array $data = array(), array $messagesData = array(), $resultType = NULL)
+    public function initFromPreparedResponse(array $data = array(), array $messagesData = array(), $resultType = null)
     {
         $this->_data = $data;
 
@@ -45,7 +45,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         $this->initResultType($resultType);
     }
 
-    // ########################################
+    //########################################
 
     public function getResult()
     {
@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         return $this->_data;
     }
 
-    // ########################################
+    //########################################
 
     public function isResultError()
     {
@@ -84,7 +84,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         return $this->_resultType == Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_NOTICE;
     }
 
-    // ########################################
+    //########################################
 
     public function setRequestTime($requestTime)
     {
@@ -97,7 +97,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         return $this->_requestTime;
     }
 
-    // ########################################
+    //########################################
 
     public function isServerInMaintenanceMode()
     {
@@ -118,7 +118,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         return false;
     }
 
-    // ########################################
+    //########################################
 
     protected function initMessages(array $messagesData)
     {
@@ -146,5 +146,5 @@ class Ess_M2ePro_Model_Connector_Connection_Response
         $this->_resultType = Ess_M2ePro_Model_Connector_Connection_Response_Message::TYPE_SUCCESS;
     }
 
-    // ########################################
+    //########################################
 }

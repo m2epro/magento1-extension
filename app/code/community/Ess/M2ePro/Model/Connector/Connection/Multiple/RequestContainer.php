@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
     protected $_request = null;
     protected $_timeout = null;
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Connector_Connection_Request|null
@@ -31,7 +31,7 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return null
@@ -51,5 +51,5 @@ class Ess_M2ePro_Model_Connector_Connection_Multiple_RequestContainer
         return $this;
     }
 
-    // ########################################
+    //########################################
 }

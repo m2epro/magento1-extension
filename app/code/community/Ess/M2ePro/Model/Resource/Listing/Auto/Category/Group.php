@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Resource_Listing_Auto_Category_Group
 
     //########################################
 
-    public function getCategoriesFromOtherGroups($listingId, $groupId = NULL)
+    public function getCategoriesFromOtherGroups($listingId, $groupId = null)
     {
         /** @var Ess_M2ePro_Model_Resource_Listing_Auto_Category_Group_Collection $groupCollection */
         $groupCollection = Mage::getModel('M2ePro/Listing_Auto_Category_Group')->getCollection();

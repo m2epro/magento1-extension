@@ -125,7 +125,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
  
                 $sourceSettingsHash = sha1(Mage::helper('M2ePro')->jsonEncode($sourceSettings));
 
-                $bufferedValue = NULL;
+                $bufferedValue = null;
                 if (isset($sourceSettingsCache[$sourceSettingsHash])) {
                     $bufferedValue = $sourceSettingsCache[$sourceSettingsHash];
                 } else {
@@ -382,7 +382,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_PickupStore_State_Updater
             return $stateItem;
         }
 
-        return NULL;
+        return null;
     }
 
     // ---------------------------------------

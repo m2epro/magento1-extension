@@ -8,7 +8,8 @@
 
 abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 {
-    const MAX_MEMORY_LIMIT = 2048;
+    const MAX_INACTIVE_TIME = 300;
+    const MAX_MEMORY_LIMIT  = 2048;
 
     protected $_previousStoreId = null;
 
@@ -17,9 +18,9 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
 
     //########################################
 
-    abstract protected function getNick();
+    abstract public function getNick();
 
-    abstract protected function getInitiator();
+    abstract public function getInitiator();
 
     //########################################
 
@@ -29,12 +30,19 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
             return false;
         }
 
+        if ($this->isDisabled()) {
+            return false;
+        }
+
+        $runnerSwitcher = Mage::getModel('M2ePro/Cron_Runner_Switcher');
+        $runnerSwitcher->check($this);
+
         $this->selfCheck();
 
         /** @var Ess_M2ePro_Model_Lock_Transactional_Manager $transactionalManager */
         $transactionalManager = Mage::getModel(
             'M2ePro/Lock_Transactional_Manager', array(
-            'nick' => 'cron_runner'
+                'nick' => 'cron_runner'
             )
         );
 
@@ -98,6 +106,15 @@ abstract class Ess_M2ePro_Model_Cron_Runner_Abstract
     }
 
     //########################################
+
+    protected function isDisabled()
+    {
+        if (Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/cron/'.$this->getNick().'/', 'disabled')) {
+            return true;
+        }
+
+        return false;
+    }
 
     protected function initialize()
     {

@@ -12,22 +12,15 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Grid extends Ess_M2ePro_Block_Ad
 
     protected function _prepareCollection()
     {
-        $collection = Mage::getModel('M2ePro/Account')->getCollection();
+        $collection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
 
-        $collection->getSelect()
-            ->joinLeft(
-                array('aa'=>Mage::getResourceModel('M2ePro/Amazon_Account')->getMainTable()),
-                '(`aa`.`account_id` = `main_table`.`id`)',
-                array('merchant_id')
-            )
-            ->joinLeft(
-                array('m'=>Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
-                '(`m`.`id` = `aa`.`marketplace_id`)',
-                array('marketplace_title'=>'title')
-            );
+        $collection->getSelect()->joinInner(
+            array('m' => Mage::getResourceModel('M2ePro/Marketplace')->getMainTable()),
+            '(`m`.`id` = `second_table`.`marketplace_id`)',
+            array('marketplace_title' => 'title')
+        );
 
         $this->setCollection($collection);
-
         return parent::_prepareCollection();
     }
 
@@ -68,44 +61,24 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Account_Grid extends Ess_M2ePro_Block_Ad
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        if ($row->isComponentModeAmazon()) {
-            $marketplaceLabel = Mage::helper('M2ePro')->__('Marketplace');
-            $marketplaceTitle = $row->getData('marketplace_title');
+        /** @var Ess_M2ePro_Model_Account $row */
+        $marketplaceLabel = Mage::helper('M2ePro')->__('Marketplace');
+        $marketplaceTitle = $row->getData('marketplace_title');
 
-            $merchantLabel = Mage::helper('M2ePro')->__('Merchant ID');
-            $merchantId = $row->getData('merchant_id');
+        $merchantLabel = Mage::helper('M2ePro')->__('Merchant ID');
+        $merchantId = $row->getData('merchant_id');
 
-            $value = <<<HTML
-            <div>
-                {$value}<br/>
-                <span style="font-weight: bold">{$merchantLabel}</span>:
-                <span style="color: #505050">{$merchantId}</span>
-                <br/>
-                <span style="font-weight: bold">{$marketplaceLabel}</span>:
-                <span style="color: #505050">{$marketplaceTitle}</span>
-                <br/>
-            </div>
+        return <<<HTML
+<div>
+    {$value}<br/>
+    <span style="font-weight: bold">{$merchantLabel}</span>:
+    <span style="color: #505050">{$merchantId}</span>
+    <br/>
+    <span style="font-weight: bold">{$marketplaceLabel}</span>:
+    <span style="color: #505050">{$marketplaceTitle}</span>
+    <br/>
+</div>
 HTML;
-        } else {
-            $sellerId = $row->getData('seller_id');
-
-            if (empty($sellerId)) {
-                return $value;
-            }
-
-            $sellerLabel = Mage::helper('M2ePro')->__('Seller ID');
-
-            $value = <<<HTML
-            <div>
-                {$value}<br/>
-                <span style="font-weight: bold">{$sellerLabel}</span>:
-                <span style="color: #505050">{$sellerId}</span>
-                <br/>
-            </div>
-HTML;
-        }
-
-        return $value;
     }
 
     //########################################
@@ -119,9 +92,7 @@ HTML;
         }
 
         $collection->getSelect()->where(
-            'main_table.title LIKE ?
-            OR m.title LIKE ?
-            OR aa.merchant_id LIKE ?',
+            'main_table.title LIKE ? OR m.title LIKE ? OR second_table.merchant_id LIKE ?',
             '%'. $value .'%'
         );
     }

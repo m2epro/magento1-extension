@@ -55,39 +55,41 @@ class Ess_M2ePro_Model_Servicing_Task_License extends Ess_M2ePro_Model_Servicing
 
     protected function updateInfoData(array $infoData)
     {
-        $moduleName = Mage::helper('M2ePro/Module')->getName();
-        $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
-
         if (array_key_exists('email', $infoData)) {
-            $primaryConfig->setGroupValue('/'.$moduleName.'/license/info/', 'email', $infoData['email']);
+            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+                '/license/info/', 'email', $infoData['email']
+            );
         }
     }
 
     protected function updateValidationMainData(array $validationData)
     {
-        $moduleName = Mage::helper('M2ePro/Module')->getName();
-        $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
 
         if (array_key_exists('domain', $validationData)) {
-            $primaryConfig->setGroupValue('/'.$moduleName.'/license/', 'domain', $validationData['domain']);
+            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+                '/license/', 'domain', $validationData['domain']
+            );
         }
 
         if (array_key_exists('ip', $validationData)) {
-            $primaryConfig->setGroupValue('/'.$moduleName.'/license/', 'ip', $validationData['ip']);
+            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+                '/license/', 'ip', $validationData['ip']
+            );
         }
     }
 
     protected function updateValidationValidData(array $isValidData)
     {
-        $moduleName = Mage::helper('M2ePro/Module')->getName();
-        $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
-
         if (array_key_exists('domain', $isValidData)) {
-            $primaryConfig->setGroupValue('/'.$moduleName.'/license/valid/', 'domain', (int)$isValidData['domain']);
+            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+                '/license/valid/', 'domain', (int)$isValidData['domain']
+            );
         }
 
         if (array_key_exists('ip', $isValidData)) {
-            $primaryConfig->setGroupValue('/'.$moduleName.'/license/valid/', 'ip', (int)$isValidData['ip']);
+            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
+                '/license/valid/', 'ip', (int)$isValidData['ip']
+            );
         }
     }
 
@@ -110,10 +112,7 @@ class Ess_M2ePro_Model_Servicing_Task_License extends Ess_M2ePro_Model_Servicing
 
     protected function updateStatus($status)
     {
-        $moduleName = Mage::helper('M2ePro/Module')->getName();
-        $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
-
-        $primaryConfig->setGroupValue('/'.$moduleName.'/license/', 'status', (int)$status);
+        Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue('/license/', 'status', (int)$status);
     }
 
     //########################################

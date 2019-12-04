@@ -65,7 +65,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'marketplace', 'get', 'info',
             array('include_details' => 1), 'info',
-            $this->_marketplace->getId(), NULL
+            $this->_marketplace->getId(), null
         );
 
         $dispatcherObj->process($connectorObj);
@@ -93,8 +93,8 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
 
         $insertData = array(
             'marketplace_id'                  => $this->_marketplace->getId(),
-            'client_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : NULL,
-            'server_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : NULL,
+            'client_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : null,
+            'server_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : null,
             'dispatch'                        => $helper->jsonEncode($details['dispatch']),
             'packages'                        => $helper->jsonEncode($details['packages']),
             'return_policy'                   => $helper->jsonEncode($details['return_policy']),
@@ -153,7 +153,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             $connectorObj  = $dispatcherObj->getVirtualConnector(
                 'marketplace', 'get', 'categories',
                 array('part_number' => $partNumber),
-                NULL, $this->_marketplace->getId()
+                null, $this->_marketplace->getId()
             );
 
             $dispatcherObj->process($connectorObj);
@@ -183,7 +183,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
                     'title'              => $data['title'],
                     'path'               => $data['path'],
                     'is_leaf'            => $data['is_leaf'],
-                    'features'           => ($data['is_leaf'] ? $helper->jsonEncode($data['features']) : NULL)
+                    'features'           => ($data['is_leaf'] ? $helper->jsonEncode($data['features']) : null)
                 );
 
                 if (count($insertData) >= 100 || $categoryIndex >= ($categoriesCount - 1)) {
@@ -272,9 +272,10 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
                     'make'         => $item['Make'],
                     'model'        => $item['Model'],
                     'year'         => $item['Year'],
-                    'trim'         => (isset($item['Trim']) ? $item['Trim'] : NULL),
-                    'engine'       => (isset($item['Engine']) ? $item['Engine'] : NULL),
-                    'submodel'     => (isset($item['Submodel']) ? $item['Submodel'] : NULL),
+                    'trim'         => (isset($item['Trim']) ? $item['Trim'] : null),
+                    'engine'       => (isset($item['Engine']) ? $item['Engine'] : null),
+                    'submodel'     => (isset($item['Submodel']) ? $item['Submodel'] : null),
+                    'street_name'  => (isset($item['StreetName']) ? $item['StreetName'] : null),
                     'scope'        => $scope
                 );
 
@@ -312,7 +313,7 @@ class Ess_M2ePro_Model_Ebay_Marketplace_Synchronization
             $connectorObj = $dispatcherObj->getVirtualConnector(
                 'marketplace', 'get', 'motorsKtypes',
                 array('part_number' => $partNumber),
-                NULL, $this->_marketplace->getId()
+                null, $this->_marketplace->getId()
             );
 
             $dispatcherObj->process($connectorObj);

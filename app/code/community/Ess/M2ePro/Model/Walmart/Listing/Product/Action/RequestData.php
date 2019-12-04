@@ -92,12 +92,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getSku()
     {
-        return $this->hasSku() ? $this->_data['sku'] : NULL;
+        return $this->hasSku() ? $this->_data['sku'] : null;
     }
 
     public function getIsNeedSkuUpdate()
     {
-        return $this->hasIsNeedSkuUpdate() ? $this->_data['is_need_sku_update'] : NULL;
+        return $this->hasIsNeedSkuUpdate() ? $this->_data['is_need_sku_update'] : null;
     }
 
     /**
@@ -105,12 +105,12 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getProductIdsData()
     {
-        return $this->hasProductIdsData() ? $this->_data['product_ids_data'] : NULL;
+        return $this->hasProductIdsData() ? $this->_data['product_ids_data'] : null;
     }
 
     public function getIsNeedProductIdUpdate()
     {
-        return $this->hasIsNeedProductIdUpdate() ? $this->_data['is_need_product_id_update'] : NULL;
+        return $this->hasIsNeedProductIdUpdate() ? $this->_data['is_need_product_id_update'] : null;
     }
 
     // ---------------------------------------
@@ -120,7 +120,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getQty()
     {
-        return $this->hasQty() ? $this->_data['qty'] : NULL;
+        return $this->hasQty() ? $this->_data['qty'] : null;
     }
 
     // ---------------------------------------
@@ -130,7 +130,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getLagTime()
     {
-        return $this->hasLagTime() ? $this->_data['lag_time'] : NULL;
+        return $this->hasLagTime() ? $this->_data['lag_time'] : null;
     }
 
     // ---------------------------------------
@@ -140,14 +140,14 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_RequestData
      */
     public function getPrice()
     {
-        return $this->hasPrice() ? $this->_data['price'] : NULL;
+        return $this->hasPrice() ? $this->_data['price'] : null;
     }
 
     // ---------------------------------------
 
     public function getVariationData()
     {
-        return $this->hasVariationData() ? $this->_data['variation_data'] : NULL;
+        return $this->hasVariationData() ? $this->_data['variation_data'] : null;
     }
 
     //########################################

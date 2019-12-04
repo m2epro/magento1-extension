@@ -15,11 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
     public function __construct()
     {
         parent::__construct();
-
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayListingGrid');
-        // ---------------------------------------
     }
 
     protected function _prepareCollection()
@@ -153,7 +149,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
             ),
 
             'viewLogs' => array(
-                'caption' => $helper->__('View Logs'),
+                'caption' => $helper->__('Logs & Events'),
                 'group'   => 'other',
                 'field'   => 'id',
                 'url'     => array(
@@ -243,12 +239,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Grid extends Ess_M2ePro_Block_Admi
                 'action_id'      => self::MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY
             ),
         );
-
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            unset($actions['autoActions']);
-            unset($actions['editSynchronization']);
-            unset($actions[self::MASS_ACTION_ID_EDIT_PARTS_COMPATIBILITY]);
-        }
 
         return $actions;
     }

@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment_Service extends Ess_M2ePro_Model_Co
     {
         if ($this->_paymentTemplateModel === null) {
             $this->_paymentTemplateModel = Mage::helper('M2ePro')->getCachedObject(
-                'Ebay_Template_Payment', $this->getTemplatePaymentId(), NULL, array('template')
+                'Ebay_Template_Payment', $this->getTemplatePaymentId(), null, array('template')
             );
         }
 

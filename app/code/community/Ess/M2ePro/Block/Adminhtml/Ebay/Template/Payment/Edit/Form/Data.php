@@ -69,11 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Payment_Edit_Form_Data extends Ma
 
     public function getDefault()
     {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            $default = Mage::getSingleton('M2ePro/Ebay_Template_Payment')->getDefaultSettingsSimpleMode();
-        } else {
-            $default = Mage::getSingleton('M2ePro/Ebay_Template_Payment')->getDefaultSettingsAdvancedMode();
-        }
+        $default = Mage::getSingleton('M2ePro/Ebay_Template_Payment')->getDefaultSettings();
 
         // populate payment fields with the data from magento configuration
         // ---------------------------------------

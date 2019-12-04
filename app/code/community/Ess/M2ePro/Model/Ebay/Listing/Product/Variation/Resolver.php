@@ -173,7 +173,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             if (!empty($tempVariation['details']['mpn_previous']) && !empty($tempVariation['details']['mpn']) &&
                 $tempVariation['details']['mpn_previous'] != $tempVariation['details']['mpn']) {
                 $oneMoreVariation = array(
-                    'id'        => NULL,
+                    'id'        => null,
                     'qty'       => 0,
                     'price'     => $tempVariation['price'],
                     'sku'       => 'del-' . sha1(microtime(1) . $tempVariation['sku']),
@@ -207,7 +207,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
 
         foreach ($variationsThatCanNoBeDeleted as $canNoBeDeleted) {
             $variations[] = array(
-                'id'            => NULL,
+                'id'            => null,
                 'sku'           => $canNoBeDeleted['sku'],
                 'price'         => $canNoBeDeleted['price'],
                 'quantity'      => $canNoBeDeleted['qty'],
@@ -360,7 +360,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
         $variations = array();
         foreach ($result['variations'] as $variation) {
             $tempVariation = array(
-                'id'            => NULL,
+                'id'            => null,
                 'sku'           => $variation['sku'],
                 'price'         => $variation['price'],
                 'quantity'      => $variation['quantity'],
@@ -540,8 +540,8 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Resolver
             return false;
         }
 
-        $channelMpn = isset($channelVariation['details']['mpn']) ? $channelVariation['details']['mpn'] : NULL;
-        $moduleMpn  = isset($moduleVariation['details']['mpn'])  ? $moduleVariation['details']['mpn']  : NULL;
+        $channelMpn = isset($channelVariation['details']['mpn']) ? $channelVariation['details']['mpn'] : null;
+        $moduleMpn  = isset($moduleVariation['details']['mpn'])  ? $moduleVariation['details']['mpn']  : null;
 
         if ($channelMpn != $moduleMpn) {
             return false;

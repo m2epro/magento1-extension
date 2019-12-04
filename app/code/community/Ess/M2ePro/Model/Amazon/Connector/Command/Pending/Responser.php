@@ -20,7 +20,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Responser
         }
 
         if (!isset($this->_params[$idKey])) {
-            return NULL;
+            return null;
         }
 
         $this->_cachedParamsObjects[$idKey] = Mage::helper('M2ePro/Component_Amazon')

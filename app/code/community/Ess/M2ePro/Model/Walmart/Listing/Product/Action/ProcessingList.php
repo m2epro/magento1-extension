@@ -8,9 +8,9 @@
 
 class Ess_M2ePro_Model_Walmart_Listing_Product_Action_ProcessingList extends Ess_M2ePro_Model_Abstract
 {
-    const STAGE_LIST_DETAILS              = 1;
-    const STAGE_RELIST_QTY_READY          = 2;
-    const STAGE_RELIST_QTY_WAITING_RESULT = 3;
+    const STAGE_LIST_DETAILS                    = 1;
+    const STAGE_RELIST_INVENTORY_READY          = 2;
+    const STAGE_RELIST_INVENTORY_WAITING_RESULT = 3;
 
     //####################################
 

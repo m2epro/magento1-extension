@@ -24,7 +24,7 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SellingFormatController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/-IIVAQ");
+        $this->setPageHelpLink(null, null, "x/-IIVAQ");
 
         return $this;
     }

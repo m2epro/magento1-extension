@@ -17,19 +17,18 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
 
         if ($this->getRequest()->isGet() &&
             !$this->getRequest()->isPost() &&
-            !$this->getRequest()->isXmlHttpRequest()) {
-            // check rewrite menu
-            if (count($this->getCustomViewComponentHelper()->getActiveComponents()) < 1) {
-                return $this->_redirect(Mage::helper('M2ePro/Module_Support')->getPageRoute());
+            !$this->getRequest()->isXmlHttpRequest()
+        ) {
+            if (!Mage::helper('M2ePro/View')->getComponentHelper()->isEnabled()) {
+                return $this->_redirect(Mage::helper('M2ePro/Module_HelpCenter')->getPageRoute());
             }
 
-            // update client data
             try {
                 Mage::helper('M2ePro/Client')->updateBackupConnectionData(false);
             } catch (Exception $exception) {
+                Mage::helper('M2ePro/Module_Exception')->process($exception);
             }
 
-            // run servicing code
             try {
                 $dispatcher = Mage::getModel('M2ePro/Servicing_Dispatcher');
                 $dispatcher->process(
@@ -136,9 +135,6 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
 
     protected function addBrowserNotifications()
     {
-// M2ePro_TRANSLATIONS
-// We are sorry, Internet Explorer browser is not supported.
-// Please, use another browser (Mozilla Firefox, Google Chrome, etc.).
         if (Mage::helper('M2ePro/Client')->isBrowserIE()) {
             $this->_getSession()->addError(
                 Mage::helper('M2ePro')->__(
@@ -198,9 +194,6 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
     protected function addServerMaintenanceInfo()
     {
         if (Mage::helper('M2ePro/Server_Maintenance')->isNow()) {
-            // M2ePro_TRANSLATIONS
-            // M2E Pro server is currently under the planned maintenance. The process is scheduled to last
-            // %from% to %to%. Please do not apply any actions during this time frame.
             $message = 'M2E Pro server is currently under the planned maintenance. The process is scheduled to last';
             $message .= ' %from% to %to%. Please do not apply any actions during this time frame.';
 
@@ -212,9 +205,6 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
                 )
             );
         } else if (Mage::helper('M2ePro/Server_Maintenance')->isScheduled()) {
-            // M2ePro_TRANSLATIONS
-            // The preventive server maintenance has been scheduled. The Service will be unavailable
-            // %from% to %to%. All product updates will processed after the technical works are finished.
             $message = 'The preventive server maintenance has been scheduled. The Service will be unavailable';
             $message .= ' %from% to %to%. All product updates will processed after the technical works are finished.';
 
@@ -230,11 +220,6 @@ abstract class Ess_M2ePro_Controller_Adminhtml_MainController
 
     protected function addCronErrorMessage()
     {
-        // M2ePro_TRANSLATIONS
-        // Attention! AUTOMATIC Synchronization is not running at the moment. It does not allow M2E Pro to work
-        // correctly.<br/>Please check this <a href="%url%" target="_blank">article</a> for the details on
-        // how to resolve the problem.
-
         if (Mage::helper('M2ePro/Module')->isReadyToWork() &&
             Mage::helper('M2ePro/Module_Cron')->isLastRunMoreThan(1, true) &&
             !Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {

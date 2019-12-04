@@ -31,9 +31,7 @@ WalmartListingSettingsHandler.prototype = Object.extend(new CommonHandler(), {
         WalmartListingSettingsHandlerObj.reloadSellingFormatTemplates();
 
         $('template_selling_format_id').value = -1;
-        if (M2ePro.autoCompleteData.flags.sellingFormatTemplatesDropDown) {
-            $('template_selling_format_id').simulate('change');
-        }
+        $('template_selling_format_id').simulate('change');
     },
 
     // ---------------------------------------
@@ -107,12 +105,8 @@ WalmartListingSettingsHandler.prototype = Object.extend(new CommonHandler(), {
         }, 250);
     },
 
-    selling_format_template_id_change: function(autoCompleteId)
+    selling_format_template_id_change: function()
     {
-        if (parseInt(autoCompleteId) > 0) {
-            $('template_selling_format_id').value = autoCompleteId;
-        }
-
         WalmartListingSettingsHandlerObj.checkMessages();
         WalmartListingSettingsHandlerObj.hideEmptyOption(this);
     },
@@ -207,12 +201,7 @@ WalmartListingSettingsHandler.prototype = Object.extend(new CommonHandler(), {
                     }
                 }
 
-                var simulateConditions = {
-                    template_selling_format_id: M2ePro.autoCompleteData.flags.sellingFormatTemplatesDropDown,
-                    template_description_id: M2ePro.autoCompleteData.flags.descriptionsTemplatesDropDown,
-                    template_synchronization_id: M2ePro.autoCompleteData.flags.synchronizationsTemplatesDropDown
-                };
-                simulateConditions[id] && $(id).simulate('change');
+                $(id).simulate('change');
             }
         });
     },
@@ -246,7 +235,7 @@ WalmartListingSettingsHandler.prototype = Object.extend(new CommonHandler(), {
         if ($('template_selling_format_id').children.length > 0) {
             $('template_selling_format_id').show();
             noteEl && $('template_selling_format_note').show();
-            M2ePro.autoCompleteData.flags.sellingFormatTemplatesDropDown && $('template_selling_format_label').hide();
+            $('template_selling_format_label').hide();
         } else {
             $('template_selling_format_id').hide();
             noteEl && $('template_selling_format_note').hide();
@@ -264,7 +253,7 @@ WalmartListingSettingsHandler.prototype = Object.extend(new CommonHandler(), {
         if ($('template_description_id').children.length > 0) {
             $('template_description_id').show();
             noteEl &&  $('template_description_note').show();
-            M2ePro.autoCompleteData.flags.descriptionsTemplatesDropDown && $('template_description_label').hide();
+            $('template_description_label').hide();
         } else {
             $('template_description_id').hide();
             noteEl &&  $('template_description_note').hide();
@@ -282,7 +271,7 @@ WalmartListingSettingsHandler.prototype = Object.extend(new CommonHandler(), {
         if ($('template_synchronization_id').children.length > 0) {
             $('template_synchronization_id').show();
             noteEl &&  $('template_synchronization_note').show();
-            M2ePro.autoCompleteData.flags.synchronizationsTemplatesDropDown && $('template_synchronization_label').hide();
+            $('template_synchronization_label').hide();
         } else {
             $('template_synchronization_id').hide();
             noteEl &&  $('template_synchronization_note').hide();

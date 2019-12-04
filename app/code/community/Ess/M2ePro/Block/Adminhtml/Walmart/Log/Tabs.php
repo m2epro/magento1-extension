@@ -9,7 +9,6 @@
 class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
 {
     const TAB_ID_LISTING            = 'listing';
-    const TAB_ID_LISTING_OTHER      = 'listing_other';
     const TAB_ID_ORDER              = 'order';
     const TAB_ID_SYNCHRONIZATION    = 'synchronization';
 
@@ -39,16 +38,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
 
     protected function _prepareLayout()
     {
-        if (!$this->isListingOtherTabShouldBeShown() && $this->getData('active_tab') == self::TAB_ID_LISTING_OTHER) {
-            $this->setData('active_tab', self::TAB_ID_LISTING);
-        }
-
         $this->addTab(self::TAB_ID_LISTING, $this->prepareTabListing());
-
-        if ($this->isListingOtherTabShouldBeShown()) {
-            $this->addTab(self::TAB_ID_LISTING_OTHER, $this->prepareTabListingOther());
-        }
-
         $this->addTab(self::TAB_ID_ORDER, $this->prepareTabOrder());
         $this->addTab(self::TAB_ID_SYNCHRONIZATION, $this->prepareTabSynchronization());
 
@@ -62,34 +52,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
     protected function prepareTabListing()
     {
         $tab = array(
-            'label' => Mage::helper('M2ePro')->__('M2E Pro Listings'),
-            'title' => Mage::helper('M2ePro')->__('M2E Pro Listings')
+            'label' => Mage::helper('M2ePro')->__('Listings'),
+            'title' => Mage::helper('M2ePro')->__('Listings')
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_LISTING) {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_log_grid')->toHtml();
+            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_listing_log')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_walmart_log/listing', array('_current' => true));
-        }
-
-        return $tab;
-    }
-
-    protected function prepareTabListingOther()
-    {
-        $tab = array(
-            'label' => Mage::helper('M2ePro')->__('3rd Party Listings'),
-            'title' => Mage::helper('M2ePro')->__('3rd Party Listings')
-        );
-
-        if ($this->getData('active_tab') == self::TAB_ID_LISTING_OTHER) {
-            $tab['content'] = $this->getLayout()
-                                   ->createBlock('M2ePro/adminhtml_walmart_listing_other_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()
-                                   ->createBlock('M2ePro/adminhtml_walmart_listing_other_log_grid')->toHtml();
-        } else {
-            $tab['url'] = $this->getUrl('*/adminhtml_walmart_log/listingOther', array('_current' => true));
         }
 
         return $tab;
@@ -104,7 +75,11 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
 
         if ($this->getData('active_tab') == self::TAB_ID_ORDER) {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_order_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_walmart_order_log')->toHtml();
+            $tab['content'] .= $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_order_log', '', array(
+                    'component_mode' => Ess_M2ePro_Helper_Component_Walmart::NICK
+                )
+            )->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_walmart_log/order', array('_current' => true));
         }
@@ -133,15 +108,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
 
     //########################################
 
-    protected function isListingOtherTabShouldBeShown()
-    {
-        $helper = Mage::helper('M2ePro/View_Walmart');
-
-        return $helper->is3rdPartyShouldBeShown(Ess_M2ePro_Helper_Component_Walmart::NICK);
-    }
-
-    //########################################
-
     protected function _toHtml()
     {
         $translations = Mage::helper('M2ePro')->jsonEncode(
@@ -158,6 +124,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Log_Tabs extends Mage_Adminhtml_Block_W
 
     Event.observe(window, 'load', function() {
         LogHandlerObj = new LogHandler();
+        LogHandlerObj.afterInitPage();
     });
 
 </script>

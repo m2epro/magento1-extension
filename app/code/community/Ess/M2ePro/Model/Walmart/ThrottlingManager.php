@@ -16,6 +16,7 @@ class Ess_M2ePro_Model_Walmart_ThrottlingManager
     const REQUEST_TYPE_UPDATE_PRICE      = 'update_price';
     const REQUEST_TYPE_UPDATE_PROMOTIONS = 'update_promotions';
     const REQUEST_TYPE_UPDATE_QTY        = 'update_qty';
+    const REQUEST_TYPE_UPDATE_LAG_TIME   = 'update_lag_time';
 
     const REGISTRY_KEY = '/walmart/listing/product/request/throttling/last_request_info/';
 
@@ -108,6 +109,10 @@ class Ess_M2ePro_Model_Walmart_ThrottlingManager
             self::REQUEST_TYPE_UPDATE_QTY => array(
                 'quota'        => 10,
                 'restore_rate' => 0.16, // 10 per hour
+            ),
+            self::REQUEST_TYPE_UPDATE_LAG_TIME => array(
+                'quota'        => 6,
+                'restore_rate' => 0.0042, // 6 per day
             ),
         );
 

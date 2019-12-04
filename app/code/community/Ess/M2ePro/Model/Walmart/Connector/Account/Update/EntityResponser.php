@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityResponser
     extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Responser
 {
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityResponser
         $walmartAccount->addData($dataForUpdate)->save();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -45,5 +45,5 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityResponser
         return $this->getObjectByParam('Account', 'account_id');
     }
 
-    // ########################################
+    //########################################
 }

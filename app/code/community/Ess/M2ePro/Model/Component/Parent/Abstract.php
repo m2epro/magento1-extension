@@ -69,7 +69,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
             return $this->_childObject;
         }
 
-        $tempMode = NULL;
+        $tempMode = null;
 
         if ($this->_childMode !== null) {
             $tempMode = $this->_childMode;
@@ -201,7 +201,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         }
 
         $temp               = parent::save();
-        $this->_childObject = NULL;
+        $this->_childObject = null;
         return $temp;
     }
 
@@ -212,8 +212,8 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
         }
 
         $temp               = parent::delete();
-        $this->_childMode   = NULL;
-        $this->_childObject = NULL;
+        $this->_childMode   = null;
+        $this->_childObject = null;
         return $temp;
     }
 
@@ -239,7 +239,7 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
-        $tempMode = NULL;
+        $tempMode = null;
 
         if ($this->_childMode !== null) {
             $tempMode = $this->_childMode;

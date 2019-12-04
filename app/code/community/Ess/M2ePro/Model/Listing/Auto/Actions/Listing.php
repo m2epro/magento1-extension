@@ -111,15 +111,14 @@ abstract class Ess_M2ePro_Model_Listing_Auto_Actions_Listing
     {
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
         $tempLog->setComponentMode($this->getListing()->getComponentMode());
+        $actionId = $tempLog->getResource()->getNextActionId();
         $tempLog->addProductMessage(
             $this->getListing()->getId(),
             $listingProduct->getProductId(),
             $listingProduct->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-            NULL,
+            $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_MAGENTO,
-            // M2ePro_TRANSLATIONS
-            // Product was successfully Added
             'Product was successfully Added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW

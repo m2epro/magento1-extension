@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Template_RemoveUnused extends Ess_M2ePro_M
 {
     const NICK = 'ebay/template/remove_unused';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 3600;
+
     const SAFE_CREATE_DATE_INTERVAL = 86400;
 
     //########################################

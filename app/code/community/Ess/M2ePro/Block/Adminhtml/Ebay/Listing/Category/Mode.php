@@ -37,9 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Mode extends Ess_M2ePro_B
 
         $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd', array('step' => 2, '_current' => true));
 
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() ||
-            (isset($additionalData['source']) && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER))
-        {
+        if (isset($additionalData['source']) && $additionalData['source'] == SourceModeBlock::SOURCE_OTHER) {
             $url = $this->getUrl('*/adminhtml_ebay_listing_productAdd/deleteAll', array('_current' => true));
         }
 

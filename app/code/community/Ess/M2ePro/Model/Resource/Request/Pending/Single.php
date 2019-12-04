@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Resource_Request_Pending_Single
     extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Request_Pending_Single', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function getComponentsInProgress()
     {
@@ -29,5 +29,5 @@ class Ess_M2ePro_Model_Resource_Request_Pending_Single
         return $this->_getReadAdapter()->fetchCol($select);
     }
 
-    // ########################################
+    //########################################
 }

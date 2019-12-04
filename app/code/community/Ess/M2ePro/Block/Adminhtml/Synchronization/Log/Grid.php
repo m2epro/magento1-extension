@@ -16,20 +16,11 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
     {
         parent::__construct();
 
-        $this->_viewComponentHelper = Mage::helper('M2ePro/View')->getComponentHelper();
-
-        $task = $this->getRequest()->getParam('task');
+        $task    = $this->getRequest()->getParam('task');
         $channel = $this->getRequest()->getParam('channel');
 
-        // Initialization block
-        // ---------------------------------------
-        $this->setId(
-            'synchronizationLogGrid' . ($task !== null ? $task : '') . ucfirst($channel)
-        );
-        // ---------------------------------------
+        $this->setId('synchronizationLogGrid' . ($task !== null ? $task : '') . ucfirst($channel));
 
-        // Set default values
-        // ---------------------------------------
         $this->setDefaultSort('create_date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
@@ -39,7 +30,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         $task !== null && $filters['task'] = $task;
         $task !== null && $filters['component_mode'] = $channel;
         $this->setDefaultFilter($filters);
-        // ---------------------------------------
     }
 
     //########################################
@@ -55,7 +45,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
         if (!empty($channel)) {
             $collection->getSelect()->where('component_mode = ?', $channel);
         } else {
-            $components = $this->_viewComponentHelper->getActiveComponents();
+            $components = Mage::helper('M2ePro/Component')->getEnabledComponents();
             $collection->getSelect()
                 ->where('component_mode IN(\'' . implode('\',\'', $components) . '\') OR component_mode IS NULL');
         }
@@ -67,16 +57,6 @@ abstract class Ess_M2ePro_Block_Adminhtml_Synchronization_Log_Grid extends Ess_M
             $excludeTasks = array_diff($allTitles, $this->getActionTitles());
             $collection->getSelect()->where('task NOT IN ('.implode(',', array_keys($excludeTasks)).')');
         }
-
-        // ---------------------------------------
-
-        // we need sort by id also, because create_date may be same for some adjacents entries
-        // ---------------------------------------
-        if ($this->getRequest()->getParam('sort', 'create_date') == 'create_date') {
-            $collection->setOrder('id', $this->getRequest()->getParam('dir', 'DESC'));
-        }
-
-        // ---------------------------------------
 
         // Set collection to grid
         $this->setCollection($collection);

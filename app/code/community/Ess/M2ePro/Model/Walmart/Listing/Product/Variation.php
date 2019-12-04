@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
 
     protected function _afterSave()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProduct()->getId()}_variations"
         );
         return parent::_afterSave();
@@ -34,7 +34,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation extends Ess_M2ePro_Mode
 
     protected function _beforeDelete()
     {
-        Mage::helper('M2ePro/Data_Cache_Session')->removeTagValues(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->removeTagValues(
             "listing_product_{$this->getListingProduct()->getId()}_variations"
         );
         return parent::_beforeDelete();

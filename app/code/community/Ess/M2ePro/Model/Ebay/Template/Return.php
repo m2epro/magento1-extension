@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
     public function deleteInstance()
     {
         $temp = parent::deleteInstance();
-        $temp && $this->_marketplaceModel = NULL;
+        $temp && $this->_marketplaceModel = null;
         return $temp;
     }
 
@@ -187,7 +187,7 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
     /**
      * @return array
      */
-    public function getDefaultSettingsSimpleMode()
+    public function getDefaultSettings()
     {
         return array(
             'accepted'      => self::RETURNS_ACCEPTED,
@@ -202,14 +202,6 @@ class Ess_M2ePro_Model_Ebay_Template_Return extends Ess_M2ePro_Model_Component_A
 
             'description' => ''
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettingsAdvancedMode()
-    {
-        return $this->getDefaultSettingsSimpleMode();
     }
 
     //########################################

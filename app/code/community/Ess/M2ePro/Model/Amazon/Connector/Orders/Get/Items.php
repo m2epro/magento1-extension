@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Model_Amazon_Connector_Command_RealTime
 {
-    // ########################################
+    //########################################
 
     const TIMEOUT_ERRORS_COUNT_TO_RISE = 3;
     const TIMEOUT_RISE_ON_ERROR        = 30;
@@ -94,7 +94,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
         return 300 + $rise;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareResponseData()
     {
@@ -128,7 +128,7 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
                 $order['status'] = trim($orderData['status']);
 
                 $sellerOrderId = trim($orderData['seller_id']);
-                $order['seller_order_id'] = empty($sellerOrderId) ? NULL : $sellerOrderId;
+                $order['seller_order_id'] = empty($sellerOrderId) ? null : $sellerOrderId;
 
                 $order['marketplace_id'] = $marketplace->getId();
                 $order['is_afn_channel'] = (int)$orderData['channel']['is_afn'];
@@ -239,5 +239,5 @@ class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Items extends Ess_M2ePro_Mode
         return $parsedAddress;
     }
 
-    // ########################################
+    //########################################
 }

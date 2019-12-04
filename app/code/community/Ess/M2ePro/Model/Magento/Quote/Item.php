@@ -187,7 +187,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $giftMessageData = $this->_proxyItem->getGiftMessage();
 
         if (!is_array($giftMessageData)) {
-            return NULL;
+            return null;
         }
 
         $giftMessageData['customer_id'] = (int)$this->_quote->getCustomerId();
@@ -195,7 +195,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $giftMessage = Mage::getModel('giftmessage/message')->addData($giftMessageData);
 
         if ($giftMessage->isMessageEmpty()) {
-            return NULL;
+            return null;
         }
 
         $this->_giftMessage = $giftMessage->save();

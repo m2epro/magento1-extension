@@ -9,7 +9,7 @@
 abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsResponser
     extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Responser
 {
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -17,5 +17,5 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Get_Details_ItemsRespons
         return isset($responseData['data']);
     }
 
-    // ########################################
+    //########################################
 }

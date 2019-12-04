@@ -18,15 +18,15 @@
         <b>Note:</b> Settings made here only take effect if <b>Feedback Synchronization</b> is enabled in %menu_path%.<br/><br/>
         More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
         Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'Synchronization'),
-        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/OAAJAQ')); ?>
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/OAAJAQ')); ?>
 </div>
 
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
     $defaults = array(
-        'feedbacks_receive' => Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_NO,
+        'feedbacks_receive' => 0,
         'feedbacks_auto_response' => Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_NONE,
-        'feedbacks_auto_response_only_positive' => Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_ONLY_POSITIVE_NO
+        'feedbacks_auto_response_only_positive' => 0
     );
     $formData = array_merge($defaults, $formData);
 
@@ -67,8 +67,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="feedbacks_receive" name="feedbacks_receive" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_NO; ?>" <?php if ($formData['feedbacks_receive'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_NO): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_YES; ?>" <?php if ($formData['feedbacks_receive'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['feedbacks_receive'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1>" <?php if ($formData['feedbacks_receive'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Choose whether to Import Feedback from eBay Buyers into Magento.'); ?></span>
@@ -83,7 +83,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_ebay_accounts_feedbacks_response" <?php if($formData['feedbacks_receive'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_NO): ?>style="display: none;"<?php endif; ?>>
+<div class="entry-edit" id="magento_block_ebay_accounts_feedbacks_response" <?php if($formData['feedbacks_receive'] == 0): ?>style="display: none;"<?php endif; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Automatic Response'); ?></h4>
@@ -122,14 +122,14 @@
                     </td>
                 </tr>
 
-                <tr id="feedbacks_auto_response_only_positive_container" <?php if($formData['feedbacks_receive'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_NO || $formData['feedbacks_auto_response'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_NONE) echo ' style="display: none;"'; ?>>
+                <tr id="feedbacks_auto_response_only_positive_container" <?php if($formData['feedbacks_receive'] == 0 || $formData['feedbacks_auto_response'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_NONE) echo ' style="display: none;"'; ?>>
                     <td class="label">
                         <label for="feedbacks_auto_response_only_positive"><?php echo Mage::helper('M2ePro')->__('Send to'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="feedbacks_auto_response_only_positive" name="feedbacks_auto_response_only_positive" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_ONLY_POSITIVE_NO; ?>" <?php if ($formData['feedbacks_auto_response_only_positive'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_ONLY_POSITIVE_NO) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('All'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_ONLY_POSITIVE_YES; ?>" <?php if ($formData['feedbacks_auto_response_only_positive'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_ONLY_POSITIVE_YES) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Positive'); ?></option>
+                            <option value="0" <?php if ($formData['feedbacks_auto_response_only_positive'] == 0) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('All'); ?></option>
+                            <option value="1" <?php if ($formData['feedbacks_auto_response_only_positive'] == 1) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Positive'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__(
@@ -146,7 +146,7 @@
 
 </div>
 
-<div id="block_accounts_feedbacks_templates" <?php if($formData['feedbacks_receive'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_NO || $formData['feedbacks_auto_response'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_NONE) echo ' style="display: none;"'; ?>>
+<div id="block_accounts_feedbacks_templates" <?php if($formData['feedbacks_receive'] == 0 || $formData['feedbacks_auto_response'] == Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_AUTO_RESPONSE_NONE) echo ' style="display: none;"'; ?>>
 
     <div class="content-header skip-header">
         <div style="float: left;">

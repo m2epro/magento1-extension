@@ -25,13 +25,13 @@ class Ess_M2ePro_Helper_Component_Ebay_Images extends Mage_Core_Helper_Abstract
 
     /**
      * @param Ess_M2ePro_Model_Magento_Product_Image[] $images
-     * @param string|NULL $attributeLabel for Variation product
+     * @param string|null $attributeLabel for Variation product
      * @return string $hash
      */
-    public function getHash(array $images, $attributeLabel = NULL)
+    public function getHash(array $images, $attributeLabel = null)
     {
         if (empty($images)) {
-            return NULL;
+            return null;
         }
 
         $hashes = array();

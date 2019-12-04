@@ -111,7 +111,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
             $this->getRepricing()->deleteInstance();
         }
 
-        $this->_variationManager = NULL;
+        $this->_variationManager = null;
 
         $this->delete();
         return true;
@@ -253,7 +253,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
         }
 
         return Mage::helper('M2ePro')->getCachedObject(
-            'Amazon_Template_Shipping', $this->getTemplateShippingId(), NULL, array('template')
+            'Amazon_Template_Shipping', $this->getTemplateShippingId(), null, array('template')
         );
     }
 
@@ -291,7 +291,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
         }
 
         return Mage::helper('M2ePro')->getCachedObject(
-            'Amazon_Template_ProductTaxCode', $this->getTemplateProductTaxCodeId(), NULL, array('template')
+            'Amazon_Template_ProductTaxCode', $this->getTemplateProductTaxCodeId(), null, array('template')
         );
     }
 
@@ -329,7 +329,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
         }
 
         return Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-            'Template_Description', $this->getTemplateDescriptionId(), NULL, array('template')
+            'Template_Description', $this->getTemplateDescriptionId(), null, array('template')
         );
     }
 
@@ -838,7 +838,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function getRegularPrice()
     {
         if (!$this->isAllowedForRegularCustomers()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
@@ -878,7 +878,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function getRegularMapPrice()
     {
         if (!$this->isAllowedForRegularCustomers()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
@@ -918,7 +918,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function getRegularSalePrice()
     {
         if (!$this->isAllowedForRegularCustomers()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
@@ -1068,7 +1068,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function getBusinessPrice()
     {
         if (!$this->isAllowedForBusinessCustomers()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getVariationManager()->isPhysicalUnit() &&
@@ -1108,7 +1108,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product extends Ess_M2ePro_Model_Component
     public function getBusinessDiscounts()
     {
         if (!$this->isAllowedForBusinessCustomers()) {
-            return NULL;
+            return null;
         }
 
         if ($this->getAmazonSellingFormatTemplate()->isBusinessDiscountsModeNone()) {

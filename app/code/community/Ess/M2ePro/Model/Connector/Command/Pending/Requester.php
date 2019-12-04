@@ -19,7 +19,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Requester
 
     protected $_preparedResponseData;
 
-    // ########################################
+    //########################################
 
     protected function getProcessingRunner()
     {
@@ -47,7 +47,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Requester
         return $this->_responser = new $modelClassName($this->getResponserParams(), $this->getResponse());
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -95,21 +95,21 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Requester
         }
     }
 
-    // ########################################
+    //########################################
 
     public function getPreparedResponseData()
     {
         return $this->_preparedResponseData;
     }
 
-    // ########################################
+    //########################################
 
     public function eventBeforeExecuting()
     {
         return null;
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingRunnerModelName()
     {
@@ -139,5 +139,5 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Requester
         return $this->_params;
     }
 
-    // ########################################
+    //########################################
 }

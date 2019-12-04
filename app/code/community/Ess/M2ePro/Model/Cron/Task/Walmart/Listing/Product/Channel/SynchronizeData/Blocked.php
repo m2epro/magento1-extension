@@ -11,6 +11,11 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
 {
     const NICK = 'walmart/listing/product/channel/synchronize_data/blocked';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 86400;
+
     //####################################
 
     public function isPossibleToRun()
@@ -61,9 +66,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             try {
                 $this->processAccount($account);
             } catch (Exception $exception) {
-                // M2ePro_TRANSLATIONS
-                // The "Update Blocked Listings Products" Action for Walmart Account: "%account%"
-                // was completed with error.
                 $message = 'The "Update Blocked Listings Products" Action for Walmart Account "%account%"';
                 $message .= ' was completed with error.';
                 $message = Mage::helper('M2ePro')->__($message, $account->getTitle());
@@ -95,6 +97,11 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         $connector = $dispatcher->getVirtualConnector('inventory', 'get', 'wpidsItems', array(), 'data', $account);
         $dispatcher->process($connector);
 
+        if (!$this->isNeedProcessResponse($connector->getResponse())) {
+            $this->processResponseMessages($connector->getResponseMessages());
+            return;
+        }
+
         $wpids = $connector->getResponseData();
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
@@ -122,8 +129,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
                 $statusChangedTo = Mage::helper('M2ePro/Component_Walmart')
                     ->getHumanTitleByListingProductStatus(Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED);
 
-                // M2ePro_TRANSLATIONS
-                // Item Status was successfully changed from "%from%" to "%to%" .
                 $tempLogMessage = Mage::helper('M2ePro')->__(
                     'Item Status was successfully changed from "%from%" to "%to%" .',
                     $statusChangedFrom,
@@ -253,6 +258,41 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         $massProcessor->setForceExecuting(false);
 
         $massProcessor->execute();
+    }
+
+    //########################################
+
+    protected function processResponseMessages(array $messages = array())
+    {
+        /** @var Ess_M2ePro_Model_Connector_Connection_Response_Message_Set $messagesSet */
+        $messagesSet = Mage::getModel('M2ePro/Connector_Connection_Response_Message_Set');
+        $messagesSet->init($messages);
+
+        foreach ($messagesSet->getEntities() as $message) {
+            if (!$message->isError() && !$message->isWarning()) {
+                continue;
+            }
+
+            $logType = $message->isError() ? Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
+                : Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
+
+            $this->getSynchronizationLog()->addMessage(
+                Mage::helper('M2ePro')->__($message->getText()),
+                $logType,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+        }
+    }
+
+    //########################################
+
+    /**
+     * @param Ess_M2ePro_Model_Connector_Connection_Response $response
+     * @return bool
+     */
+    protected function isNeedProcessResponse($response)
+    {
+        return !$response->getMessages()->hasErrorEntities();
     }
 
     //########################################

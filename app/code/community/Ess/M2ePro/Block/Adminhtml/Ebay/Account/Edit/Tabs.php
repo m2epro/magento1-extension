@@ -35,18 +35,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block
 
         if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data') &&
             Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()) {
-            $isAdvancedMode = Mage::helper('M2ePro/View_Ebay')->isAdvancedMode();
 
-            if ($isAdvancedMode) {
-                $this->addTab(
-                    'listingOther', array(
-                    'label'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
-                    'title'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
-                    'content' => $this->getLayout()
-                        ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_listingOther')->toHtml(),
-                    )
-                );
-            }
+            $this->addTab(
+                'listingOther', array(
+                'label'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
+                'title'   => Mage::helper('M2ePro')->__('3rd Party Listings'),
+                'content' => $this->getLayout()
+                    ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_listingOther')->toHtml(),
+                )
+            );
 
             $this->addTab(
                 'store', array(
@@ -65,16 +62,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Account_Edit_Tabs extends Ess_M2ePro_Block
                 )
             );
 
-            if ($isAdvancedMode) {
-                $this->addTab(
-                    'feedback', array(
-                    'label'   => Mage::helper('M2ePro')->__('Feedback'),
-                    'title'   => Mage::helper('M2ePro')->__('Feedback'),
-                    'content' => $this->getLayout()
-                        ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_feedback')->toHtml(),
-                    )
-                );
-            }
+            $this->addTab(
+                'feedback', array(
+                'label'   => Mage::helper('M2ePro')->__('Feedback'),
+                'title'   => Mage::helper('M2ePro')->__('Feedback'),
+                'content' => $this->getLayout()
+                    ->createBlock('M2ePro/adminhtml_ebay_account_edit_tabs_feedback')->toHtml(),
+                )
+            );
         }
 
         $this->setActiveTab($this->getRequest()->getParam('tab', 'general'));

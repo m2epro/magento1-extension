@@ -20,7 +20,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Delete_ProcessingRunner
         /** @var Ess_M2ePro_Model_Account $account */
         $account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Account', $params['account_id']);
 
-        $account->addProcessingLock(NULL, $this->getProcessingObject()->getId());
+        $account->addProcessingLock(null, $this->getProcessingObject()->getId());
         $account->addProcessingLock('server_synchronize', $this->getProcessingObject()->getId());
         $account->addProcessingLock('deleting_from_server', $this->getProcessingObject()->getId());
     }
@@ -35,7 +35,7 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Delete_ProcessingRunner
             /** @var Ess_M2ePro_Model_Account $account */
             $account = Mage::helper('M2ePro/Component_Walmart')->getCachedObject('Account', $params['account_id']);
 
-            $account->deleteProcessingLocks(NULL, $this->getProcessingObject()->getId());
+            $account->deleteProcessingLocks(null, $this->getProcessingObject()->getId());
             $account->deleteProcessingLocks('server_synchronize', $this->getProcessingObject()->getId());
             $account->deleteProcessingLocks('deleting_from_server', $this->getProcessingObject()->getId());
         } catch (Exception $exception) {

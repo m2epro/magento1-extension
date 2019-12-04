@@ -30,8 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Configuration_Tabs extends Mage_Adminht
 
     protected function _prepareLayout()
     {
-
-        if (Mage::helper('M2ePro/Component_Walmart')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Walmart')->isEnabled()) {
             $this->addTab(self::TAB_ID_GENERAL, $this->prepareTabGeneral());
         }
 

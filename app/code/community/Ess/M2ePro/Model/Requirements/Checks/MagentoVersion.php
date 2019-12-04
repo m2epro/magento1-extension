@@ -36,7 +36,7 @@ class Ess_M2ePro_Model_Requirements_Checks_MagentoVersion extends Ess_M2ePro_Mod
             $this->getVersionParser()->parseConstraints($this->getCompatibilityPattern())
         );
 
-        $minVersion = NULL;
+        $minVersion = null;
         foreach ($constraints as $constraint) {
             if ($minVersion === null || $constraint->versionCompare($constraint->getVersion(), $minVersion, '<')) {
                 $minVersion = $constraint->getVersion();

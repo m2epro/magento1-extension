@@ -297,9 +297,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Description_Edit_Form_Data extend
 
     public function getDefault()
     {
-        $default = Mage::helper('M2ePro/View_Ebay')->isSimpleMode()
-            ? Mage::getSingleton('M2ePro/Ebay_Template_Description')->getDefaultSettingsSimpleMode()
-            : Mage::getSingleton('M2ePro/Ebay_Template_Description')->getDefaultSettingsAdvancedMode();
+        $default = Mage::getSingleton('M2ePro/Ebay_Template_Description')->getDefaultSettings();
 
         $helper = Mage::helper('M2ePro');
 

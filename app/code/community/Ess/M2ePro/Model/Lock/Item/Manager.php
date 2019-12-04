@@ -32,7 +32,7 @@ class Ess_M2ePro_Model_Lock_Item_Manager
 
     //########################################
 
-    public function create($parentNick = NULL)
+    public function create($parentNick = null)
     {
         $parentLockItem = Mage::getModel('M2ePro/Lock_Item');
         if ($parentNick !== null) {
@@ -176,15 +176,15 @@ class Ess_M2ePro_Model_Lock_Item_Manager
 
     // ---------------------------------------
 
-    public function getContentData($key = NULL)
+    public function getContentData($key = null)
     {
         $lockItem = $this->getLockItemObject();
         if ($lockItem === null) {
-            return NULL;
+            return null;
         }
 
         if ($lockItem->getData('data') == '') {
-            return NULL;
+            return null;
         }
 
         $data = Mage::helper('M2ePro')->jsonDecode($lockItem->getContentData());
@@ -196,7 +196,7 @@ class Ess_M2ePro_Model_Lock_Item_Manager
             return $data[$key];
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################
@@ -212,7 +212,7 @@ class Ess_M2ePro_Model_Lock_Item_Manager
         /** @var Ess_M2ePro_Model_Lock_Item $lockItem */
         $lockItem = $lockItemCollection->getFirstItem();
 
-        return $lockItem->getId() ? $lockItem : NULL;
+        return $lockItem->getId() ? $lockItem : null;
     }
 
     //########################################

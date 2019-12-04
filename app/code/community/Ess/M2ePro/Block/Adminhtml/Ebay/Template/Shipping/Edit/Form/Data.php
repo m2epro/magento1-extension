@@ -54,7 +54,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         $account = Mage::helper('M2ePro/Data_Global')->getValue('ebay_account');
 
         if (!$account instanceof Ess_M2ePro_Model_Account) {
-            return NULL;
+            return null;
         }
 
         return $account;
@@ -62,7 +62,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
 
     public function getAccountId()
     {
-        return $this->getAccount() ? $this->getAccount()->getId() : NULL;
+        return $this->getAccount() ? $this->getAccount()->getId() : null;
     }
 
     public function getAccounts()
@@ -201,12 +201,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
 
     public function getDefault()
     {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            $default = Mage::getModel('M2ePro/Ebay_Template_Shipping')->getDefaultSettingsSimpleMode();
-        } else {
-            $default = Mage::getModel('M2ePro/Ebay_Template_Shipping')->getDefaultSettingsAdvancedMode();
-        }
-
+        $default = Mage::getModel('M2ePro/Ebay_Template_Shipping')->getDefaultSettings();
         $default['excluded_locations'] = Mage::helper('M2ePro')->jsonDecode($default['excluded_locations']);
 
         // populate address fields with the data from magento configuration
@@ -562,10 +557,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
     public function canDisplayInternationalCalculatedShippingType()
     {
         if (!$this->canDisplayCalculatedShippingType()) {
-            return false;
-        }
-
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
             return false;
         }
 

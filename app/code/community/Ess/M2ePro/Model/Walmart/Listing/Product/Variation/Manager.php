@@ -113,21 +113,21 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
     {
         $this->getListingProduct()->setData('is_variation_product', 0)
                                   ->setData('is_variation_parent', 0)
-                                  ->setData('variation_parent_id', NULL)
+                                  ->setData('variation_parent_id', null)
                                   ->save();
     }
 
     public function setIndividualType()
     {
         $this->getListingProduct()->setData('is_variation_parent', 0)
-                                  ->setData('variation_parent_id', NULL)
+                                  ->setData('variation_parent_id', null)
                                   ->save();
     }
 
     public function setRelationParentType()
     {
         $this->getListingProduct()->setData('is_variation_parent', 1)
-                                  ->setData('variation_parent_id', NULL)
+                                  ->setData('variation_parent_id', null)
                                   ->save();
     }
 
@@ -182,7 +182,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager
      */
     public function getTypeModel()
     {
-        $model = NULL;
+        $model = null;
 
         if ($this->isIndividualType()) {
             $model = Mage::getModel('M2ePro/Walmart_Listing_Product_Variation_Manager_Type_Individual');

@@ -39,7 +39,7 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
         return $this->_initiator;
     }
 
-    // ########################################
+    //########################################
 
     public function addMessage($orderId, $description, $type, array $additionalData = array())
     {
@@ -47,7 +47,7 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
         $this->createMessage($dataForAdd);
     }
 
-    // ########################################
+    //########################################
 
     protected function createMessage($dataForAdd)
     {
@@ -63,7 +63,11 @@ class Ess_M2ePro_Model_Order_Log extends Ess_M2ePro_Model_Log_Abstract
 
     protected function makeDataForAdd($orderId, $description, $type, array $additionalData = array())
     {
+        $order = Mage::getModel('M2ePro/Order')->load($orderId);
+
         $dataForAdd = array(
+            'account_id'      => $order->getData('account_id'),
+            'marketplace_id'  => $order->getData('marketplace_id'),
             'order_id'        => $orderId,
             'description'     => $description,
             'type'            => (int)$type,

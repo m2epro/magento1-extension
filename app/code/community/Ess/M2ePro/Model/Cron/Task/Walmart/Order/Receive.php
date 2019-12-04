@@ -56,8 +56,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
             // ---------------------------------------
 
             try {
-                $orders = $this->receiveWalmartOrdersData($account);
-                if (empty($orders)) {
+                $responseData = $this->receiveWalmartOrdersData($account);
+                if (empty($responseData)) {
                     continue;
                 }
 
@@ -69,7 +69,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
 
                 try {
                     $accountCreateDate = new DateTime($account->getData('create_date'), new DateTimeZone('UTC'));
-                    foreach ($orders as $orderData) {
+                    foreach ($responseData['items'] as $orderData) {
                         $orderCreateDate = new DateTime($orderData['purchase_date'], new DateTimeZone('UTC'));
                         if ($orderCreateDate < $accountCreateDate) {
                             continue;
@@ -152,6 +152,11 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
                         Mage::helper('M2ePro/Module_Exception')->process($exception);
                     }
                 }
+
+                // ---------------------------------------
+
+                $account->getChildObject()->setData('orders_last_synchronization', $responseData['to_create_date']);
+                $account->getChildObject()->save();
             } catch (Exception $exception) {
                 $message = Mage::helper('M2ePro')->__(
                     'The "Receive" Action for Walmart Account "%title%" was completed with error.',
@@ -245,22 +250,24 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
             // ----------------------------------------
 
             $fromDate = new DateTime($responseData['to_create_date'], new DateTimeZone('UTC'));
-            if ($breakDate === $fromDate) {
+            if ($breakDate !== null && $breakDate->getTimestamp() === $fromDate->getTimestamp()) {
                 break;
             }
 
             $orders[] = $responseData['items'];
             $breakDate = $fromDate;
+
+            if (Mage::helper('M2ePro/Module')->isTestingManualEnvironment()) {
+                break;
+            }
         } while (!empty($responseData['items']));
 
         // ----------------------------------------
 
-        $account->setData('orders_last_synchronization', $responseData['to_create_date']);
-        $account->save();
-
-        // ----------------------------------------
-
-        return call_user_func_array('array_merge', $orders);
+        return array(
+            'items'          => call_user_func_array('array_merge', $orders),
+            'to_create_date' => $responseData['to_create_date']
+        );
     }
 
     protected function processResponseMessages(array $messages = array())
@@ -325,11 +332,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Order_Receive
         );
         $collection->addFieldToFilter(
             'purchase_create_date',
-            array(
-                'from' => $minPurchaseDateTime->format('Y-m-d H:i:s')
-            )
+            array('from' => $minPurchaseDateTime->format('Y-m-d H:i:s'))
         );
-        $collection->getSelect()->order('purchase_create_date DESC');
         $collection->getSelect()->limit(1);
 
         /** @var Ess_M2ePro_Model_Order $order */

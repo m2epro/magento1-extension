@@ -57,13 +57,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_General extends Mage_
             ->setData('is_allowed', false);
         $this->setChild('policy', $policy);
         // ---------------------------------------
-
-        // ---------------------------------------
-        $translation = $this->getLayout()
-            ->createBlock('M2ePro/adminhtml_ebay_listing_transferring_step_translation')
-            ->setData('is_allowed', false);
-        $this->setChild('translation', $translation);
-        // ---------------------------------------
     }
 
     //########################################

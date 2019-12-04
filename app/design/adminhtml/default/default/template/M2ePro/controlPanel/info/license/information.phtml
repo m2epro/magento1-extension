@@ -1,0 +1,51 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_ControlPanel_Info_License_Information */
+
+?>
+
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Extension Key'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->licenseKey; ?>
+        </td>
+    </tr>
+
+    <?php if ($this->licenseData['domain'] != ''): ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('Valid Domain'); ?>: </label>
+            </td>
+            <td class="value">
+                <span <?php echo $this->licenseData['valid']['domain'] ? '' : 'style="color:red;"' ?>>
+                    <?php echo $this->licenseData['domain']; ?>
+                </span>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <?php if ($this->licenseData['ip'] != ''): ?>
+        <tr>
+            <td class="label">
+                <label><?php echo Mage::helper('M2ePro')->__('Valid IP'); ?>: </label>
+            </td>
+            <td class="value">
+                <span <?php echo $this->licenseData['valid']['ip'] ? '' : 'style="color:red;"' ?>>
+                    <?php echo $this->licenseData['ip']; ?>
+                </span>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+</table>

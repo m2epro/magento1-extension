@@ -13,7 +13,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Verify_Responser
 
     protected function getSuccessfulMessage()
     {
-        return NULL;
+        return null;
     }
 
     //########################################

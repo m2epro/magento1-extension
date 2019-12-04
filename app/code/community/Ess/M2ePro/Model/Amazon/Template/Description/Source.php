@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Source
         $src = $this->getAmazonDescriptionTemplate()->getWorldwideIdSource();
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_NONE) {
-            $result = NULL;
+            $result = null;
         }
 
         if ($src['mode'] == Ess_M2ePro_Model_Amazon_Template_Description::WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE) {

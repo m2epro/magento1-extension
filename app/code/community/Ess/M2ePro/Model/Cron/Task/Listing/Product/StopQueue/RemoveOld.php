@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Listing_Product_StopQueue_RemoveOld extends Ess
 {
     const NICK = 'listing/product/stop_queue/remove_old';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 86400;
+
     const MAX_PROCESSED_LIFETIME_HOURS_INTERVAL = 720; // 30 days
 
     //########################################

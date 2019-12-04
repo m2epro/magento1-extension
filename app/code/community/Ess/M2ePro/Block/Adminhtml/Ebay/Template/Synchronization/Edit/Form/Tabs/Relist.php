@@ -15,11 +15,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Synchronization_Edit_Form_Tabs_Re
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayTemplateSynchronizationEditFormTabsRelist');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/ebay/template/synchronization/form/tabs/relist.phtml');
     }
 
@@ -27,9 +23,28 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Synchronization_Edit_Form_Tabs_Re
 
     public function getDefault()
     {
-        return Mage::helper('M2ePro/View_Ebay')->isSimpleMode()
-            ? Mage::getSingleton('M2ePro/Ebay_Template_Synchronization')->getRelistDefaultSettingsSimpleMode()
-            : Mage::getSingleton('M2ePro/Ebay_Template_Synchronization')->getRelistDefaultSettingsAdvancedMode();
+        return Mage::getSingleton('M2ePro/Ebay_Template_Synchronization')->getRelistDefaultSettings();
+    }
+
+    public function getAdvancedRulesBlock()
+    {
+        $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setData(
+            array(
+                'prefix' => Ess_M2ePro_Model_Ebay_Template_Synchronization::RELIST_ADVANCED_RULES_PREFIX,
+                'use_custom_options' => true
+            )
+        );
+
+        $formData = $this->getData('form_data');
+        if (!empty($formData['relist_advanced_rules_filters'])) {
+            $ruleModel->loadFromSerialized($formData['relist_advanced_rules_filters']);
+        }
+
+        $ruleBlock = $this->getLayout()
+            ->createBlock('M2ePro/adminhtml_magento_product_rule')
+            ->setData(array('rule_model' => $ruleModel));
+
+        return $ruleBlock;
     }
 
     //########################################

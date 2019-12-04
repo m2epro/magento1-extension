@@ -8,7 +8,7 @@
 
 class Ess_M2ePro_Model_Ebay_Connector_Protocol extends Ess_M2ePro_Model_Connector_Protocol
 {
-    // ########################################
+    //########################################
 
     public function getComponent()
     {
@@ -20,5 +20,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Protocol extends Ess_M2ePro_Model_Connecto
         return 14;
     }
 
-    // ########################################
+    //########################################
 }

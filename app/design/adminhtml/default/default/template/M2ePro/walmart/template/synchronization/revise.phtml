@@ -18,20 +18,20 @@
 
     The detailed information can be found <a href="%url%" target="_blank">here</a>.',
 
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/L4taAQ')
     ); ?>
 </div>
 
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
     $defaults = array(
-        'revise_update_qty'                              => Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_QTY_YES,
-        'revise_update_qty_max_applied_value_mode'       => Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_AFFECTED_QTY_MODE_ON,
-        'revise_update_qty_max_applied_value'            => Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_QTY_MAX_APPLIED_VALUE_DEFAULT,
-        'revise_update_price'                            => Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PRICE_YES,
-        'revise_update_price_max_allowed_deviation_mode' => Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON,
-        'revise_update_price_max_allowed_deviation'      => Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PRICE_MAX_ALLOWED_DEVIATION_DEFAULT,
-        'revise_update_promotions'                       => Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PROMOTIONS_NONE,
+        'revise_update_qty'                              => 1,
+        'revise_update_qty_max_applied_value_mode'       => 1,
+        'revise_update_qty_max_applied_value'            => 5,
+        'revise_update_price'                            => 1,
+        'revise_update_price_max_allowed_deviation_mode' => 1,
+        'revise_update_price_max_allowed_deviation'      => 3,
+        'revise_update_promotions'                       => 0,
     );
 
     $formData = array_merge($defaults, $formData);
@@ -89,7 +89,7 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_qty" name="revise_update_qty" disabled="disabled" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_QTY_YES; ?>" selected="selected"><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="1" selected="selected"><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('
@@ -108,8 +108,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_qty_max_applied_value_mode" name="revise_update_qty_max_applied_value_mode" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_AFFECTED_QTY_MODE_OFF; ?>" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_AFFECTED_QTY_MODE_OFF): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_AFFECTED_QTY_MODE_ON; ?>" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_AFFECTED_QTY_MODE_ON): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_qty_max_applied_value_mode'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                             <p class="note">
                                 <span><?php echo Mage::helper('M2ePro')->__('Enable to narrow the conditions under which the Item Quantity should be revised. This allows optimizing the sync process.'); ?></span>
@@ -141,8 +141,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_price" name="revise_update_price" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PRICE_NONE; ?>" <?php if ($formData['revise_update_price'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PRICE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PRICE_YES; ?>" <?php if ($formData['revise_update_price'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PRICE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['revise_update_price'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_price'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('
@@ -158,8 +158,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_price_max_allowed_deviation_mode" name="revise_update_price_max_allowed_deviation_mode" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF; ?>" <?php if ($formData['revise_update_price_max_allowed_deviation_mode'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON; ?>" <?php if ($formData['revise_update_price_max_allowed_deviation_mode'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['revise_update_price_max_allowed_deviation_mode'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_price_max_allowed_deviation_mode'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Enable to narrow the conditions under which the Item Price should be revised. This allows optimizing the sync process.'); ?></span>
@@ -212,8 +212,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_promotions" name="revise_update_promotions" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PROMOTIONS_NONE; ?>" <?php if ($formData['revise_update_promotions'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PROMOTIONS_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PROMOTIONS_YES; ?>" <?php if ($formData['revise_update_promotions'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::REVISE_UPDATE_PROMOTIONS_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                            <option value="0" <?php if ($formData['revise_update_promotions'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['revise_update_promotions'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('

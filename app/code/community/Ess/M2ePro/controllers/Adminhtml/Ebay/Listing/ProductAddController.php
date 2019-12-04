@@ -68,7 +68,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/SAAJAQ");
+        $this->setPageHelpLink(null, null, "x/SAAJAQ");
 
         return $this;
     }
@@ -241,7 +241,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/RgAJAQ");
+        $this->setPageHelpLink(null, null, "x/RgAJAQ");
 
         $this->getLayout()->getBlock('head')
              ->setCanLoadExtJs(true)
@@ -416,10 +416,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
             }
         }
 
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return $this->_redirect('*/adminhtml_ebay_listing_categorySettings/', $urlParams);
-        }
-
         $this->setWizardStep('productSettings');
 
         // Set rule model
@@ -429,7 +425,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MwAJAQ");
+        $this->setPageHelpLink(null, null, "x/MwAJAQ");
 
         $this->_title(Mage::helper('M2ePro')->__('Set Products Settings'))
              ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_settings'))
@@ -692,7 +688,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
         return $this;
     }
 
-    protected function getSessionValue($key = NULL)
+    protected function getSessionValue($key = null)
     {
         $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($this->_sessionKey);
 
@@ -704,7 +700,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
             return $sessionData;
         }
 
-        return isset($sessionData[$key]) ? $sessionData[$key] : NULL;
+        return isset($sessionData[$key]) ? $sessionData[$key] : null;
     }
 
     //########################################

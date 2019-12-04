@@ -35,7 +35,7 @@ class Ess_M2ePro_Block_Adminhtml_Support_Form extends Mage_Adminhtml_Block_Widge
 
         // ---------------------------------------
         $cronInfoBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_inspection_cron',
+            'M2ePro/adminhtml_controlPanel_inspection_cron',
             '',
             array('is_support_mode' => true)
         );
@@ -44,7 +44,7 @@ class Ess_M2ePro_Block_Adminhtml_Support_Form extends Mage_Adminhtml_Block_Widge
 
         // ---------------------------------------
         $systemRequirementsBlock = $this->getLayout()->createBlock(
-            'M2ePro/adminhtml_development_inspection_requirements',
+            'M2ePro/adminhtml_controlPanel_inspection_requirements',
             '',
             array('is_support_mode' => true)
         );

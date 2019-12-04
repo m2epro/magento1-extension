@@ -25,7 +25,7 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
              ->addJs('M2ePro/GridHandler.js')
              ->addJs('M2ePro/Order/NoteHandler.js');
 
-        $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/L4taAQ");
 
         return $this;
     }
@@ -67,7 +67,7 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/L4taAQ");
+        $this->setPageHelpLink(null, null, "x/L4taAQ");
 
         $this->_initPopUp();
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_walmart_order_view'))
@@ -237,7 +237,7 @@ class Ess_M2ePro_Adminhtml_Walmart_OrderController
         $oldShippingAddress = $order->getSettings('shipping_address');
         if (empty($data['recipient_name'])) {
             $data['recipient_name'] = !empty($oldShippingAddress['recipient_name'])
-                ? $oldShippingAddress['recipient_name'] : NULL;
+                ? $oldShippingAddress['recipient_name'] : null;
         }
 
         $order->setSettings('shipping_address', $data);

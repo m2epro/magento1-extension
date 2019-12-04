@@ -72,7 +72,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Matcher_Option_Resolver
                 $sourceAttribute = array_search($destinationAttribute, $this->_matchedAttributes);
                 $sourceOptionNames = $this->_sourceOption[$sourceAttribute];
 
-                if (!empty(array_intersect((array)$sourceOptionNames, (array)$destinationOptionNames))) {
+                $diff = array_intersect((array)$sourceOptionNames, (array)$destinationOptionNames);
+                if (!empty($diff)) {
                     $isResolved = true;
                     continue;
                 }

@@ -54,10 +54,9 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_
     {
         if ($this->_magentoProduct->isGroupedType()) {
             $associatedProducts = $this->getOrderItem()->getAssociatedProducts();
+            $diff = array_diff($associatedProducts, $magentoOptionValue['product_ids']);
 
-            if (count($associatedProducts) == 1
-                && empty(array_diff($associatedProducts, $magentoOptionValue['product_ids']))
-            ) {
+            if (count($associatedProducts) === 1 && empty($diff)) {
                 return true;
             }
 

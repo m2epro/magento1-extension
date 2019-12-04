@@ -62,7 +62,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source
 
     public function getStartDate()
     {
-        $result = NULL;
+        $result = null;
 
         switch ($this->getSellingFormatPromotion()->getStartDateMode()) {
             case Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::START_DATE_MODE_VALUE:
@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion_Source
 
     public function getEndDate()
     {
-        $result = NULL;
+        $result = null;
 
         switch ($this->getSellingFormatPromotion()->getEndDateMode()) {
             case Ess_M2ePro_Model_Walmart_Template_SellingFormat_Promotion::END_DATE_MODE_VALUE:

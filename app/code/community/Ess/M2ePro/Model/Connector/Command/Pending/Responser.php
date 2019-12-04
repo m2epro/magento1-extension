@@ -15,7 +15,7 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Responser
 
     protected $_preparedResponseData = array();
 
-    // ########################################
+    //########################################
 
     public function __construct(array $params = array(), Ess_M2ePro_Model_Connector_Connection_Response $response)
     {
@@ -23,21 +23,21 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Responser
         $this->_response = $response;
     }
 
-    // ########################################
+    //########################################
 
     protected function getResponse()
     {
         return $this->_response;
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
         $this->processResponseMessages();
 
         if (!$this->isNeedProcessResponse()) {
-            return NULL;
+            return null;
         }
 
         if (!$this->validateResponse()) {
@@ -50,14 +50,14 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Responser
         return $this->getPreparedResponseData();
     }
 
-    // ########################################
+    //########################################
 
     public function getPreparedResponseData()
     {
         return $this->_preparedResponseData;
     }
 
-    // ########################################
+    //########################################
 
     public function failDetected($messageText)
     {
@@ -85,12 +85,12 @@ abstract class Ess_M2ePro_Model_Connector_Command_Pending_Responser
 
     abstract protected function processResponseData();
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages()
     {
         return null;
     }
 
-    // ########################################
+    //########################################
 }

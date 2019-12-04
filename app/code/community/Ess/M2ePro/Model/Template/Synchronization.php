@@ -15,6 +15,11 @@ use Ess_M2ePro_Model_Walmart_Template_Synchronization as WalmartTemplateSynchron
  */
 class Ess_M2ePro_Model_Template_Synchronization extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
+    const QTY_MODE_NONE    = 0;
+    const QTY_MODE_LESS    = 1;
+    const QTY_MODE_BETWEEN = 2;
+    const QTY_MODE_MORE    = 3;
+
     //########################################
 
     public function _construct()

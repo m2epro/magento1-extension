@@ -8,14 +8,14 @@
 
 class Ess_M2ePro_Model_Connector_Connection_Request
 {
-    protected $_component        = NULL;
-    protected $_componentVersion = NULL;
-    protected $_command          = NULL;
+    protected $_component        = null;
+    protected $_componentVersion = null;
+    protected $_command          = null;
 
     protected $_infoRewrites = array();
     protected $_data         = array();
 
-    // ########################################
+    //########################################
 
     public function setComponent($value)
     {
@@ -60,12 +60,11 @@ class Ess_M2ePro_Model_Connector_Connection_Request
         return $this->_command;
     }
 
-    // ########################################
+    //########################################
 
     public function getInfo()
     {
         $data = array(
-            'mode' => Mage::helper('M2ePro/Module')->isDevelopmentEnvironment() ? 'development' : 'production',
             'client' => array(
                 'platform' => array(
                     'name' => Mage::helper('M2ePro/Magento')->getName().
@@ -131,7 +130,7 @@ class Ess_M2ePro_Model_Connector_Connection_Request
         return $this->_data;
     }
 
-    // ########################################
+    //########################################
 
     public function getPackage()
     {
@@ -141,5 +140,5 @@ class Ess_M2ePro_Model_Connector_Connection_Request
         );
     }
 
-    // ########################################
+    //########################################
 }

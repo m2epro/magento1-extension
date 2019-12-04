@@ -17,11 +17,11 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Stop_Request
             array(
                 'sku'  => $this->getWalmartListingProduct()->getSku(),
                 'wpid' => $this->getWalmartListingProduct()->getWpid(),
+                'qty'  => 0
             ),
-            $this->getQtyData()
+            // Need only for CA marketplace
+            $this->getLagTimeData()
         );
-
-        $data['qty'] = 0;
 
         return $data;
     }

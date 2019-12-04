@@ -11,7 +11,7 @@ class Ess_M2ePro_Model_Resource_Ebay_Motor_Ktypes_Collection
 {
     //########################################
 
-    public function __construct($idFieldName = NULL)
+    public function __construct($idFieldName = null)
     {
         $connRead = Mage::getResourceModel('core/config')->getReadConnection();
 

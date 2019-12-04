@@ -28,7 +28,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/cYIVAQ");
+        $this->setPageHelpLink(null, null, "x/cYIVAQ");
 
         return $this;
     }
@@ -70,7 +70,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
 
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/L40VAQ");
+        $this->setPageHelpLink(null, null, "x/L40VAQ");
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_order_merchantFulfillment'))
             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_amazon_order_view'))
@@ -240,7 +240,7 @@ class Ess_M2ePro_Adminhtml_Amazon_OrderController
         $oldShippingAddress = $order->getSettings('shipping_address');
         if (empty($data['recipient_name'])) {
             $data['recipient_name'] = !empty($oldShippingAddress['recipient_name'])
-                ? $oldShippingAddress['recipient_name'] : NULL;
+                ? $oldShippingAddress['recipient_name'] : null;
         }
 
         $order->setSettings('shipping_address', $data);

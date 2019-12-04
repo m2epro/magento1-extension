@@ -596,15 +596,15 @@ HTML;
         }
 
         if ($value == self::SEARCH_SETTINGS_STATUS_NONE) {
-            $collection->addFieldToFilter('general_id', array('null' => NULL));
-            $collection->addFieldToFilter('search_settings_status', array('null' => NULL));
+            $collection->addFieldToFilter('general_id', array('null' => null));
+            $collection->addFieldToFilter('search_settings_status', array('null' => null));
             return;
         }
 
         if ($value == self::SEARCH_SETTINGS_STATUS_COMPLETED) {
             $collection->addFieldToFilter(
                 array(
-                    array('attribute'=>'general_id', 'notnull' => NULL)
+                    array('attribute'=>'general_id', 'notnull' => null)
                 )
             );
 

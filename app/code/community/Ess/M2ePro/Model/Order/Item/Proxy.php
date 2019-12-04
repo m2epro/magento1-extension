@@ -60,10 +60,9 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         $thisOptionsValues = array_values($thisOptions);
         $thatOptionsValues = array_values($thatOptions);
 
-        if (count($thisOptions) != count($thatOptions)
-            || !empty(array_diff($thisOptionsKeys, $thatOptionsKeys))
-            || !empty(array_diff($thisOptionsValues, $thatOptionsValues))
-        ) {
+        $diffKeys = array_diff($thisOptionsKeys, $thatOptionsKeys);
+        $diffValues = array_diff($thisOptionsValues, $thatOptionsValues);
+        if (count($thisOptions) != count($thatOptions) || !empty($diffKeys) || !empty($diffValues)) {
             return false;
         }
 
@@ -71,9 +70,8 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         $thisAssociatedProducts = $this->getAssociatedProducts();
         $thatAssociatedProducts = $that->getAssociatedProducts();
 
-        if (count($thisAssociatedProducts) != count($thatAssociatedProducts)
-            || !empty(array_diff($thisAssociatedProducts, $thatAssociatedProducts))
-        ) {
+        $diffProducts = array_diff($thisAssociatedProducts, $thatAssociatedProducts);
+        if (count($thisAssociatedProducts) !== count($thatAssociatedProducts) || !empty($diffProducts)) {
             return false;
         }
 

@@ -124,7 +124,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessSingle extends Ess
         $connector = $dispatcher->getVirtualConnector(
             'processing', 'get', 'results',
             array('processing_ids' => $serverHashes),
-            'results', NULL, NULL
+            'results', null, null
         );
 
         $dispatcher->process($connector);

@@ -78,11 +78,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
 
     public function getDefault()
     {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettingsSimpleMode();
-        }
-
-        return Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettingsAdvancedMode();
+        return Mage::getSingleton('M2ePro/Ebay_Template_SellingFormat')->getDefaultSettings();
     }
 
     //########################################
@@ -92,7 +88,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
 
         if ($marketplace === null) {
-            return NULL;
+            return null;
         }
 
         return $marketplace->getChildObject()->getCurrency();
@@ -142,7 +138,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
 
         if ($marketplace === null) {
-            return NULL;
+            return null;
         }
 
         return $marketplace;
@@ -153,7 +149,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Edit_Form_Data exte
         $marketplace = $this->getMarketplace();
 
         if ($marketplace === null) {
-            return NULL;
+            return null;
         }
 
         return $marketplace->getId();

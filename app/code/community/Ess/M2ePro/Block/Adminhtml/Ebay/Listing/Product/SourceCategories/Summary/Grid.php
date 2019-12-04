@@ -243,7 +243,7 @@ HTML;
 HTML;
 
         if ($this->getRequest()->getParam('grid')) {
-            $beforeHtml = $afterHtml = NULL;
+            $beforeHtml = $afterHtml = null;
         }
 
         return $beforeHtml . parent::_toHtml() . $afterHtml . $js;

@@ -33,14 +33,9 @@ $isEdit = (bool)$this->getRequest()->getParam('id');
 
     // General for all tabs
     // ----------------------------------------
-    M2ePro.php.setConstants(
-        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Template_Synchronization'); ?>,
-        'Ess_M2ePro_Model_Amazon_Template_Synchronization'
-    );
-    M2ePro.php.setConstants(
-        <?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>,
-        'Ess_M2ePro_Helper_Component_Amazon'
-    );
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Amazon_Template_Synchronization'); ?>, 'Ess_M2ePro_Model_Amazon_Template_Synchronization');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Model_Template_Synchronization'); ?>, 'Ess_M2ePro_Model_Template_Synchronization');
+    M2ePro.php.setConstants(<?php echo Mage::helper('M2ePro')->getClassConstantAsJson('Ess_M2ePro_Helper_Component_Amazon'); ?>, 'Ess_M2ePro_Helper_Component_Amazon');
 
     M2ePro.url.add(<?php echo json_encode(array(
         'formSubmit'    => $this->getUrl('M2ePro/adminhtml_amazon_template_synchronization/save', array('id' => $this->getRequest()->getParam('id'))),

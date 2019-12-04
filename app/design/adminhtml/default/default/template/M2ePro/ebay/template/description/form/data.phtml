@@ -31,35 +31,7 @@ $formData = $this->getFormData();
 $default = $this->getDefault();
 $formData = Mage::helper('M2ePro')->arrayReplaceRecursive($default, $formData);
 
-$defaultStrictSettingsForSimpleMode = $default;
-
-// removing ignored options for mode checking
-$ignoredOptions = array('condition_value', 'condition_note_mode', 'condition_note_template',
-                        'condition_mode', 'product_details', 'gallery_images_mode',
-                        'watermark_settings', 'enhancement');
-
-$defaultProductDetails = $defaultStrictSettingsForSimpleMode['product_details'];
-foreach($ignoredOptions as $val) {
-    unset($defaultStrictSettingsForSimpleMode[$val]);
-}
-
-$variationConfigurableImages = $defaultStrictSettingsForSimpleMode['variation_configurable_images'];
-unset($defaultStrictSettingsForSimpleMode['variation_configurable_images']);
-
-$showBlockedAdvancedMode = false;
-if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-    $showBlockedAdvancedMode = $formData['image_main_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_PRODUCT ||
-                               $formData['gallery_images_mode'] != Ess_M2ePro_Model_Ebay_Template_Description::GALLERY_IMAGES_MODE_NONE ||
-                               !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData)) ||
-                               $defaultProductDetails != $formData['product_details'] ||
-                               !!count(array_diff($variationConfigurableImages, $formData['variation_configurable_images'])) ||
-                               !empty($formData['enhancement'][0]);
-}
-
-$showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
-
 $tinymceEnabledForJavascript = $formData['editor_type'] == Ess_M2ePro_Model_Ebay_Template_Description::EDITOR_TYPE_TINYMCE ? 'true' : 'false';
-
 $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::DESCRIPTION_MODE_CUSTOM);
 
 ?>
@@ -142,15 +114,6 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
 
         $('product_details_mpn')
             .observe('change', EbayTemplateDescriptionHandlerObj.product_details_mpn_change);
-
-        <?php if (!$showAdvancedMode) : ?>
-            EbayTemplateDescriptionHandlerObj.simple_mode_disallowed_hide();
-        <?php endif; ?>
-
-        <?php if($showBlockedAdvancedMode): ?>
-        var DescriptionFormWrapper = new AreaWrapper('template_description_data_container');
-        DescriptionFormWrapper.lock();
-        <?php endif; ?>
     };
 
     <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
@@ -187,15 +150,6 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
 <input type="hidden" name="description[title]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getTitle()); ?>" />
 <input type="hidden" name="description[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
 <input type="hidden" name="description[editor_type]" id="editor_type" value="<?php echo $formData['editor_type']; ?>"/>
-
-<?php if($showBlockedAdvancedMode): ?>
-    <p style="font-size: 15px; font-weight: bolder; color: red;">
-        <?php $menuPath = Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'General', 'Mode > Advanced');
-        echo Mage::helper('M2ePro')->__(
-            'This set of Options cannot be edited in Simple Mode because it was set in Advanced Mode.<br/> To make the necessary changes you should switch to Advanced Mode (%menu_path%).', $menuPath);
-        ?>
-    </p>
-<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_ebay_template_description_form_data_condition">
 
@@ -240,16 +194,12 @@ $isCustomDescription = ($formData['description_mode'] == Ess_M2ePro_Model_Ebay_T
                         </select>
                         <p class="note">
                             <?php
-                            // M2ePro_TRANSLATIONS
-                            // Condition is one of the top factors Buyers consider when deciding whether to purchase an Item. When you create your Listing, let your Buyers know exactly what they\'ll be receiving by specifying its Condition. Some Conditions, such as \'new\', are grouped as single selections because they appear on eBay under slightly different names depending on the Category of the Item.
-                            // Condition is one of the top factors Buyers consider when deciding whether to purchase an Item. When you create your Listing, let your Buyers know exactly what they\'ll be receiving by specifying its Condition. Some Conditions, such as \'new\', are grouped as single selections because they appear on eBay under slightly different names depending on the Category of the Item.<br/><br/>If you choose to use a Magento Attribute to set the Condition per product, the Attribute value must be an Item Condition ID. See <a target="_blank" href="http://developer.ebay.com/devzone/finding/callref/Enums/conditionIdList.html">the eBay API reference: Item Condition IDs and Names</a> for more details.
                             $conditionModeNote = Mage::helper('M2ePro')->__('Condition is one of the top factors Buyers consider when deciding whether to purchase an Item.
                                 When you create your Listing, let your Buyers know exactly what they\'ll be receiving by specifying its Condition
                                 Some Conditions, such as \'new\', are grouped as single selections because they appear on eBay under slightly different names depending on the Category of the Item.');
 
-                            Mage::helper('M2ePro/View_Ebay')->isAdvancedMode() &&
-                                $conditionModeNote .= Mage::helper('M2ePro')->__('<br/><br/>If you choose to use a Magento Attribute to set the Condition per Product, the Attribute Value must be an Item Condition ID.
-                                    See <a target="_blank" href="http://developer.ebay.com/devzone/finding/callref/Enums/conditionIdList.html">the eBay API reference: Item Condition IDs and Names</a> for more details.');
+                            $conditionModeNote .= Mage::helper('M2ePro')->__('<br/><br/>If you choose to use a Magento Attribute to set the Condition per Product, the Attribute Value must be an Item Condition ID.
+                                See <a target="_blank" href="http://developer.ebay.com/devzone/finding/callref/Enums/conditionIdList.html">the eBay API reference: Item Condition IDs and Names</a> for more details.');
                             ?>
                             <span><?php echo Mage::helper('M2ePro')->__($conditionModeNote); ?></span>
                         </p>

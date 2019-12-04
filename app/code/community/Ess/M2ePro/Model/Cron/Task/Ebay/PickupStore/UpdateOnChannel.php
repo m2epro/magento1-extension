@@ -73,7 +73,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_PickupStore_UpdateOnChannel extends Ess_M2
 
         /** @var Ess_M2ePro_Model_Ebay_Connector_AccountPickupStore_Synchronize_ProductsRequester $connector */
         $connector = $dispatcher->getConnector(
-            'accountPickupStore', 'synchronize', 'productsRequester', array(), NULL, $account
+            'accountPickupStore', 'synchronize', 'productsRequester', array(), null, $account
         );
         $connector->setPickupStoreStateItems($pickupStoreStateItems);
         $dispatcher->process($connector);

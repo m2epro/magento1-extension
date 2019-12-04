@@ -14,33 +14,22 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log extends Ess_M2ePro_Block_Adminhtml_Wid
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayLog');
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
-            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Logs', $componentName);
+            $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Logs & Events', $componentName);
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('Logs');
+            $this->_headerText = Mage::helper('M2ePro')->__('Logs & Events');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
 
-        // ---------------------------------------
         $this->setTemplate('M2ePro/ebay/log.phtml');
-        // ---------------------------------------
     }
 
     protected function _toHtml()

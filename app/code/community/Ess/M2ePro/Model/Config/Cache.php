@@ -10,21 +10,12 @@ class Ess_M2ePro_Model_Config_Cache extends Ess_M2ePro_Model_Config_Abstract
 {
     //########################################
 
-    public function __construct()
+    /**
+     * @return string
+     */
+    protected function getModelName()
     {
-        $args = func_get_args();
-        empty($args[0]) && $args[0] = array();
-        $params = $args[0];
-
-        $params['orm'] = 'M2ePro/Config_Cache';
-
-        parent::__construct($params);
-    }
-
-    public function _construct()
-    {
-        parent::_construct();
-        $this->_init('M2ePro/Config_Cache');
+        return 'M2ePro/Config_Cache';
     }
 
     //########################################

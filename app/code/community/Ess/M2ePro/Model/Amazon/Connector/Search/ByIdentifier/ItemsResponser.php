@@ -9,7 +9,7 @@
 abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByIdentifier_ItemsResponser
     extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Responser
 {
-    // ########################################
+    //########################################
 
     protected function validateResponse()
     {
@@ -21,7 +21,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByIdentifier_ItemsRespon
         return true;
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareResponseData()
     {
@@ -72,5 +72,5 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Search_ByIdentifier_ItemsRespon
         $this->_preparedResponseData = $result;
     }
 
-    // ########################################
+    //########################################
 }

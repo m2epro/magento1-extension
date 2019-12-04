@@ -15,15 +15,12 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('listingAddTabsSelling');
+        $this->setTemplate('M2ePro/amazon/listing/add/tabs/selling.phtml');
 
         $this->component = Ess_M2ePro_Helper_Component_Amazon::NICK;
         $this->sessionKey = 'amazon_listing_create';
         $this->setId('amazonListingAddTabsSelling');
-        $this->setTemplate('M2ePro/amazon/listing/add/tabs/selling.phtml');
-        // ---------------------------------------
     }
 
     //########################################
@@ -61,19 +58,8 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
 
         // ---------------------------------------
 
-        // ---------------------------------------
-        $maxRecordsQuantity = Mage::helper('M2ePro/View_Amazon')->getAutocompleteMaxItems();
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->sellingFormatTemplates = $this->getTemplates('SellingFormat');
-        $this->sellingFormatTemplatesDropDown = (count($this->sellingFormatTemplates) < $maxRecordsQuantity);
-        // ---------------------------------------
-
-        // ---------------------------------------
         $this->synchronizationsTemplates = $this->getTemplates('Synchronization');
-        $this->synchronizationsTemplatesDropDown = (count($this->synchronizationsTemplates) < $maxRecordsQuantity);
-        // ---------------------------------------
 
         return parent::_beforeToHtml();
     }
@@ -172,30 +158,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Add_Tabs_Selling
         }
 
         return $this->listing;
-    }
-
-    //########################################
-
-    public function getSellingFormatTemplateTitleById($id)
-    {
-        foreach ($this->sellingFormatTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
-    }
-
-    public function getSynchronizationTemplateTitleById($id)
-    {
-        foreach ($this->synchronizationsTemplates as $template) {
-            if ($template['id'] == $id) {
-                return $template['title'];
-            }
-        }
-
-        return '';
     }
 
     //########################################

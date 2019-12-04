@@ -144,7 +144,7 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $listingId = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing')->getLastItem()->getId();
 
         $productAddSessionData = Mage::helper('M2ePro/Data_Session')->getValue('ebay_listing_product_add');
-        $source = isset($productAddSessionData['source']) ? $productAddSessionData['source'] : NULL;
+        $source = isset($productAddSessionData['source']) ? $productAddSessionData['source'] : null;
 
         Mage::helper('M2ePro/Data_Session')->setValue('ebay_listing_product_add', $productAddSessionData);
         return $this->_redirect(
@@ -287,14 +287,16 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $accountMode = $this->getRequest()->getParam('account_mode');
 
         try {
-             $backUrl = $this->getUrl('*/*/afterToken', array('mode' => $accountMode));
+            $backUrl = $this->getUrl('*/*/afterToken', array('mode' => $accountMode));
 
-             $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
+            $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
             $connectorObj = $dispatcherObject->getVirtualConnector(
                 'account', 'get', 'authUrl',
-                array('back_url' => $backUrl,
-                                                                          'mode' => $accountMode),
-                NULL, NULL, NULL
+                array(
+                   'back_url' => $backUrl,
+                   'mode' => $accountMode
+                ),
+                null, null, null
             );
 
             $dispatcherObject->process($connectorObj);
@@ -352,8 +354,8 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $dispatcherObject = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObject->getVirtualConnector(
             'account', 'add', 'entity',
-            $requestParams, NULL,
-            NULL, NULL
+            $requestParams, null,
+            null, null
         );
 
         $dispatcherObject->process($connectorObj);
@@ -372,15 +374,15 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
 
         $data = array_merge(
             array(
-                'title' => $response['info']['UserID'],
-                'user_id' => $response['info']['UserID'],
-                'mode' => $accountMode,
-                'info' => Mage::helper('M2ePro')->jsonEncode($response['info']),
-                'server_hash' => $response['hash'],
-                'token_session' => $tokenSessionId,
+                'title'              => $response['info']['UserID'],
+                'user_id'            => $response['info']['UserID'],
+                'mode'               => $accountMode,
+                'info'               => Mage::helper('M2ePro')->jsonEncode($response['info']),
+                'server_hash'        => $response['hash'],
+                'token_session'      => $tokenSessionId,
                 'token_expired_date' => $response['token_expired_date']
             ),
-            Mage::getModel('M2ePro/Ebay_Account')->getDefaultSettingsSimpleMode()
+            Mage::getModel('M2ePro/Ebay_Account')->getDefaultSettings()
         );
 
         $accountModel = Mage::helper('M2ePro/Component_Ebay')->getModel('Account')->setData($data)->save();
@@ -389,48 +391,6 @@ class Ess_M2ePro_Adminhtml_Wizard_InstallationEbayController
         $this->setStep($this->getNextStep());
 
         return $this->_redirect('*/*/installation');
-    }
-
-    //########################################
-
-    public function setModeAndUpdateAccountAction()
-    {
-        $mode = $this->getRequest()->getParam('mode', '');
-
-        if (!in_array(
-            $mode,
-            array(
-                Ess_M2ePro_Helper_View_Ebay::MODE_SIMPLE,
-                Ess_M2ePro_Helper_View_Ebay::MODE_ADVANCED
-            )
-        )) {
-            return $this->getResponse()->setBody(
-                Mage::helper('M2ePro')->jsonEncode(
-                    array(
-                    'result' => 'error',
-                    'message' => Mage::helper('M2ePro')->__('Unknown Mode "%mode%"', $mode)
-                    )
-                )
-            );
-        }
-
-        Mage::helper('M2ePro/View_Ebay')->setMode($mode);
-
-        $method = 'getDefaultSettings'.ucfirst($mode).'Mode';
-
-        Mage::helper('M2ePro/Component_Ebay')
-            ->getCollection('Account')
-            ->getLastItem()
-            ->addData(Mage::getModel('M2ePro/Ebay_Account')->$method())
-            ->save();
-
-        return $this->getResponse()->setBody(
-            Mage::helper('M2ePro')->jsonEncode(
-                array(
-                'result' => 'success'
-                )
-            )
-        );
     }
 
     //########################################

@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor_Connector_Multiple_Command_VirtualWithoutCall
     extends Ess_M2ePro_Model_Connector_Command_RealTime_Virtual
 {
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -26,12 +26,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Processor_Connector_Multiple_
         $this->prepareResponseData();
     }
 
-    // ########################################
+    //########################################
 
     public function getCommandConnection()
     {
         return $this->getConnection();
     }
 
-    // ########################################
+    //########################################
 }

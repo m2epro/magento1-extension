@@ -81,7 +81,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_AccountMarketplace_Form extends Ma
                 )
             );
         if ($account->getId()) {
-            Mage::helper('M2ePro/View_Ebay')->isSimpleMode()    && $buttonBlock->setData('style', 'display: none');
+            $buttonBlock->setData('style', 'display: none');
             (bool)$this->getRequest()->getParam('wizard', false) && $buttonBlock->setData('style', 'display: none');
         }
 

@@ -6,6 +6,8 @@
  * @license    Commercial use is forbidden
  */
 
+// @codingStandardsIgnoreFile
+
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_General extends Ess_M2ePro_Model_Upgrade_Migration_Abstract
 {
     //########################################
@@ -27,7 +29,7 @@ class Ess_M2ePro_Model_Upgrade_Migration_ToVersion651_General extends Ess_M2ePro
                         ->dropColumn('item_data')
                         ->dropColumn('account_hash')
                         ->dropColumn('marketplace_id')
-                        ->addColumn('additional_data', 'TEXT', NULL, 'is_processed');
+                        ->addColumn('additional_data', 'TEXT', null, 'is_processed');
 
        if ($this->_installer->getTableModifier('listing_product')->isColumnExists('synch_reasons')) {
            $listingProductTable = $this->getFullTableName('listing_product');
@@ -128,7 +130,8 @@ SQL
                                   ->where('component_mode = ?', 'buy')
                                   ->where('status != ?', 0);
 
-       if (!empty($this->_installer->getConnection()->fetchCol($select))) {
+       $result = $this->_installer->getConnection()->fetchCol($select);
+       if (!empty($result)) {
            $removedBuyWizardStatus = 0;
        } else {
            $removedBuyWizardStatus = 3;
@@ -144,7 +147,7 @@ SQL
                'nick'     => 'installationEbay',
                'view'     => 'ebay',
                'status'   => 0,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 1,
                'priority' => 1,
            ),
@@ -152,7 +155,7 @@ SQL
                'nick'     => 'installationAmazon',
                'view'     => 'amazon',
                'status'   => 0,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 1,
                'priority' => 2,
            ),
@@ -160,7 +163,7 @@ SQL
                'nick'     => 'migrationNewAmazon',
                'view'     => 'amazon',
                'status'   => 3,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 1,
                'priority' => 3,
            ),
@@ -168,7 +171,7 @@ SQL
                'nick'     => 'removedPlay',
                'view'     => '*',
                'status'   => 3,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 0,
                'priority' => 4,
            ),
@@ -176,7 +179,7 @@ SQL
                'nick'     => 'ebayProductDetails',
                'view'     => 'ebay',
                'status'   => 3,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 1,
                'priority' => 5,
            ),
@@ -184,7 +187,7 @@ SQL
                'nick'     => 'fullAmazonCategories',
                'view'     => 'amazon',
                'status'   => 3,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 1,
                'priority' => 6,
            ),
@@ -192,7 +195,7 @@ SQL
                'nick'     => 'removedEbay3rdParty',
                'view'     => 'ebay',
                'status'   => 3,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 0,
                'priority' => 8,
            ),
@@ -200,7 +203,7 @@ SQL
                'nick'     => 'removedBuy',
                'view'     => '*',
                'status'   => $removedBuyWizardStatus,
-               'step'     => NULL,
+               'step'     => null,
                'type'     => 0,
                'priority' => 9,
            ),

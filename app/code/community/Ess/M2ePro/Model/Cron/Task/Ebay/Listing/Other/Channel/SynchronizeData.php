@@ -10,6 +10,11 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
 {
     const NICK = 'ebay/listing/other/channel/synchronize_data';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 86400;
+
     const LOCK_ITEM_PREFIX = 'synchronization_ebay_other_listings_update';
 
     //####################################
@@ -44,10 +49,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
     {
         /** @var $accountsCollection Mage_Core_Model_Resource_Db_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
-        $accountsCollection->addFieldToFilter(
-            'other_listings_synchronization',
-            Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
-        );
+        $accountsCollection->addFieldToFilter('other_listings_synchronization', 1);
 
         $accounts = $accountsCollection->getItems();
 
@@ -188,8 +190,8 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
         $dispatcherObj = Mage::getModel('M2ePro/Ebay_Connector_Dispatcher');
         $connectorObj = $dispatcherObj->getVirtualConnector(
             'item', 'get', 'changes',
-            $paramsConnector, NULL,
-            NULL, $account->getId()
+            $paramsConnector, null,
+            null, $account->getId()
         );
 
         $dispatcherObj->process($connectorObj);
@@ -198,7 +200,7 @@ class Ess_M2ePro_Model_Cron_Task_Ebay_Listing_Other_Channel_SynchronizeData exte
         $this->processResponseMessages($connectorObj->getResponseMessages());
 
         if (!isset($responseData['items']) || !isset($responseData['to_time'])) {
-            return NULL;
+            return null;
         }
 
         return $responseData;

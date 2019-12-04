@@ -19,7 +19,7 @@ class Ess_M2ePro_Model_Resource_Listing_Product_Collection
 
     //########################################
 
-    public function joinListingTable($columns = '*')
+    public function joinListingTable($columns = array())
     {
         $this->getSelect()->joinLeft(
             array('l' => Mage::getResourceModel('M2ePro/Listing')->getMainTable()),

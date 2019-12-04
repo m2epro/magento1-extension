@@ -1,0 +1,44 @@
+<?php
+/*
+ * @author     M2E Pro Developers Team
+ * @copyright  M2E LTD
+ * @license    Commercial use is forbidden
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $this Ess_M2ePro_Block_Adminhtml_ControlPanel_Inspection_Installation */
+
+?>
+
+<table class="form-list" cellspacing="0" cellpadding="0">
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Public Latest Available Version'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->latestVersion; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Build Latest Available Version'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo $this->buildLatestVersion; ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="label">
+            <label><?php echo Mage::helper('M2ePro')->__('Latest Upgrade'); ?>: </label>
+        </td>
+        <td class="value">
+            <?php echo "{$this->latestUpgradeDate} (from {$this->latestUpgradeFromVersion} to {$this->latestUpgradeToVersion})"; ?>
+            <a style="margin-left: 10px;" href="<?php echo $this->getUrl('*/adminhtml_controlPanel_tools_m2ePro_install/showInstallationVersionHistory'); ?>" target="_blank"><?php echo Mage::helper('M2ePro')->__('Show All'); ?></a>
+        </td>
+    </tr>
+
+</table>

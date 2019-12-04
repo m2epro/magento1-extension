@@ -16,7 +16,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Messages
         $messageText = parent::getCurrencyConversionMessage($marketplaceCurrency);
 
         if ($messageText === null) {
-            return NULL;
+            return null;
         }
 
         $toolTipIconSrc = $this->getSkinUrl('M2ePro/images/tool-tip-icon.png');
@@ -24,8 +24,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_SellingFormat_Messages
 
         $docUrl = 'http://www.magentocommerce.com/wiki/modules_reference/English/Mage_Adminhtml/system_currency/index';
 
-        // M2ePro_TRANSLATIONS
-        // More about Currency rate set-up can be found in the <a href="%url%" target="_blank">Magento documentation</a>
         $helpText = 'More about Currency rate set-up can be found in the ';
         $helpText .= '<a href="%url%" target="_blank">Magento documentation</a>';
         $helpText = Mage::helper('M2ePro')->__($helpText, $docUrl);

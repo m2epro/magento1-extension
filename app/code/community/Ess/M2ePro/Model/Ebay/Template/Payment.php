@@ -73,7 +73,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
             $service->deleteInstance();
         }
 
-        $this->_marketplaceModel = NULL;
+        $this->_marketplaceModel = null;
 
         $this->delete();
         return true;
@@ -181,7 +181,7 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
     /**
      * @return array
      */
-    public function getDefaultSettingsSimpleMode()
+    public function getDefaultSettings()
     {
         return array(
             'pay_pal_mode'              => 0,
@@ -189,14 +189,6 @@ class Ess_M2ePro_Model_Ebay_Template_Payment extends Ess_M2ePro_Model_Component_
             'pay_pal_immediate_payment' => 0,
             'services'                  => array()
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettingsAdvancedMode()
-    {
-        return $this->getDefaultSettingsSimpleMode();
     }
 
     //########################################

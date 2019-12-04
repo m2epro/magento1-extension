@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Resource_Request_Pending_Partial_Collection
     extends Ess_M2ePro_Model_Resource_Collection_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Resource_Request_Pending_Partial_Collection
         $this->_init('M2ePro/Request_Pending_Partial');
     }
 
-    // ########################################
+    //########################################
 
     public function setOnlyExpiredItemsFilter()
     {
@@ -34,5 +34,5 @@ class Ess_M2ePro_Model_Resource_Request_Pending_Partial_Collection
         return $this;
     }
 
-    // ########################################
+    //########################################
 }

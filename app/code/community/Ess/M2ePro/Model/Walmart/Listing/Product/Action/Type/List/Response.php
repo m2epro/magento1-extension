@@ -12,6 +12,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Response
     const INSTRUCTION_INITIATOR             = 'list_action_response';
 
     const INSTRUCTION_TYPE_CHECK_QTY        = 'success_list_check_qty';
+    const INSTRUCTION_TYPE_CHECK_LAG_TIME   = 'success_list_check_lag_time';
     const INSTRUCTION_TYPE_CHECK_PRICE      = 'success_list_check_price';
     const INSTRUCTION_TYPE_CHECK_PROMOTIONS = 'success_list_check_promotions';
 
@@ -62,6 +63,13 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_List_Response
                 'type'               => self::INSTRUCTION_TYPE_CHECK_QTY,
                 'initiator'          => self::INSTRUCTION_INITIATOR,
                 'priority'           => 80,
+                'skip_until'         => $instructionDate->format('Y-m-d H:i:s')
+            ),
+            array(
+                'listing_product_id' => $this->getListingProduct()->getId(),
+                'type'               => self::INSTRUCTION_TYPE_CHECK_LAG_TIME,
+                'initiator'          => self::INSTRUCTION_INITIATOR,
+                'priority'           => 60,
                 'skip_until'         => $instructionDate->format('Y-m-d H:i:s')
             ),
             array(

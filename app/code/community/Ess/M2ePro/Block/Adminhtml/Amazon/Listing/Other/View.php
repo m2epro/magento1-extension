@@ -14,15 +14,10 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('amazonListing');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_amazon_listing_other_view';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Amazon')->getTitle();
             $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / 3rd Party Listings', $componentName);
@@ -30,19 +25,13 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
             $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         if ($this->getRequest()->getParam('back') !== null) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton(
@@ -53,17 +42,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
                 )
             );
         }
-
-        $url = $this->getUrl('*/adminhtml_amazon_log/listingOther');
-        $this->_addButton(
-            'view_log', array(
-                'label'   => Mage::helper('M2ePro')->__('View Log'),
-                'onclick' => 'window.open(\'' . $url . '\')',
-                'class'   => 'button_link'
-            )
-        );
-        // ---------------------------------------
-
     }
 
     //########################################
@@ -73,7 +51,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $accountId = $this->getRequest()->getParam('account');
         $marketplaceId = $this->getRequest()->getParam('marketplace');
 
-        // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_other_view_header', '',
             array(
@@ -81,7 +58,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
                 'marketplace' => Mage::helper('M2ePro/Component_Amazon')->getCachedObject('Marketplace', $marketplaceId)
             )
         );
-        // ---------------------------------------
 
         $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
 
@@ -131,8 +107,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
         $successfullyUnmappedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Unmapped.'));
         $successfullyRemovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Removed.'));
 
-        $viewAllProductLogMessage = $helper->escapeJs($helper->__('View All Product Log.'));
-
         $selectItemsMessage = $helper->escapeJs(
             $helper->__('Please select the Products you want to perform the Action on.')
         );
@@ -170,13 +144,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
 
         $urls = Mage::helper('M2ePro')->jsonEncode(
             array(
-
-            'adminhtml_amazon_log/listingOther' => $this->getUrl(
-                '*/adminhtml_amazon_log/listingOther', array(
-                'back' => $helper->makeBackUrlParam('*/adminhtml_amazon_listing_other/index')
-                )
-            ),
-
             'adminhtml_listing_other_mapping/map' => $this->getUrl('*/adminhtml_listing_other_mapping/map')
             )
         );
@@ -220,8 +187,6 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Listing_Other_View extends Mage_Adminhtm
     M2eProAmazon.text.processing_data_message = '{$processingDataMessage}';
     M2eProAmazon.text.successfully_mapped = '{$successfullyMappedMessage}';
     M2eProAmazon.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
-
-    M2eProAmazon.text.view_all_product_log_message = '{$viewAllProductLogMessage}';
 
     M2eProAmazon.text.success_word = '{$successWord}';
     M2eProAmazon.text.notice_word = '{$noticeWord}';

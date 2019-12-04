@@ -323,6 +323,9 @@ EbayMotorAddItemGridHandler = Class.create(GridHandler, {
                     valueName = M2ePro.translator.translate('Year To');
                 }
 
+                if (el.name == 'street_name') {
+                    valueName = M2ePro.translator.translate('Street Name');
+                }
                 li.update('<b>' + valueName + '</b>: ' + valueText);
 
                 conditionsData[el.name] = el.value;

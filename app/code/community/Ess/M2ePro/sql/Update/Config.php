@@ -12,6 +12,10 @@ class Ess_M2ePro_Sql_Update_Config extends Ess_M2ePro_Model_Upgrade_Feature_Abst
     public function getFeaturesList()
     {
         return array(
+            'dev' => array(
+                'ReinstallHook',
+                'EnabledEpidsAu'
+            ),
             'y18_m09' => array(
                 'AddWalmart',
                 'ProductVocabulary',
@@ -39,7 +43,33 @@ class Ess_M2ePro_Sql_Update_Config extends Ess_M2ePro_Model_Upgrade_Feature_Abst
               'WalmartOrderActionProcessing',
               'Maintenance'
             ),
+            'y19_m08' => array(
+              'WalmartLagTime'
+            ),
+            'y19_m10' => array(
+                'ConfigsNoticeRemoved',
+                'AdvancedSynchRules',
+                'SynchronizationConfigsModeRemoved',
+                'IsAllowedComponentRemoved',
+                'AutocompleteRemoved',
+                'Configs',
+                'DropEbayTranslations',
+                'DropEbaySimpleMode',
+                'StreetNameToEbayDictionaryMotorEpid',
+                'AddEpidsAu'
+            ),
+            'y19_m11' => array(
+                'ProductsStatisticsImprovements',
+                'LogsImprovements'
+            ),
         );
+    }
+
+    //########################################
+
+    public function getMultiRunFeaturesList()
+    {
+        return array();
     }
 
     //########################################

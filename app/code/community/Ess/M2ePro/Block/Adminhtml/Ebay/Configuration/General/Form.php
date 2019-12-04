@@ -44,8 +44,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
     {
         $configModel = Mage::helper('M2ePro/Module')->getConfig();
 
-        $this->view_ebay_mode = $configModel->getGroupValue('/view/ebay/', 'mode');
-
         $this->view_ebay_feedbacks_notification_mode = (bool)(int)$configModel->getGroupValue(
             '/view/ebay/feedbacks/notification/', 'mode'
         );
@@ -77,6 +75,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
         );
         $this->de_marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
             'Marketplace', Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_DE
+        );
+        $this->au_marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+            'Marketplace', Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU
         );
         // ---------------------------------------
 
@@ -112,6 +113,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
         );
         $this->motors_epids_de_dictionary_ebay_count   = $ebayDictionaryCount;
         $this->motors_epids_de_dictionary_custom_count = $customDictionaryCount;
+
+        list($ebayDictionaryCount, $customDictionaryCount) = $this->getMotorsDictionaryRecordCount(
+            Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU
+        );
+        $this->motors_epids_au_dictionary_ebay_count   = $ebayDictionaryCount;
+        $this->motors_epids_au_dictionary_custom_count = $customDictionaryCount;
         // ---------------------------------------
 
         // ---------------------------------------
@@ -125,6 +132,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_General_Form extends Mage_Ad
         $this->motors_epids_motor_attribute = $configModel->getGroupValue('/ebay/motors/', 'epids_motor_attribute');
         $this->motors_epids_uk_attribute    = $configModel->getGroupValue('/ebay/motors/', 'epids_uk_attribute');
         $this->motors_epids_de_attribute    = $configModel->getGroupValue('/ebay/motors/', 'epids_de_attribute');
+        $this->motors_epids_au_attribute    = $configModel->getGroupValue('/ebay/motors/', 'epids_au_attribute');
         $this->motors_ktypes_attribute      = $configModel->getGroupValue('/ebay/motors/', 'ktypes_attribute');
         // ---------------------------------------
 

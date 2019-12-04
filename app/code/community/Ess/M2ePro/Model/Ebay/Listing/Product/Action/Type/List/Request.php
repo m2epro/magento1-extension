@@ -133,7 +133,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_List_Request
 
     protected function getIsEpsImagesMode()
     {
-        return NULL;
+        return null;
     }
 
     //########################################

@@ -8,14 +8,14 @@
 
 class Ess_M2ePro_Model_Resource_Setup extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Setup', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function initCurrentSetupObject($versionFrom, $versionTo)
     {
@@ -38,7 +38,7 @@ class Ess_M2ePro_Model_Resource_Setup extends Ess_M2ePro_Model_Resource_Abstract
         if (!$setupObject->getId()) {
             $setupObject->setData(
                 array(
-                'version_from' => empty($versionFrom) ? NULL : $versionFrom,
+                'version_from' => empty($versionFrom) ? null : $versionFrom,
                 'version_to'   => $versionTo,
                 'is_backuped'  => 0,
                 'is_completed' => 0,
@@ -88,7 +88,7 @@ SQL
 
         /** @var Ess_M2ePro_Model_Setup[] $completedItems */
         $completedItems = $collection->getItems();
-        $maxCompletedItem = NULL;
+        $maxCompletedItem = null;
 
         foreach ($completedItems as $completedItem) {
             if ($maxCompletedItem === null) {
@@ -106,5 +106,5 @@ SQL
         return $maxCompletedItem;
     }
 
-    // ########################################
+    //########################################
 }

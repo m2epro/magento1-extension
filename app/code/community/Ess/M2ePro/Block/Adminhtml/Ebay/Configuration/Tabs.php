@@ -31,14 +31,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Configuration_Tabs extends Ess_M2ePro_Bloc
 
     protected function _prepareLayout()
     {
-        $isAdvancedMode = Mage::helper('M2ePro/View_Ebay')->isAdvancedMode();
         $isUsePickupStoreMode = Mage::helper('M2ePro/Component_Ebay_PickupStore')->isFeatureEnabled();
 
         $this->addTab(self::TAB_ID_GENERAL, $this->prepareTabGeneral());
         $this->addTab(self::TAB_ID_ACCOUNT, $this->prepareTabAccount());
         $this->addTab(self::TAB_ID_MARKETPLACE, $this->prepareTabMarketplace());
-        $isAdvancedMode && $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
-        $isAdvancedMode && $this->addTab(self::TAB_ID_CATEGORY, $this->prepareTabCategory());
+        $this->addTab(self::TAB_ID_TEMPLATE, $this->prepareTabTemplate());
+        $this->addTab(self::TAB_ID_CATEGORY, $this->prepareTabCategory());
         $isUsePickupStoreMode && $this->addTab(
             self::TAB_ID_ACCOUNT_PICKUP_STORE, $this->prepareTabAccountPickupStore()
         );

@@ -44,7 +44,7 @@ HTML;
             return $value;
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################

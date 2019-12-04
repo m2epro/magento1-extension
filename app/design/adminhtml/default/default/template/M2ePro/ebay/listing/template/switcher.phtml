@@ -97,14 +97,6 @@
                     </select>
                 </td>
 
-                <?php if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $this->isTemplateModeTemplate()): ?>
-
-                    <td class="template-title-td">
-                        <span class="template-title"><?php echo Mage::helper('M2ePro')->escapeHtml($this->getTemplateObject()->getTitle()) ?></span>
-                    </td>
-
-                <?php endif; ?>
-
                 <td style="padding-left: 10px; width: 100%;" class="template-nick-td">
 
                     <div id="template_<?php echo $this->getTemplateNick() ?>_nick_label" style="display: none;">
@@ -115,13 +107,11 @@
                         <?php endif; ?>
                     </div>
 
-                    <?php if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()): ?>
-                        <div id="template_<?php echo $this->getTemplateNick() ?>_edit" style="display: none;">
-                            <a href="javascript: void(0);" onclick="EbayListingTemplateSwitcherHandlerObj.editTemplate('<?php echo $this->getTemplateNick() ?>');"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
-                            <?php echo Mage::helper('M2ePro')->__('or') ?>
-                            <a href="javascript: void(0);" onclick="EbayListingTemplateSwitcherHandlerObj.customizeTemplate('<?php echo $this->getTemplateNick() ?>');"><?php echo Mage::helper('M2ePro')->__('Use Custom Settings') ?></a>
-                        </div>
-                    <?php endif; ?>
+                    <div id="template_<?php echo $this->getTemplateNick() ?>_edit" style="display: none;">
+                        <a href="javascript: void(0);" onclick="EbayListingTemplateSwitcherHandlerObj.editTemplate('<?php echo $this->getTemplateNick() ?>');"><?php echo Mage::helper('M2ePro')->__('View') ?>&nbsp;/&nbsp;<?php echo Mage::helper('M2ePro')->__('Edit') ?></a>
+                        <?php echo Mage::helper('M2ePro')->__('or') ?>
+                        <a href="javascript: void(0);" onclick="EbayListingTemplateSwitcherHandlerObj.customizeTemplate('<?php echo $this->getTemplateNick() ?>');"><?php echo Mage::helper('M2ePro')->__('Use Custom Settings') ?></a>
+                    </div>
 
                 </td>
             </tr>

@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityRequester
     extends Ess_M2ePro_Model_Walmart_Connector_Command_Pending_Requester
 {
-    // ########################################
+    //########################################
 
     public function getRequestData()
     {
@@ -21,12 +21,12 @@ class Ess_M2ePro_Model_Walmart_Connector_Account_Update_EntityRequester
         return array('account','update','entity');
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingRunnerModelName()
     {
         return 'Walmart_Connector_Account_Update_ProcessingRunner';
     }
 
-    // ########################################
+    //########################################
 }

@@ -14,7 +14,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
     public function build(array $data)
     {
         if (empty($data)) {
-            return NULL;
+            return null;
         }
 
         $this->validate($data);
@@ -39,11 +39,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Builder
     {
         $prepared = parent::prepareData($data);
 
-        $isSimpleMode = Mage::helper('M2ePro/View_Ebay')->isSimpleMode();
-
-        $defaultData = $isSimpleMode ?
-            Mage::getSingleton('M2ePro/Ebay_Template_Description')->getDefaultSettingsSimpleMode() :
-            Mage::getSingleton('M2ePro/Ebay_Template_Description')->getDefaultSettingsAdvancedMode();
+        $defaultData = Mage::getSingleton('M2ePro/Ebay_Template_Description')->getDefaultSettings();
 
         $defaultData['enhancement'] = explode(',', $defaultData['enhancement']);
         $defaultData['product_details'] = Mage::helper('M2ePro')->jsonDecode($defaultData['product_details']);

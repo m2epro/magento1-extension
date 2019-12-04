@@ -1357,7 +1357,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     public function getCharity()
     {
         if ($this->getData('charity') === null) {
-            return NULL;
+            return null;
         }
 
         return Mage::helper('M2ePro')->jsonDecode($this->getData('charity'));
@@ -1378,7 +1378,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
     /**
      * @return array
      */
-    public function getDefaultSettingsSimpleMode()
+    public function getDefaultSettings()
     {
         return array(
 
@@ -1453,14 +1453,6 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat extends Ess_M2ePro_Model_Comp
             'lot_size_custom_value' => '',
             'lot_size_attribute' => ''
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaultSettingsAdvancedMode()
-    {
-        return $this->getDefaultSettingsSimpleMode();
     }
 
     //########################################

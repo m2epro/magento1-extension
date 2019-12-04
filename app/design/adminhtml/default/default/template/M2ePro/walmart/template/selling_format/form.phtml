@@ -38,7 +38,7 @@
 
         The detailed information can be found <a href="%url%" target="_blank">here</a>.',
 
-        Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(NULL, NULL, "x/L4taAQ")
+        Mage::helper("M2ePro/Module_Support")->getDocumentationUrl(null, null, "x/L4taAQ")
     ); ?>
 </div>
 
@@ -94,7 +94,7 @@
         'price_vat_percent' => 0,
 
         'lag_time_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::LAG_TIME_MODE_RECOMMENDED,
-        'lag_time_value' => '',
+        'lag_time_value' => 0,
         'lag_time_custom_attribute' => '',
 
         'product_tax_code_mode' => Ess_M2ePro_Model_Walmart_Template_SellingFormat::PRODUCT_TAX_CODE_MODE_VALUE,
@@ -872,7 +872,7 @@
                             <input type="hidden" id="lag_time_value" name="lag_time_value" value="<?php echo $formData['lag_time_value']; ?>" />
 
                             <select id="lag_time_mode" class="M2ePro-custom-attribute-can-be-created required-entry" allowed_attribute_types="text,select" name="lag_time_mode">
-                                <option value="" style="display: none;"></option>
+                                <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_SellingFormat::LAG_TIME_MODE_RECOMMENDED ?>" attribute_code="0" <?php if ($formData['lag_time_value'] == 0) { ?>selected="selected"<?php } ?>><?php echo Mage::helper('M2ePro')->__('Same Day'); ?></option>
 
                                 <optgroup label="Recommended Value">
                                     <?php for ($i=1;$i<=30;$i++) { ?>
@@ -1165,7 +1165,7 @@
                         Defining an offer start/end date may only be reasonable if you plan to sell an Item during a certain period, e.g. start selling on 20th November and stop selling on 30th November.<br><br>
 
                         Read more details <a href="%url%" target="_blank">here</a>.',
-                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/LY1aAQ')
+                        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/LY1aAQ')
                     ); ?>
                 </div>
 

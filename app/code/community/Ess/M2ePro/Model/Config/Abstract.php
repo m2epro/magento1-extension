@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
+abstract class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
 {
     const SORT_NONE       = 0;
     const SORT_KEY_ASC    = 1;
@@ -14,58 +14,30 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
     const SORT_VALUE_ASC  = 3;
     const SORT_VALUE_DESC = 4;
 
-    const GLOBAL_GROUP = '__global__';
-
-    const CACHE_LIFETIME = 3600; // 1 hour
+    const CACHE_LIFETIME = 3600;
 
     //########################################
 
-    protected $_ormConfig = '';
-
-    //########################################
-
-    public function __construct()
+    public function _construct()
     {
-        $args = func_get_args();
-        empty($args[0]) && $args[0] = array();
-        $params = $args[0];
-
-        if (empty($params['orm'])) {
-            throw new Ess_M2ePro_Model_Exception('ORM for config is not defined.');
-        }
-
-        $this->_ormConfig = $params['orm'];
-        parent::__construct();
+        parent::_construct();
+        $this->_init($this->getModelName());
     }
 
     //########################################
 
-    public function getGlobalValue($key)
+    /**
+     * @return self
+     */
+    protected function getModel()
     {
-        return $this->getValue(self::GLOBAL_GROUP, $this->prepareKey($key));
+        return Mage::getModel($this->getModelName());
     }
 
-    public function setGlobalValue($key, $value)
-    {
-        return $this->setValue(self::GLOBAL_GROUP, $this->prepareKey($key), $value);
-    }
-
-    public function deleteGlobalValue($key)
-    {
-        return $this->deleteValue(self::GLOBAL_GROUP, $this->prepareKey($key));
-    }
-
-    // ---------------------------------------
-
-    public function getAllGlobalValues($sort = self::SORT_NONE)
-    {
-        return $this->getAllValues(self::GLOBAL_GROUP, $sort);
-    }
-
-    public function deleteAllGlobalValues()
-    {
-        return $this->deleteAllValues(self::GLOBAL_GROUP);
-    }
+    /**
+     * @return string
+     */
+    abstract protected function getModelName();
 
     //########################################
 
@@ -112,13 +84,13 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
     protected function getValue($group, $key)
     {
         if (empty($group) || empty($key)) {
-            return NULL;
+            return null;
         }
 
         $cacheData = $this->getCacheData();
 
         if (!empty($cacheData)) {
-            return isset($cacheData[$group][$key]) ? $cacheData[$group][$key] : NULL;
+            return isset($cacheData[$group][$key]) ? $cacheData[$group][$key] : null;
         }
 
         $dbData = $this->getCollection()->toArray();
@@ -137,7 +109,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
 
         $this->setCacheData($cacheData);
 
-        return isset($cacheData[$group][$key]) ? $cacheData[$group][$key] : NULL;
+        return isset($cacheData[$group][$key]) ? $cacheData[$group][$key] : null;
     }
 
     protected function setValue($group, $key, $value)
@@ -147,28 +119,22 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         }
 
         $collection = $this->getCollection();
-
-        if ($group == self::GLOBAL_GROUP) {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
-        } else {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
-        }
-
+        $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         $collection->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
+
         $dbData = $collection->toArray();
 
         if (!empty($dbData['items'])) {
             $existItem = reset($dbData['items']);
 
-            Mage::getModel($this->_ormConfig)
-                         ->load($existItem['id'])
-                         ->addData(array('value' => $value))
-                         ->save();
+            $this->getModel()
+                ->load($existItem['id'])
+                ->addData(array('value' => $value))
+                ->save();
         } else {
-            $group == self::GLOBAL_GROUP && $group = NULL;
-            Mage::getModel($this->_ormConfig)
-                         ->setData(array('group' => $group,'key' => $key,'value' => $value))
-                         ->save();
+            $this->getModel()
+                ->setData(array('group' => $group, 'key' => $key, 'value' => $value))
+                ->save();
         }
 
         $this->removeCacheData();
@@ -183,14 +149,9 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         }
 
         $collection = $this->getCollection();
-
-        if ($group == self::GLOBAL_GROUP) {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
-        } else {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
-        }
-
+        $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
         $collection->addFieldToFilter(new Zend_Db_Expr('`key`'), $key);
+
         $dbData = $collection->toArray();
 
         if (empty($dbData['items'])) {
@@ -198,7 +159,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         }
 
         $existItem = reset($dbData['items']);
-        Mage::getModel($this->_ormConfig)->setId($existItem['id'])->delete();
+        $this->getModel()->setId($existItem['id'])->delete();
 
         $this->removeCacheData();
 
@@ -207,7 +168,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
 
     // ---------------------------------------
 
-    protected function getAllValues($group = NULL, $sort = self::SORT_NONE)
+    protected function getAllValues($group, $sort = self::SORT_NONE)
     {
         if (empty($group)) {
             return array();
@@ -216,12 +177,7 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         $result = array();
 
         $collection = $this->getCollection();
-
-        if ($group == self::GLOBAL_GROUP) {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
-        } else {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
-        }
+        $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), $group);
 
         $dbData = $collection->toArray();
 
@@ -234,24 +190,19 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
         return $result;
     }
 
-    protected function deleteAllValues($group = NULL)
+    protected function deleteAllValues($group)
     {
         if (empty($group)) {
             return false;
         }
 
         $collection = $this->getCollection();
-
-        if ($group == self::GLOBAL_GROUP) {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('null' => true));
-        } else {
-            $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('like' => $group.'%'));
-        }
+        $collection->addFieldToFilter(new Zend_Db_Expr('`group`'), array('like' => $group));
 
         $dbData = $collection->toArray();
 
         foreach ($dbData['items'] as $item) {
-            Mage::getModel($this->_ormConfig)->setId($item['id'])->delete();
+            $this->getModel()->setId($item['id'])->delete();
         }
 
         $this->removeCacheData();
@@ -263,10 +214,6 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
 
     protected function prepareGroup($group)
     {
-        if ($group === null || $group == self::GLOBAL_GROUP) {
-            return self::GLOBAL_GROUP;
-        }
-
         if (empty($group)) {
             return false;
         }
@@ -307,19 +254,19 @@ class Ess_M2ePro_Model_Config_Abstract extends Ess_M2ePro_Model_Abstract
 
     protected function getCacheData()
     {
-        $key = $this->_ormConfig.'_data';
+        $key = $this->getModelName().'_data';
         return Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($key);
     }
 
     protected function setCacheData(array $data)
     {
-        $key = $this->_ormConfig.'_data';
+        $key = $this->getModelName().'_data';
         Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($key, $data, array(), self::CACHE_LIFETIME);
     }
 
     protected function removeCacheData()
     {
-        $key = $this->_ormConfig.'_data';
+        $key = $this->getModelName().'_data';
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeValue($key);
     }
 

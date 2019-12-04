@@ -9,14 +9,14 @@
 class Ess_M2ePro_Model_Resource_Amazon_Order_Action_Processing
     extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Amazon_Order_Action_Processing', 'id');
     }
 
-    // ########################################
+    //########################################
 
     public function markAsInProgress(array $actionIds, Ess_M2ePro_Model_Request_Pending_Single $requestPendingSingle)
     {
@@ -40,5 +40,5 @@ class Ess_M2ePro_Model_Resource_Amazon_Order_Action_Processing
         return $this->_getReadAdapter()->fetchCol($select);
     }
 
-    // ########################################
+    //########################################
 }

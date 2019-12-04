@@ -14,15 +14,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartOrder');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_order';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
             $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / Orders', $componentName);
@@ -30,19 +25,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
             $this->_headerText = Mage::helper('M2ePro')->__('Orders');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_walmart_account/index');
         $this->_addButton(
             'accounts', array(
@@ -51,18 +40,15 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
             'class'     => 'button_link'
             )
         );
-        // ---------------------------------------
 
-        // ---------------------------------------
         $url = $this->getUrl('*/adminhtml_walmart_log/order');
         $this->_addButton(
             'logs', array(
-            'label'     => Mage::helper('M2ePro')->__('View Logs'),
+            'label'     => Mage::helper('M2ePro')->__('Logs & Events'),
             'onclick'   => 'window.open(\'' . $url .'\')',
             'class'     => 'button_link'
             )
         );
-        // ---------------------------------------
     }
 
     //########################################
@@ -95,7 +81,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Order extends Mage_Adminhtml_Block_Widg
         );
 
         $tempGridIds = array();
-        Mage::helper('M2ePro/Component_Walmart')->isActive() && $tempGridIds[] = $this->getChild('grid')->getId();
+        Mage::helper('M2ePro/Component_Walmart')->isEnabled() && $tempGridIds[] = $this->getChild('grid')->getId();
 
         $generalBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_order_general');
         $generalBlock->setGridIds($tempGridIds);

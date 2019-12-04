@@ -47,8 +47,8 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
             return strtolower(trim($backupIp));
         }
 
-        $serverIp = isset($server['SERVER_ADDR']) ? $server['SERVER_ADDR'] : NULL;
-        $serverIp === null && $serverIp = isset($server['LOCAL_ADDR']) ? $server['LOCAL_ADDR'] : NULL;
+        $serverIp = isset($server['SERVER_ADDR']) ? $server['SERVER_ADDR'] : null;
+        $serverIp === null && $serverIp = isset($server['LOCAL_ADDR']) ? $server['LOCAL_ADDR'] : null;
 
         if ($serverIp !== null) {
             return strtolower(trim($serverIp));
@@ -104,7 +104,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
         Mage::helper('M2ePro/Module')->getCacheConfig()
             ->setGroupValue('/location_info/', 'domain', $domainBackup);
 
-        $ipBackup = isset($server['SERVER_ADDR']) ? $server['SERVER_ADDR'] : NULL;
+        $ipBackup = isset($server['SERVER_ADDR']) ? $server['SERVER_ADDR'] : null;
         $ipBackup === null && $ipBackup = isset($server['LOCAL_ADDR']) ? $server['LOCAL_ADDR'] : '127.0.0.1';
         Mage::helper('M2ePro/Module')->getCacheConfig()
             ->setGroupValue('/location_info/', 'ip', $ipBackup);
@@ -259,7 +259,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
 
     public function getMysqlTotals()
     {
-        $moduleTables = Mage::helper('M2ePro/Module_Database_Structure')->getMySqlTables();
+        $moduleTables = Mage::helper('M2ePro/Module_Database_Structure')->getModuleTables();
         $magentoTables = Mage::helper('M2ePro/Magento')->getMySqlTables();
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
@@ -339,7 +339,7 @@ class Ess_M2ePro_Helper_Client extends Mage_Core_Helper_Abstract
     public function getExecutionTime()
     {
         if (!$this->isPhpApiApacheHandler()) {
-            return NULL;
+            return null;
         }
 
         return @ini_get('max_execution_time');

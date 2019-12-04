@@ -39,7 +39,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         return Mage::getModel('M2ePro/'.$modelName, $params);
     }
 
-    public function getHelper($helperName = NULL)
+    public function getHelper($helperName = null)
     {
         is_string($helperName) && $helperName = '/'.$helperName;
         return Mage::helper('M2ePro'.(string)$helperName);
@@ -54,7 +54,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      * @return Ess_M2ePro_Model_Abstract
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getObject($modelName, $value, $field = NULL)
+    public function getObject($modelName, $value, $field = null)
     {
         return $this->getModel($modelName)->loadInstance($value, $field);
     }
@@ -67,7 +67,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      * @return Ess_M2ePro_Model_Abstract
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
+    public function getCachedObject($modelName, $value, $field = null, array $tags = array())
     {
         if (Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
             return $this->getObject($modelName, $value, $field);
@@ -107,7 +107,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getCurrentGmtDate($returnTimestamp = false, $format = NULL)
+    public function getCurrentGmtDate($returnTimestamp = false, $format = null)
     {
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->gmtTimestamp();
@@ -116,7 +116,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         return Mage::getModel('core/date')->gmtDate($format);
     }
 
-    public function getCurrentTimezoneDate($returnTimestamp = false, $format = NULL)
+    public function getCurrentTimezoneDate($returnTimestamp = false, $format = null)
     {
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->timestamp();
@@ -127,7 +127,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    public function getDate($date, $returnTimestamp = false, $format = NULL)
+    public function getDate($date, $returnTimestamp = false, $format = null)
     {
         if (is_numeric($date)) {
             $result = (int)$date;
@@ -150,7 +150,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    public function gmtDateToTimezone($dateGmt, $returnTimestamp = false, $format = NULL)
+    public function gmtDateToTimezone($dateGmt, $returnTimestamp = false, $format = null)
     {
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->timestamp($dateGmt);
@@ -159,7 +159,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         return Mage::getModel('core/date')->date($format, $dateGmt);
     }
 
-    public function timezoneDateToGmt($dateTimezone, $returnTimestamp = false, $format = NULL)
+    public function timezoneDateToGmt($dateTimezone, $returnTimestamp = false, $format = null)
     {
         if ($returnTimestamp) {
             return (int)Mage::getModel('core/date')->gmtTimestamp($dateTimezone);
@@ -196,13 +196,13 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                         '((\s+\w+="[\w\s\%\?=&#\/\.,;:_\-\(\)]*")*[\/\s\r\n]*)>/si';
                     $result = preg_replace($pattern, '##$1$2$3##', $data);
 
-                    $result = htmlspecialchars($result, $flags);
+                    $result = htmlspecialchars($result, $flags, 'UTF-8');
 
                     $pattern = '/##([\/\s\r\n]*)(' . $allowed . ')'.
                         '((\s+\w+="[\w\s\%\?=&#\/\.,;:_\-\(\)]*")*[\/\s\r\n]*)##/si';
                     $result = preg_replace($pattern, '<$1$2$3>', $result);
                 } else {
-                    $result = htmlspecialchars($data, $flags);
+                    $result = htmlspecialchars($data, $flags, 'UTF-8');
                 }
             } else {
                 $result = $data;
@@ -222,7 +222,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      * @return string
      * @throws Ess_M2ePro_Model_Exception
      */
-    public function hashString($string, $hashFunction, $prefix = NULL)
+    public function hashString($string, $hashFunction, $prefix = null)
     {
         if (!is_callable($hashFunction)) {
              throw new Ess_M2ePro_Model_Exception_Logic('Hash function can not be called');
@@ -274,7 +274,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
         if (!$throwError) {
-            return NULL;
+            return null;
         }
 
         throw new Ess_M2ePro_Model_Exception_Logic(
@@ -284,7 +284,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * It prevents situations when json_decode() returns NULL due to unknown issue.
+     * It prevents situations when json_decode() returns null due to unknown issue.
      * Despite the fact that given JSON is having correct format
      *
      * @param $data
@@ -295,7 +295,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     public function jsonDecode($data, $throwError = false)
     {
         if ($data === null || $data === '' || strtolower($data) === 'null') {
-            return NULL;
+            return null;
         }
 
         $decoded = json_decode($data, true);
@@ -309,7 +309,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             $decoded = Zend_Json::decode($data);
             Zend_Json::$useBuiltinEncoderDecoder = $previousValue;
         } catch (\Exception $e) {
-            $decoded = NULL;
+            $decoded = null;
         }
 
         if ($decoded !== null) {
@@ -322,7 +322,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
         if (!$throwError) {
-            return NULL;
+            return null;
         }
 
         throw new Ess_M2ePro_Model_Exception_Logic(
@@ -367,15 +367,15 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         $oldEncoding = mb_internal_encoding();
         mb_internal_encoding('UTF-8');
 
-        if (mb_strlen($string) <= $neededLength) {
+        if (mb_strlen($string, 'UTF-8') <= $neededLength) {
             mb_internal_encoding($oldEncoding);
             return $string;
         }
 
         $longWords = array();
         foreach (explode(' ', $string) as $word) {
-            if (mb_strlen($word) >= $longWord && !preg_match('/[0-9]/', $word)) {
-                $longWords[$word] = mb_strlen($word) - $minWordLen;
+            if (mb_strlen($word, 'UTF-8') >= $longWord && !preg_match('/[0-9]/', $word)) {
+                $longWords[$word] = mb_strlen($word, 'UTF-8') - $minWordLen;
             }
         }
 
@@ -384,7 +384,8 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
             $canBeReduced += $canBeReducedForWord;
         }
 
-        $needToBeReduced = mb_strlen($string) - $neededLength + (count($longWords) * mb_strlen($atEndOfWord));
+        $needToBeReduced =
+            mb_strlen($string, 'UTF-8') - $neededLength + (count($longWords) * mb_strlen($atEndOfWord, 'UTF-8'));
 
         if ($canBeReduced < $needToBeReduced) {
             mb_internal_encoding($oldEncoding);
@@ -394,7 +395,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         $weightOfOneLetter = $needToBeReduced / $canBeReduced;
         foreach ($longWords as $word => $canBeReducedForWord) {
             $willReduced = ceil($weightOfOneLetter * $canBeReducedForWord);
-            $reducedWord = mb_substr($word, 0, mb_strlen($word) - $willReduced) . $atEndOfWord;
+            $reducedWord = mb_substr($word, 0, mb_strlen($word, 'UTF-8') - $willReduced, 'UTF-8') . $atEndOfWord;
 
             $string = str_replace($word, $reducedWord, $string);
 
@@ -570,26 +571,31 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function getClassConstantAsJson($class)
+    public function getClassConstants($class)
     {
         if (stripos($class, 'Ess_M2ePro_') === false) {
-            throw new Ess_M2ePro_Model_Exception('Class name must begin with "Ess_M2ePro"');
+            throw new Ess_M2ePro_Model_Exception('Class name must begin with "M2e_M2ePro"');
         }
 
         $reflectionClass = new ReflectionClass($class);
-        $tempConstants = $reflectionClass->getConstants();
+        $tempConstants   = $reflectionClass->getConstants();
 
         $constants = array();
         foreach ($tempConstants as $key => $value) {
             $constants[] = array(strtoupper($key), $value);
         }
 
-        return json_encode($constants);
+        return $constants;
+    }
+
+    public function getClassConstantAsJson($class)
+    {
+        return $this->jsonEncode($this->getClassConstants($class));
     }
 
     public function getControllerActions($controllerClass, array $params = array())
     {
-        $controllerClass = Mage::helper('M2ePro/View_Development_Controller')->loadControllerAndGetClassName(
+        $controllerClass = Mage::helper('M2ePro/View_ControlPanel_Controller')->loadControllerAndGetClassName(
             $controllerClass
         );
 
@@ -623,7 +629,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function generateUniqueHash($strParam = NULL, $maxLength = NULL)
+    public function generateUniqueHash($strParam = null, $maxLength = null)
     {
         $hash = sha1(rand(1, 1000000).microtime(true).(string)$strParam);
         (int)$maxLength > 0 && $hash = substr($hash, 0, (int)$maxLength);

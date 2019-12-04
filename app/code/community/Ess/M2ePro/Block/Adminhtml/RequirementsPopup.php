@@ -37,7 +37,7 @@ class Ess_M2ePro_Block_Adminhtml_RequirementsPopup extends Mage_Adminhtml_Block_
         // ---------------------------------------
 
         // ---------------------------------------
-        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_development_inspection_requirements');
+        $block = $this->getLayout()->createBlock('M2ePro/adminhtml_controlPanel_inspection_requirements');
         $this->setChild('requirements', $block);
         // ---------------------------------------
     }

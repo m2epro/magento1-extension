@@ -18,10 +18,10 @@ class Ess_M2ePro_Model_Resource_Listing_Product_Instruction_Collection
     //########################################
 
     /**
-     * @param DateTime|NULL $dateTime
+     * @param DateTime|null $dateTime
      * @return $this
      */
-    public function applySkipUntilFilter($dateTime = NULL)
+    public function applySkipUntilFilter($dateTime = null)
     {
         $dateTime === null && $dateTime = new DateTime('now', new DateTimeZone('UTC'));
 

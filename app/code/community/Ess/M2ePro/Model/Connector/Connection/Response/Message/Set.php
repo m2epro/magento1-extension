@@ -18,7 +18,7 @@ class Ess_M2ePro_Model_Connector_Connection_Response_Message_Set extends Ess_M2e
         return Mage::getModel('M2ePro/Connector_Connection_Response_Message');
     }
 
-    // ########################################
+    //########################################
 
     public function hasSystemErrorEntity()
     {

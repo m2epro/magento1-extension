@@ -63,7 +63,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Relist_Response
         $instructionsData = array();
 
         foreach ($data['additional_data']['recheck_properties'] as $property) {
-            $instructionType     = NULL;
+            $instructionType     = null;
             $instructionPriority = 0;
 
             switch ($property) {

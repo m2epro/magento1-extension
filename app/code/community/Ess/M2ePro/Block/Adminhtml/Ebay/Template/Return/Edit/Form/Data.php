@@ -63,11 +63,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data extends Mag
 
     public function getDefault()
     {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return Mage::getSingleton('M2ePro/Ebay_Template_Return')->getDefaultSettingsSimpleMode();
-        }
-
-        return Mage::getSingleton('M2ePro/Ebay_Template_Return')->getDefaultSettingsAdvancedMode();
+        return Mage::getSingleton('M2ePro/Ebay_Template_Return')->getDefaultSettings();
     }
 
     public function getMarketplaceData()

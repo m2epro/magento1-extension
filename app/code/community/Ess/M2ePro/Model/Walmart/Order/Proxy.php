@@ -90,7 +90,7 @@ class Ess_M2ePro_Model_Walmart_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             return '';
         }
 
-        return $this->_order->getWalmartAccount()->getMagentoOrdersNumberPrefix();
+        return $this->_order->getWalmartAccount()->getMagentoOrdersNumberRegularPrefix();
     }
 
     //########################################

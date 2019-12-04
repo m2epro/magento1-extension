@@ -117,7 +117,7 @@ class Ess_M2ePro_Model_Cron_Task_System_RequestPending_ProcessPartial extends Es
                     $requestPendingPartial->getServerHash() => $requestPendingPartial->getNextPart(),
                 ),
             ),
-            'results', NULL, NULL
+            'results', null, null
         );
 
         $dispatcher->process($connector);

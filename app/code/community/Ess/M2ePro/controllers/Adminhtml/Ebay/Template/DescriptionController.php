@@ -16,7 +16,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         $templateData = $this->getRequest()->getPost('description');
 
         if ($templateData['id'] === null || empty($_FILES['watermark_image']['tmp_name'])) {
-            return NULL;
+            return null;
         }
 
         $varDir = new Ess_M2ePro_Model_VariablesDir(
@@ -56,7 +56,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
 
         if (!$productsEntities['magento_product']) {
             $errorMessage = Mage::helper('M2ePro')->__('This Product ID does not exist.');
-            $this->printOutput(NULL, NULL, $errorMessage);
+            $this->printOutput(null, null, $errorMessage);
             return;
         }
 
@@ -71,7 +71,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
 
     //########################################
 
-    protected function printOutput($title = NULL, $description = NULL, $errorMessage = NULL)
+    protected function printOutput($title = null, $description = null, $errorMessage = null)
     {
         $this->loadLayout();
 
@@ -89,7 +89,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         );
 
         $html = $this->getLayout()->getBlock('head')->toHtml() .
-                $this->getLayout()->createBlock('M2ePro/adminhtml_general')->toHtml() .
+                Mage::helper('M2ePro/View')->getGeneralBlock()->toHtml() .
                 $previewFormBlock->toHtml() .
                 $previewBodyBlock->toHtml();
 
@@ -198,7 +198,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         $product = Mage::getModel('catalog/product')->load($productId);
 
         if ($product->getId() === null) {
-            return NULL;
+            return null;
         }
 
         $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
@@ -216,7 +216,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
                         ->getItems();
 
         if (empty($products)) {
-            return NULL;
+            return null;
         }
 
         shuffle($products);
@@ -247,7 +247,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
         $listingProduct = $listingProductCollection->getFirstItem();
 
         if ($listingProduct->getId() === null) {
-            return NULL;
+            return null;
         }
 
         return $listingProduct;
@@ -270,7 +270,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Template_DescriptionController
             ->getItems();
 
         if (empty($listingProducts)) {
-            return NULL;
+            return null;
         }
 
         shuffle($listingProducts);

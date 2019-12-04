@@ -13,11 +13,10 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     const SERVER_MESSAGE_TYPE_WARNING = 2;
     const SERVER_MESSAGE_TYPE_SUCCESS = 3;
 
-    const ENVIRONMENT_PRODUCTION  = 'production';
-    const ENVIRONMENT_DEVELOPMENT = 'development';
-    const ENVIRONMENT_TESTING     = 'testing';
-
-    const DEVELOPMENT_MODE_COOKIE_KEY = 'm2epro_development_mode';
+    const ENVIRONMENT_PRODUCTION     = 'production';
+    const ENVIRONMENT_DEVELOPMENT    = 'development';
+    const ENVIRONMENT_TESTING_MANUAL = 'testing-manual';
+    const ENVIRONMENT_TESTING_AUTO   = 'testing-auto';
 
     const IDENTIFIER = 'Ess_M2ePro';
 
@@ -49,21 +48,12 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     public function getVersion()
     {
         $version = (string)Mage::getConfig()->getNode('modules/Ess_M2ePro/version');
-        $version = strtolower($version);
-
-        if (Mage::helper('M2ePro/Data_Cache_Permanent')->getValue('MODULE_VERSION_UPDATER') === false) {
-            Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/modules/', $this->getName(), $version.'.r'.$this->getRevision()
-            );
-            Mage::helper('M2ePro/Data_Cache_Permanent')->setValue('MODULE_VERSION_UPDATER', array(), array(), 60*60*24);
-        }
-
-        return $version;
+        return strtolower($version);
     }
 
     public function getRevision()
     {
-        return '14422';
+        return '14620';
     }
 
     // ---------------------------------------
@@ -77,18 +67,14 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getInstallationKey()
     {
-        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.$this->getName().'/server/', 'installation_key'
-        );
+        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/', 'installation_key');
     }
 
     //########################################
 
     public function getServerMessages()
     {
-        $messages = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
-            '/'.$this->getName().'/server/', 'messages'
-        );
+        $messages = Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/', 'messages');
 
         $messages = ($messages !== null && $messages != '') ?
                     (array)Mage::helper('M2ePro')->jsonDecode((string)$messages) :
@@ -113,7 +99,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function isDisabled()
     {
-        return (bool)$this->getConfig()->getGroupValue(NULL, 'is_disabled');
+        return (bool)$this->getConfig()->getGroupValue('/', 'is_disabled');
     }
 
     //########################################
@@ -122,7 +108,8 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
     {
         if (!Mage::helper('M2ePro/View_Ebay')->isInstallationWizardFinished() &&
             !Mage::helper('M2ePro/View_Amazon')->isInstallationWizardFinished() &&
-            !Mage::helper('M2ePro/View_Walmart')->isInstallationWizardFinished()) {
+            !Mage::helper('M2ePro/View_Walmart')->isInstallationWizardFinished()
+        ) {
             return false;
         }
 
@@ -192,38 +179,34 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     //########################################
 
-    public function isDevelopmentMode()
+    public function getEnvironment()
     {
-        return Mage::app()->getCookie()->get(self::DEVELOPMENT_MODE_COOKIE_KEY);
+        return $this->getConfig()->getGroupValue('/', 'environment');
     }
-
-    public function isProductionMode()
-    {
-        return !$this->isDevelopmentMode();
-    }
-
-    public function setDevelopmentModeMode($value)
-    {
-        $value ? Mage::app()->getCookie()->set(self::DEVELOPMENT_MODE_COOKIE_KEY, 'true', 60*60*24*31*12)
-               : Mage::app()->getCookie()->delete(self::DEVELOPMENT_MODE_COOKIE_KEY);
-    }
-
-    // ---------------------------------------
 
     public function isProductionEnvironment()
     {
-        return (string)$this->getConfig()->getGroupValue(NULL, 'environment') === self::ENVIRONMENT_PRODUCTION ||
-               (!$this->isDevelopmentEnvironment() && !$this->isTestingEnvironment());
+        return $this->getEnvironment() === null || $this->getEnvironment() === self::ENVIRONMENT_PRODUCTION;
     }
 
     public function isDevelopmentEnvironment()
     {
-        return (string)$this->getConfig()->getGroupValue(NULL, 'environment') === self::ENVIRONMENT_DEVELOPMENT;
+        return $this->getEnvironment() === self::ENVIRONMENT_DEVELOPMENT;
     }
 
-    public function isTestingEnvironment()
+    public function isTestingManualEnvironment()
     {
-        return (string)$this->getConfig()->getGroupValue(NULL, 'environment') === self::ENVIRONMENT_TESTING;
+        return $this->getEnvironment() === self::ENVIRONMENT_TESTING_MANUAL;
+    }
+
+    public function isTestingAutoEnvironment()
+    {
+        return $this->getEnvironment() === self::ENVIRONMENT_TESTING_AUTO;
+    }
+
+    public function setEnvironment($env)
+    {
+        $this->getConfig()->setGroupValue('/', 'environment', $env);
     }
 
     //########################################

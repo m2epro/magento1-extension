@@ -23,13 +23,8 @@ class Ess_M2ePro_Adminhtml_Configuration_LicenseController
         $post = $this->getRequest()->getPost();
         $primaryConfig = Mage::helper('M2ePro/Primary')->getConfig();
 
-        // Save settings
-        // ---------------------------------------
         $key = strip_tags($post['key']);
-        $primaryConfig->setGroupValue(
-            '/'.Mage::helper('M2ePro/Module')->getName().'/license/', 'key', (string)$key
-        );
-        // ---------------------------------------
+        $primaryConfig->setGroupValue('/license/', 'key', (string)$key);
 
         try {
             Mage::getModel('M2ePro/Servicing_Dispatcher')->processTask(

@@ -84,18 +84,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
         if ($ebaySynchronizationTemplate->isListStatusEnabled()) {
             if (!$listingProduct->getMagentoProduct()->isStatusEnabled()) {
-                // M2ePro_TRANSLATIONS
-                // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                // Status of Magento Product is Disabled (%date%) though in Synchronization Rules “Product Status”
-                // is set to Enabled.
                 $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                    'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                     Status of Magento Product is Disabled (%date%) though in Synchronization Rules “Product Status”
-                     is set to Enabled.',
-                    array('date' => Mage::helper('M2ePro')->getCurrentGmtDate())
+                    'Product was not Listed as it has Disabled Status in Magento.
+                    The Product Status condition in the List Rules was not met.'
                 );
                 $additionalData['synch_template_list_rules_note'] = $note;
-
                 $listingProduct->setSettings('additional_data', $additionalData)->save();
 
                 return false;
@@ -106,18 +99,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
                 );
 
                 if ($temp !== null && $temp) {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Status of Magento Product Variation is Disabled (%date%) though in Synchronization Rules
-                    // “Product Status“ is set to Enabled.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Status of Magento Product Variation is Disabled (%date%) though in Synchronization Rules
-                         “Product Status“ is set to Enabled.',
-                        array('date' => Mage::helper('M2ePro')->getCurrentGmtDate())
+                        'Product was not Listed as this Product Variation has Disabled Status in Magento.
+                        The Product Status condition in the List Rules was not met.'
                     );
                     $additionalData['synch_template_list_rules_note'] = $note;
-
                     $listingProduct->setSettings('additional_data', $additionalData)->save();
 
                     return false;
@@ -127,18 +113,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
         if ($ebaySynchronizationTemplate->isListIsInStock()) {
             if (!$listingProduct->getMagentoProduct()->isStockAvailability()) {
-                // M2ePro_TRANSLATIONS
-                // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                // Stock Availability of Magento Product is Out of Stock though in Synchronization Rules
-                // “Stock Availability” is set to In Stock.
                 $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                    'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                     Stock Availability of Magento Product is Out of Stock though in
-                     Synchronization Rules “Stock Availability” is set to In Stock.',
-                    array('date' => Mage::helper('M2ePro')->getCurrentGmtDate())
+                    'Product was not Listed as it is Out of Stock in Magento.
+                    The Stock Availability condition in the List Rules was not met.'
                 );
                 $additionalData['synch_template_list_rules_note'] = $note;
-
                 $listingProduct->setSettings('additional_data', $additionalData)->save();
 
                 return false;
@@ -149,18 +128,11 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
                 );
 
                 if ($temp !== null && $temp) {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Stock Availability of Magento Product Variation is Out of Stock though in Synchronization Rules
-                    // “Stock Availability” is set to In Stock.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Stock Availability of Magento Product Variation is Out of Stock though
-                         in Synchronization Rules “Stock Availability” is set to In Stock.',
-                        array('date' => Mage::helper('M2ePro')->getCurrentGmtDate())
+                        'Product was not Listed as this Product Variation is Out of Stock in Magento.
+                        The Stock Availability condition in the List Rules was not met.'
                     );
                     $additionalData['synch_template_list_rules_note'] = $note;
-
                     $listingProduct->setSettings('additional_data', $additionalData)->save();
 
                     return false;
@@ -178,65 +150,43 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
             $note = '';
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_LESS) {
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS) {
                 if ($productQty <= $minQty) {
                     $result = true;
                 } else {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                    // “Magento Quantity“ is set to less then  %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                         “Magento Quantity“ is set to less then  %template_min_qty%.',
+                        'Product was not Listed as its Quantity is %product_qty% in Magento.
+                        The Magento Quantity condition in the List Rules was not met.',
                         array(
-                            '!template_min_qty' => $minQty,
                             '!product_qty' => $productQty,
-                            '!date' => Mage::helper('M2ePro')->getCurrentGmtDate()
                         )
                     );
                 }
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_MORE) {
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE) {
                 if ($productQty >= $minQty) {
                     $result = true;
                 } else {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                    // “Magento Quantity” is set to more then  %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                         “Magento Quantity” is set to more then  %template_min_qty%.',
+                        'Product was not Listed as its Quantity is %product_qty% in Magento.
+                        The Magento Quantity condition in the List Rules was not met.',
                         array(
-                            '!template_min_qty' => $minQty,
                             '!product_qty' => $productQty,
-                            '!date' => Mage::helper('M2ePro')->getCurrentGmtDate()
                         )
                     );
                 }
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) {
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) {
                 if ($productQty >= $minQty && $productQty <= $maxQty) {
                     $result = true;
                 } else {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                    // “Magento Quantity” is set between  %template_min_qty% and %template_max_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                         “Magento Quantity” is set between  %template_min_qty% and %template_max_qty%.',
+                        'Product was not Listed as its Quantity is %product_qty% in Magento.
+                        The Magento Quantity condition in the List Rules was not met.',
                         array(
-                            '!template_min_qty' => $minQty,
-                            '!template_max_qty' => $maxQty,
                             '!product_qty' => $productQty,
-                            '!date' => Mage::helper('M2ePro')->getCurrentGmtDate()
                         )
                     );
                 }
@@ -262,65 +212,43 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
 
             $note = '';
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_LESS) {
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS) {
                 if ($productQty <= $minQty) {
                     $result = true;
                 } else {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                    // “Calculated Quantity” is set to less then %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                         “Calculated Quantity” is set to less then %template_min_qty%.',
+                        'Product was not Listed as its Quantity is %product_qty% in Magento.
+                        The Calculated Quantity condition in the List Rules was not met.',
                         array(
-                            '!template_min_qty' => $minQty,
                             '!product_qty' => $productQty,
-                            '!date' => Mage::helper('M2ePro')->getCurrentGmtDate()
                         )
                     );
                 }
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_MORE) {
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE) {
                 if ($productQty >= $minQty) {
                     $result = true;
                 } else {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                    // “Calculated Quantity” is set to more then  %template_min_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                         “Calculated Quantity” is set to more then  %template_min_qty%.',
+                        'Product was not Listed as its Quantity is %product_qty% in Magento.
+                        The Calculated Quantity condition in the List Rules was not met.',
                         array(
-                            '!template_min_qty' => $minQty,
                             '!product_qty' => $productQty,
-                            '!date' => Mage::helper('M2ePro')->getCurrentGmtDate()
                         )
                     );
                 }
             }
 
-            if ($typeQty == Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_QTY_BETWEEN) {
+            if ($typeQty == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) {
                 if ($productQty >= $minQty && $productQty <= $maxQty) {
                     $result = true;
                 } else {
-                    // M2ePro_TRANSLATIONS
-                    // Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                    // Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                    // “Calculated Quantity” is set between  %template_min_qty% and %template_max_qty%.
                     $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
-                        'Product was not automatically Listed according to the List Rules in Synchronization Policy.
-                         Quantity of Magento Product is %product_qty% though in Synchronization Rules
-                         “Calculated Quantity” is set between  %template_min_qty% and %template_max_qty%.',
+                        'Product was not Listed as its Quantity is %product_qty% in Magento.
+                        The Calculated Quantity condition in the List Rules was not met.',
                         array(
-                            '!template_min_qty' => $minQty,
-                            '!template_max_qty' => $maxQty,
                             '!product_qty' => $productQty,
-                            '!date' => Mage::helper('M2ePro')->getCurrentGmtDate()
                         )
                     );
                 }
@@ -331,6 +259,27 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Instruction_SynchronizationTemplate_
                     $additionalData['synch_template_list_rules_note'] = $note;
                     $listingProduct->setSettings('additional_data', $additionalData)->save();
                 }
+
+                return false;
+            }
+        }
+
+        if ($ebaySynchronizationTemplate->isListAdvancedRulesEnabled()) {
+            $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setData(
+                array(
+                    'store_id' => $listingProduct->getListing()->getStoreId(),
+                    'prefix'   => Ess_M2ePro_Model_Ebay_Template_Synchronization::LIST_ADVANCED_RULES_PREFIX
+                )
+            );
+            $ruleModel->loadFromSerialized($ebaySynchronizationTemplate->getListAdvancedRulesFilters());
+
+            if (!$ruleModel->validate($listingProduct->getMagentoProduct()->getProduct())) {
+                $note = Mage::helper('M2ePro/Module_Log')->encodeDescription(
+                    'Product was not Listed. Advanced Conditions in the List Rules were not met.'
+                );
+
+                $additionalData['synch_template_list_rules_note'] = $note;
+                $listingProduct->setSettings('additional_data', $additionalData)->save();
 
                 return false;
             }

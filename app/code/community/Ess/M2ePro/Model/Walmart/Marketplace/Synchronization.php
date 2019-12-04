@@ -56,7 +56,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Synchronization
             'marketplace', 'get', 'info',
             array('include_details' => true,
                   'marketplace' => $this->_marketplace->getNativeId()),
-            'info', NULL
+            'info', null
         );
 
         $dispatcherObj->process($connectorObj);
@@ -80,10 +80,10 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Synchronization
 
         $data = array(
             'marketplace_id' => $this->_marketplace->getId(),
-            'client_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : NULL,
-            'server_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : NULL,
-            'product_data'   => isset($details['product_data']) ? $helper->jsonEncode($details['product_data']) : NULL,
-            'tax_codes'      => isset($details['tax_codes']) ? $helper->jsonEncode($details['tax_codes']) : NULL
+            'client_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : null,
+            'server_details_last_update_date' => isset($details['last_update']) ? $details['last_update'] : null,
+            'product_data'   => isset($details['product_data']) ? $helper->jsonEncode($details['product_data']) : null,
+            'tax_codes'      => isset($details['tax_codes']) ? $helper->jsonEncode($details['tax_codes']) : null
         );
 
         $connWrite->insert($tableMarketplaces, $data);
@@ -107,7 +107,7 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Synchronization
                 'marketplace', 'get', 'categories',
                 array('part_number' => $partNumber,
                       'marketplace' => $this->_marketplace->getNativeId()),
-                NULL, NULL
+                null, null
             );
 
             $dispatcherObj->process($connectorObj);
@@ -129,8 +129,8 @@ class Ess_M2ePro_Model_Walmart_Marketplace_Synchronization
                     'marketplace_id'     => $this->_marketplace->getId(),
                     'category_id'        => $data['id'],
                     'parent_category_id' => $data['parent_id'],
-                    'browsenode_id'      => ($isLeaf ? $data['browsenode_id'] : NULL),
-                    'product_data_nicks' => ($isLeaf ? $helper->jsonEncode($data['product_data_nicks']) : NULL),
+                    'browsenode_id'      => ($isLeaf ? $data['browsenode_id'] : null),
+                    'product_data_nicks' => ($isLeaf ? $helper->jsonEncode($data['product_data_nicks']) : null),
                     'title'              => $data['title'],
                     'path'               => $data['path'],
                     'is_leaf'            => $isLeaf,

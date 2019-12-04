@@ -66,28 +66,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
 
     //########################################
 
-    public function getAdvancedFilterButtonHtml()
-    {
-        if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            return '';
-        }
-
-        return parent::getAdvancedFilterButtonHtml();
-    }
-
-    //########################################
-
-    protected function isShowRuleBlock()
-    {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return false;
-        }
-
-        return parent::isShowRuleBlock();
-    }
-
-    //########################################
-
     protected function getGridHandlerJs()
     {
         return 'EbayListingSettingsGridHandler';
@@ -166,7 +144,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
             array(
                 'item_id' => 'item_id',
             ),
-            NULL,
+            null,
             'left'
         );
         $collection->joinTable(
@@ -178,7 +156,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
                 'category_main_path'      => 'category_main_path',
                 'category_main_attribute' => 'category_main_attribute',
             ),
-            NULL,
+            null,
             'left'
         );
         $collection->joinTable(
@@ -200,11 +178,21 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
                 'store_category_secondary_path'      => 'store_category_secondary_path',
                 'store_category_secondary_attribute' => 'store_category_secondary_attribute',
             ),
-            NULL,
+            null,
             'left'
         );
 
         if ($this->_motorsAttribute) {
+            $attributeCode = $this->_motorsAttribute->getAttributeCode();
+            $collection->joinAttribute(
+                $attributeCode,
+                'catalog_product/'.$attributeCode,
+                'entity_id',
+                null,
+                'left',
+                $this->getListing()->getStoreId()
+            );
+
             $collection->joinTable(
                 array(
                     'eea' => Mage::helper('M2ePro/Module_Database_Structure')
@@ -330,14 +318,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
             ), 'other'
         );
 
-        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            $this->getMassactionBlock()->addItem(
-                'transferring', array(
-                'label'    => Mage::helper('M2ePro')->__('Sell on Another eBay Site'),
-                'url'      => '',
-                ), 'other'
-            );
-        }
+        $this->getMassactionBlock()->addItem(
+            'transferring', array(
+            'label'    => Mage::helper('M2ePro')->__('Sell on Another eBay Site'),
+            'url'      => '',
+            ), 'other'
+        );
 
         return $this;
     }
@@ -533,7 +519,7 @@ HTML;
         if ($value == 1) {
             $attributeCode = $this->_motorsAttribute->getAttributeCode();
             $collection->joinAttribute(
-                $attributeCode, 'catalog_product/'.$attributeCode, 'entity_id', NULL, 'left',
+                $attributeCode, 'catalog_product/'.$attributeCode, 'entity_id', null, 'left',
                 $this->getListing()->getStoreId()
             );
 
@@ -758,21 +744,6 @@ HTML;
             'of Product' => Mage::helper('M2ePro')->__('of Product'),
             'Specifics' => $helper->__('Specifics'),
             'Compatibility Attribute ePIDs' => $helper->__('Compatibility Attribute ePIDs'),
-            'Payment for Translation Service' => $helper->__('Payment for Translation Service'),
-            'Payment for Translation Service. Help' => $helper->__('Payment for Translation Service'),
-            'Specify a sum to be credited to an Account.' =>
-                $helper->__(
-                    'Specify a sum to be credited to an Account.'
-                           .' If you are planning to order more Items for Translation in future,'
-                           .' you can credit the sum greater than the one needed for current Translation.'
-                           .' Click <a href="%url%" target="_blank">here</a> to find out more.',
-                    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
-                        NULL, NULL,
-                        'x/BQAJAQ#SellonanothereBaySite-Account'
-                    )
-                ),
-            'Amount to Pay.' => $helper->__('Amount to Pay'),
-            'Insert amount to be credited to an Account' => $helper->__('Insert amount to be credited to an Account.'),
             'Confirm' => $helper->__('Confirm'),
             'Add Compatible Vehicles' => $helper->__('Add Compatible Vehicles'),
             'Save Filter' => $helper->__('Save Filter'),
@@ -793,7 +764,8 @@ HTML;
             'Type' => $helper->__('Type'),
             'Year From' => $helper->__('Year From'),
             'Year To' => $helper->__('Year To'),
-            'Body Style' => $helper->__('Body Style')
+            'Body Style' => $helper->__('Body Style'),
+            'Street Name' => $helper->__('Street Name')
             )
         );
         // ---------------------------------------
@@ -828,14 +800,10 @@ HTML;
             $helper->__('"%task_title%" Task was completed successfully.')
         );
 
-        // M2ePro_TRANSLATIONS
-        // %task_title%" Task was completed with warnings. <a target="_blank" href="%url%">View Log</a> for the details.
         $tempString = '"%task_title%" Task was completed with warnings.'
                      .' <a target="_blank" href="%url%">View Log</a> for the details.';
         $taskCompletedWarningMessage = $helper->escapeJs($helper->__($tempString));
 
-        // M2ePro_TRANSLATIONS
-        // "%task_title%" Task was completed with errors. <a target="_blank" href="%url%">View Log</a> for the details.
         $tempString = '"%task_title%" Task was completed with errors. '
                      .' <a target="_blank" href="%url%">View Log</a> for the details.';
         $taskCompletedErrorMessage = $helper->escapeJs($helper->__($tempString));

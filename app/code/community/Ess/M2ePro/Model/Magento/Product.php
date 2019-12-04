@@ -99,7 +99,7 @@ class Ess_M2ePro_Model_Magento_Product
      * @throws Ess_M2ePro_Model_Exception
      * @return Ess_M2ePro_Model_Magento_Product | Ess_M2ePro_Model_Magento_Product_Cache
      */
-    public function loadProduct($productId = NULL, $storeId = NULL)
+    public function loadProduct($productId = null, $storeId = null)
     {
         $productId = ($productId === null) ? $this->_productId : $productId;
         $storeId = ($storeId === null) ? $this->_storeId : $storeId;
@@ -477,7 +477,7 @@ class Ess_M2ePro_Model_Magento_Product
 
     public function getTypeId()
     {
-        $typeId = NULL;
+        $typeId = null;
         if (!$this->_productModel && $this->_productId > 0) {
             $typeId = self::getTypeIdByProductId($this->_productId);
         } else {
@@ -746,7 +746,7 @@ class Ess_M2ePro_Model_Magento_Product
     public function getSpecialPrice()
     {
         if (!$this->isSpecialPriceActual()) {
-            return NULL;
+            return null;
         }
 
         // for grouped always returns 0
@@ -832,7 +832,7 @@ class Ess_M2ePro_Model_Magento_Product
      * @param null $customerGroupId
      * @return array
      */
-    public function getTierPrice($websiteId = NULL, $customerGroupId = NULL)
+    public function getTierPrice($websiteId = null, $customerGroupId = null)
     {
         $attribute = $this->getProduct()->getResource()->getAttribute('tier_price');
         $attribute->getBackend()->afterLoad($this->getProduct());
@@ -1266,7 +1266,7 @@ class Ess_M2ePro_Model_Magento_Product
         $thumbnailTempUrl = 'catalog/product/' . ltrim($thumbnailTempPath, '/');
         $thumbnailTempUrl = Mage::app()->getStore($this->getStoreId())
                 ->getBaseUrl(
-                    Mage_Core_Model_Store::URL_TYPE_MEDIA, NULL
+                    Mage_Core_Model_Store::URL_TYPE_MEDIA, null
                 ) . $thumbnailTempUrl;
 
         $thumbnailTempUrl = $this->prepareImageUrl($thumbnailTempUrl);

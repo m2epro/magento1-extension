@@ -12,93 +12,9 @@
  */
 class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    const LIST_MODE_NONE = 0;
-    const LIST_MODE_YES = 1;
-
-    const LIST_STATUS_ENABLED_NONE = 0;
-    const LIST_STATUS_ENABLED_YES  = 1;
-
-    const LIST_IS_IN_STOCK_NONE = 0;
-    const LIST_IS_IN_STOCK_YES  = 1;
-
-    const LIST_QTY_NONE    = 0;
-    const LIST_QTY_LESS    = 1;
-    const LIST_QTY_BETWEEN = 2;
-    const LIST_QTY_MORE    = 3;
-
-    const REVISE_UPDATE_QTY_NONE = 0;
-    const REVISE_UPDATE_QTY_YES  = 1;
-
-    const REVISE_MAX_AFFECTED_QTY_MODE_OFF = 0;
-    const REVISE_MAX_AFFECTED_QTY_MODE_ON = 1;
-
-    const REVISE_UPDATE_QTY_MAX_APPLIED_VALUE_DEFAULT = 5;
-
-    const REVISE_UPDATE_PRICE_NONE = 0;
-    const REVISE_UPDATE_PRICE_YES  = 1;
-
-    const REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF = 0;
-    const REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON  = 1;
-
-    const REVISE_UPDATE_PRICE_MAX_ALLOWED_DEVIATION_DEFAULT = 3;
-
-    const REVISE_UPDATE_TITLE_NONE = 0;
-    const REVISE_UPDATE_TITLE_YES  = 1;
-
-    const REVISE_UPDATE_DESCRIPTION_NONE = 0;
-    const REVISE_UPDATE_DESCRIPTION_YES  = 1;
-
-    const REVISE_UPDATE_SUB_TITLE_NONE = 0;
-    const REVISE_UPDATE_SUB_TITLE_YES  = 1;
-
-    const REVISE_UPDATE_IMAGES_NONE = 0;
-    const REVISE_UPDATE_IMAGES_YES  = 1;
-
-    const REVISE_UPDATE_CATEGORIES_NONE = 0;
-    const REVISE_UPDATE_CATEGORIES_YES  = 1;
-
-    const REVISE_UPDATE_SHIPPING_NONE = 0;
-    const REVISE_UPDATE_SHIPPING_YES  = 1;
-
-    const REVISE_UPDATE_PAYMENT_NONE = 0;
-    const REVISE_UPDATE_PAYMENT_YES  = 1;
-
-    const REVISE_UPDATE_RETURN_NONE = 0;
-    const REVISE_UPDATE_RETURN_YES  = 1;
-
-    const REVISE_UPDATE_OTHER_NONE = 0;
-    const REVISE_UPDATE_OTHER_YES  = 1;
-
-    const RELIST_FILTER_USER_LOCK_NONE = 0;
-    const RELIST_FILTER_USER_LOCK_YES  = 1;
-
-    const RELIST_MODE_NONE = 0;
-    const RELIST_MODE_YES  = 1;
-
-    const RELIST_STATUS_ENABLED_NONE = 0;
-    const RELIST_STATUS_ENABLED_YES  = 1;
-
-    const RELIST_IS_IN_STOCK_NONE = 0;
-    const RELIST_IS_IN_STOCK_YES  = 1;
-
-    const RELIST_QTY_NONE    = 0;
-    const RELIST_QTY_LESS    = 1;
-    const RELIST_QTY_BETWEEN = 2;
-    const RELIST_QTY_MORE    = 3;
-
-    const STOP_MODE_NONE = 0;
-    const STOP_MODE_YES  = 1;
-
-    const STOP_STATUS_DISABLED_NONE = 0;
-    const STOP_STATUS_DISABLED_YES  = 1;
-
-    const STOP_OUT_OFF_STOCK_NONE = 0;
-    const STOP_OUT_OFF_STOCK_YES  = 1;
-
-    const STOP_QTY_NONE    = 0;
-    const STOP_QTY_LESS    = 1;
-    const STOP_QTY_BETWEEN = 2;
-    const STOP_QTY_MORE    = 3;
+    const LIST_ADVANCED_RULES_PREFIX   = 'ebay_template_synchronization_list_advanced_rules';
+    const RELIST_ADVANCED_RULES_PREFIX = 'ebay_template_synchronization_relist_advanced_rules';
+    const STOP_ADVANCED_RULES_PREFIX   = 'ebay_template_synchronization_stop_advanced_rules';
 
     //########################################
 
@@ -153,7 +69,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isListMode()
     {
-        return $this->getData('list_mode') != self::LIST_MODE_NONE;
+        return $this->getData('list_mode') != 0;
     }
 
     /**
@@ -161,7 +77,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isListStatusEnabled()
     {
-        return $this->getData('list_status_enabled') != self::LIST_STATUS_ENABLED_NONE;
+        return $this->getData('list_status_enabled') != 0;
     }
 
     /**
@@ -169,7 +85,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isListIsInStock()
     {
-        return $this->getData('list_is_in_stock') != self::LIST_IS_IN_STOCK_NONE;
+        return $this->getData('list_is_in_stock') != 0;
     }
 
     /**
@@ -177,7 +93,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isListWhenQtyMagentoHasValue()
     {
-        return $this->getData('list_qty_magento') != self::LIST_QTY_NONE;
+        return $this->getData('list_qty_magento') != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE;
     }
 
     /**
@@ -185,7 +101,21 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isListWhenQtyCalculatedHasValue()
     {
-        return $this->getData('list_qty_calculated') != self::LIST_QTY_NONE;
+        return $this->getData('list_qty_calculated') != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isListAdvancedRulesEnabled()
+    {
+        $rules = $this->getListAdvancedRulesFilters();
+        return $this->getData('list_advanced_rules_mode') != 0 && !empty($rules);
+    }
+
+    public function getListAdvancedRulesFilters()
+    {
+        return $this->getData('list_advanced_rules_filters');
     }
 
     // ---------------------------------------
@@ -203,7 +133,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateQtyMaxAppliedValueModeOn()
     {
-        return $this->getReviseUpdateQtyMaxAppliedValueMode() == self::REVISE_MAX_AFFECTED_QTY_MODE_ON;
+        return $this->getReviseUpdateQtyMaxAppliedValueMode() == 1;
     }
 
     /**
@@ -211,7 +141,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateQtyMaxAppliedValueModeOff()
     {
-        return $this->getReviseUpdateQtyMaxAppliedValueMode() == self::REVISE_MAX_AFFECTED_QTY_MODE_OFF;
+        return $this->getReviseUpdateQtyMaxAppliedValueMode() == 0;
     }
 
     // ---------------------------------------
@@ -239,7 +169,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdatePriceMaxAllowedDeviationModeOn()
     {
-        return $this->getReviseUpdatePriceMaxAllowedDeviationMode() == self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON;
+        return $this->getReviseUpdatePriceMaxAllowedDeviationMode() == 1;
     }
 
     /**
@@ -247,8 +177,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdatePriceMaxAllowedDeviationModeOff()
     {
-        return $this->getReviseUpdatePriceMaxAllowedDeviationMode()
-                    == self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF;
+        return $this->getReviseUpdatePriceMaxAllowedDeviationMode() == 0;
     }
 
     // ---------------------------------------
@@ -289,7 +218,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateQty()
     {
-        return $this->getData('revise_update_qty') != self::REVISE_UPDATE_QTY_NONE;
+        return $this->getData('revise_update_qty') != 0;
     }
 
     /**
@@ -297,7 +226,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdatePrice()
     {
-        return $this->getData('revise_update_price') != self::REVISE_UPDATE_PRICE_NONE;
+        return $this->getData('revise_update_price') != 0;
     }
 
     /**
@@ -305,7 +234,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateTitle()
     {
-        return $this->getData('revise_update_title') != self::REVISE_UPDATE_TITLE_NONE;
+        return $this->getData('revise_update_title') != 0;
     }
 
     /**
@@ -313,7 +242,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateSubtitle()
     {
-        return $this->getData('revise_update_sub_title') != self::REVISE_UPDATE_SUB_TITLE_NONE;
+        return $this->getData('revise_update_sub_title') != 0;
     }
 
     /**
@@ -321,7 +250,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateDescription()
     {
-        return $this->getData('revise_update_description') != self::REVISE_UPDATE_DESCRIPTION_NONE;
+        return $this->getData('revise_update_description') != 0;
     }
 
     /**
@@ -329,7 +258,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateImages()
     {
-        return $this->getData('revise_update_images') != self::REVISE_UPDATE_IMAGES_NONE;
+        return $this->getData('revise_update_images') != 0;
     }
 
     /**
@@ -337,7 +266,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateCategories()
     {
-        return $this->getData('revise_update_categories') != self::REVISE_UPDATE_CATEGORIES_NONE;
+        return $this->getData('revise_update_categories') != 0;
     }
 
     /**
@@ -345,7 +274,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateShipping()
     {
-        return $this->getData('revise_update_shipping') != self::REVISE_UPDATE_SHIPPING_NONE;
+        return $this->getData('revise_update_shipping') != 0;
     }
 
     /**
@@ -353,7 +282,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdatePayment()
     {
-        return $this->getData('revise_update_payment') != self::REVISE_UPDATE_PAYMENT_NONE;
+        return $this->getData('revise_update_payment') != 0;
     }
 
     /**
@@ -361,7 +290,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateReturn()
     {
-        return $this->getData('revise_update_return') != self::REVISE_UPDATE_RETURN_NONE;
+        return $this->getData('revise_update_return') != 0;
     }
 
     /**
@@ -369,7 +298,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isReviseUpdateOther()
     {
-        return $this->getData('revise_update_other') != self::REVISE_UPDATE_OTHER_NONE;
+        return $this->getData('revise_update_other') != 0;
     }
 
     // ---------------------------------------
@@ -379,7 +308,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isRelistMode()
     {
-        return $this->getData('relist_mode') != self::RELIST_MODE_NONE;
+        return $this->getData('relist_mode') != 0;
     }
 
     /**
@@ -387,7 +316,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isRelistFilterUserLock()
     {
-        return $this->getData('relist_filter_user_lock') != self::RELIST_FILTER_USER_LOCK_NONE;
+        return $this->getData('relist_filter_user_lock') != 0;
     }
 
     /**
@@ -395,7 +324,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isRelistStatusEnabled()
     {
-        return $this->getData('relist_status_enabled') != self::RELIST_STATUS_ENABLED_NONE;
+        return $this->getData('relist_status_enabled') != 0;
     }
 
     /**
@@ -403,7 +332,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isRelistIsInStock()
     {
-        return $this->getData('relist_is_in_stock') != self::RELIST_IS_IN_STOCK_NONE;
+        return $this->getData('relist_is_in_stock') != 0;
     }
 
     /**
@@ -411,7 +340,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isRelistWhenQtyMagentoHasValue()
     {
-        return $this->getData('relist_qty_magento') != self::RELIST_QTY_NONE;
+        return $this->getData('relist_qty_magento') != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE;
     }
 
     /**
@@ -419,7 +348,21 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isRelistWhenQtyCalculatedHasValue()
     {
-        return $this->getData('relist_qty_calculated') != self::RELIST_QTY_NONE;
+        return $this->getData('relist_qty_calculated') != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRelistAdvancedRulesEnabled()
+    {
+        $rules = $this->getRelistAdvancedRulesFilters();
+        return $this->getData('relist_advanced_rules_mode') != 0 && !empty($rules);
+    }
+
+    public function getRelistAdvancedRulesFilters()
+    {
+        return $this->getData('relist_advanced_rules_filters');
     }
 
     // ---------------------------------------
@@ -429,7 +372,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isStopMode()
     {
-        return $this->getData('stop_mode') != self::STOP_MODE_NONE;
+        return $this->getData('stop_mode') != 0;
     }
 
     /**
@@ -437,7 +380,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isStopStatusDisabled()
     {
-        return $this->getData('stop_status_disabled') != self::STOP_STATUS_DISABLED_NONE;
+        return $this->getData('stop_status_disabled') != 0;
     }
 
     /**
@@ -445,7 +388,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isStopOutOfStock()
     {
-        return $this->getData('stop_out_off_stock') != self::STOP_OUT_OFF_STOCK_NONE;
+        return $this->getData('stop_out_off_stock') != 0;
     }
 
     /**
@@ -453,7 +396,7 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isStopWhenQtyMagentoHasValue()
     {
-        return $this->getData('stop_qty_magento') != self::STOP_QTY_NONE;
+        return $this->getData('stop_qty_magento') != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE;
     }
 
     /**
@@ -461,7 +404,21 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
      */
     public function isStopWhenQtyCalculatedHasValue()
     {
-        return $this->getData('stop_qty_calculated') != self::STOP_QTY_NONE;
+        return $this->getData('stop_qty_calculated') != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStopAdvancedRulesEnabled()
+    {
+        $rules = $this->getStopAdvancedRulesFilters();
+        return $this->getData('stop_advanced_rules_mode') != 0 && !empty($rules);
+    }
+
+    public function getStopAdvancedRulesFilters()
+    {
+        return $this->getData('stop_advanced_rules_filters');
     }
 
     //########################################
@@ -571,160 +528,109 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
     /**
      * @return array
      */
-    public function getDefaultSettingsSimpleMode()
+    public function getDefaultSettings()
     {
         return array_merge(
-            $this->getListDefaultSettingsSimpleMode(),
-            $this->getReviseDefaultSettingsSimpleMode(),
-            $this->getRelistDefaultSettingsSimpleMode(),
-            $this->getStopDefaultSettingsSimpleMode()
+            $this->getListDefaultSettings(),
+            $this->getReviseDefaultSettings(),
+            $this->getRelistDefaultSettings(),
+            $this->getStopDefaultSettings()
         );
     }
 
     /**
      * @return array
      */
-    public function getDefaultSettingsAdvancedMode()
-    {
-        return array_merge(
-            $this->getListDefaultSettingsAdvancedMode(),
-            $this->getReviseDefaultSettingsAdvancedMode(),
-            $this->getRelistDefaultSettingsAdvancedMode(),
-            $this->getStopDefaultSettingsAdvancedMode()
-        );
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return array
-     */
-    public function getListDefaultSettingsSimpleMode()
+    public function getListDefaultSettings()
     {
         return array(
-            'list_mode'           => self::LIST_MODE_NONE,
-            'list_status_enabled' => self::LIST_STATUS_ENABLED_YES,
-            'list_is_in_stock'    => self::LIST_IS_IN_STOCK_YES,
+            'list_mode'           => 1,
+            'list_status_enabled' => 1,
+            'list_is_in_stock'    => 1,
 
-            'list_qty_magento'           => self::LIST_QTY_NONE,
+            'list_qty_magento'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
             'list_qty_magento_value'     => '1',
             'list_qty_magento_value_max' => '10',
 
-            'list_qty_calculated'           => self::LIST_QTY_NONE,
+            'list_qty_calculated'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
             'list_qty_calculated_value'     => '1',
             'list_qty_calculated_value_max' => '10',
+
+            'list_advanced_rules_mode'    => 0,
+            'list_advanced_rules_filters' => null
         );
     }
 
     /**
      * @return array
      */
-    public function getReviseDefaultSettingsSimpleMode()
+    public function getReviseDefaultSettings()
     {
         return array(
-            'revise_update_qty'                              => self::REVISE_UPDATE_QTY_YES,
-            'revise_update_qty_max_applied_value_mode'       => self::REVISE_MAX_AFFECTED_QTY_MODE_OFF,
-            'revise_update_qty_max_applied_value'            => self::REVISE_UPDATE_QTY_MAX_APPLIED_VALUE_DEFAULT,
-            'revise_update_price'                            => self::REVISE_UPDATE_PRICE_YES,
-            'revise_update_price_max_allowed_deviation_mode' => self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF,
-            'revise_update_price_max_allowed_deviation'      => self::REVISE_UPDATE_PRICE_MAX_ALLOWED_DEVIATION_DEFAULT,
-            'revise_update_title'                            => self::REVISE_UPDATE_TITLE_NONE,
-            'revise_update_sub_title'                        => self::REVISE_UPDATE_SUB_TITLE_NONE,
-            'revise_update_description'                      => self::REVISE_UPDATE_DESCRIPTION_NONE,
-            'revise_update_images'                           => self::REVISE_UPDATE_IMAGES_NONE,
-            'revise_update_categories'                       => self::REVISE_UPDATE_CATEGORIES_NONE,
-            'revise_update_shipping'                         => self::REVISE_UPDATE_SHIPPING_NONE,
-            'revise_update_payment'                          => self::REVISE_UPDATE_PAYMENT_NONE,
-            'revise_update_return'                           => self::REVISE_UPDATE_RETURN_NONE,
-            'revise_update_other'                           => self::REVISE_UPDATE_OTHER_NONE,
+            'revise_update_qty'                              => 1,
+            'revise_update_qty_max_applied_value_mode'       => 1,
+            'revise_update_qty_max_applied_value'            => 5,
+            'revise_update_price'                            => 1,
+            'revise_update_price_max_allowed_deviation_mode' => 1,
+            'revise_update_price_max_allowed_deviation'      => 0,
+            'revise_update_title'                            => 0,
+            'revise_update_sub_title'                        => 0,
+            'revise_update_description'                      => 0,
+            'revise_update_images'                           => 0,
+            'revise_update_categories'                       => 0,
+            'revise_update_shipping'                         => 0,
+            'revise_update_payment'                          => 0,
+            'revise_update_return'                           => 0,
+            'revise_update_other'                            => 0,
         );
     }
 
     /**
      * @return array
      */
-    public function getRelistDefaultSettingsSimpleMode()
+    public function getRelistDefaultSettings()
     {
         return array(
-            'relist_mode'             => self::RELIST_MODE_YES,
-            'relist_filter_user_lock' => self::RELIST_FILTER_USER_LOCK_YES,
-            'relist_status_enabled'   => self::RELIST_STATUS_ENABLED_YES,
-            'relist_is_in_stock'      => self::RELIST_IS_IN_STOCK_YES,
+            'relist_mode'             => 1,
+            'relist_filter_user_lock' => 1,
+            'relist_status_enabled'   => 1,
+            'relist_is_in_stock'      => 1,
 
-            'relist_qty_magento'           => self::RELIST_QTY_NONE,
+            'relist_qty_magento'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
             'relist_qty_magento_value'     => '1',
             'relist_qty_magento_value_max' => '10',
 
-            'relist_qty_calculated'           => self::RELIST_QTY_NONE,
+            'relist_qty_calculated'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
             'relist_qty_calculated_value'     => '1',
-            'relist_qty_calculated_value_max' => '10'
+            'relist_qty_calculated_value_max' => '10',
+
+            'relist_advanced_rules_mode'    => 0,
+            'relist_advanced_rules_filters' => null
         );
     }
 
     /**
      * @return array
      */
-    public function getStopDefaultSettingsSimpleMode()
+    public function getStopDefaultSettings()
     {
         return array(
-            'stop_mode' => self::STOP_MODE_YES,
+            'stop_mode' => 1,
 
-            'stop_status_disabled' => self::STOP_STATUS_DISABLED_YES,
-            'stop_out_off_stock'   => self::STOP_OUT_OFF_STOCK_YES,
+            'stop_status_disabled' => 1,
+            'stop_out_off_stock'   => 1,
 
-            'stop_qty_magento'           => self::STOP_QTY_NONE,
+            'stop_qty_magento'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
             'stop_qty_magento_value'     => '0',
             'stop_qty_magento_value_max' => '10',
 
-            'stop_qty_calculated'           => self::STOP_QTY_NONE,
+            'stop_qty_calculated'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
             'stop_qty_calculated_value'     => '0',
-            'stop_qty_calculated_value_max' => '10'
+            'stop_qty_calculated_value_max' => '10',
+
+            'stop_advanced_rules_mode'    => 0,
+            'stop_advanced_rules_filters' => null
         );
-    }
-
-    // ---------------------------------------
-
-    /**
-     * @return array
-     */
-    public function getListDefaultSettingsAdvancedMode()
-    {
-        $simpleSettings = $this->getListDefaultSettingsSimpleMode();
-
-        $simpleSettings['list_mode'] = self::LIST_MODE_YES;
-
-        return $simpleSettings;
-    }
-
-    /**
-     * @return array
-     */
-    public function getReviseDefaultSettingsAdvancedMode()
-    {
-        $simpleSettings = $this->getReviseDefaultSettingsSimpleMode();
-
-        $simpleSettings['revise_update_qty_max_applied_value_mode'] = self::REVISE_MAX_AFFECTED_QTY_MODE_ON;
-
-        $simpleSettings['revise_update_price_max_allowed_deviation_mode']
-            = self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON;
-
-        return $simpleSettings;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRelistDefaultSettingsAdvancedMode()
-    {
-        return $this->getRelistDefaultSettingsSimpleMode();
-    }
-
-    /**
-     * @return array
-     */
-    public function getStopDefaultSettingsAdvancedMode()
-    {
-        return $this->getStopDefaultSettingsSimpleMode();
     }
 
     //########################################

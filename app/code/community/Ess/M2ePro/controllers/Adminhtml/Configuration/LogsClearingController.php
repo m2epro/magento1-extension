@@ -24,11 +24,6 @@ class Ess_M2ePro_Adminhtml_Configuration_LogsClearingController
                 $post['listings_log_days']
             );
             Mage::getModel('M2ePro/Log_Clearing')->saveSettings(
-                Ess_M2ePro_Model_Log_Clearing::LOG_OTHER_LISTINGS,
-                $post['other_listings_log_mode'],
-                $post['other_listings_log_days']
-            );
-            Mage::getModel('M2ePro/Log_Clearing')->saveSettings(
                 Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS,
                 $post['synchronizations_log_mode'],
                 $post['synchronizations_log_days']

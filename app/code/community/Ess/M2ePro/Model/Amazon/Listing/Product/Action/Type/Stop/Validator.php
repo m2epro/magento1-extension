@@ -33,15 +33,10 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Stop_Validator
 
         if ($this->getAmazonListingProduct()->isAfnChannel()) {
             if (!empty($params['remove'])) {
-                // M2ePro_TRANSLATIONS
-                // Stop Action for FBA Items is impossible as their Quantity is unknown.
                 $this->addMessage('Stop Action for FBA Items is impossible as their Quantity is unknown.');
                 $this->getListingProduct()->deleteInstance();
                 $this->getListingProduct()->isDeleted(true);
             } else {
-                // M2ePro_TRANSLATIONS
-                // Stop Action for FBA Items is impossible as their Quantity is unknown. You can run
-                // Revise Action for such Items, but the Quantity value will be ignored.
                 $this->addMessage(
                     'Stop Action for FBA Items is impossible as their Quantity is unknown. You can run
                     Revise Action for such Items, but the Quantity value will be ignored.'
@@ -53,8 +48,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Stop_Validator
 
         if (!$this->getListingProduct()->isListed() || !$this->getListingProduct()->isStoppable()) {
             if (empty($params['remove'])) {
-                // M2ePro_TRANSLATIONS
-                // Item is not Listed or not available
                 $this->addMessage('Item is not active or not available');
             } else {
                 $removeHandler = Mage::getModel(

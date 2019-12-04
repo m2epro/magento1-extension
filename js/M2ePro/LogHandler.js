@@ -1,9 +1,25 @@
-LogHandler = Class.create();
-LogHandler.prototype = Object.extend(new CommonHandler(), {
+LogHandler = Class.create(GridHandler, {
 
     // ---------------------------------------
 
-    initialize: function() {},
+    prepareActions: function() {},
+
+    // ---------------------------------------
+
+    afterInitPage: function($super)
+    {
+        $super();
+        this.randomBorderColor();
+    },
+
+    randomBorderColor: function ()
+    {
+        $$('.random_border_color').each(function(el) {
+            $(el).style.borderLeftWidth = '2px';
+            $(el).style.borderTopWidth = '0';
+            $(el).style.borderLeftColor = 'hsla(' + (Math.random() * 360) + ', 100%, 65%, 1)';
+        });
+    },
 
     // ---------------------------------------
 

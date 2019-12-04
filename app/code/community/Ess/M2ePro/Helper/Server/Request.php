@@ -18,9 +18,6 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         $tryToSwitchEndpointOnError = true
     ) {
         if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
-            // M2ePro_TRANSLATIONS
-            // The action is temporarily unavailable. M2E Pro server is currently
-            // under the planned maintenance. Please try again later.
             $message = 'The action is temporarily unavailable. M2E Pro server is currently';
             $message .= ' under the planned maintenance. Please try again later.';
 
@@ -99,9 +96,6 @@ class Ess_M2ePro_Helper_Server_Request extends Mage_Core_Helper_Abstract
         $asynchronous = false
     ) {
         if (Mage::helper('M2ePro/Server_Maintenance')->isInRealRange()) {
-            // M2ePro_TRANSLATIONS
-            // The action is temporarily unavailable. M2E Pro server is currently
-            // under the planned maintenance. Please try again later.
             $message = 'The action is temporarily unavailable. M2E Pro server is currently';
             $message .= ' under the planned maintenance. Please try again later.';
 

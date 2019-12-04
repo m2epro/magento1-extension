@@ -45,18 +45,6 @@ class Ess_M2ePro_Block_Adminhtml_Support extends Mage_Adminhtml_Block_Widget_For
         // ---------------------------------------
 
         // ---------------------------------------
-        $url = Mage::helper('M2ePro/View_Development')->getPageUrl();
-        $this->_addButton(
-            'goto_development', array(
-                'label'   => 'Control Panel',
-                'onclick' => 'window.location = \'' . $url . '\'',
-                'class'   => 'button_link development',
-                'style'   => 'display: none;'
-            )
-        );
-        // ---------------------------------------
-
-        // ---------------------------------------
         if ($this->_referrer === null) {
             $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl();
 

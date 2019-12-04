@@ -89,7 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
     public function getAttributesAvailabilityMessage()
     {
         if (!$this->canDisplayAttributesAvailabilityMessage()) {
-            return NULL;
+            return null;
         }
 
         $productIds = Mage::getResourceModel('M2ePro/Listing_Product')
@@ -98,15 +98,11 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
             ->getSetsFromProductsWhichLacksAttributes($this->getUsedAttributes(), $productIds);
 
         if (empty($attributeSets)) {
-            return NULL;
+            return null;
         }
 
         $attributeSetsNames = Mage::helper('M2ePro/Magento_AttributeSet')->getNames($attributeSets);
 
-        // M2ePro_TRANSLATIONS
-        // Some attributes which are used in this Policy were not found in Products Settings.
-        // Please, check if all of them are in [%set_name%] Attribute Set(s) as it can cause List,
-        // Revise or Relist issues.
         return
             Mage::helper('M2ePro')->__(
                 'Some Attributes which are used in this Policy were not found in Products Settings.'
@@ -124,7 +120,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
     public function getMarketplace()
     {
         if (!isset($this->_data['marketplace_id'])) {
-            return NULL;
+            return null;
         }
 
         return Mage::helper('M2ePro/Component')->getCachedComponentObject(
@@ -140,7 +136,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
     public function getStore()
     {
         if (!isset($this->_data['store_id'])) {
-            return NULL;
+            return null;
         }
 
         return Mage::app()->getStore((int)$this->_data['store_id']);

@@ -30,8 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Amazon_Configuration_Tabs extends Ess_M2ePro_Bl
 
     protected function _prepareLayout()
     {
-
-        if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
+        if (Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
             $this->addTab(self::TAB_ID_GENERAL, $this->prepareTabGeneral());
         }
 

@@ -109,7 +109,7 @@ HTML;
 
     //########################################
 
-    public function getButtonsHtml($area = NULL)
+    public function getButtonsHtml($area = null)
     {
         $html = parent::getButtonsHtml($area);
 

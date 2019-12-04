@@ -84,7 +84,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Updater
         $variationManager->getTypeModel()->clearTypeData();
 
         if ($variationManager->isRelationParentType()) {
-            $listingProduct->setData('general_id', NULL);
+            $listingProduct->setData('general_id', null);
             $listingProduct->setData(
                 'is_general_id_owner', Ess_M2ePro_Model_Amazon_Listing_Product::IS_GENERAL_ID_OWNER_NO
             );

@@ -47,7 +47,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
      * @return Ess_M2ePro_Model_Abstract
      * @throws Ess_M2ePro_Model_Exception_Logic
      */
-    public function loadInstance($id, $field = NULL)
+    public function loadInstance($id, $field = null)
     {
         $this->load($id, $field);
 
@@ -73,7 +73,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
-        if ($this->isSetProcessingLock(NULL)) {
+        if ($this->isSetProcessingLock(null)) {
             return true;
         }
 
@@ -134,7 +134,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
 
     //########################################
 
-    public function addProcessingLock($tag = NULL, $processingId = NULL)
+    public function addProcessingLock($tag = null, $processingId = null)
     {
         if ($this->getId() === null) {
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
@@ -175,7 +175,8 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
             throw new Ess_M2ePro_Model_Exception_Logic('Method require loaded instance first');
         }
 
-        return !empty($this->getProcessingLocks($tag, $processingId));
+        $locks = $this->getProcessingLocks($tag, $processingId);
+        return !empty($locks);
     }
 
     /**

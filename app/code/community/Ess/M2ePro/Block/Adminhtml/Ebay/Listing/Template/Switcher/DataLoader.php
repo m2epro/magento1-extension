@@ -12,7 +12,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
 
     public function load($source, array $params = array())
     {
-        $data = NULL;
+        $data = null;
 
         if ($source instanceof Ess_M2ePro_Helper_Data_Session) {
             $data = $this->getDataFromSession($source, $params);
@@ -39,12 +39,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         }
 
         // ---------------------------------------
-        $account = NULL;
+        $account = null;
         if ($data['account_id']) {
             $account = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Account', $data['account_id']);
         }
 
-        $marketplace = NULL;
+        $marketplace = null;
         if ($data['marketplace_id']) {
             $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
                 'Marketplace',
@@ -100,9 +100,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         // ---------------------------------------
 
         // ---------------------------------------
-        $accountId = isset($sessionData['account_id']) ? $sessionData['account_id'] : NULL;
-        $marketplaceId = isset($sessionData['marketplace_id']) ? $sessionData['marketplace_id'] : NULL;
-        $storeId = isset($sessionData['store_id']) ? $sessionData['store_id'] : NULL;
+        $accountId = isset($sessionData['account_id']) ? $sessionData['account_id'] : null;
+        $marketplaceId = isset($sessionData['marketplace_id']) ? $sessionData['marketplace_id'] : null;
+        $storeId = isset($sessionData['store_id']) ? $sessionData['store_id'] : null;
         $attributeSets = Mage::helper('M2ePro/Magento_AttributeSet')
             ->getAll(Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS);
         // ---------------------------------------
@@ -111,8 +111,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         $templates = array();
 
         foreach (Mage::getSingleton('M2ePro/Ebay_Template_Manager')->getAllTemplates() as $nick) {
-            $templateId = isset($sessionData["template_id_{$nick}"]) ? $sessionData["template_id_{$nick}"] : NULL;
-            $templateMode = isset($sessionData["template_id_{$nick}"]) ? $sessionData["template_mode_{$nick}"] : NULL;
+            $templateId = isset($sessionData["template_id_{$nick}"]) ? $sessionData["template_id_{$nick}"] : null;
+            $templateMode = isset($sessionData["template_id_{$nick}"]) ? $sessionData["template_mode_{$nick}"] : null;
 
             if (empty($templateMode)) {
                 $templateMode = Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM;
@@ -208,8 +208,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         $templates = array();
 
         foreach (Mage::getSingleton('M2ePro/Ebay_Template_Manager')->getAllTemplates() as $nick) {
-            $templateId = NULL;
-            $templateMode = NULL;
+            $templateId = null;
+            $templateMode = null;
             $forceParent = false;
 
             if ($source->getSize() <= 200) {
@@ -228,7 +228,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
                     }
 
                     if ($templateId != $currentProductTemplateId || $templateMode != $currentProductTemplateMode) {
-                        $templateId = NULL;
+                        $templateId = null;
                         $templateMode = Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT;
                         $forceParent = true;
                         break;
@@ -317,7 +317,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         $attributeSets = Mage::helper('M2ePro/Magento_AttributeSet')
             ->getAll(Ess_M2ePro_Helper_Magento_Abstract::RETURN_TYPE_IDS);
 
-        $marketplaceId = NULL;
+        $marketplaceId = null;
         if (isset($params['marketplace_id'])) {
             $marketplaceId = (int)$params['marketplace_id'];
         }
@@ -325,7 +325,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher_DataLoader
         $nick = $this->getTemplateNick($source);
 
         return array(
-            'account_id'                 => NULL,
+            'account_id'                 => null,
             'marketplace_id'             => $marketplaceId,
             'store_id'                   => Mage_Core_Model_App::ADMIN_STORE_ID,
             'attribute_sets'             => $attributeSets,

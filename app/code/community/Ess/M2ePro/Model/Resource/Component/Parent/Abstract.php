@@ -41,7 +41,7 @@ abstract class Ess_M2ePro_Model_Resource_Component_Parent_Abstract
     public function getChildModel()
     {
         if ($this->_childMode === null) {
-            return NULL;
+            return null;
         }
 
         return 'M2ePro/'.ucwords($this->_childMode) . '_' . $this->_mainTable;
@@ -50,7 +50,7 @@ abstract class Ess_M2ePro_Model_Resource_Component_Parent_Abstract
     public function getChildTable()
     {
         if ($this->_childMode === null) {
-            return NULL;
+            return null;
         }
 
         return str_replace('m2epro_', 'm2epro_'.$this->_childMode . '_', $this->getMainTable());
@@ -59,7 +59,7 @@ abstract class Ess_M2ePro_Model_Resource_Component_Parent_Abstract
     public function getChildPrimary()
     {
         if ($this->_childMode === null) {
-            return NULL;
+            return null;
         }
 
         $secondTable = $this->getChildTable();

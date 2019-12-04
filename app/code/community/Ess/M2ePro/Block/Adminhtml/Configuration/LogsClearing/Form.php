@@ -15,15 +15,8 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('configurationLogsClearingForm');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/configuration/logsClearing.phtml');
-
-        // ---------------------------------------
-
         $this->setPageHelpLink("x/CwAJAQ");
     }
 
@@ -58,7 +51,6 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_LogsClearing_Form
         $config = Mage::helper('M2ePro/Module')->getConfig();
         $tasks = array(
             Ess_M2ePro_Model_Log_Clearing::LOG_LISTINGS,
-            Ess_M2ePro_Model_Log_Clearing::LOG_OTHER_LISTINGS,
             Ess_M2ePro_Model_Log_Clearing::LOG_SYNCHRONIZATIONS,
             Ess_M2ePro_Model_Log_Clearing::LOG_ORDERS,
             Ess_M2ePro_Model_Log_Clearing::LOG_EBAY_PICKUP_STORE,

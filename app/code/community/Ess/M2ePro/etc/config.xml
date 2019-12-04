@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.5.6</version>
+            <version>6.5.7</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -90,7 +90,7 @@
                             </orders>
 
                             <logs module="M2ePro">
-                                <title>Logs</title>
+                                <title><![CDATA[Logs & Events]]></title>
                                 <sort_order>3</sort_order>
                                 <action>M2ePro/adminhtml_ebay_log/listing</action>
                             </logs>
@@ -122,7 +122,7 @@
                             </orders>
 
                             <logs module="M2ePro">
-                                <title>Logs</title>
+                                <title><![CDATA[Logs & Events]]></title>
                                 <sort_order>3</sort_order>
                                 <action>M2ePro/adminhtml_amazon_log/listing</action>
                             </logs>
@@ -154,7 +154,7 @@
                             </orders>
 
                             <logs module="M2ePro">
-                                <title>Logs</title>
+                                <title><![CDATA[Logs & Events]]></title>
                                 <sort_order>3</sort_order>
                                 <action>M2ePro/adminhtml_walmart_log/listing</action>
                             </logs>
@@ -207,7 +207,7 @@
                                         </orders>
 
                                         <logs>
-                                            <title>Logs</title>
+                                            <title><![CDATA[Logs & Events]]></title>
                                             <sort_order>3</sort_order>
                                         </logs>
 
@@ -235,7 +235,7 @@
                                         </orders>
 
                                         <logs>
-                                            <title>Logs</title>
+                                            <title><![CDATA[Logs & Events]]></title>
                                             <sort_order>3</sort_order>
                                         </logs>
 
@@ -263,7 +263,7 @@
                                         </orders>
 
                                         <logs>
-                                            <title>Logs</title>
+                                            <title><![CDATA[Logs & Events]]></title>
                                             <sort_order>3</sort_order>
                                         </logs>
 
@@ -338,7 +338,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>systemConfigurationInit</method>
                     </M2ePro_observer>
                 </observers>
@@ -348,7 +348,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>systemConfigurationSaveAction</method>
                     </M2ePro_observer>
                 </observers>
@@ -360,7 +360,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>catalogProductSaveBefore</method>
                     </M2ePro_observer>
                 </observers>
@@ -369,7 +369,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>catalogProductSaveAfter</method>
                     </M2ePro_observer>
                 </observers>
@@ -379,7 +379,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>catalogProductDeleteBefore</method>
                     </M2ePro_observer>
                 </observers>
@@ -391,7 +391,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>catalogProductAttributeUpdateBefore</method>
                     </M2ePro_observer>
                 </observers>
@@ -403,7 +403,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>catalogProductWebsiteUpdateBefore</method>
                     </M2ePro_observer>
                 </observers>
@@ -415,7 +415,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>catalogCategoryChangeProducts</method>
                     </M2ePro_observer>
                 </observers>
@@ -425,7 +425,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>catalogInventoryStockItemSaveAfter</method>
                     </M2ePro_observer>
                 </observers>
@@ -437,7 +437,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>synchronizationBeforeStart</method>
                     </M2ePro_observer>
                 </observers>
@@ -447,7 +447,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>synchronizationAfterStart</method>
                     </M2ePro_observer>
                 </observers>
@@ -459,7 +459,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>salesOrderInvoicePay</method>
                     </M2ePro_observer>
                 </observers>
@@ -469,7 +469,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>salesOrderShipmentSaveAfter</method>
                     </M2ePro_observer>
                 </observers>
@@ -479,7 +479,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>salesOrderShipmentTrackSaveAfter</method>
                     </M2ePro_observer>
                 </observers>
@@ -489,7 +489,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>salesOrderCreditmemoRefund</method>
                     </M2ePro_observer>
                 </observers>
@@ -499,7 +499,7 @@
                 <observers>
                     <M2ePro_observer_order_create>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>magentoOrderCreate</method>
                     </M2ePro_observer_order_create>
                 </observers>
@@ -509,7 +509,7 @@
                 <observers>
                     <M2ePro_observer_order_status_change>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>magentoOrderStatusChange</method>
                     </M2ePro_observer_order_status_change>
                 </observers>
@@ -519,7 +519,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>salesConvertQuoteItemToOrderItem</method>
                     </M2ePro_observer>
                 </observers>
@@ -529,7 +529,7 @@
                 <observers>
                     <M2ePro_observer_order_view_before>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>orderViewBefore</method>
                     </M2ePro_observer_order_view_before>
                 </observers>
@@ -539,7 +539,7 @@
                 <observers>
                     <M2ePro_observer_shipment_view>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>shipmentView</method>
                     </M2ePro_observer_shipment_view>
                 </observers>
@@ -549,7 +549,7 @@
                 <observers>
                     <M2ePro_observer_invoice_view>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>invoiceView</method>
                     </M2ePro_observer_invoice_view>
                 </observers>
@@ -559,7 +559,7 @@
                 <observers>
                     <M2ePro_observer_creditmemo_view>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>creditMemoView</method>
                     </M2ePro_observer_creditmemo_view>
                 </observers>
@@ -569,7 +569,7 @@
                 <observers>
                     <M2ePro_observer_order_view_after>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>orderViewAfter</method>
                     </M2ePro_observer_order_view_after>
                 </observers>
@@ -579,7 +579,7 @@
                 <observers>
                     <M2ePro_observer_shipment_view_before>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>shipmentViewBefore</method>
                     </M2ePro_observer_shipment_view_before>
                 </observers>
@@ -589,7 +589,7 @@
                 <observers>
                     <M2ePro_observer_shipment_view_after>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>shipmentViewAfter</method>
                     </M2ePro_observer_shipment_view_after>
                 </observers>
@@ -601,7 +601,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>associateEbayItemWithProduct</method>
                     </M2ePro_observer>
                 </observers>
@@ -610,7 +610,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>associateAmazonItemWithProduct</method>
                     </M2ePro_observer>
                 </observers>
@@ -619,7 +619,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>associateWalmartItemWithProduct</method>
                     </M2ePro_observer>
                 </observers>
@@ -631,7 +631,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>revertAmazonOrderedQty</method>
                     </M2ePro_observer>
                 </observers>
@@ -643,7 +643,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>listingProductSaveAfter</method>
                     </M2ePro_observer>
                 </observers>
@@ -653,7 +653,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>listingProductDeleteBefore</method>
                     </M2ePro_observer>
                 </observers>
@@ -775,7 +775,7 @@
                 <observers>
                     <M2ePro_observer>
                         <type>model</type>
-                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <class>Ess_M2ePro_Observer_Dispatcher</class>
                         <method>magentoStaticBlockChanged</method>
                     </M2ePro_observer>
                 </observers>
@@ -786,7 +786,23 @@
             <M2ePro>
                 <class>Ess_M2ePro_Model</class>
                 <resourceModel>M2ePro_resource</resourceModel>
+                <!-- PublicServices dir. was moved outside of Model dir. The following lines are added for BC. -->
+                <rewrite>
+                    <PublicServices_Product_ObjectChange>Ess_M2ePro_PublicServices_Product_ObjectChange</PublicServices_Product_ObjectChange>
+                    <PublicServices_Product_SqlChange>Ess_M2ePro_PublicServices_Product_SqlChange</PublicServices_Product_SqlChange>
+                </rewrite>
             </M2ePro>
+
+            <!-- Observer dir. was moved outside of Model dir. -->
+            <M2ePro_Observer>
+                <class>Ess_M2ePro_Observer</class>
+            </M2ePro_Observer>
+
+            <!-- PublicServices dir. was moved outside of Model dir. -->
+            <M2ePro_PublicServices>
+                <class>Ess_M2ePro_PublicServices</class>
+            </M2ePro_PublicServices>
+
             <M2ePro_resource>
                 <class>Ess_M2ePro_Model_Resource</class>
                 <entities>
@@ -975,9 +991,6 @@
                     <Listing_Log>
                         <table>m2epro_listing_log</table>
                     </Listing_Log>
-                    <Listing_Other_Log>
-                        <table>m2epro_listing_other_log</table>
-                    </Listing_Other_Log>
 
                     <Listing_Other>
                         <table>m2epro_listing_other</table>

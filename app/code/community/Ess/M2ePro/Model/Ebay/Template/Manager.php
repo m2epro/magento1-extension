@@ -214,7 +214,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
      */
     public function getIdColumnNameByMode($mode)
     {
-        $name = NULL;
+        $name = null;
 
         switch ($mode) {
             case self::MODE_TEMPLATE:
@@ -233,7 +233,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         $idColumnName = $this->getIdColumnNameByMode($this->getModeValue());
 
         if ($idColumnName === null) {
-            return NULL;
+            return null;
         }
 
         return $this->getOwnerObject()->getData($idColumnName);
@@ -261,7 +261,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
     public function getParentResultObject()
     {
         if ($this->isListingOwner()) {
-            return NULL;
+            return null;
         }
 
         /** @var Ess_M2ePro_Model_Ebay_Template_Manager $manager */
@@ -277,7 +277,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         $id = $this->getCustomIdValue();
 
         if ($id === null) {
-            return NULL;
+            return null;
         }
 
         return $this->makeResultObject($id);
@@ -288,7 +288,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
         $id = $this->getTemplateIdValue();
 
         if ($id === null) {
-            return NULL;
+            return null;
         }
 
         return $this->makeResultObject($id);
@@ -304,12 +304,12 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
 
         if ($this->isHorizontalTemplate()) {
             $object = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
-                $modelName, $id, NULL, array('template')
+                $modelName, $id, null, array('template')
             );
         } else {
             $modelName = 'Ebay_'.$modelName;
             $object = Mage::helper('M2ePro')->getCachedObject(
-                $modelName, $id, NULL, array('template')
+                $modelName, $id, null, array('template')
             );
         }
 
@@ -377,7 +377,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
      */
     public function getTemplateModelName()
     {
-        $name = NULL;
+        $name = null;
 
         switch ($this->getTemplate()) {
             case self::TEMPLATE_PAYMENT:
@@ -409,7 +409,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
 
     public function getTemplateModel($returnChildModel = false)
     {
-        $model = NULL;
+        $model = null;
 
         switch ($this->getTemplate()) {
             case self::TEMPLATE_PAYMENT:
@@ -442,7 +442,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
 
     public function getTemplateCollection()
     {
-        $collection = NULL;
+        $collection = null;
 
         switch ($this->getTemplate()) {
             case self::TEMPLATE_PAYMENT:
@@ -470,7 +470,7 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
 
     public function getTemplateBuilder()
     {
-        $model = NULL;
+        $model = null;
 
         switch ($this->getTemplate()) {
             case self::TEMPLATE_PAYMENT:
@@ -553,11 +553,11 @@ class Ess_M2ePro_Model_Ebay_Template_Manager
 
             if ($this->isHorizontalTemplate()) {
                 $templateModel = Mage::helper('M2ePro/Component_Ebay')
-                    ->getCachedObject($templateModelName, $templateId, NULL, array('template'))
+                    ->getCachedObject($templateModelName, $templateId, null, array('template'))
                     ->getChildObject();
             } else {
                 $templateModel = Mage::helper('M2ePro')->getCachedObject(
-                    $templateModelName, $templateId, NULL, array('template')
+                    $templateModelName, $templateId, null, array('template')
                 );
             }
 

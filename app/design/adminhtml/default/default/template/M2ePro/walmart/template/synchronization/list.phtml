@@ -25,24 +25,26 @@
     The detailed information can be found <a href="%url%" target="_blank">here</a>.',
 
     Mage::helper('M2ePro/View_Walmart')->getPageNavigationPath('configuration', 'Synchronization'),
-    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/L4taAQ')
+    Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, 'x/L4taAQ')
     ); ?>
 </div>
 
 <?php
     $formData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data') ? Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->toArray() : array();
     $defaults = array(
-        'list_mode'           => Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_MODE_YES,
-        'list_status_enabled' => Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_STATUS_ENABLED_YES,
-        'list_is_in_stock'    => Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_IS_IN_STOCK_YES,
+        'list_mode'           => 1,
+        'list_status_enabled' => 1,
+        'list_is_in_stock'    => 1,
 
-        'list_qty_magento'           => Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE,
+        'list_qty_magento'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
         'list_qty_magento_value'     => '1',
         'list_qty_magento_value_max' => '10',
 
-        'list_qty_calculated'           => Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE,
+        'list_qty_calculated'           => Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE,
         'list_qty_calculated_value'     => '1',
-        'list_qty_calculated_value_max' => '10'
+        'list_qty_calculated_value_max' => '10',
+
+        'list_advanced_rules_mode' => 0,
     );
     $formData = array_merge($defaults, $formData);
 
@@ -51,14 +53,18 @@
 
 <script type="text/javascript">
 
-    // Data for current tab
-    //-----------------------------
     Event.observe(window, 'load', function() {
-        $('list_mode').observe('change', WalmartTemplateSynchronizationHandlerObj.listMode_change);
+        $('list_mode')
+            .observe('change', WalmartTemplateSynchronizationHandlerObj.listMode_change)
+            .simulate('change');
+
         $('list_qty_magento').observe('change', WalmartTemplateSynchronizationHandlerObj.listQty_change);
         $('list_qty_calculated').observe('change', WalmartTemplateSynchronizationHandlerObj.listQty_change);
+
+        $('list_advanced_rules_mode')
+            .observe('change', WalmartTemplateSynchronizationHandlerObj.listAdvancedRules_change)
+            .simulate('change');
     });
-    //-----------------------------
 
 </script>
 
@@ -79,8 +85,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="list_mode" name="list_mode" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_MODE_NONE; ?>" <?php if ($formData['list_mode'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_MODE_YES; ?>" <?php if ($formData['list_mode'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_MODE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                            <option value="0" <?php if ($formData['list_mode'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
+                            <option value="1" <?php if ($formData['list_mode'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Enable to automatically list the Not Listed Item(s) when the List Conditions are met.'); ?></span>
@@ -95,7 +101,7 @@
 
 </div>
 
-<div class="entry-edit" id="magento_block_walmart_template_synchronization_list_rules" <?php if ($formData['list_mode'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_MODE_NONE): echo ' style="display:none;"'; endif; ?>>
+<div class="entry-edit" id="magento_block_walmart_template_synchronization_list_rules" <?php if ($formData['list_mode'] == 0): echo ' style="display:none;"'; endif; ?>>
 
     <div class="entry-edit-head">
         <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('List Conditions'); ?></h4>
@@ -112,8 +118,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="list_status_enabled" name="list_status_enabled" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_STATUS_ENABLED_NONE; ?>" <?php if ($formData['list_status_enabled'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_STATUS_ENABLED_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_STATUS_ENABLED_YES; ?>" <?php if ($formData['list_status_enabled'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_STATUS_ENABLED_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
+                            <option value="0" <?php if ($formData['list_status_enabled'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <option value="1" <?php if ($formData['list_status_enabled'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Magento Product Status at which the Item(s) have to be listed.'); ?></span>
@@ -127,8 +133,8 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="list_is_in_stock" name="list_is_in_stock" class="required-entry">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_IS_IN_STOCK_NONE; ?>" <?php if ($formData['list_is_in_stock'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_IS_IN_STOCK_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_IS_IN_STOCK_YES; ?>" <?php if ($formData['list_is_in_stock'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_IS_IN_STOCK_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('In Stock'); ?></option>
+                            <option value="0" <?php if ($formData['list_is_in_stock'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <option value="1" <?php if ($formData['list_is_in_stock'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('In Stock'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Magento Stock Availability at which the Item(s) have to be listed.'); ?></span>
@@ -142,10 +148,10 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="list_qty_magento" name="list_qty_magento" class="required-entry" qty_type="magento">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_LESS; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_MORE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('Magento Product Quantity at which the Item(s) have to be listed.'); ?></span>
@@ -153,11 +159,11 @@
                     </td>
                 </tr>
 
-                <tr id="list_qty_magento_value_container" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE) echo ' style="display: none;"'; ?>>
+                <tr id="list_qty_magento_value_container" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
                     <td class="label">
                         <label for="list_qty_magento_value">
-                            <span id="list_qty_magento_item" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="list_qty_magento_item_min" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
+                            <span id="list_qty_magento_item" <?php if ($formData['list_qty_magento'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
+                            <span id="list_qty_magento_item_min" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
                         </label>
                     </td>
                     <td class="value" style="width: auto;">
@@ -165,7 +171,7 @@
                     </td>
                 </tr>
 
-                <tr id="list_qty_magento_value_max_container" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>>
+                <tr id="list_qty_magento_value_max_container" <?php if ($formData['list_qty_magento'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
                     <td class="label">
                         <label for="list_qty_magento_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
                     </td>
@@ -180,10 +186,10 @@
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="list_qty_calculated" name="list_qty_calculated" class="required-entry" qty_type="calculated">
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
-                            <!-- <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_LESS; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_MORE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Any'); ?></option>
+                            <!-- <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_LESS): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Less'); ?></option> -->
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_MORE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('More or Equal'); ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN; ?>" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Between'); ?></option>
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__(
@@ -194,11 +200,11 @@
                     </td>
                 </tr>
 
-                <tr id="list_qty_calculated_value_container" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_NONE) echo ' style="display: none;"'; ?>>
+                <tr id="list_qty_calculated_value_container" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_NONE) echo ' style="display: none;"'; ?>>
                     <td class="label">
                         <label for="list_qty_calculated_value">
-                            <span id="list_qty_calculated_item" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
-                            <span id="list_qty_calculated_item_min" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
+                            <span id="list_qty_calculated_item" <?php if ($formData['list_qty_calculated'] == Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Quantity'); ?>: <span class="required">*</span></span>
+                            <span id="list_qty_calculated_item_min" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>><?php echo Mage::helper('M2ePro')->__('Min Quantity'); ?>: <span class="required">*</span></span>
                         </label>
                     </td>
                     <td class="value" style="width: auto;">
@@ -206,12 +212,75 @@
                     </td>
                 </tr>
 
-                <tr id="list_qty_calculated_value_max_container" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Walmart_Template_Synchronization::LIST_QTY_BETWEEN) echo ' style="display: none;"'; ?>>
+                <tr id="list_qty_calculated_value_max_container" <?php if ($formData['list_qty_calculated'] != Ess_M2ePro_Model_Template_Synchronization::QTY_MODE_BETWEEN) echo ' style="display: none;"'; ?>>
                     <td class="label">
                         <label for="list_qty_calculated_value_max"><?php echo Mage::helper('M2ePro')->__('Max Quantity'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value" style="width: auto;">
                         <input id="list_qty_calculated_value_max" name="list_qty_calculated_value_max" value="<?php echo $this->escapeHtml($formData['list_qty_calculated_value_max']); ?>" type="text" class="M2ePro-required-when-visible input-text validate-digits M2ePro-validate-conditions-between" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="entry-edit" id="magento_block_walmart_template_synchronization_list_advanced">
+
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Advanced Conditions'); ?></h4>
+    </div>
+
+    <div class="fieldset">
+        <div class="hor-scroll">
+
+            <div id="list_advanced_rules_filters_warning">
+                <ul class="messages">
+                    <li class="warning-msg">
+                        <ul>
+                            <li>
+                                <?php echo Mage::helper('M2ePro')->__(
+                                    'Please be very thoughtful before enabling this option as this functionality
+                                    can have a negative impact on the Performance of your system.<br> It can decrease the speed
+                                    of running in case you have a lot of Products with the high number of changes made to them.'
+                                ); ?>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <table class="form-list" cellspacing="0" cellpadding="0">
+
+                <tr>
+                    <td class="label">
+                        <label for="list_advanced_rules_mode"><?php echo Mage::helper('M2ePro')->__('Enabled'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <select id="list_advanced_rules_mode" name="list_advanced_rules_mode" class="required-entry">
+                            <option value="0" <?php if ($formData['list_advanced_rules_mode'] == 0): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('No'); ?></option>
+                            <option value="1" <?php if ($formData['list_advanced_rules_mode'] == 1): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
+                        </select>
+                        <p class="note">
+                            <span><?php echo Mage::helper('M2ePro')->__(
+                                'You can provide flexible Advanced Conditions to manage when the List action should
+                                be run basing on the Attributes’ values of the Magento Product.<br> So, when all the Conditions
+                                (both general List Conditions and Advanced Conditions) are met,
+                                the Product will be listed on Channel.'
+                            ); ?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr id="list_advanced_rules_filters_container">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Conditions'); ?>: </label>
+                    </td>
+                    <td class="value" style="width: auto;">
+                        <?php echo $this->getAdvancedRulesBlock()->toHtml(); ?>
                     </td>
                 </tr>
 

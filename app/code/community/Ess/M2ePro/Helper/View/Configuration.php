@@ -8,9 +8,6 @@
 
 class Ess_M2ePro_Helper_View_Configuration extends Mage_Core_Helper_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Configuration
-
     const NICK  = 'configuration';
 
     const CONFIG_SECTION_COMPONENTS     = 'm2epro_components';

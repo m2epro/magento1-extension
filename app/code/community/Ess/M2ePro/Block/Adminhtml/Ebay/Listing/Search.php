@@ -64,8 +64,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Search extends Ess_M2ePro_Block_Ad
             $switchersSettings
         );
 
-        if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode() ||
-            !Mage::helper('M2ePro/View_Ebay')->is3rdPartyShouldBeShown()) {
+        if (!Mage::helper('M2ePro/View_Ebay')->is3rdPartyShouldBeShown()) {
             $searchSwitcher->showOtherOption = false;
         }
 

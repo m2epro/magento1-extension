@@ -108,10 +108,10 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
 
     // ---------------------------------------
 
-    public function getRequestMetaData($key = NULL)
+    public function getRequestMetaData($key = null)
     {
         if ($key !== null) {
-            return isset($this->_requestMetaData[$key]) ? $this->_requestMetaData[$key] : NULL;
+            return isset($this->_requestMetaData[$key]) ? $this->_requestMetaData[$key] : null;
         }
 
         return $this->_requestMetaData;
@@ -222,6 +222,11 @@ abstract class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Response
             }
         }
 
+        return $data;
+    }
+
+    protected function appendLagTimeValues($data)
+    {
         if ($this->getRequestData()->hasLagTime()) {
             $data['online_lag_time'] = $this->getRequestData()->getLagTime();
         }

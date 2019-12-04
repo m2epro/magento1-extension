@@ -6,7 +6,7 @@
  * @license    Commercial use is forbidden
  */
 
-Class Ess_M2ePro_Model_Magento_Product_Rule extends Ess_M2ePro_Model_Abstract
+class Ess_M2ePro_Model_Magento_Product_Rule extends Ess_M2ePro_Model_Abstract
 {
     protected $_conditions = null;
 
@@ -227,7 +227,8 @@ Class Ess_M2ePro_Model_Magento_Product_Rule extends Ess_M2ePro_Model_Abstract
      */
     public function setAttributesFilterToCollection(Varien_Data_Collection_Db $collection)
     {
-        if (empty($this->getConditions()->getData($this->getPrefix()))) {
+        $conditions = $this->getConditions()->getData($this->getPrefix());
+        if (empty($conditions)) {
             return;
         }
 

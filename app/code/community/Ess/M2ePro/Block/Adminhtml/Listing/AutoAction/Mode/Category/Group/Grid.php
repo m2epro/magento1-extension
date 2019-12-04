@@ -70,18 +70,24 @@ class Ess_M2ePro_Block_Adminhtml_Listing_AutoAction_Mode_Category_Group_Grid
         );
         // ---------------------------------------
 
-        // we need sort by id also, because create_date may be same for some adjustment entries
-        // ---------------------------------------
-        if ($this->getRequest()->getParam('sort', 'create_date') == 'create_date') {
-            $collection->setOrder('id', $this->getRequest()->getParam('dir', 'DESC'));
-        }
-
-        // ---------------------------------------
-
         // Set collection to grid
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
+    }
+
+    //########################################
+
+    protected function _setCollectionOrder($column)
+    {
+        // We need to sort by id to maintain the correct sequence of records
+        $collection = $this->getCollection();
+        if ($collection) {
+            $columnIndex = $column->getFilterIndex() ? $column->getFilterIndex() : $column->getIndex();
+            $collection->getSelect()->order($columnIndex . ' ' . strtoupper($column->getDir()))->order('id DESC');
+        }
+
+        return $this;
     }
 
     //########################################

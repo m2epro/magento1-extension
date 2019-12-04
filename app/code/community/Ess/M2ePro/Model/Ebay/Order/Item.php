@@ -11,11 +11,6 @@
  */
 class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    // M2ePro_TRANSLATIONS
-    // Product Import is disabled in eBay Account Settings.
-    // Data obtaining for eBay Item failed. Please try again later.
-    // Product for eBay Item #%id% was created in Magento Catalog.
-
     const UNPAID_ITEM_PROCESS_NOT_OPENED = 0;
     const UNPAID_ITEM_PROCESS_OPENED     = 1;
 
@@ -76,7 +71,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
                                       ->getFirstItem();
         }
 
-        return $this->_channelItem->getId() !== null ? $this->_channelItem : NULL;
+        return $this->_channelItem->getId() !== null ? $this->_channelItem : null;
     }
 
     //########################################
@@ -191,7 +186,8 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
      */
     public function hasVariation()
     {
-        return !empty($this->getVariationDetails());
+        $details = $this->getVariationDetails();
+        return !empty($details);
     }
 
     /**

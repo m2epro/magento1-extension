@@ -55,8 +55,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
     public function getSuccessfulMessage()
     {
         if ($this->getConfigurator()->isExcludingMode()) {
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
@@ -69,53 +67,37 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
             if (!empty($params['switch_to']) &&
                 $params['switch_to'] ===
                 Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_AFN) {
-                // M2ePro_TRANSLATIONS
-                // Item was successfully switched to AFN
                 return 'Item was successfully switched to AFN';
             }
 
             if (!empty($params['switch_to']) &&
                 $params['switch_to'] ===
                 Ess_M2ePro_Model_Amazon_Listing_Product_Action_DataBuilder_Qty::FULFILLMENT_MODE_MFN) {
-                // M2ePro_TRANSLATIONS
-                // Item was successfully switched to MFN
                 return 'Item was successfully switched to MFN';
             }
 
-            // M2ePro_TRANSLATIONS
-            // QTY
             $sequenceStrings[] = 'QTY';
         }
 
         if ($this->getConfigurator()->isRegularPriceAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Price
             $sequenceStrings[] = 'Price';
         }
 
         if ($this->getConfigurator()->isBusinessPriceAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // Business Price
             $sequenceStrings[] = 'Business Price';
         }
 
         if ($this->getConfigurator()->isDetailsAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // details
             $sequenceStrings[] = 'Details';
             $isPlural = true;
         }
 
         if ($this->getConfigurator()->isImagesAllowed()) {
-            // M2ePro_TRANSLATIONS
-            // images
             $sequenceStrings[] = 'Images';
             $isPlural = true;
         }
 
         if (empty($sequenceStrings)) {
-            // M2ePro_TRANSLATIONS
-            // Item was successfully Revised
             return 'Item was successfully Revised';
         }
 
@@ -128,8 +110,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Revise_Response
             return ucfirst($sequenceStrings[0]).' '.$verb.' successfully Revised';
         }
 
-        // M2ePro_TRANSLATIONS
-        // was successfully Revised
         return ucfirst(implode(', ', $sequenceStrings)).' were successfully Revised';
     }
 

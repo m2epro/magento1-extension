@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Resource_Connector_Command_Pending_Processing_Partial_Collection
     extends Ess_M2ePro_Model_Resource_Collection_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
@@ -17,7 +17,7 @@ class Ess_M2ePro_Model_Resource_Connector_Command_Pending_Processing_Partial_Col
         $this->_init('M2ePro/Connector_Command_Pending_Processing_Partial');
     }
 
-    // ########################################
+    //########################################
 
     public function setCompletedRequestPendingPartialFilter()
     {
@@ -39,5 +39,5 @@ class Ess_M2ePro_Model_Resource_Connector_Command_Pending_Processing_Partial_Col
         $this->addFieldToFilter('mp.is_completed', 0);
     }
 
-    // ########################################
+    //########################################
 }

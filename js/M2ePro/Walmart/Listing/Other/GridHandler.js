@@ -19,14 +19,6 @@ WalmartListingOtherGridHandler = Class.create(ListingOtherGridHandler, {
     getComponent: function()
     {
         return 'walmart';
-    },
-
-    getLogViewUrl: function(rowId)
-    {
-        return M2ePro.url.get('adminhtml_walmart_log/listingOther', {
-            id: rowId,
-            filter: base64_encode('component_mode=' + this.getComponent())
-        });
     }
 
     // ---------------------------------------

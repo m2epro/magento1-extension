@@ -59,7 +59,7 @@ final class Ess_M2ePro_Model_Servicing_Dispatcher
 
     //########################################
 
-    public function process($minInterval = NULL, $taskCodes = NULL)
+    public function process($minInterval = null, $taskCodes = null)
     {
         $timeLastUpdate = $this->getLastUpdateTimestamp();
 

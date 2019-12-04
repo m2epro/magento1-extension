@@ -18,13 +18,15 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
              ->_title(Mage::helper('M2ePro')->__('Synchronization Policies'));
 
         $this->getLayout()->getBlock('head')
+            ->setCanLoadExtJs(true)
+            ->addJs('mage/adminhtml/rules.js')
             ->addJs('M2ePro/Template/EditHandler.js')
             ->addJs('M2ePro/Amazon/Template/EditHandler.js')
             ->addJs('M2ePro/Amazon/Template/SynchronizationHandler.js');
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/AoMVAQ");
+        $this->setPageHelpLink(null, null, "x/AoMVAQ");
 
         return $this;
     }
@@ -97,12 +99,18 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
             'list_qty_calculated',
             'list_qty_calculated_value',
             'list_qty_calculated_value_max',
+            'list_advanced_rules_mode'
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
                 $data[$key] = $post[$key];
             }
         }
+
+        $data['list_advanced_rules_filters'] = $this->getRuleData(
+            Ess_M2ePro_Model_Amazon_Template_Synchronization::LIST_ADVANCED_RULES_PREFIX,
+            $post
+        );
 
         $data['title'] = strip_tags($data['title']);
         // ---------------------------------------
@@ -137,13 +145,19 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
             'relist_qty_magento_value_max',
             'relist_qty_calculated',
             'relist_qty_calculated_value',
-            'relist_qty_calculated_value_max'
+            'relist_qty_calculated_value_max',
+            'relist_advanced_rules_mode'
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
                 $data[$key] = $post[$key];
             }
         }
+
+        $data['relist_advanced_rules_filters'] = $this->getRuleData(
+            Ess_M2ePro_Model_Amazon_Template_Synchronization::RELIST_ADVANCED_RULES_PREFIX,
+            $post
+        );
 
         // ---------------------------------------
 
@@ -158,13 +172,19 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
             'stop_qty_magento_value_max',
             'stop_qty_calculated',
             'stop_qty_calculated_value',
-            'stop_qty_calculated_value_max'
+            'stop_qty_calculated_value_max',
+            'stop_advanced_rules_mode'
         );
         foreach ($keys as $key) {
             if (isset($post[$key])) {
                 $data[$key] = $post[$key];
             }
         }
+
+        $data['stop_advanced_rules_filters'] = $this->getRuleData(
+            Ess_M2ePro_Model_Amazon_Template_Synchronization::STOP_ADVANCED_RULES_PREFIX,
+            $post
+        );
 
         // ---------------------------------------
 
@@ -207,6 +227,19 @@ class Ess_M2ePro_Adminhtml_Amazon_Template_SynchronizationController
                 )
             )
         );
+    }
+
+    protected function getRuleData($rulePrefix, $post)
+    {
+        if (empty($post['rule'][$rulePrefix])) {
+            return null;
+        }
+
+        $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setData(
+            array('prefix' => $rulePrefix)
+        );
+
+        return $ruleModel->getSerializedFromPost($post);
     }
 
     //########################################

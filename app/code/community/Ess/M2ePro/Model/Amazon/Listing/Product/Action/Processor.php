@@ -537,7 +537,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
             $additionalData['configurator'] = $existedConfigurator->getData();
             $scheduledAction->setSettings('additional_data', $additionalData);
 
-            if (empty($existedConfigurator->getAllowedDataTypes())) {
+            $types = $existedConfigurator->getAllowedDataTypes();
+            if (empty($types)) {
                 $scheduledActionManager->deleteAction($scheduledAction);
             } else {
                 $scheduledAction->setData('tag', '/'.trim(implode('/', $tags), '/').'/');
@@ -1118,7 +1119,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Processor
 
     //########################################
 
-    protected function getFeedTypes($actionType, $tag = NULL)
+    protected function getFeedTypes($actionType, $tag = null)
     {
         switch ($actionType) {
             case Ess_M2ePro_Model_Listing_Product::ACTION_LIST:

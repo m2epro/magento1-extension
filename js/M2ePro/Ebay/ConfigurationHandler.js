@@ -7,22 +7,6 @@ EbayConfigurationHandler.prototype = Object.extend(new CommonHandler(), {
 
     // ---------------------------------------
 
-    viewModeChange: function()
-    {
-        var hidingBlocks = $$('#magento_block_ebay_configuration_general_notification',
-                              '#magento_block_ebay_configuration_general_selling',
-                              '#magento_block_ebay_configuration_general_images',
-                              '#magento_block_ebay_configuration_general_motors_epids',
-                              '#magento_block_ebay_configuration_general_motors_epids_uk',
-                              '#magento_block_ebay_configuration_general_motors_epids_de',
-                              '#magento_block_ebay_configuration_general_motors_ktypes');
-
-        hidingBlocks.invoke('hide');
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Helper_View_Ebay::MODE_ADVANCED')) {
-            hidingBlocks.invoke('show');
-        }
-    },
-
     // Manage Compatibility Dictionary
     // ---------------------------------------
 
@@ -47,6 +31,8 @@ EbayConfigurationHandler.prototype = Object.extend(new CommonHandler(), {
             $('database-statistic-popup-epids-uk').show();
         } else if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_DE')) {
             $('database-statistic-popup-epids-de').show();
+        } else if (motorsType == M2ePro.php.constant('Ess_M2ePro_Helper_Component_Ebay_Motors::TYPE_EPID_AU')) {
+            $('database-statistic-popup-epids-au').show();
         } else {
             $('database-statistic-popup-ktypes').show();
         }

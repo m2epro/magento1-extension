@@ -9,12 +9,12 @@
 class Ess_M2ePro_Model_Resource_Processing_Lock
     extends Ess_M2ePro_Model_Resource_Abstract
 {
-    // ########################################
+    //########################################
 
     public function _construct()
     {
         $this->_init('M2ePro/Processing_Lock', 'id');
     }
 
-    // ########################################
+    //########################################
 }

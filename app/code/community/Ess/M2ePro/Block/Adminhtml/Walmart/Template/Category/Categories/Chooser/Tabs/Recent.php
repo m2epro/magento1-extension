@@ -32,7 +32,8 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Template_Category_Categories_Chooser_Ta
 
     public function shouldBeShown()
     {
-        return !empty($this->getCategories());
+        $categoriesData = $this->getCategories();
+        return !empty($categoriesData);
     }
 
     public function getCategories()

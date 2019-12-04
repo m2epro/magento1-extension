@@ -40,13 +40,13 @@ class Ess_M2ePro_Model_Cron_OperationHistory extends Ess_M2ePro_Model_OperationH
 
     // ---------------------------------------
 
-    public function addText($text = NULL)
+    public function addText($text = null)
     {
         $this->appendText($text);
         $this->saveBufferString();
     }
 
-    public function appendText($text = NULL)
+    public function appendText($text = null)
     {
         $text && $text = str_repeat(' ', $this->_leftPadding) . $text;
         $this->_bufferString .= (string)$text . PHP_EOL;

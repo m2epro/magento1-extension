@@ -119,29 +119,33 @@ class Ess_M2ePro_Model_Response_Message_Set
         return $messages;
     }
 
-    // ########################################
+    //########################################
 
     public function hasErrorEntities()
     {
-        return !empty($this->getErrorEntities());
+        $errors = $this->getErrorEntities();
+        return !empty($errors);
     }
 
     public function hasWarningEntities()
     {
-        return !empty($this->getWarningEntities());
+        $errors = $this->getWarningEntities();
+        return !empty($errors);
     }
 
     public function hasSuccessEntities()
     {
-        return !empty($this->getSuccessEntities());
+        $errors = $this->getSuccessEntities();
+        return !empty($errors);
     }
 
     public function hasNoticeEntities()
     {
-        return !empty($this->getNoticeEntities());
+        $errors = $this->getNoticeEntities();
+        return !empty($errors);
     }
 
-    // ########################################
+    //########################################
 
     public function getCombinedErrorsString()
     {

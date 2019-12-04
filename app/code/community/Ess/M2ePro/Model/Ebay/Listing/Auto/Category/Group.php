@@ -60,7 +60,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Auto_Category_Group extends Ess_M2ePro_Model
         if ($this->_categoryTemplateModel === null) {
             try {
                 $this->_categoryTemplateModel = Mage::helper('M2ePro')->getCachedObject(
-                    'Ebay_Template_Category', (int)$this->getAddingTemplateCategoryId(), NULL, array('template')
+                    'Ebay_Template_Category', (int)$this->getAddingTemplateCategoryId(), null, array('template')
                 );
             } catch (Exception $exception) {
                 return $this->_categoryTemplateModel;
@@ -93,7 +93,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Auto_Category_Group extends Ess_M2ePro_Model
             try {
                 $this->_otherCategoryTemplateModel = Mage::helper('M2ePro')->getCachedObject(
                     'Ebay_Template_OtherCategory', (int)$this->getAddingTemplateOtherCategoryId(),
-                    NULL, array('template')
+                    null, array('template')
                 );
             } catch (Exception $exception) {
                 return $this->_otherCategoryTemplateModel;

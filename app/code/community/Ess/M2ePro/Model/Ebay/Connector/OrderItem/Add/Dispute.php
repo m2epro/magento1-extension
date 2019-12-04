@@ -9,19 +9,12 @@
 class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
     extends Ess_M2ePro_Model_Ebay_Connector_Command_RealTime
 {
-    // M2ePro_TRANSLATIONS
-    // Dispute cannot be opened. Reason: Dispute explanation is not defined.
-    // Dispute cannot be opened. Reason: Dispute reason is not defined.
-    // Unpaid Item Process was not open for Item #%id%. Reason: %msg%
-    // Unpaid Item Process was not open for Item #%id%. Reason: eBay failure. Please try again later.
-    // Unpaid Item Process for Item #%id% has been initiated.
-
     const DISPUTE_EXPLANATION_BUYER_HAS_NOT_PAID = 'BuyerNotPaid';
 
     /** @var $_orderItem Ess_M2ePro_Model_Order_Item */
     protected $_orderItem;
 
-    // ########################################
+    //########################################
 
     public function setOrderItem(Ess_M2ePro_Model_Order_Item $orderItem)
     {
@@ -31,7 +24,7 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
         return $this;
     }
 
-    // ########################################
+    //########################################
 
     protected function getCommand()
     {
@@ -137,5 +130,5 @@ class Ess_M2ePro_Model_Ebay_Connector_OrderItem_Add_Dispute
         );
     }
 
-    // ########################################
+    //########################################
 }

@@ -8,13 +8,12 @@
 
 class Ess_M2ePro_Helper_Module_Cron extends Mage_Core_Helper_Abstract
 {
-    const RUNNER_MAGENTO = 'magento';
-    const RUNNER_SERVICE = 'service';
+    const RUNNER_MAGENTO   = 'magento';
+    const RUNNER_SERVICE   = 'service';
+    const RUNNER_DEVELOPER = 'developer';
 
     const STRATEGY_SERIAL   = 'serial';
     const STRATEGY_PARALLEL = 'parallel';
-
-    const RUNNER_SERVICE_MAX_INACTIVE_TIME = 300;
 
     //########################################
 

@@ -14,15 +14,10 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayListingOtherView');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_ebay_listing_other_view';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Ebay')->getTitle();
             $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / 3rd Party Listings', $componentName);
@@ -30,19 +25,13 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
             $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         if ($this->getRequest()->getParam('back') !== null) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton(
@@ -53,16 +42,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
                 )
             );
         }
-
-        $url = $this->getUrl('*/adminhtml_ebay_log/listingOther');
-        $this->_addButton(
-            'view_log', array(
-            'label'     => Mage::helper('M2ePro')->__('View Log'),
-            'onclick'   => 'window.open(\''.$url.'\',\'_blank\')',
-            'class'     => 'button_link'
-            )
-        );
-        // ---------------------------------------
     }
 
     //########################################
@@ -72,7 +51,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $accountId = $this->getRequest()->getParam('account');
         $marketplaceId = $this->getRequest()->getParam('marketplace');
 
-        // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_other_view_header', '',
             array(
@@ -80,7 +58,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
                 'marketplace' => Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', $marketplaceId)
             )
         );
-        // ---------------------------------------
 
         return $viewHeaderBlock->toHtml() . parent::getGridHtml();
     }
@@ -92,8 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         /** @var $helper Ess_M2ePro_Helper_Data */
         $helper = Mage::helper('M2ePro');
 
-        $urls = $helper->getControllerActions('adminhtml_listing_other');
-        $urls['adminhtml_ebay_log/listingOther'] = $this->getUrl('*/adminhtml_ebay_log/listingOther');
+        $urls = array();
         $urls['adminhtml_listing_other_mapping/map'] = $this->getUrl('*/adminhtml_listing_other_mapping/map');
         $urls['adminhtml_ebay_listing_categorySettings/index'] = $this->getUrl(
             '*/adminhtml_ebay_listing_categorySettings/index', array('step' => 1)
@@ -113,12 +89,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
 
         $component = Ess_M2ePro_Helper_Component_Ebay::NICK;
 
-        $logViewUrl = $this->getUrl(
-            '*/adminhtml_ebay_log/listingOther', array(
-            'back'=>$helper->makeBackUrlParam('*/adminhtml_listing_other/index')
-            )
-        );
-
         $mapAutoToProductUrl = $this->getUrl('*/adminhtml_listing_other_mapping/autoMap');
 
         $removingProductsUrl = $this->getUrl('*/adminhtml_ebay_listing_other/removing');
@@ -136,76 +106,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
         $popupTitle = $helper->escapeJs($helper->__('Moving eBay Items'));
 
         $successfullyMappedMessage = $helper->escapeJs($helper->__('Product was successfully Mapped.'));
-        $mappingProductMessage = $helper->escapeJs($helper->__('Mapping Product'));
-        $productDoesNotExistMessage = $helper->escapeJs($helper->__('Product does not exist.'));
-
         $notEnoughDataMessage = $helper->escapeJs($helper->__('Not enough data.'));
         $successfullyUnmappedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Unmapped.'));
         $successfullyRemovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Removed.'));
 
-        // M2ePro_TRANSLATIONS
-        // Current eBay version only supports Simple Products in Mapping. Please, choose Simple Product.
-        $temp = 'Current eBay version only supports Simple Products in Mapping. Please, choose Simple Product.';
-        $selectSimpleProductMessage = $helper->escapeJs($helper->__($temp));
-
         $processingDataMessage = $helper->escapeJs($helper->__('Processing %product_title% Product(s).'));
-
-        $getErrorsSummary = $this->getUrl('*/adminhtml_listing_other/getErrorsSummary');
-
-        $runReviseProducts = $this->getUrl('*/adminhtml_ebay_listing_other/runReviseProducts');
-        $runRelistProducts = $this->getUrl('*/adminhtml_ebay_listing_other/runRelistProducts');
-        $runStopProducts = $this->getUrl('*/adminhtml_ebay_listing_other/runStopProducts');
-
-        $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
-        $taskCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%task_title%" Task has successfully submitted to be processed.')
-        );
-        $taskRealtimeCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%task_title%" Task has successfully completed.')
-        );
-
-        // M2ePro_TRANSLATIONS
-        // "%task_title%" Task has completed with warnings. <a target="_blank" href="%url%">View Log</a> for details.
-        $temp = '"%task_title%" Task has completed with warnings. ';
-        $temp .= '<a target="_blank" href="%url%">View Log</a> for details.';
-        $taskCompletedWarningMessage = $helper->escapeJs($helper->__($temp));
-
-        // M2ePro_TRANSLATIONS
-        // "%task_title%" Task has completed with errors. <a target="_blank" href="%url%">View Log</a> for details.
-        $temp = '"%task_title%" Task has completed with errors. ';
-        $temp .= '<a target="_blank" href="%url%">View Log</a> for details.';
-        $taskCompletedErrorMessage = $helper->escapeJs($helper->__($temp));
-
-        $sendingDataToEbayMessage = $helper->escapeJs($helper->__('Sending %product_title% Product(s) data on eBay.'));
-        $viewAllProductLogMessage = $helper->escapeJs($helper->__('View All Product Log.'));
-
-        $listingLockedMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('The Listing was locked by another process. Please try again later.')
-        );
-        $listingEmptyMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Listing is empty.')
-        );
-        $listingAllItemsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Listing All Items On eBay')
-        );
-        $listingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Listing Selected Items On eBay')
-        );
-        $revisingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Revising Selected Items On eBay')
-        );
-        $relistingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Relisting Selected Items On eBay')
-        );
-        $stoppingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Stopping Selected Items On eBay')
-        );
-        $stoppingAndRemovingSelectedItemsMessage = Mage::helper('M2ePro')->escapeJs(
-            Mage::helper('M2ePro')->__('Stopping On eBay And Removing From Listing Selected Items')
-        );
-
-        $invalidDataMessage = $helper->escapeJs($helper->__('Please enter correct Product ID.'));
-        $enterProductOrSkuMessage = $helper->escapeJs($helper->__('Please enter correct Product ID or SKU'));
         $autoMapProgressTitle = $helper->escapeJs($helper->__('Map Item(s) to Products'));
 
         $selectItemsMessage = $helper->escapeJs(
@@ -227,13 +132,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     M2eProEbay.customData = {};
     M2eProEbay.text = {};
 
-    M2eProEbay.url.logViewUrl = '{$logViewUrl}';
-    M2eProEbay.url.getErrorsSummary = '{$getErrorsSummary}';
-
-    M2eProEbay.url.runReviseProducts = '{$runReviseProducts}';
-    M2eProEbay.url.runRelistProducts = '{$runRelistProducts}';
-    M2eProEbay.url.runStopProducts = '{$runStopProducts}';
-
     M2eProEbay.url.mapAutoToProduct = '{$mapAutoToProductUrl}';
     M2eProEbay.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
 
@@ -245,11 +143,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     M2eProEbay.url.unmappingProducts = '{$unmappingProductsUrl}';
 
     M2eProEbay.text.successfully_mapped = '{$successfullyMappedMessage}';
-    M2eProEbay.text.mapping_product_title = '{$mappingProductMessage}';
-    M2eProEbay.text.product_does_not_exist = '{$productDoesNotExistMessage}';
-    M2eProEbay.text.select_simple_product = '{$selectSimpleProductMessage}';
-    M2eProEbay.text.invalid_data = '{$invalidDataMessage}';
-    M2eProEbay.text.enter_product_or_sku = '{$enterProductOrSkuMessage}';
     M2eProEbay.text.automap_progress_title = '{$autoMapProgressTitle}';
     M2eProEbay.text.processing_data_message = '{$processingDataMessage}';
 
@@ -258,25 +151,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View extends Mage_Adminhtml_
     M2eProEbay.text.not_enough_data = '{$notEnoughDataMessage}';
     M2eProEbay.text.successfully_unmapped = '{$successfullyUnmappedMessage}';
     M2eProEbay.text.successfully_removed = '{$successfullyRemovedMessage}';
-
-    M2eProEbay.text.task_completed_message = '{$taskCompletedMessage}';
-    M2eProEbay.text.task_completed_success_message = '{$taskCompletedSuccessMessage}';
-    M2eProEbay.text.task_realtime_completed_success_message = '{$taskRealtimeCompletedSuccessMessage}';
-    M2eProEbay.text.task_completed_warning_message = '{$taskCompletedWarningMessage}';
-    M2eProEbay.text.task_completed_error_message = '{$taskCompletedErrorMessage}';
-
-    M2eProEbay.text.sending_data_message = '{$sendingDataToEbayMessage}';
-    M2eProEbay.text.view_all_product_log_message = '{$viewAllProductLogMessage}';
-
-    M2eProEbay.text.listing_locked_message = '{$listingLockedMessage}';
-    M2eProEbay.text.listing_empty_message = '{$listingEmptyMessage}';
-
-    M2eProEbay.text.listing_all_items_message = '{$listingAllItemsMessage}';
-    M2eProEbay.text.listing_selected_items_message = '{$listingSelectedItemsMessage}';
-    M2eProEbay.text.revising_selected_items_message = '{$revisingSelectedItemsMessage}';
-    M2eProEbay.text.relisting_selected_items_message = '{$relistingSelectedItemsMessage}';
-    M2eProEbay.text.stopping_selected_items_message = '{$stoppingSelectedItemsMessage}';
-    M2eProEbay.text.stopping_and_removing_selected_items_message = '{$stoppingAndRemovingSelectedItemsMessage}';
 
     M2eProEbay.text.select_items_message = '{$selectItemsMessage}';
     M2eProEbay.text.select_action_message = '{$selectActionMessage}';

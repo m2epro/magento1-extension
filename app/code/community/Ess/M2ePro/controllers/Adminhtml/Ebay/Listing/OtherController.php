@@ -39,7 +39,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/HQAJAQ");
+        $this->setPageHelpLink(null, null, "x/HQAJAQ");
 
         return $this;
     }
@@ -92,7 +92,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
             );
 
             if ($listingOther->getProductId() !== null) {
-                $listingOther->unmapProduct(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
+                $listingOther->unmapProduct();
             }
 
             $listingOther->deleteInstance();
@@ -128,8 +128,6 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
                 );
 
             if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
-                $listingOther->moveToListingFailed();
-
                 $errorsCount++;
                 continue;
             }
@@ -151,17 +149,10 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
         $sessionHelper->removeValue($sessionKey);
 
         if ($errorsCount) {
-            $logViewUrl = $this->getUrl(
-                '*/adminhtml_ebay_log/listingOther', array(
-                'back' => Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_listing_other/index')
-                )
-            );
-
             if (count($selectedProducts) == $errorsCount) {
                 $this->getSession()->addError(
                     Mage::helper('M2ePro')->__(
-                        'Products were not Moved. <a target="_blank" href="%url%">View Log</a> for details.',
-                        $logViewUrl
+                        'Products were not moved because they already exist in the selected Listing.'
                     )
                 );
 
@@ -176,9 +167,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_OtherController extends Ess_M2ePro_Contr
 
             $this->getSession()->addError(
                 Mage::helper('M2ePro')->__(
-                    '%errors_count% product(s) were not Moved. Please <a target="_blank" href="%url%">view Log</a>
-                for the details.',
-                    $errorsCount, $logViewUrl
+                    'Some products were not moved because they already exist in the selected Listing.'
                 )
             );
         } else {

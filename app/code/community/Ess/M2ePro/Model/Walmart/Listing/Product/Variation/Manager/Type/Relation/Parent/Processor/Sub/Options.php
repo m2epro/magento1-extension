@@ -13,7 +13,8 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Variation_Manager_Type_Relation_P
 
     protected function check()
     {
-        if (empty($this->getProcessor()->getTypeModel()->getChildListingsProducts())) {
+        $products = $this->getProcessor()->getTypeModel()->getChildListingsProducts();
+        if (empty($products)) {
             return;
         }
 

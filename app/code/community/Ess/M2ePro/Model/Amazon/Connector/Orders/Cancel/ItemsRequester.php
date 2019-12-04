@@ -9,14 +9,14 @@
 abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Cancel_ItemsRequester
     extends Ess_M2ePro_Model_Amazon_Connector_Command_Pending_Requester
 {
-    // ########################################
+    //########################################
 
     public function getCommand()
     {
         return array('orders','cancel','entities');
     }
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -24,7 +24,7 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Cancel_ItemsRequester
         $this->getProcessingRunner()->start();
     }
 
-    // ########################################
+    //########################################
 
     protected function getProcessingRunnerModelName()
     {
@@ -46,12 +46,12 @@ abstract class Ess_M2ePro_Model_Amazon_Connector_Orders_Cancel_ItemsRequester
         );
     }
 
-    // ########################################
+    //########################################
 
     public function getRequestData()
     {
         return $this->_params['order']['amazon_order_id'];
     }
 
-    // ########################################
+    //########################################
 }

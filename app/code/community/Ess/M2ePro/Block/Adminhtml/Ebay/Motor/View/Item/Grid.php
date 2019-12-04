@@ -34,7 +34,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Item_Grid extends Mage_Adminhtm
         //------------------------------
     }
 
-    // ########################################
+    //########################################
 
     protected function getExistingItems(array $ids)
     {
@@ -162,7 +162,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Item_Grid extends Mage_Adminhtm
         return $value;
     }
 
-    // ####################################
+    //####################################
 
     protected function _addColumnFilterToCollection($column)
     {
@@ -204,7 +204,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Item_Grid extends Mage_Adminhtm
         $this->setCollection($filteredCollection);
     }
 
-    // ####################################
+    //####################################
 
     protected function _setCollectionOrder($column)
     {
@@ -242,7 +242,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_View_Item_Grid extends Mage_Adminhtm
         $this->setCollection($sortedCollection);
     }
 
-    // ####################################
+    //####################################
 
     protected function _toHtml()
     {

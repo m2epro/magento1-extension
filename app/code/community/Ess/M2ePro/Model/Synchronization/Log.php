@@ -77,7 +77,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //########################################
 
-    public function addMessage($description = NULL, $type = NULL, $priority = NULL, array $additionalData = array())
+    public function addMessage($description = null, $type = null, $priority = null, array $additionalData = array())
     {
         $dataForAdd = $this->makeDataForAdd(
             $description,
@@ -91,7 +91,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //########################################
 
-    public function clearMessages($task = NULL)
+    public function clearMessages($task = null)
     {
         $filters = array();
 
@@ -132,7 +132,7 @@ class Ess_M2ePro_Model_Synchronization_Log extends Ess_M2ePro_Model_Log_Abstract
         if ($description !== null) {
             $dataForAdd['description'] = Mage::helper('M2ePro')->__($description);
         } else {
-            $dataForAdd['description'] = NULL;
+            $dataForAdd['description'] = null;
         }
 
         if ($type !== null) {

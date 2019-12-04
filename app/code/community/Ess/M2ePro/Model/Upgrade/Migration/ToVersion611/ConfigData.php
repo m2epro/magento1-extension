@@ -6,10 +6,12 @@
  * @license    Commercial use is forbidden
  */
 
+// @codingStandardsIgnoreFile
+
 class Ess_M2ePro_Model_Upgrade_Migration_ToVersion611_ConfigData
 {
     /** @var Ess_M2ePro_Model_Upgrade_MySqlSetup */
-    protected $installer = NULL;
+    protected $installer = null;
 
     //########################################
 
@@ -126,7 +128,7 @@ SQL
         $connection->delete($tempTable, $where);
 
         $connection->update(
-            $tempTable, array('value' => NULL),
+            $tempTable, array('value' => null),
             "`group` LIKE '/cron/%' AND (`key` = 'last_access' OR `key` = 'last_run')"
         );
 

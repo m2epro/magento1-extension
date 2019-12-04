@@ -87,7 +87,7 @@ class Ess_M2ePro_Model_Lock_Transactional_Manager extends Varien_Object
         $this->unlockTable();
     }
 
-    // ########################################
+    //########################################
 
     protected function startTransaction()
     {

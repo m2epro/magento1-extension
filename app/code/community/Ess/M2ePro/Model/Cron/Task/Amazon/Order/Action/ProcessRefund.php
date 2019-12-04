@@ -11,6 +11,11 @@ class Ess_M2ePro_Model_Cron_Task_Amazon_Order_Action_ProcessRefund
 {
     const NICK = 'amazon/order/action/process_refund';
 
+    /**
+     * @var int (in seconds)
+     */
+    protected $_interval = 18000;
+
     //####################################
 
     public function performActions()

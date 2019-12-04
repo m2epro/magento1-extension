@@ -14,34 +14,48 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Synchronization_Edit_Form_Data ex
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('ebayTemplateSynchronizationEditFormData');
-        // ---------------------------------------
-
         $this->setTemplate('M2ePro/ebay/template/synchronization/form/data.phtml');
     }
+
+    //########################################
 
     protected function _beforeToHtml()
     {
         $this->setChild(
             'ebay_template_synchronization_edit_form_tabs_list', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_list'
+                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_list',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
             )
         );
         $this->setChild(
             'ebay_template_synchronization_edit_form_tabs_relist', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_relist'
+                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_relist',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
             )
         );
         $this->setChild(
             'ebay_template_synchronization_edit_form_tabs_revise', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_revise'
+                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_revise',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
             )
         );
         $this->setChild(
             'ebay_template_synchronization_edit_form_tabs_stop', $this->getLayout()->createBlock(
-                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_stop'
+                'M2ePro/adminhtml_ebay_template_synchronization_edit_form_tabs_stop',
+                '',
+                array(
+                    'form_data' => $this->getFormData()
+                )
             )
         );
 

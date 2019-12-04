@@ -10,8 +10,14 @@ use Ess_M2ePro_Model_Amazon_Listing_Product as AmazonListingProduct;
 use Ess_M2ePro_Model_Ebay_Listing_Product as EbayListingProduct;
 use Ess_M2ePro_Model_Walmart_Listing_Product as WalmartListingProduct;
 
+use Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator as AmazonConfigurator;
+use Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator as EbayConfigurator;
+use Ess_M2ePro_Model_Walmart_Listing_Product_Action_Configurator as WalmartConfigurator;
+
 /**
  * @method AmazonListingProduct|EbayListingProduct|WalmartListingProduct getChildObject()
+ * @method setActionConfigurator($configurator)
+ * @method AmazonConfigurator|EbayConfigurator|WalmartConfigurator getActionConfigurator()
  */
 class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -143,22 +149,21 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
         $tempLog = Mage::getModel('M2ePro/Listing_Log');
         $tempLog->setComponentMode($this->getComponentMode());
+        $actionId = $tempLog->getResource()->getNextActionId();
         $tempLog->addProductMessage(
             $this->getListingId(),
             $this->getProductId(),
             $this->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
-            NULL,
+            $actionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_LISTING,
-            // M2ePro_TRANSLATIONS
-                                    // Item was successfully Deleted
                                     'Item was successfully Deleted',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
         );
 
-        $this->_listingModel        = NULL;
-        $this->_magentoProductModel = NULL;
+        $this->_listingModel        = null;
+        $this->_magentoProductModel = null;
 
         $this->deleteChildInstance();
         $this->delete();
@@ -256,7 +261,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
         $storageKey = "listing_product_{$this->getId()}_variations_" .
                       sha1((string)$asObjects . Mage::helper('M2ePro')->jsonEncode($filters));
 
-        if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Session')->getValue($storageKey))) {
+        if ($tryToGetFromStorage && ($cacheData = Mage::helper('M2ePro/Data_Cache_Runtime')->getValue($storageKey))) {
             return $cacheData;
         }
 
@@ -271,7 +276,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
             }
         }
 
-        Mage::helper('M2ePro/Data_Cache_Session')->setValue(
+        Mage::helper('M2ePro/Data_Cache_Runtime')->setValue(
             $storageKey, $variations, array(
             'listing_product',
             "listing_product_{$this->getId()}",
@@ -489,7 +494,7 @@ class Ess_M2ePro_Model_Listing_Product extends Ess_M2ePro_Model_Component_Parent
 
     //########################################
 
-    public function canBeForceDeleted($value = NULL)
+    public function canBeForceDeleted($value = null)
     {
         if ($value === null) {
             return $this->_canBeForceDeleted;

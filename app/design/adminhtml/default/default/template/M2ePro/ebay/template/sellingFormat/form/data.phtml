@@ -22,43 +22,6 @@ $formData = $this->getFormData();
 $default = $this->getDefault();
 $formData = array_merge($default, $formData);
 
-// checking what mode need to show (simple or advanced)
-$defaultStrictSettingsForSimpleMode = $default;
-
-// removing ignored options for mode checking
-$ignoredOptions = array(
-    'duration_mode',
-    'out_of_stock_control',
-    'qty_custom_value',
-
-    'fixed_price_mode',
-    'fixed_price_coefficient',
-    'fixed_price_custom_attribute',
-
-    'best_offer_accept_mode',
-    'best_offer_accept_value',
-    'best_offer_accept_attribute',
-    'best_offer_reject_mode',
-    'best_offer_reject_value',
-    'best_offer_reject_attribute',
-
-    'price_discount_map_exposure_type',
-
-    'lot_size_custom_value',
-    'lot_size_attribute'
-);
-
-foreach($ignoredOptions as $val) {
-    unset($defaultStrictSettingsForSimpleMode[$val]);
-}
-
-$showBlockedAdvancedMode = false;
-if(Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-    $showBlockedAdvancedMode = !!count(array_diff_assoc($defaultStrictSettingsForSimpleMode, $formData));
-}
-
-$showAdvancedMode = (!Mage::helper('M2ePro/View_Ebay')->isSimpleMode() || (Mage::helper('M2ePro/View_Ebay')->isSimpleMode() && $showBlockedAdvancedMode));
-
 $charitiesDict = $this->getData('charities');
 $charitySelf = json_decode($formData['charity'], true);
 
@@ -121,10 +84,9 @@ $taxCategories = $this->getTaxCategoriesInfo();
 
     )); ?>);
 
-    M2ePro.formData.simpleMode = Boolean(<?php echo !$showAdvancedMode; ?>);
-    M2ePro.formData.isStpEnabled = Boolean(<?php echo ($showAdvancedMode && $this->isStpAvailable()); ?>);
-    M2ePro.formData.isStpAdvancedEnabled = Boolean(<?php echo ($showAdvancedMode && $this->isStpAdvancedAvailable()); ?>);
-    M2ePro.formData.isMapEnabled = Boolean(<?php echo ($showAdvancedMode && $this->isMapAvailable()); ?>);
+    M2ePro.formData.isStpEnabled = Boolean(<?php echo $this->isStpAvailable(); ?>);
+    M2ePro.formData.isStpAdvancedEnabled = Boolean(<?php echo $this->isStpAdvancedAvailable(); ?>);
+    M2ePro.formData.isMapEnabled = Boolean(<?php echo $this->isMapAvailable(); ?>);
 
     M2ePro.formData.outOfStockControl = <?php echo $formData['out_of_stock_control']; ?>;
     M2ePro.formData.duration_mode = <?php echo Mage::helper('M2ePro')->escapeJs($formData['duration_mode']); ?>;
@@ -236,15 +198,6 @@ $taxCategories = $this->getTaxCategoriesInfo();
         $('best_offer_accept_mode', 'best_offer_reject_mode').invoke('observe', 'change', function () {
             EbayTemplateSellingFormatHandlerObj.checkBestOfferMessages();
         });
-
-        <?php if (!$showAdvancedMode) : ?>
-            EbayTemplateSellingFormatHandlerObj.simple_mode_disallowed_hide();
-        <?php endif; ?>
-
-        <?php if($showBlockedAdvancedMode): ?>
-        var SellingFormWrapper = new AreaWrapper('template_selling_format_data_container');
-        SellingFormWrapper.lock();
-        <?php endif; ?>
     };
 
     <?php if ($this->getRequest()->isXmlHttpRequest()): ?>
@@ -299,15 +252,6 @@ $taxCategories = $this->getTaxCategoriesInfo();
 <input type="hidden" name="selling_format[id]" value="<?php echo (!$this->isCustom() && isset($formData['id'])) ? (int)$formData['id'] : ''; ?>" />
 <input type="hidden" name="selling_format[title]" value="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getTitle()); ?>" />
 <input type="hidden" name="selling_format[is_custom_template]" value="<?php echo $this->isCustom() ? 1 : 0; ?>" />
-
-<?php if($showBlockedAdvancedMode): ?>
-    <p style="font-size: 15px; font-weight: bolder; color: red;">
-        <?php $menuPath = Mage::helper('M2ePro/View_Ebay')->getPageNavigationPath('configuration', 'General', 'Mode > Advanced');
-            echo Mage::helper('M2ePro')->__(
-            'This set of Options cannot be edited in Simple Mode because it was set in Advanced Mode.<br/> To make the necessary changes you should switch to Advanced Mode (%menu_path%).', $menuPath);
-        ?>
-    </p>
-<?php endif; ?>
 
 <div class="entry-edit simple_mode_disallowed" id="magento_block_ebay_template_selling_format_edit_form_general">
 
@@ -414,7 +358,7 @@ $taxCategories = $this->getTaxCategoriesInfo();
 <div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_qty_and_duration">
 
     <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php $title =  Mage::helper('M2ePro')->__('Duration'); if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) : $title =  Mage::helper('M2ePro')->__('Quantity And Duration'); endif; echo Mage::helper('M2ePro')->__($title); ?></h4>
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Quantity And Duration'); ?></h4>
     </div>
 
     <div class="fieldset">
@@ -670,8 +614,6 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
 
 </div>
 
-<?php if ($showAdvancedMode) : ?>
-
 <div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_taxation">
 
     <div class="entry-edit-head">
@@ -771,8 +713,6 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
     </div>
 
 </div>
-
-<?php endif; ?>
 
 <div class="entry-edit" id="magento_block_ebay_template_selling_format_edit_form_prices">
 
@@ -1469,9 +1409,9 @@ Otherwise, the Item will be Listed with Quantity according to the Settings in th
                         <td class="value" style="width: auto;">
 
                             <?php
-                                $charitySelected = NULL;
+                                $charitySelected = null;
                                 $customGroup = false;
-                                $charityPercent = NULL;
+                                $charityPercent = null;
 
                                 if ($charitySelf !== null) {
                                     $customGroup = true;

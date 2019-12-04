@@ -24,7 +24,7 @@ class Ess_M2ePro_Adminhtml_Ebay_CategoryController extends Ess_M2ePro_Controller
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
+        $this->setPageHelpLink(null, null, "x/MQAJAQ");
 
         return $this;
     }

@@ -36,7 +36,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit_General extends Mage_Adminht
     {
         $template = $this->getParentBlock()->getTemplateObject();
 
-        return $template ? $template->getId() : NULL;
+        return $template ? $template->getId() : null;
     }
 
     public function canDisplayMarketplace()
@@ -69,7 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Edit_General extends Mage_Adminht
             return $template->getData('marketplace_id');
         }
 
-        return NULL;
+        return null;
     }
 
     protected function _beforeToHtml()

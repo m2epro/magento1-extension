@@ -11,11 +11,6 @@
  */
 class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    const TRANSLATION_SERVICE_NO       = 0;
-    const TRANSLATION_SERVICE_YES_TO   = 1;
-    const TRANSLATION_SERVICE_YES_FROM = 2;
-    const TRANSLATION_SERVICE_YES_BOTH = 3;
-
     protected $_info = null;
 
     //########################################
@@ -48,46 +43,6 @@ class Ess_M2ePro_Model_Ebay_Marketplace extends Ess_M2ePro_Model_Component_Child
     public function getLanguageCode()
     {
         return $this->getData('language_code');
-    }
-
-    /**
-     * @return int
-     */
-    public function getTranslationServiceMode()
-    {
-        return (int)$this->getData('translation_service_mode');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTranslationServiceMode()
-    {
-        return $this->getTranslationServiceMode() != self::TRANSLATION_SERVICE_NO;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTranslationServiceModeTo()
-    {
-        return $this->getTranslationServiceMode() == self::TRANSLATION_SERVICE_YES_TO;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTranslationServiceModeFrom()
-    {
-        return $this->getTranslationServiceMode() == self::TRANSLATION_SERVICE_YES_FROM;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTranslationServiceModeBoth()
-    {
-        return $this->getTranslationServiceMode() == self::TRANSLATION_SERVICE_YES_BOTH;
     }
 
     /**

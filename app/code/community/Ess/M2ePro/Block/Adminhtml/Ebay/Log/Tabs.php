@@ -9,7 +9,6 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtml_Widget_Tabs
 {
     const TAB_ID_LISTING            = 'listing';
-    const TAB_ID_LISTING_OTHER      = 'listing_other';
     const TAB_ID_ORDER              = 'order';
     const TAB_ID_SYNCHRONIZATION    = 'synchronization';
 
@@ -28,12 +27,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtm
     protected function _prepareLayout()
     {
         $this->addTab(self::TAB_ID_LISTING, $this->prepareTabListing());
-
-        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode() &&
-            Mage::helper('M2ePro/View_Ebay')->is3rdPartyShouldBeShown()) {
-            $this->addTab(self::TAB_ID_LISTING_OTHER, $this->prepareTabListingOther());
-        }
-
         $this->addTab(self::TAB_ID_ORDER, $this->prepareTabOrder());
         $this->addTab(self::TAB_ID_SYNCHRONIZATION, $this->prepareTabSynchronization());
 
@@ -47,8 +40,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtm
     protected function prepareTabListing()
     {
         $tab = array(
-            'label' => Mage::helper('M2ePro')->__('M2E Pro Listings'),
-            'title' => Mage::helper('M2ePro')->__('M2E Pro Listings')
+            'label' => Mage::helper('M2ePro')->__('Listings'),
+            'title' => Mage::helper('M2ePro')->__('Listings')
         );
 
         if ($this->getData('active_tab') == self::TAB_ID_LISTING) {
@@ -56,23 +49,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtm
             $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_log')->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_ebay_log/listing');
-        }
-
-        return $tab;
-    }
-
-    protected function prepareTabListingOther()
-    {
-        $tab = array(
-            'label' => Mage::helper('M2ePro')->__('3rd Party Listings'),
-            'title' => Mage::helper('M2ePro')->__('3rd Party Listings')
-        );
-
-        if ($this->getData('active_tab') == self::TAB_ID_LISTING_OTHER) {
-            $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_other_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_other_log')->toHtml();
-        } else {
-            $tab['url'] = $this->getUrl('*/adminhtml_ebay_log/listingOther');
         }
 
         return $tab;
@@ -105,7 +81,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Log_Tabs extends Ess_M2ePro_Block_Adminhtm
 
         if ($this->getData('active_tab') == self::TAB_ID_ORDER) {
             $tab['content'] = $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_order_log_help')->toHtml();
-            $tab['content'] .= $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_order_log')->toHtml();
+            $tab['content'] .= $this->getLayout()->createBlock(
+                'M2ePro/adminhtml_order_log', '', array(
+                    'component_mode' => Ess_M2ePro_Helper_Component_Ebay::NICK
+                )
+            )->toHtml();
         } else {
             $tab['url'] = $this->getUrl('*/adminhtml_ebay_log/order');
         }

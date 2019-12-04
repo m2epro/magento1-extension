@@ -10,15 +10,15 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
 {
     const API_VERSION = 1;
 
-    protected $_requestTime = NULL;
+    protected $_requestTime = null;
 
-    protected $_serverBaseUrl  = NULL;
-    protected $_serverHostName = NULL;
+    protected $_serverBaseUrl  = null;
+    protected $_serverHostName = null;
 
     protected $_tryToResendOnError         = true;
     protected $_tryToSwitchEndpointOnError = true;
 
-    // ########################################
+    //########################################
 
     public function process()
     {
@@ -42,7 +42,7 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
 
     abstract protected function processRequestResult(array $result);
 
-    // ########################################
+    //########################################
 
     public function setServerBaseUrl($value)
     {
@@ -108,5 +108,5 @@ abstract class Ess_M2ePro_Model_Connector_Connection_Abstract
         return $this->_tryToSwitchEndpointOnError;
     }
 
-    // ########################################
+    //########################################
 }

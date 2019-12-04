@@ -143,11 +143,11 @@ class Ess_M2ePro_Model_OperationHistory extends Ess_M2ePro_Model_Abstract
     public function getContentData($key)
     {
         if ($this->_object === null) {
-            return NULL;
+            return null;
         }
 
         if ($this->_object->getData('data') == '') {
-            return NULL;
+            return null;
         }
 
         $data = Mage::helper('M2ePro')->jsonDecode($this->_object->getData('data'));
@@ -156,7 +156,7 @@ class Ess_M2ePro_Model_OperationHistory extends Ess_M2ePro_Model_Abstract
             return $data[$key];
         }
 
-        return NULL;
+        return null;
     }
 
     //########################################
@@ -223,7 +223,7 @@ class Ess_M2ePro_Model_OperationHistory extends Ess_M2ePro_Model_Abstract
     public function getDataInfo($nestingLevel = 0)
     {
         if ($this->_object === null) {
-            return NULL;
+            return null;
         }
 
         $offset = str_repeat(' ', $nestingLevel * 7);
@@ -250,7 +250,7 @@ INFO;
     public function getFullDataInfo($nestingLevel = 0)
     {
         if ($this->_object === null) {
-            return NULL;
+            return null;
         }
 
         $dataInfo = $this->getDataInfo($nestingLevel);
@@ -276,7 +276,7 @@ INFO;
     public function getExecutionInfo($nestingLevel = 0)
     {
         if ($this->_object === null) {
-            return NULL;
+            return null;
         }
 
         $offset = str_repeat(' ', $nestingLevel * 5);
@@ -320,7 +320,7 @@ INFO;
     public function getExecutionTreeDownInfo($nestingLevel = 0)
     {
         if ($this->_object === null) {
-            return NULL;
+            return null;
         }
 
         $info = $this->getExecutionInfo($nestingLevel);

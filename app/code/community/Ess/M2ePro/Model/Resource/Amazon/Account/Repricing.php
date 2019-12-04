@@ -55,7 +55,8 @@ class Ess_M2ePro_Model_Resource_Amazon_Account_Repricing
             unset($newData[$ignoreField], $oldData[$ignoreField]);
         }
 
-        return (!empty(array_diff_assoc($newData, $oldData)));
+        $diff = array_diff_assoc($newData, $oldData);
+        return !empty($diff);
     }
 
     //########################################

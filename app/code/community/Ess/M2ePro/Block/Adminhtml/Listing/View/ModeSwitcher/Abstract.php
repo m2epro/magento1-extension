@@ -17,10 +17,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_ModeSwitcher_Abstract extends Mage
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('listingViewModeSwitcher');
-        // ---------------------------------------
 
         $this->setData('component_nick', self::NICK);
         $this->setData('component_label', self::LABEL);
@@ -34,7 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_View_ModeSwitcher_Abstract extends Mage
             'items' => $this->getMenuItems()
         );
 
-        $modeChangeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_view_modeSwitcher');
+        $modeChangeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_widget_grid_modeSwitcher');
         $modeChangeBlock->setData($data);
         $modeChangeLabel = Mage::helper('M2ePro')->__('View Mode');
 

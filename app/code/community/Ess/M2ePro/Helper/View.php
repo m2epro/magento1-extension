@@ -6,10 +6,6 @@
  * @license    Commercial use is forbidden
  */
 
-use Ess_M2ePro_Helper_View_Ebay_Component as EbayComponent;
-use Ess_M2ePro_Helper_View_Amazon_Component as AmazonComponent;
-use Ess_M2ePro_Helper_View_Walmart_Component as WalmartComponent;
-
 use Ess_M2ePro_Helper_View_Ebay_Controller as EbayControllerComponent;
 use Ess_M2ePro_Helper_View_Amazon_Controller as AmazonControllerComponent;
 use Ess_M2ePro_Helper_View_Walmart_Controller as WalmartControllerComponent;
@@ -67,7 +63,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 
     /**
      * @param string $viewNick
-     * @return AmazonComponent|EbayComponent|WalmartComponent
+     * @return Ess_M2ePro_Helper_Component_Amazon|Ess_M2ePro_Helper_Component_Ebay|Ess_M2ePro_Helper_Component_Walmart
      */
     public function getComponentHelper($viewNick = null)
     {
@@ -76,20 +72,17 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         }
 
         switch ($viewNick) {
-            case Ess_M2ePro_Helper_View_Ebay::NICK:
-                $helper = Mage::helper('M2ePro/View_Ebay_Component');
+            case Ess_M2ePro_Helper_Component_Ebay::NICK:
+                $helper = Mage::helper('M2ePro/Component_Ebay');
                 break;
 
-            case Ess_M2ePro_Helper_View_Amazon::NICK:
-                $helper = Mage::helper('M2ePro/View_Amazon_Component');
-                break;
-
-            case Ess_M2ePro_Helper_View_Walmart::NICK:
-                $helper = Mage::helper('M2ePro/View_Walmart_Component');
+            case Ess_M2ePro_Helper_Component_Amazon::NICK:
+                $helper = Mage::helper('M2ePro/Component_Amazon');
                 break;
 
             default:
-                $helper = Mage::helper('M2ePro/View_Amazon_Component');
+            case Ess_M2ePro_Helper_Component_Walmart::NICK:
+                $helper = Mage::helper('M2ePro/Component_Walmart');
                 break;
         }
 
@@ -107,20 +100,17 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         }
 
         switch ($viewNick) {
-            case Ess_M2ePro_Helper_View_Ebay::NICK:
+            case Ess_M2ePro_Helper_Component_Ebay::NICK:
                 $helper = Mage::helper('M2ePro/View_Ebay_Controller');
                 break;
 
-            case Ess_M2ePro_Helper_View_Amazon::NICK:
+            case Ess_M2ePro_Helper_Component_Amazon::NICK:
                 $helper = Mage::helper('M2ePro/View_Amazon_Controller');
-                break;
-
-            case Ess_M2ePro_Helper_View_Walmart::NICK:
-                $helper = Mage::helper('M2ePro/View_Walmart_Controller');
                 break;
 
             default:
-                $helper = Mage::helper('M2ePro/View_Amazon_Controller');
+            case Ess_M2ePro_Helper_Component_Walmart::NICK:
+                $helper = Mage::helper('M2ePro/View_Walmart_Controller');
                 break;
         }
 
@@ -135,7 +125,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         $controller = $request->getControllerName();
 
         if ($controller === null) {
-            return NULL;
+            return null;
         }
 
         if (stripos($controller, 'adminhtml_ebay') !== false) {
@@ -150,8 +140,8 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
             return Ess_M2ePro_Helper_View_Walmart::NICK;
         }
 
-        if (stripos($controller, 'adminhtml_development') !== false) {
-            return Ess_M2ePro_Helper_View_Development::NICK;
+        if (stripos($controller, 'adminhtml_controlPanel') !== false) {
+            return Ess_M2ePro_Helper_View_ControlPanel::NICK;
         }
 
         if (stripos($controller, 'adminhtml_wizard') !== false) {
@@ -162,7 +152,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
             return Ess_M2ePro_Helper_View_Configuration::NICK;
         }
 
-        return NULL;
+        return null;
     }
 
     // ---------------------------------------
@@ -182,9 +172,9 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         return $this->getCurrentView() == Ess_M2ePro_Helper_View_Walmart::NICK;
     }
 
-    public function isCurrentViewDevelopment()
+    public function isCurrentViewControlPanel()
     {
-        return $this->getCurrentView() == Ess_M2ePro_Helper_View_Development::NICK;
+        return $this->getCurrentView() == Ess_M2ePro_Helper_View_ControlPanel::NICK;
     }
 
     public function isCurrentViewConfiguration()
@@ -302,7 +292,7 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
 
     // ---------------------------------------
 
-    public function getPageNavigationPath($pathNick, $tabName = NULL, $additionalEnd = NULL)
+    public function getPageNavigationPath($pathNick, $tabName = null, $additionalEnd = null)
     {
         $resultPath = array();
 
@@ -327,6 +317,49 @@ class Ess_M2ePro_Helper_View extends Mage_Core_Helper_Abstract
         }
 
         return join($resultPath, ' > ');
+    }
+
+    //########################################
+
+    /**
+     * @return Ess_M2ePro_Block_Adminhtml_General
+     */
+    public function getGeneralBlock()
+    {
+        $session = Mage::helper('M2ePro/Data_Cache_Runtime');
+
+        if (!$session->getValue(self::GENERAL_BLOCK_PATH)) {
+            /** @var Ess_M2ePro_Block_Adminhtml_General $blockGeneral */
+            $blockGeneral = Mage::getSingleton('core/layout')->createBlock(self::GENERAL_BLOCK_PATH);
+            $session->setValue(self::GENERAL_BLOCK_PATH, $blockGeneral);
+        }
+
+        return $session->getValue(self::GENERAL_BLOCK_PATH);
+    }
+
+    public function getJsPhpRenderer()
+    {
+        return $this->getGeneralBlock()->getJsPhp();
+    }
+
+    public function getJsTranslatorRenderer()
+    {
+        return $this->getGeneralBlock()->getJsTranslator();
+    }
+
+    public function getJsUrlsRenderer()
+    {
+        return $this->getGeneralBlock()->getJsUrls();
+    }
+
+    public function getJsRenderer()
+    {
+        return $this->getGeneralBlock()->getJs();
+    }
+
+    public function getCssRenderer()
+    {
+        return $this->getGeneralBlock()->getCss();
     }
 
     //########################################

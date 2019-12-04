@@ -16,7 +16,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
     protected $_logsActionId       = null;
     protected $_synchronizationLog = null;
 
-    // ########################################
+    //########################################
 
     protected function processResponseMessages()
     {
@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         return true;
     }
 
-    // ########################################
+    //########################################
 
     public function failDetected($messageText)
     {
@@ -64,7 +64,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         );
     }
 
-    // ########################################
+    //########################################
 
     protected function processResponseData()
     {
@@ -81,7 +81,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function updateReceivedListingsProducts()
     {
@@ -110,8 +110,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             );
 
             $newData = array(
-                'upc'                     => !empty($receivedItem['upc']) ? (string)$receivedItem['upc'] : NULL,
-                'gtin'                    => !empty($receivedItem['gtin']) ? (string)$receivedItem['gtin'] : NULL,
+                'upc'                     => !empty($receivedItem['upc']) ? (string)$receivedItem['upc'] : null,
+                'gtin'                    => !empty($receivedItem['gtin']) ? (string)$receivedItem['gtin'] : null,
                 'wpid'                    => (string)$receivedItem['wpid'],
                 'item_id'                 => (string)$receivedItem['item_id'],
                 'online_qty'              => (int)$receivedItem['qty'],
@@ -128,8 +128,8 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             );
 
             $existingData = array(
-                'upc'                     => !empty($existingItem['upc']) ? (string)$existingItem['upc'] : NULL,
-                'gtin'                    => !empty($existingItem['gtin']) ? (string)$existingItem['gtin'] : NULL,
+                'upc'                     => !empty($existingItem['upc']) ? (string)$existingItem['upc'] : null,
+                'gtin'                    => !empty($existingItem['gtin']) ? (string)$existingItem['gtin'] : null,
                 'wpid'                    => (string)$existingItem['wpid'],
                 'item_id'                 => (string)$existingItem['item_id'],
                 'online_qty'              => (int)$existingItem['online_qty'],
@@ -215,8 +215,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
             $tempLogMessages = array();
 
             if (isset($newData['online_qty']) && $newData['online_qty'] != $existingData['online_qty']) {
-                // M2ePro_TRANSLATIONS
-                // Item QTY was successfully changed from %from% to %to% .
                 $tempLogMessages[] = Mage::helper('M2ePro')->__(
                     'Item QTY was successfully changed from %from% to %to% .',
                     (int)$existingData['online_qty'],
@@ -233,8 +231,6 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
                     ->getHumanTitleByListingProductStatus($newData['status']);
 
                 if (!empty($statusChangedFrom) && !empty($statusChangedTo)) {
-                    // M2ePro_TRANSLATIONS
-                    // Item Status was successfully changed from "%from%" to "%to%" .
                     $tempLogMessages[] = Mage::helper('M2ePro')->__(
                         'Item Status was successfully changed from "%from%" to "%to%" .',
                         $statusChangedFrom,
@@ -267,7 +263,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         }
     }
 
-    // ########################################
+    //########################################
 
     protected function getPdoStatementExistingListings($withData = false)
     {
@@ -347,7 +343,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         $massProcessor->execute();
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @return Ess_M2ePro_Model_Account
@@ -383,7 +379,7 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         }
 
         $this->_synchronizationLog = Mage::getModel('M2ePro/Synchronization_Log');
-        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
+        $this->_synchronizationLog->setComponentMode(Ess_M2ePro_Helper_Component_Walmart::NICK);
         $this->_synchronizationLog->setSynchronizationTask(Ess_M2ePro_Model_Synchronization_Log::TASK_LISTINGS);
 
         return $this->_synchronizationLog;
@@ -410,5 +406,5 @@ class Ess_M2ePro_Model_Cron_Task_Walmart_Listing_Product_Channel_SynchronizeData
         return $existData[$key] != $newData[$key];
     }
 
-    // ########################################
+    //########################################
 }

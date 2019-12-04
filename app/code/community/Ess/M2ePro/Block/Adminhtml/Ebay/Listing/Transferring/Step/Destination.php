@@ -66,9 +66,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
         $accounts = array();
         foreach ($collection->getItems() as $account) {
             $accounts[] = array(
-                'id'               => $account->getId(),
-                'title'            => Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
-                'translation_hash' => (bool)$account->getTranslationHash() ? '1' : '0',
+                'id'    => $account->getId(),
+                'title' => Mage::helper('M2ePro')->escapeHtml($account->getTitle()),
             );
         }
 
@@ -80,25 +79,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
             ->setOrder('sorder', 'ASC')
             ->setOrder('title', 'ASC');
 
-        $countAvailableTranslationMarketplaces = 0;
-        $countNotAvailableTranslationMarketplaces = 0;
         $marketplaces = array();
         foreach ($collection->getItems() as $id => $marketplace) {
-            $isAvailableTranslation = $this->_isMarketplaceTranslationAvailable($marketplace, $sourceMarketplace);
-            $countAvailableTranslationMarketplaces += intval($isAvailableTranslation);
-            $countNotAvailableTranslationMarketplaces += intval(!$isAvailableTranslation);
             $marketplaces[$id] = array(
                 'id'     => $marketplace->getId(),
                 'title'  => Mage::helper('M2ePro')->escapeHtml($marketplace->getTitle()),
                 'url'    => $marketplace->getUrl(),
                 'status' => $marketplace->getStatus() == Ess_M2ePro_Model_Marketplace::STATUS_ENABLE ? '1' : '0',
-                'translation_available' => $isAvailableTranslation,
             );
         }
 
         $this->setData('marketplaces', $marketplaces);
-        $this->setData('count_available_translation_marketplaces', $countAvailableTranslationMarketplaces);
-        $this->setData('count_not_available_translation_marketplaces', $countNotAvailableTranslationMarketplaces);
         // ---------------------------------------
 
         // ---------------------------------------
@@ -168,25 +159,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Transferring_Step_Destination exte
                     return true;
                 }
             }
-        }
-
-        return false;
-    }
-
-    //########################################
-
-    protected function _isMarketplaceTranslationAvailable($targetMarketplace, $sourceMarketplace)
-    {
-        $targetEbayMarketplace = $targetMarketplace->getChildObject();
-        $sourceEbayMarketplace = $sourceMarketplace->getChildObject();
-
-        if ($targetEbayMarketplace->getId() != $sourceEbayMarketplace->getId() &&
-            ($targetEbayMarketplace->isTranslationServiceModeTo() ||
-                $targetEbayMarketplace->isTranslationServiceModeBoth() )       &&
-            ($sourceEbayMarketplace->isTranslationServiceModeFrom() ||
-                $sourceEbayMarketplace->isTranslationServiceModeBoth())        &&
-            $targetEbayMarketplace->getLanguageCode() != $sourceEbayMarketplace->getLanguageCode()) {
-            return true;
         }
 
         return false;

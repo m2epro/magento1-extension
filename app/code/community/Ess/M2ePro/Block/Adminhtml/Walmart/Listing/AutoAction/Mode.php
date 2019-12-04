@@ -13,7 +13,7 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_AutoAction_Mode
 
     public function getHelpPageUrl()
     {
-        return Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, "x/L4taAQ");
+        return Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(null, null, "x/L4taAQ");
     }
 
     //########################################

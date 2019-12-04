@@ -10,7 +10,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Dispatcher
 {
     //####################################
 
-    public function getConnector($entity, $type, $name, array $params = array(), $marketplace = NULL, $account = NULL)
+    public function getConnector($entity, $type, $name, array $params = array(), $marketplace = null, $account = null)
     {
         $className = 'Ess_M2ePro_Model_Ebay_Connector';
 
@@ -37,7 +37,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Dispatcher
         return $connectorObject;
     }
 
-    public function getCustomConnector($modelName, array $params = array(), $marketplace = NULL, $account = NULL)
+    public function getCustomConnector($modelName, array $params = array(), $marketplace = null, $account = null)
     {
         if (is_int($marketplace) || is_string($marketplace)) {
             $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Marketplace', (int)$marketplace);

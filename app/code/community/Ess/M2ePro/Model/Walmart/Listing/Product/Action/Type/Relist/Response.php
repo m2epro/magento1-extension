@@ -12,6 +12,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response
     const INSTRUCTION_INITIATOR             = 'relist_action_response';
 
     const INSTRUCTION_TYPE_CHECK_QTY        = 'success_relist_check_qty';
+    const INSTRUCTION_TYPE_CHECK_LAG_TIME   = 'success_relist_check_lag_time';
     const INSTRUCTION_TYPE_CHECK_PRICE      = 'success_relist_check_price';
     const INSTRUCTION_TYPE_CHECK_PROMOTIONS = 'success_relist_check_promotions';
     const INSTRUCTION_TYPE_CHECK_DETAILS    = 'success_relist_check_details';
@@ -31,6 +32,7 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response
 
         $data = $this->appendStatusChangerValue($data);
         $data = $this->appendQtyValues($data);
+        $data = $this->appendLagTimeValues($data);
         $data = $this->appendPriceValues($data);
         $data = $this->appendPromotionsValues($data);
 
@@ -62,13 +64,18 @@ class Ess_M2ePro_Model_Walmart_Listing_Product_Action_Type_Relist_Response
         $instructionsData = array();
 
         foreach ($data['additional_data']['recheck_properties'] as $property) {
-            $instructionType     = NULL;
+            $instructionType     = null;
             $instructionPriority = 0;
 
             switch ($property) {
                 case 'qty':
                     $instructionType     = self::INSTRUCTION_TYPE_CHECK_QTY;
                     $instructionPriority = 80;
+                    break;
+
+                case 'lag_time':
+                    $instructionType     = self::INSTRUCTION_TYPE_CHECK_LAG_TIME;
+                    $instructionPriority = 60;
                     break;
 
                 case 'price':

@@ -14,15 +14,10 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
     {
         parent::__construct();
 
-        // Initialization block
-        // ---------------------------------------
         $this->setId('walmartListing');
         $this->_blockGroup = 'M2ePro';
         $this->_controller = 'adminhtml_walmart_listing_other_view';
-        // ---------------------------------------
 
-        // Set header text
-        // ---------------------------------------
         if (!Mage::helper('M2ePro/Component')->isSingleActiveComponent()) {
             $componentName = Mage::helper('M2ePro/Component_Walmart')->getTitle();
             $this->_headerText = Mage::helper('M2ePro')->__('%component_name% / 3rd Party Listings', $componentName);
@@ -30,19 +25,13 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
             $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings');
         }
 
-        // ---------------------------------------
-
-        // Set buttons actions
-        // ---------------------------------------
         $this->removeButton('back');
         $this->removeButton('reset');
         $this->removeButton('delete');
         $this->removeButton('add');
         $this->removeButton('save');
         $this->removeButton('edit');
-        // ---------------------------------------
 
-        // ---------------------------------------
         if ($this->getRequest()->getParam('back') !== null) {
             $url = Mage::helper('M2ePro')->getBackUrl();
             $this->_addButton(
@@ -53,17 +42,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
                 )
             );
         }
-
-        $url = $this->getUrl('*/adminhtml_walmart_log/listingOther');
-        $this->_addButton(
-            'view_log', array(
-            'label'     => Mage::helper('M2ePro')->__('View Log'),
-            'onclick'   => 'window.open(\''.$url.'\')',
-            'class'     => 'button_link'
-            )
-        );
-        // ---------------------------------------
-
     }
 
     //########################################
@@ -73,7 +51,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $accountId = $this->getRequest()->getParam('account');
         $marketplaceId = $this->getRequest()->getParam('marketplace');
 
-        // ---------------------------------------
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_other_view_header', '',
             array(
@@ -85,7 +62,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
                 )
             )
         );
-        // ---------------------------------------
 
         $mapToProductBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_listing_other_mapping');
 
@@ -131,8 +107,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
         $successfullyUnmappedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Unmapped.'));
         $successfullyRemovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully Removed.'));
 
-        $viewAllProductLogMessage = $helper->escapeJs($helper->__('View All Product Log.'));
-
         $selectItemsMessage = $helper->escapeJs(
             $helper->__('Please select the Products you want to perform the Action on.')
         );
@@ -170,11 +144,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
 
         $urls = Mage::helper('M2ePro')->jsonEncode(
             array(
-            'adminhtml_walmart_log/listingOther' => $this->getUrl(
-                '*/adminhtml_walmart_log/listingOther', array(
-                'back' => $helper->makeBackUrlParam('*/adminhtml_walmart_listing_other/index')
-                )
-            ),
             'adminhtml_listing_other_mapping/map' => $this->getUrl('*/adminhtml_listing_other_mapping/map'),
             'adminhtml_walmart_listing_productAdd/index' => $this->getUrl(
                 '*/adminhtml_walmart_listing_productAdd/index', array('step' => 3)
@@ -218,8 +187,6 @@ class Ess_M2ePro_Block_Adminhtml_Walmart_Listing_Other_View extends Mage_Adminht
     M2eProWalmart.text.processing_data_message = '{$processingDataMessage}';
     M2eProWalmart.text.successfully_mapped = '{$successfullyMappedMessage}';
     M2eProWalmart.text.failed_mapped = '{$someProductsWereNotMappedMessage}';
-
-    M2eProWalmart.text.view_all_product_log_message = '{$viewAllProductLogMessage}';
 
     M2eProWalmart.text.success_word = '{$successWord}';
     M2eProWalmart.text.notice_word = '{$noticeWord}';

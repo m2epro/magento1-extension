@@ -9,7 +9,7 @@
 class Ess_M2ePro_Model_Amazon_Connector_Product_List_ProcessingRunner
     extends Ess_M2ePro_Model_Amazon_Connector_Product_ProcessingRunner
 {
-    // ########################################
+    //########################################
 
     public function prepare()
     {
@@ -53,5 +53,5 @@ class Ess_M2ePro_Model_Amazon_Connector_Product_List_ProcessingRunner
         }
     }
 
-    // ########################################
+    //########################################
 }

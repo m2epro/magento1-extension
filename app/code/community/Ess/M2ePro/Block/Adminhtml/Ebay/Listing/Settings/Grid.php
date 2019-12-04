@@ -23,28 +23,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Settings_Grid
 
     //########################################
 
-    public function getAdvancedFilterButtonHtml()
-    {
-        if (!Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
-            return '';
-        }
-
-        return parent::getAdvancedFilterButtonHtml();
-    }
-
-    //########################################
-
-    protected function isShowRuleBlock()
-    {
-        if (Mage::helper('M2ePro/View_Ebay')->isSimpleMode()) {
-            return false;
-        }
-
-        return parent::isShowRuleBlock();
-    }
-
-    //########################################
-
     protected function _prepareMassactionItems()
     {
         parent::_prepareMassactionItems();

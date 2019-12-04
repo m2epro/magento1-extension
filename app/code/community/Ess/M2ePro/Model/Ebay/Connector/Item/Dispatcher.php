@@ -10,7 +10,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 {
     protected $_logsActionId = null;
 
-    // ########################################
+    //########################################
 
     /**
      * @param int $action
@@ -46,7 +46,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
         return (int)$this->_logsActionId;
     }
 
-    // ########################################
+    //########################################
 
     /**
      * @param array $sortedProducts
@@ -90,7 +90,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
         return Mage::helper('M2ePro')->getMainStatus($results);
     }
 
-    // ########################################
+    //########################################
 
     protected function processProducts(array $products, $action, $isRealTime = false, array $params = array())
     {
@@ -135,7 +135,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
         return Mage::helper('M2ePro')->getMainStatus($results);
     }
 
-    // ########################################
+    //########################################
 
     protected function prepareProducts($products)
     {
@@ -147,7 +147,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
 
         $productsIdsTemp = array();
         foreach ($products as $product) {
-            $tempProduct = NULL;
+            $tempProduct = null;
             if ($product instanceof Ess_M2ePro_Model_Listing_Product) {
                 $tempProduct = $product;
             } else {
@@ -252,7 +252,7 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
         return $logAction;
     }
 
-    // ########################################
+    //########################################
 
     protected function getActionNick($action)
     {
@@ -274,5 +274,5 @@ class Ess_M2ePro_Model_Ebay_Connector_Item_Dispatcher
         }
     }
 
-    // ########################################
+    //########################################
 }

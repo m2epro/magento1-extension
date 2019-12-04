@@ -20,7 +20,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
         $this->_initPopUp();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
+        $this->setPageHelpLink(null, null, "x/MQAJAQ");
 
         return $this;
     }
@@ -49,7 +49,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
     {
         $this->_initAction();
 
-        $this->setPageHelpLink(NULL, NULL, "x/MQAJAQ");
+        $this->setPageHelpLink(null, null, "x/MQAJAQ");
 
         $this->_addContent(
             $this->getLayout()->createBlock(
@@ -61,11 +61,6 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
 
     public function saveAction()
     {
-        // ---------------------------------------
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/view/ebay/', 'mode',
-            $this->getRequest()->getParam('view_ebay_mode')
-        );
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
             '/view/ebay/feedbacks/notification/', 'mode',
             (int)$this->getRequest()->getParam('view_ebay_feedbacks_notification_mode')
@@ -106,6 +101,10 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
             $motorsAttributes[] = $motorsEpidsDeAttribute;
         }
 
+        if ($motorsEpidsAuAttribute = $this->getRequest()->getParam('motors_epids_au_attribute')) {
+            $motorsAttributes[] = $motorsEpidsAuAttribute;
+        }
+
         if ($motorsKtypesAttribute = $this->getRequest()->getParam('motors_ktypes_attribute')) {
             $motorsAttributes[] = $motorsKtypesAttribute;
         }
@@ -126,6 +125,9 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
         );
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
             '/ebay/motors/', 'epids_de_attribute', $motorsEpidsDeAttribute
+        );
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
+            '/ebay/motors/', 'epids_au_attribute', $motorsEpidsAuAttribute
         );
         Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
             '/ebay/motors/', 'ktypes_attribute', $motorsKtypesAttribute
@@ -281,6 +283,7 @@ class Ess_M2ePro_Adminhtml_Ebay_ConfigurationController extends Ess_M2ePro_Contr
             'trim'         => (isset($csvRow['trim']) ? $csvRow['trim'] : null),
             'engine'       => (isset($csvRow['engine']) ? $csvRow['engine'] : null),
             'submodel'     => (isset($csvRow['submodel']) ? $csvRow['submodel'] : null),
+            'street_name'  => (isset($csvRow['street_name']) ? $csvRow['street_name'] : null),
             'is_custom'    => 1,
             'scope'        => $helper->getEpidsScopeByType($motorsType)
         );
